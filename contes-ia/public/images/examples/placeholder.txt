@@ -1,0 +1,3 @@
+# Images d'exemple pour les personnages
+# Ces images seront utilisées comme exemples dans les stories
+# Vous pouvez remplacer ce fichier par de vraies images

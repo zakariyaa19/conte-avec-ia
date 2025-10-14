@@ -1,0 +1,758 @@
+.idees-cadeaux-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2rem 0;
+}
+
+.idees-cadeaux-page .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.page-header {
+  text-align: center;
+  margin-bottom: 4rem;
+  color: white;
+}
+
+.page-header h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.page-header .intro {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  max-width: 800px;
+  margin: 0 auto;
+  opacity: 0.95;
+}
+
+.occasions-showcase {
+  margin-bottom: 4rem;
+}
+
+.occasions-showcase h2 {
+  color: white;
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.section-intro {
+  color: white;
+  text-align: center;
+  font-size: 1.1rem;
+  margin-bottom: 3rem;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  opacity: 0.9;
+}
+
+.occasions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+}
+
+.occasion-card {
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.occasion-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+.occasion-header {
+  padding: 2rem;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.occasion-icon {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.occasion-header h3 {
+  color: #2d3748;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.occasion-content {
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.occasion-description {
+  color: #4a5568;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.occasion-ages h4,
+.occasion-personalizations h4 {
+  color: #2d3748;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.ages-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.age-tag {
+  background: #48bb78;
+  color: white;
+  padding: 0.3rem 0.8rem;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.occasion-personalizations ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.occasion-personalizations li {
+  color: #4a5568;
+  padding: 0.3rem 0;
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.occasion-personalizations li::before {
+  content: "✨";
+  position: absolute;
+  left: 0;
+  font-size: 0.8rem;
+}
+
+.formats-pricing {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 3rem;
+  margin-bottom: 4rem;
+  backdrop-filter: blur(10px);
+}
+
+.formats-pricing h2 {
+  color: white;
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.formats-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 3rem;
+  margin-top: 2rem;
+}
+
+.format-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  padding: 2.5rem;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  transition: transform 0.3s ease;
+}
+
+.format-card:hover {
+  transform: translateY(-5px);
+}
+
+.format-header {
+  margin-bottom: 2rem;
+}
+
+.format-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.format-header h3 {
+  color: #2d3748;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.format-price {
+  background: linear-gradient(135deg, #ff6b6b, #feca57);
+  color: white;
+  padding: 0.8rem 1.5rem;
+  border-radius: 25px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  display: inline-block;
+}
+
+.format-description {
+  color: #4a5568;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.format-advantages h4,
+.format-best-for h4 {
+  color: #2d3748;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  text-align: left;
+}
+
+.format-advantages ul {
+  list-style: none;
+  padding: 0;
+  text-align: left;
+  margin-bottom: 1.5rem;
+}
+
+.format-advantages li {
+  color: #4a5568;
+  padding: 0.3rem 0;
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.format-advantages li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: #48bb78;
+  font-weight: bold;
+}
+
+.best-for-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.use-tag {
+  background: #667eea;
+  color: white;
+  padding: 0.3rem 0.8rem;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.format-cta {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-block;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.format-cta:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  text-decoration: none;
+  color: white;
+}
+
+.personalization-ideas {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  padding: 3rem;
+  margin-bottom: 4rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.personalization-ideas h2 {
+  color: #2d3748;
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.personalization-ideas > p {
+  color: #4a5568;
+  text-align: center;
+  font-size: 1.1rem;
+  margin-bottom: 2.5rem;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.ideas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.idea-category {
+  background: linear-gradient(135deg, #f7fafc, #edf2f7);
+  border-radius: 15px;
+  padding: 2rem;
+  text-align: center;
+}
+
+.category-header {
+  margin-bottom: 1.5rem;
+}
+
+.category-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.category-header h3 {
+  color: #2d3748;
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.category-ideas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.idea-tag {
+  background: #667eea;
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.age-specific-gifts {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 3rem;
+  margin-bottom: 4rem;
+  backdrop-filter: blur(10px);
+}
+
+.age-specific-gifts h2 {
+  color: white;
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.age-gifts-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.age-gift-card {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  padding: 2rem;
+  backdrop-filter: blur(5px);
+}
+
+.age-gift-header h3 {
+  color: white;
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+.age-gift-header h4 {
+  color: #ffd700;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.age-gift-description {
+  color: white;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  opacity: 0.9;
+}
+
+.gift-ideas h5,
+.age-themes h5 {
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.gift-ideas ul {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 1.5rem;
+}
+
+.gift-ideas li {
+  color: white;
+  padding: 0.3rem 0;
+  position: relative;
+  padding-left: 1.5rem;
+  opacity: 0.9;
+}
+
+.gift-ideas li::before {
+  content: "🎁";
+  position: absolute;
+  left: 0;
+  font-size: 0.8rem;
+}
+
+.themes-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.theme-tag {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 0.3rem 0.8rem;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.age-guide-link {
+  text-align: center;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  backdrop-filter: blur(5px);
+}
+
+.age-guide-link p {
+  color: white;
+  margin: 0;
+  opacity: 0.9;
+}
+
+.age-guide-link a {
+  color: #ffd700;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.age-guide-link a:hover {
+  text-decoration: underline;
+}
+
+.gift-process {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  padding: 3rem;
+  margin-bottom: 4rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.gift-process h2 {
+  color: #2d3748;
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.process-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.process-step {
+  text-align: center;
+  padding: 1.5rem;
+  border-radius: 15px;
+  background: linear-gradient(135deg, #f7fafc, #edf2f7);
+}
+
+.step-number {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin: 0 auto 1rem auto;
+}
+
+.process-step h3 {
+  color: #2d3748;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.process-step p {
+  color: #4a5568;
+  line-height: 1.6;
+}
+
+.testimonials-gifts {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 3rem;
+  margin-bottom: 4rem;
+  backdrop-filter: blur(10px);
+}
+
+.testimonials-gifts h2 {
+  color: white;
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 2.5rem;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.testimonials-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.testimonial {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2rem;
+  border-radius: 15px;
+  backdrop-filter: blur(5px);
+}
+
+.testimonial p {
+  color: white;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  font-style: italic;
+  opacity: 0.9;
+}
+
+.testimonial-author {
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.testimonial-occasion {
+  color: #ffd700;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.gift-tips {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  padding: 3rem;
+  margin-bottom: 4rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.gift-tips h2 {
+  color: #2d3748;
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.tips-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.tip-card {
+  background: linear-gradient(135deg, #f7fafc, #edf2f7);
+  padding: 2rem;
+  border-radius: 15px;
+  text-align: center;
+}
+
+.tip-card h3 {
+  color: #2d3748;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.tip-card p {
+  color: #4a5568;
+  line-height: 1.6;
+}
+
+.tip-card a {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.tip-card a:hover {
+  text-decoration: underline;
+}
+
+.cta-section {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 4rem 2rem;
+  text-align: center;
+  backdrop-filter: blur(10px);
+}
+
+.cta-content h2 {
+  color: white;
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.cta-content p {
+  color: white;
+  font-size: 1.2rem;
+  line-height: 1.6;
+  margin-bottom: 2.5rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  opacity: 0.95;
+}
+
+.cta-buttons {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.cta-button {
+  padding: 1rem 2.5rem;
+  border-radius: 50px;
+  text-decoration: none;
+  font-size: 1.2rem;
+  font-weight: 600;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.cta-button.primary {
+  background: linear-gradient(135deg, #ff6b6b, #feca57);
+  color: white;
+}
+
+.cta-button.secondary {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 2px solid rgba(255,255,255,0.3);
+}
+
+.cta-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  text-decoration: none;
+  color: white;
+}
+
+.cta-links {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.cta-links a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 25px;
+  transition: all 0.3s ease;
+}
+
+.cta-links a:hover {
+  background: rgba(255,255,255,0.2);
+  border-color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .page-header h1 {
+    font-size: 2.2rem;
+  }
+  
+  .occasions-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .formats-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .ideas-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .age-gifts-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .process-steps {
+    grid-template-columns: 1fr;
+  }
+  
+  .testimonials-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .tips-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .cta-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .cta-links {
+    flex-direction: column;
+    align-items: center;
+  }
+}
