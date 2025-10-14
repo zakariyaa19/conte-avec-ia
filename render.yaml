@@ -4,5 +4,8 @@ services:
     env: node
     rootDir: backend
     branch: main
+    envVars:
+      - key: NPM_CONFIG_PRODUCTION
+        value: "false"
     buildCommand: npm install && npm run build
     startCommand: npm start
