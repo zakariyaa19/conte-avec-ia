@@ -7,7 +7,6 @@ import { SuccessPage } from './pages/SuccessPage';
 import { CancelPage } from './pages/CancelPage';
 import { AdminPage } from './pages/AdminPage';
 import { ExemplesPage } from './pages/ExemplesPage';
-import { FonctionnalitesPage } from './pages/FonctionnalitesPage';
 import { FeaturesPage } from './pages/FeaturesPage';
 import ThemesContesPage from './pages/ThemesContesPage';
 import ContesParAgePage from './pages/ContesParAgePage';
@@ -37,6 +36,7 @@ function App() {
           <Route path="/admin/order/:orderId" element={<AdminPage />} />
           <Route path="/exemples" element={<ExemplesPage />} />
           <Route path="/fonctionnalites" element={<FeaturesPage />} />
+          <Route path="/features" element={<FeaturesPage />} />
           {/* Nouvelles pages SEO */}
           <Route path="/themes-de-contes" element={<ThemesContesPage />} />
           <Route path="/contes-par-age" element={<ContesParAgePage />} />
