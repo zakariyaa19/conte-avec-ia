@@ -4,5 +4,5 @@ services:
     env: node
     rootDir: backend
     branch: main
-    buildCommand: npm install
+    buildCommand: npm install && npm run build
     startCommand: npm start
