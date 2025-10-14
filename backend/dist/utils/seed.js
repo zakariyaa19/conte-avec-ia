@@ -86,7 +86,6 @@ async function main() {
                 shippingAddress: '123 Rue de la Paix',
                 shippingCity: 'Paris',
                 shippingPostalCode: '75001',
-                shippingCountry: 'France',
                 paidAt: new Date()
             }
         }),
@@ -103,7 +102,7 @@ async function main() {
                 protagonistAge: '2 ans',
                 eyeColor: 'green',
                 hairColor: 'red',
-                productType: 'PACK',
+                productType: 'EBOOK',
                 price: 49.99
             }
         })

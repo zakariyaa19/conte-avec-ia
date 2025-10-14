@@ -4,8 +4,8 @@ import cors from 'cors';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 import { prisma } from './utils/database';
-import { EmailService } from './utils/emailService';
 import stripeRoutes from './routes/stripe';
+import testRoutes from './routes/test';
 
 // Configuration
 dotenv.config();
@@ -25,6 +25,7 @@ app.use(morgan('combined'));
 
 // Middleware (Stripe webhook doit être avant express.json)
 app.use('/api/stripe', stripeRoutes);
+app.use('/api/test', testRoutes);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -122,7 +123,6 @@ app.post('/api/orders', async (req, res) => {
         shippingAddress: formData.shippingAddress?.address,
         shippingCity: formData.shippingAddress?.city,
         shippingPostalCode: formData.shippingAddress?.postalCode,
-        shippingCountry: formData.shippingAddress?.country || 'France'
       },
       include: { user: true }
     });

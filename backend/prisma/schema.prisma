@@ -34,21 +34,42 @@ model Order {
   userId    String?
   status    OrderStatus @default(NEW_ORDER)
   
-  // Données du conte
+  // Étape 1 - Données du conte
   ageRange           String
   generalTheme       String
+  customTheme        String?
   specificSubject    String
+  customSubject      String?
   centralMessage     String
+  customMessage      String?
   illustrationStyle  String
   
-  // Données du protagoniste
+  // Étape 2 - Données du protagoniste
   protagonistName    String
   protagonistAge     String?
+  protagonistGender  String?
   eyeColor          String?
   hairColor         String?
+  photoUrl          String?
+  
+  // Langue du conte
+  language          String?
+  
+  // Informations supplémentaires (facultatif)
+  hobbies           String?
+  favoriteDish      String?
+  specialEvents     String?
+  
+  // Option religieuse (facultatif)
+  religion          String?
+  customReligion    String?
+  
+  // Personnage secondaire (optionnel)
   secondaryCharacterName String?
   secondaryCharacterAge  String?
-  photoUrl          String?
+  
+  // Détails personnels
+  creatorName       String?
   
   // Informations produit
   productType       ProductType
@@ -60,7 +81,6 @@ model Order {
   shippingAddress   String?
   shippingCity      String?
   shippingPostalCode String?
-  shippingCountry   String?
   
   // Paiement
   stripePaymentIntentId String?
@@ -112,7 +132,6 @@ enum OrderStatus {
 enum ProductType {
   EBOOK
   PRINTED
-  PACK
 }
 
 enum AdminRole {

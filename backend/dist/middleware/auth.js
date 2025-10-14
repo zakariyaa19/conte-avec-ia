@@ -9,19 +9,23 @@ const database_1 = require("../utils/database");
 // Middleware d'authentification JWT pour les admins
 const authenticateAdmin = async (req, res, next) => {
     try {
+        console.log('🔐 Authentification admin - Headers:', req.headers.authorization);
         const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            console.log('❌ Token manquant ou format incorrect');
             return res.status(401).json({
                 success: false,
                 message: 'Token d\'authentification requis'
             });
         }
         const token = authHeader.substring(7); // Enlever "Bearer "
+        console.log('🔑 Token extrait:', token.substring(0, 20) + '...');
         if (!process.env.JWT_SECRET) {
             throw new Error('JWT_SECRET non configuré');
         }
         // Vérifier le token
         const decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
+        console.log('✅ Token décodé:', { adminId: decoded.adminId, email: decoded.email });
         // Récupérer l'admin depuis la base de données
         const admin = await database_1.prisma.adminUser.findUnique({
             where: { id: decoded.adminId }

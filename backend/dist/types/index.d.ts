@@ -1,24 +1,34 @@
 export interface StoryFormData {
     ageRange: string;
     generalTheme: string;
+    customTheme?: string;
     specificSubject: string;
+    customSubject?: string;
     centralMessage: string;
+    customMessage?: string;
     illustrationStyle: string;
     protagonistName: string;
-    protagonistAge?: string;
-    eyeColor?: string;
-    hairColor?: string;
+    protagonistAge: string;
+    protagonistGender: 'boy' | 'girl';
+    eyeColor: string;
+    hairColor: string;
+    photo?: Express.Multer.File;
+    language: string;
+    hobbies?: string;
+    favoriteDish?: string;
+    specialEvents?: string;
+    religion?: string;
+    customReligion?: string;
     secondaryCharacterName?: string;
     secondaryCharacterAge?: string;
-    photo?: Express.Multer.File;
-    productType: 'EBOOK' | 'PRINTED' | 'PACK';
+    creatorName?: string;
+    productType: 'EBOOK' | 'PRINTED';
     shippingAddress?: {
         firstName: string;
         lastName: string;
         address: string;
         city: string;
         postalCode: string;
-        country: string;
     };
 }
 export interface CreateOrderRequest {

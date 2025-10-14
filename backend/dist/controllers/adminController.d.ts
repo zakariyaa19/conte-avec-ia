@@ -4,6 +4,6 @@ export declare class AdminController {
     static getDashboardStats(req: Request, res: Response): Promise<void>;
     static getOrders(req: Request, res: Response): Promise<void>;
     static getOrderDetails(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined>;
-    static updateOrder(req: Request, res: Response): Promise<void>;
+    static updateOrder(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined>;
 }
 //# sourceMappingURL=adminController.d.ts.map

@@ -17,10 +17,13 @@ dotenv_1.default.config();
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 5001;
 // Middleware de sécurité
-app.use((0, helmet_1.default)());
+app.use((0, helmet_1.default)({
+    contentSecurityPolicy: false
+}));
 app.use((0, cors_1.default)({
     origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-    credentials: true
+    credentials: true,
+    optionsSuccessStatus: 200
 }));
 // Middleware de logging
 app.use((0, morgan_1.default)('combined'));
@@ -29,6 +32,17 @@ app.use('/api/stripe', stripe_1.default);
 // Middleware de parsing
 app.use(express_1.default.json({ limit: '10mb' }));
 app.use(express_1.default.urlencoded({ extended: true, limit: '10mb' }));
+// Servir les fichiers statiques (images uploadées)
+app.use('/uploads', express_1.default.static('uploads'));
+// Servir les fichiers PDF des exemples
+app.use('/pdfs', express_1.default.static('pdfs'));
+// Servir les images de couverture avec headers CORS
+app.use('/images', (req, res, next) => {
+    res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
+    res.header('Access-Control-Allow-Methods', 'GET');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+    next();
+}, express_1.default.static('images'));
 // Routes
 app.get('/health', (req, res) => {
     res.json({

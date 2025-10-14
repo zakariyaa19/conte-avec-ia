@@ -1,9 +1,15 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
+const express_2 = __importDefault(require("express"));
 const adminController_1 = require("../controllers/adminController");
 const auth_1 = require("../middleware/auth");
 const router = (0, express_1.Router)();
+// Middleware pour parser le JSON
+router.use(express_2.default.json());
 // Authentification admin
 router.post('/login', adminController_1.AdminController.login);
 // Routes protégées avec authentification

@@ -6,9 +6,8 @@ exports.calculatePrice = calculatePrice;
 exports.formatPrice = formatPrice;
 exports.convertToStripeAmount = convertToStripeAmount;
 exports.PRODUCT_PRICES = {
-    EBOOK: 14.99,
-    PRINTED: 29.99,
-    PACK: 49.99
+    EBOOK: 4.99,
+    PRINTED: 19.99
 };
 function calculatePrice(productType) {
     return exports.PRODUCT_PRICES[productType];

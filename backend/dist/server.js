@@ -10,6 +10,7 @@ const morgan_1 = __importDefault(require("morgan"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const database_1 = require("./utils/database");
 const stripe_1 = __importDefault(require("./routes/stripe"));
+const test_1 = __importDefault(require("./routes/test"));
 // Configuration
 dotenv_1.default.config();
 const app = (0, express_1.default)();
@@ -24,6 +25,7 @@ app.use((0, cors_1.default)({
 app.use((0, morgan_1.default)('combined'));
 // Middleware (Stripe webhook doit être avant express.json)
 app.use('/api/stripe', stripe_1.default);
+app.use('/api/test', test_1.default);
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 // Route de santé
@@ -113,7 +115,6 @@ app.post('/api/orders', async (req, res) => {
                 shippingAddress: formData.shippingAddress?.address,
                 shippingCity: formData.shippingAddress?.city,
                 shippingPostalCode: formData.shippingAddress?.postalCode,
-                shippingCountry: formData.shippingAddress?.country || 'France'
             },
             include: { user: true }
         });

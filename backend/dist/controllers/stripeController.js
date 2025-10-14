@@ -1,4 +1,37 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -6,7 +39,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.checkPaymentStatus = exports.createPaymentSession = void 0;
 const stripe_1 = __importDefault(require("stripe"));
 const database_1 = require("../utils/database");
-const emailService_1 = require("../utils/emailService");
+const mailjetService_1 = require("../utils/mailjetService");
 const stripe = new stripe_1.default(process.env.STRIPE_SECRET_KEY || '', {
     typescript: true,
 });
@@ -30,7 +63,7 @@ const createPaymentSession = async (req, res) => {
                     price_data: {
                         currency: 'eur',
                         product_data: {
-                            name: `Conte personnalisé - ${order.productType === 'EBOOK' ? 'eBook' : order.productType === 'PRINTED' ? 'Livre relié' : 'Pack famille'}`,
+                            name: `Conte personnalisé - ${order.productType === 'EBOOK' ? 'eBook Numérique' : 'Livre Relié Premium'}`,
                             description: `Conte pour ${order.protagonistName}`,
                         },
                         unit_amount: Math.round(Number(order.price) * 100), // Stripe utilise les centimes
@@ -81,6 +114,15 @@ const checkPaymentStatus = async (req, res) => {
             if (!order) {
                 return res.status(404).json({ error: 'Commande non trouvée' });
             }
+            // Vérifier si les emails ont déjà été envoyés pour éviter les doublons
+            if (order.status === 'PAID' && order.paidAt) {
+                console.log(`⚠️ Commande ${orderId} déjà payée et emails déjà envoyés, pas de nouvel envoi`);
+                return res.json({
+                    success: true,
+                    status: 'paid',
+                    message: 'Paiement déjà confirmé'
+                });
+            }
             // Mettre à jour le statut de la commande
             const updatedOrder = await database_1.prisma.order.update({
                 where: { id: orderId },
@@ -99,8 +141,7 @@ const checkPaymentStatus = async (req, res) => {
                     lastName: order.shippingLastName || '',
                     address: order.shippingAddress || '',
                     city: order.shippingCity || '',
-                    postalCode: order.shippingPostalCode || '',
-                    country: order.shippingCountry || 'France'
+                    postalCode: order.shippingPostalCode || ''
                 },
                 ageRange: order.ageRange,
                 generalTheme: order.generalTheme,
@@ -115,10 +156,78 @@ const checkPaymentStatus = async (req, res) => {
                 secondaryCharacterAge: order.secondaryCharacterAge,
                 photo: order.photoUrl ? true : false
             };
-            // Envoyer l'email de notification à l'admin
-            await emailService_1.EmailService.sendOrderNotificationToAdmin(updatedOrder, formData);
-            // Envoyer l'email de confirmation au client
-            await emailService_1.EmailService.sendOrderConfirmation(updatedOrder);
+            // Préparer les détails de la commande pour Mailjet avec tous les nouveaux champs
+            const orderDetails = `
+=== INFORMATIONS DU CONTE ===
+Tranche d'âge: ${order.ageRange}
+Thème général: ${order.generalTheme}${order.customTheme ? ` (Personnalisé: ${order.customTheme})` : ''}
+Sujet: ${order.specificSubject}${order.customSubject ? ` (Personnalisé: ${order.customSubject})` : ''}
+Message central: ${order.centralMessage}${order.customMessage ? ` (Personnalisé: ${order.customMessage})` : ''}
+Style d'illustration: ${order.illustrationStyle}
+${order.language ? `Langue du conte: ${order.language}` : ''}
+
+=== INFORMATIONS DU PROTAGONISTE ===
+Nom: ${order.protagonistName}
+Âge: ${order.protagonistAge || 'Non spécifié'}
+${order.protagonistGender ? `Sexe: ${order.protagonistGender === 'boy' ? 'Garçon' : 'Fille'}` : ''}
+Couleur des yeux: ${order.eyeColor || 'Non spécifié'}
+Couleur des cheveux: ${order.hairColor || 'Non spécifié'}
+${order.hobbies ? `Loisirs: ${order.hobbies}` : ''}
+${order.favoriteDish ? `Plat préféré: ${order.favoriteDish}` : ''}
+${order.specialEvents ? `Événements spéciaux: ${order.specialEvents}` : ''}
+${order.religion ? `Religion: ${order.religion}${order.customReligion ? ` (${order.customReligion})` : ''}` : ''}
+
+=== PERSONNAGE SECONDAIRE ===
+${order.secondaryCharacterName ? `Nom: ${order.secondaryCharacterName}` : 'Aucun'}
+${order.secondaryCharacterAge ? `Âge/Type: ${order.secondaryCharacterAge}` : ''}
+
+=== DÉTAILS PERSONNELS ===
+${order.creatorName ? `Créateur: ${order.creatorName}` : 'Non spécifié'}
+
+=== COMMANDE ===
+Type de produit: ${order.productType}
+Prix: ${order.price}€
+${order.shippingAddress ? `
+Adresse de livraison:
+${order.shippingFirstName} ${order.shippingLastName}
+${order.shippingAddress}
+${order.shippingPostalCode} ${order.shippingCity}
+` : ''}`;
+            // Envoyer les emails via Mailjet (une seule fois)
+            console.log(`📧 Envoi des emails pour la commande ${orderId} (première fois)`);
+            try {
+                // Email de confirmation au client
+                if (order.user?.email) {
+                    await mailjetService_1.MailjetService.sendOrderConfirmation({
+                        customerName: order.shippingFirstName || 'Client',
+                        customerEmail: order.user.email,
+                        orderNumber: order.id.slice(-8),
+                        orderDetails: orderDetails
+                    });
+                    console.log(`✅ Email client envoyé à ${order.user.email}`);
+                }
+                // Email de notification à l'admin
+                await mailjetService_1.MailjetService.sendAdminNotification({
+                    customerName: order.shippingFirstName || 'Client',
+                    customerEmail: order.user?.email || 'Email non fourni',
+                    orderNumber: order.id.slice(-8),
+                    orderDetails: orderDetails
+                });
+                console.log(`✅ Email admin envoyé`);
+                // Envoyer SMS de notification via Twilio
+                const { TwilioService } = await Promise.resolve().then(() => __importStar(require('../utils/twilioService')));
+                await TwilioService.sendOrderNotificationSMS({
+                    orderNumber: order.id.slice(-8),
+                    productType: order.productType,
+                    price: Number(order.price),
+                    customerName: order.shippingFirstName || 'Client'
+                });
+                console.log(`✅ SMS de notification envoyé`);
+            }
+            catch (emailError) {
+                console.error('❌ Erreur envoi emails/SMS:', emailError);
+                // Ne pas faire échouer le paiement si l'email/SMS échoue
+            }
             console.log(`✅ Paiement confirmé et emails envoyés pour la commande ${orderId}`);
             res.json({
                 success: true,

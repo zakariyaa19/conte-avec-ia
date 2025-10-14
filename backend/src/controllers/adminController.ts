@@ -122,8 +122,8 @@ export class AdminController {
       if (productType) where.productType = productType;
       if (search) {
         where.OR = [
-          { protagonistName: { contains: search as string, mode: 'insensitive' } },
-          { user: { email: { contains: search as string, mode: 'insensitive' } } }
+          { protagonistName: { contains: search as string } },
+          { user: { email: { contains: search as string } } }
         ];
       }
 

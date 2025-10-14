@@ -97,30 +97,22 @@ class AdminController {
     // Statistiques du dashboard
     static async getDashboardStats(req, res) {
         try {
-            const [totalOrders, paidOrders, pendingOrders, totalRevenue, recentOrders] = await Promise.all([
+            const [totalOrders, paidOrders, pendingOrders, totalRevenue] = await Promise.all([
                 database_1.prisma.order.count(),
                 database_1.prisma.order.count({ where: { status: 'PAID' } }),
                 database_1.prisma.order.count({ where: { status: 'PENDING' } }),
                 database_1.prisma.order.aggregate({
                     where: { status: 'PAID' },
                     _sum: { price: true }
-                }),
-                database_1.prisma.order.findMany({
-                    take: 5,
-                    orderBy: { createdAt: 'desc' },
-                    include: { user: true }
                 })
             ]);
             res.json({
                 success: true,
                 data: {
-                    stats: {
-                        totalOrders,
-                        paidOrders,
-                        pendingOrders,
-                        totalRevenue: totalRevenue._sum.price || 0
-                    },
-                    recentOrders
+                    totalOrders,
+                    paidOrders,
+                    pendingOrders,
+                    totalRevenue: totalRevenue._sum.price || 0
                 }
             });
         }
@@ -145,8 +137,8 @@ class AdminController {
                 where.productType = productType;
             if (search) {
                 where.OR = [
-                    { protagonistName: { contains: search, mode: 'insensitive' } },
-                    { user: { email: { contains: search, mode: 'insensitive' } } }
+                    { protagonistName: { contains: search } },
+                    { user: { email: { contains: search } } }
                 ];
             }
             const [orders, total] = await Promise.all([
@@ -208,8 +200,28 @@ class AdminController {
     // Mettre à jour une commande
     static async updateOrder(req, res) {
         try {
+            console.log('🔄 Mise à jour commande:', { id: req.params.id, body: req.body });
             const { id } = req.params;
             const updates = req.body;
+            // Vérifier que le body n'est pas vide ou undefined
+            if (!updates || typeof updates !== 'object') {
+                console.log('❌ Body de requête invalide:', updates);
+                return res.status(400).json({
+                    success: false,
+                    message: 'Données de mise à jour manquantes ou invalides'
+                });
+            }
+            // Vérifier que la commande existe
+            const existingOrder = await database_1.prisma.order.findUnique({
+                where: { id }
+            });
+            if (!existingOrder) {
+                console.log('❌ Commande non trouvée:', id);
+                return res.status(404).json({
+                    success: false,
+                    message: 'Commande non trouvée'
+                });
+            }
             // Champs autorisés à la modification
             const allowedFields = ['status', 'ebookUrl', 'generatedAt'];
             const filteredUpdates = {};
@@ -218,11 +230,25 @@ class AdminController {
                     filteredUpdates[field] = updates[field];
                 }
             }
+            // Vérifier qu'il y a au moins un champ à mettre à jour
+            if (Object.keys(filteredUpdates).length === 0) {
+                console.log('❌ Aucun champ valide à mettre à jour');
+                return res.status(400).json({
+                    success: false,
+                    message: 'Aucun champ valide à mettre à jour'
+                });
+            }
+            console.log('📝 Champs à mettre à jour:', filteredUpdates);
+            // Ajouter la date de paiement si le statut passe à PAID
+            if (filteredUpdates.status === 'PAID' && existingOrder.status !== 'PAID') {
+                filteredUpdates.paidAt = new Date();
+            }
             const order = await database_1.prisma.order.update({
                 where: { id },
                 data: filteredUpdates,
                 include: { user: true }
             });
+            console.log('✅ Commande mise à jour:', order.id, 'nouveau statut:', order.status);
             res.json({
                 success: true,
                 data: order,
@@ -230,10 +256,16 @@ class AdminController {
             });
         }
         catch (error) {
-            console.error('Erreur mise à jour commande:', error);
+            console.error('❌ Erreur mise à jour commande:', error);
+            // Log détaillé de l'erreur
+            if (error instanceof Error) {
+                console.error('Message d\'erreur:', error.message);
+                console.error('Stack trace:', error.stack);
+            }
             res.status(500).json({
                 success: false,
-                message: 'Erreur lors de la mise à jour de la commande'
+                message: 'Erreur lors de la mise à jour de la commande',
+                error: process.env.NODE_ENV === 'development' ? error : undefined
             });
         }
     }

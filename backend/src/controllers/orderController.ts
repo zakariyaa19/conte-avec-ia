@@ -7,29 +7,42 @@ export class OrderController {
   // Créer une nouvelle commande
   static async createOrder(req: Request, res: Response) {
     try {
+      console.log('📝 Création de commande reçue');
+      console.log('📋 Body reçu:', JSON.stringify(req.body, null, 2));
+      
       // Récupérer les données depuis le body (pour FormData, les données JSON sont dans req.body)
       let formData, userEmail;
       
       if (req.body.formData) {
         // Si les données viennent de FormData
         formData = typeof req.body.formData === 'string' ? JSON.parse(req.body.formData) : req.body.formData;
-        userEmail = req.body.userEmail;
+        userEmail = req.body.userEmail || formData.userEmail;
       } else {
         // Si les données viennent directement du JSON
-        formData = req.body.formData;
-        userEmail = req.body.userEmail;
+        formData = req.body.formData || req.body;
+        userEmail = req.body.userEmail || formData.userEmail;
       }
       
-      // Validation des données requises
-      if (!formData.ageRange || !formData.generalTheme || !formData.protagonistName || !formData.productType) {
+      console.log('📊 FormData parsé:', JSON.stringify(formData, null, 2));
+      console.log('📧 UserEmail:', userEmail);
+      
+      // Validation des données requises (champs essentiels seulement)
+      if (!formData.ageRange || !formData.generalTheme || !formData.protagonistName || 
+          !formData.productType) {
+        console.log('❌ Validation échouée:', {
+          ageRange: !!formData.ageRange,
+          generalTheme: !!formData.generalTheme,
+          protagonistName: !!formData.protagonistName,
+          productType: !!formData.productType
+        });
         return res.status(400).json({
           success: false,
-          message: 'Données manquantes dans le formulaire'
+          message: 'Données obligatoires manquantes dans le formulaire'
         });
       }
 
       // Calcul du prix
-      const price = calculatePrice(formData.productType?.toUpperCase() as keyof typeof PRODUCT_PRICES) || 14.99;
+      const price = calculatePrice(formData.productType?.toUpperCase() as keyof typeof PRODUCT_PRICES) || 4.99;
 
       // Créer l'utilisateur s'il n'existe pas
       let user = null;
@@ -51,42 +64,61 @@ export class OrderController {
         console.log('📸 Photo uploadée:', photoUrl, 'Chemin:', photoPath);
       }
 
-      // Créer la commande
+      // Créer la commande avec tous les nouveaux champs
       const order = await prisma.order.create({
         data: {
           userId: user?.id,
+          // Étape 1 - Données du conte
           ageRange: formData.ageRange,
           generalTheme: formData.generalTheme,
+          customTheme: formData.customTheme,
           specificSubject: formData.specificSubject,
+          customSubject: formData.customSubject,
           centralMessage: formData.centralMessage,
+          customMessage: formData.customMessage,
           illustrationStyle: formData.illustrationStyle,
+          
+          // Étape 2 - Données du protagoniste
           protagonistName: formData.protagonistName,
           protagonistAge: formData.protagonistAge,
+          protagonistGender: formData.protagonistGender,
           eyeColor: formData.eyeColor,
           hairColor: formData.hairColor,
+          photoUrl: photoUrl,
+          
+          // Langue du conte
+          language: formData.language,
+          
+          // Informations supplémentaires
+          hobbies: formData.hobbies,
+          favoriteDish: formData.favoriteDish,
+          specialEvents: formData.specialEvents,
+          
+          // Option religieuse
+          religion: formData.religion,
+          customReligion: formData.customReligion,
+          
+          // Personnage secondaire
           secondaryCharacterName: formData.secondaryCharacterName,
           secondaryCharacterAge: formData.secondaryCharacterAge,
-          photoUrl: photoUrl,
-          productType: formData.productType?.toUpperCase() as 'EBOOK' | 'PRINTED' | 'PACK',
+          
+          // Détails personnels
+          creatorName: formData.creatorName,
+          
+          // Produit et livraison
+          productType: formData.productType?.toUpperCase() as 'EBOOK' | 'PRINTED',
           price: price,
           shippingFirstName: formData.shippingAddress?.firstName,
           shippingLastName: formData.shippingAddress?.lastName,
           shippingAddress: formData.shippingAddress?.address,
           shippingCity: formData.shippingAddress?.city,
-          shippingPostalCode: formData.shippingAddress?.postalCode,
-          shippingCountry: formData.shippingAddress?.country || 'France'
+          shippingPostalCode: formData.shippingAddress?.postalCode
         }
       });
 
-      // Envoyer l'email de notification à l'admin
-      try {
-        const { EmailService } = await import('../utils/emailService');
-        await EmailService.sendOrderNotificationToAdmin(order, formData, photoPath || undefined);
-        console.log('✅ Email admin envoyé pour commande:', order.id);
-      } catch (emailError) {
-        console.error('❌ Erreur envoi email admin:', emailError);
-        // Ne pas faire échouer la commande si l'email échoue
-      }
+      // NOTE: Les emails sont maintenant envoyés uniquement après confirmation du paiement
+      // dans stripeController.ts pour éviter les doublons
+      console.log('📝 Commande créée, emails seront envoyés après paiement confirmé');
 
       res.status(201).json({
         success: true,

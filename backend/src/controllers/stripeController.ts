@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import Stripe from 'stripe';
 import { prisma } from '../utils/database';
-import { EmailService } from '../utils/emailService';
+import { MailjetService } from '../utils/mailjetService';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
   typescript: true,
@@ -30,7 +30,7 @@ export const createPaymentSession = async (req: Request, res: Response) => {
           price_data: {
             currency: 'eur',
             product_data: {
-              name: `Conte personnalisé - ${order.productType === 'EBOOK' ? 'eBook' : order.productType === 'PRINTED' ? 'Livre relié' : 'Pack famille'}`,
+              name: `Conte personnalisé - ${order.productType === 'EBOOK' ? 'eBook Numérique' : 'Livre Relié Premium'}`,
               description: `Conte pour ${order.protagonistName}`,
             },
             unit_amount: Math.round(Number(order.price) * 100), // Stripe utilise les centimes
@@ -87,6 +87,16 @@ export const checkPaymentStatus = async (req: Request, res: Response) => {
         return res.status(404).json({ error: 'Commande non trouvée' });
       }
 
+      // Vérifier si les emails ont déjà été envoyés pour éviter les doublons
+      if (order.status === 'PAID' && order.paidAt) {
+        console.log(`⚠️ Commande ${orderId} déjà payée et emails déjà envoyés, pas de nouvel envoi`);
+        return res.json({ 
+          success: true, 
+          status: 'paid', 
+          message: 'Paiement déjà confirmé' 
+        });
+      }
+
       // Mettre à jour le statut de la commande
       const updatedOrder = await prisma.order.update({
         where: { id: orderId as string },
@@ -106,8 +116,7 @@ export const checkPaymentStatus = async (req: Request, res: Response) => {
           lastName: order.shippingLastName || '',
           address: order.shippingAddress || '',
           city: order.shippingCity || '',
-          postalCode: order.shippingPostalCode || '',
-          country: order.shippingCountry || 'France'
+          postalCode: order.shippingPostalCode || ''
         },
         ageRange: order.ageRange,
         generalTheme: order.generalTheme,
@@ -123,11 +132,84 @@ export const checkPaymentStatus = async (req: Request, res: Response) => {
         photo: order.photoUrl ? true : false
       };
 
-      // Envoyer l'email de notification à l'admin
-      await EmailService.sendOrderNotificationToAdmin(updatedOrder, formData);
-      
-      // Envoyer l'email de confirmation au client
-      await EmailService.sendOrderConfirmation(updatedOrder);
+      // Préparer les détails de la commande pour Mailjet avec tous les nouveaux champs
+      const orderDetails = `
+=== INFORMATIONS DU CONTE ===
+Tranche d'âge: ${order.ageRange}
+Thème général: ${order.generalTheme}${order.customTheme ? ` (Personnalisé: ${order.customTheme})` : ''}
+Sujet: ${order.specificSubject}${order.customSubject ? ` (Personnalisé: ${order.customSubject})` : ''}
+Message central: ${order.centralMessage}${order.customMessage ? ` (Personnalisé: ${order.customMessage})` : ''}
+Style d'illustration: ${order.illustrationStyle}
+${order.language ? `Langue du conte: ${order.language}` : ''}
+
+=== INFORMATIONS DU PROTAGONISTE ===
+Nom: ${order.protagonistName}
+Âge: ${order.protagonistAge || 'Non spécifié'}
+${order.protagonistGender ? `Sexe: ${order.protagonistGender === 'boy' ? 'Garçon' : 'Fille'}` : ''}
+Couleur des yeux: ${order.eyeColor || 'Non spécifié'}
+Couleur des cheveux: ${order.hairColor || 'Non spécifié'}
+${order.hobbies ? `Loisirs: ${order.hobbies}` : ''}
+${order.favoriteDish ? `Plat préféré: ${order.favoriteDish}` : ''}
+${order.specialEvents ? `Événements spéciaux: ${order.specialEvents}` : ''}
+${order.religion ? `Religion: ${order.religion}${order.customReligion ? ` (${order.customReligion})` : ''}` : ''}
+
+=== PERSONNAGE SECONDAIRE ===
+${order.secondaryCharacterName ? `Nom: ${order.secondaryCharacterName}` : 'Aucun'}
+${order.secondaryCharacterAge ? `Âge/Type: ${order.secondaryCharacterAge}` : ''}
+
+=== DÉTAILS PERSONNELS ===
+${order.creatorName ? `Créateur: ${order.creatorName}` : 'Non spécifié'}
+
+=== COMMANDE ===
+Type de produit: ${order.productType}
+Prix: ${order.price}€
+${order.shippingAddress ? `
+Adresse de livraison:
+${order.shippingFirstName} ${order.shippingLastName}
+${order.shippingAddress}
+${order.shippingPostalCode} ${order.shippingCity}
+` : ''}`;
+
+      // Envoyer les emails via Mailjet (une seule fois)
+      console.log(`📧 Envoi des emails pour la commande ${orderId} (première fois)`);
+      try {
+        // Email de confirmation au client
+        if (order.user?.email) {
+          await MailjetService.sendOrderConfirmation({
+            customerName: order.shippingFirstName || 'Client',
+            customerEmail: order.user.email,
+            orderNumber: order.id.slice(-8),
+            orderDetails: orderDetails
+          });
+          console.log(`✅ Email client envoyé à ${order.user.email}`);
+        }
+
+        // Email de notification à l'admin
+        await MailjetService.sendAdminNotification({
+          customerName: order.shippingFirstName || 'Client',
+          customerEmail: order.user?.email || 'Email non fourni',
+          orderNumber: order.id.slice(-8),
+          orderDetails: orderDetails
+        });
+        console.log(`✅ Email admin envoyé`);
+
+        // Envoyer notification Telegram
+        const { TelegramService } = await import('../utils/telegramService');
+        await TelegramService.sendOrderNotification({
+          customerName: order.shippingFirstName || 'Client',
+          customerEmail: order.user?.email || 'Email non fourni',
+          orderNumber: order.id.slice(-8),
+          amount: Number(order.price),
+          orderDate: new Date(),
+          productType: order.productType,
+          orderDetails: order // Passer toutes les données de la commande
+        });
+        console.log(`✅ Notification Telegram envoyée`);
+
+      } catch (emailError) {
+        console.error('❌ Erreur envoi emails/Telegram:', emailError);
+        // Ne pas faire échouer le paiement si l'email/Telegram échoue
+      }
 
       console.log(`✅ Paiement confirmé et emails envoyés pour la commande ${orderId}`);
       
