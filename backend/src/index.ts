@@ -15,12 +15,25 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5001;
 
+// CORS: gérer plusieurs origines autorisées (FRONTEND_URL + CORS_ALLOWED_ORIGINS séparées par des virgules)
+const DEFAULT_ORIGINS = ['http://localhost:3000'];
+const configuredOrigins = (process.env.CORS_ALLOWED_ORIGINS || '')
+  .split(',')
+  .map(o => o.trim())
+  .filter(Boolean);
+if (process.env.FRONTEND_URL) configuredOrigins.push(process.env.FRONTEND_URL);
+const allowedOrigins = Array.from(new Set([...DEFAULT_ORIGINS, ...configuredOrigins]));
+
 // Middleware de sécurité
 app.use(helmet({
   contentSecurityPolicy: false
 }));
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true); // requêtes internes/outils
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error('Not allowed by CORS'));
+  },
   credentials: true,
   optionsSuccessStatus: 200
 }));
@@ -43,7 +56,10 @@ app.use('/pdfs', express.static('pdfs'));
 
 // Servir les images de couverture avec headers CORS
 app.use('/images', (req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
+  const origin = req.headers.origin as string | undefined;
+  if (origin && allowedOrigins.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
   res.header('Access-Control-Allow-Methods', 'GET');
   res.header('Access-Control-Allow-Headers', 'Content-Type');
   next();
