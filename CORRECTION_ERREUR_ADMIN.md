@@ -42,7 +42,7 @@ UPDATE orders SET productType = 'PRINTED' WHERE productType = 'PACK';
 ```bash
 # Login admin
 curl -X POST -H "Content-Type: application/json" \
-  -d '{"email":"admin@contes-ia.com","password":"admin123"}' \
+  -d '{"email":"contact@contedia.fr","password":"admin123"}' \
   http://localhost:5001/api/admin/login
 
 # Récupération commandes

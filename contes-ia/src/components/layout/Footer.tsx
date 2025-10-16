@@ -157,7 +157,7 @@ export const Footer: React.FC = () => {
           <FooterSection>
             <h4>Support</h4>
             <FooterLinks>
-              <FooterLink href="#" onClick={(e) => { e.preventDefault(); handleNavigation('mailto:zakariyou.tahiri@gmail.com'); }}>Nous contacter</FooterLink>
+              <FooterLink href="#" onClick={(e) => { e.preventDefault(); handleNavigation('mailto:contact@contedia.fr'); }}>Nous contacter</FooterLink>
               <FooterLink href="#" onClick={(e) => { e.preventDefault(); handleNavigation('#aide'); }}>Aide & FAQ</FooterLink>
               <FooterLink href="#" onClick={(e) => { e.preventDefault(); handleNavigation('tel:+33123456789'); }}>📞 Support téléphonique</FooterLink>
               <FooterLink href="#" onClick={(e) => { e.preventDefault(); handleNavigation('#livraison'); }}>Informations de livraison</FooterLink>
@@ -177,7 +177,7 @@ export const Footer: React.FC = () => {
           <p>&copy; 2025 Contes d'IA. Tous droits réservés. Fait avec ❤️ pour les enfants.</p>
           <p style={{ marginTop: '8px', fontSize: '12px', color: '#888' }}>
             SIRET: 12345678901234 | TVA: FR12345678901 | 
-            <FooterLink href="#" onClick={(e) => { e.preventDefault(); handleNavigation('mailto:zakariyou.tahiri@gmail.com'); }} style={{ color: 'inherit' }}>zakariyou.tahiri@gmail.com</FooterLink>
+            <FooterLink href="#" onClick={(e) => { e.preventDefault(); handleNavigation('mailto:contact@contedia.fr'); }} style={{ color: 'inherit' }}>contact@contedia.fr</FooterLink>
           </p>
         </FooterBottom>
       </FooterContent>

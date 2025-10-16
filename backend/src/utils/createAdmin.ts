@@ -4,7 +4,7 @@ import { prisma } from './database';
 // Script pour créer un utilisateur administrateur
 async function createAdmin() {
   try {
-    const email = 'admin@contes-ia.com';
+    const email = 'contact@contedia.fr';
     const password = 'admin123'; // À changer en production
     const hashedPassword = await bcrypt.hash(password, 10);
 

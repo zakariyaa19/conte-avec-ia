@@ -165,7 +165,7 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onLoginSuccess }
               value={formData.email}
               onChange={handleChange}
               required
-              placeholder="admin@contes-ia.com"
+              placeholder="contact@contedia.fr"
             />
           </FormGroup>
 

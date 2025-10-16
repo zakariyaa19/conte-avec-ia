@@ -143,7 +143,7 @@ const MentionsLegalesPage: React.FC = () => {
 
             <h3>9. Droit applicable et juridiction compétente</h3>
             <p>
-              Tout litige en relation avec l'utilisation du site <strong>contes-ia.com</strong> est soumis au droit français. Il est fait attribution exclusive de juridiction aux tribunaux compétents de <span className="highlight">................</span>.
+              Tout litige en relation avec l'utilisation du site <strong>contedia.fr</strong> est soumis au droit français. Il est fait attribution exclusive de juridiction aux tribunaux compétents de <span className="highlight">................</span>.
             </p>
 
             <h3>10. Contact</h3>

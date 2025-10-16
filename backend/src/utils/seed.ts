@@ -10,10 +10,10 @@ async function main() {
   const hashedPassword = await bcrypt.hash('admin123', 10);
   
   const admin = await prisma.adminUser.upsert({
-    where: { email: 'admin@contes-ia.com' },
+    where: { email: 'contact@contedia.fr' },
     update: {},
     create: {
-      email: 'admin@contes-ia.com',
+      email: 'contact@contedia.fr',
       password: hashedPassword,
       firstName: 'Admin',
       lastName: 'Contes IA',
@@ -114,7 +114,7 @@ async function main() {
   console.log('✅ Commandes de test créées');
 
   console.log('🎉 Seeding terminé avec succès !');
-  console.log('📧 Admin: admin@contes-ia.com / admin123');
+  console.log('📧 Admin: contact@contedia.fr / admin123');
 }
 
 main()

@@ -4,7 +4,7 @@
 
 ### Connexion
 - **URL** : `http://localhost:3000/admin`
-- **Email** : `admin@contes-ia.com`
+- **Email** : `contact@contedia.fr`
 - **Mot de passe** : `admin123`
 - **Rôle** : SUPER_ADMIN
 

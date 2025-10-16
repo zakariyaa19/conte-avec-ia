@@ -21,7 +21,7 @@ export class MailjetService {
           Messages: [
             {
               From: {
-                Email: process.env.MAILJET_FROM_EMAIL || 'zakariyou.tahiri@gmail.com',
+                Email: process.env.MAILJET_FROM_EMAIL || 'contact@contedia.fr',
                 Name: 'Contes d\'IA'
               },
               To: [
@@ -75,7 +75,7 @@ export class MailjetService {
                       <p style="margin: 0 0 15px 0; font-size: 16px; opacity: 0.95;">L'équipe Contes d'IA met tout son cœur dans la création de votre histoire personnalisée</p>
                       <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; margin-top: 20px;">
                         <p style="margin: 0; font-size: 14px;">💬 <strong>Une question ?</strong> Répondez simplement à cet email<br>
-                        📧 Ou contactez-nous à : <strong>${process.env.MAILJET_FROM_EMAIL || 'zakariyou.tahiri@gmail.com'}</strong></p>
+                        📧 Ou contactez-nous à : <strong>${process.env.MAILJET_FROM_EMAIL || 'contact@contedia.fr'}</strong></p>
                       </div>
                     </div>
                   </div>
@@ -108,12 +108,12 @@ export class MailjetService {
           Messages: [
             {
               From: {
-                Email: process.env.MAILJET_FROM_EMAIL || 'zakariyou.tahiri@gmail.com',
+                Email: process.env.MAILJET_FROM_EMAIL || 'contact@contedia.fr',
                 Name: 'Contes d\'IA - Système'
               },
               To: [
                 {
-                  Email: process.env.ADMIN_EMAIL || 'admin@contes-ia.com',
+                  Email: process.env.ADMIN_EMAIL || 'contact@contedia.fr',
                   Name: 'Administrateur'
                 }
               ],

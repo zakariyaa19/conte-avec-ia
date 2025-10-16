@@ -152,7 +152,7 @@ EMAIL_HOST=smtp.gmail.com
 EMAIL_PORT=587
 EMAIL_USER=your-email@gmail.com
 EMAIL_PASS=your-app-password
-EMAIL_FROM=Contes d'IA <noreply@contes-ia.com>
+EMAIL_FROM=Contes d'IA <contact@contedia.fr>
 ```
 
 ## 🔐 Variables d'environnement
@@ -171,7 +171,7 @@ EMAIL_HOST=smtp.gmail.com
 EMAIL_PORT=587
 EMAIL_USER=your-email@gmail.com
 EMAIL_PASS=your-app-password
-EMAIL_FROM=Contes d'IA <noreply@contes-ia.com>
+EMAIL_FROM=Contes d'IA <contact@contedia.fr>
 
 # URLs
 FRONTEND_URL=http://localhost:3001
@@ -218,7 +218,7 @@ curl -X POST http://localhost:5000/api/orders \
 
 ### Données de test
 Le système inclut des données de test :
-- 1 administrateur : `admin@contes-ia.com` / `admin123`
+- 1 administrateur : `contact@contedia.fr` / `admin123`
 - 2 utilisateurs de test
 - 3 commandes d'exemple
 
