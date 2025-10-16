@@ -762,26 +762,9 @@ export const HomePage: React.FC = () => {
   };
   
   const handleViewExample = (story?: any) => {
-    // Utiliser le PDF spécifique à chaque histoire ou un PDF générique
-    let pdfUrl = "http://localhost:5001/api/pdfs/examples/exemple-conte.pdf";
-    
-    if (story && story.id) {
-      switch (story.id) {
-        case "6":
-          pdfUrl = "http://localhost:5001/api/pdfs/examples/examen-hunter.pdf";
-          break;
-        case "1":
-          pdfUrl = "http://localhost:5001/api/pdfs/examples/forest-adventure.pdf";
-          break;
-        case "2":
-          pdfUrl = "http://localhost:5001/api/pdfs/examples/space-adventure.pdf";
-          break;
-        default:
-          pdfUrl = "http://localhost:5001/api/pdfs/examples/exemple-conte.pdf";
-      }
+    if (story && story.pdfUrl) {
+      window.open(story.pdfUrl, '_blank');
     }
-    
-    window.open(pdfUrl, '_blank');
   };
   
   
