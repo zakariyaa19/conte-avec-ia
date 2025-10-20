@@ -280,6 +280,7 @@ export const StoryFormStep2: React.FC<StoryFormStep2Props> = ({ formData, onUpda
   const genderRef = useRef<HTMLDivElement>(null);
   const eyeColorRef = useRef<HTMLDivElement>(null);
   const hairColorRef = useRef<HTMLDivElement>(null);
+  const photoRef = useRef<HTMLDivElement>(null);
   const languageRef = useRef<HTMLDivElement>(null);
 
   const scrollToNext = (nextRef: React.RefObject<HTMLDivElement | null>) => {
@@ -323,7 +324,7 @@ export const StoryFormStep2: React.FC<StoryFormStep2Props> = ({ formData, onUpda
         scrollToNext(hairColorRef);
         break;
       case 'hairColor':
-        scrollToNext(languageRef);
+        scrollToNext(photoRef);
         break;
     }
   };
@@ -332,6 +333,8 @@ export const StoryFormStep2: React.FC<StoryFormStep2Props> = ({ formData, onUpda
     const file = event.target.files?.[0];
     if (file) {
       onUpdate({ photo: file });
+      // Auto-scroll vers la section langue après upload de photo
+      scrollToNext(languageRef);
     }
   };
 
@@ -432,7 +435,7 @@ export const StoryFormStep2: React.FC<StoryFormStep2Props> = ({ formData, onUpda
         </ColorGrid>
       </FormSection>
 
-      <FormSection>
+      <FormSection ref={photoRef}>
         <h4 style={{ marginBottom: theme.spacing.lg, color: theme.colors.text.primary }}>
           Photo du protagoniste (optionnel)
         </h4>

@@ -35,8 +35,8 @@ export class ApiService {
     options: RequestInit = {},
     maxRetries: number = 2
   ): Promise<T> {
-    let lastError: Error;
-    
+    let lastError: Error | null = null;
+      
     for (let attempt = 0; attempt <= maxRetries; attempt++) {
       try {
         if (attempt > 0) {
@@ -47,7 +47,7 @@ export class ApiService {
         
         return await this.request<T>(endpoint, options);
       } catch (error) {
-        lastError = error as Error;
+        lastError = error instanceof Error ? error : new Error(String(error));
         console.warn(`⚠️ Échec tentative ${attempt + 1}:`, error);
         
         // Ne pas retry sur certaines erreurs (4xx sauf 408, 429)
@@ -58,7 +58,7 @@ export class ApiService {
       }
     }
     
-    throw lastError!;
+    throw lastError ?? new Error('Request failed after retries');
   }
 
   // Méthode générique pour les requêtes avec retry et timeout

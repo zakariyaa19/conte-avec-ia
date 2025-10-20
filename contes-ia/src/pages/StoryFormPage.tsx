@@ -161,7 +161,7 @@ export const StoryFormPage: React.FC = () => {
     hairColor: '',
     
     // Langue du conte
-    language: '',
+    language: 'french',
     
     // Informations supplémentaires (facultatif)
     hobbies: '',

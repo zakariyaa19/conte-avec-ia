@@ -9,15 +9,202 @@ import { Footer } from '../components/layout/Footer';
 import { useNavigate } from 'react-router-dom';
 import { exampleStories } from '../data/exampleStories';
 
+// Éléments graphiques animés
+const FloatingBubbles = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+`;
+
+const Bubble = styled.div<{ size: number; delay: number; duration: number; left: number }>`
+  position: absolute;
+  width: ${props => props.size}px;
+  height: ${props => props.size}px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  left: ${props => props.left}%;
+  animation: float ${props => props.duration}s ease-in-out infinite;
+  animation-delay: ${props => props.delay}s;
+  
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(100vh) rotate(0deg);
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(-100px) rotate(360deg);
+      opacity: 0;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    width: ${props => props.size * 0.7}px;
+    height: ${props => props.size * 0.7}px;
+  }
+`;
+
+const StarField = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+`;
+
+const Star = styled.div<{ top: number; left: number; delay: number; size?: number }>`
+  position: absolute;
+  top: ${props => props.top}%;
+  left: ${props => props.left}%;
+  width: ${props => props.size || 3}px;
+  height: ${props => props.size || 3}px;
+  opacity: 0.4;
+  animation: starTwinkle 3s ease-in-out infinite;
+  animation-delay: ${props => props.delay}s;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    background: #FFD700;
+    transform: translate(-50%, -50%) rotate(45deg);
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 150%;
+    height: 150%;
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.3) 0%, transparent 60%);
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    animation: starGlow 2s ease-in-out infinite;
+    animation-delay: ${props => props.delay}s;
+  }
+  
+  @keyframes starTwinkle {
+    0%, 100% {
+      opacity: 0.2;
+      transform: scale(0.8) rotate(0deg);
+    }
+    50% {
+      opacity: 0.8;
+      transform: scale(1.2) rotate(180deg);
+    }
+  }
+  
+  @keyframes starGlow {
+    0%, 100% {
+      opacity: 0.1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+      opacity: 0.4;
+      transform: translate(-50%, -50%) scale(1.5);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    width: ${props => (props.size || 3) * 0.8}px;
+    height: ${props => (props.size || 3) * 0.8}px;
+  }
+`;
+
+const MagicWand = styled.div<{ top: number; left: number; rotation: number }>`
+  position: absolute;
+  top: ${props => props.top}%;
+  left: ${props => props.left}%;
+  width: 30px;
+  height: 4px;
+  background: linear-gradient(90deg, #8B4513 0%, #D2691E 100%);
+  border-radius: 2px;
+  transform: rotate(${props => props.rotation}deg);
+  animation: magicFloat 4s ease-in-out infinite;
+  
+  &::before {
+    content: '✨';
+    position: absolute;
+    left: -8px;
+    top: -8px;
+    font-size: 16px;
+    animation: sparkle 1.5s ease-in-out infinite;
+  }
+  
+  @keyframes magicFloat {
+    0%, 100% {
+      transform: rotate(${props => props.rotation}deg) translateY(0px);
+    }
+    50% {
+      transform: rotate(${props => props.rotation + 10}deg) translateY(-10px);
+    }
+  }
+  
+  @keyframes sparkle {
+    0%, 100% {
+      opacity: 0.5;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.3);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    width: 20px;
+    height: 3px;
+    
+    &::before {
+      font-size: 12px;
+      left: -6px;
+      top: -6px;
+    }
+  }
+`;
+
+
 const PageContainer = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  position: relative;
 `;
 
 const HeroSection = styled.section`
   background: linear-gradient(135deg, ${theme.colors.background.primary} 0%, ${theme.colors.accent.paleYellow} 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 8s ease-in-out infinite;
   padding: ${theme.spacing['4xl']} 0;
+  position: relative;
+  overflow: hidden;
+  
+  @keyframes gradientShift {
+    0%, 100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
 `;
 
 const HeroContent = styled.div`
@@ -236,6 +423,8 @@ const TestimonialAuthor = styled.div`
 const StepsSection = styled.section`
   padding: ${theme.spacing['4xl']} 0;
   background-color: ${theme.colors.background.white};
+  position: relative;
+  overflow: hidden;
 `;
 
 const StepsContainer = styled.div`
@@ -764,6 +953,9 @@ export const HomePage: React.FC = () => {
   const handleViewExample = (story?: any) => {
     if (story && story.pdfUrl) {
       window.open(story.pdfUrl, '_blank');
+    } else {
+      // Si aucun story n'est fourni, ouvrir le PDF d'exemple par défaut
+      window.open('/pdfs/exemple-conte.pdf', '_blank');
     }
   };
   
@@ -772,6 +964,40 @@ export const HomePage: React.FC = () => {
     <PageContainer>
       <Header />
       <HeroSection>
+        {/* Éléments graphiques animés */}
+        <FloatingBubbles>
+          <Bubble size={60} delay={0} duration={8} left={10} />
+          <Bubble size={40} delay={2} duration={10} left={80} />
+          <Bubble size={80} delay={4} duration={12} left={60} />
+          <Bubble size={30} delay={6} duration={9} left={20} />
+          <Bubble size={50} delay={8} duration={11} left={90} />
+          <Bubble size={45} delay={10} duration={13} left={35} />
+          <Bubble size={35} delay={12} duration={9} left={75} />
+          <Bubble size={55} delay={14} duration={10} left={5} />
+          <Bubble size={25} delay={16} duration={11} left={95} />
+        </FloatingBubbles>
+        
+        <StarField>
+          <Star top={5} left={15} delay={0} size={4} />
+          <Star top={15} left={85} delay={0.5} size={3} />
+          <Star top={25} left={25} delay={1} size={5} />
+          <Star top={35} left={75} delay={1.5} size={3} />
+          <Star top={45} left={10} delay={2} size={4} />
+          <Star top={55} left={90} delay={2.5} size={3} />
+          <Star top={65} left={35} delay={3} size={5} />
+          <Star top={75} left={65} delay={3.5} size={4} />
+          <Star top={85} left={20} delay={4} size={3} />
+          <Star top={95} left={80} delay={4.5} size={4} />
+          <Star top={12} left={50} delay={5} size={3} />
+          <Star top={40} left={5} delay={5.5} size={4} />
+          <Star top={60} left={95} delay={6} size={3} />
+          <Star top={80} left={45} delay={6.5} size={5} />
+          <Star top={30} left={70} delay={7} size={3} />
+        </StarField>
+        
+        <MagicWand top={20} left={5} rotation={45} />
+        <MagicWand top={60} left={95} rotation={-30} />
+        
         <HeroContent>
           <div>
             <HeroTitle>
@@ -803,11 +1029,21 @@ export const HomePage: React.FC = () => {
       </HeroSection>
 
       <StepsSection>
+        {/* Éléments décoratifs pour la section étapes */}
+        <StarField>
+          <Star top={20} left={5} delay={0} size={4} />
+          <Star top={40} left={95} delay={1} size={3} />
+          <Star top={80} left={10} delay={2} size={5} />
+          <Star top={15} left={75} delay={3} size={3} />
+          <Star top={65} left={85} delay={4} size={4} />
+          <Star top={30} left={25} delay={5} size={3} />
+        </StarField>
+        
         <StepsContainer>
           <StepsGrid>
             <StepCard>
               <StepNumber>1</StepNumber>
-              <StepTitle>Étape 1 — Personnalisez votre conte</StepTitle>
+              <StepTitle>Personnalisez votre conte</StepTitle>
               <StepDescription>
                 Donnez en détail le thème, l'âge visé, le message central et le style d'illustration 
                 pour créer une histoire sur mesure, adaptée aux goûts et aux centres d'intérêt de votre enfant.
@@ -818,7 +1054,7 @@ export const HomePage: React.FC = () => {
             
             <StepCard>
               <StepNumber>2</StepNumber>
-              <StepTitle>Étape 2 — Créez le héros de l'histoire</StepTitle>
+              <StepTitle>Créez le héros de l'histoire</StepTitle>
               <StepDescription>
                 Remplissez les noms et les informations des personnages et téléversez leurs photos. 
                 Nos illustrations se basent directement sur vos images pour donner vie à un conte unique.
@@ -829,7 +1065,7 @@ export const HomePage: React.FC = () => {
             
             <StepCard>
               <StepNumber>3</StepNumber>
-              <StepTitle>Étape 3 — Recevez votre livre dans le format que vous voulez</StepTitle>
+              <StepTitle>Recevez votre livre dans le format que vous voulez</StepTitle>
               <StepDescription>
                 Recevez votre eBook personnalisé dans la journée pour 4,99 €. 
                 Vous souhaitez un exemplaire physique ? Choisissez une couverture rigide pour 19,99 € 
@@ -943,12 +1179,12 @@ export const HomePage: React.FC = () => {
             </ImageColumn>
             
             <TextColumn>
-              <PromoTitle>Choisissez la religion de votre héros !</PromoTitle>
+              <PromoTitle>De nombreuses options uniques pour votre conte !</PromoTitle>
               <PromoSubtitle>
-              Personnalisez votre conte grâce à de nombreuses options uniques !
+              🌍 Créez votre conte dans 10 langues différentes !
               </PromoSubtitle>
               <PromoDescription>
-              <strong>🌍 Créez votre conte dans 10 langues différentes !</strong>
+              <strong>Choisissez la religion de votre héros !</strong>
               <br></br>
               Vous pouvez même définir la religion de votre personnage principal 
                 pour une histoire encore plus authentique et unique.
@@ -956,7 +1192,7 @@ export const HomePage: React.FC = () => {
               <PromoFeatures>
                 <PromoFeature>🎨 Styles d'illustration variés</PromoFeature>
                 <PromoFeature>🌟 Messages éducatifs personnalisés</PromoFeature>
-                <PromoFeature>👨‍👩‍👧‍👦 Valeurs familiales respectées</PromoFeature>
+                <PromoFeature>👨‍👩‍👧‍👦 Choisissez la religion de votre héros</PromoFeature>
                 <PromoFeature>📚 Adapté à chaque tranche d'âge</PromoFeature>
               </PromoFeatures>
             </TextColumn>

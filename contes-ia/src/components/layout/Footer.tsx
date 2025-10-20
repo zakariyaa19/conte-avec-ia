@@ -158,9 +158,7 @@ export const Footer: React.FC = () => {
             <h4>Support</h4>
             <FooterLinks>
               <FooterLink href="#" onClick={(e) => { e.preventDefault(); handleNavigation('mailto:contact@contedia.fr'); }}>Nous contacter</FooterLink>
-              <FooterLink href="#" onClick={(e) => { e.preventDefault(); handleNavigation('#aide'); }}>Aide & FAQ</FooterLink>
-              <FooterLink href="#" onClick={(e) => { e.preventDefault(); handleNavigation('tel:+33123456789'); }}>📞 Support téléphonique</FooterLink>
-              <FooterLink href="#" onClick={(e) => { e.preventDefault(); handleNavigation('#livraison'); }}>Informations de livraison</FooterLink>
+              <FooterLink href="#" onClick={(e) => { e.preventDefault(); handleNavigation('tel:+33780777110'); }}>📞 Support téléphonique</FooterLink>
             </FooterLinks>
           </FooterSection>
           
