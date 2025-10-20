@@ -29,7 +29,39 @@ const API_CONFIG = {
 export class ApiService {
   private static baseUrl = API_CONFIG.BASE_URL;
 
-  // Méthode générique pour les requêtes
+  // Fonction de retry pour les requêtes critiques
+  private static async requestWithRetry<T>(
+    endpoint: string,
+    options: RequestInit = {},
+    maxRetries: number = 2
+  ): Promise<T> {
+    let lastError: Error;
+    
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      try {
+        if (attempt > 0) {
+          console.log(`🔄 Tentative ${attempt + 1}/${maxRetries + 1} pour ${endpoint}`);
+          // Attendre avant de retry (backoff exponentiel)
+          await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
+        }
+        
+        return await this.request<T>(endpoint, options);
+      } catch (error) {
+        lastError = error as Error;
+        console.warn(`⚠️ Échec tentative ${attempt + 1}:`, error);
+        
+        // Ne pas retry sur certaines erreurs (4xx sauf 408, 429)
+        if (error instanceof Error && error.message.includes('40') && 
+            !error.message.includes('408') && !error.message.includes('429')) {
+          throw error;
+        }
+      }
+    }
+    
+    throw lastError!;
+  }
+
+  // Méthode générique pour les requêtes avec retry et timeout
   private static async request<T>(
     endpoint: string, 
     options: RequestInit = {}
@@ -43,6 +75,8 @@ export class ApiService {
         'Content-Type': 'application/json',
         ...options.headers,
       },
+      // Timeout de 60 secondes pour les requêtes importantes
+      signal: AbortSignal.timeout(60000),
       ...options,
     };
 
@@ -107,7 +141,7 @@ export class ApiService {
     return this.request(API_CONFIG.ENDPOINTS.TEST_DB);
   }
 
-  // Créer une commande
+  // Créer une commande (avec retry)
   static async createOrder(orderData: {
     userEmail: string;
     formData: any;
@@ -124,12 +158,12 @@ export class ApiService {
       formDataToSend.append('photo', orderData.formData.photo);
     }
 
-    return this.request(API_CONFIG.ENDPOINTS.ORDERS, {
+    return this.requestWithRetry(API_CONFIG.ENDPOINTS.ORDERS, {
       method: 'POST',
       body: formDataToSend,
       // Ne pas définir Content-Type, le navigateur le fera automatiquement avec boundary
       headers: {}
-    });
+    }, 2); // 2 retry pour cette requête critique
   }
 
   // Récupérer toutes les commandes
@@ -150,15 +184,15 @@ export class ApiService {
     });
   }
 
-  // Créer une session de paiement Stripe
+  // Créer une session de paiement Stripe (avec retry)
   static async createPaymentSession(orderId: string): Promise<{ sessionId: string; url: string }> {
     console.log('🔄 Création session Stripe pour commande:', orderId);
     
     try {
-      const response = await this.request<{ sessionId: string; url: string }>('/api/stripe/create-payment-session', {
+      const response = await this.requestWithRetry<{ sessionId: string; url: string }>('/api/stripe/create-payment-session', {
         method: 'POST',
         body: JSON.stringify({ orderId }),
-      });
+      }, 2); // 2 retry pour cette requête critique
       
       console.log('✅ Réponse session Stripe:', response);
       return response;

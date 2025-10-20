@@ -296,7 +296,10 @@ export const StoryFormPage: React.FC = () => {
       // 3. Rediriger vers Stripe Checkout
       if (paymentResponse.url) {
         console.log('🔄 Redirection vers:', paymentResponse.url);
-        window.location.href = paymentResponse.url;
+        // Petite pause pour s'assurer que l'état est mis à jour
+        setTimeout(() => {
+          window.location.href = paymentResponse.url;
+        }, 100);
       } else {
         console.error('❌ Pas d\'URL dans la réponse:', paymentResponse);
         throw new Error('URL de paiement non reçue');
@@ -304,7 +307,18 @@ export const StoryFormPage: React.FC = () => {
 
     } catch (error: any) {
       console.error('❌ Erreur soumission:', error);
-      setSubmitError(error.message || 'Une erreur est survenue lors de la soumission');
+      
+      // Messages d'erreur plus spécifiques
+      let errorMessage = 'Une erreur est survenue lors de la soumission';
+      if (error.message.includes('timeout') || error.message.includes('AbortError')) {
+        errorMessage = 'La requête a pris trop de temps. Veuillez réessayer dans quelques instants.';
+      } else if (error.message.includes('fetch')) {
+        errorMessage = 'Problème de connexion. Vérifiez votre connexion internet et réessayez.';
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      setSubmitError(errorMessage);
       setIsSubmitting(false);
     }
   };
@@ -433,9 +447,9 @@ export const StoryFormPage: React.FC = () => {
               <Button 
                 variant="primary" 
                 onClick={handleSubmit}
-                disabled={!isStepValid()}
+                disabled={!isStepValid() || isSubmitting}
               >
-                Finaliser la commande
+                {isSubmitting ? '⏳ Traitement en cours...' : 'Finaliser la commande'}
               </Button>
             )}
           </ButtonGroup>

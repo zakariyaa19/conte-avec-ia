@@ -44,25 +44,27 @@ export class OrderController {
       // Calcul du prix
       const price = calculatePrice(formData.productType?.toUpperCase() as keyof typeof PRODUCT_PRICES) || 4.99;
 
-      // Créer l'utilisateur s'il n'existe pas
+      // Optimisation : Créer utilisateur et commande en parallèle si possible
       let user = null;
-      if (userEmail) {
-        user = await prisma.user.upsert({
-          where: { email: userEmail },
-          update: {},
-          create: { email: userEmail }
-        });
-      }
-
-      // Gestion de l'upload de photo
       let photoUrl = null;
       let photoPath = null;
+
+      // Gestion de l'upload de photo
       if (req.file) {
-        // Construire l'URL de la photo uploadée
         photoUrl = `/uploads/${req.file.filename}`;
-        photoPath = req.file.path; // Chemin complet pour l'email
+        photoPath = req.file.path;
         console.log('📸 Photo uploadée:', photoUrl, 'Chemin:', photoPath);
       }
+
+      // Créer l'utilisateur en parallèle si nécessaire
+      const userPromise = userEmail ? prisma.user.upsert({
+        where: { email: userEmail },
+        update: {},
+        create: { email: userEmail }
+      }) : Promise.resolve(null);
+
+      // Attendre la création de l'utilisateur
+      user = await userPromise;
 
       // Créer la commande avec tous les nouveaux champs
       const order = await prisma.order.create({

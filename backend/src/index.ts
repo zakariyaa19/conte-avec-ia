@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 import { prisma } from './utils/database';
+import { KeepAliveService } from './utils/keepAlive';
 
 // Import des routes
 import apiRouter from './routes';
@@ -74,6 +75,25 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Endpoint de warm-up pour éviter le cold start
+app.get('/warmup', async (req, res) => {
+  try {
+    // Test rapide de la base de données
+    await prisma.$queryRaw`SELECT 1`;
+    res.json({ 
+      status: 'WARM', 
+      timestamp: new Date().toISOString(),
+      message: 'Serveur réchauffé avec succès'
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      status: 'ERROR', 
+      timestamp: new Date().toISOString(),
+      message: 'Erreur lors du warm-up'
+    });
+  }
+});
+
 app.use('/api', apiRouter);
 
 // Middleware de gestion d'erreurs
@@ -106,6 +126,11 @@ async function startServer() {
       console.log(`🚀 Serveur démarré sur le port ${PORT}`);
       console.log(`📊 Health check: http://localhost:${PORT}/health`);
       console.log(`🌍 Environnement: ${process.env.NODE_ENV || 'development'}`);
+      
+      // Démarrer le service keep-alive en production
+      if (process.env.NODE_ENV === 'production') {
+        KeepAliveService.start();
+      }
     });
   } catch (error) {
     console.error('❌ Erreur de démarrage du serveur:', error);
@@ -116,12 +141,14 @@ async function startServer() {
 // Gestion propre de l'arrêt
 process.on('SIGINT', async () => {
   console.log('\n🛑 Arrêt du serveur...');
+  KeepAliveService.stop();
   await prisma.$disconnect();
   process.exit(0);
 });
 
 process.on('SIGTERM', async () => {
   console.log('\n🛑 Arrêt du serveur...');
+  KeepAliveService.stop();
   await prisma.$disconnect();
   process.exit(0);
 });
