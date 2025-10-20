@@ -1,5 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import { GlobalStyles } from './styles/GlobalStyles';
 import { HomePage } from './pages/HomePage';
 import { StoryFormPage } from './pages/StoryFormPage';
@@ -62,6 +64,8 @@ function App() {
           <Route path="/politique-confidentialite" element={<PolitiqueConfidentialitePage />} />
         </Routes>
       </Router>
+      <Analytics />
+      <SpeedInsights />
     </>
   );
 }
