@@ -5,12 +5,15 @@ import { prisma } from './database';
 async function createAdmin() {
   try {
     const email = 'contact@contedia.fr';
-    const password = 'admin123'; // À changer en production
+    const password = 'lvAlancheDestoc!ea'; // Mot de passe sécurisé
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const admin = await prisma.adminUser.upsert({
       where: { email },
-      update: {},
+      update: {
+        password: hashedPassword,
+        isActive: true
+      },
       create: {
         email,
         password: hashedPassword,
