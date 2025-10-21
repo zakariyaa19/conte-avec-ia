@@ -1110,7 +1110,7 @@ export const HomePage: React.FC = () => {
               <StepTitle>Recevez votre livre dans le format que vous voulez</StepTitle>
               <StepDescription>
                 Recevez votre eBook personnalisé dans la journée pour 4,99 €. 
-                Vous souhaitez un exemplaire physique ? Choisissez une couverture rigide pour 19,99 € 
+                Vous souhaitez un exemplaire physique ? Choisissez une couverture rigide pour 29,99 € 
                 et recevez votre livre directement chez vous.
               </StepDescription>
             </StepCard>
@@ -1266,7 +1266,7 @@ export const HomePage: React.FC = () => {
             
             <PricingCard
               title="Livre Relié Premium"
-              price="19,99€"
+              price="29,99€"
               features={[
                 "Conte personnalisé de 20 pages",
                 "Illustrations premium",
@@ -1401,6 +1401,7 @@ export const HomePage: React.FC = () => {
           </TestimonialGrid>
         </div>
       </TestimonialsSection>
+      
       <Footer />
       
       {/* Visionneuse d'image */}
@@ -1417,7 +1418,6 @@ export const HomePage: React.FC = () => {
         </ImageViewerOverlay>
       )}
       </main>
-      <Footer />
     </PageContainer>
   );
 };

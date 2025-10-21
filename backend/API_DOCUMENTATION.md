@@ -178,9 +178,8 @@ Récupérer une commande spécifique par ID
 - `CANCELLED` - Annulé
 
 ### Product Types
-- `EBOOK` - eBook numérique (14.99€)
+- `EBOOK` - eBook numérique (4.99€)
 - `PRINTED` - Livre relié (29.99€)
-- `PACK` - Pack famille (49.99€)
 
 ### Age Ranges
 - `0-2` - 0-2 ans

@@ -120,7 +120,7 @@ conte-ia/
 - Upload de photo (optionnel)
 
 ### Étape 3 : Commande et livraison
-- Choix du produit (eBook 14.99€, Livre relié 29.99€, Pack famille 49.99€)
+- Choix du produit (eBook 4.99€, Livre relié 29.99€)
 - Informations de livraison (pour produits physiques)
 - Récapitulatif et validation
 

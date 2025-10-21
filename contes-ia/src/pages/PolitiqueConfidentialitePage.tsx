@@ -104,10 +104,10 @@ const PolitiqueConfidentialitePage: React.FC = () => {
 
             <h3>1. Responsable du traitement des données</h3>
             <p>
-              <strong>Responsable :</strong> <span className="highlight">................</span><br/>
-              <strong>Adresse :</strong> <span className="highlight">................</span><br/>
-              <strong>Email :</strong> <span className="highlight">................</span><br/>
-              <strong>Téléphone :</strong> <span className="highlight">................</span>
+              <strong>Responsable :</strong> PAUSIA - Zakariya T<br/>
+              <strong>Adresse :</strong> 42 RUE du Westhoek 59760 Grande-Synthe<br/>
+              <strong>Email :</strong> contact@contedia.fr<br/>
+              <strong>Téléphone :</strong> +33780777110
             </p>
 
             <h3>2. Données collectées</h3>
@@ -190,8 +190,7 @@ const PolitiqueConfidentialitePage: React.FC = () => {
 
             <p>
               <strong>Pour exercer vos droits, contactez-nous à :</strong><br/>
-              Email : <span className="highlight">................</span><br/>
-              Courrier : <span className="highlight">................</span>
+              Email : contact@contedia.fr<br/>
             </p>
 
             <h3>9. Cookies et technologies similaires</h3>
@@ -234,7 +233,7 @@ const PolitiqueConfidentialitePage: React.FC = () => {
               Notre service s'adresse aux parents et tuteurs légaux. Nous ne collectons pas sciemment de données personnelles d'enfants de moins de 16 ans sans le consentement des parents.
             </p>
             <p>
-              Si vous pensez qu'un mineur a fourni des informations personnelles, contactez-nous immédiatement à <span className="highlight">................</span>
+              Si vous pensez qu'un mineur a fourni des informations personnelles, contactez-nous immédiatement à contact@contedia.fr
             </p>
 
             <h3>12. Modifications de cette politique</h3>
@@ -257,9 +256,9 @@ const PolitiqueConfidentialitePage: React.FC = () => {
             <h3>14. Contact</h3>
             <p>
               Pour toute question concernant cette politique de confidentialité :<br/>
-              <strong>Email :</strong> <span className="highlight">................</span><br/>
-              <strong>Téléphone :</strong> <span className="highlight">................</span><br/>
-              <strong>Adresse :</strong> <span className="highlight">................</span>
+              <strong>Email :</strong> contact@contedia.fr<br/>
+              <strong>Téléphone :</strong> +33780777110<br/>
+              <strong>Adresse :</strong> 42 RUE du Westhoek 59760 Grande-Synthe
             </p>
 
             <p style={{ marginTop: '2rem', fontSize: '0.9rem', color: '#666' }}>

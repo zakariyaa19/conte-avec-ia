@@ -2,7 +2,7 @@
 
 export const PRODUCT_PRICES = {
   EBOOK: 4.99,
-  PRINTED: 19.99
+  PRINTED: 29.99
 } as const;
 
 export function calculatePrice(productType: keyof typeof PRODUCT_PRICES): number {

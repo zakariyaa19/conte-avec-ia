@@ -107,7 +107,7 @@ const IdeesCadeauxPage: React.FC = () => {
     },
     {
       format: "Livre Relié Premium",
-      price: "19,99€",
+      price: "29,99€",
       description: "Objet précieux à conserver, avec impression haute qualité et reliure solide pour durer dans le temps.",
       advantages: ["Qualité premium", "Objet de collection", "Papier haute qualité", "Reliure durable"],
       bestFor: ["Cadeaux mémorables", "Occasions spéciales", "Bibliothèque personnelle", "Transmission familiale"],

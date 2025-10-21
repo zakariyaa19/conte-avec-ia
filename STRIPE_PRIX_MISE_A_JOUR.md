@@ -8,7 +8,7 @@
 ```typescript
 export const PRODUCT_PRICES = {
   EBOOK: 4.99,      // Ancien: 14.99€
-  PRINTED: 19.99    // Ancien: 29.99€
+  PRINTED: 29.99    // Ancien: 19.99€
   // PACK: supprimé
 } as const;
 ```
@@ -26,7 +26,7 @@ export const PRODUCT_PRICES = {
 | Produit | Ancien Prix | Nouveau Prix | Stripe (centimes) |
 |---------|-------------|--------------|-------------------|
 | eBook Numérique | 14.99€ | **4.99€** | 499 |
-| Livre Relié Premium | 29.99€ | **19.99€** | 1999 |
+| Livre Relié Premium | 19.99€ | **29.99€** | 2999 |
 | ~~Pack Famille~~ | ~~49.99€~~ | **Supprimé** | - |
 
 ### **🎯 Fonctionnalités Stripe**
@@ -45,7 +45,7 @@ export const PRODUCT_PRICES = {
 
 Stripe est maintenant configuré avec les nouveaux prix :
 - **eBook** : 4.99€ (au lieu de 14.99€)
-- **Livre Relié** : 19.99€ (au lieu de 29.99€)
+- **Livre Relié** : 29.99€ (au lieu de 19.99€)
 - **Pack Famille** : Supprimé
 
 Les sessions de paiement utilisent automatiquement les prix de la base de données, donc tout est synchronisé ! 💳✨

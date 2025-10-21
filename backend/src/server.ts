@@ -96,9 +96,8 @@ app.post('/api/orders', async (req, res) => {
     }
     
     // Calculer le prix basique
-    let price = 14.99; // eBook par défaut
+    let price = 4.99; // eBook par défaut
     if (formData.productType === 'PRINTED') price = 29.99;
-    if (formData.productType === 'PACK') price = 49.99;
     
     // Créer la commande
     const order = await prisma.order.create({

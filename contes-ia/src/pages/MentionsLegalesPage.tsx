@@ -92,28 +92,27 @@ const MentionsLegalesPage: React.FC = () => {
           <LegalContent>
             <h3>1. Éditeur du site</h3>
             <p>
-              <strong>Raison sociale :</strong> <span className="highlight">................</span><br/>
-              <strong>Forme juridique :</strong> <span className="highlight">................</span><br/>
-              <strong>Capital social :</strong> <span className="highlight">................</span><br/>
-              <strong>Siège social :</strong> <span className="highlight">................</span><br/>
-              <strong>Numéro SIRET :</strong> <span className="highlight">................</span><br/>
-              <strong>Code APE :</strong> <span className="highlight">................</span><br/>
-              <strong>Numéro de TVA intracommunautaire :</strong> <span className="highlight">................</span>
+              <strong>Raison sociale :</strong> PAUSIA<br/>
+              <strong>Forme juridique :</strong> Entrepreneur individuel<br/>
+              <strong>Capital social :</strong> 0 euro<br/>
+              <strong>Siège social :</strong> 42 RUE du Westhoek 59760 Grande-Synthe<br/>
+              <strong>Numéro SIRET :</strong> 99282930900010<br/>
+              <strong>Code APE :</strong> 6202A<br/>
             </p>
 
             <h3>2. Directeur de la publication</h3>
             <p>
-              <strong>Nom :</strong> <span className="highlight">................</span><br/>
-              <strong>Qualité :</strong> <span className="highlight">................</span><br/>
-              <strong>Email :</strong> <span className="highlight">................</span>
+              <strong>Nom :</strong> Zakariya T<br/>
+              <strong>Qualité :</strong> Entrepreneur individuel<br/>
+              <strong>Email :</strong> contact@contedia.fr
             </p>
 
             <h3>3. Hébergement</h3>
             <p>
               Le site est hébergé par :<br/>
-              <strong>Nom de l'hébergeur :</strong> <span className="highlight">................</span><br/>
-              <strong>Adresse :</strong> <span className="highlight">................</span><br/>
-              <strong>Téléphone :</strong> <span className="highlight">................</span>
+              <strong>Nom de l'hébergeur :</strong> LWS<br/>
+              <strong>Adresse :</strong> 2 rue Jules-Ferry, 88190 Golbey, France<br/>
+              <strong>Téléphone :</strong> 01 77 62 30 03
             </p>
 
             <h3>4. Propriété intellectuelle</h3>
@@ -129,12 +128,12 @@ const MentionsLegalesPage: React.FC = () => {
               Les informations contenues sur ce site sont aussi précises que possible et le site remis à jour à différentes périodes de l'année, mais peut toutefois contenir des inexactitudes ou des omissions.
             </p>
             <p>
-              Si vous constatez une lacune, erreur ou ce qui parait être un dysfonctionnement, merci de bien vouloir le signaler par email à l'adresse <span className="highlight">................</span> en décrivant le problème de la manière la plus précise possible.
+              Si vous constatez une lacune, erreur ou ce qui parait être un dysfonctionnement, merci de bien vouloir le signaler par email à l'adresse contact@contedia.fr en décrivant le problème de la manière la plus précise possible.
             </p>
 
             <h3>6. Liens hypertextes</h3>
             <p>
-              Les liens hypertextes mis en place dans le cadre du présent site web en direction d'autres ressources présentes sur le réseau Internet ne sauraient engager la responsabilité de <span className="highlight">................</span>.
+              Les liens hypertextes mis en place dans le cadre du présent site web en direction d'autres ressources présentes sur le réseau Internet ne sauraient engager la responsabilité de PAUSIA.
             </p>
 
             <h3>7. Collecte et traitement de données personnelles</h3>
@@ -143,7 +142,7 @@ const MentionsLegalesPage: React.FC = () => {
             </p>
             <p>
               Pour exercer ce droit, adressez-vous à :<br/>
-              <span className="highlight">................</span>
+              contact@contedia.fr
             </p>
 
             <h3>8. Cookies</h3>
@@ -156,15 +155,15 @@ const MentionsLegalesPage: React.FC = () => {
 
             <h3>9. Droit applicable et juridiction compétente</h3>
             <p>
-              Tout litige en relation avec l'utilisation du site <strong>contedia.fr</strong> est soumis au droit français. Il est fait attribution exclusive de juridiction aux tribunaux compétents de <span className="highlight">................</span>.
+              Tout litige en relation avec l'utilisation du site <strong>contedia.fr</strong> est soumis au droit français. Il est fait attribution exclusive de juridiction aux tribunaux compétents de Dunkerque.
             </p>
 
             <h3>10. Contact</h3>
             <p>
               Pour toute question concernant ces mentions légales, vous pouvez nous contacter à :<br/>
-              <strong>Email :</strong> <span className="highlight">................</span><br/>
-              <strong>Téléphone :</strong> <span className="highlight">................</span><br/>
-              <strong>Adresse postale :</strong> <span className="highlight">................</span>
+              <strong>Email :</strong> contact@contedia.fr<br/>
+              <strong>Téléphone :</strong> +33780777110<br/>
+              <strong>Adresse postale :</strong> 42 RUE du Westhoek 59760 Grande-Synthe
             </p>
 
             <p style={{ marginTop: '2rem', fontSize: '0.9rem', color: '#666' }}>

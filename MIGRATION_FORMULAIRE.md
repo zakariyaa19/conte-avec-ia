@@ -7,7 +7,7 @@ J'ai complètement mis à jour le formulaire de création de contes selon vos sp
 ### ✅ Frontend Mis à Jour
 - **Étape 1** : Nouveaux champs avec options personnalisées (thème, sujet, message)
 - **Étape 2** : Champs étendus (sexe, langue, religion, loisirs, etc.)
-- **Étape 3** : Suppression du pack famille, garde eBook (4,99€) et Livre (19,99€)
+- **Étape 3** : Suppression du pack famille, garde eBook (4,99€) et Livre (29,99€)
 
 ### ✅ Backend Préparé
 - Types TypeScript mis à jour
@@ -59,7 +59,7 @@ npm start
 
 ### Étape 3 - Commande
 - ✅ Suppression du pack famille
-- ✅ Prix mis à jour : eBook 4,99€, Livre 19,99€
+- ✅ Prix mis à jour : eBook 4,99€, Livre 29,99€
 - ✅ Récapitulatif enrichi
 
 ## 📧 Emails Améliorés

@@ -32,7 +32,7 @@ Remplissez un formulaire complet avec :
 - ✅ **Nom du créateur**
 
 #### **Étape 3 - Commande**
-- ✅ Choisissez eBook (4,99€) ou Livre (19,99€)
+- ✅ Choisissez eBook (4,99€) ou Livre (29,99€)
 - ✅ Remplissez les informations de commande
 
 ### **2. Vérifier dans l'Espace Admin**

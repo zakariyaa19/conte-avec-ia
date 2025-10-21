@@ -496,7 +496,7 @@ export const StoryFormStep3: React.FC<StoryFormStep3Props> = ({ formData, onUpda
           
           <PricingCard
             title="Livre Relié Premium"
-            price="19,99€"
+            price="29,99€"
             features={[
               "Conte personnalisé de 20 pages",
               "Illustrations premium",
@@ -611,7 +611,7 @@ export const StoryFormStep3: React.FC<StoryFormStep3Props> = ({ formData, onUpda
           disabled={!formData.productType}
         >
           {formData.productType === 'ebook' ? 'Payer 4,99€' : 
-           formData.productType === 'printed' ? 'Payer 19,99€' : 
+           formData.productType === 'printed' ? 'Payer 29,99€' : 
            'Choisir un format'}
         </Button>
         <p style={{ 
