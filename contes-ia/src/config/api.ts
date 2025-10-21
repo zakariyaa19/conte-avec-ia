@@ -1,6 +1,40 @@
 // Configuration des URLs API
+const getApiBaseUrl = () => {
+  // Si une URL API est explicitement définie, l'utiliser
+  if (process.env.REACT_APP_API_URL) {
+    return process.env.REACT_APP_API_URL;
+  }
+  
+  // Détection automatique de l'environnement
+  if (typeof window !== 'undefined') {
+    const hostname = window.location.hostname;
+    
+    // Production sur contedia.fr - Essayer plusieurs URLs
+    if (hostname === 'contedia.fr' || hostname.includes('contedia')) {
+      // TODO: Remplacer par votre vraie URL backend en production
+      // Options possibles :
+      // - Nouveau déploiement Render
+      // - Vercel Functions
+      // - Railway
+      // - Heroku
+      return 'https://your-backend-url.com'; // À remplacer
+    }
+    
+    // Vercel preview deployments
+    if (hostname.includes('vercel.app')) {
+      return 'https://your-backend-url.com'; // À remplacer
+    }
+  }
+  
+  // Fallback pour développement local
+  return 'http://localhost:5001';
+};
+
+const baseUrl = getApiBaseUrl();
+console.log('🌐 URL API configurée:', baseUrl);
+
 const API_CONFIG = {
-  BASE_URL: process.env.REACT_APP_API_URL || 'http://localhost:5001',
+  BASE_URL: baseUrl,
   ENDPOINTS: {
     // Health checks
     HEALTH: '/health',
