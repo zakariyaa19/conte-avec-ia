@@ -26,7 +26,11 @@ export class TelegramService {
 
       // 1. Envoyer la photo si elle existe
       if (orderData.orderDetails?.photoUrl) {
-        await this.sendOrderPhoto(orderData);
+        await this.sendOrderPhoto({
+          customerName: orderData.customerName,
+          orderNumber: orderData.orderNumber,
+          orderDetails: orderData.orderDetails
+        });
       }
 
       // 2. Envoyer le message détaillé

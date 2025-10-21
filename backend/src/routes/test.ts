@@ -165,7 +165,7 @@ router.post('/telegram-photo', async (req: Request, res: Response) => {
       customerName: `${orderWithPhoto.shippingFirstName} ${orderWithPhoto.shippingLastName}`,
       customerEmail: orderWithPhoto.user?.email || 'test@example.com',
       orderNumber: orderWithPhoto.id.slice(-8),
-      amount: parseFloat(orderWithPhoto.price),
+      amount: parseFloat(orderWithPhoto.price.toString()),
       orderDate: new Date(orderWithPhoto.createdAt),
       productType: orderWithPhoto.productType,
       orderDetails: orderWithPhoto
