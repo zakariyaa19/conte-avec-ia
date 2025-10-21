@@ -13,8 +13,24 @@ export const AdminPage: React.FC = () => {
     // Vérifier si un token existe déjà
     const savedToken = localStorage.getItem('adminToken');
     console.log('🔍 Token récupéré du localStorage:', savedToken ? savedToken.substring(0, 20) + '...' : 'null');
+    
     if (savedToken) {
-      setToken(savedToken);
+      // Vérifier si le token est valide (pas expiré)
+      try {
+        const tokenPayload = JSON.parse(atob(savedToken.split('.')[1]));
+        const currentTime = Date.now() / 1000;
+        
+        if (tokenPayload.exp && tokenPayload.exp > currentTime) {
+          console.log('✅ Token valide, expiration:', new Date(tokenPayload.exp * 1000));
+          setToken(savedToken);
+        } else {
+          console.log('⚠️ Token expiré, suppression...');
+          localStorage.removeItem('adminToken');
+        }
+      } catch (error) {
+        console.log('❌ Token invalide, suppression...');
+        localStorage.removeItem('adminToken');
+      }
     }
     setIsLoading(false);
   }, []);
