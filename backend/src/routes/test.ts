@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { MailjetService } from '../utils/mailjetService';
 import { TelegramService } from '../utils/telegramService';
+import { prisma } from '../utils/database';
 
 const router = Router();
 
@@ -121,6 +122,74 @@ router.post('/telegram-order', async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       message: 'Erreur lors de l\'envoi de la notification Telegram',
+      error: error instanceof Error ? error.message : 'Erreur inconnue'
+    });
+  }
+});
+
+// Endpoint de test pour notification avec photo d'une vraie commande
+router.post('/telegram-photo', async (req: Request, res: Response) => {
+  try {
+    console.log('🔄 Test notification Telegram avec photo...');
+
+    // Trouver une commande avec photo
+    const orderWithPhoto = await prisma.order.findFirst({
+      where: {
+        photoUrl: {
+          not: null
+        }
+      },
+      include: {
+        user: true
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
+
+    if (!orderWithPhoto) {
+      return res.status(404).json({
+        success: false,
+        message: 'Aucune commande avec photo trouvée pour le test'
+      });
+    }
+
+    console.log('📸 Commande trouvée:', {
+      id: orderWithPhoto.id.slice(-8),
+      photoUrl: orderWithPhoto.photoUrl,
+      protagonistName: orderWithPhoto.protagonistName
+    });
+
+    // Préparer les données de notification
+    const orderData = {
+      customerName: `${orderWithPhoto.shippingFirstName} ${orderWithPhoto.shippingLastName}`,
+      customerEmail: orderWithPhoto.user?.email || 'test@example.com',
+      orderNumber: orderWithPhoto.id.slice(-8),
+      amount: parseFloat(orderWithPhoto.price),
+      orderDate: new Date(orderWithPhoto.createdAt),
+      productType: orderWithPhoto.productType,
+      orderDetails: orderWithPhoto
+    };
+
+    // Envoyer la notification avec photo
+    await TelegramService.sendOrderNotification(orderData);
+
+    res.json({
+      success: true,
+      message: 'Notification avec photo envoyée avec succès',
+      data: {
+        orderId: orderWithPhoto.id.slice(-8),
+        photoUrl: orderWithPhoto.photoUrl,
+        protagonistName: orderWithPhoto.protagonistName,
+        customerName: orderData.customerName
+      }
+    });
+
+  } catch (error) {
+    console.error('❌ Erreur test notification photo:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erreur lors du test de notification avec photo',
       error: error instanceof Error ? error.message : 'Erreur inconnue'
     });
   }
