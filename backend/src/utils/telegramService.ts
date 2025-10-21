@@ -1,4 +1,6 @@
 import axios from 'axios';
+import fs from 'fs';
+import path from 'path';
 
 export class TelegramService {
   private static readonly BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
@@ -6,7 +8,7 @@ export class TelegramService {
   private static readonly API_URL = `https://api.telegram.org/bot${TelegramService.BOT_TOKEN}`;
 
   /**
-   * Envoyer un message de notification de commande via Telegram
+   * Envoyer un message de notification de commande via Telegram avec photo
    */
   static async sendOrderNotification(orderData: {
     customerName: string;
@@ -22,6 +24,12 @@ export class TelegramService {
         throw new Error('Configuration Telegram manquante (BOT_TOKEN ou CHAT_ID)');
       }
 
+      // 1. Envoyer la photo si elle existe
+      if (orderData.orderDetails?.photoUrl) {
+        await this.sendOrderPhoto(orderData);
+      }
+
+      // 2. Envoyer le message détaillé
       const message = this.formatOrderMessage(orderData);
 
       const response = await axios.post(`${this.API_URL}/sendMessage`, {
@@ -39,6 +47,74 @@ export class TelegramService {
     } catch (error) {
       console.error('❌ Erreur envoi message Telegram:', error);
       throw new Error('Échec de l\'envoi du message Telegram');
+    }
+  }
+
+  /**
+   * Envoyer la photo de l'utilisateur via Telegram
+   */
+  private static async sendOrderPhoto(orderData: {
+    customerName: string;
+    orderNumber: string;
+    orderDetails: any;
+  }): Promise<void> {
+    try {
+      const photoUrl = orderData.orderDetails.photoUrl;
+      if (!photoUrl) return;
+
+      console.log('📸 Envoi photo Telegram:', photoUrl);
+
+      // Construire le chemin du fichier
+      let photoPath = '';
+      if (photoUrl.startsWith('/uploads/')) {
+        photoPath = path.join(__dirname, '../../uploads', photoUrl.replace('/uploads/', ''));
+      } else if (photoUrl.startsWith('uploads/')) {
+        photoPath = path.join(__dirname, '../../uploads', photoUrl.replace('uploads/', ''));
+      } else {
+        photoPath = path.join(__dirname, '../../uploads', photoUrl);
+      }
+
+      console.log('📁 Chemin photo:', photoPath);
+
+      // Vérifier si le fichier existe
+      if (!fs.existsSync(photoPath)) {
+        console.log('⚠️ Photo non trouvée, envoi du message sans photo');
+        return;
+      }
+
+      // Préparer le caption de la photo
+      const caption = `📸 <b>Photo du protagoniste</b>
+      
+🛍️ Commande #${orderData.orderNumber}
+👤 Client: ${orderData.customerName}
+👦👧 Protagoniste: ${orderData.orderDetails.protagonistName || 'Non spécifié'}
+
+<i>Photo envoyée par le client pour personnaliser le conte</i>`;
+
+      // Envoyer la photo avec FormData
+      const FormData = require('form-data');
+      const form = new FormData();
+      
+      form.append('chat_id', this.CHAT_ID);
+      form.append('photo', fs.createReadStream(photoPath));
+      form.append('caption', caption);
+      form.append('parse_mode', 'HTML');
+
+      const response = await axios.post(`${this.API_URL}/sendPhoto`, form, {
+        headers: {
+          ...form.getHeaders(),
+        },
+      });
+
+      if (response.data.ok) {
+        console.log('✅ Photo Telegram envoyée avec succès');
+      } else {
+        console.error('❌ Erreur envoi photo Telegram:', response.data.description);
+      }
+
+    } catch (error) {
+      console.error('❌ Erreur envoi photo Telegram:', error);
+      // Ne pas faire échouer toute la notification si la photo échoue
     }
   }
 
