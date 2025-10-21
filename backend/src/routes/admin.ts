@@ -11,6 +11,9 @@ router.use(express.json());
 // Authentification admin
 router.post('/login', AdminController.login);
 
+// Route temporaire pour créer l'admin (À SUPPRIMER après utilisation)
+router.post('/create-admin-temp', AdminController.createAdminTemp);
+
 // Routes protégées avec authentification
 router.get('/dashboard/stats', authenticateAdmin, requireAdmin, AdminController.getDashboardStats);
 router.get('/orders', authenticateAdmin, requireAdmin, AdminController.getOrders);

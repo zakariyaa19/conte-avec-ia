@@ -275,4 +275,46 @@ export class AdminController {
       });
     }
   }
+
+  // Route temporaire pour créer l'admin (À SUPPRIMER après utilisation)
+  static async createAdminTemp(req: Request, res: Response) {
+    try {
+      const email = 'contact@contedia.fr';
+      const password = 'lvAlancheDestoc!ea';
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      const admin = await prisma.adminUser.upsert({
+        where: { email },
+        update: {
+          password: hashedPassword,
+          isActive: true
+        },
+        create: {
+          email,
+          password: hashedPassword,
+          firstName: 'Admin',
+          lastName: 'Contes IA',
+          role: 'SUPER_ADMIN',
+          isActive: true
+        }
+      });
+
+      res.json({
+        success: true,
+        message: 'Admin créé/mis à jour avec succès',
+        data: {
+          id: admin.id,
+          email: admin.email,
+          role: admin.role
+        }
+      });
+
+    } catch (error: any) {
+      console.error('❌ Erreur création admin:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Erreur lors de la création de l\'admin'
+      });
+    }
+  }
 }

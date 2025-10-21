@@ -9,20 +9,14 @@ const getApiBaseUrl = () => {
   if (typeof window !== 'undefined') {
     const hostname = window.location.hostname;
     
-    // Production sur contedia.fr - Essayer plusieurs URLs
+    // Production sur contedia.fr
     if (hostname === 'contedia.fr' || hostname.includes('contedia')) {
-      // TODO: Remplacer par votre vraie URL backend en production
-      // Options possibles :
-      // - Nouveau déploiement Render
-      // - Vercel Functions
-      // - Railway
-      // - Heroku
-      return 'https://your-backend-url.com'; // À remplacer
+      return 'https://conte-avec-ia-1.onrender.com';
     }
     
     // Vercel preview deployments
     if (hostname.includes('vercel.app')) {
-      return 'https://your-backend-url.com'; // À remplacer
+      return 'https://conte-avec-ia-1.onrender.com';
     }
   }
   
