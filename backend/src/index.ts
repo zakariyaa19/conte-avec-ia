@@ -9,6 +9,7 @@ import { KeepAliveService } from './utils/keepAlive';
 // Import des routes
 import apiRouter from './routes';
 import stripeRoutes from './routes/stripe';
+import filesRoutes from './routes/files';
 
 // Configuration
 dotenv.config();
@@ -95,6 +96,7 @@ app.get('/warmup', async (req, res) => {
 });
 
 app.use('/api', apiRouter);
+app.use('/files', filesRoutes);
 
 // Middleware de gestion d'erreurs
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
