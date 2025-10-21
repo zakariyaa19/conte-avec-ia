@@ -27,11 +27,24 @@ import {
 
 const ValeursEducativesPage: React.FC = () => {
   useEffect(() => {
-    document.title = 'Valeurs Éducatives dans les Contes Personnalisés | Contes d\'IA';
+    document.title = 'Contes Éducatifs Personnalisés | Valeurs et Développement Émotionnel Enfant';
     
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', 'Découvrez comment nos contes éducatifs transmettent des valeurs essentielles : respect, courage, empathie. Livre personnalisé IA pour l\'\u00e9panouissement de votre enfant.');
+      metaDescription.setAttribute('content', 'Transmettez des valeurs importantes avec nos contes éducatifs personnalisés : respect, courage, empathie, confiance en soi. Développement émotionnel optimal de votre enfant.');
+    } else {
+      const newMetaDescription = document.createElement('meta');
+      newMetaDescription.name = 'description';
+      newMetaDescription.content = 'Transmettez des valeurs importantes avec nos contes éducatifs personnalisés : respect, courage, empathie, confiance en soi. Développement émotionnel optimal de votre enfant.';
+      document.head.appendChild(newMetaDescription);
+    }
+
+    // Mots-clés pour les valeurs éducatives
+    const metaKeywords = document.querySelector('meta[name="keywords"]') || document.createElement('meta');
+    metaKeywords.setAttribute('name', 'keywords');
+    metaKeywords.setAttribute('content', 'conte éducatif personnalisé, contes éducatifs et développement émotionnel, conte personnalisé pour apprendre la confiance en soi, valeurs éducatives conte, livre éducatif personnalisé pour enfant, développement émotionnel enfant, conte moral personnalisé');
+    if (!document.querySelector('meta[name="keywords"]')) {
+      document.head.appendChild(metaKeywords);
     }
   }, []);
   const educationalValues = [

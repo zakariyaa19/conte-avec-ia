@@ -5,33 +5,46 @@ import '../styles/BlogPage.css';
 
 const BlogPage: React.FC = () => {
   useEffect(() => {
-    document.title = 'Blog - Contes Personnalisés avec IA | Conseils et Inspiration';
+    document.title = 'Blog Contes Personnalisés | Conseils Parents et Développement Enfant';
     
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', 'Découvrez nos conseils d\'experts sur les contes personnalisés avec IA, l\'éducation des enfants et la création d\'histoires uniques. Blog spécialisé dans les livres personnalisés pour enfants.');
+      metaDescription.setAttribute('content', 'Blog expert sur les contes personnalisés : pourquoi offrir un livre personnalisé à un enfant, les avantages des contes personnalisés pour le développement de l\'enfant, conseils parents et inspiration.');
+    } else {
+      const newMetaDescription = document.createElement('meta');
+      newMetaDescription.name = 'description';
+      newMetaDescription.content = 'Blog expert sur les contes personnalisés : pourquoi offrir un livre personnalisé à un enfant, les avantages des contes personnalisés pour le développement de l\'enfant, conseils parents et inspiration.';
+      document.head.appendChild(newMetaDescription);
+    }
+
+    // Mots-clés blog éditorial
+    const metaKeywords = document.querySelector('meta[name="keywords"]') || document.createElement('meta');
+    metaKeywords.setAttribute('name', 'keywords');
+    metaKeywords.setAttribute('content', 'pourquoi offrir un livre personnalisé à un enfant, les avantages des contes personnalisés pour le développement de l\'enfant, top 10 des cadeaux personnalisés pour enfants, comment choisir un conte adapté à l\'âge de son enfant, blog contes personnalisés');
+    if (!document.querySelector('meta[name="keywords"]')) {
+      document.head.appendChild(metaKeywords);
     }
   }, []);
 
   const blogArticles = [
     {
       id: 1,
-      title: "L'histoire unique de votre animal de compagnie dans son propre livre",
-      excerpt: "Découvrez comment transformer votre cher animal de compagnie en héros de son propre livre pour enfants. Cet article explique comment notre IA peut créer un souvenir magnifique et durable.",
+      title: "Créer un Livre Personnalisé avec votre Animal de Compagnie",
+      excerpt: "Transformez votre chien, chat ou animal favori en héros d'un conte personnalisé unique. Découvrez comment créer un livre magique où votre enfant et son compagnon vivent des aventures extraordinaires ensemble.",
       image: "/images/blog/conte-animal-compagnie.jpg",
       slug: "histoire-animal-compagnie-livre-personnalise"
     },
     {
       id: 2,
-      title: "Des livres pour enfants avec plus de personnages, de nouveaux styles de dessin & des aventures pour ados",
-      excerpt: "Découvrez les toutes dernières mises à jour magiques chez Livre Magique qui rendent vos histoires personnalisées encore plus spéciales ! Désormais, vous pouvez créer des aventures avec jusqu'à cinq personnages, permettant frères,",
+      title: "Des contes pour enfants à personnaliser : nouveaux héros et univers illustrés",
+      excerpt: "Découvrez comment créer des héros uniques, explorer des univers illustrés époustouflants et adapter vos histoires aux goûts des adolescents. Plongez dans un monde où chaque conte devient une aventure sur mesure inoubliable.",
       image: "/images/blog/enfant-lecture-personnalisee.jpg",
       slug: "nouveaux-personnages-styles-aventures-ados"
     },
     {
       id: 3,
-      title: "L'évolution des livres pour enfants des contes de fées aux aventures personnalisées",
-      excerpt: "Les livres pour enfants évoluent des contes de fées classiques vers des histoires numériques interactives qui stimulent l'imagination et le développement des enfants. Découvrez comment les innovations technologiques rendent cette transformation possible et ce que cela signifie",
+      title: "Contes de Fées Modernes : Quand la Magie Rencontre la Personnalisation",
+      excerpt: "Les contes de fées se réinventent grâce aux aventures personnalisées, offrant à chaque enfant la possibilité de devenir le héros de son propre conte de fées sur mesure avec châteaux enchantés et créatures magiques.",
       image: "/images/blog/contes-fees-modernes.jpg",
       slug: "evolution-livres-enfants-contes-fees-aventures-personnalisees"
     },

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { theme } from '../styles/theme';
 import { Button } from '../components/ui/Button';
@@ -73,6 +73,21 @@ const ButtonGroup = styled.div`
 `;
 
 export const CancelPage: React.FC = () => {
+  useEffect(() => {
+    // SEO pour la page d'annulation
+    document.title = 'Paiement Annulé | Reprendre votre Commande de Livre Personnalisé';
+    
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', 'Paiement annulé. Reprenez facilement votre commande de livre personnalisé enfant. Aucun montant débité, votre conte sur mesure vous attend.');
+    } else {
+      const newMetaDescription = document.createElement('meta');
+      newMetaDescription.name = 'description';
+      newMetaDescription.content = 'Paiement annulé. Reprenez facilement votre commande de livre personnalisé enfant. Aucun montant débité, votre conte sur mesure vous attend.';
+      document.head.appendChild(newMetaDescription);
+    }
+  }, []);
+
   const handleRetryPayment = () => {
     window.location.href = '/create-story';
   };

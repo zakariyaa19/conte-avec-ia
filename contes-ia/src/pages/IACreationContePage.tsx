@@ -25,11 +25,24 @@ import {
 
 const IACreationContePage: React.FC = () => {
   useEffect(() => {
-    document.title = 'Comment l\'IA Crée des Contes Personnalisés | Technologie Contes d\'IA';
+    document.title = 'IA et Créativité : Créer des Histoires Uniques pour Enfants | Innovation';
     
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', 'Découvrez la technologie IA derrière nos contes personnalisés : génération narrative, adaptation linguistique, création d\'illustrations uniques.');
+      metaDescription.setAttribute('content', 'Découvrez comment l\'IA révolutionne les livres pour enfants. Créer un livre magique avec intelligence artificielle : génération narrative, personnalisation et illustrations uniques.');
+    } else {
+      const newMetaDescription = document.createElement('meta');
+      newMetaDescription.name = 'description';
+      newMetaDescription.content = 'Découvrez comment l\'IA révolutionne les livres pour enfants. Créer un livre magique avec intelligence artificielle : génération narrative, personnalisation et illustrations uniques.';
+      document.head.appendChild(newMetaDescription);
+    }
+
+    // Mots-clés pour l'IA et la créativité
+    const metaKeywords = document.querySelector('meta[name="keywords"]') || document.createElement('meta');
+    metaKeywords.setAttribute('name', 'keywords');
+    metaKeywords.setAttribute('content', 'IA et créativité, créer des histoires uniques pour enfants, comment l\'intelligence artificielle révolutionne les livres pour enfants, créer un livre magique avec intelligence artificielle, personnalisation et imagination chez l\'enfant, technologie conte personnalisé');
+    if (!document.querySelector('meta[name="keywords"]')) {
+      document.head.appendChild(metaKeywords);
     }
   }, []);
   const aiCapabilities = [

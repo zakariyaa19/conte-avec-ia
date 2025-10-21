@@ -25,11 +25,24 @@ import {
 
 const IdeesCadeauxPage: React.FC = () => {
   useEffect(() => {
-    document.title = 'Idées Cadeaux Contes Personnalisés | Cadeau Enfant Original | Contes d\'IA';
+    document.title = 'Idées Cadeaux Originaux pour Enfants | Livre Personnalisé Anniversaire';
     
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', 'Trouvez le cadeau enfant original parfait ! Contes personnalisés pour anniversaire, Noël, rentrée. Livre personnalisé IA dès 4,99€.');
+      metaDescription.setAttribute('content', 'Découvrez le cadeau personnalisé enfant parfait ! Livre personnalisé pour anniversaire, Noël, rentrée. Histoire personnalisée pour un anniversaire d\'enfant unique et mémorable.');
+    } else {
+      const newMetaDescription = document.createElement('meta');
+      newMetaDescription.name = 'description';
+      newMetaDescription.content = 'Découvrez le cadeau personnalisé enfant parfait ! Livre personnalisé pour anniversaire, Noël, rentrée. Histoire personnalisée pour un anniversaire d\'enfant unique et mémorable.';
+      document.head.appendChild(newMetaDescription);
+    }
+
+    // Mots-clés longue traîne pour les cadeaux
+    const metaKeywords = document.querySelector('meta[name="keywords"]') || document.createElement('meta');
+    metaKeywords.setAttribute('name', 'keywords');
+    metaKeywords.setAttribute('content', 'cadeau personnalisé enfant, histoire personnalisée pour un anniversaire d\'enfant, idée cadeau original pour un enfant de 5 ans, livre personnalisé anniversaire, cadeau enfant original, livre personnalisé Noël, cadeau unique enfant, livre personnalisé rentrée');
+    if (!document.querySelector('meta[name="keywords"]')) {
+      document.head.appendChild(metaKeywords);
     }
   }, []);
   const giftOccasions = [

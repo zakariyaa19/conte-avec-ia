@@ -27,12 +27,25 @@ import {
 
 const ThemesContesPage: React.FC = () => {
   useEffect(() => {
-    document.title = 'Thèmes de Contes Personnalisés pour Enfants | Contes d\'IA';
+    document.title = 'Thèmes de Contes Personnalisés pour Enfants | Livre sur Mesure avec IA';
     
-    // Meta description
+    // Meta description optimisée
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', 'Découvrez nos thèmes de contes personnalisés : aventure, magie, animaux, héros. Créez un livre personnalisé IA unique pour votre enfant.');
+      metaDescription.setAttribute('content', 'Choisissez parmi nos thèmes de contes personnalisés : aventure, magie, animaux, héros, princesses. Créez un livre enfant sur mesure adapté aux goûts de votre petit avec notre IA.');
+    } else {
+      const newMetaDescription = document.createElement('meta');
+      newMetaDescription.name = 'description';
+      newMetaDescription.content = 'Choisissez parmi nos thèmes de contes personnalisés : aventure, magie, animaux, héros, princesses. Créez un livre enfant sur mesure adapté aux goûts de votre petit avec notre IA.';
+      document.head.appendChild(newMetaDescription);
+    }
+
+    // Mots-clés longue traîne pour les thèmes
+    const metaKeywords = document.querySelector('meta[name="keywords"]') || document.createElement('meta');
+    metaKeywords.setAttribute('name', 'keywords');
+    metaKeywords.setAttribute('content', 'thèmes contes personnalisés, livre enfant sur mesure, conte magique personnalisé, histoire personnalisée aventure, conte personnalisé animaux, livre personnalisé héros, thème conte enfant, choix thème livre personnalisé');
+    if (!document.querySelector('meta[name="keywords"]')) {
+      document.head.appendChild(metaKeywords);
     }
   }, []);
   const themes = [

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { theme } from '../styles/theme';
 import { Header } from '../components/layout/Header';
@@ -438,6 +438,29 @@ export const ExemplesPage: React.FC = () => {
   const [isViewerOpen, setIsViewerOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isImageViewerOpen, setIsImageViewerOpen] = useState(false);
+
+  // SEO optimisé pour la page exemples
+  useEffect(() => {
+    document.title = 'Exemples de Livres Personnalisés pour Enfants | Contes Originaux avec IA';
+    
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', 'Découvrez des exemples de contes originaux pour enfants créés avec notre IA. Livres personnalisés uniques avec photos, thèmes variés et illustrations sur mesure pour inspirer votre création.');
+    } else {
+      const newMetaDescription = document.createElement('meta');
+      newMetaDescription.name = 'description';
+      newMetaDescription.content = 'Découvrez des exemples de contes originaux pour enfants créés avec notre IA. Livres personnalisés uniques avec photos, thèmes variés et illustrations sur mesure pour inspirer votre création.';
+      document.head.appendChild(newMetaDescription);
+    }
+
+    // Mots-clés pour les exemples
+    const metaKeywords = document.querySelector('meta[name="keywords"]') || document.createElement('meta');
+    metaKeywords.setAttribute('name', 'keywords');
+    metaKeywords.setAttribute('content', 'conte original pour enfants, livre personnalisé fille, livre personnalisé garçon, exemples livres personnalisés, histoire avec photo de l\'enfant, conte illustré avec photo de mon enfant, inspiration livre personnalisé, modèles contes personnalisés');
+    if (!document.querySelector('meta[name="keywords"]')) {
+      document.head.appendChild(metaKeywords);
+    }
+  }, []);
 
   const handleViewExample = (story: any) => {
     if (story.pdfUrl) {

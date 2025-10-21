@@ -25,11 +25,24 @@ import {
 
 const StylesIllustrationPage: React.FC = () => {
   useEffect(() => {
-    document.title = 'Styles d\'Illustration pour Contes Personnalisés | Contes d\'IA';
+    document.title = 'Styles d\'Illustration Livre Personnalisé | Conte Illustré sur Mesure';
     
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', 'Découvrez nos styles d\'illustration : aquarelle, cartoon, réalisme fantastique, vintage. Créez un conte illustré unique avec notre IA.');
+      metaDescription.setAttribute('content', 'Choisissez le style parfait pour votre livre illustré personnalisé : aquarelle douce, cartoon coloré, réalisme fantastique, vintage. Conte illustré avec photo de votre enfant.');
+    } else {
+      const newMetaDescription = document.createElement('meta');
+      newMetaDescription.name = 'description';
+      newMetaDescription.content = 'Choisissez le style parfait pour votre livre illustré personnalisé : aquarelle douce, cartoon coloré, réalisme fantastique, vintage. Conte illustré avec photo de votre enfant.';
+      document.head.appendChild(newMetaDescription);
+    }
+
+    // Mots-clés pour les styles d'illustration
+    const metaKeywords = document.querySelector('meta[name="keywords"]') || document.createElement('meta');
+    metaKeywords.setAttribute('name', 'keywords');
+    metaKeywords.setAttribute('content', 'livre illustré personnalisé, conte illustré avec photo de mon enfant, styles illustration livre enfant, livre personnalisé aquarelle, conte cartoon personnalisé, illustration sur mesure enfant, livre artistique personnalisé');
+    if (!document.querySelector('meta[name="keywords"]')) {
+      document.head.appendChild(metaKeywords);
     }
   }, []);
   const illustrationStyles = [

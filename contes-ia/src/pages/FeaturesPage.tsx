@@ -27,11 +27,24 @@ import {
 
 const FeaturesPage: React.FC = () => {
   useEffect(() => {
-    document.title = 'Fonctionnalités Contes d\'IA | Créateur de Contes Personnalisés';
+    document.title = 'Fonctionnalités Livre Personnalisé Enfant | Conte Magique avec IA';
     
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', 'Découvrez toutes les fonctionnalités de Contes d\'IA : personnalisation complète, 9 styles d\'illustration, support multilingue, adaptation par âge et bien plus.');
+      metaDescription.setAttribute('content', 'Découvrez toutes les fonctionnalités pour créer un livre illustré personnalisé : 9 styles d\'art, conte magique personnalisé, support multilingue, adaptation par âge et personnalisation complète.');
+    } else {
+      const newMetaDescription = document.createElement('meta');
+      newMetaDescription.name = 'description';
+      newMetaDescription.content = 'Découvrez toutes les fonctionnalités pour créer un livre illustré personnalisé : 9 styles d\'art, conte magique personnalisé, support multilingue, adaptation par âge et personnalisation complète.';
+      document.head.appendChild(newMetaDescription);
+    }
+
+    // Mots-clés secondaires SEO
+    const metaKeywords = document.querySelector('meta[name="keywords"]') || document.createElement('meta');
+    metaKeywords.setAttribute('name', 'keywords');
+    metaKeywords.setAttribute('content', 'conte magique personnalisé, livre illustré personnalisé, conte pour enfant généré par IA, histoire sur mesure pour enfants, créer une histoire pour mon enfant, livre pour bébé personnalisé, cadeau personnalisé enfant, livre personnalisé prénom enfant, conte éducatif personnalisé, histoire avec photo de l\'enfant');
+    if (!document.querySelector('meta[name="keywords"]')) {
+      document.head.appendChild(metaKeywords);
     }
   }, []);
 

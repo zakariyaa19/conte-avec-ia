@@ -26,11 +26,24 @@ import {
 
 const ContesParAgePage: React.FC = () => {
   useEffect(() => {
-    document.title = 'Contes Personnalisés par Âge | Histoires Adaptées 2-12 ans | Contes d\'IA';
+    document.title = 'Contes Personnalisés par Âge | Livre pour Bébé et Enfant Adapté';
     
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', 'Contes personnalisés adaptés à chaque âge : 2-4 ans, 4-6 ans, 6-8 ans, 8-10 ans, 10+ ans. Livre personnalisé IA pour un développement optimal de votre enfant.');
+      metaDescription.setAttribute('content', 'Choisissez un conte adapté à l\'âge de votre enfant : livre pour bébé personnalisé (2-4 ans), histoires magiques (4-6 ans), aventures (6-8 ans). Développement optimal avec notre IA.');
+    } else {
+      const newMetaDescription = document.createElement('meta');
+      newMetaDescription.name = 'description';
+      newMetaDescription.content = 'Choisissez un conte adapté à l\'âge de votre enfant : livre pour bébé personnalisé (2-4 ans), histoires magiques (4-6 ans), aventures (6-8 ans). Développement optimal avec notre IA.';
+      document.head.appendChild(newMetaDescription);
+    }
+
+    // Mots-clés pour les âges
+    const metaKeywords = document.querySelector('meta[name="keywords"]') || document.createElement('meta');
+    metaKeywords.setAttribute('name', 'keywords');
+    metaKeywords.setAttribute('content', 'livre pour bébé personnalisé, comment choisir un conte adapté à l\'âge de son enfant, conte personnalisé 2 ans, livre personnalisé 3 ans, histoire personnalisée 5 ans, conte éducatif personnalisé, livre adapté âge enfant');
+    if (!document.querySelector('meta[name="keywords"]')) {
+      document.head.appendChild(metaKeywords);
     }
   }, []);
   const ageGroups = [

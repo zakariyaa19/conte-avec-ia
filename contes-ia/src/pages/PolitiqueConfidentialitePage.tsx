@@ -65,11 +65,24 @@ const PrivacyContent = styled.div`
 
 const PolitiqueConfidentialitePage: React.FC = () => {
   useEffect(() => {
-    document.title = 'Politique de Confidentialité | Contes d\'IA';
+    document.title = 'Politique de Confidentialité | Protection des Données - Contes d\'IA';
     
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', 'Politique de confidentialité de Contes d\'IA - Protection des données personnelles, cookies et droits des utilisateurs.');
+      metaDescription.setAttribute('content', 'Politique de confidentialité de Contes d\'IA - Protection des données personnelles, RGPD, respect de votre vie privée lors de la création de livres personnalisés enfant.');
+    } else {
+      const newMetaDescription = document.createElement('meta');
+      newMetaDescription.name = 'description';
+      newMetaDescription.content = 'Politique de confidentialité de Contes d\'IA - Protection des données personnelles, RGPD, respect de votre vie privée lors de la création de livres personnalisés enfant.';
+      document.head.appendChild(newMetaDescription);
+    }
+
+    // Empêcher l'indexation des pages légales
+    const metaRobots = document.querySelector('meta[name="robots"]') || document.createElement('meta');
+    metaRobots.setAttribute('name', 'robots');
+    metaRobots.setAttribute('content', 'noindex, follow');
+    if (!document.querySelector('meta[name="robots"]')) {
+      document.head.appendChild(metaRobots);
     }
   }, []);
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { theme } from '../styles/theme';
 import { Button } from '../components/ui/Button';
@@ -932,6 +932,44 @@ export const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const [isImageViewerOpen, setIsImageViewerOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  // SEO optimisé pour la page d'accueil avec mots-clés principaux
+  useEffect(() => {
+    document.title = 'Créez un conte personnalisé avec l\'IA | Contes d\'IA';
+    
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', 'Offrez à votre enfant un livre unique et magique ! Créez facilement un conte personnalisé avec l\'intelligence artificielle : prénom, photo, thème, style d\'illustration et message éducatif sur mesure.');
+    } else {
+      const newMetaDescription = document.createElement('meta');
+      newMetaDescription.name = 'description';
+      newMetaDescription.content = 'Offrez à votre enfant un livre unique et magique ! Créez facilement un conte personnalisé avec l\'intelligence artificielle : prénom, photo, thème, style d\'illustration et message éducatif sur mesure.';
+      document.head.appendChild(newMetaDescription);
+    }
+
+    // Mots-clés principaux SEO
+    const metaKeywords = document.querySelector('meta[name="keywords"]') || document.createElement('meta');
+    metaKeywords.setAttribute('name', 'keywords');
+    metaKeywords.setAttribute('content', 'livre personnalisé enfant, conte personnalisé enfant, livre personnalisé avec photo, histoire personnalisée pour enfant, créer un livre personnalisé, livre pour enfant personnalisé, conte sur mesure pour enfant, livre enfant sur mesure, conte personnalisé avec IA, créer une histoire personnalisée');
+    if (!document.querySelector('meta[name="keywords"]')) {
+      document.head.appendChild(metaKeywords);
+    }
+
+    // Balises Open Graph pour le partage social
+    const ogTitle = document.querySelector('meta[property="og:title"]') || document.createElement('meta');
+    ogTitle.setAttribute('property', 'og:title');
+    ogTitle.setAttribute('content', 'Créez un conte personnalisé avec l\'IA | Contes d\'IA');
+    if (!document.querySelector('meta[property="og:title"]')) {
+      document.head.appendChild(ogTitle);
+    }
+
+    const ogDescription = document.querySelector('meta[property="og:description"]') || document.createElement('meta');
+    ogDescription.setAttribute('property', 'og:description');
+    ogDescription.setAttribute('content', 'Offrez à votre enfant un livre unique et magique ! Créez facilement un conte personnalisé avec l\'intelligence artificielle.');
+    if (!document.querySelector('meta[property="og:description"]')) {
+      document.head.appendChild(ogDescription);
+    }
+  }, []);
   
   // Récupérer 3 histoires d'exemple
   const featuredStories = [

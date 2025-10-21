@@ -57,11 +57,24 @@ const LegalContent = styled.div`
 
 const MentionsLegalesPage: React.FC = () => {
   useEffect(() => {
-    document.title = 'Mentions Légales | Contes d\'IA';
+    document.title = 'Mentions Légales | Contes d\'IA - Livre Personnalisé Enfant';
     
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', 'Mentions légales de Contes d\'IA - Informations légales, éditeur, hébergeur et conditions d\'utilisation.');
+      metaDescription.setAttribute('content', 'Mentions légales de Contes d\'IA - Informations légales sur notre service de création de livres personnalisés enfant avec intelligence artificielle. Conditions d\'utilisation et responsabilités.');
+    } else {
+      const newMetaDescription = document.createElement('meta');
+      newMetaDescription.name = 'description';
+      newMetaDescription.content = 'Mentions légales de Contes d\'IA - Informations légales sur notre service de création de livres personnalisés enfant avec intelligence artificielle. Conditions d\'utilisation et responsabilités.';
+      document.head.appendChild(newMetaDescription);
+    }
+
+    // Empêcher l'indexation des pages légales
+    const metaRobots = document.querySelector('meta[name="robots"]') || document.createElement('meta');
+    metaRobots.setAttribute('name', 'robots');
+    metaRobots.setAttribute('content', 'noindex, follow');
+    if (!document.querySelector('meta[name="robots"]')) {
+      document.head.appendChild(metaRobots);
     }
   }, []);
 

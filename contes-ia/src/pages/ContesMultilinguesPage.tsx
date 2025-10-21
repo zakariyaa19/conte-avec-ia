@@ -25,11 +25,24 @@ import {
 
 const ContesMultilinguesPage: React.FC = () => {
   useEffect(() => {
-    document.title = 'Contes Multilingues Personnalisés | Apprentissage des Langues | Contes d\'IA';
+    document.title = 'Livre Personnalisé Multilingue pour Enfant | Apprentissage des Langues';
     
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', 'Contes personnalisés en français, anglais, espagnol, italien, allemand, arabe. Apprentissage ludique des langues avec notre livre personnalisé IA.');
+      metaDescription.setAttribute('content', 'Créez un livre personnalisé multilingue pour enfant : français, anglais, espagnol, italien, allemand, arabe. Apprentissage naturel des langues avec des histoires sur mesure.');
+    } else {
+      const newMetaDescription = document.createElement('meta');
+      newMetaDescription.name = 'description';
+      newMetaDescription.content = 'Créez un livre personnalisé multilingue pour enfant : français, anglais, espagnol, italien, allemand, arabe. Apprentissage naturel des langues avec des histoires sur mesure.';
+      document.head.appendChild(newMetaDescription);
+    }
+
+    // Mots-clés pour le multilinguisme
+    const metaKeywords = document.querySelector('meta[name="keywords"]') || document.createElement('meta');
+    metaKeywords.setAttribute('name', 'keywords');
+    metaKeywords.setAttribute('content', 'livre personnalisé multilingue pour enfant, conte personnalisé anglais, livre personnalisé espagnol, apprentissage langues enfant, conte bilingue personnalisé, livre éducatif multilingue, histoire personnalisée langues étrangères');
+    if (!document.querySelector('meta[name="keywords"]')) {
+      document.head.appendChild(metaKeywords);
     }
   }, []);
   const languages = [

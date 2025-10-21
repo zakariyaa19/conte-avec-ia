@@ -98,6 +98,19 @@ export const SuccessPage: React.FC = () => {
   const orderId = searchParams.get('order_id');
 
   useEffect(() => {
+    // SEO pour la page de succès
+    document.title = 'Commande Confirmée | Votre Livre Personnalisé est en Préparation';
+    
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', 'Félicitations ! Votre conte personnalisé à imprimer chez soi est confirmé. Votre livre personnalisé enfant sera bientôt prêt.');
+    } else {
+      const newMetaDescription = document.createElement('meta');
+      newMetaDescription.name = 'description';
+      newMetaDescription.content = 'Félicitations ! Votre conte personnalisé à imprimer chez soi est confirmé. Votre livre personnalisé enfant sera bientôt prêt.';
+      document.head.appendChild(newMetaDescription);
+    }
+
     const verifyPayment = async () => {
       if (sessionId && orderId) {
         try {
