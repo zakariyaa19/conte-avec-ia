@@ -610,7 +610,7 @@ const InfoValue = styled.span`
   font-weight: 600;
 `;
 
-const ExampleSectionTitle = styled.h5`
+const ExampleSectionTitle = styled.h3`
   font-size: ${theme.fontSizes.lg};
   font-weight: 600;
   color: ${theme.colors.text.primary};
@@ -1001,6 +1001,7 @@ export const HomePage: React.FC = () => {
   return (
     <PageContainer>
       <Header />
+      <main>
       <HeroSection>
         {/* Éléments graphiques animés */}
         <FloatingBubbles>
@@ -1057,6 +1058,9 @@ export const HomePage: React.FC = () => {
             <HeroImage 
               src="/images/homepage/hero-image.png" 
               alt="Enfants découvrant des contes magiques"
+              width="1605"
+              height="1152"
+              fetchPriority="high"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
                 target.style.display = 'none';
@@ -1193,6 +1197,9 @@ export const HomePage: React.FC = () => {
                 <PromoImage 
                   src="/images/homepage/multilingual-story.jpg" 
                   alt="Conte multilingue illustré"
+                  width="1345"
+                  height="1792"
+                  loading="lazy"
                   onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
                     e.currentTarget.src = "/images/homepage/hero-image.png";
                   }}
@@ -1284,6 +1291,9 @@ export const HomePage: React.FC = () => {
                 <FeatureImage 
                   src="/images/homepage/feature-personnalisation.png" 
                   alt="Personnalisation complète"
+                  width="766"
+                  height="511"
+                  loading="lazy"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
                     target.style.display = 'none';
@@ -1305,6 +1315,9 @@ export const HomePage: React.FC = () => {
                 <FeatureImage 
                   src="/images/homepage/feature-qualite.png" 
                   alt="Qualité professionnelle"
+                  width="1024"
+                  height="683"
+                  loading="lazy"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
                     target.style.display = 'none';
@@ -1326,6 +1339,9 @@ export const HomePage: React.FC = () => {
                 <FeatureImage 
                   src="/images/homepage/feature-livraison.png" 
                   alt="Livraison rapide"
+                  width="827"
+                  height="551"
+                  loading="lazy"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
                     target.style.display = 'none';
@@ -1400,6 +1416,8 @@ export const HomePage: React.FC = () => {
           </ImageViewerContainer>
         </ImageViewerOverlay>
       )}
+      </main>
+      <Footer />
     </PageContainer>
   );
 };
