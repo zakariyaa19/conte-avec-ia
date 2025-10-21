@@ -611,6 +611,26 @@ export const AdminOrderDetailPage: React.FC<AdminOrderDetailPageProps> = ({ toke
                     <PhotoPreview 
                       src={getImageUrl(order.photoUrl)} 
                       alt="Photo de référence du protagoniste"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                        const container = target.parentElement;
+                        if (container) {
+                          container.innerHTML = `
+                            <div style="
+                              padding: 20px; 
+                              text-align: center; 
+                              background: #f5f5f5; 
+                              border-radius: 8px;
+                              color: #666;
+                            ">
+                              📷 Image non disponible<br/>
+                              <small>Fichier: ${order.photoUrl}</small><br/>
+                              <small style="color: #999;">Les images sont supprimées lors des redéploiements</small>
+                            </div>
+                          `;
+                        }
+                      }}
                       onClick={() => {
                         const imageUrl = getImageUrl(order.photoUrl);
                         if (imageUrl) window.open(imageUrl, '_blank');
