@@ -95,38 +95,110 @@
     <priority>0.8</priority>
   </url>
   
-  <!-- Articles de blog -->
+  <!-- Articles de blog originaux -->
   <url>
     <loc>https://contedia.fr/blog/histoire-animal-compagnie-livre-personnalise</loc>
-    <lastmod>2025-10-21</lastmod>
+    <lastmod>2025-11-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://contedia.fr/blog/nouveaux-personnages-styles-aventures-ados</loc>
-    <lastmod>2025-10-21</lastmod>
+    <lastmod>2025-11-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://contedia.fr/blog/evolution-livres-enfants-contes-fees-aventures-personnalisees</loc>
-    <lastmod>2025-10-21</lastmod>
+    <lastmod>2025-11-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://contedia.fr/blog/ia-revolution-creation-histoires-enfants</loc>
-    <lastmod>2025-10-21</lastmod>
+    <lastmod>2025-11-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://contedia.fr/blog/integrer-valeurs-religieuses-contes-personnalises</loc>
-    <lastmod>2025-10-21</lastmod>
+    <lastmod>2025-11-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Articles sur les animaux de compagnie -->
+  <url>
+    <loc>https://contedia.fr/blog/animal-compagnie-stimule-imagination-enfant</loc>
+    <lastmod>2025-11-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://contedia.fr/blog/conte-personnalise-noel-cadeau-amoureux-animaux</loc>
+    <lastmod>2025-11-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://contedia.fr/blog/photo-heros-conte-ia-transforme-animal-personnage</loc>
+    <lastmod>2025-11-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://contedia.fr/blog/lire-compagnon-quatre-pattes-rituel-lien-enfant-animal</loc>
+    <lastmod>2025-11-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://contedia.fr/blog/top-5-themes-histoires-animal-heros-conte</loc>
+    <lastmod>2025-11-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Articles sur la foi et la religion -->
+  <url>
+    <loc>https://contedia.fr/blog/transmettre-foi-histoires-contes-personnalises-spiritualite</loc>
+    <lastmod>2025-11-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://contedia.fr/blog/fetes-religieuses-conte-personnalise-noel-ramadan-paque-diwali</loc>
+    <lastmod>2025-11-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://contedia.fr/blog/personnaliser-foi-ia-adapte-valeurs-religieuses</loc>
+    <lastmod>2025-11-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://contedia.fr/blog/heros-foi-inspirer-enfants-personnages-spirituels</loc>
+    <lastmod>2025-11-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://contedia.fr/blog/foi-tolerance-ouverture-respect-differentes-religions</loc>
+    <lastmod>2025-11-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>

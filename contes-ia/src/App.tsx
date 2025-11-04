@@ -23,6 +23,16 @@ import BlogArticle2 from './pages/BlogArticle2';
 import BlogArticle3 from './pages/BlogArticle3';
 import BlogArticle4 from './pages/BlogArticle4';
 import BlogArticle5 from './pages/BlogArticle5';
+import BlogArticleAnimaux1 from './pages/BlogArticleAnimaux1';
+import BlogArticleAnimaux2 from './pages/BlogArticleAnimaux2';
+import BlogArticleAnimaux3 from './pages/BlogArticleAnimaux3';
+import BlogArticleAnimaux4 from './pages/BlogArticleAnimaux4';
+import BlogArticleAnimaux5 from './pages/BlogArticleAnimaux5';
+import BlogArticleFoi1 from './pages/BlogArticleFoi1';
+import BlogArticleFoi2 from './pages/BlogArticleFoi2';
+import BlogArticleFoi3 from './pages/BlogArticleFoi3';
+import BlogArticleFoi4 from './pages/BlogArticleFoi4';
+import BlogArticleFoi5 from './pages/BlogArticleFoi5';
 import { MentionsLegalesPage } from './pages/MentionsLegalesPage';
 import { PolitiqueConfidentialitePage } from './pages/PolitiqueConfidentialitePage';
 import ScrollToTop from './components/utils/ScrollToTop';
@@ -59,6 +69,18 @@ function App() {
           <Route path="/blog/evolution-livres-enfants-contes-fees-aventures-personnalisees" element={<BlogArticle3 />} />
           <Route path="/blog/ia-revolution-creation-histoires-enfants" element={<BlogArticle4 />} />
           <Route path="/blog/integrer-valeurs-religieuses-contes-personnalises" element={<BlogArticle5 />} />
+          {/* Articles sur les animaux de compagnie */}
+          <Route path="/blog/animal-compagnie-stimule-imagination-enfant" element={<BlogArticleAnimaux1 />} />
+          <Route path="/blog/conte-personnalise-noel-cadeau-amoureux-animaux" element={<BlogArticleAnimaux2 />} />
+          <Route path="/blog/photo-heros-conte-ia-transforme-animal-personnage" element={<BlogArticleAnimaux3 />} />
+          <Route path="/blog/lire-compagnon-quatre-pattes-rituel-lien-enfant-animal" element={<BlogArticleAnimaux4 />} />
+          <Route path="/blog/top-5-themes-histoires-animal-heros-conte" element={<BlogArticleAnimaux5 />} />
+          {/* Articles sur la foi et la religion */}
+          <Route path="/blog/transmettre-foi-histoires-contes-personnalises-spiritualite" element={<BlogArticleFoi1 />} />
+          <Route path="/blog/fetes-religieuses-conte-personnalise-noel-ramadan-paque-diwali" element={<BlogArticleFoi2 />} />
+          <Route path="/blog/personnaliser-foi-ia-adapte-valeurs-religieuses" element={<BlogArticleFoi3 />} />
+          <Route path="/blog/heros-foi-inspirer-enfants-personnages-spirituels" element={<BlogArticleFoi4 />} />
+          <Route path="/blog/foi-tolerance-ouverture-respect-differentes-religions" element={<BlogArticleFoi5 />} />
           {/* Pages légales */}
           <Route path="/mentions-legales" element={<MentionsLegalesPage />} />
           <Route path="/politique-confidentialite" element={<PolitiqueConfidentialitePage />} />

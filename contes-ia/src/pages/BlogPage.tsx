@@ -61,6 +61,78 @@ const BlogPage: React.FC = () => {
       excerpt: "Apprenez comment personnaliser la religion de votre enfant dans nos contes IA. Guide complet pour créer des histoires respectueuses des croyances familiales tout en stimulant l'imagination et les valeurs morales.",
       image: "/images/blog/religion-contes-personnalises.jpg",
       slug: "integrer-valeurs-religieuses-contes-personnalises"
+    },
+    // Articles sur les animaux de compagnie
+    {
+      id: 6,
+      title: "Pourquoi votre animal de compagnie stimule l'imagination de votre enfant",
+      excerpt: "Découvrez comment votre animal de compagnie devient une source d'inspiration magique pour l'imagination de votre enfant. Créez des histoires personnalisées mettant en scène votre compagnon à quatre pattes.",
+      image: "/images/blog/enfant-animal-lecture.jpg",
+      slug: "animal-compagnie-stimule-imagination-enfant"
+    },
+    {
+      id: 7,
+      title: "Offrir un conte personnalisé pour Noël : le cadeau parfait pour les amoureux des animaux",
+      excerpt: "Découvrez pourquoi un livre personnalisé mettant en scène l'animal de compagnie est le cadeau de Noël idéal. Original, émouvant et unique, ce présent marquera les fêtes à jamais.",
+      image: "/images/blog/noel-enfant-animal-livre.jpg",
+      slug: "conte-personnalise-noel-cadeau-amoureux-animaux"
+    },
+    {
+      id: 8,
+      title: "De la photo au héros de conte : comment l'IA transforme votre animal en personnage d'aventure",
+      excerpt: "Découvrez la technologie révolutionnaire qui transforme les photos de votre animal en illustrations de conte personnalisé. L'IA au service de la créativité et de l'émotion.",
+      image: "/images/blog/ia-transformation-animal.jpg",
+      slug: "photo-heros-conte-ia-transforme-animal-personnage"
+    },
+    {
+      id: 9,
+      title: "Lire avec son compagnon à quatre pattes : un rituel qui renforce le lien enfant-animal",
+      excerpt: "Découvrez comment la lecture partagée avec votre animal de compagnie renforce les liens affectifs et développe l'empathie chez l'enfant. Les bienfaits d'un rituel unique.",
+      image: "/images/blog/enfant-lecture-animal-rituel.jpg",
+      slug: "lire-compagnon-quatre-pattes-rituel-lien-enfant-animal"
+    },
+    {
+      id: 10,
+      title: "Top 5 des thèmes d'histoires pour transformer votre animal en héros de conte",
+      excerpt: "Découvrez 5 thèmes d'aventures captivants pour créer des contes personnalisés avec votre animal : forêt magique, voyage spatial, enquête urbaine et plus encore. Inspiration garantie !",
+      image: "/images/blog/themes-aventures-animaux.jpg",
+      slug: "top-5-themes-histoires-animal-heros-conte"
+    },
+    // Articles sur la foi et la religion
+    {
+      id: 11,
+      title: "Transmettre la foi à travers les histoires : comment les contes personnalisés éveillent la spiritualité",
+      excerpt: "Découvrez comment les contes personnalisés aident à transmettre la foi et les valeurs spirituelles aux enfants avec douceur et bienveillance. Une approche moderne de l'éducation religieuse.",
+      image: "/images/blog/foi-spiritualite-enfant-conte.jpg",
+      slug: "transmettre-foi-histoires-contes-personnalises-spiritualite"
+    },
+    {
+      id: 12,
+      title: "Les grandes fêtes religieuses revisitées : créer un conte personnalisé pour Noël, Ramadan, Pâque ou Diwali",
+      excerpt: "Célébrez les fêtes religieuses avec des contes personnalisés adaptés à chaque tradition : Noël, Ramadan, Pâque, Diwali. Une approche moderne et respectueuse des célébrations spirituelles.",
+      image: "/images/blog/fetes-religieuses-conte-personnalise.jpg",
+      slug: "fetes-religieuses-conte-personnalise-noel-ramadan-paque-diwali"
+    },
+    {
+      id: 13,
+      title: "Personnaliser la foi : quand l'IA s'adapte à vos valeurs religieuses",
+      excerpt: "Découvrez comment l'intelligence artificielle respecte et s'adapte aux différentes croyances religieuses pour créer des contes personnalisés authentiques et respectueux.",
+      image: "/images/blog/ia-adaptation-valeurs-religieuses.jpg",
+      slug: "personnaliser-foi-ia-adapte-valeurs-religieuses"
+    },
+    {
+      id: 14,
+      title: "Des héros de foi : inspirer les enfants à travers des personnages spirituels",
+      excerpt: "Découvrez comment intégrer des figures inspirantes de différentes traditions religieuses dans les contes personnalisés pour enfants. Des héros spirituels qui guident et inspirent.",
+      image: "/images/blog/heros-spirituels-conte-enfant.jpg",
+      slug: "heros-foi-inspirer-enfants-personnages-spirituels"
+    },
+    {
+      id: 15,
+      title: "Foi, tolérance et ouverture : comment les contes favorisent le respect des différentes religions",
+      excerpt: "Découvrez comment les contes personnalisés enseignent la tolérance religieuse et le respect des différentes croyances aux enfants, favorisant une coexistence harmonieuse.",
+      image: "/images/blog/tolerance-religieuse-conte-enfant.jpg",
+      slug: "foi-tolerance-ouverture-respect-differentes-religions"
     }
   ];
 
