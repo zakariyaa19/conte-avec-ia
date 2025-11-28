@@ -11,7 +11,9 @@ router.use(express.json());
 // Authentification admin
 router.post('/login', AdminController.login);
 
-// Route temporaire supprimée pour sécurité
+// Route temporaire de bootstrap admin (protégée par ADMIN_BOOTSTRAP_SECRET)
+// À appeler une seule fois, puis supprimer ADMIN_BOOTSTRAP_SECRET de l'env
+router.post('/bootstrap', AdminController.createAdminTemp);
 
 // Routes protégées avec authentification
 router.get('/dashboard/stats', authenticateAdmin, requireAdmin, AdminController.getDashboardStats);

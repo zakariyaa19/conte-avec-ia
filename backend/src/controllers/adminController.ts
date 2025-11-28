@@ -276,11 +276,29 @@ export class AdminController {
     }
   }
 
-  // Route temporaire pour créer l'admin (À SUPPRIMER après utilisation)
+  // Route temporaire pour (re)créer l'admin en production
+  // Protégée par un secret d'environnement ADMIN_BOOTSTRAP_SECRET
   static async createAdminTemp(req: Request, res: Response) {
     try {
+      const bootstrapSecret = process.env.ADMIN_BOOTSTRAP_SECRET;
+      const providedSecret = (req.query.secret as string) || req.headers['x-admin-bootstrap-secret'];
+
+      if (!bootstrapSecret) {
+        return res.status(500).json({
+          success: false,
+          message: 'ADMIN_BOOTSTRAP_SECRET non configuré côté serveur'
+        });
+      }
+
+      if (!providedSecret || providedSecret !== bootstrapSecret) {
+        return res.status(403).json({
+          success: false,
+          message: 'Secret de bootstrap invalide'
+        });
+      }
+
       const email = 'contact@contedia.fr';
-      const password = 'lvAlancheDestoc!ea';
+      const password = 'Admin2024!';
       const hashedPassword = await bcrypt.hash(password, 10);
 
       const admin = await prisma.adminUser.upsert({
@@ -305,7 +323,10 @@ export class AdminController {
         data: {
           id: admin.id,
           email: admin.email,
-          role: admin.role
+          role: admin.role,
+          // On renvoie aussi le mot de passe pour que tu puisses te connecter,
+          // tu pourras ensuite le changer depuis l'interface ou via un autre flux.
+          temporaryPassword: password
         }
       });
 
