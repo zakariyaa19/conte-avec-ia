@@ -54,14 +54,26 @@ export function trackViewContent(contentId: string, contentName: string, value: 
 }
 
 // Track InitiateCheckout (début du paiement)
-export function trackInitiateCheckout(value: number, currency: string = 'EUR') {
+export function trackInitiateCheckout(productType: 'digital' | 'printed') {
   if (typeof window !== 'undefined' && window.ttq) {
     try {
+      const isEbook = productType === 'digital';
+      const contentId = isEbook ? 'ebook_499' : 'livre_2999';
+      const contentName = isEbook ? 'Ebook conte personnalisé' : 'Livre conte personnalisé';
+      const value = isEbook ? 4.99 : 29.99;
+      
       window.ttq.track('InitiateCheckout', {
+        contents: [
+          {
+            content_id: contentId,
+            content_type: 'product',
+            content_name: contentName
+          }
+        ],
         value: value,
-        currency: currency
+        currency: 'EUR'
       });
-      console.log('✅ TikTok Pixel: InitiateCheckout tracked');
+      console.log(`✅ TikTok Pixel: InitiateCheckout tracked - ${contentName} (${value} EUR)`);
     } catch (error) {
       console.error('❌ TikTok Pixel InitiateCheckout error:', error);
     }
@@ -69,9 +81,14 @@ export function trackInitiateCheckout(value: number, currency: string = 'EUR') {
 }
 
 // Track Purchase (achat confirmé)
-export function trackPurchase(contentId: string, contentName: string, value: number, currency: string = 'EUR') {
+export function trackPurchase(productType: 'digital' | 'printed', orderId: string) {
   if (typeof window !== 'undefined' && window.ttq) {
     try {
+      const isEbook = productType === 'digital';
+      const contentId = isEbook ? 'ebook_499' : 'livre_2999';
+      const contentName = isEbook ? 'Ebook conte personnalisé' : 'Livre conte personnalisé';
+      const value = isEbook ? 4.99 : 29.99;
+      
       window.ttq.track('Purchase', {
         contents: [
           {
@@ -81,9 +98,9 @@ export function trackPurchase(contentId: string, contentName: string, value: num
           }
         ],
         value: value,
-        currency: currency
+        currency: 'EUR'
       });
-      console.log('✅ TikTok Pixel: Purchase tracked');
+      console.log(`✅ TikTok Pixel: Purchase tracked - Order ${orderId} - ${contentName} (${value} EUR)`);
     } catch (error) {
       console.error('❌ TikTok Pixel Purchase error:', error);
     }

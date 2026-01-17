@@ -323,8 +323,9 @@ export const StoryFormPage: React.FC = () => {
       console.log('✅ Réponse session Stripe:', paymentResponse);
       
       // 3. Track InitiateCheckout avec TikTok Pixel
-      const price = formData.productType === 'printed' ? 29.99 : 9.99;
-      trackInitiateCheckout(price, 'EUR');
+      if (formData.productType) {
+        trackInitiateCheckout(formData.productType);
+      }
 
       // 4. Rediriger vers Stripe Checkout
       if (paymentResponse.url) {

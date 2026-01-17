@@ -123,15 +123,7 @@ export const SuccessPage: React.FC = () => {
             
             // Track Purchase avec TikTok Pixel
             const productType = data.order?.formData?.productType || 'digital';
-            const price = productType === 'printed' ? 29.99 : 9.99;
-            const contentName = productType === 'printed' ? 'Livre Personnalisé Relié' : 'Livre Personnalisé PDF';
-            
-            trackPurchase(
-              orderId || 'unknown',
-              contentName,
-              price,
-              'EUR'
-            );
+            trackPurchase(productType, orderId || 'unknown');
           }
         } catch (error) {
           console.error('Erreur lors de la vérification du paiement:', error);
