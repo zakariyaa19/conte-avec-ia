@@ -4,6 +4,7 @@ import paymentsRouter from './payments';
 import adminRouter from './admin';
 import testRouter from './test';
 import pdfRouter from './pdf';
+import tiktokRouter from './tiktok';
 
 const router = Router();
 
@@ -13,6 +14,7 @@ router.use('/payments', paymentsRouter);
 router.use('/admin', adminRouter);
 router.use('/test', testRouter);
 router.use('/pdfs', pdfRouter);
+router.use('/tiktok', tiktokRouter);
 
 // Route de santé
 router.get('/health', (req, res) => {
