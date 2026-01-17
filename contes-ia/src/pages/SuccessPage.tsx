@@ -122,7 +122,7 @@ export const SuccessPage: React.FC = () => {
             setPaymentConfirmed(true);
             
             // Track Purchase avec TikTok Pixel
-            const productType = data.order?.formData?.productType || 'digital';
+            const productType = data.order?.formData?.productType || 'ebook';
             trackPurchase(productType, orderId || 'unknown');
           }
         } catch (error) {

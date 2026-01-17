@@ -54,10 +54,10 @@ export function trackViewContent(contentId: string, contentName: string, value: 
 }
 
 // Track InitiateCheckout (début du paiement)
-export function trackInitiateCheckout(productType: 'digital' | 'printed') {
+export function trackInitiateCheckout(productType: 'ebook' | 'printed') {
   if (typeof window !== 'undefined' && window.ttq) {
     try {
-      const isEbook = productType === 'digital';
+      const isEbook = productType === 'ebook';
       const contentId = isEbook ? 'ebook_499' : 'livre_2999';
       const contentName = isEbook ? 'Ebook conte personnalisé' : 'Livre conte personnalisé';
       const value = isEbook ? 4.99 : 29.99;
@@ -81,10 +81,10 @@ export function trackInitiateCheckout(productType: 'digital' | 'printed') {
 }
 
 // Track Purchase (achat confirmé)
-export function trackPurchase(productType: 'digital' | 'printed', orderId: string) {
+export function trackPurchase(productType: 'ebook' | 'printed', orderId: string) {
   if (typeof window !== 'undefined' && window.ttq) {
     try {
-      const isEbook = productType === 'digital';
+      const isEbook = productType === 'ebook';
       const contentId = isEbook ? 'ebook_499' : 'livre_2999';
       const contentName = isEbook ? 'Ebook conte personnalisé' : 'Livre conte personnalisé';
       const value = isEbook ? 4.99 : 29.99;
