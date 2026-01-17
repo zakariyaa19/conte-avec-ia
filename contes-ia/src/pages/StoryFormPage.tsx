@@ -322,9 +322,9 @@ export const StoryFormPage: React.FC = () => {
       
       console.log('✅ Réponse session Stripe:', paymentResponse);
       
-      // 3. Track InitiateCheckout avec TikTok Pixel
+      // 3. Track InitiateCheckout avec TikTok Pixel (Browser + Server)
       if (formData.productType) {
-        trackInitiateCheckout(formData.productType);
+        await trackInitiateCheckout(formData.productType, formData.userEmail);
       }
 
       // 4. Rediriger vers Stripe Checkout

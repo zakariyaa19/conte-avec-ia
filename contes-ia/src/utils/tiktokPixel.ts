@@ -9,6 +9,82 @@ async function sha256Hash(message: string): Promise<string> {
   return hashHex;
 }
 
+// Générer un event_id unique
+function generateEventId(): string {
+  return `evt_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
+}
+
+// Récupérer un cookie par nom
+function getCookie(name: string): string | null {
+  if (typeof document === 'undefined') return null;
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
+  return null;
+}
+
+// Récupérer les paramètres TikTok (ttclid, ttp)
+function getTikTokParams(): { ttclid?: string; ttp?: string } {
+  const params: { ttclid?: string; ttp?: string } = {};
+  
+  // Récupérer ttclid (TikTok Click ID)
+  const ttclid = getCookie('ttclid');
+  if (ttclid) params.ttclid = ttclid;
+  
+  // Récupérer ttp (TikTok Pixel)
+  const ttp = getCookie('_ttp');
+  if (ttp) params.ttp = ttp;
+  
+  return params;
+}
+
+// Envoyer un événement au backend TikTok Events API
+async function sendTiktokServerEvent(payload: {
+  event: string;
+  event_id: string;
+  event_time: number;
+  url: string;
+  properties: {
+    content_id: string;
+    content_name: string;
+    content_type: string;
+    value: number;
+    currency: string;
+  };
+  context?: {
+    user_agent?: string;
+    ttclid?: string;
+    ttp?: string;
+  };
+  user?: {
+    email?: string;
+    phone?: string;
+    external_id?: string;
+  };
+}): Promise<void> {
+  try {
+    const apiUrl = process.env.REACT_APP_API_URL || 'https://conte-avec-ia-1.onrender.com';
+    
+    const response = await fetch(`${apiUrl}/api/tiktok/events`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
+    
+    const result = await response.json();
+    
+    if (result.ok) {
+      console.log('✅ TikTok Server Event envoyé:', payload.event);
+    } else {
+      console.error('❌ TikTok Server Event erreur:', result.error);
+    }
+  } catch (error) {
+    console.error('❌ Erreur envoi TikTok Server Event:', error);
+  }
+}
+
 // Déclarer le type pour ttq
 declare global {
   interface Window {
@@ -54,7 +130,7 @@ export function trackViewContent(contentId: string, contentName: string, value: 
 }
 
 // Track InitiateCheckout (début du paiement) - UNE SEULE FOIS par session
-export function trackInitiateCheckout(productType: 'ebook' | 'printed') {
+export async function trackInitiateCheckout(productType: 'ebook' | 'printed', userEmail?: string) {
   if (typeof window !== 'undefined' && window.ttq) {
     try {
       // Vérifier si déjà déclenché dans cette session
@@ -69,13 +145,38 @@ export function trackInitiateCheckout(productType: 'ebook' | 'printed') {
       const contentName = isEbook ? 'Ebook conte personnalisé' : 'Livre conte personnalisé';
       const value = isEbook ? 4.99 : 29.99;
       
+      // Générer un event_id unique
+      const eventId = generateEventId();
+      
       // Structure avec content_id à la racine (pas dans contents[])
       window.ttq.track('InitiateCheckout', {
         content_id: contentId,
         content_name: contentName,
         content_type: 'product',
         value: value,
-        currency: 'EUR'
+        currency: 'EUR',
+        event_id: eventId
+      });
+      
+      // Envoyer aussi au backend (Server-Side)
+      const tiktokParams = getTikTokParams();
+      await sendTiktokServerEvent({
+        event: 'InitiateCheckout',
+        event_id: eventId,
+        event_time: Math.floor(Date.now() / 1000),
+        url: window.location.href,
+        properties: {
+          content_id: contentId,
+          content_name: contentName,
+          content_type: 'product',
+          value: value,
+          currency: 'EUR'
+        },
+        context: {
+          user_agent: navigator.userAgent,
+          ...tiktokParams
+        },
+        ...(userEmail && { user: { email: userEmail } })
       });
       
       // Marquer comme déclenché
@@ -88,7 +189,7 @@ export function trackInitiateCheckout(productType: 'ebook' | 'printed') {
 }
 
 // Track Purchase (achat confirmé) - UNE SEULE FOIS par commande
-export function trackPurchase(productType: 'ebook' | 'printed', orderId: string) {
+export async function trackPurchase(productType: 'ebook' | 'printed', orderId: string, userEmail?: string) {
   if (typeof window !== 'undefined' && window.ttq) {
     try {
       // Vérifier si déjà déclenché pour cette commande
@@ -103,13 +204,38 @@ export function trackPurchase(productType: 'ebook' | 'printed', orderId: string)
       const contentName = isEbook ? 'Ebook conte personnalisé' : 'Livre conte personnalisé';
       const value = isEbook ? 4.99 : 29.99;
       
+      // Générer un event_id unique
+      const eventId = generateEventId();
+      
       // Structure avec content_id à la racine (pas dans contents[])
       window.ttq.track('Purchase', {
         content_id: contentId,
         content_name: contentName,
         content_type: 'product',
         value: value,
-        currency: 'EUR'
+        currency: 'EUR',
+        event_id: eventId
+      });
+      
+      // Envoyer aussi au backend (Server-Side)
+      const tiktokParams = getTikTokParams();
+      await sendTiktokServerEvent({
+        event: 'Purchase',
+        event_id: eventId,
+        event_time: Math.floor(Date.now() / 1000),
+        url: window.location.href,
+        properties: {
+          content_id: contentId,
+          content_name: contentName,
+          content_type: 'product',
+          value: value,
+          currency: 'EUR'
+        },
+        context: {
+          user_agent: navigator.userAgent,
+          ...tiktokParams
+        },
+        ...(userEmail && { user: { email: userEmail } })
       });
       
       // Marquer comme déclenché pour cette commande

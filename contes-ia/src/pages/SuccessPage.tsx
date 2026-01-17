@@ -121,9 +121,10 @@ export const SuccessPage: React.FC = () => {
           if (data.success && data.status === 'paid') {
             setPaymentConfirmed(true);
             
-            // Track Purchase avec TikTok Pixel
+            // Track Purchase avec TikTok Pixel (Browser + Server)
             const productType = data.order?.formData?.productType || 'ebook';
-            trackPurchase(productType, orderId || 'unknown');
+            const userEmail = data.order?.userEmail;
+            await trackPurchase(productType, orderId || 'unknown', userEmail);
           }
         } catch (error) {
           console.error('Erreur lors de la vérification du paiement:', error);
