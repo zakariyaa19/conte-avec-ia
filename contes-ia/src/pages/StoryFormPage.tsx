@@ -10,6 +10,7 @@ import { Button } from '../components/ui/Button';
 import { StoryFormData, FormStep } from '../types/FormTypes';
 import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
+import { identifyUser, trackInitiateCheckout } from '../utils/tiktokPixel';
 
 const PageContainer = styled.div`
   min-height: 100vh;
@@ -297,6 +298,11 @@ export const StoryFormPage: React.FC = () => {
     setSubmitError('');
 
     try {
+      // Identifier l'utilisateur avec TikTok Pixel
+      if (formData.userEmail) {
+        await identifyUser(formData.userEmail);
+      }
+
       // 1. Créer la commande
       console.log('🔄 Création de la commande avec les données:', formData);
       const orderResponse = await ApiService.createOrder({
@@ -316,7 +322,11 @@ export const StoryFormPage: React.FC = () => {
       
       console.log('✅ Réponse session Stripe:', paymentResponse);
       
-      // 3. Rediriger vers Stripe Checkout
+      // 3. Track InitiateCheckout avec TikTok Pixel
+      const price = formData.productType === 'printed' ? 29.99 : 9.99;
+      trackInitiateCheckout(price, 'EUR');
+
+      // 4. Rediriger vers Stripe Checkout
       if (paymentResponse.url) {
         console.log('🔄 Redirection vers:', paymentResponse.url);
         // Petite pause pour s'assurer que l'état est mis à jour

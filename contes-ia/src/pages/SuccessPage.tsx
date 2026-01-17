@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { theme } from '../styles/theme';
 import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
+import { trackPurchase } from '../utils/tiktokPixel';
 
 const PageContainer = styled.div`
   min-height: 100vh;
@@ -119,6 +120,18 @@ export const SuccessPage: React.FC = () => {
           
           if (data.success && data.status === 'paid') {
             setPaymentConfirmed(true);
+            
+            // Track Purchase avec TikTok Pixel
+            const productType = data.order?.formData?.productType || 'digital';
+            const price = productType === 'printed' ? 29.99 : 9.99;
+            const contentName = productType === 'printed' ? 'Livre Personnalisé Relié' : 'Livre Personnalisé PDF';
+            
+            trackPurchase(
+              orderId || 'unknown',
+              contentName,
+              price,
+              'EUR'
+            );
           }
         } catch (error) {
           console.error('Erreur lors de la vérification du paiement:', error);
