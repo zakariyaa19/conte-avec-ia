@@ -53,26 +53,33 @@ export function trackViewContent(contentId: string, contentName: string, value: 
   }
 }
 
-// Track InitiateCheckout (début du paiement)
+// Track InitiateCheckout (début du paiement) - UNE SEULE FOIS par session
 export function trackInitiateCheckout(productType: 'ebook' | 'printed') {
   if (typeof window !== 'undefined' && window.ttq) {
     try {
+      // Vérifier si déjà déclenché dans cette session
+      const sessionKey = 'tiktok_initiate_checkout_fired';
+      if (sessionStorage.getItem(sessionKey)) {
+        console.log('⚠️ TikTok Pixel: InitiateCheckout déjà déclenché dans cette session');
+        return;
+      }
+
       const isEbook = productType === 'ebook';
       const contentId = isEbook ? 'ebook_499' : 'livre_2999';
       const contentName = isEbook ? 'Ebook conte personnalisé' : 'Livre conte personnalisé';
       const value = isEbook ? 4.99 : 29.99;
       
+      // Structure avec content_id à la racine (pas dans contents[])
       window.ttq.track('InitiateCheckout', {
-        contents: [
-          {
-            content_id: contentId,
-            content_type: 'product',
-            content_name: contentName
-          }
-        ],
+        content_id: contentId,
+        content_name: contentName,
+        content_type: 'product',
         value: value,
         currency: 'EUR'
       });
+      
+      // Marquer comme déclenché
+      sessionStorage.setItem(sessionKey, 'true');
       console.log(`✅ TikTok Pixel: InitiateCheckout tracked - ${contentName} (${value} EUR)`);
     } catch (error) {
       console.error('❌ TikTok Pixel InitiateCheckout error:', error);
@@ -80,26 +87,33 @@ export function trackInitiateCheckout(productType: 'ebook' | 'printed') {
   }
 }
 
-// Track Purchase (achat confirmé)
+// Track Purchase (achat confirmé) - UNE SEULE FOIS par commande
 export function trackPurchase(productType: 'ebook' | 'printed', orderId: string) {
   if (typeof window !== 'undefined' && window.ttq) {
     try {
+      // Vérifier si déjà déclenché pour cette commande
+      const sessionKey = `tiktok_purchase_fired_${orderId}`;
+      if (sessionStorage.getItem(sessionKey)) {
+        console.log(`⚠️ TikTok Pixel: Purchase déjà déclenché pour la commande ${orderId}`);
+        return;
+      }
+
       const isEbook = productType === 'ebook';
       const contentId = isEbook ? 'ebook_499' : 'livre_2999';
       const contentName = isEbook ? 'Ebook conte personnalisé' : 'Livre conte personnalisé';
       const value = isEbook ? 4.99 : 29.99;
       
+      // Structure avec content_id à la racine (pas dans contents[])
       window.ttq.track('Purchase', {
-        contents: [
-          {
-            content_id: contentId,
-            content_type: 'product',
-            content_name: contentName
-          }
-        ],
+        content_id: contentId,
+        content_name: contentName,
+        content_type: 'product',
         value: value,
         currency: 'EUR'
       });
+      
+      // Marquer comme déclenché pour cette commande
+      sessionStorage.setItem(sessionKey, 'true');
       console.log(`✅ TikTok Pixel: Purchase tracked - Order ${orderId} - ${contentName} (${value} EUR)`);
     } catch (error) {
       console.error('❌ TikTok Pixel Purchase error:', error);
