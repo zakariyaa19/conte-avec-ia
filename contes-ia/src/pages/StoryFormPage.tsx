@@ -10,7 +10,7 @@ import { Button } from '../components/ui/Button';
 import { StoryFormData, FormStep } from '../types/FormTypes';
 import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
-import { identifyUser, trackInitiateCheckout } from '../utils/tiktokPixel';
+import { identifyUser, trackInitiateCheckout, trackViewContent } from '../utils/tiktokPixel';
 
 const PageContainer = styled.div`
   min-height: 100vh;
@@ -143,6 +143,24 @@ export const StoryFormPage: React.FC = () => {
   const [submitError, setSubmitError] = useState<string>('');
   const [orderSuccess, setOrderSuccess] = useState<any>(null);
   const formHeaderRef = useRef<HTMLDivElement>(null);
+  
+  // Track ViewContent au chargement de la page
+  useEffect(() => {
+    // Attendre que le pixel TikTok soit chargé
+    const timer = setTimeout(() => {
+      if (typeof window !== 'undefined' && window.ttq) {
+        // Envoyer ViewContent pour la page produit
+        trackViewContent(
+          'product_story_creation',
+          'Création de conte personnalisé',
+          4.99, // Prix minimum (ebook)
+          'EUR'
+        );
+      }
+    }, 500);
+    
+    return () => clearTimeout(timer);
+  }, []);
   const [formData, setFormData] = useState<Partial<StoryFormData>>({
     // Étape 1 - Personnalisez votre conte
     ageRange: '',
@@ -298,12 +316,19 @@ export const StoryFormPage: React.FC = () => {
     setSubmitError('');
 
     try {
-      // Identifier l'utilisateur avec TikTok Pixel
+      // 1. Track InitiateCheckout AVANT toute requête (CRITIQUE pour production)
+      console.log('🎯 TikTok: Déclenchement InitiateCheckout AVANT redirection...');
+      if (formData.productType) {
+        await trackInitiateCheckout(formData.productType, formData.userEmail);
+      }
+      console.log('✅ TikTok: InitiateCheckout envoyé avec succès');
+      
+      // 2. Identifier l'utilisateur avec TikTok Pixel
       if (formData.userEmail) {
         await identifyUser(formData.userEmail);
       }
 
-      // 1. Créer la commande
+      // 3. Créer la commande
       console.log('🔄 Création de la commande avec les données:', formData);
       const orderResponse = await ApiService.createOrder({
         userEmail: formData.userEmail,
@@ -316,24 +341,19 @@ export const StoryFormPage: React.FC = () => {
         throw new Error(orderResponse.message || 'Erreur lors de la création de la commande');
       }
 
-      // 2. Créer la session de paiement Stripe
+      // 4. Créer la session de paiement Stripe
       console.log('🔄 Création session Stripe pour commande ID:', orderResponse.data.id);
       const paymentResponse = await ApiService.createPaymentSession(orderResponse.data.id);
       
       console.log('✅ Réponse session Stripe:', paymentResponse);
-      
-      // 3. Track InitiateCheckout avec TikTok Pixel (Browser + Server)
-      if (formData.productType) {
-        await trackInitiateCheckout(formData.productType, formData.userEmail);
-      }
 
-      // 4. Rediriger vers Stripe Checkout
+      // 5. Rediriger vers Stripe Checkout
       if (paymentResponse.url) {
-        console.log('🔄 Redirection vers:', paymentResponse.url);
-        // Petite pause pour s'assurer que l'état est mis à jour
+        console.log('🔄 Redirection vers Stripe dans 200ms...');
+        // Délai de sécurité supplémentaire pour garantir l'envoi
         setTimeout(() => {
           window.location.href = paymentResponse.url;
-        }, 100);
+        }, 200);
       } else {
         console.error('❌ Pas d\'URL dans la réponse:', paymentResponse);
         throw new Error('URL de paiement non reçue');

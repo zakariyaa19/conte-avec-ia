@@ -130,62 +130,88 @@ export function trackViewContent(contentId: string, contentName: string, value: 
 }
 
 // Track InitiateCheckout (début du paiement) - UNE SEULE FOIS par session
-export async function trackInitiateCheckout(productType: 'ebook' | 'printed', userEmail?: string) {
-  if (typeof window !== 'undefined' && window.ttq) {
-    try {
-      // Vérifier si déjà déclenché dans cette session
-      const sessionKey = 'tiktok_initiate_checkout_fired';
-      if (sessionStorage.getItem(sessionKey)) {
-        console.log('⚠️ TikTok Pixel: InitiateCheckout déjà déclenché dans cette session');
-        return;
-      }
+// IMPORTANT: Retourne une Promise qui se résout après confirmation d'envoi
+export async function trackInitiateCheckout(productType: 'ebook' | 'printed', userEmail?: string): Promise<void> {
+  return new Promise((resolve) => {
+    if (typeof window !== 'undefined' && window.ttq) {
+      try {
+        // Vérifier si déjà déclenché dans cette session
+        const sessionKey = 'tiktok_initiate_checkout_fired';
+        if (sessionStorage.getItem(sessionKey)) {
+          console.log('⚠️ TikTok Pixel: InitiateCheckout déjà déclenché dans cette session');
+          resolve();
+          return;
+        }
 
-      const isEbook = productType === 'ebook';
-      const contentId = isEbook ? 'ebook_499' : 'livre_2999';
-      const contentName = isEbook ? 'Ebook conte personnalisé' : 'Livre conte personnalisé';
-      const value = isEbook ? 4.99 : 29.99;
-      
-      // Générer un event_id unique
-      const eventId = generateEventId();
-      
-      // Structure avec content_id à la racine (pas dans contents[])
-      window.ttq.track('InitiateCheckout', {
-        content_id: contentId,
-        content_name: contentName,
-        content_type: 'product',
-        value: value,
-        currency: 'EUR',
-        event_id: eventId
-      });
-      
-      // Envoyer aussi au backend (Server-Side)
-      const tiktokParams = getTikTokParams();
-      await sendTiktokServerEvent({
-        event: 'InitiateCheckout',
-        event_id: eventId,
-        event_time: Math.floor(Date.now() / 1000),
-        url: window.location.href,
-        properties: {
+        const isEbook = productType === 'ebook';
+        const contentId = isEbook ? 'ebook_499' : 'livre_2999';
+        const contentName = isEbook ? 'Ebook conte personnalisé' : 'Livre conte personnalisé';
+        const value = isEbook ? 4.99 : 29.99;
+        
+        // Générer un event_id unique
+        const eventId = generateEventId();
+        
+        let callbackFired = false;
+        
+        // Structure avec content_id à la racine + event_callback
+        window.ttq.track('InitiateCheckout', {
           content_id: contentId,
           content_name: contentName,
           content_type: 'product',
           value: value,
-          currency: 'EUR'
-        },
-        context: {
-          user_agent: navigator.userAgent,
-          ...tiktokParams
-        },
-        ...(userEmail && { user: { email: userEmail } })
-      });
-      
-      // Marquer comme déclenché
-      sessionStorage.setItem(sessionKey, 'true');
-      console.log(`✅ TikTok Pixel: InitiateCheckout tracked - ${contentName} (${value} EUR)`);
-    } catch (error) {
-      console.error('❌ TikTok Pixel InitiateCheckout error:', error);
+          currency: 'EUR',
+          event_id: eventId
+        }, {
+          event_callback: () => {
+            if (!callbackFired) {
+              callbackFired = true;
+              console.log('✅ TikTok Pixel: InitiateCheckout callback confirmé');
+              // Délai de sécurité de 300ms après callback
+              setTimeout(() => resolve(), 300);
+            }
+          }
+        });
+        
+        // Timeout de sécurité: résoudre après 1 seconde même sans callback
+        setTimeout(() => {
+          if (!callbackFired) {
+            console.log('⚠️ TikTok Pixel: InitiateCheckout timeout (pas de callback)');
+            resolve();
+          }
+        }, 1000);
+        
+        // Envoyer aussi au backend (Server-Side) en parallèle
+        const tiktokParams = getTikTokParams();
+        sendTiktokServerEvent({
+          event: 'InitiateCheckout',
+          event_id: eventId,
+          event_time: Math.floor(Date.now() / 1000),
+          url: window.location.href,
+          properties: {
+            content_id: contentId,
+            content_name: contentName,
+            content_type: 'product',
+            value: value,
+            currency: 'EUR'
+          },
+          context: {
+            user_agent: navigator.userAgent,
+            ...tiktokParams
+          },
+          ...(userEmail && { user: { email: userEmail } })
+        }).catch(err => console.error('❌ Server event error:', err));
+        
+        // Marquer comme déclenché
+        sessionStorage.setItem(sessionKey, 'true');
+        console.log(`✅ TikTok Pixel: InitiateCheckout tracked - ${contentName} (${value} EUR)`);
+      } catch (error) {
+        console.error('❌ TikTok Pixel InitiateCheckout error:', error);
+        resolve();
+      }
+    } else {
+      resolve();
     }
-  }
+  });
 }
 
 // Track Purchase (achat confirmé) - UNE SEULE FOIS par commande
