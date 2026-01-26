@@ -1,5 +1,31 @@
 // Utilitaire pour TikTok Pixel tracking
 
+// Attendre que le pixel TikTok soit chargé (polling jusqu'à 5s max)
+function waitForTTQ(maxWaitMs: number = 5000): Promise<boolean> {
+  return new Promise((resolve) => {
+    const startTime = Date.now();
+    const checkInterval = 100; // Vérifier toutes les 100ms
+    
+    const checkTTQ = () => {
+      if (typeof window !== 'undefined' && window.ttq) {
+        console.log('✅ TikTok Pixel chargé après', Date.now() - startTime, 'ms');
+        resolve(true);
+        return;
+      }
+      
+      if (Date.now() - startTime >= maxWaitMs) {
+        console.warn('⚠️ TikTok Pixel non chargé après', maxWaitMs, 'ms');
+        resolve(false);
+        return;
+      }
+      
+      setTimeout(checkTTQ, checkInterval);
+    };
+    
+    checkTTQ();
+  });
+}
+
 // Fonction pour hasher une chaîne en SHA-256
 async function sha256Hash(message: string): Promise<string> {
   const msgBuffer = new TextEncoder().encode(message);
@@ -108,31 +134,44 @@ export async function identifyUser(email: string) {
 }
 
 // Track ViewContent (vue de produit)
-export function trackViewContent(contentId: string, contentName: string, value: number, currency: string = 'EUR') {
-  if (typeof window !== 'undefined' && window.ttq) {
-    try {
-      window.ttq.track('ViewContent', {
-        contents: [
-          {
-            content_id: contentId,
-            content_type: 'product',
-            content_name: contentName
-          }
-        ],
-        value: value,
-        currency: currency
-      });
-      console.log('✅ TikTok Pixel: ViewContent tracked');
-    } catch (error) {
-      console.error('❌ TikTok Pixel ViewContent error:', error);
-    }
+export async function trackViewContent(contentId: string, contentName: string, value: number, currency: string = 'EUR'): Promise<void> {
+  const ttqReady = await waitForTTQ();
+  
+  if (!ttqReady) {
+    console.error('❌ TikTok Pixel non disponible pour ViewContent');
+    return;
+  }
+  
+  try {
+    window.ttq.track('ViewContent', {
+      contents: [
+        {
+          content_id: contentId,
+          content_type: 'product',
+          content_name: contentName
+        }
+      ],
+      value: value,
+      currency: currency
+    });
+    console.log('✅ TikTok Pixel: ViewContent tracked');
+  } catch (error) {
+    console.error('❌ TikTok Pixel ViewContent error:', error);
   }
 }
 
 // Track InitiateCheckout (début du paiement) - UNE SEULE FOIS par session
 // IMPORTANT: Retourne une Promise qui se résout après confirmation d'envoi
 export async function trackInitiateCheckout(productType: 'ebook' | 'printed', userEmail?: string): Promise<void> {
-  return new Promise((resolve) => {
+  return new Promise(async (resolve) => {
+    const ttqReady = await waitForTTQ();
+    
+    if (!ttqReady) {
+      console.error('❌ TikTok Pixel non disponible pour InitiateCheckout');
+      resolve();
+      return;
+    }
+    
     if (typeof window !== 'undefined' && window.ttq) {
       try {
         // Vérifier si déjà déclenché dans cette session
@@ -208,8 +247,6 @@ export async function trackInitiateCheckout(productType: 'ebook' | 'printed', us
         console.error('❌ TikTok Pixel InitiateCheckout error:', error);
         resolve();
       }
-    } else {
-      resolve();
     }
   });
 }

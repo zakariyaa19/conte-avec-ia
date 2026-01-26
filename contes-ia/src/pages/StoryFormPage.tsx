@@ -146,20 +146,13 @@ export const StoryFormPage: React.FC = () => {
   
   // Track ViewContent au chargement de la page
   useEffect(() => {
-    // Attendre que le pixel TikTok soit chargé
-    const timer = setTimeout(() => {
-      if (typeof window !== 'undefined' && window.ttq) {
-        // Envoyer ViewContent pour la page produit
-        trackViewContent(
-          'product_story_creation',
-          'Création de conte personnalisé',
-          4.99, // Prix minimum (ebook)
-          'EUR'
-        );
-      }
-    }, 500);
-    
-    return () => clearTimeout(timer);
+    // trackViewContent utilise maintenant waitForTTQ en interne (polling jusqu'à 5s)
+    trackViewContent(
+      'product_story_creation',
+      'Création de conte personnalisé',
+      4.99, // Prix minimum (ebook)
+      'EUR'
+    );
   }, []);
   const [formData, setFormData] = useState<Partial<StoryFormData>>({
     // Étape 1 - Personnalisez votre conte
