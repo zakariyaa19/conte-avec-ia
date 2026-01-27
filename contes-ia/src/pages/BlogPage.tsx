@@ -133,6 +133,77 @@ const BlogPage: React.FC = () => {
       excerpt: "Découvrez comment les contes personnalisés enseignent la tolérance religieuse et le respect des différentes croyances aux enfants, favorisant une coexistence harmonieuse.",
       image: "/images/blog/tolerance-religieuse-conte-enfant.jpg",
       slug: "foi-tolerance-ouverture-respect-differentes-religions"
+    },
+    // Nouveaux articles 2026
+    {
+      id: 16,
+      title: "Pourquoi offrir un livre personnalisé à un enfant en 2026 ?",
+      excerpt: "Découvrez pourquoi le livre personnalisé est le cadeau idéal pour un enfant en 2026. Avantages, bienfaits et impact sur le développement de l'enfant dans notre époque moderne.",
+      image: "/images/blog/livre-personnalise-enfant-2026.jpg",
+      slug: "livre-personnalise-enfant-2026"
+    },
+    {
+      id: 17,
+      title: "Comment un conte personnalisé aide l'enfant à développer confiance et imagination",
+      excerpt: "Découvrez comment les contes personnalisés renforcent la confiance en soi et stimulent l'imagination des enfants. Bienfaits psychologiques et développement personnel expliqués.",
+      image: "/images/blog/conte-personnalise-confiance-imagination-enfant.jpg",
+      slug: "conte-personnalise-confiance-imagination-enfant"
+    },
+    {
+      id: 18,
+      title: "Livre personnalisé ou livre classique : lequel est le plus bénéfique pour l'enfant ?",
+      excerpt: "Comparaison détaillée entre livres personnalisés et livres classiques pour enfants. Avantages, inconvénients et impact sur le développement de l'enfant.",
+      image: "/images/blog/livre-personnalise-vs-livre-classique-enfant.jpg",
+      slug: "livre-personnalise-vs-livre-classique-enfant"
+    },
+    {
+      id: 19,
+      title: "L'intelligence artificielle au service des histoires pour enfants",
+      excerpt: "Découvrez comment l'intelligence artificielle révolutionne la création d'histoires pour enfants. Personnalisation, créativité et innovation au service de la littérature jeunesse.",
+      image: "/images/blog/intelligence-artificielle-histoires-enfants.jpg",
+      slug: "intelligence-artificielle-histoires-enfants"
+    },
+    {
+      id: 20,
+      title: "Pourquoi les enfants adorent être le héros de leur propre histoire",
+      excerpt: "Découvrez les raisons psychologiques pour lesquelles les enfants adorent être le héros de leur propre histoire. Impact sur l'estime de soi et le développement personnel.",
+      image: "/images/blog/enfant-heros-propre-histoire.jpg",
+      slug: "enfant-heros-propre-histoire"
+    },
+    {
+      id: 21,
+      title: "Lecture du soir : pourquoi le conte personnalisé améliore le rituel du coucher",
+      excerpt: "Découvrez comment les contes personnalisés transforment le rituel du coucher en moment magique. Bienfaits sur le sommeil et la relation parent-enfant.",
+      image: "/images/blog/conte-personnalise-rituel-coucher.jpg",
+      slug: "conte-personnalise-rituel-coucher"
+    },
+    {
+      id: 22,
+      title: "Comment un livre personnalisé peut aider un enfant timide ou anxieux",
+      excerpt: "Découvrez comment les livres personnalisés aident les enfants timides et anxieux à développer leur confiance en soi. Approche thérapeutique douce et bienveillante.",
+      image: "/images/blog/livre-personnalise-enfant-timide.jpg",
+      slug: "livre-personnalise-enfant-timide"
+    },
+    {
+      id: 23,
+      title: "Cadeau de naissance ou anniversaire : le livre personnalisé intemporel",
+      excerpt: "Découvrez pourquoi le livre personnalisé est le cadeau parfait pour une naissance ou un anniversaire. Un présent unique qui grandit avec l'enfant et marque les esprits.",
+      image: "/images/blog/cadeau-livre-personnalise-enfant.jpg",
+      slug: "cadeau-livre-personnalise-enfant"
+    },
+    {
+      id: 24,
+      title: "Comment sont créées les histoires personnalisées sur Conte d'IA",
+      excerpt: "Découvrez les coulisses de la création d'histoires personnalisées sur Conte d'IA. Processus, technologie et expertise au service de contes uniques pour chaque enfant.",
+      image: "/images/blog/creation-histoires-personnalisees-conte-ia.jpg",
+      slug: "creation-histoires-personnalisees-conte-ia"
+    },
+    {
+      id: 25,
+      title: "Les bienfaits de la lecture personnalisée sur le développement émotionnel",
+      excerpt: "Découvrez comment la lecture personnalisée favorise le développement émotionnel des enfants. Intelligence émotionnelle, empathie et équilibre psychologique.",
+      image: "/images/blog/bienfaits-lecture-personnalisee-enfant.jpg",
+      slug: "bienfaits-lecture-personnalisee-enfant"
     }
   ];
 

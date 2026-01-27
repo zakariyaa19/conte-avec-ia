@@ -33,6 +33,16 @@ import BlogArticleFoi2 from './pages/BlogArticleFoi2';
 import BlogArticleFoi3 from './pages/BlogArticleFoi3';
 import BlogArticleFoi4 from './pages/BlogArticleFoi4';
 import BlogArticleFoi5 from './pages/BlogArticleFoi5';
+import BlogArticleNouveau1 from './pages/BlogArticleNouveau1';
+import BlogArticleNouveau2 from './pages/BlogArticleNouveau2';
+import BlogArticleNouveau3 from './pages/BlogArticleNouveau3';
+import BlogArticleNouveau4 from './pages/BlogArticleNouveau4';
+import BlogArticleNouveau5 from './pages/BlogArticleNouveau5';
+import BlogArticleNouveau6 from './pages/BlogArticleNouveau6';
+import BlogArticleNouveau7 from './pages/BlogArticleNouveau7';
+import BlogArticleNouveau8 from './pages/BlogArticleNouveau8';
+import BlogArticleNouveau9 from './pages/BlogArticleNouveau9';
+import BlogArticleNouveau10 from './pages/BlogArticleNouveau10';
 import { MentionsLegalesPage } from './pages/MentionsLegalesPage';
 import { PolitiqueConfidentialitePage } from './pages/PolitiqueConfidentialitePage';
 import ScrollToTop from './components/utils/ScrollToTop';
@@ -81,6 +91,17 @@ function App() {
           <Route path="/blog/personnaliser-foi-ia-adapte-valeurs-religieuses" element={<BlogArticleFoi3 />} />
           <Route path="/blog/heros-foi-inspirer-enfants-personnages-spirituels" element={<BlogArticleFoi4 />} />
           <Route path="/blog/foi-tolerance-ouverture-respect-differentes-religions" element={<BlogArticleFoi5 />} />
+          {/* Nouveaux articles 2026 */}
+          <Route path="/blog/livre-personnalise-enfant-2026" element={<BlogArticleNouveau1 />} />
+          <Route path="/blog/conte-personnalise-confiance-imagination-enfant" element={<BlogArticleNouveau2 />} />
+          <Route path="/blog/livre-personnalise-vs-livre-classique-enfant" element={<BlogArticleNouveau3 />} />
+          <Route path="/blog/intelligence-artificielle-histoires-enfants" element={<BlogArticleNouveau4 />} />
+          <Route path="/blog/enfant-heros-propre-histoire" element={<BlogArticleNouveau5 />} />
+          <Route path="/blog/conte-personnalise-rituel-coucher" element={<BlogArticleNouveau6 />} />
+          <Route path="/blog/livre-personnalise-enfant-timide" element={<BlogArticleNouveau7 />} />
+          <Route path="/blog/cadeau-livre-personnalise-enfant" element={<BlogArticleNouveau8 />} />
+          <Route path="/blog/creation-histoires-personnalisees-conte-ia" element={<BlogArticleNouveau9 />} />
+          <Route path="/blog/bienfaits-lecture-personnalisee-enfant" element={<BlogArticleNouveau10 />} />
           {/* Pages légales */}
           <Route path="/mentions-legales" element={<MentionsLegalesPage />} />
           <Route path="/politique-confidentialite" element={<PolitiqueConfidentialitePage />} />
