@@ -1,13 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { theme } from '../styles/theme';
-import { StepIndicator } from '../components/ui/StepIndicator';
-import { StoryFormStep1 } from '../components/forms/StoryFormStep1';
-import { StoryFormStep2 } from '../components/forms/StoryFormStep2';
-import { StoryFormStep3 } from '../components/forms/StoryFormStep3';
+import { ProgressIndicator } from '../components/ui/ProgressIndicator';
+import { UnifiedStoryForm } from '../components/forms/UnifiedStoryForm';
 import { ApiService } from '../config/api';
-import { Button } from '../components/ui/Button';
-import { StoryFormData, FormStep } from '../types/FormTypes';
+import { StoryFormData } from '../types/FormTypes';
 import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
 import { identifyUser, trackInitiateCheckout, trackViewContent } from '../utils/tiktokPixel';
@@ -60,7 +57,7 @@ const FormSubtitle = styled.p`
   line-height: 1.6;
 `;
 
-const StepContent = styled.div`
+const FormContent = styled.div`
   background-color: ${theme.colors.background.white};
   border-radius: ${theme.borderRadius.xl};
   box-shadow: ${theme.shadows.lg};
@@ -74,74 +71,8 @@ const StepContent = styled.div`
   }
 `;
 
-const NavigationButtons = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 0 ${theme.spacing.lg};
-  
-  @media (max-width: ${theme.breakpoints.md}) {
-    flex-direction: column;
-    gap: ${theme.spacing.md};
-  }
-`;
-
-const ButtonGroup = styled.div`
-  display: flex;
-  gap: ${theme.spacing.md};
-  
-  @media (max-width: ${theme.breakpoints.md}) {
-    width: 100%;
-    justify-content: center;
-  }
-`;
-
-const SuccessContainer = styled.div`
-  text-align: center;
-  padding: ${theme.spacing['2xl']};
-  background: linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.accent.coral});
-  border-radius: ${theme.borderRadius.lg};
-  margin: ${theme.spacing.xl} 0;
-`;
-
-const SuccessIcon = styled.div`
-  font-size: 4rem;
-  margin-bottom: ${theme.spacing.lg};
-`;
-
-const SuccessTitle = styled.h2`
-  color: ${theme.colors.text.primary};
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: ${theme.spacing.md};
-`;
-
-const SuccessMessage = styled.p`
-  color: ${theme.colors.text.secondary};
-  font-size: 1.125rem;
-  margin-bottom: ${theme.spacing.lg};
-`;
-
-const OrderDetails = styled.div`
-  background: ${theme.colors.background.secondary};
-  padding: ${theme.spacing.lg};
-  border-radius: ${theme.borderRadius.md};
-  margin: ${theme.spacing.lg} 0;
-  text-align: left;
-  
-  p {
-    margin: ${theme.spacing.sm} 0;
-    color: ${theme.colors.text.primary};
-  }
-`;
-
 export const StoryFormPage: React.FC = () => {
-  const [currentStep, setCurrentStep] = useState<number>(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState<string>('');
-  const [orderSuccess, setOrderSuccess] = useState<any>(null);
   const formHeaderRef = useRef<HTMLDivElement>(null);
   
   // Track ViewContent au chargement de la page
@@ -184,7 +115,10 @@ export const StoryFormPage: React.FC = () => {
     religion: '',
     customReligion: '',
     
-    // Personnage secondaire (optionnel)
+    // Personnages secondaires (jusqu'à 5)
+    secondaryCharacters: [],
+    
+    // Anciens champs (rétrocompatibilité)
     secondaryCharacterName: '',
     secondaryCharacterAge: '',
     
@@ -226,27 +160,49 @@ export const StoryFormPage: React.FC = () => {
     }
   }, []);
 
-  const steps: FormStep[] = [
+  // Déterminer les étapes complétées pour l'indicateur de progression
+  const isChoicesComplete = !!(
+    formData.ageRange && 
+    formData.generalTheme && 
+    formData.specificSubject && 
+    formData.centralMessage && 
+    formData.illustrationStyle
+  );
+
+  const isProtagonistComplete = !!(
+    formData.protagonistName && 
+    formData.protagonistAge && 
+    formData.protagonistGender &&
+    formData.eyeColor && 
+    formData.hairColor
+  );
+
+  const isPaymentComplete = false; // Jamais complété avant soumission
+
+  const progressSteps = [
     {
-      id: 1,
-      title: 'Choix du thème',
-      description: 'Personnalisez votre conte',
-      isCompleted: currentStep > 1,
-      isActive: currentStep === 1
+      id: 'choices',
+      title: 'Choix du conte',
+      isCompleted: isChoicesComplete,
+      isActive: !isChoicesComplete
     },
     {
-      id: 2,
-      title: 'Détails du protagoniste',
-      description: 'Créez votre héros',
-      isCompleted: currentStep > 2,
-      isActive: currentStep === 2
+      id: 'protagonist',
+      title: 'Héros',
+      isCompleted: isProtagonistComplete,
+      isActive: isChoicesComplete && !isProtagonistComplete
     },
     {
-      id: 3,
+      id: 'options',
+      title: 'Options',
+      isCompleted: isProtagonistComplete,
+      isActive: isProtagonistComplete && !isPaymentComplete
+    },
+    {
+      id: 'payment',
       title: 'Paiement',
-      description: 'Finalisez votre commande',
-      isCompleted: false,
-      isActive: currentStep === 3
+      isCompleted: isPaymentComplete,
+      isActive: isProtagonistComplete
     }
   ];
 
@@ -254,72 +210,26 @@ export const StoryFormPage: React.FC = () => {
     setFormData(prev => ({ ...prev, ...newData }));
   };
 
-  const handleNext = () => {
-    if (currentStep < 3) {
-      setCurrentStep(prev => prev + 1);
-      // Scroll vers le haut du formulaire
-      setTimeout(() => {
-        formHeaderRef.current?.scrollIntoView({ 
-          behavior: 'smooth', 
-          block: 'start' 
-        });
-      }, 100);
-    }
-  };
-
-  const handlePrevious = () => {
-    if (currentStep > 1) {
-      setCurrentStep(prev => prev - 1);
-      // Scroll vers le haut du formulaire
-      setTimeout(() => {
-        formHeaderRef.current?.scrollIntoView({ 
-          behavior: 'smooth', 
-          block: 'start' 
-        });
-      }, 100);
-    }
-  };
 
   const handleSubmit = async () => {
-    if (!formData.productType) {
-      setSubmitError('Veuillez sélectionner un format');
+    // La validation est maintenant gérée dans UnifiedStoryForm
+    // Vérification de sécurité finale
+    if (!formData.userEmail || !formData.productType) {
+      console.error('❌ Données manquantes pour la soumission');
+      setIsSubmitting(false);
       return;
-    }
-
-    // Validation des champs obligatoires
-    if (!formData.userEmail) {
-      setSubmitError('Veuillez renseigner votre email');
-      return;
-    }
-
-    // Validation de l'adresse seulement pour les livres physiques
-    if (formData.productType === 'printed') {
-      if (!formData.shippingAddress?.firstName || !formData.shippingAddress?.lastName) {
-        setSubmitError('Veuillez renseigner votre prénom et nom');
-        return;
-      }
-
-      if (!formData.shippingAddress?.address || !formData.shippingAddress?.city || !formData.shippingAddress?.postalCode) {
-        setSubmitError('Veuillez renseigner votre adresse complète');
-        return;
-      }
     }
 
     setIsSubmitting(true);
-    setSubmitError('');
 
     try {
       // 1. Track InitiateCheckout AVANT toute requête (CRITIQUE pour production)
       console.log('🎯 TikTok: Déclenchement InitiateCheckout AVANT redirection...');
-      if (formData.productType) {
-        await trackInitiateCheckout(formData.productType, formData.userEmail);
-      }
+      await trackInitiateCheckout(formData.productType, formData.userEmail);
       console.log('✅ TikTok: InitiateCheckout envoyé avec succès');
       
       // 2. Identifier l'utilisateur avec TikTok Pixel
-      if (formData.userEmail) {
-        await identifyUser(formData.userEmail);
-      }
+      await identifyUser(formData.userEmail);
 
       // 3. Créer la commande
       console.log('🔄 Création de la commande avec les données:', formData);
@@ -365,91 +275,13 @@ export const StoryFormPage: React.FC = () => {
         errorMessage = error.message;
       }
       
-      setSubmitError(errorMessage);
+      // Afficher l'erreur dans la console pour debug
+      alert(errorMessage);
       setIsSubmitting(false);
     }
   };
 
-  const isStepValid = () => {
-    switch (currentStep) {
-      case 1:
-        return formData.ageRange && 
-               formData.generalTheme && 
-               formData.specificSubject && 
-               formData.centralMessage && 
-               formData.illustrationStyle;
-      case 2:
-        return formData.protagonistName && 
-               formData.protagonistAge && 
-               formData.eyeColor && 
-               formData.hairColor;
-      case 3:
-        // Pour l'eBook, seuls l'email et le type de produit sont requis
-        if (formData.productType === 'ebook') {
-          return formData.productType && formData.userEmail;
-        }
-        // Pour le livre physique, l'adresse complète est requise
-        return formData.productType &&
-               formData.userEmail &&
-               formData.shippingAddress?.firstName &&
-               formData.shippingAddress?.lastName &&
-               formData.shippingAddress?.address &&
-               formData.shippingAddress?.city &&
-               formData.shippingAddress?.postalCode;
-      default:
-        return false;
-    }
-  };
 
-  const renderCurrentStep = () => {
-    switch (currentStep) {
-      case 1:
-        return (
-          <StoryFormStep1 
-            formData={formData} 
-            onUpdate={handleFormUpdate} 
-          />
-        );
-      case 2:
-        return (
-          <StoryFormStep2 
-            formData={formData} 
-            onUpdate={handleFormUpdate} 
-          />
-        );
-      case 3:
-        return (
-          <>
-            {!orderSuccess && (
-              <StoryFormStep3
-                formData={formData}
-                onUpdate={handleFormUpdate}
-                onSubmit={handleSubmit}
-              />
-            )}
-
-            {orderSuccess && (
-              <SuccessContainer>
-                <SuccessIcon>🎉</SuccessIcon>
-                <SuccessTitle>Commande créée avec succès !</SuccessTitle>
-                <SuccessMessage>
-                  Votre conte personnalisé pour <strong>{orderSuccess.protagonistName}</strong> est en cours de préparation.
-                </SuccessMessage>
-                <OrderDetails>
-                  <p><strong>Numéro de commande :</strong> {orderSuccess.id}</p>
-                  <p><strong>Produit :</strong> {orderSuccess.productType === 'EBOOK' ? 'eBook numérique' : 'Livre relié'}</p>
-                  <p><strong>Prix :</strong> {orderSuccess.price}€</p>
-                  <p><strong>Statut :</strong> {orderSuccess.status}</p>
-                </OrderDetails>
-                <p>Un email de confirmation vous a été envoyé avec tous les détails.</p>
-              </SuccessContainer>
-            )}
-          </>
-        );
-      default:
-        return null;
-    }
-  };
 
   return (
     <PageContainer>
@@ -459,48 +291,20 @@ export const StoryFormPage: React.FC = () => {
         <FormHeader ref={formHeaderRef}>
           <FormTitle>Créez votre conte personnalisé ✨</FormTitle>
           <FormSubtitle>
-            En quelques étapes simples, créez une histoire unique qui fera briller les yeux de votre enfant
+            Créez une histoire unique en quelques clics - chaque choix débloque automatiquement la suite
           </FormSubtitle>
         </FormHeader>
 
-        <StepIndicator steps={steps} currentStep={currentStep} />
+        <ProgressIndicator steps={progressSteps} />
 
-        <StepContent>
-          {renderCurrentStep()}
-        </StepContent>
-
-        <NavigationButtons>
-          <div>
-            {currentStep > 1 && (
-              <Button 
-                variant="outline" 
-                onClick={handlePrevious}
-              >
-                ← Étape précédente
-              </Button>
-            )}
-          </div>
-
-          <ButtonGroup>
-            {currentStep < 3 ? (
-              <Button 
-                variant="primary" 
-                onClick={handleNext}
-                disabled={!isStepValid()}
-              >
-                Étape suivante →
-              </Button>
-            ) : (
-              <Button 
-                variant="primary" 
-                onClick={handleSubmit}
-                disabled={!isStepValid() || isSubmitting}
-              >
-                {isSubmitting ? '⏳ Traitement en cours...' : 'Finaliser la commande'}
-              </Button>
-            )}
-          </ButtonGroup>
-        </NavigationButtons>
+        <FormContent>
+          <UnifiedStoryForm
+            formData={formData}
+            onUpdate={handleFormUpdate}
+            onSubmit={handleSubmit}
+            isSubmitting={isSubmitting}
+          />
+        </FormContent>
       </FormContainer>
     </MainContent>
     <Footer />

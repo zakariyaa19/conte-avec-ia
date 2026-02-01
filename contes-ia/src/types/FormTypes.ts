@@ -1,5 +1,12 @@
 // Types pour le formulaire de commande
 
+export interface SecondaryCharacter {
+  kind: 'human' | 'animal';
+  name: string;
+  ageOrType: string;
+  physical?: string;
+}
+
 export interface StoryFormData {
   // Étape 1 - Personnalisez votre conte
   ageRange: string;
@@ -31,7 +38,10 @@ export interface StoryFormData {
   religion?: string;
   customReligion?: string;
   
-  // Personnage secondaire (optionnel)
+  // Personnages secondaires (jusqu'à 5)
+  secondaryCharacters?: SecondaryCharacter[];
+  
+  // Anciens champs (pour rétrocompatibilité temporaire)
   secondaryCharacterName?: string;
   secondaryCharacterAge?: string;
   

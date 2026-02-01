@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import Stripe from 'stripe';
 import { prisma } from '../utils/database';
 import { MailjetService } from '../utils/mailjetService';
+import { formatSecondaryCharacters, parseSecondaryCharacters } from '../utils/formatters';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
   typescript: true,
@@ -153,9 +154,8 @@ ${order.favoriteDish ? `Plat préféré: ${order.favoriteDish}` : ''}
 ${order.specialEvents ? `Événements spéciaux: ${order.specialEvents}` : ''}
 ${order.religion ? `Religion: ${order.religion}${order.customReligion ? ` (${order.customReligion})` : ''}` : ''}
 
-=== PERSONNAGE SECONDAIRE ===
-${order.secondaryCharacterName ? `Nom: ${order.secondaryCharacterName}` : 'Aucun'}
-${order.secondaryCharacterAge ? `Âge/Type: ${order.secondaryCharacterAge}` : ''}
+=== PERSONNAGES SECONDAIRES ===
+${formatSecondaryCharacters(parseSecondaryCharacters(order.secondaryCharactersJson))}
 
 === DÉTAILS PERSONNELS ===
 ${order.creatorName ? `Créateur: ${order.creatorName}` : 'Non spécifié'}

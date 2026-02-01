@@ -63,7 +63,10 @@ model Order {
   religion          String?
   customReligion    String?
   
-  // Personnage secondaire (optionnel)
+  // Personnages secondaires (jusqu'à 5) - stockés en JSON
+  secondaryCharactersJson String? @db.Text
+  
+  // Anciens champs personnage secondaire (rétrocompatibilité)
   secondaryCharacterName String?
   secondaryCharacterAge  String?
   

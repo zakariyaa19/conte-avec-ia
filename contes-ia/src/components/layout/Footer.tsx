@@ -130,17 +130,6 @@ export const Footer: React.FC = () => {
               Créez des contes personnalisés et magiques pour vos enfants grâce à l'intelligence artificielle. 
               Chaque histoire est unique et adaptée à votre petit lecteur.
             </FooterDescription>
-            <SocialLinks>
-              <SocialIcon href="https://facebook.com" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
-                📘
-              </SocialIcon>
-              <SocialIcon href="https://instagram.com" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
-                📷
-              </SocialIcon>
-              <SocialIcon href="https://twitter.com" aria-label="Twitter" target="_blank" rel="noopener noreferrer">
-                🐦
-              </SocialIcon>
-            </SocialLinks>
           </FooterSection>
           
           <FooterSection>

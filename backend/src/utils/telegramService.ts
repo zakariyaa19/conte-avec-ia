@@ -1,6 +1,7 @@
 import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
+import { formatSecondaryCharacters, parseSecondaryCharacters } from './formatters';
 
 export class TelegramService {
   private static readonly BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
@@ -182,8 +183,15 @@ ${order.favoriteDish ? `🍽️ Plat préféré: ${order.favoriteDish}` : ''}
 ${order.specialEvents ? `🎉 Événements: ${order.specialEvents}` : ''}
 ${order.religion ? `🙏 Religion: ${order.religion}${order.customReligion ? ` (${order.customReligion})` : ''}` : ''}`;
 
-      // Personnage secondaire
-      if (order.secondaryCharacterName) {
+      // Personnages secondaires
+      const secondaryChars = parseSecondaryCharacters(order.secondaryCharactersJson);
+      if (secondaryChars.length > 0) {
+        message += `
+
+👥 <b>Personnages secondaires (${secondaryChars.length})</b>
+${formatSecondaryCharacters(secondaryChars)}`;
+      } else if (order.secondaryCharacterName) {
+        // Rétrocompatibilité avec ancien format
         message += `
 
 👥 <b>Personnage secondaire</b>

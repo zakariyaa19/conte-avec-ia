@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { calculatePrice, PRODUCT_PRICES } from '../utils/pricing';
 import { StoryFormData, ApiResponse } from '../types';
 import { prisma } from '../utils/database';
+import { stringifySecondaryCharacters } from '../utils/formatters';
 
 export class OrderController {
   // Créer une nouvelle commande
@@ -100,7 +101,10 @@ export class OrderController {
           religion: formData.religion,
           customReligion: formData.customReligion,
           
-          // Personnage secondaire
+          // Personnages secondaires (nouveau format JSON)
+          secondaryCharactersJson: stringifySecondaryCharacters(formData.secondaryCharacters),
+          
+          // Anciens champs personnage secondaire (rétrocompatibilité)
           secondaryCharacterName: formData.secondaryCharacterName,
           secondaryCharacterAge: formData.secondaryCharacterAge,
           
