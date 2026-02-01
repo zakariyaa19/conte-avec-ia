@@ -203,6 +203,77 @@
     <priority>0.6</priority>
   </url>
   
+  <!-- Nouveaux articles 2026 -->
+  <url>
+    <loc>https://contedia.fr/blog/livre-personnalise-enfant-2026</loc>
+    <lastmod>2026-02-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://contedia.fr/blog/conte-personnalise-confiance-imagination-enfant</loc>
+    <lastmod>2026-02-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://contedia.fr/blog/livre-personnalise-vs-livre-classique-enfant</loc>
+    <lastmod>2026-02-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://contedia.fr/blog/intelligence-artificielle-histoires-enfants</loc>
+    <lastmod>2026-02-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://contedia.fr/blog/enfant-heros-propre-histoire</loc>
+    <lastmod>2026-02-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://contedia.fr/blog/conte-personnalise-rituel-coucher</loc>
+    <lastmod>2026-02-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://contedia.fr/blog/livre-personnalise-enfant-timide</loc>
+    <lastmod>2026-02-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://contedia.fr/blog/cadeau-livre-personnalise-enfant</loc>
+    <lastmod>2026-02-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://contedia.fr/blog/creation-histoires-personnalisees-conte-ia</loc>
+    <lastmod>2026-02-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://contedia.fr/blog/bienfaits-lecture-personnalisee-enfant</loc>
+    <lastmod>2026-02-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
   <!-- Pages légales -->
   <url>
     <loc>https://contedia.fr/mentions-legales</loc>
