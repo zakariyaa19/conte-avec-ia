@@ -253,6 +253,32 @@ const Value = styled.span`
   text-align: right;
 `;
 
+const CharacterList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${theme.spacing.sm};
+  width: 100%;
+`;
+
+const CharacterItem = styled.div`
+  background: ${theme.colors.background.secondary};
+  padding: ${theme.spacing.sm};
+  border-radius: ${theme.borderRadius.sm};
+  border-left: 3px solid ${theme.colors.accent.coral};
+`;
+
+const CharacterType = styled.span`
+  font-weight: 600;
+  color: ${theme.colors.accent.coral};
+  margin-right: ${theme.spacing.xs};
+`;
+
+const CharacterDetail = styled.div`
+  color: ${theme.colors.text.secondary};
+  font-size: ${theme.fontSizes.sm};
+  margin-top: ${theme.spacing.xs};
+`;
+
 const StatusBadge = styled.span<{ status: string }>`
   padding: ${theme.spacing.xs} ${theme.spacing.sm};
   border-radius: ${theme.borderRadius.sm};
@@ -382,6 +408,17 @@ export const AdminOrderDetailPage: React.FC<AdminOrderDetailPageProps> = ({ toke
 
   const formatPrice = (price: number) => {
     return `${price}€`;
+  };
+
+  const parseSecondaryCharacters = (json?: string | null) => {
+    if (!json) return [];
+    try {
+      const parsed = JSON.parse(json);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (error) {
+      console.error('Erreur parsing secondaryCharacters:', error);
+      return [];
+    }
   };
 
   const getStatusLabel = (status: string) => {
@@ -591,18 +628,6 @@ export const AdminOrderDetailPage: React.FC<AdminOrderDetailPageProps> = ({ toke
                 <Value>{order.hairColor}</Value>
               </InfoRow>
             )}
-            {order.secondaryCharacterName && (
-              <InfoRow>
-                <Label>Personnage secondaire :</Label>
-                <Value>{order.secondaryCharacterName}</Value>
-              </InfoRow>
-            )}
-            {order.secondaryCharacterAge && (
-              <InfoRow>
-                <Label>Âge/Type du personnage secondaire :</Label>
-                <Value>{order.secondaryCharacterAge}</Value>
-              </InfoRow>
-            )}
             {order.photoUrl && (
               <InfoRow>
                 <Label>Photo de référence :</Label>
@@ -660,6 +685,53 @@ export const AdminOrderDetailPage: React.FC<AdminOrderDetailPageProps> = ({ toke
             )}
           </SectionContent>
         </Section>
+
+        {/* Personnages secondaires */}
+        {(() => {
+          const secondaryChars = parseSecondaryCharacters(order.secondaryCharactersJson);
+          const hasOldFormat = order.secondaryCharacterName;
+          
+          if (secondaryChars.length > 0 || hasOldFormat) {
+            return (
+              <Section>
+                <SectionHeader>
+                  <SectionTitle>🧸 Personnages secondaires</SectionTitle>
+                </SectionHeader>
+                <SectionContent>
+                  {secondaryChars.length > 0 ? (
+                    <CharacterList>
+                      {secondaryChars.map((char: any, index: number) => (
+                        <CharacterItem key={index}>
+                          <div>
+                            <CharacterType>
+                              {index + 1}. {char.kind === 'human' ? '👤 Humain' : '🐾 Animal'}
+                            </CharacterType>
+                            <strong>{char.name}</strong>
+                          </div>
+                          {char.ageOrType && (
+                            <CharacterDetail>Âge/Type : {char.ageOrType}</CharacterDetail>
+                          )}
+                          {char.physical && (
+                            <CharacterDetail>Caractéristiques : {char.physical}</CharacterDetail>
+                          )}
+                        </CharacterItem>
+                      ))}
+                    </CharacterList>
+                  ) : hasOldFormat ? (
+                    <InfoRow>
+                      <Label>Personnage secondaire :</Label>
+                      <Value>
+                        {order.secondaryCharacterName}
+                        {order.secondaryCharacterAge && ` (${order.secondaryCharacterAge})`}
+                      </Value>
+                    </InfoRow>
+                  ) : null}
+                </SectionContent>
+              </Section>
+            );
+          }
+          return null;
+        })()}
 
         {/* Informations supplémentaires */}
         {(order.hobbies || order.favoriteDish || order.specialEvents || order.religion || order.creatorName) && (
