@@ -31,9 +31,12 @@ interface UnifiedStoryFormProps {
 }
 
 const FormContainer = styled.div`
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 0 ${theme.spacing.lg};
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   
   @media (max-width: ${theme.breakpoints.sm}) {
     padding: 0 ${theme.spacing.md};
@@ -60,6 +63,8 @@ const Section = styled.div<{ $isVisible: boolean; $isCompleted: boolean }>`
     `0 0 30px ${theme.colors.accent.coral}20` : 
     'none'
   };
+  width: 100%;
+  max-width: 1100px;
   
   @media (max-width: ${theme.breakpoints.sm}) {
     margin-bottom: ${theme.spacing.lg};
@@ -136,8 +141,8 @@ const FormSection = styled.div`
 
 const SelectionGrid = styled.div<{ $columns?: number }>`
   display: grid;
-  grid-template-columns: repeat(${props => props.$columns || 3}, 1fr);
-  gap: ${theme.spacing.lg};
+  grid-template-columns: repeat(${props => props.$columns || 4}, 1fr);
+  gap: ${theme.spacing.md};
   
   @media (max-width: ${theme.breakpoints.md}) {
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -776,6 +781,8 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
               icon="✏️"
               isSelected={formData.generalTheme === 'custom'}
               onClick={(value) => handleSelection('generalTheme', value)}
+              isCustom={true}
+              customLabel="Personnalisé le thème général de votre conte"
             />
           </SelectionGrid>
           {formData.generalTheme === 'custom' && (
@@ -809,6 +816,8 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
               icon="✏️"
               isSelected={formData.specificSubject === 'custom'}
               onClick={(value) => handleSelection('specificSubject', value)}
+              isCustom={true}
+              customLabel="Personnalisé le sujet de votre conte"
             />
           </SelectionGrid>
           {formData.specificSubject === 'custom' && (
@@ -842,6 +851,8 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
               icon="✏️"
               isSelected={formData.centralMessage === 'custom'}
               onClick={(value) => handleSelection('centralMessage', value)}
+              isCustom={true}
+              customLabel="Personnalisé le message central de votre conte"
             />
           </SelectionGrid>
           {formData.centralMessage === 'custom' && (

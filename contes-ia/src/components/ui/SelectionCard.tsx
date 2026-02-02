@@ -10,13 +10,26 @@ interface SelectionCardProps {
   isSelected: boolean;
   onClick: (value: string) => void;
   size?: 'sm' | 'md' | 'lg';
+  isCustom?: boolean;
+  customLabel?: string;
 }
 
-const CardContainer = styled.div<{ $isSelected: boolean; $size: string }>`
-  background-color: ${props => props.$isSelected ? theme.colors.accent.creamyYellow : theme.colors.background.white};
-  border: 2px solid ${props => props.$isSelected ? theme.colors.accent.coral : '#E5E5E5'};
+const CardContainer = styled.div<{ $isSelected: boolean; $size: string; $isCustom?: boolean }>`
+  background-color: ${props => {
+    if (props.$isCustom) {
+      return props.$isSelected ? theme.colors.accent.skyBlue + '30' : theme.colors.accent.skyBlue + '15';
+    }
+    return props.$isSelected ? theme.colors.accent.creamyYellow : theme.colors.background.white;
+  }};
+  border: 2px solid ${props => {
+    if (props.$isCustom) {
+      return props.$isSelected ? theme.colors.accent.skyBlue : theme.colors.accent.skyBlue + '60';
+    }
+    return props.$isSelected ? theme.colors.accent.coral : '#E5E5E5';
+  }};
   border-radius: ${theme.borderRadius.lg};
   padding: ${props => {
+    if (props.$isCustom) return `${theme.spacing.xl} ${theme.spacing.lg}`;
     switch (props.$size) {
       case 'sm': return theme.spacing.md;
       case 'lg': return theme.spacing.xl;
@@ -26,9 +39,10 @@ const CardContainer = styled.div<{ $isSelected: boolean; $size: string }>`
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: center;
+  grid-column: ${props => props.$isCustom ? '1 / -1' : 'auto'};
   
   &:hover {
-    border-color: ${theme.colors.accent.coral};
+    border-color: ${props => props.$isCustom ? theme.colors.accent.skyBlue : theme.colors.accent.coral};
     box-shadow: ${theme.shadows.md};
     transform: translateY(-2px);
   }
@@ -40,6 +54,7 @@ const CardContainer = styled.div<{ $isSelected: boolean; $size: string }>`
   
   @media (max-width: ${theme.breakpoints.sm}) {
     padding: ${props => {
+      if (props.$isCustom) return `${theme.spacing.lg} ${theme.spacing.md}`;
       switch (props.$size) {
         case 'sm': return `${theme.spacing.sm} ${theme.spacing.xs}`;
         case 'lg': return `${theme.spacing.lg} ${theme.spacing.md}`;
@@ -117,12 +132,15 @@ export const SelectionCard: React.FC<SelectionCardProps> = ({
   description,
   isSelected,
   onClick,
-  size = 'md'
+  size = 'md',
+  isCustom = false,
+  customLabel
 }) => {
   return (
     <CardContainer
       $isSelected={isSelected}
       $size={size}
+      $isCustom={isCustom}
       onClick={() => onClick(value)}
     >
       {icon && (
@@ -131,7 +149,7 @@ export const SelectionCard: React.FC<SelectionCardProps> = ({
         </CardIcon>
       )}
       <CardLabel $size={size}>
-        {label}
+        {customLabel || label}
       </CardLabel>
       {description && (
         <CardDescription>
