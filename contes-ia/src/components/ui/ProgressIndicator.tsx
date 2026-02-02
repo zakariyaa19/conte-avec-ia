@@ -14,17 +14,7 @@ interface ProgressIndicatorProps {
 }
 
 const Container = styled.div`
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: ${theme.colors.background.white};
-  padding: ${theme.spacing.lg} 0;
-  margin-bottom: ${theme.spacing.xl};
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  
-  @media (max-width: ${theme.breakpoints.sm}) {
-    display: none;
-  }
+  display: none;
 `;
 
 const ProgressBarContainer = styled.div`
