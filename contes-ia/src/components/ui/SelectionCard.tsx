@@ -17,13 +17,13 @@ interface SelectionCardProps {
 const CardContainer = styled.div<{ $isSelected: boolean; $size: string; $isCustom?: boolean }>`
   background-color: ${props => {
     if (props.$isCustom) {
-      return props.$isSelected ? theme.colors.accent.skyBlue + '30' : theme.colors.accent.skyBlue + '15';
+      return props.$isSelected ? theme.colors.accent.pastelBlue + '30' : theme.colors.accent.pastelBlue + '15';
     }
     return props.$isSelected ? theme.colors.accent.creamyYellow : theme.colors.background.white;
   }};
   border: 2px solid ${props => {
     if (props.$isCustom) {
-      return props.$isSelected ? theme.colors.accent.skyBlue : theme.colors.accent.skyBlue + '60';
+      return props.$isSelected ? theme.colors.accent.pastelBlue : theme.colors.accent.pastelBlue + '60';
     }
     return props.$isSelected ? theme.colors.accent.coral : '#E5E5E5';
   }};
@@ -42,7 +42,7 @@ const CardContainer = styled.div<{ $isSelected: boolean; $size: string; $isCusto
   grid-column: ${props => props.$isCustom ? '1 / -1' : 'auto'};
   
   &:hover {
-    border-color: ${props => props.$isCustom ? theme.colors.accent.skyBlue : theme.colors.accent.coral};
+    border-color: ${props => props.$isCustom ? theme.colors.accent.pastelBlue : theme.colors.accent.coral};
     box-shadow: ${theme.shadows.md};
     transform: translateY(-2px);
   }
