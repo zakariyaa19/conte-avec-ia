@@ -554,7 +554,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
         scrollToSection(hairColorRef);
         break;
       case 'hairColor':
-        scrollToSection(photoRef);
+        // Pas d'auto-scroll vers photo (facultatif)
         break;
     }
   };
@@ -570,7 +570,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
     const file = event.target.files?.[0];
     if (file) {
       onUpdate({ photo: file });
-      scrollToSection(languageRef);
+      // Pas d'auto-scroll vers langue (facultatif)
     }
   };
 
@@ -745,7 +745,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
           <h4 style={{ marginBottom: theme.spacing.lg, color: theme.colors.text.primary }}>
             🧒 Pour quel âge ?
           </h4>
-          <SelectionGrid $columns={2}>
+          <SelectionGrid $columns={4}>
             {AGE_RANGES.map((range) => (
               <SelectionCard
                 key={range.value}
