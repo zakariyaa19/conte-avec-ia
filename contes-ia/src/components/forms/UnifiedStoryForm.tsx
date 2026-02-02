@@ -1277,10 +1277,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
             disabled={!formData.productType || isSubmitting}
             $isReady={isPaymentInfoComplete()}
           >
-            {isSubmitting ? '⏳ Traitement en cours...' :
-             formData.productType === 'ebook' ? 'Payer 4,99€' : 
-             formData.productType === 'printed' ? 'Payer 29,99€' : 
-             'Choisir un format'}
+            {isSubmitting ? '⏳ Traitement en cours...' : '✨ Créer le conte de mon enfant'}
           </PayButton>
           
           <p style={{ 
