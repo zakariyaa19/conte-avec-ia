@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { theme } from '../../styles/theme';
 import { SelectionCard } from '../ui/SelectionCard';
+import { ImageSelectionCard } from '../ui/ImageSelectionCard';
 import { Button } from '../ui/Button';
 import { ValidatedInput } from '../ui/ValidatedInput';
 import { AgeSelector } from '../ui/AgeSelector';
@@ -869,13 +870,13 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
           <h4 style={{ marginBottom: theme.spacing.lg, color: theme.colors.text.primary }}>
             🎨 Style d'illustration
           </h4>
-          <SelectionGrid>
+          <SelectionGrid $columns={3}>
             {ILLUSTRATION_STYLES.map((style) => (
-              <SelectionCard
+              <ImageSelectionCard
                 key={style.value}
                 value={style.value}
                 label={style.label}
-                icon={style.icon}
+                imagePath={style.imagePath}
                 isSelected={formData.illustrationStyle === style.value}
                 onClick={(value) => handleSelection('illustrationStyle', value)}
               />

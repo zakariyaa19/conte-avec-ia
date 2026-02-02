@@ -110,15 +110,15 @@ export const CENTRAL_MESSAGES = [
 ];
 
 export const ILLUSTRATION_STYLES = [
-  { value: 'watercolor', label: 'Aquarelle', icon: '🎨' },
-  { value: '3d-animation', label: 'Animation 3D', icon: '🎬' },
-  { value: 'block-world', label: 'Monde des blocs', icon: '🧱' },
-  { value: 'paper-cut', label: 'Papier découpé', icon: '✂️' },
-  { value: 'clay-animation', label: 'Clay-animation', icon: '🏺' },
-  { value: 'kawaii', label: 'Kawaii', icon: '🥰' },
-  { value: 'geometric', label: 'Géométrique', icon: '🔷' },
-  { value: 'illustrated-book', label: 'Livre illustré', icon: '📚' },
-  { value: 'japanese-manga', label: 'Dessin japonais / manga', icon: '🎌' }
+  { value: 'watercolor', label: 'Aquarelle', icon: '🎨', imagePath: '/images/illustration-styles/aquarelle.jpg' },
+  { value: '3d-animation', label: 'Animation 3D', icon: '🎬', imagePath: '/images/illustration-styles/animation-3d.jpg' },
+  { value: 'block-world', label: 'Monde des blocs', icon: '🧱', imagePath: '/images/illustration-styles/monde-des-blocs.jpg' },
+  { value: 'paper-cut', label: 'Papier découpé', icon: '✂️', imagePath: '/images/illustration-styles/papier-decoupe.jpg' },
+  { value: 'clay-animation', label: 'Clay-animation', icon: '🏺', imagePath: '/images/illustration-styles/clay-animation.jpg' },
+  { value: 'kawaii', label: 'Kawaii', icon: '🥰', imagePath: '/images/illustration-styles/kawaii.jpg' },
+  { value: 'geometric', label: 'Géométrique', icon: '🔷', imagePath: '/images/illustration-styles/geometrique.jpg' },
+  { value: 'illustrated-book', label: 'Livre illustré', icon: '📚', imagePath: '/images/illustration-styles/livre-illustre.jpg' },
+  { value: 'japanese-manga', label: 'Dessin japonais / manga', icon: '🎌', imagePath: '/images/illustration-styles/dessin-japonais-manga.jpg' }
 ];
 
 export const EYE_COLORS = [
