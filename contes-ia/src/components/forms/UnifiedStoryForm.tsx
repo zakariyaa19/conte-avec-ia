@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { theme } from '../../styles/theme';
 import { SelectionCard } from '../ui/SelectionCard';
 import { ImageSelectionCard } from '../ui/ImageSelectionCard';
+import { ImageAgeCard } from '../ui/ImageAgeCard';
 import { Button } from '../ui/Button';
 import { ValidatedInput } from '../ui/ValidatedInput';
 import { AgeSelector } from '../ui/AgeSelector';
@@ -744,18 +745,18 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
 
         <FormSection>
           <h4 style={{ marginBottom: theme.spacing.lg, color: theme.colors.text.primary }}>
-            🧒 Pour quel âge ?
+            Pour quel âge ?
           </h4>
           <SelectionGrid $columns={4}>
             {AGE_RANGES.map((range) => (
-              <SelectionCard
+              <ImageAgeCard
                 key={range.value}
                 value={range.value}
                 label={range.label}
                 description={range.description}
+                imagePath={range.imagePath}
                 isSelected={formData.ageRange === range.value}
                 onClick={(value) => handleSelection('ageRange', value)}
-                size="lg"
               />
             ))}
           </SelectionGrid>

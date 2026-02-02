@@ -70,10 +70,10 @@ export interface FormStep {
 
 // Options pour les sélections
 export const AGE_RANGES = [
-  { value: '0-2', label: '0-2 ans', description: 'Histoires simples avec images colorées' },
-  { value: '3-5', label: '3-5 ans', description: 'Contes courts avec vocabulaire adapté' },
-  { value: '6-9', label: '6-9 ans', description: 'Histoires plus longues et aventures' },
-  { value: '10+', label: '10+ ans', description: 'Récits complexes et personnages développés' }
+  { value: '0-2', label: '0-2 ans', description: 'Histoires simples avec images colorées', imagePath: '/image/ageenfant/age-0-2.png' },
+  { value: '3-5', label: '3-5 ans', description: 'Contes courts avec vocabulaire adapté', imagePath: '/image/ageenfant/age-3-5.png' },
+  { value: '6-9', label: '6-9 ans', description: 'Histoires plus longues et aventures', imagePath: '/image/ageenfant/age-6-9.png' },
+  { value: '10+', label: '10+ ans', description: 'Récits complexes et personnages développés', imagePath: '/image/ageenfant/age-10-plus.png' }
 ];
 
 export const GENERAL_THEMES = [
