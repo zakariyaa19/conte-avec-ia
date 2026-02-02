@@ -98,6 +98,10 @@ const SectionTitle = styled.h3<{ $isCompleted: boolean }>`
   align-items: center;
   gap: ${theme.spacing.sm};
   
+  @media (min-width: ${theme.breakpoints.md}) {
+    justify-content: center;
+  }
+  
   @media (max-width: ${theme.breakpoints.sm}) {
     font-size: ${theme.fontSizes.lg};
   }
@@ -138,6 +142,18 @@ const FormSection = styled.div`
   
   @media (max-width: ${theme.breakpoints.sm}) {
     margin-bottom: ${theme.spacing.lg};
+  }
+`;
+
+const OptionTitle = styled.h4`
+  margin-bottom: ${theme.spacing.lg};
+  color: ${theme.colors.text.primary};
+  font-size: ${theme.fontSizes.base};
+  font-weight: 600;
+  
+  @media (min-width: ${theme.breakpoints.md}) {
+    font-size: ${theme.fontSizes['2xl']};
+    font-weight: 700;
   }
 `;
 
@@ -556,7 +572,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
         scrollToSection(hairColorRef);
         break;
       case 'hairColor':
-        // Pas d'auto-scroll vers photo (facultatif)
+        scrollToSection(photoRef);
         break;
     }
   };
@@ -572,7 +588,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
     const file = event.target.files?.[0];
     if (file) {
       onUpdate({ photo: file });
-      // Pas d'auto-scroll vers langue (facultatif)
+      scrollToSection(languageRef);
     }
   };
 
@@ -744,9 +760,9 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
         </SectionHeader>
 
         <FormSection>
-          <h4 style={{ marginBottom: theme.spacing.lg, color: theme.colors.text.primary }}>
+          <OptionTitle>
             Pour quel âge ?
-          </h4>
+          </OptionTitle>
           <SelectionGrid $columns={4}>
             {AGE_RANGES.map((range) => (
               <ImageAgeCard
@@ -763,9 +779,9 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
         </FormSection>
 
         <FormSection ref={themeRef}>
-          <h4 style={{ marginBottom: theme.spacing.lg, color: theme.colors.text.primary }}>
+          <OptionTitle>
             🌈 Quel thème général ?
-          </h4>
+          </OptionTitle>
           <SelectionGrid>
             {GENERAL_THEMES.map((theme_item) => (
               <SelectionCard
@@ -798,9 +814,9 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
         </FormSection>
 
         <FormSection ref={subjectRef}>
-          <h4 style={{ marginBottom: theme.spacing.lg, color: theme.colors.text.primary }}>
+          <OptionTitle>
             🪅 Sujet
-          </h4>
+          </OptionTitle>
           <SelectionGrid>
             {SPECIFIC_SUBJECTS.map((subject) => (
               <SelectionCard
@@ -833,9 +849,9 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
         </FormSection>
 
         <FormSection ref={messageRef}>
-          <h4 style={{ marginBottom: theme.spacing.lg, color: theme.colors.text.primary }}>
+          <OptionTitle>
             💬 Message central
-          </h4>
+          </OptionTitle>
           <SelectionGrid>
             {CENTRAL_MESSAGES.map((message) => (
               <SelectionCard
@@ -868,9 +884,9 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
         </FormSection>
 
         <FormSection ref={styleRef}>
-          <h4 style={{ marginBottom: theme.spacing.lg, color: theme.colors.text.primary }}>
+          <OptionTitle>
             🎨 Style d'illustration
-          </h4>
+          </OptionTitle>
           <SelectionGrid $columns={3}>
             {ILLUSTRATION_STYLES.map((style) => (
               <ImageSelectionCard
@@ -929,9 +945,9 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
           </InputGroup>
 
           <FormSection ref={genderRef}>
-            <h4 style={{ marginBottom: theme.spacing.lg, color: theme.colors.text.primary }}>
+            <OptionTitle>
               Sexe *
-            </h4>
+            </OptionTitle>
             <SelectionGrid>
               {GENDERS.map((gender) => (
                 <SelectionCard
@@ -948,9 +964,9 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
         </FormSection>
 
         <FormSection ref={eyeColorRef}>
-          <h4 style={{ marginBottom: theme.spacing.lg, color: theme.colors.text.primary }}>
+          <OptionTitle>
             Couleur des yeux *
-          </h4>
+          </OptionTitle>
           <ColorGrid>
             {EYE_COLORS.map((eyeColor) => (
               <ColorOption
@@ -967,9 +983,9 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
         </FormSection>
 
         <FormSection ref={hairColorRef}>
-          <h4 style={{ marginBottom: theme.spacing.lg, color: theme.colors.text.primary }}>
+          <OptionTitle>
             Couleur des cheveux *
-          </h4>
+          </OptionTitle>
           <ColorGrid>
             {HAIR_COLORS.map((hairColor) => (
               <ColorOption
@@ -986,9 +1002,9 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
         </FormSection>
 
         <FormSection ref={photoRef}>
-          <h4 style={{ marginBottom: theme.spacing.lg, color: theme.colors.text.primary }}>
+          <OptionTitle>
             📸 Photo (optionnel)
-          </h4>
+          </OptionTitle>
           <PhotoUploadSection>
             <Button variant="outline" onClick={() => fileInputRef.current?.click()}>
               {formData.photo ? `✓ ${formData.photo.name}` : 'Choisir une photo'}
@@ -1003,9 +1019,9 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
         </FormSection>
 
         <FormSection ref={languageRef}>
-          <h4 style={{ marginBottom: theme.spacing.lg, color: theme.colors.text.primary }}>
+          <OptionTitle>
             🌍 Langue du conte
-          </h4>
+          </OptionTitle>
           <SelectionGrid>
             {LANGUAGES.map((language) => (
               <SelectionCard
@@ -1021,9 +1037,9 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
         </FormSection>
 
         <FormSection ref={optionsRef}>
-          <h4 style={{ marginBottom: theme.spacing.lg, color: theme.colors.text.primary }}>
+          <OptionTitle>
             💡 Infos supplémentaires (facultatif)
-          </h4>
+          </OptionTitle>
           
           <InputField style={{ marginBottom: theme.spacing.lg }}>
             <Label>Loisirs / Centres d'intérêt</Label>
@@ -1055,9 +1071,9 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
         </FormSection>
 
         <FormSection>
-          <h4 style={{ marginBottom: theme.spacing.lg, color: theme.colors.text.primary }}>
+          <OptionTitle>
             🕊️ Dimension religieuse (optionnel)
-          </h4>
+          </OptionTitle>
           
           <ToggleButton
             $isActive={showReligionSection}
@@ -1111,9 +1127,9 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
         />
 
         <FormSection style={{ marginTop: theme.spacing['3xl'], paddingTop: theme.spacing.xl, borderTop: `1px solid ${theme.colors.background.secondary}` }}>
-          <h4 style={{ marginBottom: theme.spacing.lg, color: theme.colors.text.primary }}>
+          <OptionTitle>
             🧑‍🎨 Créateur du livre (optionnel)
-          </h4>
+          </OptionTitle>
           
           <InputField>
             <ValidatedInput
@@ -1140,9 +1156,9 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
         </SectionHeader>
 
         <FormSection>
-          <h4 style={{ marginBottom: theme.spacing.lg, color: theme.colors.text.primary, textAlign: 'center' }}>
+          <OptionTitle style={{ textAlign: 'center' }}>
             📦 Choisissez votre format
-          </h4>
+          </OptionTitle>
           <PricingGrid>
             <PricingCard
               title="eBook Numérique"
@@ -1178,9 +1194,9 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
         </FormSection>
 
         <ShippingSection $show={true} ref={paymentRef}>
-          <h4 style={{ marginBottom: theme.spacing.lg, color: theme.colors.text.primary }}>
+          <OptionTitle>
             Informations de commande
-          </h4>
+          </OptionTitle>
           <ShippingGrid>
             <FullWidthField>
               <ValidatedInput
