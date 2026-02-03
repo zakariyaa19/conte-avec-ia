@@ -5,6 +5,7 @@ import { SelectionCard } from '../ui/SelectionCard';
 import { ImageSelectionCard } from '../ui/ImageSelectionCard';
 import { ImageAgeCard } from '../ui/ImageAgeCard';
 import { ImageThemeCard } from '../ui/ImageThemeCard';
+import { CustomThemeCard } from '../ui/CustomThemeCard';
 import { Button } from '../ui/Button';
 import { ValidatedInput } from '../ui/ValidatedInput';
 import { AgeSelector } from '../ui/AgeSelector';
@@ -794,14 +795,12 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
                 onClick={(value) => handleSelection('generalTheme', value)}
               />
             ))}
-            <SelectionCard
+            <CustomThemeCard
               value="custom"
               label="Personnalisé"
-              icon="✏️"
+              imagePath="/image/themes/personnalise.png"
               isSelected={formData.generalTheme === 'custom'}
               onClick={(value) => handleSelection('generalTheme', value)}
-              isCustom={true}
-              customLabel="Personnalisé le thème général de votre conte"
             />
           </SelectionGrid>
           {formData.generalTheme === 'custom' && (

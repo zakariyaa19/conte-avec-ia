@@ -12,6 +12,7 @@ Les images suivantes doivent être placées dans ce dossier :
 4. **histoires.png** - Histoires (enfant lisant un livre)
 5. **fetes.png** - Fêtes (enfant avec ballon/guirlande)
 6. **famille.png** - Famille (enfant avec parents/famille)
+7. **personnalise.png** - Personnalisé (enfant créatif avec crayon/palette)
 
 ## Spécifications techniques
 
