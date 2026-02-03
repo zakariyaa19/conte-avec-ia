@@ -77,12 +77,12 @@ export const AGE_RANGES = [
 ];
 
 export const GENERAL_THEMES = [
-  { value: 'educational', label: 'Éducatif', icon: '📚' },
-  { value: 'fairy-tales', label: 'Contes de fées', icon: '🧚‍♀️' },
-  { value: 'activities', label: 'Activités', icon: '🎨' },
-  { value: 'stories', label: 'Histoires', icon: '📖' },
-  { value: 'celebrations', label: 'Fêtes', icon: '🎉' },
-  { value: 'family', label: 'Famille', icon: '👨‍👩‍👧‍👦' }
+  { value: 'educational', label: 'Éducatif', icon: '📚', imagePath: '/image/themes/educatif.png' },
+  { value: 'fairy-tales', label: 'Contes de fées', icon: '🧚‍♀️', imagePath: '/image/themes/contes-de-fees.png' },
+  { value: 'activities', label: 'Activités', icon: '🎨', imagePath: '/image/themes/activites.png' },
+  { value: 'stories', label: 'Histoires', icon: '📖', imagePath: '/image/themes/histoires.png' },
+  { value: 'celebrations', label: 'Fêtes', icon: '🎉', imagePath: '/image/themes/fetes.png' },
+  { value: 'family', label: 'Famille', icon: '👨‍👩‍👧‍👦', imagePath: '/image/themes/famille.png' }
 ];
 
 export const SPECIFIC_SUBJECTS = [

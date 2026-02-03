@@ -4,6 +4,7 @@ import { theme } from '../../styles/theme';
 import { SelectionCard } from '../ui/SelectionCard';
 import { ImageSelectionCard } from '../ui/ImageSelectionCard';
 import { ImageAgeCard } from '../ui/ImageAgeCard';
+import { ImageThemeCard } from '../ui/ImageThemeCard';
 import { Button } from '../ui/Button';
 import { ValidatedInput } from '../ui/ValidatedInput';
 import { AgeSelector } from '../ui/AgeSelector';
@@ -784,11 +785,11 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
           </OptionTitle>
           <SelectionGrid>
             {GENERAL_THEMES.map((theme_item) => (
-              <SelectionCard
+              <ImageThemeCard
                 key={theme_item.value}
                 value={theme_item.value}
                 label={theme_item.label}
-                icon={theme_item.icon}
+                imagePath={theme_item.imagePath}
                 isSelected={formData.generalTheme === theme_item.value}
                 onClick={(value) => handleSelection('generalTheme', value)}
               />
