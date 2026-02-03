@@ -86,16 +86,14 @@ export const GENERAL_THEMES = [
 ];
 
 export const SPECIFIC_SUBJECTS = [
-  { value: 'birthday', label: 'Anniversaire', icon: '🎂' },
-  { value: 'christmas', label: 'Noël', icon: '🎄' },
-  { value: 'new-year', label: 'Nouvel An', icon: '🎆' },
-  { value: 'easter', label: 'Pâques', icon: '🐣' },
-  { value: 'eid', label: 'Aïd el-Fitr', icon: '🌙' },
-  { value: 'mothers-day', label: 'Fête des mères', icon: '💐' },
-  { value: 'fathers-day', label: 'Fête des pères', icon: '👨‍👧' },
-  { value: 'saint-nicolas', label: 'Saint-Nicolas', icon: '🎅' },
-  { value: 'carnival', label: 'Carnaval', icon: '🎭' },
-  { value: 'halloween', label: 'Halloween', icon: '👻' }
+  { value: 'birthday', label: 'Anniversaire', icon: '🎂', imagePath: '/image/occasions/anniversaire.png' },
+  { value: 'christmas', label: 'Noël', icon: '🎄', imagePath: '/image/occasions/noel.png' },
+  { value: 'new-year', label: 'Nouvel An', icon: '🎆', imagePath: '/image/occasions/nouvel-an.png' },
+  { value: 'easter', label: 'Pâques', icon: '🐣', imagePath: '/image/occasions/paques.png' },
+  { value: 'eid', label: 'Aïd el-Fitr', icon: '🌙', imagePath: '/image/occasions/aid.png' },
+  { value: 'mothers-day', label: 'Fête des mères', icon: '💐', imagePath: '/image/occasions/fete-meres.png' },
+  { value: 'fathers-day', label: 'Fête des pères', icon: '👨‍👧', imagePath: '/image/occasions/fete-peres.png' },
+  { value: 'halloween', label: 'Halloween', icon: '👻', imagePath: '/image/occasions/halloween.png' }
 ];
 
 export const CENTRAL_MESSAGES = [

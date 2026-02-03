@@ -6,6 +6,8 @@ import { ImageSelectionCard } from '../ui/ImageSelectionCard';
 import { ImageAgeCard } from '../ui/ImageAgeCard';
 import { ImageThemeCard } from '../ui/ImageThemeCard';
 import { CustomThemeCard } from '../ui/CustomThemeCard';
+import { ImageOccasionCard } from '../ui/ImageOccasionCard';
+import { CustomOccasionCard } from '../ui/CustomOccasionCard';
 import { Button } from '../ui/Button';
 import { ValidatedInput } from '../ui/ValidatedInput';
 import { AgeSelector } from '../ui/AgeSelector';
@@ -782,7 +784,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
 
         <FormSection ref={themeRef}>
           <OptionTitle>
-            🌈 Quel thème général ?
+            Quel univers ?
           </OptionTitle>
           <SelectionGrid>
             {GENERAL_THEMES.map((theme_item) => (
@@ -815,27 +817,25 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
 
         <FormSection ref={subjectRef}>
           <OptionTitle>
-            🪅 Sujet
+            Quelle occasion ?
           </OptionTitle>
           <SelectionGrid>
             {SPECIFIC_SUBJECTS.map((subject) => (
-              <SelectionCard
+              <ImageOccasionCard
                 key={subject.value}
                 value={subject.value}
                 label={subject.label}
-                icon={subject.icon}
+                imagePath={subject.imagePath}
                 isSelected={formData.specificSubject === subject.value}
                 onClick={(value) => handleSelection('specificSubject', value)}
               />
             ))}
-            <SelectionCard
+            <CustomOccasionCard
               value="custom"
-              label="Sujet personnalisé"
-              icon="✏️"
+              label="Occasion personnalisée"
+              imagePath="/image/occasions/personnalise.png"
               isSelected={formData.specificSubject === 'custom'}
               onClick={(value) => handleSelection('specificSubject', value)}
-              isCustom={true}
-              customLabel="Personnalisé le sujet de votre conte"
             />
           </SelectionGrid>
           {formData.specificSubject === 'custom' && (
@@ -850,7 +850,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
 
         <FormSection ref={messageRef}>
           <OptionTitle>
-            💬 Message central
+            Quel message transmettre ?
           </OptionTitle>
           <SelectionGrid>
             {CENTRAL_MESSAGES.map((message) => (
@@ -885,7 +885,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
 
         <FormSection ref={styleRef}>
           <OptionTitle>
-            🎨 Style d'illustration
+            Quel style d'illustration ?
           </OptionTitle>
           <SelectionGrid $columns={3}>
             {ILLUSTRATION_STYLES.map((style) => (
