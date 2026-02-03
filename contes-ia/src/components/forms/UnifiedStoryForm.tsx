@@ -8,6 +8,8 @@ import { ImageThemeCard } from '../ui/ImageThemeCard';
 import { CustomThemeCard } from '../ui/CustomThemeCard';
 import { ImageOccasionCard } from '../ui/ImageOccasionCard';
 import { CustomOccasionCard } from '../ui/CustomOccasionCard';
+import { ImageMessageCard } from '../ui/ImageMessageCard';
+import { CustomMessageCard } from '../ui/CustomMessageCard';
 import { Button } from '../ui/Button';
 import { ValidatedInput } from '../ui/ValidatedInput';
 import { AgeSelector } from '../ui/AgeSelector';
@@ -854,23 +856,21 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
           </OptionTitle>
           <SelectionGrid>
             {CENTRAL_MESSAGES.map((message) => (
-              <SelectionCard
+              <ImageMessageCard
                 key={message.value}
                 value={message.value}
                 label={message.label}
-                icon={message.icon}
+                imagePath={message.imagePath}
                 isSelected={formData.centralMessage === message.value}
                 onClick={(value) => handleSelection('centralMessage', value)}
               />
             ))}
-            <SelectionCard
+            <CustomMessageCard
               value="custom"
               label="Message personnalisé"
-              icon="✏️"
+              imagePath="/image/messages/personnalise.png"
               isSelected={formData.centralMessage === 'custom'}
               onClick={(value) => handleSelection('centralMessage', value)}
-              isCustom={true}
-              customLabel="Personnalisé le message central de votre conte"
             />
           </SelectionGrid>
           {formData.centralMessage === 'custom' && (

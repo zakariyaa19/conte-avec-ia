@@ -97,14 +97,14 @@ export const SPECIFIC_SUBJECTS = [
 ];
 
 export const CENTRAL_MESSAGES = [
-  { value: 'friendship', label: 'Amitié', icon: '🤝' },
-  { value: 'courage', label: 'Courage', icon: '💪' },
-  { value: 'nature-care', label: 'Prendre soin de la nature', icon: '🌱' },
-  { value: 'love', label: 'Amour', icon: '❤️' },
-  { value: 'perseverance', label: 'Persévérance', icon: '🎯' },
-  { value: 'sharing', label: 'Partage', icon: '🤲' },
-  { value: 'honesty', label: 'Honnêteté', icon: '✨' },
-  { value: 'respect', label: 'Respect', icon: '🙏' }
+  { value: 'friendship', label: 'Amitié', icon: '🤝', imagePath: '/image/messages/amitie.png' },
+  { value: 'courage', label: 'Courage', icon: '💪', imagePath: '/image/messages/courage.png' },
+  { value: 'nature-care', label: 'Prendre soin de la nature', icon: '🌱', imagePath: '/image/messages/nature.png' },
+  { value: 'love', label: 'Amour', icon: '❤️', imagePath: '/image/messages/amour.png' },
+  { value: 'perseverance', label: 'Persévérance', icon: '🎯', imagePath: '/image/messages/perseverance.png' },
+  { value: 'sharing', label: 'Partage', icon: '🤲', imagePath: '/image/messages/partage.png' },
+  { value: 'honesty', label: 'Honnêteté', icon: '✨', imagePath: '/image/messages/honnetete.png' },
+  { value: 'respect', label: 'Respect', icon: '🙏', imagePath: '/image/messages/respect.png' }
 ];
 
 export const ILLUSTRATION_STYLES = [
