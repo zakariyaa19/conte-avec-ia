@@ -45,16 +45,16 @@ const CardContainer = styled.div<{ $isSelected: boolean }>`
 `;
 
 const ImageContainer = styled.div`
-  width: 140px;
-  height: 140px;
+  width: 180px;
+  height: 180px;
   margin-bottom: ${theme.spacing.md};
   display: flex;
   align-items: center;
   justify-content: center;
   
   @media (max-width: ${theme.breakpoints.sm}) {
-    width: 100px;
-    height: 100px;
+    width: 130px;
+    height: 130px;
   }
 `;
 

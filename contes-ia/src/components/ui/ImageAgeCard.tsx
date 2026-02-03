@@ -46,16 +46,16 @@ const CardContainer = styled.div<{ $isSelected: boolean }>`
 `;
 
 const ImageContainer = styled.div`
-  width: 120px;
-  height: 120px;
+  width: 160px;
+  height: 160px;
   margin-bottom: ${theme.spacing.md};
   display: flex;
   align-items: center;
   justify-content: center;
   
   @media (max-width: ${theme.breakpoints.sm}) {
-    width: 100px;
-    height: 100px;
+    width: 130px;
+    height: 130px;
   }
 `;
 
