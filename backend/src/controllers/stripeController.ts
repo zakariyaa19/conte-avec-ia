@@ -170,24 +170,35 @@ ${order.shippingAddress}
 ${order.shippingPostalCode} ${order.shippingCity}
 ` : ''}`;
 
+      // Récupérer l'email du client depuis la base de données OU depuis Stripe
+      const customerEmail = order.user?.email || session.customer_details?.email || session.customer_email;
+      
       // Envoyer les emails via Mailjet (une seule fois)
       console.log(`📧 Envoi des emails pour la commande ${orderId} (première fois)`);
+      console.log(`📊 Diagnostic email:`);
+      console.log(`   - order.user existe: ${!!order.user}`);
+      console.log(`   - order.user?.email: ${order.user?.email || 'NON DÉFINI'}`);
+      console.log(`   - session.customer_details?.email: ${session.customer_details?.email || 'NON DÉFINI'}`);
+      console.log(`   - Email final utilisé: ${customerEmail || 'AUCUN EMAIL TROUVÉ'}`);
+      
       try {
         // Email de confirmation au client
-        if (order.user?.email) {
+        if (customerEmail) {
           await MailjetService.sendOrderConfirmation({
             customerName: order.shippingFirstName || 'Client',
-            customerEmail: order.user.email,
+            customerEmail: customerEmail,
             orderNumber: order.id.slice(-8),
             orderDetails: orderDetails
           });
-          console.log(`✅ Email client envoyé à ${order.user.email}`);
+          console.log(`✅ Email client envoyé à ${customerEmail}`);
+        } else {
+          console.warn(`⚠️ Impossible d'envoyer l'email client : aucun email trouvé pour la commande ${orderId}`);
         }
 
         // Email de notification à l'admin
         await MailjetService.sendAdminNotification({
           customerName: order.shippingFirstName || 'Client',
-          customerEmail: order.user?.email || 'Email non fourni',
+          customerEmail: customerEmail || 'Email non fourni',
           orderNumber: order.id.slice(-8),
           orderDetails: orderDetails
         });
@@ -197,7 +208,7 @@ ${order.shippingPostalCode} ${order.shippingCity}
         const { TelegramService } = await import('../utils/telegramService');
         await TelegramService.sendOrderNotification({
           customerName: order.shippingFirstName || 'Client',
-          customerEmail: order.user?.email || 'Email non fourni',
+          customerEmail: customerEmail || 'Email non fourni',
           orderNumber: order.id.slice(-8),
           amount: Number(order.price),
           orderDate: new Date(),
@@ -208,6 +219,8 @@ ${order.shippingPostalCode} ${order.shippingCity}
 
       } catch (emailError) {
         console.error('❌ Erreur envoi emails/Telegram:', emailError);
+        console.error('❌ Détails de l\'erreur:', emailError instanceof Error ? emailError.message : emailError);
+        console.error('❌ Stack trace:', emailError instanceof Error ? emailError.stack : 'N/A');
         // Ne pas faire échouer le paiement si l'email/Telegram échoue
       }
 
