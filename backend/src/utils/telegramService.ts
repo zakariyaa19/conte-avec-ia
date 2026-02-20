@@ -3,6 +3,19 @@ import fs from 'fs';
 import path from 'path';
 import { formatSecondaryCharacters, parseSecondaryCharacters } from './formatters';
 
+/**
+ * Echappe les caracteres speciaux HTML pour Telegram
+ * Telegram HTML parse_mode n'accepte que: <b>, <i>, <a>, <code>, <pre>
+ * Tous les &, < et > dans les donnees utilisateur doivent etre echappes
+ */
+function escapeHtml(text: string | null | undefined): string {
+  if (!text) return '';
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
 export class TelegramService {
   private static get BOT_TOKEN() { return process.env.TELEGRAM_BOT_TOKEN; }
   private static get CHAT_ID() { return process.env.TELEGRAM_CHAT_ID; }
@@ -10,6 +23,7 @@ export class TelegramService {
 
   /**
    * Envoyer un message de notification de commande via Telegram avec photo
+   * Ne lance JAMAIS d'exception — les erreurs sont loguees mais n'affectent pas le webhook
    */
   static async sendOrderNotification(orderData: {
     customerName: string;
@@ -21,10 +35,17 @@ export class TelegramService {
     purchaseType?: string;
     orderDetails?: any;
   }): Promise<void> {
+    console.log('[TELEGRAM] === Debut envoi notification ===');
+    console.log('[TELEGRAM] Commande:', orderData.orderNumber, '| Client:', orderData.customerEmail);
+
     try {
+      // Verification des variables d'environnement
       if (!this.BOT_TOKEN || !this.CHAT_ID) {
-        throw new Error('Configuration Telegram manquante (BOT_TOKEN ou CHAT_ID)');
+        console.error('[TELEGRAM] ERREUR: Variables d\'environnement manquantes');
+        console.error('[TELEGRAM] BOT_TOKEN present:', !!this.BOT_TOKEN, '| CHAT_ID present:', !!this.CHAT_ID);
+        return; // Ne pas throw — on log et on sort
       }
+      console.log('[TELEGRAM] Env OK (BOT_TOKEN:', this.BOT_TOKEN.length, 'chars, CHAT_ID:', this.CHAT_ID, ')');
 
       // 1. Envoyer la photo si elle existe
       if (orderData.orderDetails?.photoUrl) {
@@ -35,8 +56,9 @@ export class TelegramService {
         });
       }
 
-      // 2. Envoyer le message détaillé
+      // 2. Envoyer le message detaille
       const message = this.formatOrderMessage(orderData);
+      console.log('[TELEGRAM] Message formate (' + message.length + ' chars). Envoi en cours...');
 
       const response = await axios.post(`${this.API_URL}/sendMessage`, {
         chat_id: this.CHAT_ID,
@@ -45,14 +67,52 @@ export class TelegramService {
       });
 
       if (response.data.ok) {
-        console.log('✅ Message Telegram envoyé avec succès');
+        console.log('[TELEGRAM] Message envoye avec succes (message_id:', response.data.result?.message_id, ')');
       } else {
-        throw new Error(`Erreur API Telegram: ${response.data.description}`);
+        console.error('[TELEGRAM] Reponse API non-ok:', JSON.stringify(response.data));
       }
 
-    } catch (error) {
-      console.error('❌ Erreur envoi message Telegram:', error);
-      throw new Error('Échec de l\'envoi du message Telegram');
+    } catch (error: any) {
+      console.error('[TELEGRAM] ERREUR envoi message:', error.message);
+
+      // Si erreur Telegram API (400 = HTML invalide), tenter en texte brut
+      if (error.response?.status === 400) {
+        console.log('[TELEGRAM] Erreur 400 (probable HTML invalide). Retry en texte brut...');
+        try {
+          const plainMessage = this.formatOrderMessage(orderData)
+            .replace(/<\/?b>/g, '')
+            .replace(/<\/?i>/g, '')
+            .replace(/<\/?code>/g, '')
+            .replace(/&amp;/g, '&')
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>');
+
+          const retryResponse = await axios.post(`${this.API_URL}/sendMessage`, {
+            chat_id: this.CHAT_ID,
+            text: plainMessage
+          });
+
+          if (retryResponse.data.ok) {
+            console.log('[TELEGRAM] Retry texte brut: SUCCES');
+          } else {
+            console.error('[TELEGRAM] Retry texte brut: ECHEC:', JSON.stringify(retryResponse.data));
+          }
+        } catch (retryError: any) {
+          console.error('[TELEGRAM] Retry texte brut: ERREUR:', retryError.message);
+          if (retryError.response) {
+            console.error('[TELEGRAM] Retry status:', retryError.response.status, 'body:', JSON.stringify(retryError.response.data));
+          }
+        }
+      } else {
+        // Log details de l'erreur HTTP
+        if (error.response) {
+          console.error('[TELEGRAM] Status HTTP:', error.response.status);
+          console.error('[TELEGRAM] Response body:', JSON.stringify(error.response.data));
+        } else if (error.code) {
+          console.error('[TELEGRAM] Code erreur reseau:', error.code);
+        }
+      }
+      // PAS de throw — on ne casse jamais le webhook Stripe
     }
   }
 
@@ -68,7 +128,7 @@ export class TelegramService {
       const photoUrl = orderData.orderDetails.photoUrl;
       if (!photoUrl) return;
 
-      console.log('📸 Envoi photo Telegram:', photoUrl);
+      console.log('[TELEGRAM] Envoi photo:', photoUrl);
 
       // Construire le chemin du fichier
       let photoPath = '';
@@ -80,52 +140,40 @@ export class TelegramService {
         photoPath = path.join(__dirname, '../../uploads', photoUrl);
       }
 
-      console.log('📁 Chemin photo:', photoPath);
-
-      // Vérifier si le fichier existe
+      // Verifier si le fichier existe
       if (!fs.existsSync(photoPath)) {
-        console.log('⚠️ Photo non trouvée, envoi du message sans photo');
+        console.log('[TELEGRAM] Photo non trouvee sur le serveur, skip');
         return;
       }
 
-      // Préparer le caption de la photo
-      const caption = `📸 <b>Photo du protagoniste</b>
-      
-🛍️ Commande #${orderData.orderNumber}
-👤 Client: ${orderData.customerName}
-👦👧 Protagoniste: ${orderData.orderDetails.protagonistName || 'Non spécifié'}
+      const caption = `📸 Photo du protagoniste\n🛍️ Commande #${escapeHtml(orderData.orderNumber)}\n👤 Client: ${escapeHtml(orderData.customerName)}`;
 
-<i>Photo envoyée par le client pour personnaliser le conte</i>`;
-
-      // Envoyer la photo avec FormData
       const FormData = require('form-data');
       const form = new FormData();
-      
+
       form.append('chat_id', this.CHAT_ID);
       form.append('photo', fs.createReadStream(photoPath));
       form.append('caption', caption);
       form.append('parse_mode', 'HTML');
 
       const response = await axios.post(`${this.API_URL}/sendPhoto`, form, {
-        headers: {
-          ...form.getHeaders(),
-        },
+        headers: { ...form.getHeaders() },
       });
 
       if (response.data.ok) {
-        console.log('✅ Photo Telegram envoyée avec succès');
+        console.log('[TELEGRAM] Photo envoyee avec succes');
       } else {
-        console.error('❌ Erreur envoi photo Telegram:', response.data.description);
+        console.error('[TELEGRAM] Erreur envoi photo:', response.data.description);
       }
 
-    } catch (error) {
-      console.error('❌ Erreur envoi photo Telegram:', error);
-      // Ne pas faire échouer toute la notification si la photo échoue
+    } catch (error: any) {
+      console.error('[TELEGRAM] Erreur envoi photo (non bloquant):', error.message);
     }
   }
 
   /**
-   * Formater le message de commande avec emojis et mise en forme
+   * Formater le message de commande avec emojis et mise en forme HTML
+   * Toutes les donnees utilisateur sont echappees pour eviter les erreurs HTML
    */
   private static formatOrderMessage(orderData: {
     customerName: string;
@@ -147,50 +195,63 @@ export class TelegramService {
 
     const productEmoji = orderData.productType === 'EBOOK' ? '📱' : '📚';
 
-    // Première partie : Informations essentielles
     const purchaseTypeLabel = orderData.purchaseType === 'CLUB' && orderData.amount === 0
       ? 'Club (gratuit)'
       : orderData.purchaseType === 'CLUB'
         ? 'Club'
         : 'Achat unique';
 
+    // Echapper toutes les donnees utilisateur
+    const safeName = escapeHtml(orderData.customerName);
+    const safeEmail = escapeHtml(orderData.customerEmail);
+    const safeOrderNumber = escapeHtml(orderData.orderNumber);
+
     let message = `🛍️ <b>Nouvelle commande reçue !</b>
 
-📋 <b>Commande #${orderData.orderNumber}</b>
-👤 <b>Client:</b> ${orderData.customerName}
-📧 <b>Email:</b> ${orderData.customerEmail}
+📋 <b>Commande #${safeOrderNumber}</b>
+👤 <b>Client:</b> ${safeName}
+📧 <b>Email:</b> ${safeEmail}
 ${productEmoji} <b>Produit:</b> ${orderData.productType === 'EBOOK' ? 'eBook' : 'Livre relié'}
 🎫 <b>Type:</b> ${purchaseTypeLabel}
 💳 <b>Montant:</b> ${orderData.amount}€
 📅 <b>Date:</b> ${formattedDate}`;
 
-    // Deuxième partie : Détails du formulaire
+    // Details du formulaire
     if (orderData.orderDetails) {
       const order = orderData.orderDetails;
-      
+
+      const safeProtagName = escapeHtml(order.protagonistName);
+      const safeCustomTheme = escapeHtml(order.customTheme);
+      const safeCustomSubject = escapeHtml(order.customSubject);
+      const safeCustomMessage = escapeHtml(order.customMessage);
+      const safeHobbies = escapeHtml(order.hobbies);
+      const safeFavoriteDish = escapeHtml(order.favoriteDish);
+      const safeSpecialEvents = escapeHtml(order.specialEvents);
+      const safeCustomReligion = escapeHtml(order.customReligion);
+
       message += `
 
 ━━━━━━━━━━━━━━━━━━━━━━
 📝 <b>DÉTAILS DE LA COMMANDE</b>
 
 🎯 <b>Conte personnalisé</b>
-📚 Tranche d'âge: ${order.ageRange || 'Non spécifié'}
-🌟 Thème général: ${this.formatTheme(order.generalTheme)}${order.customTheme ? ` (${order.customTheme})` : ''}
-📖 Sujet: ${this.formatSubject(order.specificSubject)}${order.customSubject ? ` (${order.customSubject})` : ''}
-💭 Message central: ${this.formatMessage(order.centralMessage)}${order.customMessage ? ` (${order.customMessage})` : ''}
+📚 Tranche d'âge: ${escapeHtml(order.ageRange) || 'Non spécifié'}
+🌟 Thème général: ${this.formatTheme(order.generalTheme)}${safeCustomTheme ? ` (${safeCustomTheme})` : ''}
+📖 Sujet: ${this.formatSubject(order.specificSubject)}${safeCustomSubject ? ` (${safeCustomSubject})` : ''}
+💭 Message central: ${this.formatMessage(order.centralMessage)}${safeCustomMessage ? ` (${safeCustomMessage})` : ''}
 🎨 Style: ${this.formatIllustrationStyle(order.illustrationStyle)}
-${order.language ? `🌍 Langue: ${order.language}` : ''}
+${order.language ? `🌍 Langue: ${escapeHtml(order.language)}` : ''}
 
 👦👧 <b>Protagoniste</b>
-🏷️ Nom: ${order.protagonistName || 'Non spécifié'}
-🎂 Âge: ${order.protagonistAge || 'Non spécifié'}
+🏷️ Nom: ${safeProtagName || 'Non spécifié'}
+🎂 Âge: ${escapeHtml(order.protagonistAge) || 'Non spécifié'}
 ${order.protagonistGender ? `⚧️ Sexe: ${order.protagonistGender === 'boy' ? 'Garçon' : 'Fille'}` : ''}
-👁️ Yeux: ${order.eyeColor || 'Non spécifié'}
-💇 Cheveux: ${order.hairColor || 'Non spécifié'}
-${order.hobbies ? `🎮 Loisirs: ${order.hobbies}` : ''}
-${order.favoriteDish ? `🍽️ Plat préféré: ${order.favoriteDish}` : ''}
-${order.specialEvents ? `🎉 Événements: ${order.specialEvents}` : ''}
-${order.religion ? `🙏 Religion: ${order.religion}${order.customReligion ? ` (${order.customReligion})` : ''}` : ''}`;
+👁️ Yeux: ${escapeHtml(order.eyeColor) || 'Non spécifié'}
+💇 Cheveux: ${escapeHtml(order.hairColor) || 'Non spécifié'}
+${safeHobbies ? `🎮 Loisirs: ${safeHobbies}` : ''}
+${safeFavoriteDish ? `🍽️ Plat préféré: ${safeFavoriteDish}` : ''}
+${safeSpecialEvents ? `🎉 Événements: ${safeSpecialEvents}` : ''}
+${order.religion ? `🙏 Religion: ${escapeHtml(order.religion)}${safeCustomReligion ? ` (${safeCustomReligion})` : ''}` : ''}`;
 
       // Personnages secondaires
       const secondaryChars = parseSecondaryCharacters(order.secondaryCharactersJson);
@@ -198,32 +259,31 @@ ${order.religion ? `🙏 Religion: ${order.religion}${order.customReligion ? ` (
         message += `
 
 👥 <b>Personnages secondaires (${secondaryChars.length})</b>
-${formatSecondaryCharacters(secondaryChars)}`;
+${escapeHtml(formatSecondaryCharacters(secondaryChars))}`;
       } else if (order.secondaryCharacterName) {
-        // Rétrocompatibilité avec ancien format
         message += `
 
 👥 <b>Personnage secondaire</b>
-🏷️ Nom: ${order.secondaryCharacterName}
-${order.secondaryCharacterAge ? `📝 Type/Âge: ${order.secondaryCharacterAge}` : ''}`;
+🏷️ Nom: ${escapeHtml(order.secondaryCharacterName)}
+${order.secondaryCharacterAge ? `📝 Type/Âge: ${escapeHtml(order.secondaryCharacterAge)}` : ''}`;
       }
 
-      // Informations personnelles
+      // Createur
       if (order.creatorName) {
         message += `
 
 ✍️ <b>Créateur</b>
-👤 Nom: ${order.creatorName}`;
+👤 Nom: ${escapeHtml(order.creatorName)}`;
       }
 
-      // Adresse de livraison pour les livres reliés
+      // Adresse de livraison
       if (order.productType === 'PRINTED' && order.shippingAddress) {
         message += `
 
 📦 <b>Livraison</b>
-📍 ${order.shippingFirstName} ${order.shippingLastName}
-🏠 ${order.shippingAddress}
-📮 ${order.shippingPostalCode} ${order.shippingCity}`;
+📍 ${escapeHtml(order.shippingFirstName)} ${escapeHtml(order.shippingLastName)}
+🏠 ${escapeHtml(order.shippingAddress)}
+📮 ${escapeHtml(order.shippingPostalCode)} ${escapeHtml(order.shippingCity)}`;
       }
     }
 
@@ -234,9 +294,6 @@ ${order.secondaryCharacterAge ? `📝 Type/Âge: ${order.secondaryCharacterAge}`
     return message;
   }
 
-  /**
-   * Formater les thèmes pour l'affichage
-   */
   private static formatTheme(theme: string): string {
     const themes: { [key: string]: string } = {
       'adventure': 'Aventure',
@@ -250,12 +307,9 @@ ${order.secondaryCharacterAge ? `📝 Type/Âge: ${order.secondaryCharacterAge}`
       'sports': 'Sports',
       'music': 'Musique'
     };
-    return themes[theme] || theme;
+    return themes[theme] || escapeHtml(theme);
   }
 
-  /**
-   * Formater les sujets pour l'affichage
-   */
   private static formatSubject(subject: string): string {
     const subjects: { [key: string]: string } = {
       'fairy-tales': 'Contes de fées',
@@ -264,12 +318,9 @@ ${order.secondaryCharacterAge ? `📝 Type/Âge: ${order.secondaryCharacterAge}`
       'futuristic': 'Futuriste',
       'educational': 'Éducatif'
     };
-    return subjects[subject] || subject;
+    return subjects[subject] || escapeHtml(subject);
   }
 
-  /**
-   * Formater les messages centraux pour l'affichage
-   */
   private static formatMessage(message: string): string {
     const messages: { [key: string]: string } = {
       'love': 'Amour',
@@ -281,12 +332,9 @@ ${order.secondaryCharacterAge ? `📝 Type/Âge: ${order.secondaryCharacterAge}`
       'respect': 'Respect',
       'responsibility': 'Responsabilité'
     };
-    return messages[message] || message;
+    return messages[message] || escapeHtml(message);
   }
 
-  /**
-   * Formater les styles d'illustration pour l'affichage
-   */
   private static formatIllustrationStyle(style: string): string {
     const styles: { [key: string]: string } = {
       'realistic': 'Réaliste',
@@ -295,22 +343,26 @@ ${order.secondaryCharacterAge ? `📝 Type/Âge: ${order.secondaryCharacterAge}`
       'watercolor': 'Aquarelle',
       'minimalist': 'Minimaliste'
     };
-    return styles[style] || style;
+    return styles[style] || escapeHtml(style);
   }
 
   /**
    * Envoyer un message de test
    */
   static async sendTestMessage(): Promise<void> {
+    console.log('[TELEGRAM] === Test de connexion ===');
     try {
       if (!this.BOT_TOKEN || !this.CHAT_ID) {
+        console.error('[TELEGRAM] TEST ECHEC: BOT_TOKEN present:', !!this.BOT_TOKEN, '| CHAT_ID present:', !!this.CHAT_ID);
         throw new Error('Configuration Telegram manquante (BOT_TOKEN ou CHAT_ID)');
       }
+
+      console.log('[TELEGRAM] BOT_TOKEN:', this.BOT_TOKEN.length, 'chars | CHAT_ID:', this.CHAT_ID);
 
       const testMessage = `🤖 <b>Test de connexion Telegram Bot</b>
 
 ✅ Configuration OK
-📱 Bot Token: Configuré
+📱 Bot Token: Configuré (${this.BOT_TOKEN.length} chars)
 💬 Chat ID: ${this.CHAT_ID}
 ⏰ Date: ${new Date().toLocaleString('fr-FR')}
 
@@ -323,14 +375,18 @@ ${order.secondaryCharacterAge ? `📝 Type/Âge: ${order.secondaryCharacterAge}`
       });
 
       if (response.data.ok) {
-        console.log('✅ Message de test Telegram envoyé avec succès');
+        console.log('[TELEGRAM] Test SUCCES (message_id:', response.data.result?.message_id, ')');
       } else {
+        console.error('[TELEGRAM] Test ECHEC:', JSON.stringify(response.data));
         throw new Error(`Erreur API Telegram: ${response.data.description}`);
       }
 
-    } catch (error) {
-      console.error('❌ Erreur test Telegram:', error);
-      throw new Error('Échec du test Telegram');
+    } catch (error: any) {
+      console.error('[TELEGRAM] Test ERREUR:', error.message);
+      if (error.response) {
+        console.error('[TELEGRAM] Status:', error.response.status, 'Body:', JSON.stringify(error.response.data));
+      }
+      throw error;
     }
   }
 }
