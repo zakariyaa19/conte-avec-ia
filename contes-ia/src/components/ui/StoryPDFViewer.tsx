@@ -3,8 +3,9 @@ import { Document, Page, pdfjs } from 'react-pdf';
 import styled, { keyframes } from 'styled-components';
 import { theme } from '../../styles/theme';
 
-// Worker PDF.js — CDN qui match la version embarquee par react-pdf
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+// Worker PDF.js — fichier local copie depuis react-pdf/node_modules/pdfjs-dist
+// Plus fiable que le CDN (pas de dependance reseau, pas de probleme de version)
+pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
 
 // CSS react-pdf (annotation + text layers)
 import 'react-pdf/dist/Page/AnnotationLayer.css';
