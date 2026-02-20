@@ -4,9 +4,9 @@ import path from 'path';
 import { formatSecondaryCharacters, parseSecondaryCharacters } from './formatters';
 
 export class TelegramService {
-  private static readonly BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
-  private static readonly CHAT_ID = process.env.TELEGRAM_CHAT_ID;
-  private static readonly API_URL = `https://api.telegram.org/bot${TelegramService.BOT_TOKEN}`;
+  private static get BOT_TOKEN() { return process.env.TELEGRAM_BOT_TOKEN; }
+  private static get CHAT_ID() { return process.env.TELEGRAM_CHAT_ID; }
+  private static get API_URL() { return `https://api.telegram.org/bot${this.BOT_TOKEN}`; }
 
   /**
    * Envoyer un message de notification de commande via Telegram avec photo
@@ -18,7 +18,8 @@ export class TelegramService {
     amount: number;
     orderDate: Date;
     productType: string;
-    orderDetails?: any; // Toutes les données de la commande
+    purchaseType?: string;
+    orderDetails?: any;
   }): Promise<void> {
     try {
       if (!this.BOT_TOKEN || !this.CHAT_ID) {
@@ -133,6 +134,7 @@ export class TelegramService {
     amount: number;
     orderDate: Date;
     productType: string;
+    purchaseType?: string;
     orderDetails?: any;
   }): string {
     const formattedDate = orderData.orderDate.toLocaleString('fr-FR', {
@@ -146,12 +148,19 @@ export class TelegramService {
     const productEmoji = orderData.productType === 'EBOOK' ? '📱' : '📚';
 
     // Première partie : Informations essentielles
+    const purchaseTypeLabel = orderData.purchaseType === 'CLUB' && orderData.amount === 0
+      ? 'Club (gratuit)'
+      : orderData.purchaseType === 'CLUB'
+        ? 'Club'
+        : 'Achat unique';
+
     let message = `🛍️ <b>Nouvelle commande reçue !</b>
 
 📋 <b>Commande #${orderData.orderNumber}</b>
 👤 <b>Client:</b> ${orderData.customerName}
 📧 <b>Email:</b> ${orderData.customerEmail}
 ${productEmoji} <b>Produit:</b> ${orderData.productType === 'EBOOK' ? 'eBook' : 'Livre relié'}
+🎫 <b>Type:</b> ${purchaseTypeLabel}
 💳 <b>Montant:</b> ${orderData.amount}€
 📅 <b>Date:</b> ${formattedDate}`;
 

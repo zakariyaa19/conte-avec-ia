@@ -7,7 +7,7 @@ async function main() {
   console.log('🌱 Début du seeding...');
 
   // Créer un utilisateur admin par défaut
-  const hashedPassword = await bcrypt.hash('admin123', 10);
+  const hashedPassword = await bcrypt.hash('Admin2024!', 10);
   
   const admin = await prisma.adminUser.upsert({
     where: { email: 'contact@contedia.fr' },
@@ -70,7 +70,7 @@ async function main() {
     prisma.order.create({
       data: {
         userId: testUsers[1].id,
-        status: 'PROCESSING',
+        status: 'PAID',
         ageRange: '6-9',
         generalTheme: 'educational',
         specificSubject: 'knights-dragons',
@@ -114,7 +114,7 @@ async function main() {
   console.log('✅ Commandes de test créées');
 
   console.log('🎉 Seeding terminé avec succès !');
-  console.log('📧 Admin: contact@contedia.fr / admin123');
+  console.log('📧 Admin: contact@contedia.fr / Admin2024!');
 }
 
 main()

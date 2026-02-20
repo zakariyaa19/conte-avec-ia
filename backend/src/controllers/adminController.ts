@@ -45,7 +45,7 @@ export class AdminController {
           email: admin.email, 
           role: admin.role 
         },
-        process.env.JWT_SECRET || 'your-secret-key',
+        process.env.JWT_SECRET!,
         { expiresIn: '24h' }
       );
 
@@ -109,22 +109,37 @@ export class AdminController {
     }
   }
 
-  // Liste des commandes pour l'admin
+  // Liste des commandes pour l'admin (avec filtres avances)
   static async getOrders(req: Request, res: Response) {
     try {
-      const { page = 1, limit = 20, status, productType, search } = req.query;
-      
+      const { page = 1, limit = 20, status, productType, purchaseType, search, dateFrom, dateTo, actionRequired } = req.query;
+
       const skip = (Number(page) - 1) * Number(limit);
-      
+
       // Construction des filtres
       const where: any = {};
       if (status) where.status = status;
       if (productType) where.productType = productType;
+      if (purchaseType) where.purchaseType = purchaseType;
       if (search) {
         where.OR = [
           { protagonistName: { contains: search as string } },
           { user: { email: { contains: search as string } } }
         ];
+      }
+      if (dateFrom || dateTo) {
+        where.createdAt = {};
+        if (dateFrom) where.createdAt.gte = new Date(dateFrom as string);
+        if (dateTo) {
+          const end = new Date(dateTo as string);
+          end.setHours(23, 59, 59, 999);
+          where.createdAt.lte = end;
+        }
+      }
+
+      // Filtre "a traiter" : commandes payees non encore livrees
+      if (actionRequired === 'true') {
+        where.status = 'PAID';
       }
 
       const [orders, total] = await Promise.all([
@@ -219,8 +234,8 @@ export class AdminController {
         });
       }
 
-      // Champs autorisés à la modification
-      const allowedFields = ['status', 'ebookUrl', 'generatedAt'];
+      // Champs autorises a la modification
+      const allowedFields = ['status', 'ebookUrl', 'pdfUrl', 'storyStatus', 'generatedAt'];
       const filteredUpdates: any = {};
       
       for (const field of allowedFields) {
@@ -276,11 +291,14 @@ export class AdminController {
     }
   }
 
-  // Route temporaire pour (re)créer l'admin en production
-  // ATTENTION : pas de protection par secret pour simplifier le bootstrap.
-  // À supprimer dès que l'admin est recréé et que la connexion fonctionne.
+  // Route de bootstrap admin protegee par secret
   static async createAdminTemp(req: Request, res: Response) {
     try {
+      const bootstrapSecret = req.headers['x-bootstrap-secret'];
+      if (!bootstrapSecret || bootstrapSecret !== process.env.BOOTSTRAP_SECRET) {
+        return res.status(403).json({ success: false, message: 'Acces interdit' });
+      }
+
       const email = 'contact@contedia.fr';
       const password = 'Admin2024!';
       const hashedPassword = await bcrypt.hash(password, 10);
@@ -313,10 +331,320 @@ export class AdminController {
       });
 
     } catch (error: any) {
-      console.error('❌ Erreur création admin:', error);
+      console.error('Erreur creation admin:', error);
       res.status(500).json({
         success: false,
-        message: 'Erreur lors de la création de l\'admin'
+        message: 'Erreur lors de la creation de l\'admin'
+      });
+    }
+  }
+
+  // Upload PDF d'un conte
+  static async uploadStoryPdf(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+
+      if (!req.file) {
+        return res.status(400).json({
+          success: false,
+          message: 'Fichier PDF requis'
+        });
+      }
+
+      const order = await prisma.order.findUnique({ where: { id } });
+      if (!order) {
+        return res.status(404).json({
+          success: false,
+          message: 'Commande non trouvee'
+        });
+      }
+
+      const pdfUrl = `/uploads/pdfs/${req.file.filename}`;
+
+      const updated = await prisma.order.update({
+        where: { id },
+        data: {
+          pdfUrl,
+          storyStatus: 'DISPONIBLE'
+        },
+        include: { user: true }
+      });
+
+      res.json({
+        success: true,
+        data: updated,
+        message: 'PDF uploade avec succes'
+      });
+    } catch (error) {
+      console.error('Erreur upload PDF:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Erreur lors de l\'upload du PDF'
+      });
+    }
+  }
+
+  // Livrer un conte au client
+  static async deliverStory(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+
+      const order = await prisma.order.findUnique({
+        where: { id },
+        include: { user: true }
+      });
+
+      if (!order) {
+        return res.status(404).json({
+          success: false,
+          message: 'Commande non trouvee'
+        });
+      }
+
+      if (!order.pdfUrl) {
+        return res.status(400).json({
+          success: false,
+          message: 'Aucun PDF n\'a ete uploade pour cette commande'
+        });
+      }
+
+      const updated = await prisma.order.update({
+        where: { id },
+        data: {
+          status: 'DELIVERED',
+          storyStatus: 'DISPONIBLE',
+          deliveredAt: new Date()
+        },
+        include: { user: true }
+      });
+
+      // Envoyer email de livraison (pas de Telegram — action admin, pas commande client)
+      try {
+        const { MailjetService } = await import('../utils/mailjetService');
+        if (order.user?.email) {
+          await MailjetService.sendStoryDeliveryEmail({
+            customerName: order.shippingFirstName || order.user.firstName || 'Client',
+            customerEmail: order.user.email,
+            orderNumber: order.id.slice(-8),
+            protagonistName: order.protagonistName
+          });
+        }
+      } catch (notifError) {
+        console.error('Erreur notification livraison:', notifError);
+      }
+
+      res.json({
+        success: true,
+        data: updated,
+        message: 'Conte livre au client avec succes'
+      });
+    } catch (error) {
+      console.error('Erreur livraison conte:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Erreur lors de la livraison'
+      });
+    }
+  }
+
+  // Liste des clients
+  static async getClients(req: Request, res: Response) {
+    try {
+      const { page = 1, limit = 20, role, search } = req.query;
+      const skip = (Number(page) - 1) * Number(limit);
+
+      const where: any = {};
+      if (role) where.role = role;
+      if (search) {
+        where.OR = [
+          { email: { contains: search as string } },
+          { firstName: { contains: search as string } },
+          { lastName: { contains: search as string } }
+        ];
+      }
+
+      const [users, total] = await Promise.all([
+        prisma.user.findMany({
+          where,
+          include: {
+            _count: { select: { orders: true } }
+          },
+          orderBy: { createdAt: 'desc' },
+          skip,
+          take: Number(limit)
+        }),
+        prisma.user.count({ where })
+      ]);
+
+      const clientsData = users.map(u => ({
+        id: u.id,
+        email: u.email,
+        firstName: u.firstName,
+        lastName: u.lastName,
+        role: u.role,
+        subscriptionStatus: u.subscriptionStatus,
+        orderCount: (u as any)._count.orders,
+        createdAt: u.createdAt
+      }));
+
+      res.json({
+        success: true,
+        data: clientsData,
+        pagination: {
+          page: Number(page),
+          limit: Number(limit),
+          total,
+          totalPages: Math.ceil(total / Number(limit))
+        }
+      });
+    } catch (error) {
+      console.error('Erreur liste clients:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Erreur lors de la recuperation des clients'
+      });
+    }
+  }
+
+  // Detail d'un client
+  static async getClientDetail(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+
+      const user = await prisma.user.findUnique({
+        where: { id },
+        include: {
+          orders: { orderBy: { createdAt: 'desc' } },
+          childProfiles: true
+        }
+      });
+
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          message: 'Client non trouve'
+        });
+      }
+
+      res.json({
+        success: true,
+        data: {
+          id: user.id,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          role: user.role,
+          subscriptionStatus: user.subscriptionStatus,
+          subscriptionPeriodEnd: user.subscriptionPeriodEnd,
+          subscriptionId: user.subscriptionId,
+          stripeCustomerId: user.stripeCustomerId,
+          weeklySubmissionCount: user.weeklySubmissionCount,
+          weeklySubmissionReset: user.weeklySubmissionReset,
+          createdAt: user.createdAt,
+          orders: user.orders,
+          children: user.childProfiles
+        }
+      });
+    } catch (error) {
+      console.error('Erreur detail client:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Erreur lors de la recuperation du client'
+      });
+    }
+  }
+
+  // Supprimer un client et ses commandes
+  static async deleteClient(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+
+      const user = await prisma.user.findUnique({ where: { id }, include: { _count: { select: { orders: true } } } });
+      if (!user) {
+        return res.status(404).json({ success: false, message: 'Client non trouve' });
+      }
+
+      // Supprimer les commandes, profils enfants, puis le user
+      await prisma.order.deleteMany({ where: { userId: id } });
+      await prisma.childProfile.deleteMany({ where: { userId: id } });
+      await prisma.user.delete({ where: { id } });
+
+      res.json({ success: true, message: `Client ${user.email} supprime avec ${user._count.orders} commande(s)` });
+    } catch (error) {
+      console.error('Erreur suppression client:', error);
+      res.status(500).json({ success: false, message: 'Erreur lors de la suppression du client' });
+    }
+  }
+
+  // Modifier le mot de passe d'un client
+  static async updateClientPassword(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const { newPassword } = req.body;
+
+      if (!newPassword || newPassword.length < 8) {
+        return res.status(400).json({ success: false, message: 'Le mot de passe doit contenir au moins 8 caracteres' });
+      }
+
+      const user = await prisma.user.findUnique({ where: { id } });
+      if (!user) {
+        return res.status(404).json({ success: false, message: 'Client non trouve' });
+      }
+
+      const bcrypt = await import('bcryptjs');
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      await prisma.user.update({ where: { id }, data: { password: hashedPassword } });
+
+      res.json({ success: true, message: 'Mot de passe modifie' });
+    } catch (error) {
+      console.error('Erreur modification mot de passe:', error);
+      res.status(500).json({ success: false, message: 'Erreur lors de la modification du mot de passe' });
+    }
+  }
+
+  // Stats etendues
+  static async getDashboardStatsExtended(req: Request, res: Response) {
+    try {
+      const [
+        ordersToProcess,
+        totalRevenue,
+        clubSubscribers,
+        clubSubscribersActive,
+        totalStories
+      ] = await Promise.all([
+        // A traiter : commandes payees non encore livrees
+        prisma.order.count({ where: { status: 'PAID' } }),
+        // Chiffre d'affaires : somme des commandes payees ou livrees
+        prisma.order.aggregate({
+          where: { status: { in: ['PAID', 'DELIVERED'] } },
+          _sum: { price: true }
+        }),
+        // Abonnements Club (actifs + en cours d'annulation)
+        prisma.user.count({ where: { role: 'CLUB', subscriptionStatus: { in: ['active', 'canceling'] } } }),
+        // Abonnements Club qui vont renouveler (actifs uniquement, pas canceling)
+        prisma.user.count({ where: { role: 'CLUB', subscriptionStatus: 'active' } }),
+        // Total contes generes (tout sauf PENDING)
+        prisma.order.count({ where: { status: { in: ['PAID', 'DELIVERED', 'BLOCKED'] } } })
+      ]);
+
+      // MRR = nombre d'abonnes qui vont renouveler x 12.99€
+      const mrr = Math.round(clubSubscribersActive * 12.99 * 100) / 100;
+
+      res.json({
+        success: true,
+        data: {
+          ordersToProcess,
+          totalRevenue: totalRevenue._sum.price || 0,
+          clubSubscribers,
+          mrr,
+          totalStories
+        }
+      });
+    } catch (error) {
+      console.error('Erreur stats dashboard:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Erreur lors de la recuperation des statistiques'
       });
     }
   }

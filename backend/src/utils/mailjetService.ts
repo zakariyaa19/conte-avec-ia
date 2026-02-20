@@ -1,10 +1,19 @@
 import Mailjet from 'node-mailjet';
 
-// Configuration Mailjet
-const mailjet = Mailjet.apiConnect(
-  process.env.MAILJET_API_KEY || '',
-  process.env.MAILJET_SECRET_KEY || ''
-);
+// Configuration Mailjet — initialisation lazy pour attendre le chargement de dotenv
+let _mailjet: ReturnType<typeof Mailjet.apiConnect> | null = null;
+
+function getMailjet() {
+  if (!_mailjet) {
+    const apiKey = process.env.MAILJET_API_KEY || '';
+    const secretKey = process.env.MAILJET_SECRET_KEY || '';
+    if (!apiKey || !secretKey) {
+      throw new Error('Configuration Mailjet manquante (MAILJET_API_KEY ou MAILJET_SECRET_KEY)');
+    }
+    _mailjet = Mailjet.apiConnect(apiKey, secretKey);
+  }
+  return _mailjet;
+}
 
 export class MailjetService {
   // Envoyer un email de confirmation de commande au client
@@ -15,7 +24,7 @@ export class MailjetService {
     orderDetails: string;
   }): Promise<void> {
     try {
-      const request = mailjet
+      const request = getMailjet()
         .post('send', { version: 'v3.1' })
         .request({
           Messages: [
@@ -94,7 +103,71 @@ export class MailjetService {
     }
   }
 
-  // Envoyer un email de notification à l'admin
+  // Envoyer un email de livraison au client
+  static async sendStoryDeliveryEmail(data: {
+    customerName: string;
+    customerEmail: string;
+    orderNumber: string;
+    protagonistName: string;
+  }): Promise<void> {
+    try {
+      const request = getMailjet()
+        .post('send', { version: 'v3.1' })
+        .request({
+          Messages: [
+            {
+              From: {
+                Email: process.env.MAILJET_FROM_EMAIL || 'contact@contedia.fr',
+                Name: 'Contes d\'IA'
+              },
+              To: [
+                {
+                  Email: data.customerEmail,
+                  Name: data.customerName
+                }
+              ],
+              Subject: `Votre conte est pret ! #${data.orderNumber}`,
+              HTMLPart: `
+                <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 650px; margin: 0 auto; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); border-radius: 20px; overflow: hidden;">
+                  <div style="background: linear-gradient(135deg, #FF9999, #87CEEB); padding: 40px 30px; text-align: center; color: white;">
+                    <h1 style="margin: 0; font-size: 32px; font-weight: 700;">Le conte de ${data.protagonistName} est pret !</h1>
+                    <p style="margin: 15px 0 0 0; font-size: 18px; opacity: 0.95;">Commande #${data.orderNumber}</p>
+                  </div>
+                  <div style="padding: 40px 30px;">
+                    <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 25px;">
+                      <h2 style="color: #333; margin: 0 0 20px 0; font-size: 24px;">Bonjour ${data.customerName} !</h2>
+                      <p style="color: #555; font-size: 16px; line-height: 1.6;">
+                        Votre conte personnalise est maintenant disponible dans votre espace <strong style="color: #FF9999;">Ma Bibliotheque</strong>.
+                      </p>
+                      <p style="color: #555; font-size: 16px; line-height: 1.6;">
+                        Connectez-vous a votre compte pour le consulter et le telecharger.
+                      </p>
+                      <div style="text-align: center; margin-top: 25px;">
+                        <a href="${process.env.FRONTEND_URL}/dashboard" style="background: linear-gradient(135deg, #FF9999, #FF7F7F); color: white; text-decoration: none; padding: 14px 32px; border-radius: 10px; font-weight: 600; font-size: 16px; display: inline-block;">
+                          Acceder a ma bibliotheque
+                        </a>
+                      </div>
+                    </div>
+                    <div style="text-align: center; margin-top: 30px; padding: 25px; background: linear-gradient(135deg, #FF9999, #87CEEB); border-radius: 15px; color: white;">
+                      <p style="margin: 0; font-size: 14px;">Une question ? Repondez simplement a cet email<br>
+                      ${process.env.MAILJET_FROM_EMAIL || 'contact@contedia.fr'}</p>
+                    </div>
+                  </div>
+                </div>
+              `
+            }
+          ]
+        });
+
+      const result = await request;
+      console.log('Email de livraison envoye via Mailjet:', result.body);
+    } catch (error) {
+      console.error('Erreur envoi email livraison Mailjet:', error);
+      throw new Error('Echec de l\'envoi de l\'email de livraison');
+    }
+  }
+
+  // Envoyer un email de notification a l'admin
   static async sendAdminNotification(orderData: {
     customerName: string;
     customerEmail: string;
@@ -102,7 +175,7 @@ export class MailjetService {
     orderDetails: string;
   }): Promise<void> {
     try {
-      const request = mailjet
+      const request = getMailjet()
         .post('send', { version: 'v3.1' })
         .request({
           Messages: [

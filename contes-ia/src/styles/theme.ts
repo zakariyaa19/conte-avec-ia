@@ -1,34 +1,36 @@
-// Design System - Thème principal pour Contes d'IA
+// Design System V2 - Thème principal pour Contes d'IA
+// Refonte complète : ombres plus douces, animations, meilleure hiérarchie
+
 export const theme = {
   colors: {
     // Couleurs principales
     background: {
-      primary: '#FEFCF8', // Blanc cassé / crème très clair
+      primary: '#FEFCF8',
       secondary: '#F9F7F4',
       white: '#FFFFFF'
     },
-    
+
     // Couleurs d'accentuation
     accent: {
-      coral: '#FF9999', // Rose corail
-      pastelBlue: '#A8D8EA', // Bleu pastel
-      paleYellow: '#FFE5B4', // Jaune pâle
+      coral: '#FF9999',
+      coralDark: '#E88888',
+      pastelBlue: '#A8D8EA',
+      paleYellow: '#FFE5B4',
       softPink: '#FFB3BA',
       lightGreen: '#BAFFC9',
-      // Couleurs manquantes pour la compatibilité
-      creamyYellow: '#FDF6E3', // Jaune crémeux
-      lightCoral: '#FFCCCC', // Rose corail clair
-      softPeach: '#FFDDCC' // Pêche doux
+      creamyYellow: '#FDF6E3',
+      lightCoral: '#FFCCCC',
+      softPeach: '#FFDDCC'
     },
-    
+
     // Couleurs de texte
     text: {
-      primary: '#2C2C2C', // Gris-noir
-      secondary: '#5A4A42', // Brun foncé
+      primary: '#2C2C2C',
+      secondary: '#5A4A42',
       light: '#8B8B8B',
       white: '#FFFFFF'
     },
-    
+
     // Couleurs d'état
     status: {
       success: '#4CAF50',
@@ -36,66 +38,92 @@ export const theme = {
       error: '#F44336',
       info: '#2196F3'
     },
-    
+
     // Couleurs pour les boutons
     button: {
       primary: '#FF9999',
       primaryHover: '#FF7F7F',
       secondary: '#A8D8EA',
       secondaryHover: '#8ECAE6'
+    },
+
+    // Palette admin
+    admin: {
+      sidebar: '#1E293B',
+      sidebarHover: '#334155',
+      sidebarText: '#E2E8F0',
+      sidebarActive: '#3B82F6',
+      contentBg: '#F8FAFC',
+      accent: '#3B82F6',
+      accentHover: '#2563EB',
+      cardBorder: '#E2E8F0'
     }
   },
-  
+
   // Typographie
   fonts: {
-    heading: '"Baloo 2", "Comic Neue", cursive', // Police avec empattements ronds
-    body: '"Poppins", "Inter", sans-serif', // Police sans empattement
+    heading: '"Baloo 2", "Comic Neue", cursive',
+    body: '"Poppins", "Inter", sans-serif',
     fallback: 'system-ui, -apple-system, sans-serif'
   },
-  
+
   // Tailles de police
   fontSizes: {
-    xs: '0.75rem',   // 12px
-    sm: '0.875rem',  // 14px
-    base: '1rem',    // 16px
-    lg: '1.125rem',  // 18px
-    xl: '1.25rem',   // 20px
-    '2xl': '1.5rem', // 24px
-    '3xl': '1.875rem', // 30px
-    '4xl': '2.25rem',  // 36px
-    '5xl': '3rem'      // 48px
+    xs: '0.75rem',
+    sm: '0.875rem',
+    base: '1rem',
+    lg: '1.125rem',
+    xl: '1.25rem',
+    '2xl': '1.5rem',
+    '3xl': '1.875rem',
+    '4xl': '2.25rem',
+    '5xl': '3rem',
+    '6xl': '3.75rem'
   },
-  
+
   // Espacements
   spacing: {
-    xs: '0.25rem',   // 4px
-    sm: '0.5rem',    // 8px
-    md: '1rem',      // 16px
-    lg: '1.5rem',    // 24px
-    xl: '2rem',      // 32px
-    '2xl': '3rem',   // 48px
-    '3xl': '4rem',   // 64px
-    '4xl': '6rem'    // 96px
+    xs: '0.25rem',
+    sm: '0.5rem',
+    md: '1rem',
+    lg: '1.5rem',
+    xl: '2rem',
+    '2xl': '3rem',
+    '3xl': '4rem',
+    '4xl': '6rem'
   },
-  
-  // Rayons de bordure
+
+  // Rayons de bordure (plus généreux V2)
   borderRadius: {
-    sm: '0.25rem',   // 4px
-    md: '0.5rem',    // 8px
-    lg: '0.75rem',   // 12px
-    xl: '1rem',      // 16px
-    '2xl': '1.5rem', // 24px
+    sm: '0.375rem',
+    md: '0.625rem',
+    lg: '1rem',
+    xl: '1.25rem',
+    '2xl': '1.75rem',
     full: '9999px'
   },
-  
-  // Ombres
+
+  // Ombres V2 (plus douces, plus naturelles)
   shadows: {
-    sm: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-    md: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-    lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-    xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
+    sm: '0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06)',
+    md: '0 4px 12px rgba(0, 0, 0, 0.06), 0 2px 4px rgba(0, 0, 0, 0.04)',
+    lg: '0 8px 24px rgba(0, 0, 0, 0.08), 0 4px 8px rgba(0, 0, 0, 0.04)',
+    xl: '0 16px 40px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.04)',
+    glow: '0 0 20px rgba(255, 153, 153, 0.3)',
+    glowStrong: '0 0 40px rgba(255, 153, 153, 0.4)',
+    card: '0 2px 8px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.06)',
+    cardHover: '0 8px 32px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.06)'
   },
-  
+
+  // Transitions V2
+  transitions: {
+    fast: '0.15s ease',
+    base: '0.25s ease',
+    smooth: '0.35s cubic-bezier(0.4, 0, 0.2, 1)',
+    spring: '0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
+    slow: '0.6s cubic-bezier(0.4, 0, 0.2, 1)'
+  },
+
   // Points de rupture pour le responsive
   breakpoints: {
     sm: '640px',

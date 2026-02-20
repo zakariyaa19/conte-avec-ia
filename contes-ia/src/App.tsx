@@ -3,11 +3,18 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import { GlobalStyles } from './styles/GlobalStyles';
+import { AuthProvider } from './contexts/AuthContext';
+import { ProtectedRoute, AdminProtectedRoute } from './components/auth/ProtectedRoute';
 import { HomePage } from './pages/HomePage';
 import { StoryFormPage } from './pages/StoryFormPage';
 import { SuccessPage } from './pages/SuccessPage';
 import { CancelPage } from './pages/CancelPage';
 import { AdminPage } from './pages/AdminPage';
+import { LoginPage } from './pages/LoginPage';
+import { DashboardPage } from './pages/DashboardPage';
+import { StoryDetailPage } from './pages/StoryDetailPage';
+import { AccountPage } from './pages/AccountPage';
+import { ClubPage } from './pages/ClubPage';
 import { ExemplesPage } from './pages/ExemplesPage';
 import { FeaturesPage } from './pages/FeaturesPage';
 import ThemesContesPage from './pages/ThemesContesPage';
@@ -46,12 +53,16 @@ import BlogArticleNouveau10 from './pages/BlogArticleNouveau10';
 import { MentionsLegalesPage } from './pages/MentionsLegalesPage';
 import { PolitiqueConfidentialitePage } from './pages/PolitiqueConfidentialitePage';
 import ScrollToTop from './components/utils/ScrollToTop';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import { HelmetProvider } from 'react-helmet-async';
 
 function App() {
   return (
-    <>
+    <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID || ''}>
+    <HelmetProvider>
       <GlobalStyles />
       <Router>
+        <AuthProvider>
         <ScrollToTop />
         <Routes>
           <Route path="/" element={<HomePage />} />
@@ -59,8 +70,16 @@ function App() {
           <Route path="/create-story" element={<StoryFormPage />} />
           <Route path="/success" element={<SuccessPage />} />
           <Route path="/cancel" element={<CancelPage />} />
-          <Route path="/admin" element={<AdminPage />} />
-          <Route path="/admin/order/:orderId" element={<AdminPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+          <Route path="/dashboard/story/:id" element={<ProtectedRoute><StoryDetailPage /></ProtectedRoute>} />
+          <Route path="/dashboard/account" element={<ProtectedRoute><AccountPage /></ProtectedRoute>} />
+          <Route path="/club" element={<ClubPage />} />
+          <Route path="/admin" element={<AdminProtectedRoute><AdminPage /></AdminProtectedRoute>} />
+          <Route path="/admin/orders" element={<AdminProtectedRoute><AdminPage /></AdminProtectedRoute>} />
+          <Route path="/admin/order/:orderId" element={<AdminProtectedRoute><AdminPage /></AdminProtectedRoute>} />
+          <Route path="/admin/clients" element={<AdminProtectedRoute><AdminPage /></AdminProtectedRoute>} />
+          <Route path="/admin/clients/:clientId" element={<AdminProtectedRoute><AdminPage /></AdminProtectedRoute>} />
           <Route path="/exemples" element={<ExemplesPage />} />
           <Route path="/fonctionnalites" element={<FeaturesPage />} />
           <Route path="/features" element={<FeaturesPage />} />
@@ -106,10 +125,12 @@ function App() {
           <Route path="/mentions-legales" element={<MentionsLegalesPage />} />
           <Route path="/politique-confidentialite" element={<PolitiqueConfidentialitePage />} />
         </Routes>
+        </AuthProvider>
       </Router>
       <Analytics />
       <SpeedInsights />
-    </>
+    </HelmetProvider>
+    </GoogleOAuthProvider>
   );
 }
 

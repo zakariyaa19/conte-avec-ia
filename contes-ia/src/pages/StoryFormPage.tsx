@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { theme } from '../styles/theme';
 import { ProgressIndicator } from '../components/ui/ProgressIndicator';
 import { UnifiedStoryForm } from '../components/forms/UnifiedStoryForm';
@@ -8,6 +8,12 @@ import { StoryFormData } from '../types/FormTypes';
 import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
 import { identifyUser, trackInitiateCheckout, trackViewContent } from '../utils/tiktokPixel';
+import { useAuth } from '../contexts/AuthContext';
+
+const fadeInUp = keyframes`
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+`;
 
 const PageContainer = styled.div`
   min-height: 100vh;
@@ -19,9 +25,9 @@ const PageContainer = styled.div`
 const MainContent = styled.main`
   flex: 1;
   padding: ${theme.spacing['2xl']} 0;
-  
+
   @media (max-width: ${theme.breakpoints.sm}) {
-    padding: ${theme.spacing.xl} 0;
+    padding: ${theme.spacing.lg} 0;
   }
 `;
 
@@ -29,62 +35,111 @@ const FormContainer = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 ${theme.spacing.lg};
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    padding: 0 ${theme.spacing.md};
+  }
 `;
 
 const FormHeader = styled.div`
   text-align: center;
-  margin-bottom: ${theme.spacing['3xl']};
-  
+  margin-bottom: ${theme.spacing['2xl']};
+  animation: ${fadeInUp} 0.6s ease-out;
+
   @media (max-width: ${theme.breakpoints.sm}) {
-    margin-bottom: ${theme.spacing.xl};
+    margin-bottom: ${theme.spacing.lg};
   }
 `;
 
 const FormTitle = styled.h1`
   font-family: ${theme.fonts.heading};
-  font-size: ${theme.fontSizes['4xl']};
+  font-size: ${theme.fontSizes['5xl']};
   color: ${theme.colors.text.primary};
-  margin-bottom: ${theme.spacing.md};
-  
+  margin-bottom: ${theme.spacing.sm};
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+
   @media (max-width: ${theme.breakpoints.md}) {
     font-size: ${theme.fontSizes['3xl']};
+  }
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    font-size: ${theme.fontSizes['2xl']};
   }
 `;
 
 const FormSubtitle = styled.p`
   font-size: ${theme.fontSizes.lg};
   color: ${theme.colors.text.secondary};
-  line-height: 1.6;
+  line-height: 1.7;
+  max-width: 600px;
+  margin: 0 auto;
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    font-size: ${theme.fontSizes.base};
+  }
 `;
 
 const FormContent = styled.div`
   background-color: ${theme.colors.background.white};
-  border-radius: ${theme.borderRadius.xl};
-  box-shadow: ${theme.shadows.lg};
+  border-radius: ${theme.borderRadius['2xl']};
+  box-shadow: ${theme.shadows.card};
   padding: ${theme.spacing['3xl']} 0;
   margin-bottom: ${theme.spacing.xl};
-  
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  animation: ${fadeInUp} 0.6s ease-out 0.15s both;
+
   @media (max-width: ${theme.breakpoints.sm}) {
-    padding: ${theme.spacing.xl} 0;
+    padding: ${theme.spacing.lg} 0;
     margin-bottom: ${theme.spacing.lg};
-    border-radius: ${theme.borderRadius.lg};
+    border-radius: ${theme.borderRadius.xl};
   }
 `;
 
 export const StoryFormPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const formHeaderRef = useRef<HTMLDivElement>(null);
+  const { user, isAuthenticated, isClub, setTokenAndUser } = useAuth();
+  const [clubCredit, setClubCredit] = useState<{ canSubmit: boolean; remaining: number; nextCreditDate?: string; totalEarned?: number } | null>(null);
   
   // Track ViewContent au chargement de la page
   useEffect(() => {
-    // trackViewContent utilise maintenant waitForTTQ en interne (polling jusqu'à 5s)
     trackViewContent(
       'product_story_creation',
       'Création de conte personnalisé',
-      4.99, // Prix minimum (ebook)
+      4.99,
       'EUR'
     );
   }, []);
+
+  // Pre-remplir les donnees si l'utilisateur est connecte
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      setFormData(prev => ({
+        ...prev,
+        userEmail: user.email || prev.userEmail,
+        shippingAddress: {
+          ...prev.shippingAddress!,
+          firstName: user.firstName || prev.shippingAddress?.firstName || '',
+          lastName: user.lastName || prev.shippingAddress?.lastName || '',
+        }
+      }));
+    }
+  }, [isAuthenticated, user]);
+
+  // Charger le credit Club si l'utilisateur est Club
+  useEffect(() => {
+    if (isClub) {
+      const token = localStorage.getItem('userToken');
+      if (token) {
+        ApiService.getClubCredit(token)
+          .then(res => {
+            if (res.success) setClubCredit(res.data);
+          })
+          .catch(() => {});
+      }
+    }
+  }, [isClub]);
   const [formData, setFormData] = useState<Partial<StoryFormData>>({
     // Étape 1 - Personnalisez votre conte
     ageRange: '',
@@ -212,10 +267,8 @@ export const StoryFormPage: React.FC = () => {
 
 
   const handleSubmit = async () => {
-    // La validation est maintenant gérée dans UnifiedStoryForm
-    // Vérification de sécurité finale
     if (!formData.userEmail || !formData.productType) {
-      console.error('❌ Données manquantes pour la soumission');
+      console.error('Donnees manquantes pour la soumission');
       setIsSubmitting(false);
       return;
     }
@@ -223,59 +276,68 @@ export const StoryFormPage: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      // 1. Track InitiateCheckout AVANT toute requête (CRITIQUE pour production)
-      console.log('🎯 TikTok: Déclenchement InitiateCheckout AVANT redirection...');
+      // Track InitiateCheckout
       await trackInitiateCheckout(formData.productType, formData.userEmail);
-      console.log('✅ TikTok: InitiateCheckout envoyé avec succès');
-      
-      // 2. Identifier l'utilisateur avec TikTok Pixel
       await identifyUser(formData.userEmail);
 
-      // 3. Créer la commande
-      console.log('🔄 Création de la commande avec les données:', formData);
+      // Passer le token si connecte
+      const authToken = localStorage.getItem('userToken') || undefined;
+
       const orderResponse = await ApiService.createOrder({
         userEmail: formData.userEmail,
-        formData: formData
+        formData: formData,
+        authToken
       });
 
-      console.log('✅ Réponse création commande:', orderResponse);
-
       if (!orderResponse.success) {
-        throw new Error(orderResponse.message || 'Erreur lors de la création de la commande');
+        throw new Error(orderResponse.message || 'Erreur lors de la creation de la commande');
       }
 
-      // 4. Créer la session de paiement Stripe
-      console.log('🔄 Création session Stripe pour commande ID:', orderResponse.data.id);
-      const paymentResponse = await ApiService.createPaymentSession(orderResponse.data.id);
-      
-      console.log('✅ Réponse session Stripe:', paymentResponse);
+      // Store token if returned (user account created)
+      if (orderResponse.token && orderResponse.user) {
+        setTokenAndUser(orderResponse.token, orderResponse.user);
+      }
 
-      // 5. Rediriger vers Stripe Checkout
-      if (paymentResponse.url) {
-        console.log('🔄 Redirection vers Stripe dans 200ms...');
-        // Délai de sécurité supplémentaire pour garantir l'envoi
-        setTimeout(() => {
-          window.location.href = paymentResponse.url;
-        }, 200);
+      // --- Club gratuit : pas de Stripe, redirection directe ---
+      if (orderResponse.isClubFreeOrder) {
+        window.location.href = `/success?order_id=${orderResponse.data.id}&club_free=true`;
+        return;
+      }
+
+      // --- Checkout Club (nouvel abonnement OU membre Club sans credit) ---
+      // clubCreditExhausted = true → membre Club actif, credit epuise → paiement unique
+      // purchaseType = 'club' sans clubCreditExhausted → nouvel abonnement → checkout subscription
+      if (formData.purchaseType === 'club' && !orderResponse.clubCreditExhausted) {
+        const token = localStorage.getItem('userToken');
+        if (!token) {
+          throw new Error('Token d\'authentification manquant pour l\'abonnement Club');
+        }
+        const subResponse = await ApiService.createSubscriptionSession(token, orderResponse.data.id);
+        if (subResponse.url) {
+          setTimeout(() => { window.location.href = subResponse.url; }, 200);
+        } else {
+          throw new Error('URL abonnement non recue');
+        }
       } else {
-        console.error('❌ Pas d\'URL dans la réponse:', paymentResponse);
-        throw new Error('URL de paiement non reçue');
+        // Paiement unique (eBook, livre relie, ou Club credit epuise)
+        const paymentResponse = await ApiService.createPaymentSession(orderResponse.data.id);
+        if (paymentResponse.url) {
+          setTimeout(() => { window.location.href = paymentResponse.url; }, 200);
+        } else {
+          throw new Error('URL de paiement non recue');
+        }
       }
 
     } catch (error: any) {
-      console.error('❌ Erreur soumission:', error);
-      
-      // Messages d'erreur plus spécifiques
+      console.error('Erreur soumission:', error);
       let errorMessage = 'Une erreur est survenue lors de la soumission';
       if (error.message.includes('timeout') || error.message.includes('AbortError')) {
-        errorMessage = 'La requête a pris trop de temps. Veuillez réessayer dans quelques instants.';
+        errorMessage = 'La requete a pris trop de temps. Veuillez reessayer dans quelques instants.';
       } else if (error.message.includes('fetch')) {
-        errorMessage = 'Problème de connexion. Vérifiez votre connexion internet et réessayez.';
+        errorMessage = 'Probleme de connexion. Verifiez votre connexion internet et reessayez.';
       } else if (error.message) {
         errorMessage = error.message;
       }
-      
-      // Afficher l'erreur dans la console pour debug
       alert(errorMessage);
       setIsSubmitting(false);
     }
@@ -303,6 +365,10 @@ export const StoryFormPage: React.FC = () => {
             onUpdate={handleFormUpdate}
             onSubmit={handleSubmit}
             isSubmitting={isSubmitting}
+            isAuthenticated={isAuthenticated}
+            isClub={isClub}
+            currentUser={user}
+            clubCredit={clubCredit}
           />
         </FormContent>
       </FormContainer>

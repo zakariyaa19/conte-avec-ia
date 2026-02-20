@@ -11,12 +11,12 @@ const getApiBaseUrl = () => {
     
     // Production sur contedia.fr
     if (hostname === 'contedia.fr' || hostname.includes('contedia')) {
-      return 'https://conte-avec-ia-1.onrender.com';
+      return 'https://conte-avec-ia-backend.onrender.com';
     }
     
     // Vercel preview deployments
     if (hostname.includes('vercel.app')) {
-      return 'https://conte-avec-ia-1.onrender.com';
+      return 'https://conte-avec-ia-backend.onrender.com';
     }
   }
   
@@ -38,12 +38,7 @@ const API_CONFIG = {
     ORDERS: '/api/orders',
     ORDER_BY_ID: (id: string) => `/api/orders/${id}`,
     
-    // Payments (pour future intégration Stripe)
-    PAYMENTS: '/api/payments',
-    PAYMENT_INTENT: '/api/payments/create-intent',
-    PAYMENT_WEBHOOK: '/api/payments/webhook',
-    
-    // Admin (pour futur panneau d'administration)
+    // Admin
     ADMIN_LOGIN: '/api/admin/login',
     ADMIN_DASHBOARD: '/api/admin/dashboard',
     ADMIN_ORDERS: '/api/admin/orders',
@@ -138,12 +133,12 @@ export class ApiService {
         
         console.log('❌ Erreur API:', { status: response.status, errorData, responseText });
         
-        // Si c'est une erreur d'authentification (401), supprimer le token expiré
+        // Si c'est une erreur d'authentification (401), supprimer les tokens et rediriger vers /login
         if (response.status === 401) {
           localStorage.removeItem('adminToken');
-          // Rediriger vers la page de connexion
-          if (window.location.pathname.startsWith('/admin')) {
-            window.location.href = '/admin';
+          localStorage.removeItem('userToken');
+          if (window.location.pathname !== '/login') {
+            window.location.href = '/login';
           }
         }
         
@@ -169,47 +164,34 @@ export class ApiService {
     return this.request(API_CONFIG.ENDPOINTS.TEST_DB);
   }
 
-  // Créer une commande (avec retry)
+  // Créer une commande (avec retry, auth optionnelle)
   static async createOrder(orderData: {
     userEmail: string;
     formData: any;
-  }): Promise<{ success: boolean; data: any; message: string }> {
+    authToken?: string;
+  }): Promise<{ success: boolean; data: any; token?: string; user?: any; message: string; isClubFreeOrder?: boolean; clubCreditExhausted?: boolean }> {
     // Créer un FormData pour gérer l'upload de fichier
     const formDataToSend = new FormData();
-    
+
     // Ajouter les données du formulaire
     formDataToSend.append('userEmail', orderData.userEmail);
     formDataToSend.append('formData', JSON.stringify(orderData.formData));
-    
+
     // Ajouter la photo si elle existe
     if (orderData.formData.photo) {
       formDataToSend.append('photo', orderData.formData.photo);
     }
 
+    const headers: Record<string, string> = {};
+    if (orderData.authToken) {
+      headers['Authorization'] = `Bearer ${orderData.authToken}`;
+    }
+
     return this.requestWithRetry(API_CONFIG.ENDPOINTS.ORDERS, {
       method: 'POST',
       body: formDataToSend,
-      // Ne pas définir Content-Type, le navigateur le fera automatiquement avec boundary
-      headers: {}
-    }, 2); // 2 retry pour cette requête critique
-  }
-
-  // Récupérer toutes les commandes
-  static async getOrders(): Promise<{ success: boolean; data: any[] }> {
-    return this.request(API_CONFIG.ENDPOINTS.ORDERS);
-  }
-
-  // Récupérer une commande par ID
-  static async getOrderById(id: string): Promise<{ success: boolean; data: any }> {
-    return this.request(API_CONFIG.ENDPOINTS.ORDER_BY_ID(id));
-  }
-
-  // Mettre à jour une commande
-  static async updateOrder(id: string, updateData: any): Promise<{ success: boolean; data: any }> {
-    return this.request(API_CONFIG.ENDPOINTS.ORDER_BY_ID(id), {
-      method: 'PUT',
-      body: JSON.stringify(updateData),
-    });
+      headers
+    }, 2);
   }
 
   // Créer une session de paiement Stripe (avec retry)
@@ -248,7 +230,7 @@ export class ApiService {
   }
 
   // Gestion des commandes admin
-  static async getAdminOrders(token: string, params?: any): Promise<{ success: boolean; data: any }> {
+  static async getAdminOrders(token: string, params?: any): Promise<{ success: boolean; data: any; pagination?: any }> {
     const queryString = params ? `?${new URLSearchParams(params).toString()}` : '';
     return this.request(`/api/admin/orders${queryString}`, {
       headers: {
@@ -266,8 +248,6 @@ export class ApiService {
   }
 
   static async updateAdminOrder(token: string, orderId: string, updateData: any): Promise<{ success: boolean; data: any }> {
-    console.log('🔧 updateAdminOrder appelée avec:', { orderId, updateData, token: token?.substring(0, 20) + '...' });
-    
     return this.request(`/api/admin/orders/${orderId}`, {
       method: 'PATCH',
       body: JSON.stringify(updateData),
@@ -276,6 +256,242 @@ export class ApiService {
         'Content-Type': 'application/json'
       }
     });
+  }
+
+  // Upload PDF admin
+  static async uploadStoryPdf(token: string, orderId: string, file: File): Promise<{ success: boolean; data: any }> {
+    const formData = new FormData();
+    formData.append('pdf', file);
+    return this.request(`/api/admin/orders/${orderId}/upload-pdf`, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+  }
+
+  // Livrer un conte
+  static async deliverStory(token: string, orderId: string): Promise<{ success: boolean; data: any }> {
+    return this.request(`/api/admin/orders/${orderId}/deliver`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+  }
+
+  // Admin clients
+  static async getAdminClients(token: string, params?: any): Promise<{ success: boolean; data: any }> {
+    const queryString = params ? `?${new URLSearchParams(params).toString()}` : '';
+    return this.request(`/api/admin/clients${queryString}`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+  }
+
+  static async getAdminClientDetail(token: string, clientId: string): Promise<{ success: boolean; data: any }> {
+    return this.request(`/api/admin/clients/${clientId}`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+  }
+
+  static async deleteAdminClient(token: string, clientId: string): Promise<{ success: boolean; message: string }> {
+    return this.request(`/api/admin/clients/${clientId}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+  }
+
+  static async updateAdminClientPassword(token: string, clientId: string, newPassword: string): Promise<{ success: boolean; message: string }> {
+    return this.request(`/api/admin/clients/${clientId}/password`, {
+      method: 'PATCH',
+      body: JSON.stringify({ newPassword }),
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+  }
+
+  // ========== Unified Login ==========
+  static async unifiedLogin(email: string, password: string): Promise<{ success: boolean; data: any; message?: string }> {
+    return this.request('/api/auth/unified-login', {
+      method: 'POST',
+      body: JSON.stringify({ email, password })
+    });
+  }
+
+  // ========== Client Auth ==========
+  static async clientLogin(email: string, password: string): Promise<{ success: boolean; data: any; message?: string }> {
+    return this.request('/api/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ email, password })
+    });
+  }
+
+  static async clientRegister(email: string, password: string, firstName?: string, lastName?: string): Promise<{ success: boolean; data: any; message?: string }> {
+    return this.request('/api/auth/register', {
+      method: 'POST',
+      body: JSON.stringify({ email, password, firstName, lastName })
+    });
+  }
+
+  static async googleAuth(credential: string): Promise<{ success: boolean; data: any; message?: string }> {
+    return this.request('/api/auth/google', {
+      method: 'POST',
+      body: JSON.stringify({ credential })
+    });
+  }
+
+  static async checkEmail(email: string): Promise<{ success: boolean; exists: boolean; hasPassword?: boolean }> {
+    return this.request(`/api/auth/check-email?email=${encodeURIComponent(email)}`);
+  }
+
+  static async getClientProfile(token: string): Promise<{ success: boolean; data: any }> {
+    return this.request('/api/auth/profile', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+  }
+
+  // ========== Client Dashboard ==========
+  static async getClientStories(token: string, params?: any): Promise<{ success: boolean; data: any[] }> {
+    const queryString = params ? `?${new URLSearchParams(params).toString()}` : '';
+    return this.request(`/api/client/stories${queryString}`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+  }
+
+  static async getClientStoryDetail(token: string, storyId: string): Promise<{ success: boolean; data: any }> {
+    return this.request(`/api/client/stories/${storyId}`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+  }
+
+  static async toggleFavorite(token: string, storyId: string): Promise<{ success: boolean; data: any }> {
+    return this.request(`/api/client/stories/${storyId}/favorite`, {
+      method: 'PATCH',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+  }
+
+  static async getClientChildren(token: string): Promise<{ success: boolean; data: any[] }> {
+    return this.request('/api/client/children', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+  }
+
+  static async createChild(token: string, data: { name: string; age?: number; photoUrl?: string }): Promise<{ success: boolean; data: any }> {
+    return this.request('/api/client/children', {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+  }
+
+  static async updateChild(token: string, childId: string, data: any): Promise<{ success: boolean; data: any }> {
+    return this.request(`/api/client/children/${childId}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+  }
+
+  static async deleteChild(token: string, childId: string): Promise<{ success: boolean }> {
+    return this.request(`/api/client/children/${childId}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+  }
+
+  static async getClientSubscription(token: string): Promise<{ success: boolean; data: any }> {
+    return this.request('/api/client/subscription', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+  }
+
+  // Club credit status
+  static async getClubCredit(token: string): Promise<{ success: boolean; data: { canSubmit: boolean; remaining: number; nextCreditDate?: string; totalEarned?: number } }> {
+    return this.request('/api/client/club-credit', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+  }
+
+  // ========== Stripe Subscription ==========
+  static async createSubscriptionSession(token: string, orderId?: string): Promise<{ sessionId: string; url: string }> {
+    return this.request('/api/stripe/create-subscription-session', {
+      method: 'POST',
+      body: JSON.stringify({ orderId }),
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+  }
+
+  // Verifier le statut de souscription (polling apres checkout)
+  static async checkSubscriptionStatus(token: string): Promise<{ success: boolean; status: string; user?: any }> {
+    return this.request('/api/stripe/check-subscription-status', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+  }
+
+  // Marquer une commande comme abandonnee
+  static async abandonOrder(orderId: string): Promise<{ success: boolean; message: string }> {
+    return this.request(`/api/orders/${orderId}/abandon`, {
+      method: 'POST'
+    });
+  }
+
+  static async createCustomerPortal(token: string): Promise<{ url: string }> {
+    return this.request('/api/stripe/create-customer-portal', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+  }
+
+  // Client profile update
+  static async updateProfile(token: string, data: { firstName?: string; lastName?: string }): Promise<{ success: boolean; data: any }> {
+    return this.request('/api/auth/profile', {
+      method: 'PUT',
+      body: JSON.stringify(data),
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+  }
+
+  // Client password change
+  static async changePassword(token: string, currentPassword: string, newPassword: string): Promise<{ success: boolean; message: string }> {
+    return this.request('/api/auth/change-password', {
+      method: 'POST',
+      body: JSON.stringify({ currentPassword, newPassword }),
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+  }
+
+  // PDF download (returns blob URL)
+  static async downloadStoryPdf(token: string, storyId: string): Promise<string> {
+    const url = `${this.baseUrl}/api/client/stories/${storyId}/pdf`;
+    const response = await fetch(url, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (!response.ok) throw new Error('Erreur telechargement PDF');
+    const blob = await response.blob();
+    return URL.createObjectURL(blob);
   }
 }
 

@@ -1,246 +1,283 @@
-import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { PageLayout } from '../components/layout/PageLayout';
-import '../styles/BlogPage.css';
+import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
+import styled from 'styled-components';
+import { Header } from '../components/layout/Header';
+import { Footer } from '../components/layout/Footer';
+import { useScrollReveal, useStaggerReveal } from '../hooks/useScrollReveal';
+import { theme } from '../styles/theme';
+import {
+  PageContainer,
+  HeroSection,
+  HeroDecoBlur,
+  HeroContent,
+  HeroBadge,
+  HeroTitle,
+  HeroDivider,
+  HeroSubtitle,
+  ContentSection,
+  Container,
+  SectionTitle,
+  SectionDivider,
+  FinalCTASection,
+  FinalCTATitle,
+  FinalCTAText,
+  WhiteButton,
+} from '../styles/DiscoverPageStyles';
 
-const BlogPage: React.FC = () => {
-  useEffect(() => {
-    document.title = 'Blog Contes Personnalisés | Conseils Parents et Développement Enfant';
-    
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', 'Blog expert sur les contes personnalisés : pourquoi offrir un livre personnalisé à un enfant, les avantages des contes personnalisés pour le développement de l\'enfant, conseils parents et inspiration.');
-    } else {
-      const newMetaDescription = document.createElement('meta');
-      newMetaDescription.name = 'description';
-      newMetaDescription.content = 'Blog expert sur les contes personnalisés : pourquoi offrir un livre personnalisé à un enfant, les avantages des contes personnalisés pour le développement de l\'enfant, conseils parents et inspiration.';
-      document.head.appendChild(newMetaDescription);
-    }
+// ─── Blog-specific styled components ───
 
-    // Mots-clés blog éditorial
-    const metaKeywords = document.querySelector('meta[name="keywords"]') || document.createElement('meta');
-    metaKeywords.setAttribute('name', 'keywords');
-    metaKeywords.setAttribute('content', 'pourquoi offrir un livre personnalisé à un enfant, les avantages des contes personnalisés pour le développement de l\'enfant, top 10 des cadeaux personnalisés pour enfants, comment choisir un conte adapté à l\'âge de son enfant, blog contes personnalisés');
-    if (!document.querySelector('meta[name="keywords"]')) {
-      document.head.appendChild(metaKeywords);
-    }
-  }, []);
+const BlogGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: ${theme.spacing.xl};
 
-  const blogArticles = [
-    {
-      id: 1,
-      title: "Créer un Livre Personnalisé avec votre Animal de Compagnie",
-      excerpt: "Transformez votre chien, chat ou animal favori en héros d'un conte personnalisé unique. Découvrez comment créer un livre magique où votre enfant et son compagnon vivent des aventures extraordinaires ensemble.",
-      image: "/images/blog/conte-animal-compagnie.jpg",
-      slug: "histoire-animal-compagnie-livre-personnalise"
-    },
-    {
-      id: 2,
-      title: "Des contes pour enfants à personnaliser : nouveaux héros et univers illustrés",
-      excerpt: "Découvrez comment créer des héros uniques, explorer des univers illustrés époustouflants et adapter vos histoires aux goûts des adolescents. Plongez dans un monde où chaque conte devient une aventure sur mesure inoubliable.",
-      image: "/images/blog/enfant-lecture-personnalisee.jpg",
-      slug: "nouveaux-personnages-styles-aventures-ados"
-    },
-    {
-      id: 3,
-      title: "Contes de Fées Modernes : Quand la Magie Rencontre la Personnalisation",
-      excerpt: "Les contes de fées se réinventent grâce aux aventures personnalisées, offrant à chaque enfant la possibilité de devenir le héros de son propre conte de fées sur mesure avec châteaux enchantés et créatures magiques.",
-      image: "/images/blog/contes-fees-modernes.jpg",
-      slug: "evolution-livres-enfants-contes-fees-aventures-personnalisees"
-    },
-    {
-      id: 4,
-      title: "Comment l'IA révolutionne la création d'histoires pour enfants",
-      excerpt: "L'intelligence artificielle transforme la façon dont nous créons des histoires pour enfants. Découvrez comment notre technologie permet de générer des contes personnalisés uniques qui captivent l'imagination des petits lecteurs.",
-      image: "/images/blog/ia-creation-histoires.jpg",
-      slug: "ia-revolution-creation-histoires-enfants"
-    },
-    {
-      id: 5,
-      title: "Intégrer les valeurs religieuses dans les contes personnalisés",
-      excerpt: "Apprenez comment personnaliser la religion de votre enfant dans nos contes IA. Guide complet pour créer des histoires respectueuses des croyances familiales tout en stimulant l'imagination et les valeurs morales.",
-      image: "/images/blog/religion-contes-personnalises.jpg",
-      slug: "integrer-valeurs-religieuses-contes-personnalises"
-    },
-    // Articles sur les animaux de compagnie
-    {
-      id: 6,
-      title: "Pourquoi votre animal de compagnie stimule l'imagination de votre enfant",
-      excerpt: "Découvrez comment votre animal de compagnie devient une source d'inspiration magique pour l'imagination de votre enfant. Créez des histoires personnalisées mettant en scène votre compagnon à quatre pattes.",
-      image: "/images/blog/enfant-animal-lecture.jpg",
-      slug: "animal-compagnie-stimule-imagination-enfant"
-    },
-    {
-      id: 7,
-      title: "Offrir un conte personnalisé pour Noël : le cadeau parfait pour les amoureux des animaux",
-      excerpt: "Découvrez pourquoi un livre personnalisé mettant en scène l'animal de compagnie est le cadeau de Noël idéal. Original, émouvant et unique, ce présent marquera les fêtes à jamais.",
-      image: "/images/blog/noel-enfant-animal-livre.jpg",
-      slug: "conte-personnalise-noel-cadeau-amoureux-animaux"
-    },
-    {
-      id: 8,
-      title: "De la photo au héros de conte : comment l'IA transforme votre animal en personnage d'aventure",
-      excerpt: "Découvrez la technologie révolutionnaire qui transforme les photos de votre animal en illustrations de conte personnalisé. L'IA au service de la créativité et de l'émotion.",
-      image: "/images/blog/ia-transformation-animal.jpg",
-      slug: "photo-heros-conte-ia-transforme-animal-personnage"
-    },
-    {
-      id: 9,
-      title: "Lire avec son compagnon à quatre pattes : un rituel qui renforce le lien enfant-animal",
-      excerpt: "Découvrez comment la lecture partagée avec votre animal de compagnie renforce les liens affectifs et développe l'empathie chez l'enfant. Les bienfaits d'un rituel unique.",
-      image: "/images/blog/enfant-lecture-animal-rituel.jpg",
-      slug: "lire-compagnon-quatre-pattes-rituel-lien-enfant-animal"
-    },
-    {
-      id: 10,
-      title: "Top 5 des thèmes d'histoires pour transformer votre animal en héros de conte",
-      excerpt: "Découvrez 5 thèmes d'aventures captivants pour créer des contes personnalisés avec votre animal : forêt magique, voyage spatial, enquête urbaine et plus encore. Inspiration garantie !",
-      image: "/images/blog/themes-aventures-animaux.jpg",
-      slug: "top-5-themes-histoires-animal-heros-conte"
-    },
-    // Articles sur la foi et la religion
-    {
-      id: 11,
-      title: "Transmettre la foi à travers les histoires : comment les contes personnalisés éveillent la spiritualité",
-      excerpt: "Découvrez comment les contes personnalisés aident à transmettre la foi et les valeurs spirituelles aux enfants avec douceur et bienveillance. Une approche moderne de l'éducation religieuse.",
-      image: "/images/blog/foi-spiritualite-enfant-conte.jpg",
-      slug: "transmettre-foi-histoires-contes-personnalises-spiritualite"
-    },
-    {
-      id: 12,
-      title: "Les grandes fêtes religieuses revisitées : créer un conte personnalisé pour Noël, Ramadan, Pâque ou Diwali",
-      excerpt: "Célébrez les fêtes religieuses avec des contes personnalisés adaptés à chaque tradition : Noël, Ramadan, Pâque, Diwali. Une approche moderne et respectueuse des célébrations spirituelles.",
-      image: "/images/blog/fetes-religieuses-conte-personnalise.jpg",
-      slug: "fetes-religieuses-conte-personnalise-noel-ramadan-paque-diwali"
-    },
-    {
-      id: 13,
-      title: "Personnaliser la foi : quand l'IA s'adapte à vos valeurs religieuses",
-      excerpt: "Découvrez comment l'intelligence artificielle respecte et s'adapte aux différentes croyances religieuses pour créer des contes personnalisés authentiques et respectueux.",
-      image: "/images/blog/ia-adaptation-valeurs-religieuses.jpg",
-      slug: "personnaliser-foi-ia-adapte-valeurs-religieuses"
-    },
-    {
-      id: 14,
-      title: "Des héros de foi : inspirer les enfants à travers des personnages spirituels",
-      excerpt: "Découvrez comment intégrer des figures inspirantes de différentes traditions religieuses dans les contes personnalisés pour enfants. Des héros spirituels qui guident et inspirent.",
-      image: "/images/blog/heros-spirituels-conte-enfant.jpg",
-      slug: "heros-foi-inspirer-enfants-personnages-spirituels"
-    },
-    {
-      id: 15,
-      title: "Foi, tolérance et ouverture : comment les contes favorisent le respect des différentes religions",
-      excerpt: "Découvrez comment les contes personnalisés enseignent la tolérance religieuse et le respect des différentes croyances aux enfants, favorisant une coexistence harmonieuse.",
-      image: "/images/blog/tolerance-religieuse-conte-enfant.jpg",
-      slug: "foi-tolerance-ouverture-respect-differentes-religions"
-    },
-    // Nouveaux articles 2026
-    {
-      id: 16,
-      title: "Pourquoi offrir un livre personnalisé à un enfant en 2026 ?",
-      excerpt: "Découvrez pourquoi le livre personnalisé est le cadeau idéal pour un enfant en 2026. Avantages, bienfaits et impact sur le développement de l'enfant dans notre époque moderne.",
-      image: "/images/blog/livre-personnalise-enfant-2026.jpg",
-      slug: "livre-personnalise-enfant-2026"
-    },
-    {
-      id: 17,
-      title: "Comment un conte personnalisé aide l'enfant à développer confiance et imagination",
-      excerpt: "Découvrez comment les contes personnalisés renforcent la confiance en soi et stimulent l'imagination des enfants. Bienfaits psychologiques et développement personnel expliqués.",
-      image: "/images/blog/conte-personnalise-confiance-imagination-enfant.jpg",
-      slug: "conte-personnalise-confiance-imagination-enfant"
-    },
-    {
-      id: 18,
-      title: "Livre personnalisé ou livre classique : lequel est le plus bénéfique pour l'enfant ?",
-      excerpt: "Comparaison détaillée entre livres personnalisés et livres classiques pour enfants. Avantages, inconvénients et impact sur le développement de l'enfant.",
-      image: "/images/blog/livre-personnalise-vs-livre-classique-enfant.jpg",
-      slug: "livre-personnalise-vs-livre-classique-enfant"
-    },
-    {
-      id: 19,
-      title: "L'intelligence artificielle au service des histoires pour enfants",
-      excerpt: "Découvrez comment l'intelligence artificielle révolutionne la création d'histoires pour enfants. Personnalisation, créativité et innovation au service de la littérature jeunesse.",
-      image: "/images/blog/intelligence-artificielle-histoires-enfants.jpg",
-      slug: "intelligence-artificielle-histoires-enfants"
-    },
-    {
-      id: 20,
-      title: "Pourquoi les enfants adorent être le héros de leur propre histoire",
-      excerpt: "Découvrez les raisons psychologiques pour lesquelles les enfants adorent être le héros de leur propre histoire. Impact sur l'estime de soi et le développement personnel.",
-      image: "/images/blog/enfant-heros-propre-histoire.jpg",
-      slug: "enfant-heros-propre-histoire"
-    },
-    {
-      id: 21,
-      title: "Lecture du soir : pourquoi le conte personnalisé améliore le rituel du coucher",
-      excerpt: "Découvrez comment les contes personnalisés transforment le rituel du coucher en moment magique. Bienfaits sur le sommeil et la relation parent-enfant.",
-      image: "/images/blog/conte-personnalise-rituel-coucher.jpg",
-      slug: "conte-personnalise-rituel-coucher"
-    },
-    {
-      id: 22,
-      title: "Comment un livre personnalisé peut aider un enfant timide ou anxieux",
-      excerpt: "Découvrez comment les livres personnalisés aident les enfants timides et anxieux à développer leur confiance en soi. Approche thérapeutique douce et bienveillante.",
-      image: "/images/blog/livre-personnalise-enfant-timide.jpg",
-      slug: "livre-personnalise-enfant-timide"
-    },
-    {
-      id: 23,
-      title: "Cadeau de naissance ou anniversaire : le livre personnalisé intemporel",
-      excerpt: "Découvrez pourquoi le livre personnalisé est le cadeau parfait pour une naissance ou un anniversaire. Un présent unique qui grandit avec l'enfant et marque les esprits.",
-      image: "/images/blog/cadeau-livre-personnalise-enfant.jpg",
-      slug: "cadeau-livre-personnalise-enfant"
-    },
-    {
-      id: 24,
-      title: "Comment sont créées les histoires personnalisées sur Conte d'IA",
-      excerpt: "Découvrez les coulisses de la création d'histoires personnalisées sur Conte d'IA. Processus, technologie et expertise au service de contes uniques pour chaque enfant.",
-      image: "/images/blog/creation-histoires-personnalisees-conte-ia.jpg",
-      slug: "creation-histoires-personnalisees-conte-ia"
-    },
-    {
-      id: 25,
-      title: "Les bienfaits de la lecture personnalisée sur le développement émotionnel",
-      excerpt: "Découvrez comment la lecture personnalisée favorise le développement émotionnel des enfants. Intelligence émotionnelle, empathie et équilibre psychologique.",
-      image: "/images/blog/bienfaits-lecture-personnalisee-enfant.jpg",
-      slug: "bienfaits-lecture-personnalisee-enfant"
-    }
-  ];
+  @media (max-width: ${theme.breakpoints.lg}) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const BlogCard = styled(Link)<{ $visible?: boolean; $delay?: string }>`
+  display: flex;
+  flex-direction: column;
+  background: ${theme.colors.background.white};
+  border-radius: ${theme.borderRadius['2xl']};
+  overflow: hidden;
+  box-shadow: ${theme.shadows.card};
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  text-decoration: none;
+  color: inherit;
+  opacity: ${p => (p.$visible !== undefined ? (p.$visible ? 1 : 0) : 1)};
+  transform: translateY(${p => (p.$visible !== undefined ? (p.$visible ? '0' : '30px') : '0')});
+  transition:
+    opacity 0.6s ease ${p => p.$delay || '0ms'},
+    transform 0.6s ease ${p => p.$delay || '0ms'},
+    box-shadow ${theme.transitions.smooth},
+    border-color ${theme.transitions.smooth};
+
+  &:hover {
+    transform: translateY(-6px);
+    box-shadow: ${theme.shadows.cardHover};
+    border-color: ${theme.colors.accent.lightCoral};
+  }
+`;
+
+const BlogCardImage = styled.div`
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform ${theme.transitions.smooth};
+  }
+
+  ${BlogCard}:hover & img {
+    transform: scale(1.06);
+  }
+`;
+
+const BlogCardContent = styled.div`
+  padding: ${theme.spacing.lg};
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
+  h3 {
+    font-family: ${theme.fonts.heading};
+    font-size: ${theme.fontSizes.lg};
+    font-weight: 700;
+    color: ${theme.colors.text.primary};
+    margin-bottom: ${theme.spacing.sm};
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  p {
+    font-size: ${theme.fontSizes.sm};
+    color: ${theme.colors.text.secondary};
+    line-height: 1.7;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+`;
+
+const CategoryTitle = styled.h2`
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes['2xl']};
+  font-weight: 700;
+  color: ${theme.colors.text.primary};
+  margin-bottom: ${theme.spacing.xl};
+  padding-bottom: ${theme.spacing.sm};
+  border-bottom: 3px solid ${theme.colors.accent.lightCoral};
+  display: inline-block;
+`;
+
+const CategoryBlock = styled.div`
+  margin-bottom: ${theme.spacing['3xl']};
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+`;
+
+// ─── Blog articles data ───
+
+const blogArticles = [
+    { id: 1, title: "Creer un Livre Personnalise avec votre Animal de Compagnie", excerpt: "Transformez votre chien, chat ou animal favori en heros d'un conte personnalise unique. Decouvrez comment creer un livre magique ou votre enfant et son compagnon vivent des aventures extraordinaires ensemble.", slug: "histoire-animal-compagnie-livre-personnalise" },
+    { id: 2, title: "Des contes pour enfants a personnaliser : nouveaux heros et univers illustres", excerpt: "Decouvrez comment creer des heros uniques, explorer des univers illustres epoustouflants et adapter vos histoires aux gouts des adolescents.", slug: "nouveaux-personnages-styles-aventures-ados" },
+    { id: 3, title: "Contes de Fees Modernes : Quand la Magie Rencontre la Personnalisation", excerpt: "Les contes de fees se reinventent grace aux aventures personnalisees, offrant a chaque enfant la possibilite de devenir le heros de son propre conte de fees sur mesure.", slug: "evolution-livres-enfants-contes-fees-aventures-personnalisees" },
+    { id: 4, title: "Comment l'IA revolutionne la creation d'histoires pour enfants", excerpt: "L'intelligence artificielle transforme la facon dont nous creons des histoires pour enfants. Decouvrez comment notre technologie permet de generer des contes personnalises uniques.", slug: "ia-revolution-creation-histoires-enfants" },
+    { id: 5, title: "Integrer les valeurs religieuses dans les contes personnalises", excerpt: "Apprenez comment personnaliser la religion de votre enfant dans nos contes IA. Guide complet pour creer des histoires respectueuses des croyances familiales.", slug: "integrer-valeurs-religieuses-contes-personnalises" },
+    { id: 6, title: "Pourquoi votre animal de compagnie stimule l'imagination de votre enfant", excerpt: "Decouvrez comment votre animal de compagnie devient une source d'inspiration magique pour l'imagination de votre enfant.", slug: "animal-compagnie-stimule-imagination-enfant" },
+    { id: 7, title: "Offrir un conte personnalise pour Noel : le cadeau parfait pour les amoureux des animaux", excerpt: "Decouvrez pourquoi un livre personnalise mettant en scene l'animal de compagnie est le cadeau de Noel ideal.", slug: "conte-personnalise-noel-cadeau-amoureux-animaux" },
+    { id: 8, title: "De la photo au heros de conte : comment l'IA transforme votre animal en personnage d'aventure", excerpt: "Decouvrez la technologie revolutionnaire qui transforme les photos de votre animal en illustrations de conte personnalise.", slug: "photo-heros-conte-ia-transforme-animal-personnage" },
+    { id: 9, title: "Lire avec son compagnon a quatre pattes : un rituel qui renforce le lien enfant-animal", excerpt: "Decouvrez comment la lecture partagee avec votre animal de compagnie renforce les liens affectifs et developpe l'empathie chez l'enfant.", slug: "lire-compagnon-quatre-pattes-rituel-lien-enfant-animal" },
+    { id: 10, title: "Top 5 des themes d'histoires pour transformer votre animal en heros de conte", excerpt: "Decouvrez 5 themes d'aventures captivants pour creer des contes personnalises avec votre animal.", slug: "top-5-themes-histoires-animal-heros-conte" },
+    { id: 11, title: "Transmettre la foi a travers les histoires : comment les contes personnalises eveillent la spiritualite", excerpt: "Decouvrez comment les contes personnalises aident a transmettre la foi et les valeurs spirituelles aux enfants avec douceur.", slug: "transmettre-foi-histoires-contes-personnalises-spiritualite" },
+    { id: 12, title: "Les grandes fetes religieuses revisitees : creer un conte personnalise pour Noel, Ramadan, Paque ou Diwali", excerpt: "Celebrez les fetes religieuses avec des contes personnalises adaptes a chaque tradition.", slug: "fetes-religieuses-conte-personnalise-noel-ramadan-paque-diwali" },
+    { id: 13, title: "Personnaliser la foi : quand l'IA s'adapte a vos valeurs religieuses", excerpt: "Decouvrez comment l'intelligence artificielle respecte et s'adapte aux differentes croyances religieuses.", slug: "personnaliser-foi-ia-adapte-valeurs-religieuses" },
+    { id: 14, title: "Des heros de foi : inspirer les enfants a travers des personnages spirituels", excerpt: "Decouvrez comment integrer des figures inspirantes de differentes traditions religieuses dans les contes personnalises.", slug: "heros-foi-inspirer-enfants-personnages-spirituels" },
+    { id: 15, title: "Foi, tolerance et ouverture : comment les contes favorisent le respect des differentes religions", excerpt: "Decouvrez comment les contes personnalises enseignent la tolerance religieuse et le respect des differentes croyances.", slug: "foi-tolerance-ouverture-respect-differentes-religions" },
+    { id: 16, title: "Pourquoi offrir un livre personnalise a un enfant en 2026 ?", excerpt: "Decouvrez pourquoi le livre personnalise est le cadeau ideal pour un enfant en 2026. Avantages, bienfaits et impact sur le developpement.", slug: "livre-personnalise-enfant-2026" },
+    { id: 17, title: "Comment un conte personnalise aide l'enfant a developper confiance et imagination", excerpt: "Decouvrez comment les contes personnalises renforcent la confiance en soi et stimulent l'imagination des enfants.", slug: "conte-personnalise-confiance-imagination-enfant" },
+    { id: 18, title: "Livre personnalise ou livre classique : lequel est le plus benefique pour l'enfant ?", excerpt: "Comparaison detaillee entre livres personnalises et livres classiques pour enfants.", slug: "livre-personnalise-vs-livre-classique-enfant" },
+    { id: 19, title: "L'intelligence artificielle au service des histoires pour enfants", excerpt: "Decouvrez comment l'intelligence artificielle revolutionne la creation d'histoires pour enfants.", slug: "intelligence-artificielle-histoires-enfants" },
+    { id: 20, title: "Pourquoi les enfants adorent etre le heros de leur propre histoire", excerpt: "Decouvrez les raisons psychologiques pour lesquelles les enfants adorent etre le heros de leur propre histoire.", slug: "enfant-heros-propre-histoire" },
+    { id: 21, title: "Lecture du soir : pourquoi le conte personnalise ameliore le rituel du coucher", excerpt: "Decouvrez comment les contes personnalises transforment le rituel du coucher en moment magique.", slug: "conte-personnalise-rituel-coucher" },
+    { id: 22, title: "Comment un livre personnalise peut aider un enfant timide ou anxieux", excerpt: "Decouvrez comment les livres personnalises aident les enfants timides et anxieux a developper leur confiance en soi.", slug: "livre-personnalise-enfant-timide" },
+    { id: 23, title: "Cadeau de naissance ou anniversaire : le livre personnalise intemporel", excerpt: "Decouvrez pourquoi le livre personnalise est le cadeau parfait pour une naissance ou un anniversaire.", slug: "cadeau-livre-personnalise-enfant" },
+    { id: 24, title: "Comment sont creees les histoires personnalisees sur Conte d'IA", excerpt: "Decouvrez les coulisses de la creation d'histoires personnalisees sur Conte d'IA.", slug: "creation-histoires-personnalisees-conte-ia" },
+    { id: 25, title: "Les bienfaits de la lecture personnalisee sur le developpement emotionnel", excerpt: "Decouvrez comment la lecture personnalisee favorise le developpement emotionnel des enfants.", slug: "bienfaits-lecture-personnalisee-enfant" }
+];
+
+// ─── Article categories ───
+
+const recentArticles = blogArticles.filter(a => a.id >= 16 && a.id <= 25);
+const animalArticles = blogArticles.filter(a => a.id >= 6 && a.id <= 10);
+const faithArticles = blogArticles.filter(a => a.id >= 11 && a.id <= 15);
+const firstArticles = blogArticles.filter(a => a.id >= 1 && a.id <= 5);
+
+// ─── Category Section Component ───
+
+interface CategorySectionProps {
+  title: string;
+  articles: typeof blogArticles;
+}
+
+const CategorySection: React.FC<CategorySectionProps> = ({ title, articles }) => {
+  const { ref, isVisible, getDelay } = useStaggerReveal(articles.length);
 
   return (
-    <PageLayout>
-      <div className="blog-container">
-        <div className="blog-header">
-          <h1>Blog</h1>
-          <p>Lisez nos derniers articles remplis d'inspiration, de conseils et d'histoires sur les livres pour enfants magiques.</p>
-        </div>
+    <CategoryBlock ref={ref}>
+      <CategoryTitle>{title}</CategoryTitle>
+      <BlogGrid>
+        {articles.map((article, index) => (
+          <BlogCard
+            key={article.id}
+            to={`/blog/${article.slug}`}
+            $visible={isVisible}
+            $delay={getDelay(index)}
+          >
+            <BlogCardImage>
+              <img
+                src={`/images/blog/${article.slug}.jpg`}
+                alt={article.title}
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.src = '/images/placeholder-blog.jpg';
+                }}
+              />
+            </BlogCardImage>
+            <BlogCardContent>
+              <h3>{article.title}</h3>
+              <p>{article.excerpt}</p>
+            </BlogCardContent>
+          </BlogCard>
+        ))}
+      </BlogGrid>
+    </CategoryBlock>
+  );
+};
 
-        <div className="blog-grid">
-          {blogArticles.map((article) => (
-            <Link 
-              key={article.id} 
-              to={`/blog/${article.slug}`} 
-              className="blog-card"
-            >
-              <div className="blog-card-image">
-                <img 
-                  src={article.image} 
-                  alt={article.title}
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.src = '/images/placeholder-blog.jpg';
-                  }}
-                />
-              </div>
-              <div className="blog-card-content">
-                <h3>{article.title}</h3>
-                <p>{article.excerpt}</p>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </div>
-    </PageLayout>
+// ─── BlogPage Component ───
+
+const BlogPage: React.FC = () => {
+  const navigate = useNavigate();
+  const { ref: sectionRef, isVisible: sectionVisible } = useScrollReveal();
+
+  return (
+    <PageContainer>
+      <Helmet>
+        <title>Blog Contes Personnalises | Conseils Parents et Developpement Enfant</title>
+        <meta
+          name="description"
+          content="Blog expert sur les contes personnalises : pourquoi offrir un livre personnalise a un enfant, les avantages des contes personnalises pour le developpement de l'enfant, conseils parents et inspiration."
+        />
+        <meta
+          name="keywords"
+          content="pourquoi offrir un livre personnalise a un enfant, les avantages des contes personnalises pour le developpement de l'enfant, top 10 des cadeaux personnalises pour enfants, comment choisir un conte adapte a l'age de son enfant, blog contes personnalises"
+        />
+      </Helmet>
+
+      <Header />
+
+      {/* ─── Hero ─── */}
+      <HeroSection>
+        <HeroDecoBlur $size={400} $top="-10%" $left="-5%" $color={theme.colors.accent.softPink} $opacity={0.3} />
+        <HeroDecoBlur $size={300} $top="60%" $left="80%" $color={theme.colors.accent.pastelBlue} $opacity={0.2} />
+        <HeroDecoBlur $size={250} $top="30%" $left="50%" $color={theme.colors.accent.paleYellow} $opacity={0.25} />
+        <HeroContent>
+          <HeroBadge>Blog</HeroBadge>
+          <HeroTitle>
+            Notre <span>Blog</span>
+          </HeroTitle>
+          <HeroDivider />
+          <HeroSubtitle>
+            Lisez nos derniers articles remplis d'inspiration, de conseils et d'histoires sur les livres pour enfants magiques.
+          </HeroSubtitle>
+        </HeroContent>
+      </HeroSection>
+
+      {/* ─── Blog Articles ─── */}
+      <ContentSection ref={sectionRef}>
+        <Container>
+          <SectionTitle>
+            Tous nos <span>articles</span>
+          </SectionTitle>
+          <SectionDivider />
+
+          <CategorySection title="Articles Recents" articles={recentArticles} />
+          <CategorySection title="Animaux de Compagnie" articles={animalArticles} />
+          <CategorySection title="Foi et Spiritualite" articles={faithArticles} />
+          <CategorySection title="Nos Premiers Articles" articles={firstArticles} />
+        </Container>
+      </ContentSection>
+
+      {/* ─── Final CTA ─── */}
+      <FinalCTASection>
+        <FinalCTATitle>Envie de creer votre propre conte ?</FinalCTATitle>
+        <FinalCTAText>
+          Offrez a votre enfant une aventure personnalisee unique, creee sur mesure grace a l'intelligence artificielle.
+        </FinalCTAText>
+        <WhiteButton onClick={() => navigate('/create-story')}>
+          Creer un conte personnalise
+        </WhiteButton>
+      </FinalCTASection>
+
+      <Footer />
+    </PageContainer>
   );
 };
 

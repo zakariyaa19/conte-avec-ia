@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { theme } from '../../styles/theme';
 
 interface ValidatedInputProps {
-  type?: 'text' | 'email' | 'tel';
+  type?: 'text' | 'email' | 'tel' | 'password';
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
@@ -11,6 +11,7 @@ interface ValidatedInputProps {
   required?: boolean;
   error?: string;
   onBlur?: () => void;
+  disabled?: boolean;
 }
 
 const InputContainer = styled.div`
@@ -42,6 +43,12 @@ const Input = styled.input<{ $hasError: boolean }>`
   &::placeholder {
     color: ${theme.colors.text.light};
   }
+
+  &:disabled {
+    background-color: ${theme.colors.background.secondary};
+    color: ${theme.colors.text.secondary};
+    cursor: not-allowed;
+  }
 `;
 
 const ErrorMessage = styled.span`
@@ -59,7 +66,8 @@ export const ValidatedInput: React.FC<ValidatedInputProps> = ({
   label,
   required = false,
   error,
-  onBlur
+  onBlur,
+  disabled = false
 }) => {
   return (
     <InputContainer>
@@ -75,6 +83,7 @@ export const ValidatedInput: React.FC<ValidatedInputProps> = ({
         placeholder={placeholder}
         $hasError={!!error}
         onBlur={onBlur}
+        disabled={disabled}
       />
       {error && <ErrorMessage>{error}</ErrorMessage>}
     </InputContainer>

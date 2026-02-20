@@ -48,9 +48,11 @@ export interface StoryFormData {
   // Détails personnels
   creatorName?: string;
   
-  // Étape 3 - Paiement et informations
+  // Etape 3 - Paiement et informations
   userEmail: string;
+  password?: string;
   productType: 'ebook' | 'printed';
+  purchaseType?: 'single' | 'club';
   shippingAddress?: {
     firstName: string;
     lastName: string;

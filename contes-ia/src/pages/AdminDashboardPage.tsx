@@ -1,179 +1,202 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { theme } from '../styles/theme';
 import { ApiService } from '../config/api';
+import { AdminLayout } from '../components/admin/AdminLayout';
 
-const DashboardContainer = styled.div`
-  min-height: 100vh;
-  background: ${theme.colors.background.secondary};
-  padding: ${theme.spacing.lg};
-`;
+// ========== Styled Components ==========
 
-const Header = styled.div`
-  background: white;
-  padding: ${theme.spacing.lg};
-  border-radius: ${theme.borderRadius.lg};
-  box-shadow: ${theme.shadows.sm};
-  margin-bottom: ${theme.spacing.lg};
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const Title = styled.h1`
+const PageTitle = styled.h1`
+  font-size: ${theme.fontSizes['2xl']};
+  font-weight: 700;
   color: ${theme.colors.text.primary};
-  margin: 0;
-  font-size: 2rem;
-  font-weight: 600;
-`;
-
-const LogoutButton = styled.button`
-  background: ${theme.colors.status.error};
-  color: white;
-  border: none;
-  padding: ${theme.spacing.sm} ${theme.spacing.md};
-  border-radius: ${theme.borderRadius.md};
-  cursor: pointer;
-  font-weight: 500;
-  transition: background-color 0.2s;
-
-  &:hover {
-    background: ${theme.colors.status.error}dd;
-  }
+  margin: 0 0 ${theme.spacing.lg};
 `;
 
 const StatsGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: ${theme.spacing.lg};
+  grid-template-columns: repeat(5, 1fr);
+  gap: ${theme.spacing.md};
   margin-bottom: ${theme.spacing.xl};
+
+  @media (max-width: ${theme.breakpoints.lg}) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  @media (max-width: ${theme.breakpoints.sm}) {
+    grid-template-columns: repeat(2, 1fr);
+  }
 `;
 
-const StatCard = styled.div`
+const StatCard = styled.div<{ $accent?: string }>`
   background: white;
   padding: ${theme.spacing.lg};
   border-radius: ${theme.borderRadius.lg};
-  box-shadow: ${theme.shadows.sm};
-  text-align: center;
+  border: 1px solid ${theme.colors.admin.cardBorder};
+  border-top: 3px solid ${props => props.$accent || theme.colors.admin.accent};
 `;
 
 const StatValue = styled.div`
-  font-size: 2.5rem;
+  font-size: ${theme.fontSizes['3xl']};
   font-weight: 700;
-  color: ${theme.colors.button.primary};
-  margin-bottom: ${theme.spacing.sm};
+  color: ${theme.colors.text.primary};
+  line-height: 1;
+  margin-bottom: 4px;
 `;
 
 const StatLabel = styled.div`
-  color: ${theme.colors.text.secondary};
+  font-size: ${theme.fontSizes.sm};
+  color: ${theme.colors.text.light};
   font-weight: 500;
 `;
 
-const OrdersSection = styled.div`
+const SectionCard = styled.div`
   background: white;
   border-radius: ${theme.borderRadius.lg};
-  box-shadow: ${theme.shadows.sm};
+  border: 1px solid ${theme.colors.admin.cardBorder};
   overflow: hidden;
+  margin-bottom: ${theme.spacing.xl};
 `;
 
 const SectionHeader = styled.div`
-  padding: ${theme.spacing.lg};
-  border-bottom: 1px solid ${theme.colors.background.secondary};
+  padding: ${theme.spacing.md} ${theme.spacing.lg};
+  border-bottom: 1px solid ${theme.colors.admin.cardBorder};
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: ${theme.spacing.sm};
 `;
 
 const SectionTitle = styled.h2`
   margin: 0;
+  font-size: ${theme.fontSizes.lg};
+  font-weight: 600;
   color: ${theme.colors.text.primary};
-  font-size: 1.5rem;
+`;
+
+const FiltersRow = styled.div`
+  display: flex;
+  gap: ${theme.spacing.sm};
+  align-items: center;
+  flex-wrap: wrap;
 `;
 
 const FilterSelect = styled.select`
-  padding: ${theme.spacing.sm};
-  border: 2px solid ${theme.colors.background.secondary};
-  border-radius: ${theme.borderRadius.md};
+  padding: 6px 10px;
+  border: 1px solid ${theme.colors.admin.cardBorder};
+  border-radius: ${theme.borderRadius.sm};
+  font-size: ${theme.fontSizes.sm};
   background: white;
+  color: ${theme.colors.text.primary};
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+    border-color: ${theme.colors.admin.accent};
+  }
 `;
 
-const OrdersTable = styled.table`
+const SearchInput = styled.input`
+  padding: 6px 10px;
+  border: 1px solid ${theme.colors.admin.cardBorder};
+  border-radius: ${theme.borderRadius.sm};
+  font-size: ${theme.fontSizes.sm};
+  min-width: 200px;
+
+  &:focus {
+    outline: none;
+    border-color: ${theme.colors.admin.accent};
+  }
+`;
+
+const DateInput = styled.input`
+  padding: 6px 10px;
+  border: 1px solid ${theme.colors.admin.cardBorder};
+  border-radius: ${theme.borderRadius.sm};
+  font-size: ${theme.fontSizes.sm};
+
+  &:focus {
+    outline: none;
+    border-color: ${theme.colors.admin.accent};
+  }
+`;
+
+const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
 `;
 
-const TableHeader = styled.th`
-  padding: ${theme.spacing.md};
+const Th = styled.th`
+  padding: ${theme.spacing.sm} ${theme.spacing.md};
   text-align: left;
-  background: ${theme.colors.background.secondary};
-  color: ${theme.colors.text.primary};
+  font-size: ${theme.fontSizes.xs};
   font-weight: 600;
+  color: ${theme.colors.text.light};
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: ${theme.colors.admin.contentBg};
+  border-bottom: 1px solid ${theme.colors.admin.cardBorder};
 `;
 
-const TableCell = styled.td`
-  padding: ${theme.spacing.md};
-  border-bottom: 1px solid ${theme.colors.background.secondary};
+const Td = styled.td`
+  padding: ${theme.spacing.sm} ${theme.spacing.md};
+  font-size: ${theme.fontSizes.sm};
   color: ${theme.colors.text.primary};
+  border-bottom: 1px solid ${theme.colors.admin.cardBorder}80;
+  vertical-align: middle;
 `;
 
-const StatusDropdown = styled.div`
+const Badge = styled.span<{ $color: string; $bg: string }>`
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: ${theme.borderRadius.full};
+  font-size: ${theme.fontSizes.xs};
+  font-weight: 600;
+  color: ${props => props.$color};
+  background: ${props => props.$bg};
+  white-space: nowrap;
+`;
+
+const StatusDropdownWrapper = styled.div`
   position: relative;
   display: inline-block;
 `;
 
-const StatusButton = styled.button<{ status: string }>`
-  padding: ${theme.spacing.xs} ${theme.spacing.sm};
+const StatusBtn = styled.button<{ $bg: string }>`
+  padding: 4px 10px;
   border-radius: ${theme.borderRadius.sm};
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-size: ${theme.fontSizes.xs};
+  font-weight: 600;
   border: none;
   cursor: pointer;
-  background: ${props => {
-    const statusColors = {
-      NEW_ORDER: theme.colors.status.info,
-      IN_PROGRESS: theme.colors.status.warning,
-      DELIVERED: theme.colors.status.success,
-      BLOCKED: theme.colors.status.error,
-      PENDING: theme.colors.status.warning,
-      PAID: theme.colors.status.success,
-      PROCESSING: theme.colors.status.info,
-      GENERATED: theme.colors.accent.coral,
-      PRINTED: theme.colors.accent.softPeach,
-      SHIPPED: theme.colors.accent.lightCoral,
-      CANCELLED: theme.colors.status.error,
-      REFUNDED: theme.colors.status.error
-    };
-    return statusColors[props.status as keyof typeof statusColors] || theme.colors.text.light;
-  }};
+  background: ${props => props.$bg};
   color: white;
-  min-width: 140px;
-  text-align: left;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 4px;
+  white-space: nowrap;
 
-  &:hover {
-    opacity: 0.9;
-  }
+  &:hover { opacity: 0.9; }
 `;
 
 const StatusMenu = styled.div`
   position: absolute;
   top: 100%;
   left: 0;
-  right: 0;
+  min-width: 160px;
   background: white;
-  border: 1px solid ${theme.colors.text.light};
+  border: 1px solid ${theme.colors.admin.cardBorder};
   border-radius: ${theme.borderRadius.md};
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: ${theme.shadows.lg};
   z-index: 1000;
   margin-top: 4px;
   opacity: 0;
   visibility: hidden;
-  transform: translateY(-10px);
-  transition: all 0.2s ease;
+  transform: translateY(-8px);
+  transition: all 0.15s ease;
 
-  ${StatusDropdown}:hover & {
+  ${StatusDropdownWrapper}:hover & {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
@@ -182,293 +205,447 @@ const StatusMenu = styled.div`
 
 const StatusMenuItem = styled.button`
   width: 100%;
-  padding: ${theme.spacing.sm} ${theme.spacing.md};
+  padding: 8px 12px;
   border: none;
   background: transparent;
   text-align: left;
   cursor: pointer;
   font-size: ${theme.fontSizes.sm};
   color: ${theme.colors.text.primary};
-  transition: background-color 0.2s ease;
 
-  &:hover {
-    background: ${theme.colors.background.secondary};
-  }
-
-  &:first-child {
-    border-radius: ${theme.borderRadius.md} ${theme.borderRadius.md} 0 0;
-  }
-
-  &:last-child {
-    border-radius: 0 0 ${theme.borderRadius.md} ${theme.borderRadius.md};
-  }
-
-  &:only-child {
-    border-radius: ${theme.borderRadius.md};
-  }
-`;
-const ActionButton = styled.button`
-  background: ${theme.colors.button.primary};
-  color: white;
-  border: none;
-  padding: ${theme.spacing.xs} ${theme.spacing.sm};
-  border-radius: ${theme.borderRadius.sm};
-  cursor: pointer;
-  font-size: 0.875rem;
-  margin-right: ${theme.spacing.xs};
-
-  &:hover {
-    background: ${theme.colors.button.primaryHover};
-  }
+  &:hover { background: ${theme.colors.admin.contentBg}; }
+  &:first-child { border-radius: ${theme.borderRadius.md} ${theme.borderRadius.md} 0 0; }
+  &:last-child { border-radius: 0 0 ${theme.borderRadius.md} ${theme.borderRadius.md}; }
 `;
 
-const ViewButton = styled.button`
-  background: transparent;
-  color: ${theme.colors.button.primary};
-  border: 1px solid ${theme.colors.button.primary};
-  padding: ${theme.spacing.xs} ${theme.spacing.sm};
+const ActionBtn = styled.button<{ $variant?: 'primary' | 'success' | 'ghost' }>`
+  padding: 4px 10px;
   border-radius: ${theme.borderRadius.sm};
-  cursor: pointer;
-  font-size: 0.875rem;
+  font-size: ${theme.fontSizes.xs};
   font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
 
-  &:hover {
-    background: ${theme.colors.button.primary};
-    color: white;
-  }
+  ${props => {
+    switch (props.$variant) {
+      case 'success':
+        return `background: ${theme.colors.status.success}; color: white; border: none; &:hover { opacity: 0.9; }`;
+      case 'ghost':
+        return `background: transparent; color: ${theme.colors.admin.accent}; border: 1px solid ${theme.colors.admin.accent}; &:hover { background: ${theme.colors.admin.accent}10; }`;
+      default:
+        return `background: ${theme.colors.admin.accent}; color: white; border: none; &:hover { background: ${theme.colors.admin.accentHover}; }`;
+    }
+  }}
+
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
 `;
 
-const LoadingMessage = styled.div`
+const ActionsCell = styled.div`
+  display: flex;
+  gap: 4px;
+  align-items: center;
+`;
+
+const EmptyState = styled.div`
   text-align: center;
-  padding: ${theme.spacing.xl};
-  color: ${theme.colors.text.secondary};
+  padding: ${theme.spacing['2xl']};
+  color: ${theme.colors.text.light};
+  font-size: ${theme.fontSizes.sm};
 `;
 
-const ErrorMessage = styled.div`
-  background: ${theme.colors.status.error}20;
-  color: ${theme.colors.status.error};
-  padding: ${theme.spacing.md};
-  border-radius: ${theme.borderRadius.md};
-  margin: ${theme.spacing.md};
+const Pagination = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: ${theme.spacing.md} ${theme.spacing.lg};
+  border-top: 1px solid ${theme.colors.admin.cardBorder};
+  font-size: ${theme.fontSizes.sm};
+  color: ${theme.colors.text.light};
 `;
+
+const PaginationBtns = styled.div`
+  display: flex;
+  gap: ${theme.spacing.xs};
+`;
+
+const PageBtn = styled.button<{ $active?: boolean }>`
+  padding: 4px 10px;
+  border: 1px solid ${props => props.$active ? theme.colors.admin.accent : theme.colors.admin.cardBorder};
+  background: ${props => props.$active ? theme.colors.admin.accent : 'white'};
+  color: ${props => props.$active ? 'white' : theme.colors.text.primary};
+  border-radius: ${theme.borderRadius.sm};
+  cursor: pointer;
+  font-size: ${theme.fontSizes.sm};
+
+  &:hover:not(:disabled) { border-color: ${theme.colors.admin.accent}; }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+`;
+
+const ErrorBanner = styled.div`
+  background: ${theme.colors.status.error}10;
+  border: 1px solid ${theme.colors.status.error}30;
+  color: ${theme.colors.status.error};
+  padding: ${theme.spacing.sm} ${theme.spacing.md};
+  border-radius: ${theme.borderRadius.md};
+  margin-bottom: ${theme.spacing.md};
+  font-size: ${theme.fontSizes.sm};
+`;
+
+// ========== Helpers ==========
+
+const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
+  PENDING: { label: 'En attente', color: '#6B7280', bg: '#F3F4F6' },
+  PAID: { label: 'Payee - A traiter', color: '#D97706', bg: '#FEF3C7' },
+  BLOCKED: { label: 'Bloquee', color: '#DC2626', bg: '#FEE2E2' },
+  DELIVERED: { label: 'Livree', color: '#059669', bg: '#D1FAE5' },
+};
+
+const PURCHASE_TYPE_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
+  SINGLE: { label: 'Unique', color: '#6B7280', bg: '#F3F4F6' },
+  CLUB: { label: 'Club', color: '#7C3AED', bg: '#EDE9FE' },
+};
+
+const ALL_STATUSES = Object.keys(STATUS_CONFIG);
+
+const formatDate = (d: string) =>
+  new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+const formatPrice = (p: number | string) => `${Number(p).toFixed(2)}€`;
+
+// ========== Component ==========
 
 interface AdminDashboardPageProps {
   token: string;
   onLogout: () => void;
 }
 
-export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ token, onLogout }) => {
+export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ token }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isOrdersView = location.pathname === '/admin/orders';
+
   const [stats, setStats] = useState<any>(null);
-  const [orders, setOrders] = useState<any[]>([]);
+  const [actionOrders, setActionOrders] = useState<any[]>([]);
+  const [allOrders, setAllOrders] = useState<any[]>([]);
+  const [allPagination, setAllPagination] = useState({ page: 1, total: 0, totalPages: 0 });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
   const [updating, setUpdating] = useState(false);
 
-  const getStatusLabel = (status: string) => {
-    const statusLabels = {
-      NEW_ORDER: 'Nouvelle commande',
-      IN_PROGRESS: 'En cours de création',
-      DELIVERED: 'Livré',
-      BLOCKED: 'Bloqué',
-      // Anciens statuts pour compatibilité
-      PENDING: 'En attente',
-      PAID: 'Payé',
-      PROCESSING: 'En traitement',
-      GENERATED: 'Généré',
-      PRINTED: 'Imprimé',
-      SHIPPED: 'Expédié',
-      CANCELLED: 'Annulé',
-      REFUNDED: 'Remboursé'
-    };
-    return statusLabels[status as keyof typeof statusLabels] || status;
-  };
+  // Filters
+  const [statusFilter, setStatusFilter] = useState('');
+  const [typeFilter, setTypeFilter] = useState('');
+  const [searchFilter, setSearchFilter] = useState('');
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
+  const [page, setPage] = useState(1);
 
-  const getAvailableStatuses = () => {
-    return ['NEW_ORDER', 'IN_PROGRESS', 'DELIVERED', 'BLOCKED'];
-  };
+  const getToken = () => localStorage.getItem('adminToken') || token;
 
-  useEffect(() => {
-    loadDashboardData();
+  const loadStats = useCallback(async () => {
+    try {
+      const response = await ApiService.getAdminDashboardStats(getToken());
+      if (response.success) setStats(response.data);
+    } catch (err: any) {
+      console.error('Stats error:', err);
+    }
   }, [token]);
 
-  useEffect(() => {
-    loadOrders();
-  }, [statusFilter, token]);
-
-  const loadDashboardData = async () => {
+  const loadActionOrders = useCallback(async () => {
     try {
-      const response = await ApiService.getAdminDashboardStats(token);
-      if (response.success) {
-        setStats(response.data);
-      }
-    } catch (error: any) {
-      setError('Erreur lors du chargement des statistiques');
-      console.error('Erreur stats:', error);
+      const response = await ApiService.getAdminOrders(getToken(), { actionRequired: 'true', limit: '50' });
+      if (response.success) setActionOrders(response.data);
+    } catch (err: any) {
+      console.error('Action orders error:', err);
     }
-  };
+  }, [token]);
 
-  const loadOrders = async () => {
+  const loadAllOrders = useCallback(async () => {
     try {
       setLoading(true);
-      const params = statusFilter ? { status: statusFilter } : {};
-      const response = await ApiService.getAdminOrders(token, params);
+      const params: any = { page: String(page), limit: '20' };
+      if (statusFilter) params.status = statusFilter;
+      if (typeFilter) params.purchaseType = typeFilter;
+      if (searchFilter) params.search = searchFilter;
+      if (dateFrom) params.dateFrom = dateFrom;
+      if (dateTo) params.dateTo = dateTo;
+      const response = await ApiService.getAdminOrders(getToken(), params);
       if (response.success) {
-        setOrders(response.data);
+        setAllOrders(response.data);
+        if (response.pagination) setAllPagination(response.pagination);
       }
-    } catch (error: any) {
-      setError('Erreur lors du chargement des commandes');
-      console.error('Erreur commandes:', error);
+    } catch (err: any) {
+      setError('Erreur chargement commandes');
     } finally {
       setLoading(false);
     }
-  };
+  }, [token, page, statusFilter, typeFilter, searchFilter, dateFrom, dateTo]);
+
+  useEffect(() => {
+    loadStats();
+    loadActionOrders();
+  }, [loadStats, loadActionOrders]);
+
+  useEffect(() => {
+    loadAllOrders();
+  }, [loadAllOrders]);
 
   const handleStatusChange = async (orderId: string, newStatus: string) => {
     try {
       setUpdating(true);
-      setError(''); // Clear previous errors
-      
-      console.log('🔄 Mise à jour statut:', { orderId, newStatus, token: token?.substring(0, 20) + '...' });
-      
-      const currentToken = localStorage.getItem('adminToken') || token;
-      console.log('🔑 Token utilisé:', currentToken?.substring(0, 20) + '...');
-      
-      if (!currentToken) {
-        throw new Error('Token manquant');
-      }
-      
-      await ApiService.updateAdminOrder(currentToken, orderId, { status: newStatus });
-      await loadOrders(); // Recharger la liste
-      await loadDashboardData(); // Recharger les stats
-      
-      console.log('✅ Statut mis à jour avec succès');
-    } catch (error: any) {
-      console.error('❌ Erreur update complète:', error);
-      setError('Erreur lors de la mise à jour du statut: ' + error.message);
-      
-      if (error.message.includes('401') || error.message.includes('Token') || error.message.includes('authentification')) {
-        console.log('🔄 Token expiré, redirection...');
-        localStorage.removeItem('adminToken');
-        window.location.href = '/admin';
-      }
+      setError('');
+      await ApiService.updateAdminOrder(getToken(), orderId, { status: newStatus });
+      await Promise.all([loadStats(), loadActionOrders(), loadAllOrders()]);
+    } catch (err: any) {
+      setError('Erreur mise a jour: ' + err.message);
     } finally {
       setUpdating(false);
     }
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('fr-FR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+  const handleDeliver = async (orderId: string) => {
+    if (!window.confirm('Livrer ce conte ? Un email sera envoye au client.')) return;
+    try {
+      setUpdating(true);
+      await ApiService.deliverStory(getToken(), orderId);
+      await Promise.all([loadStats(), loadActionOrders(), loadAllOrders()]);
+    } catch (err: any) {
+      setError('Erreur livraison: ' + err.message);
+    } finally {
+      setUpdating(false);
+    }
   };
 
+  const renderStatusBadge = (status: string) => {
+    const cfg = STATUS_CONFIG[status] || { label: status, color: '#6B7280', bg: '#F3F4F6' };
+    return <Badge $color={cfg.color} $bg={cfg.bg}>{cfg.label}</Badge>;
+  };
+
+  const renderTypeBadge = (order: any) => {
+    if (order.purchaseType === 'CLUB' && Number(order.price) === 0) {
+      return <Badge $color="#059669" $bg="#D1FAE5">Club gratuit</Badge>;
+    }
+    if (order.purchaseType === 'CLUB') {
+      return <Badge $color="#7C3AED" $bg="#EDE9FE">Club</Badge>;
+    }
+    return <Badge $color="#6B7280" $bg="#F3F4F6">Unique</Badge>;
+  };
+
+  const renderStatusDropdown = (order: any) => {
+    const cfg = STATUS_CONFIG[order.status] || { label: order.status, color: '#fff', bg: '#6B7280' };
+    return (
+      <StatusDropdownWrapper>
+        <StatusBtn $bg={cfg.color} disabled={updating}>
+          {cfg.label} ▾
+        </StatusBtn>
+        <StatusMenu>
+          {ALL_STATUSES.map(s => (
+            <StatusMenuItem key={s} onClick={() => handleStatusChange(order.id, s)} disabled={updating}>
+              {STATUS_CONFIG[s]?.label || s}
+            </StatusMenuItem>
+          ))}
+        </StatusMenu>
+      </StatusDropdownWrapper>
+    );
+  };
+
+  const renderOrderRow = (order: any, showActions = false) => (
+    <tr key={order.id}>
+      <Td>
+        <ActionBtn $variant="ghost" onClick={() => navigate(`/admin/order/${order.id}`)}>
+          #{order.id.slice(-8)}
+        </ActionBtn>
+      </Td>
+      <Td>{formatDate(order.createdAt)}</Td>
+      <Td>
+        <span style={order.user?.role === 'CLUB' ? { color: '#B8860B', fontWeight: 600 } : {}}>
+          {order.user?.email || '-'}
+        </span>
+        {order.user?.role === 'CLUB' && <Badge $color="#92400E" $bg="#FDE68A" style={{ marginLeft: '6px', fontSize: '10px' }}>Club</Badge>}
+      </Td>
+      <Td>{order.protagonistName}</Td>
+      <Td>{renderTypeBadge(order)}</Td>
+      <Td>{renderStatusDropdown(order)}</Td>
+      <Td>{formatPrice(order.price)}</Td>
+      {showActions && (
+        <Td>
+          <ActionsCell>
+            <ActionBtn $variant="ghost" onClick={() => navigate(`/admin/order/${order.id}`)}>
+              Voir
+            </ActionBtn>
+            {order.pdfUrl && !order.deliveredAt && (
+              <ActionBtn $variant="success" onClick={() => handleDeliver(order.id)} disabled={updating}>
+                Livrer
+              </ActionBtn>
+            )}
+          </ActionsCell>
+        </Td>
+      )}
+    </tr>
+  );
+
+  // Orders view (all orders with filters)
+  if (isOrdersView) {
+    return (
+      <AdminLayout>
+        <PageTitle>Commandes</PageTitle>
+        {error && <ErrorBanner>{error}</ErrorBanner>}
+
+        <SectionCard>
+          <SectionHeader>
+            <SectionTitle>Toutes les commandes</SectionTitle>
+            <FiltersRow>
+              <FilterSelect value={statusFilter} onChange={e => { setStatusFilter(e.target.value); setPage(1); }}>
+                <option value="">Tous les statuts</option>
+                {ALL_STATUSES.map(s => (
+                  <option key={s} value={s}>{STATUS_CONFIG[s]?.label || s}</option>
+                ))}
+              </FilterSelect>
+              <FilterSelect value={typeFilter} onChange={e => { setTypeFilter(e.target.value); setPage(1); }}>
+                <option value="">Tous les types</option>
+                <option value="SINGLE">Achat unique</option>
+                <option value="CLUB">Club</option>
+              </FilterSelect>
+              <SearchInput
+                placeholder="Rechercher email, prenom..."
+                value={searchFilter}
+                onChange={e => { setSearchFilter(e.target.value); setPage(1); }}
+              />
+              <DateInput type="date" value={dateFrom} onChange={e => { setDateFrom(e.target.value); setPage(1); }} title="Date debut" />
+              <DateInput type="date" value={dateTo} onChange={e => { setDateTo(e.target.value); setPage(1); }} title="Date fin" />
+            </FiltersRow>
+          </SectionHeader>
+
+          {loading ? (
+            <EmptyState>Chargement...</EmptyState>
+          ) : allOrders.length === 0 ? (
+            <EmptyState>Aucune commande trouvee</EmptyState>
+          ) : (
+            <>
+              <Table>
+                <thead>
+                  <tr>
+                    <Th>ID</Th>
+                    <Th>Date</Th>
+                    <Th>Client</Th>
+                    <Th>Protagoniste</Th>
+                    <Th>Type</Th>
+                    <Th>Statut</Th>
+                    <Th>Prix</Th>
+                    <Th>Actions</Th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {allOrders.map(order => renderOrderRow(order, true))}
+                </tbody>
+              </Table>
+              <Pagination>
+                <span>{allPagination.total} commande(s) — page {allPagination.page}/{allPagination.totalPages || 1}</span>
+                <PaginationBtns>
+                  <PageBtn disabled={page <= 1} onClick={() => setPage(p => p - 1)}>Precedent</PageBtn>
+                  <PageBtn disabled={page >= (allPagination.totalPages || 1)} onClick={() => setPage(p => p + 1)}>Suivant</PageBtn>
+                </PaginationBtns>
+              </Pagination>
+            </>
+          )}
+        </SectionCard>
+      </AdminLayout>
+    );
+  }
+
+  // Dashboard home view
   return (
-    <DashboardContainer>
-      <Header>
-        <Title>Dashboard Administration</Title>
-        <LogoutButton onClick={onLogout}>
-          Déconnexion
-        </LogoutButton>
-      </Header>
+    <AdminLayout>
+      <PageTitle>Tableau de bord</PageTitle>
+      {error && <ErrorBanner>{error}</ErrorBanner>}
 
-      {error && <ErrorMessage>{error}</ErrorMessage>}
-
+      {/* Stats */}
       {stats && (
         <StatsGrid>
-          <StatCard>
-            <StatValue>{stats.totalOrders || 0}</StatValue>
-            <StatLabel>Commandes totales</StatLabel>
+          <StatCard $accent={theme.colors.status.warning}>
+            <StatValue>{stats.ordersToProcess || 0}</StatValue>
+            <StatLabel>A traiter</StatLabel>
           </StatCard>
-          <StatCard>
-            <StatValue>{stats.pendingOrders || 0}</StatValue>
-            <StatLabel>En attente</StatLabel>
-          </StatCard>
-          <StatCard>
-            <StatValue>{stats.paidOrders || 0}</StatValue>
-            <StatLabel>Payées</StatLabel>
-          </StatCard>
-          <StatCard>
-            <StatValue>{stats.totalRevenue || '0'}€</StatValue>
+          <StatCard $accent={theme.colors.status.success}>
+            <StatValue>{formatPrice(stats.totalRevenue || 0)}</StatValue>
             <StatLabel>Chiffre d'affaires</StatLabel>
+          </StatCard>
+          <StatCard $accent="#7C3AED">
+            <StatValue>{stats.clubSubscribers || 0}</StatValue>
+            <StatLabel>Abonnements Club</StatLabel>
+          </StatCard>
+          <StatCard $accent="#B8860B">
+            <StatValue>{formatPrice(stats.mrr || 0)}</StatValue>
+            <StatLabel>Revenus Club / mois</StatLabel>
+          </StatCard>
+          <StatCard $accent={theme.colors.admin.accent}>
+            <StatValue>{stats.totalStories || 0}</StatValue>
+            <StatLabel>Contes generes</StatLabel>
           </StatCard>
         </StatsGrid>
       )}
 
-      <OrdersSection>
+      {/* Section "A traiter" */}
+      <SectionCard>
         <SectionHeader>
-          <SectionTitle>Commandes récentes</SectionTitle>
-          <FilterSelect 
-            value={statusFilter} 
-            onChange={(e) => setStatusFilter(e.target.value)}
-          >
-            <option value="">Tous les statuts</option>
-            <option value="NEW_ORDER">Nouvelle commande</option>
-            <option value="IN_PROGRESS">En cours de création</option>
-            <option value="DELIVERED">Livré</option>
-            <option value="BLOCKED">Bloqué</option>
-          </FilterSelect>
+          <SectionTitle>A traiter ({actionOrders.length})</SectionTitle>
         </SectionHeader>
-
-        {loading ? (
-          <LoadingMessage>Chargement des commandes...</LoadingMessage>
-        ) : orders.length === 0 ? (
-          <LoadingMessage>Aucune commande trouvée</LoadingMessage>
+        {actionOrders.length === 0 ? (
+          <EmptyState>Aucune commande a traiter</EmptyState>
         ) : (
-          <OrdersTable>
+          <Table>
             <thead>
               <tr>
-                <TableHeader>ID</TableHeader>
-                <TableHeader>Client</TableHeader>
-                <TableHeader>Protagoniste</TableHeader>
-                <TableHeader>Produit</TableHeader>
-                <TableHeader>Prix</TableHeader>
-                <TableHeader>Statut</TableHeader>
-                <TableHeader>Date</TableHeader>
+                <Th>ID</Th>
+                <Th>Date</Th>
+                <Th>Client</Th>
+                <Th>Protagoniste</Th>
+                <Th>Type</Th>
+                <Th>Statut</Th>
+                <Th>Prix</Th>
+                <Th>Actions</Th>
               </tr>
             </thead>
             <tbody>
-              {orders.map((order) => (
-                <tr key={order.id}>
-                  <TableCell>
-                    <ViewButton onClick={() => window.location.href = `/admin/order/${order.id}`}>
-                      {order.id.slice(-8)}
-                    </ViewButton>
-                  </TableCell>
-                  <TableCell>{order.user?.email || 'N/A'}</TableCell>
-                  <TableCell>{order.protagonistName}</TableCell>
-                  <TableCell>{order.productType}</TableCell>
-                  <TableCell>{order.price}€</TableCell>
-                  <TableCell>
-                    <StatusDropdown>
-                      <StatusButton status={order.status} disabled={updating}>
-                        {getStatusLabel(order.status)} ▼
-                      </StatusButton>
-                      <StatusMenu>
-                        {getAvailableStatuses().map(status => (
-                          <StatusMenuItem 
-                            key={status}
-                            onClick={() => handleStatusChange(order.id, status)}
-                            disabled={updating}
-                          >
-                            {getStatusLabel(status)}
-                          </StatusMenuItem>
-                        ))}
-                      </StatusMenu>
-                    </StatusDropdown>
-                  </TableCell>
-                  <TableCell>{formatDate(order.createdAt)}</TableCell>
-                </tr>
-              ))}
+              {actionOrders.map(order => renderOrderRow(order, true))}
             </tbody>
-          </OrdersTable>
+          </Table>
         )}
-      </OrdersSection>
-    </DashboardContainer>
+      </SectionCard>
+
+      {/* Commandes recentes */}
+      <SectionCard>
+        <SectionHeader>
+          <SectionTitle>Commandes recentes</SectionTitle>
+          <ActionBtn $variant="ghost" onClick={() => navigate('/admin/orders')}>
+            Voir toutes →
+          </ActionBtn>
+        </SectionHeader>
+        {loading ? (
+          <EmptyState>Chargement...</EmptyState>
+        ) : allOrders.length === 0 ? (
+          <EmptyState>Aucune commande</EmptyState>
+        ) : (
+          <Table>
+            <thead>
+              <tr>
+                <Th>ID</Th>
+                <Th>Date</Th>
+                <Th>Client</Th>
+                <Th>Protagoniste</Th>
+                <Th>Type</Th>
+                <Th>Statut</Th>
+                <Th>Prix</Th>
+              </tr>
+            </thead>
+            <tbody>
+              {allOrders.slice(0, 10).map(order => renderOrderRow(order, false))}
+            </tbody>
+          </Table>
+        )}
+      </SectionCard>
+    </AdminLayout>
   );
 };
 

@@ -3,194 +3,103 @@ import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { theme } from '../styles/theme';
 import { ApiService } from '../config/api';
+import { AdminLayout } from '../components/admin/AdminLayout';
 import { getImageUrl } from '../config/constants';
 
-const DetailContainer = styled.div`
-  min-height: 100vh;
-  background: ${theme.colors.background.secondary};
-  padding: ${theme.spacing.lg};
-`;
+// ========== Styled ==========
 
-const Header = styled.div`
-  background: white;
-  padding: ${theme.spacing.lg};
-  border-radius: ${theme.borderRadius.lg};
-  box-shadow: ${theme.shadows.sm};
-  margin-bottom: ${theme.spacing.lg};
+const Breadcrumb = styled.div`
   display: flex;
-  justify-content: space-between;
   align-items: center;
-`;
+  gap: ${theme.spacing.xs};
+  font-size: ${theme.fontSizes.sm};
+  color: ${theme.colors.text.light};
+  margin-bottom: ${theme.spacing.lg};
 
-const BackButton = styled.button`
-  background: ${theme.colors.text.light};
-  color: white;
-  border: none;
-  padding: ${theme.spacing.sm} ${theme.spacing.md};
-  border-radius: ${theme.borderRadius.md};
-  cursor: pointer;
-  font-weight: 500;
-
-  &:hover {
-    background: ${theme.colors.text.secondary};
+  a, span.link {
+    color: ${theme.colors.admin.accent};
+    cursor: pointer;
+    text-decoration: none;
+    &:hover { text-decoration: underline; }
   }
 `;
 
-const Title = styled.h1`
+const PageHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: ${theme.spacing.lg};
+  flex-wrap: wrap;
+  gap: ${theme.spacing.sm};
+`;
+
+const PageTitle = styled.h1`
+  font-size: ${theme.fontSizes['2xl']};
+  font-weight: 700;
   color: ${theme.colors.text.primary};
   margin: 0;
-  font-size: 1.5rem;
-  font-weight: 600;
 `;
 
-const QuickActions = styled.div`
+const HeaderActions = styled.div`
   display: flex;
   gap: ${theme.spacing.sm};
   align-items: center;
 `;
 
-const PhotoContainer = styled.div`
+const Timeline = styled.div`
   display: flex;
-  flex-direction: column;
-  gap: ${theme.spacing.sm};
-  max-width: 300px;
-`;
-
-const PhotoPreview = styled.img`
-  width: 100%;
-  max-width: 200px;
-  height: auto;
-  border-radius: ${theme.borderRadius.md};
-  border: 2px solid ${theme.colors.background.secondary};
-  cursor: pointer;
-  transition: transform 0.2s ease;
-
-  &:hover {
-    transform: scale(1.05);
-    border-color: ${theme.colors.button.primary};
-  }
-`;
-
-const PhotoActions = styled.div`
-  display: flex;
-  gap: ${theme.spacing.sm};
-`;
-
-const DownloadButton = styled.button`
-  background: ${theme.colors.button.primary};
-  color: white;
-  border: none;
-  padding: ${theme.spacing.xs} ${theme.spacing.sm};
-  border-radius: ${theme.borderRadius.sm};
-  cursor: pointer;
-  font-size: 0.875rem;
-  font-weight: 500;
-  transition: background-color 0.2s;
-
-  &:hover {
-    background: ${theme.colors.button.primaryHover};
-  }
-`;
-
-const ViewButton = styled.button`
-  background: ${theme.colors.text.light};
-  color: white;
-  border: none;
-  padding: ${theme.spacing.xs} ${theme.spacing.sm};
-  border-radius: ${theme.borderRadius.sm};
-  cursor: pointer;
-  font-size: 0.875rem;
-  font-weight: 500;
-  transition: background-color 0.2s;
-
-  &:hover {
-    background: ${theme.colors.text.secondary};
-  }
-`;
-
-const StatusDropdown = styled.div`
-  position: relative;
-  display: inline-block;
-`;
-
-const DropdownButton = styled.button<{ disabled?: boolean }>`
-  background: ${theme.colors.button.primary};
-  color: white;
-  border: none;
-  padding: ${theme.spacing.sm} ${theme.spacing.md};
-  border-radius: ${theme.borderRadius.md};
-  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
-  font-size: ${theme.fontSizes.sm};
-  font-weight: 500;
-  opacity: ${props => props.disabled ? 0.6 : 1};
-  transition: all 0.2s ease;
-  min-width: 140px;
-  text-align: left;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  &:hover:not(:disabled) {
-    background: ${theme.colors.button.primaryHover};
-    transform: translateY(-1px);
-  }
-
-  &:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px ${theme.colors.button.primary}33;
-  }
-`;
-
-const DropdownMenu = styled.div`
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
+  gap: 0;
+  margin-bottom: ${theme.spacing.xl};
   background: white;
-  border: 1px solid ${theme.colors.text.light};
-  border-radius: ${theme.borderRadius.md};
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
-  margin-top: 4px;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-10px);
-  transition: all 0.2s ease;
+  border-radius: ${theme.borderRadius.lg};
+  border: 1px solid ${theme.colors.admin.cardBorder};
+  padding: ${theme.spacing.lg};
+  overflow-x: auto;
+`;
 
-  ${StatusDropdown}:hover & {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
+const TimelineStep = styled.div<{ $active?: boolean; $done?: boolean }>`
+  flex: 1;
+  text-align: center;
+  position: relative;
+  min-width: 120px;
+
+  &:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 14px;
+    right: -50%;
+    width: 100%;
+    height: 2px;
+    background: ${props => props.$done ? theme.colors.status.success : theme.colors.admin.cardBorder};
   }
 `;
 
-const DropdownItem = styled.button<{ disabled?: boolean }>`
-  width: 100%;
-  padding: ${theme.spacing.sm} ${theme.spacing.md};
-  border: none;
-  background: transparent;
-  text-align: left;
-  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
-  font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.text.primary};
-  opacity: ${props => props.disabled ? 0.5 : 1};
-  transition: background-color 0.2s ease;
+const TimelineDot = styled.div<{ $active?: boolean; $done?: boolean }>`
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  margin: 0 auto ${theme.spacing.xs};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  position: relative;
+  z-index: 1;
+  background: ${props => props.$done ? theme.colors.status.success : props.$active ? theme.colors.admin.accent : theme.colors.admin.cardBorder};
+  color: ${props => (props.$done || props.$active) ? 'white' : theme.colors.text.light};
+`;
 
-  &:hover:not(:disabled) {
-    background: ${theme.colors.background.secondary};
-  }
+const TimelineLabel = styled.div`
+  font-size: ${theme.fontSizes.xs};
+  font-weight: 600;
+  color: ${theme.colors.text.secondary};
+`;
 
-  &:first-child {
-    border-radius: ${theme.borderRadius.md} ${theme.borderRadius.md} 0 0;
-  }
-
-  &:last-child {
-    border-radius: 0 0 ${theme.borderRadius.md} ${theme.borderRadius.md};
-  }
-
-  &:only-child {
-    border-radius: ${theme.borderRadius.md};
-  }
+const TimelineDate = styled.div`
+  font-size: 10px;
+  color: ${theme.colors.text.light};
+  margin-top: 2px;
 `;
 
 const ContentGrid = styled.div`
@@ -198,32 +107,27 @@ const ContentGrid = styled.div`
   grid-template-columns: 1fr 1fr;
   gap: ${theme.spacing.lg};
 
-  @media (max-width: 768px) {
+  @media (max-width: ${theme.breakpoints.md}) {
     grid-template-columns: 1fr;
   }
 `;
 
-const Section = styled.div`
+const Card = styled.div`
   background: white;
   border-radius: ${theme.borderRadius.lg};
-  box-shadow: ${theme.shadows.sm};
+  border: 1px solid ${theme.colors.admin.cardBorder};
   overflow: hidden;
 `;
 
-const SectionHeader = styled.div`
-  padding: ${theme.spacing.lg};
-  border-bottom: 1px solid ${theme.colors.background.secondary};
-  background: ${theme.colors.background.primary};
-`;
-
-const SectionTitle = styled.h2`
-  margin: 0;
-  color: ${theme.colors.text.primary};
-  font-size: 1.25rem;
+const CardHeader = styled.div`
+  padding: ${theme.spacing.md} ${theme.spacing.lg};
+  border-bottom: 1px solid ${theme.colors.admin.cardBorder};
+  font-size: ${theme.fontSizes.base};
   font-weight: 600;
+  color: ${theme.colors.text.primary};
 `;
 
-const SectionContent = styled.div`
+const CardBody = styled.div`
   padding: ${theme.spacing.lg};
 `;
 
@@ -231,100 +135,210 @@ const InfoRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: ${theme.spacing.md};
-  padding-bottom: ${theme.spacing.sm};
-  border-bottom: 1px solid ${theme.colors.background.secondary};
+  padding: ${theme.spacing.sm} 0;
+  border-bottom: 1px solid ${theme.colors.admin.cardBorder}40;
 
-  &:last-child {
-    margin-bottom: 0;
-    border-bottom: none;
-  }
+  &:last-child { border-bottom: none; }
 `;
 
 const Label = styled.span`
-  font-weight: 600;
-  color: ${theme.colors.text.secondary};
-  min-width: 140px;
+  font-size: ${theme.fontSizes.sm};
+  color: ${theme.colors.text.light};
+  font-weight: 500;
+  min-width: 130px;
 `;
 
 const Value = styled.span`
-  color: ${theme.colors.text.primary};
-  flex: 1;
-  text-align: right;
-`;
-
-const CharacterList = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${theme.spacing.sm};
-  width: 100%;
-`;
-
-const CharacterItem = styled.div`
-  background: ${theme.colors.background.secondary};
-  padding: ${theme.spacing.sm};
-  border-radius: ${theme.borderRadius.sm};
-  border-left: 3px solid ${theme.colors.accent.coral};
-`;
-
-const CharacterType = styled.span`
-  font-weight: 600;
-  color: ${theme.colors.accent.coral};
-  margin-right: ${theme.spacing.xs};
-`;
-
-const CharacterDetail = styled.div`
-  color: ${theme.colors.text.secondary};
   font-size: ${theme.fontSizes.sm};
+  color: ${theme.colors.text.primary};
+  text-align: right;
+  flex: 1;
+`;
+
+const Badge = styled.span<{ $color: string; $bg: string }>`
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: ${theme.borderRadius.full};
+  font-size: ${theme.fontSizes.xs};
+  font-weight: 600;
+  color: ${props => props.$color};
+  background: ${props => props.$bg};
+`;
+
+const StatusDropdownWrapper = styled.div`
+  position: relative;
+  display: inline-block;
+`;
+
+const StatusBtn = styled.button<{ $bg: string }>`
+  padding: 6px 14px;
+  border-radius: ${theme.borderRadius.md};
+  font-size: ${theme.fontSizes.sm};
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  background: ${props => props.$bg};
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  &:hover { opacity: 0.9; }
+`;
+
+const StatusMenuDropdown = styled.div`
+  position: absolute;
+  top: 100%;
+  right: 0;
+  min-width: 180px;
+  background: white;
+  border: 1px solid ${theme.colors.admin.cardBorder};
+  border-radius: ${theme.borderRadius.md};
+  box-shadow: ${theme.shadows.lg};
+  z-index: 1000;
+  margin-top: 4px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: all 0.15s ease;
+
+  ${StatusDropdownWrapper}:hover & {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+`;
+
+const StatusMenuItemBtn = styled.button`
+  width: 100%;
+  padding: 8px 14px;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  font-size: ${theme.fontSizes.sm};
+  color: ${theme.colors.text.primary};
+
+  &:hover { background: ${theme.colors.admin.contentBg}; }
+  &:first-child { border-radius: ${theme.borderRadius.md} ${theme.borderRadius.md} 0 0; }
+  &:last-child { border-radius: 0 0 ${theme.borderRadius.md} ${theme.borderRadius.md}; }
+`;
+
+const PhotoPreview = styled.img`
+  max-width: 180px;
+  border-radius: ${theme.borderRadius.md};
+  border: 1px solid ${theme.colors.admin.cardBorder};
+  cursor: pointer;
+  &:hover { opacity: 0.9; }
+`;
+
+const PhotoActions = styled.div`
+  display: flex;
+  gap: ${theme.spacing.xs};
   margin-top: ${theme.spacing.xs};
 `;
 
-const StatusBadge = styled.span<{ status: string }>`
-  padding: ${theme.spacing.xs} ${theme.spacing.sm};
+const SmallBtn = styled.button<{ $variant?: string }>`
+  padding: 4px 10px;
   border-radius: ${theme.borderRadius.sm};
-  font-size: 0.875rem;
+  font-size: ${theme.fontSizes.xs};
   font-weight: 500;
-  background: ${props => {
-    switch (props.status) {
-      case 'PENDING': return theme.colors.status.warning + '20';
-      case 'PAID': return theme.colors.status.success + '20';
-      case 'PROCESSING': return theme.colors.status.info + '20';
-      case 'GENERATED': return theme.colors.accent.coral + '40';
-      case 'PRINTED': return theme.colors.accent.creamyYellow + '40';
-      case 'SHIPPED': return theme.colors.accent.lightCoral + '40';
-      case 'DELIVERED': return theme.colors.status.success + '20';
-      case 'CANCELLED': return theme.colors.status.error + '20';
-      default: return theme.colors.background.secondary;
-    }
-  }};
-  color: ${props => {
-    switch (props.status) {
-      case 'PENDING': return theme.colors.status.warning;
-      case 'PAID': return theme.colors.status.success;
-      case 'PROCESSING': return theme.colors.status.info;
-      case 'GENERATED': return theme.colors.text.primary;
-      case 'PRINTED': return theme.colors.text.primary;
-      case 'SHIPPED': return theme.colors.text.primary;
-      case 'DELIVERED': return theme.colors.status.success;
-      case 'CANCELLED': return theme.colors.status.error;
-      default: return theme.colors.text.secondary;
-    }
-  }};
+  cursor: pointer;
+  border: 1px solid ${theme.colors.admin.accent};
+  background: ${props => props.$variant === 'fill' ? theme.colors.admin.accent : 'transparent'};
+  color: ${props => props.$variant === 'fill' ? 'white' : theme.colors.admin.accent};
+
+  &:hover { opacity: 0.8; }
 `;
 
-const ErrorMessage = styled.div`
-  background: ${theme.colors.status.error}20;
-  color: ${theme.colors.status.error};
-  padding: ${theme.spacing.md};
-  border-radius: ${theme.borderRadius.md};
-  margin-bottom: ${theme.spacing.lg};
+const CharacterItem = styled.div`
+  background: ${theme.colors.admin.contentBg};
+  padding: ${theme.spacing.sm};
+  border-radius: ${theme.borderRadius.sm};
+  border-left: 3px solid ${theme.colors.admin.accent};
+  margin-bottom: ${theme.spacing.xs};
+  font-size: ${theme.fontSizes.sm};
 `;
 
-const LoadingMessage = styled.div`
-  text-align: center;
+const UploadZone = styled.div<{ $isDragOver?: boolean }>`
+  border: 2px dashed ${props => props.$isDragOver ? theme.colors.admin.accent : theme.colors.admin.cardBorder};
+  border-radius: ${theme.borderRadius.lg};
   padding: ${theme.spacing.xl};
-  color: ${theme.colors.text.secondary};
+  text-align: center;
+  background: ${props => props.$isDragOver ? theme.colors.admin.accent + '08' : theme.colors.admin.contentBg};
+  cursor: pointer;
+  transition: all 0.2s;
+  &:hover { border-color: ${theme.colors.admin.accent}; }
 `;
+
+const DeliverButton = styled.button`
+  background: ${theme.colors.status.success};
+  color: white;
+  border: none;
+  padding: ${theme.spacing.sm} ${theme.spacing.lg};
+  border-radius: ${theme.borderRadius.md};
+  cursor: pointer;
+  font-weight: 600;
+  font-size: ${theme.fontSizes.sm};
+  width: 100%;
+  &:hover { opacity: 0.9; }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+`;
+
+const PdfInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${theme.spacing.sm};
+  padding: ${theme.spacing.sm} ${theme.spacing.md};
+  background: ${theme.colors.status.success}15;
+  border-radius: ${theme.borderRadius.md};
+  color: ${theme.colors.status.success};
+  font-weight: 500;
+  font-size: ${theme.fontSizes.sm};
+  margin-bottom: ${theme.spacing.sm};
+`;
+
+const SuccessMsg = styled.div`
+  background: ${theme.colors.status.success}15;
+  color: ${theme.colors.status.success};
+  padding: ${theme.spacing.sm} ${theme.spacing.md};
+  border-radius: ${theme.borderRadius.md};
+  margin-bottom: ${theme.spacing.sm};
+  font-weight: 500;
+  font-size: ${theme.fontSizes.sm};
+`;
+
+const ErrorMsg = styled.div`
+  background: ${theme.colors.status.error}10;
+  border: 1px solid ${theme.colors.status.error}30;
+  color: ${theme.colors.status.error};
+  padding: ${theme.spacing.sm} ${theme.spacing.md};
+  border-radius: ${theme.borderRadius.md};
+  margin-bottom: ${theme.spacing.md};
+  font-size: ${theme.fontSizes.sm};
+`;
+
+const LoadingState = styled.div`
+  text-align: center;
+  padding: ${theme.spacing['3xl']};
+  color: ${theme.colors.text.light};
+`;
+
+// ========== Helpers ==========
+
+const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
+  PENDING: { label: 'En attente', color: '#6B7280', bg: '#F3F4F6' },
+  PAID: { label: 'Payee - A traiter', color: '#D97706', bg: '#FEF3C7' },
+  BLOCKED: { label: 'Bloquee', color: '#DC2626', bg: '#FEE2E2' },
+  DELIVERED: { label: 'Livree', color: '#059669', bg: '#D1FAE5' },
+};
+
+const ALL_STATUSES = Object.keys(STATUS_CONFIG);
+
+const formatDate = (d: string) =>
+  new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+// ========== Component ==========
 
 interface AdminOrderDetailPageProps {
   token: string;
@@ -337,36 +351,30 @@ export const AdminOrderDetailPage: React.FC<AdminOrderDetailPageProps> = ({ toke
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [updating, setUpdating] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [delivering, setDelivering] = useState(false);
+  const [uploadSuccess, setUploadSuccess] = useState('');
+  const [isDragOver, setIsDragOver] = useState(false);
+  const pdfInputRef = React.useRef<HTMLInputElement>(null);
+
+  const getToken = () => localStorage.getItem('adminToken') || token;
 
   useEffect(() => {
-    if (orderId) {
-      loadOrderDetails();
-    }
+    if (orderId) loadOrderDetails();
   }, [orderId]);
-  
+
   if (!orderId) {
-    return (
-      <DetailContainer>
-        <ErrorMessage>ID de commande manquant</ErrorMessage>
-      </DetailContainer>
-    );
+    return <AdminLayout><ErrorMsg>ID de commande manquant</ErrorMsg></AdminLayout>;
   }
 
   const loadOrderDetails = async () => {
     try {
       setLoading(true);
-      // Récupérer le token le plus récent du localStorage
-      const currentToken = localStorage.getItem('adminToken') || token;
-      console.log('🔍 Chargement détails avec token:', currentToken?.substring(0, 20) + '...');
-      
-      const response = await ApiService.getAdminOrderDetails(currentToken, orderId!);
-      if (response.success) {
-        setOrder(response.data);
-      } else {
-        setError('Commande non trouvée');
-      }
-    } catch (error: any) {
-      setError('Erreur lors du chargement des détails');
+      const response = await ApiService.getAdminOrderDetails(getToken(), orderId!);
+      if (response.success) setOrder(response.data);
+      else setError('Commande non trouvee');
+    } catch {
+      setError('Erreur lors du chargement');
     } finally {
       setLoading(false);
     }
@@ -375,72 +383,49 @@ export const AdminOrderDetailPage: React.FC<AdminOrderDetailPageProps> = ({ toke
   const updateOrderStatus = async (newStatus: string) => {
     try {
       setUpdating(true);
-      setError(''); // Effacer les erreurs précédentes
-      
-      const currentToken = localStorage.getItem('adminToken') || token;
-      await ApiService.updateAdminOrder(currentToken, orderId, { status: newStatus });
-      
-      // Recharger les détails de la commande
+      setError('');
+      await ApiService.updateAdminOrder(getToken(), orderId, { status: newStatus });
       await loadOrderDetails();
-      
-    } catch (error: any) {
-      setError('Erreur lors de la mise à jour du statut');
-      console.error('Erreur update:', error);
-      
-      if (error.message.includes('401') || error.message.includes('Token')) {
-        localStorage.removeItem('adminToken');
-        window.location.href = '/admin';
-      }
+    } catch (err: any) {
+      setError('Erreur mise a jour: ' + err.message);
     } finally {
       setUpdating(false);
     }
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('fr-FR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
-
-  const formatPrice = (price: number) => {
-    return `${price}€`;
-  };
-
-  const parseSecondaryCharacters = (json?: string | null) => {
-    if (!json) return [];
+  const handlePdfUpload = async (file: File) => {
+    if (!file || file.type !== 'application/pdf') {
+      setError('Veuillez selectionner un fichier PDF');
+      return;
+    }
     try {
-      const parsed = JSON.parse(json);
-      return Array.isArray(parsed) ? parsed : [];
-    } catch (error) {
-      console.error('Erreur parsing secondaryCharacters:', error);
-      return [];
+      setUploading(true);
+      setError('');
+      await ApiService.uploadStoryPdf(getToken(), orderId!, file);
+      setUploadSuccess('PDF uploade avec succes');
+      await loadOrderDetails();
+      setTimeout(() => setUploadSuccess(''), 3000);
+    } catch (err: any) {
+      setError('Erreur upload: ' + err.message);
+    } finally {
+      setUploading(false);
     }
   };
 
-  const getStatusLabel = (status: string) => {
-    const statusLabels: { [key: string]: string } = {
-      'NEW_ORDER': 'Nouvelle commande',
-      'IN_PROGRESS': 'En cours de création',
-      'DELIVERED': 'Livré',
-      'BLOCKED': 'Bloqué',
-      // Anciens statuts pour compatibilité
-      'PENDING': 'En attente',
-      'PAID': 'Payé',
-      'PROCESSING': 'En traitement',
-      'GENERATED': 'Généré',
-      'PRINTED': 'Imprimé',
-      'SHIPPED': 'Expédié'
-    };
-    return statusLabels[status] || status;
-  };
-
-  const getAvailableStatuses = (currentStatus: string, productType: string) => {
-    // Nouveaux statuts simplifiés
-    return ['NEW_ORDER', 'IN_PROGRESS', 'DELIVERED', 'BLOCKED'];
+  const handleDeliver = async () => {
+    if (!window.confirm('Livrer ce conte ? Un email sera envoye au client.')) return;
+    try {
+      setDelivering(true);
+      setError('');
+      await ApiService.deliverStory(getToken(), orderId!);
+      setUploadSuccess('Conte livre ! Email envoye.');
+      await loadOrderDetails();
+      setTimeout(() => setUploadSuccess(''), 5000);
+    } catch (err: any) {
+      setError('Erreur livraison: ' + err.message);
+    } finally {
+      setDelivering(false);
+    }
   };
 
   const downloadPhoto = async (photoUrl: string, filename: string) => {
@@ -448,366 +433,251 @@ export const AdminOrderDetailPage: React.FC<AdminOrderDetailPageProps> = ({ toke
       const response = await fetch(photoUrl);
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
-      
       const link = document.createElement('a');
       link.href = url;
       link.download = filename;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      
       window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error('Erreur lors du téléchargement:', error);
-      setError('Erreur lors du téléchargement de l\'image');
+    } catch {
+      setError('Erreur telechargement image');
     }
   };
 
-  if (loading) {
-    return (
-      <DetailContainer>
-        <LoadingMessage>Chargement des détails de la commande...</LoadingMessage>
-      </DetailContainer>
-    );
-  }
+  const parseSecondaryCharacters = (json?: string | null) => {
+    if (!json) return [];
+    try { return JSON.parse(json); } catch { return []; }
+  };
 
-  if (!order) {
-    return (
-      <DetailContainer>
-        <ErrorMessage>Commande non trouvée</ErrorMessage>
-      </DetailContainer>
-    );
-  }
+  if (loading) return <AdminLayout><LoadingState>Chargement...</LoadingState></AdminLayout>;
+  if (!order) return <AdminLayout><ErrorMsg>Commande non trouvee</ErrorMsg></AdminLayout>;
+
+  const cfg = STATUS_CONFIG[order.status] || { label: order.status, color: '#6B7280', bg: '#F3F4F6' };
+
+  // Timeline steps
+  const steps = [
+    { label: 'Cree', date: order.createdAt },
+    { label: 'Paye', date: order.paidAt },
+    { label: 'PDF genere', date: order.generatedAt || (order.pdfUrl ? order.updatedAt : null) },
+    { label: 'Livre', date: order.deliveredAt },
+  ];
+
+  const purchaseTypeBadge = () => {
+    if (order.purchaseType === 'CLUB' && Number(order.price) === 0) return <Badge $color="#059669" $bg="#D1FAE5">Club gratuit</Badge>;
+    if (order.purchaseType === 'CLUB') return <Badge $color="#7C3AED" $bg="#EDE9FE">Club payant</Badge>;
+    return <Badge $color="#6B7280" $bg="#F3F4F6">Achat unique</Badge>;
+  };
+
+  const secondaryChars = parseSecondaryCharacters(order.secondaryCharactersJson);
 
   return (
-    <DetailContainer>
-      <Header>
-        <div style={{ display: 'flex', alignItems: 'center', gap: theme.spacing.md }}>
-          <BackButton onClick={() => navigate('/admin')}>
-            ← Retour
-          </BackButton>
-          <Title>Commande #{order.id.slice(-8)}</Title>
-        </div>
-        
-        <QuickActions>
-          <StatusDropdown>
-            <DropdownButton disabled={updating}>
-              {getStatusLabel(order.status)} ▼
-            </DropdownButton>
-            <DropdownMenu>
-              {getAvailableStatuses(order.status, order.productType).map(status => (
-                <DropdownItem 
-                  key={status}
-                  onClick={() => updateOrderStatus(status)}
-                  disabled={updating}
-                >
-                  {getStatusLabel(status)}
-                </DropdownItem>
+    <AdminLayout>
+      {/* Breadcrumb */}
+      <Breadcrumb>
+        <span className="link" onClick={() => navigate('/admin')}>Admin</span>
+        <span>/</span>
+        <span className="link" onClick={() => navigate('/admin/orders')}>Commandes</span>
+        <span>/</span>
+        <span>#{order.id.slice(-8)}</span>
+      </Breadcrumb>
+
+      {/* Header */}
+      <PageHeader>
+        <PageTitle>Commande #{order.id.slice(-8)}</PageTitle>
+        <HeaderActions>
+          <StatusDropdownWrapper>
+            <StatusBtn $bg={cfg.color} disabled={updating}>
+              {cfg.label} ▾
+            </StatusBtn>
+            <StatusMenuDropdown>
+              {ALL_STATUSES.map(s => (
+                <StatusMenuItemBtn key={s} onClick={() => updateOrderStatus(s)} disabled={updating}>
+                  {STATUS_CONFIG[s]?.label || s}
+                </StatusMenuItemBtn>
               ))}
-            </DropdownMenu>
-          </StatusDropdown>
-        </QuickActions>
-      </Header>
+            </StatusMenuDropdown>
+          </StatusDropdownWrapper>
+        </HeaderActions>
+      </PageHeader>
 
-      {error && <ErrorMessage>{error}</ErrorMessage>}
+      {error && <ErrorMsg>{error}</ErrorMsg>}
+      {uploadSuccess && <SuccessMsg>{uploadSuccess}</SuccessMsg>}
 
+      {/* Timeline */}
+      <Timeline>
+        {steps.map((step, i) => {
+          const done = !!step.date;
+          const active = !done && (i === 0 || !!steps[i - 1]?.date);
+          return (
+            <TimelineStep key={i} $done={done} $active={active}>
+              <TimelineDot $done={done} $active={active}>
+                {done ? '✓' : i + 1}
+              </TimelineDot>
+              <TimelineLabel>{step.label}</TimelineLabel>
+              {step.date && <TimelineDate>{formatDate(step.date)}</TimelineDate>}
+            </TimelineStep>
+          );
+        })}
+      </Timeline>
+
+      {/* Content */}
       <ContentGrid>
-        {/* Informations générales */}
-        <Section>
-          <SectionHeader>
-            <SectionTitle>Informations générales</SectionTitle>
-          </SectionHeader>
-          <SectionContent>
-            <InfoRow>
-              <Label>Statut :</Label>
-              <Value><StatusBadge status={order.status}>{order.status}</StatusBadge></Value>
-            </InfoRow>
-            <InfoRow>
-              <Label>Client :</Label>
-              <Value>{order.user?.email || 'N/A'}</Value>
-            </InfoRow>
-            <InfoRow>
-              <Label>Produit :</Label>
-              <Value>{order.productType}</Value>
-            </InfoRow>
-            <InfoRow>
-              <Label>Prix :</Label>
-              <Value>{formatPrice(order.price)}</Value>
-            </InfoRow>
-            <InfoRow>
-              <Label>Créé le :</Label>
-              <Value>{formatDate(order.createdAt)}</Value>
-            </InfoRow>
-            {order.paidAt && (
-              <InfoRow>
-                <Label>Payé le :</Label>
-                <Value>{formatDate(order.paidAt)}</Value>
-              </InfoRow>
-            )}
-          </SectionContent>
-        </Section>
+        {/* General info */}
+        <Card>
+          <CardHeader>Informations generales</CardHeader>
+          <CardBody>
+            <InfoRow><Label>Statut</Label><Value><Badge $color={cfg.color} $bg={cfg.bg}>{cfg.label}</Badge></Value></InfoRow>
+            <InfoRow><Label>Client</Label><Value>
+              <span style={order.user?.role === 'CLUB' ? { color: '#B8860B', fontWeight: 600 } : {}}>
+                {order.user?.email || '-'}
+              </span>
+              {order.user?.role === 'CLUB' && <span style={{ marginLeft: '8px', padding: '2px 8px', borderRadius: '999px', fontSize: '11px', fontWeight: 700, color: '#92400E', background: '#FDE68A' }}>Club</span>}
+            </Value></InfoRow>
+            <InfoRow><Label>Produit</Label><Value>{order.productType}</Value></InfoRow>
+            <InfoRow><Label>Type d'achat</Label><Value>{purchaseTypeBadge()}</Value></InfoRow>
+            <InfoRow><Label>Prix</Label><Value>{Number(order.price).toFixed(2)}€</Value></InfoRow>
+            <InfoRow><Label>Cree le</Label><Value>{formatDate(order.createdAt)}</Value></InfoRow>
+            {order.paidAt && <InfoRow><Label>Paye le</Label><Value>{formatDate(order.paidAt)}</Value></InfoRow>}
+            {order.deliveredAt && <InfoRow><Label>Livre le</Label><Value>{formatDate(order.deliveredAt)}</Value></InfoRow>}
+          </CardBody>
+        </Card>
 
-        {/* Détails du conte */}
-        <Section>
-          <SectionHeader>
-            <SectionTitle>🎨 Détails du conte</SectionTitle>
-          </SectionHeader>
-          <SectionContent>
-            <InfoRow>
-              <Label>Tranche d'âge :</Label>
-              <Value>{order.ageRange}</Value>
-            </InfoRow>
-            <InfoRow>
-              <Label>Thème général :</Label>
-              <Value>
-                {order.generalTheme === 'custom' && order.customTheme 
-                  ? `Personnalisé : ${order.customTheme}`
-                  : order.generalTheme}
-              </Value>
-            </InfoRow>
-            <InfoRow>
-              <Label>Sujet spécifique :</Label>
-              <Value>
-                {order.specificSubject === 'custom' && order.customSubject 
-                  ? `Personnalisé : ${order.customSubject}`
-                  : order.specificSubject}
-              </Value>
-            </InfoRow>
-            <InfoRow>
-              <Label>Message central :</Label>
-              <Value>
-                {order.centralMessage === 'custom' && order.customMessage 
-                  ? `Personnalisé : ${order.customMessage}`
-                  : order.centralMessage}
-              </Value>
-            </InfoRow>
-            <InfoRow>
-              <Label>Style d'illustration :</Label>
-              <Value>{order.illustrationStyle}</Value>
-            </InfoRow>
-            {order.language && (
-              <InfoRow>
-                <Label>Langue du conte :</Label>
-                <Value>{order.language}</Value>
-              </InfoRow>
-            )}
-          </SectionContent>
-        </Section>
+        {/* Story details */}
+        <Card>
+          <CardHeader>Details du conte</CardHeader>
+          <CardBody>
+            <InfoRow><Label>Tranche d'age</Label><Value>{order.ageRange}</Value></InfoRow>
+            <InfoRow><Label>Theme</Label><Value>{order.generalTheme === 'custom' && order.customTheme ? order.customTheme : order.generalTheme}</Value></InfoRow>
+            <InfoRow><Label>Sujet</Label><Value>{order.specificSubject === 'custom' && order.customSubject ? order.customSubject : order.specificSubject}</Value></InfoRow>
+            <InfoRow><Label>Message</Label><Value>{order.centralMessage === 'custom' && order.customMessage ? order.customMessage : order.centralMessage}</Value></InfoRow>
+            <InfoRow><Label>Illustration</Label><Value>{order.illustrationStyle}</Value></InfoRow>
+            {order.language && <InfoRow><Label>Langue</Label><Value>{order.language}</Value></InfoRow>}
+          </CardBody>
+        </Card>
 
-        {/* Protagoniste */}
-        <Section>
-          <SectionHeader>
-            <SectionTitle>🧍 Protagoniste</SectionTitle>
-          </SectionHeader>
-          <SectionContent>
-            <InfoRow>
-              <Label>Nom :</Label>
-              <Value>{order.protagonistName}</Value>
-            </InfoRow>
-            {order.protagonistAge && (
-              <InfoRow>
-                <Label>Âge :</Label>
-                <Value>{order.protagonistAge}</Value>
-              </InfoRow>
-            )}
-            {order.protagonistGender && (
-              <InfoRow>
-                <Label>Sexe :</Label>
-                <Value>{order.protagonistGender === 'boy' ? 'Garçon' : 'Fille'}</Value>
-              </InfoRow>
-            )}
-            {order.eyeColor && (
-              <InfoRow>
-                <Label>Couleur des yeux :</Label>
-                <Value>{order.eyeColor}</Value>
-              </InfoRow>
-            )}
-            {order.hairColor && (
-              <InfoRow>
-                <Label>Couleur des cheveux :</Label>
-                <Value>{order.hairColor}</Value>
-              </InfoRow>
-            )}
+        {/* Protagonist */}
+        <Card>
+          <CardHeader>Protagoniste</CardHeader>
+          <CardBody>
+            <InfoRow><Label>Nom</Label><Value>{order.protagonistName}</Value></InfoRow>
+            {order.protagonistAge && <InfoRow><Label>Age</Label><Value>{order.protagonistAge}</Value></InfoRow>}
+            {order.protagonistGender && <InfoRow><Label>Sexe</Label><Value>{order.protagonistGender === 'boy' ? 'Garcon' : 'Fille'}</Value></InfoRow>}
+            {order.eyeColor && <InfoRow><Label>Yeux</Label><Value>{order.eyeColor}</Value></InfoRow>}
+            {order.hairColor && <InfoRow><Label>Cheveux</Label><Value>{order.hairColor}</Value></InfoRow>}
             {order.photoUrl && (
-              <InfoRow>
-                <Label>Photo de référence :</Label>
-                <Value>
-                  <PhotoContainer>
-                    <PhotoPreview 
-                      src={getImageUrl(order.photoUrl)} 
-                      alt="Photo de référence du protagoniste"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.style.display = 'none';
-                        const container = target.parentElement;
-                        if (container) {
-                          container.innerHTML = `
-                            <div style="
-                              padding: 20px; 
-                              text-align: center; 
-                              background: #f5f5f5; 
-                              border-radius: 8px;
-                              color: #666;
-                            ">
-                              📷 Image non disponible<br/>
-                              <small>Fichier: ${order.photoUrl}</small><br/>
-                              <small style="color: #999;">Les images sont supprimées lors des redéploiements</small>
-                            </div>
-                          `;
-                        }
-                      }}
-                      onClick={() => {
-                        const imageUrl = getImageUrl(order.photoUrl);
-                        if (imageUrl) window.open(imageUrl, '_blank');
-                      }}
-                    />
-                    <PhotoActions>
-                      <DownloadButton 
-                        onClick={() => {
-                          const imageUrl = getImageUrl(order.photoUrl);
-                          if (imageUrl) downloadPhoto(imageUrl, `photo-${order.protagonistName}-${order.id.slice(-8)}.jpg`);
-                        }}
-                      >
-                        📥 Télécharger
-                      </DownloadButton>
-                      <ViewButton 
-                        onClick={() => {
-                          const imageUrl = getImageUrl(order.photoUrl);
-                          if (imageUrl) window.open(imageUrl, '_blank');
-                        }}
-                      >
-                        👁️ Voir en grand
-                      </ViewButton>
-                    </PhotoActions>
-                  </PhotoContainer>
-                </Value>
-              </InfoRow>
+              <div style={{ marginTop: theme.spacing.sm }}>
+                <PhotoPreview
+                  src={getImageUrl(order.photoUrl)}
+                  alt="Photo"
+                  onClick={() => window.open(getImageUrl(order.photoUrl), '_blank')}
+                  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                />
+                <PhotoActions>
+                  <SmallBtn $variant="fill" onClick={() => { const url = getImageUrl(order.photoUrl); if (url) downloadPhoto(url, `photo-${order.protagonistName}-${order.id.slice(-8)}.jpg`); }}>
+                    Telecharger
+                  </SmallBtn>
+                  <SmallBtn onClick={() => window.open(getImageUrl(order.photoUrl), '_blank')}>
+                    Agrandir
+                  </SmallBtn>
+                </PhotoActions>
+              </div>
             )}
-          </SectionContent>
-        </Section>
+          </CardBody>
+        </Card>
 
-        {/* Personnages secondaires */}
-        {(() => {
-          const secondaryChars = parseSecondaryCharacters(order.secondaryCharactersJson);
-          const hasOldFormat = order.secondaryCharacterName;
-          
-          if (secondaryChars.length > 0 || hasOldFormat) {
-            return (
-              <Section>
-                <SectionHeader>
-                  <SectionTitle>🧸 Personnages secondaires</SectionTitle>
-                </SectionHeader>
-                <SectionContent>
-                  {secondaryChars.length > 0 ? (
-                    <CharacterList>
-                      {secondaryChars.map((char: any, index: number) => (
-                        <CharacterItem key={index}>
-                          <div>
-                            <CharacterType>
-                              {index + 1}. {char.kind === 'human' ? '👤 Humain' : '🐾 Animal'}
-                            </CharacterType>
-                            <strong>{char.name}</strong>
-                          </div>
-                          {char.ageOrType && (
-                            <CharacterDetail>Âge/Type : {char.ageOrType}</CharacterDetail>
-                          )}
-                          {char.physical && (
-                            <CharacterDetail>Caractéristiques : {char.physical}</CharacterDetail>
-                          )}
-                        </CharacterItem>
-                      ))}
-                    </CharacterList>
-                  ) : hasOldFormat ? (
-                    <InfoRow>
-                      <Label>Personnage secondaire :</Label>
-                      <Value>
-                        {order.secondaryCharacterName}
-                        {order.secondaryCharacterAge && ` (${order.secondaryCharacterAge})`}
-                      </Value>
-                    </InfoRow>
-                  ) : null}
-                </SectionContent>
-              </Section>
-            );
-          }
-          return null;
-        })()}
+        {/* Secondary characters */}
+        {(secondaryChars.length > 0 || order.secondaryCharacterName) && (
+          <Card>
+            <CardHeader>Personnages secondaires</CardHeader>
+            <CardBody>
+              {secondaryChars.length > 0 ? (
+                secondaryChars.map((char: any, i: number) => (
+                  <CharacterItem key={i}>
+                    <strong>{i + 1}. {char.name}</strong> ({char.kind === 'human' ? 'Humain' : 'Animal'})
+                    {char.ageOrType && <div style={{ fontSize: theme.fontSizes.xs, color: theme.colors.text.light }}>Age/Type: {char.ageOrType}</div>}
+                    {char.physical && <div style={{ fontSize: theme.fontSizes.xs, color: theme.colors.text.light }}>Caract.: {char.physical}</div>}
+                  </CharacterItem>
+                ))
+              ) : (
+                <InfoRow>
+                  <Label>Personnage</Label>
+                  <Value>{order.secondaryCharacterName} {order.secondaryCharacterAge && `(${order.secondaryCharacterAge})`}</Value>
+                </InfoRow>
+              )}
+            </CardBody>
+          </Card>
+        )}
 
-        {/* Informations supplémentaires */}
+        {/* Additional info */}
         {(order.hobbies || order.favoriteDish || order.specialEvents || order.religion || order.creatorName) && (
-          <Section>
-            <SectionHeader>
-              <SectionTitle>📝 Informations supplémentaires</SectionTitle>
-            </SectionHeader>
-            <SectionContent>
-              {order.hobbies && (
-                <InfoRow>
-                  <Label>Loisirs / Centres d'intérêt :</Label>
-                  <Value>{order.hobbies}</Value>
-                </InfoRow>
-              )}
-              {order.favoriteDish && (
-                <InfoRow>
-                  <Label>Plat préféré :</Label>
-                  <Value>{order.favoriteDish}</Value>
-                </InfoRow>
-              )}
-              {order.specialEvents && (
-                <InfoRow>
-                  <Label>Événements particuliers :</Label>
-                  <Value>{order.specialEvents}</Value>
-                </InfoRow>
-              )}
-              {order.religion && (
-                <InfoRow>
-                  <Label>Religion :</Label>
-                  <Value>
-                    {order.religion === 'other' && order.customReligion 
-                      ? `Autre : ${order.customReligion}`
-                      : order.religion}
-                  </Value>
-                </InfoRow>
-              )}
-              {order.creatorName && (
-                <InfoRow>
-                  <Label>Nom du créateur :</Label>
-                  <Value>{order.creatorName}</Value>
-                </InfoRow>
-              )}
-            </SectionContent>
-          </Section>
+          <Card>
+            <CardHeader>Informations supplementaires</CardHeader>
+            <CardBody>
+              {order.hobbies && <InfoRow><Label>Loisirs</Label><Value>{order.hobbies}</Value></InfoRow>}
+              {order.favoriteDish && <InfoRow><Label>Plat prefere</Label><Value>{order.favoriteDish}</Value></InfoRow>}
+              {order.specialEvents && <InfoRow><Label>Evenements</Label><Value>{order.specialEvents}</Value></InfoRow>}
+              {order.religion && <InfoRow><Label>Religion</Label><Value>{order.religion === 'other' && order.customReligion ? order.customReligion : order.religion}</Value></InfoRow>}
+              {order.creatorName && <InfoRow><Label>Createur</Label><Value>{order.creatorName}</Value></InfoRow>}
+            </CardBody>
+          </Card>
         )}
 
-        {/* Adresse de livraison */}
+        {/* Shipping */}
         {(order.shippingFirstName || order.shippingAddress) && (
-          <Section>
-            <SectionHeader>
-              <SectionTitle>📦 Adresse de livraison</SectionTitle>
-            </SectionHeader>
-            <SectionContent>
-              {order.shippingFirstName && (
-                <InfoRow>
-                  <Label>Nom :</Label>
-                  <Value>{order.shippingFirstName} {order.shippingLastName}</Value>
-                </InfoRow>
-              )}
-              {order.shippingAddress && (
-                <InfoRow>
-                  <Label>Adresse :</Label>
-                  <Value>{order.shippingAddress}</Value>
-                </InfoRow>
-              )}
-              {order.shippingCity && (
-                <InfoRow>
-                  <Label>Ville :</Label>
-                  <Value>{order.shippingPostalCode} {order.shippingCity}</Value>
-                </InfoRow>
-              )}
-            </SectionContent>
-          </Section>
+          <Card>
+            <CardHeader>Adresse de livraison</CardHeader>
+            <CardBody>
+              {order.shippingFirstName && <InfoRow><Label>Nom</Label><Value>{order.shippingFirstName} {order.shippingLastName}</Value></InfoRow>}
+              {order.shippingAddress && <InfoRow><Label>Adresse</Label><Value>{order.shippingAddress}</Value></InfoRow>}
+              {order.shippingCity && <InfoRow><Label>Ville</Label><Value>{order.shippingPostalCode} {order.shippingCity}</Value></InfoRow>}
+            </CardBody>
+          </Card>
         )}
+
+        {/* PDF & Delivery */}
+        <Card>
+          <CardHeader>PDF & Livraison</CardHeader>
+          <CardBody>
+            {order.pdfUrl ? (
+              <>
+                <PdfInfo>PDF: {order.pdfUrl.split('/').pop()}</PdfInfo>
+                {order.storyStatus === 'DISPONIBLE' && !order.deliveredAt && (
+                  <DeliverButton onClick={handleDeliver} disabled={delivering}>
+                    {delivering ? 'Livraison...' : 'Livrer au client'}
+                  </DeliverButton>
+                )}
+                {order.deliveredAt && (
+                  <PdfInfo>Livre le {new Date(order.deliveredAt).toLocaleDateString('fr-FR')}</PdfInfo>
+                )}
+              </>
+            ) : (
+              <>
+                <input
+                  type="file"
+                  accept="application/pdf"
+                  ref={pdfInputRef}
+                  style={{ display: 'none' }}
+                  onChange={(e) => { const file = e.target.files?.[0]; if (file) handlePdfUpload(file); }}
+                />
+                <UploadZone
+                  $isDragOver={isDragOver}
+                  onDragOver={(e) => { e.preventDefault(); setIsDragOver(true); }}
+                  onDragLeave={() => setIsDragOver(false)}
+                  onDrop={(e) => { e.preventDefault(); setIsDragOver(false); const f = e.dataTransfer.files[0]; if (f) handlePdfUpload(f); }}
+                  onClick={() => pdfInputRef.current?.click()}
+                >
+                  <div style={{ fontSize: '2rem', marginBottom: '4px' }}>📄</div>
+                  <div style={{ fontSize: theme.fontSizes.sm, color: theme.colors.text.light }}>
+                    {uploading ? 'Upload en cours...' : 'Glissez un PDF ou cliquez'}
+                  </div>
+                </UploadZone>
+              </>
+            )}
+          </CardBody>
+        </Card>
       </ContentGrid>
-    </DetailContainer>
+    </AdminLayout>
   );
 };
 

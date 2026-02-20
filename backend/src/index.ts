@@ -50,7 +50,12 @@ app.use('/api/stripe', stripeRoutes);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Servir les fichiers statiques (images uploadées)
+// Bloquer l'acces statique aux PDFs (securises via /api/client/stories/:id/pdf)
+app.use('/uploads/pdfs', (req, res) => {
+  res.status(403).json({ error: 'Acces interdit. Utilisez l\'API pour telecharger les PDFs.' });
+});
+
+// Servir les fichiers statiques (images uploadees, sauf PDFs)
 app.use('/uploads', express.static('uploads'));
 
 // Servir les fichiers PDF des exemples
@@ -102,10 +107,11 @@ app.use('/files', filesRoutes);
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error('Error:', err);
   
+  const isDev = process.env.NODE_ENV === 'development';
   res.status(err.status || 500).json({
     success: false,
-    message: err.message || 'Erreur interne du serveur',
-    ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
+    message: isDev ? (err.message || 'Erreur interne du serveur') : 'Erreur interne du serveur',
+    ...(isDev && { stack: err.stack })
   });
 });
 

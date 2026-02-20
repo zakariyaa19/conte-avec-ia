@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import ordersRouter from './orders';
-import paymentsRouter from './payments';
 import adminRouter from './admin';
-import testRouter from './test';
+import authRouter from './auth';
+import clientRouter from './client';
 import pdfRouter from './pdf';
 import tiktokRouter from './tiktok';
 
@@ -10,9 +10,9 @@ const router = Router();
 
 // Routes principales
 router.use('/orders', ordersRouter);
-router.use('/payments', paymentsRouter);
 router.use('/admin', adminRouter);
-router.use('/test', testRouter);
+router.use('/auth', authRouter);
+router.use('/client', clientRouter);
 router.use('/pdfs', pdfRouter);
 router.use('/tiktok', tiktokRouter);
 

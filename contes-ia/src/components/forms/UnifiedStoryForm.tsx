@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import styled from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 import { theme } from '../../styles/theme';
 import { SelectionCard } from '../ui/SelectionCard';
 import { ImageSelectionCard } from '../ui/ImageSelectionCard';
@@ -15,11 +15,11 @@ import { ValidatedInput } from '../ui/ValidatedInput';
 import { AgeSelector } from '../ui/AgeSelector';
 import { PricingCard } from '../ui/PricingCard';
 import { SecondaryCharactersSection } from './SecondaryCharactersSection';
-import { 
-  AGE_RANGES, 
-  GENERAL_THEMES, 
-  SPECIFIC_SUBJECTS, 
-  CENTRAL_MESSAGES, 
+import {
+  AGE_RANGES,
+  GENERAL_THEMES,
+  SPECIFIC_SUBJECTS,
+  CENTRAL_MESSAGES,
   ILLUSTRATION_STYLES,
   EYE_COLORS,
   HAIR_COLORS,
@@ -30,13 +30,55 @@ import {
   SecondaryCharacter
 } from '../../types/FormTypes';
 import { validateEmail, validateAddress, validateCity, validatePostalCode, validateRequired } from '../../utils/validation';
+import { ApiService } from '../../config/api';
 
 interface UnifiedStoryFormProps {
   formData: Partial<StoryFormData>;
   onUpdate: (data: Partial<StoryFormData>) => void;
   onSubmit: () => void;
   isSubmitting: boolean;
+  isAuthenticated?: boolean;
+  isClub?: boolean;
+  currentUser?: { id: string; email: string; firstName?: string; lastName?: string; role: string } | null;
+  clubCredit?: { canSubmit: boolean; remaining: number; nextCreditDate?: string; totalEarned?: number } | null;
 }
+
+/* ──────────────────────────────────────────────
+   V2 Keyframe Animations
+   ────────────────────────────────────────────── */
+
+const slideIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
+
+const glowPulse = keyframes`
+  0%, 100% {
+    box-shadow: 0 0 20px ${theme.colors.accent.coral}40, 0 0 40px ${theme.colors.accent.coral}20;
+  }
+  50% {
+    box-shadow: 0 0 30px ${theme.colors.accent.coral}60, 0 0 60px ${theme.colors.accent.coral}30;
+  }
+`;
+
+const buttonPulse = keyframes`
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.04);
+  }
+`;
+
+/* ──────────────────────────────────────────────
+   V2 Styled Components
+   ────────────────────────────────────────────── */
 
 const FormContainer = styled.div`
   max-width: 1200px;
@@ -45,7 +87,7 @@ const FormContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  
+
   @media (max-width: ${theme.breakpoints.sm}) {
     padding: 0 ${theme.spacing.md};
   }
@@ -55,31 +97,44 @@ const Section = styled.div<{ $isVisible: boolean; $isCompleted: boolean }>`
   opacity: ${props => props.$isVisible ? 1 : 0.3};
   pointer-events: ${props => props.$isVisible ? 'auto' : 'none'};
   margin-bottom: ${theme.spacing['3xl']};
-  transition: all 0.4s ease;
+  transition: all ${theme.transitions.smooth};
   position: relative;
   padding: ${theme.spacing.xl};
-  border-radius: ${theme.borderRadius.lg};
-  background: ${props => props.$isVisible && !props.$isCompleted ? 
-    `linear-gradient(135deg, ${theme.colors.accent.creamyYellow}15, ${theme.colors.accent.lightCoral}10)` : 
-    'transparent'
-  };
-  border: ${props => props.$isVisible && !props.$isCompleted ? 
-    `2px solid ${theme.colors.accent.coral}40` : 
-    '2px solid transparent'
-  };
-  box-shadow: ${props => props.$isVisible && !props.$isCompleted ? 
-    `0 0 30px ${theme.colors.accent.coral}20` : 
-    'none'
-  };
   width: 100%;
   max-width: 1100px;
-  
+
+  /* V2: Better visual separation for active sections */
+  background: ${props => props.$isVisible && !props.$isCompleted
+    ? theme.colors.background.white
+    : props.$isCompleted
+      ? theme.colors.background.primary
+      : 'transparent'
+  };
+  border-radius: ${theme.borderRadius['2xl']};
+  box-shadow: ${props => props.$isVisible && !props.$isCompleted
+    ? theme.shadows.card
+    : props.$isCompleted
+      ? theme.shadows.sm
+      : 'none'
+  };
+  border: ${props => props.$isVisible && !props.$isCompleted
+    ? '1px solid rgba(0,0,0,0.04)'
+    : props.$isCompleted
+      ? `1px solid ${theme.colors.accent.lightCoral}30`
+      : '1px solid transparent'
+  };
+
   @media (max-width: ${theme.breakpoints.sm}) {
     margin-bottom: ${theme.spacing.lg};
-    padding: ${theme.spacing.sm};
+    padding: ${theme.spacing.md};
+    border-radius: ${theme.borderRadius.xl};
+    /* V2: Subtle background on mobile */
+    background: ${props => props.$isVisible
+      ? theme.colors.background.secondary
+      : 'transparent'
+    };
     border: none;
-    box-shadow: none;
-    background: transparent;
+    box-shadow: ${props => props.$isVisible ? theme.shadows.sm : 'none'};
   }
 `;
 
@@ -87,10 +142,26 @@ const SectionHeader = styled.div<{ $isCompleted: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: ${theme.spacing.lg};
-  padding-bottom: ${theme.spacing.md};
-  border-bottom: 2px solid ${props => props.$isCompleted ? theme.colors.accent.coral : theme.colors.background.secondary};
-  
+  margin-bottom: ${theme.spacing.xl};
+  padding: ${theme.spacing.md} 0 ${theme.spacing.lg};
+  position: relative;
+
+  /* V2: Gradient underline instead of plain border */
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    border-radius: ${theme.borderRadius.full};
+    background: ${props => props.$isCompleted
+      ? `linear-gradient(90deg, ${theme.colors.accent.coral}, ${theme.colors.accent.softPink})`
+      : `linear-gradient(90deg, ${theme.colors.background.secondary}, ${theme.colors.background.secondary})`
+    };
+    transition: background ${theme.transitions.smooth};
+  }
+
   @media (max-width: ${theme.breakpoints.sm}) {
     display: none;
   }
@@ -98,16 +169,18 @@ const SectionHeader = styled.div<{ $isCompleted: boolean }>`
 
 const SectionTitle = styled.h3<{ $isCompleted: boolean }>`
   font-family: ${theme.fonts.heading};
-  font-size: ${theme.fontSizes.xl};
+  /* V2: Larger on desktop */
+  font-size: ${theme.fontSizes['2xl']};
   color: ${props => props.$isCompleted ? theme.colors.accent.coral : theme.colors.text.primary};
   display: flex;
   align-items: center;
   gap: ${theme.spacing.sm};
-  
+  transition: color ${theme.transitions.base};
+
   @media (min-width: ${theme.breakpoints.md}) {
     justify-content: center;
   }
-  
+
   @media (max-width: ${theme.breakpoints.sm}) {
     font-size: ${theme.fontSizes.lg};
   }
@@ -123,6 +196,7 @@ const CompletedBadge = styled.span`
   font-size: ${theme.fontSizes.xs};
   font-weight: 600;
   color: ${theme.colors.accent.coral};
+  transition: all ${theme.transitions.base};
 `;
 
 const EditButton = styled.button`
@@ -134,18 +208,19 @@ const EditButton = styled.button`
   font-size: ${theme.fontSizes.xs};
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
-  
+  transition: all ${theme.transitions.smooth};
+
   &:hover {
     background: ${theme.colors.accent.coral};
     color: ${theme.colors.background.white};
+    box-shadow: ${theme.shadows.glow};
   }
 `;
 
 
 const FormSection = styled.div`
   margin-bottom: ${theme.spacing.xl};
-  
+
   @media (max-width: ${theme.breakpoints.sm}) {
     margin-bottom: ${theme.spacing.lg};
   }
@@ -156,10 +231,29 @@ const OptionTitle = styled.h4`
   color: ${theme.colors.text.primary};
   font-size: ${theme.fontSizes.base};
   font-weight: 600;
-  
+  display: flex;
+  align-items: center;
+  gap: ${theme.spacing.sm};
+
+  /* V2: Subtle colored dot accent before the text */
+  &::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: ${theme.borderRadius.full};
+    background: linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.accent.softPink});
+    flex-shrink: 0;
+  }
+
   @media (min-width: ${theme.breakpoints.md}) {
     font-size: ${theme.fontSizes['2xl']};
     font-weight: 700;
+
+    &::before {
+      width: 10px;
+      height: 10px;
+    }
   }
 `;
 
@@ -167,15 +261,16 @@ const SelectionGrid = styled.div<{ $columns?: number }>`
   display: grid;
   grid-template-columns: repeat(${props => props.$columns || 4}, 1fr);
   gap: ${theme.spacing.md};
-  
+
   @media (max-width: ${theme.breakpoints.md}) {
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: ${theme.spacing.sm};
+    gap: ${theme.spacing.md};
   }
-  
+
+  /* V2: Better gap on mobile */
   @media (max-width: ${theme.breakpoints.sm}) {
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: ${theme.spacing.xs};
+    gap: ${theme.spacing.md};
   }
 `;
 
@@ -186,13 +281,14 @@ const CustomInput = styled.input`
   border-radius: ${theme.borderRadius.md};
   font-size: ${theme.fontSizes.base};
   margin-top: ${theme.spacing.md};
-  transition: border-color 0.3s ease;
-  
+  transition: border-color ${theme.transitions.smooth};
+
   &:focus {
     outline: none;
     border-color: ${theme.colors.accent.coral};
+    box-shadow: 0 0 0 3px ${theme.colors.accent.coral}15;
   }
-  
+
   &::placeholder {
     color: ${theme.colors.text.light};
   }
@@ -203,11 +299,11 @@ const InputGroup = styled.div`
   grid-template-columns: 1fr 1fr;
   gap: ${theme.spacing.lg};
   margin-bottom: ${theme.spacing.lg};
-  
+
   @media (max-width: ${theme.breakpoints.md}) {
     grid-template-columns: 1fr;
   }
-  
+
   @media (max-width: ${theme.breakpoints.sm}) {
     gap: ${theme.spacing.md};
     margin-bottom: ${theme.spacing.md};
@@ -224,7 +320,7 @@ const ColorGrid = styled.div`
   grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   gap: ${theme.spacing.sm};
   margin-bottom: ${theme.spacing.lg};
-  
+
   @media (max-width: ${theme.breakpoints.sm}) {
     grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
     gap: ${theme.spacing.xs};
@@ -239,13 +335,14 @@ const ColorOption = styled.div<{ color: string; $isSelected: boolean }>`
   border: 2px solid ${props => props.$isSelected ? theme.colors.accent.coral : '#E5E5E5'};
   border-radius: ${theme.borderRadius.md};
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all ${theme.transitions.smooth};
   background-color: ${props => props.$isSelected ? theme.colors.accent.creamyYellow : theme.colors.background.white};
-  
+
   &:hover {
     border-color: ${theme.colors.accent.coral};
+    box-shadow: ${theme.shadows.sm};
   }
-  
+
   @media (max-width: ${theme.breakpoints.sm}) {
     padding: ${theme.spacing.xs};
   }
@@ -258,7 +355,7 @@ const ColorCircle = styled.div<{ color: string }>`
   background-color: ${props => props.color};
   margin-right: ${theme.spacing.sm};
   border: 1px solid #ccc;
-  
+
   @media (max-width: ${theme.breakpoints.sm}) {
     width: 16px;
     height: 16px;
@@ -269,22 +366,41 @@ const ColorCircle = styled.div<{ color: string }>`
 const ColorLabel = styled.span`
   font-size: ${theme.fontSizes.sm};
   color: ${theme.colors.text.primary};
-  
+
   @media (max-width: ${theme.breakpoints.sm}) {
     font-size: ${theme.fontSizes.xs};
   }
 `;
 
+/* V2: More inviting PhotoUploadSection with icon and better background */
 const PhotoUploadSection = styled.div`
-  border: 2px dashed #E5E5E5;
-  border-radius: ${theme.borderRadius.lg};
-  padding: ${theme.spacing.xl};
+  border: 2px dashed ${theme.colors.accent.lightCoral};
+  border-radius: ${theme.borderRadius.xl};
+  padding: ${theme.spacing['2xl']} ${theme.spacing.xl};
   text-align: center;
   margin-bottom: ${theme.spacing.lg};
-  transition: border-color 0.2s ease;
-  
+  transition: all ${theme.transitions.smooth};
+  background: ${theme.colors.background.secondary};
+  position: relative;
+
+  /* V2: Camera icon decoration */
+  &::before {
+    content: '📷';
+    display: block;
+    font-size: ${theme.fontSizes['3xl']};
+    margin-bottom: ${theme.spacing.sm};
+    opacity: 0.7;
+    transition: opacity ${theme.transitions.smooth};
+  }
+
   &:hover {
     border-color: ${theme.colors.accent.coral};
+    background: ${theme.colors.accent.creamyYellow};
+    box-shadow: ${theme.shadows.md};
+
+    &::before {
+      opacity: 1;
+    }
   }
 `;
 
@@ -307,13 +423,14 @@ const TextArea = styled.textarea`
   font-family: ${theme.fonts.body};
   resize: vertical;
   min-height: 80px;
-  transition: border-color 0.3s ease;
-  
+  transition: border-color ${theme.transitions.smooth};
+
   &:focus {
     outline: none;
     border-color: ${theme.colors.accent.coral};
+    box-shadow: 0 0 0 3px ${theme.colors.accent.coral}15;
   }
-  
+
   &::placeholder {
     color: ${theme.colors.text.light};
   }
@@ -325,7 +442,7 @@ const Label = styled.label`
   color: ${theme.colors.text.primary};
   margin-bottom: ${theme.spacing.sm};
   font-size: ${theme.fontSizes.sm};
-  
+
   @media (max-width: ${theme.breakpoints.sm}) {
     margin-bottom: ${theme.spacing.xs};
     font-size: ${theme.fontSizes.xs};
@@ -333,8 +450,8 @@ const Label = styled.label`
 `;
 
 const ToggleButton = styled.button<{ $isActive: boolean }>`
-  background: ${props => props.$isActive ? 
-    `linear-gradient(135deg, ${theme.colors.accent.creamyYellow}, ${theme.colors.accent.lightCoral})` : 
+  background: ${props => props.$isActive ?
+    `linear-gradient(135deg, ${theme.colors.accent.creamyYellow}, ${theme.colors.accent.lightCoral})` :
     theme.colors.background.white
   };
   color: ${props => props.$isActive ? theme.colors.text.primary : theme.colors.text.secondary};
@@ -343,11 +460,12 @@ const ToggleButton = styled.button<{ $isActive: boolean }>`
   padding: ${theme.spacing.sm} ${theme.spacing.md};
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all ${theme.transitions.smooth};
   margin-bottom: ${theme.spacing.lg};
-  
+
   &:hover {
     border-color: ${theme.colors.accent.coral};
+    box-shadow: ${theme.shadows.sm};
   }
 `;
 
@@ -358,17 +476,113 @@ const SecondaryCharacterSection = styled.div`
   margin-top: ${theme.spacing.xl};
 `;
 
+const ConnectedBanner = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${theme.spacing.sm};
+  padding: ${theme.spacing.md} ${theme.spacing.lg};
+  background: linear-gradient(135deg, ${theme.colors.accent.creamyYellow}, ${theme.colors.accent.softPink}15);
+  border: 1px solid ${theme.colors.accent.lightCoral}30;
+  border-radius: ${theme.borderRadius.lg};
+  margin-bottom: ${theme.spacing.lg};
+  font-size: ${theme.fontSizes.sm};
+  color: ${theme.colors.text.primary};
+  font-weight: 500;
+`;
+
+const ClubFreeCard = styled.div<{ $isSelected: boolean }>`
+  background: ${props => props.$isSelected
+    ? `linear-gradient(135deg, ${theme.colors.accent.creamyYellow}, ${theme.colors.accent.lightCoral}20)`
+    : theme.colors.background.white
+  };
+  border: 2px solid ${props => props.$isSelected ? theme.colors.accent.coral : '#E5E7EB'};
+  border-radius: ${theme.borderRadius.xl};
+  padding: ${theme.spacing.xl};
+  text-align: center;
+  cursor: pointer;
+  transition: all ${theme.transitions.smooth};
+  position: relative;
+
+  &:hover {
+    border-color: ${theme.colors.accent.coral};
+    box-shadow: ${theme.shadows.md};
+  }
+`;
+
+const ClubBadge = styled.span`
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover});
+  color: white;
+  padding: 4px ${theme.spacing.md};
+  border-radius: ${theme.borderRadius.full};
+  font-size: ${theme.fontSizes.xs};
+  font-weight: 700;
+  white-space: nowrap;
+`;
+
+const ClubExhaustedMsg = styled.div`
+  padding: ${theme.spacing.md} ${theme.spacing.lg};
+  background: ${theme.colors.background.secondary};
+  border: 1px solid #E5E7EB;
+  border-radius: ${theme.borderRadius.lg};
+  margin-bottom: ${theme.spacing.lg};
+  font-size: ${theme.fontSizes.sm};
+  color: ${theme.colors.text.secondary};
+  text-align: center;
+`;
+
 const PricingGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: ${theme.spacing.xl};
   margin-bottom: ${theme.spacing.xl};
-  
+  max-width: 1100px;
+
+  @media (max-width: ${theme.breakpoints.lg}) {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+
   @media (max-width: ${theme.breakpoints.sm}) {
     grid-template-columns: 1fr;
     gap: ${theme.spacing.lg};
     margin-bottom: ${theme.spacing.lg};
   }
+`;
+
+const OrderCostSummary = styled.div<{ $variant: 'free' | 'paid' | 'info' }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: ${theme.spacing.sm};
+  padding: ${theme.spacing.md} ${theme.spacing.lg};
+  border-radius: ${theme.borderRadius.lg};
+  font-size: ${theme.fontSizes.sm};
+  font-weight: 600;
+  margin-bottom: ${theme.spacing.xl};
+  background: ${props => {
+    switch (props.$variant) {
+      case 'free': return `linear-gradient(135deg, ${theme.colors.accent.lightGreen}30, #a8e6cf30)`;
+      case 'paid': return `${theme.colors.accent.creamyYellow}`;
+      case 'info': return `${theme.colors.background.secondary}`;
+    }
+  }};
+  color: ${props => {
+    switch (props.$variant) {
+      case 'free': return '#2d6a4f';
+      case 'paid': return theme.colors.text.primary;
+      case 'info': return theme.colors.text.secondary;
+    }
+  }};
+  border: 1px solid ${props => {
+    switch (props.$variant) {
+      case 'free': return '#a8e6cf';
+      case 'paid': return `${theme.colors.accent.lightCoral}30`;
+      case 'info': return '#E5E7EB';
+    }
+  }};
 `;
 
 const ShippingSection = styled.div<{ $show: boolean }>`
@@ -377,7 +591,8 @@ const ShippingSection = styled.div<{ $show: boolean }>`
   padding: ${theme.spacing.xl};
   border-radius: ${theme.borderRadius.lg};
   margin-bottom: ${theme.spacing.xl};
-  
+  transition: all ${theme.transitions.smooth};
+
   @media (max-width: ${theme.breakpoints.sm}) {
     padding: ${theme.spacing.lg};
     margin-bottom: ${theme.spacing.lg};
@@ -388,11 +603,11 @@ const ShippingGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: ${theme.spacing.lg};
-  
+
   @media (max-width: ${theme.breakpoints.md}) {
     grid-template-columns: 1fr;
   }
-  
+
   @media (max-width: ${theme.breakpoints.sm}) {
     gap: ${theme.spacing.md};
   }
@@ -402,79 +617,115 @@ const FullWidthField = styled(InputField)`
   grid-column: 1 / -1;
 `;
 
+/* V2: Enhanced PaymentSection */
 const PaymentSection = styled.div`
   text-align: center;
   padding: ${theme.spacing.xl} 0;
 `;
 
+/* V2: Green gradient ReadyMessage instead of coral */
 const ReadyMessage = styled.div<{ $show: boolean }>`
   display: ${props => props.$show ? 'flex' : 'none'};
   align-items: center;
   justify-content: center;
   gap: ${theme.spacing.sm};
   margin-bottom: ${theme.spacing.lg};
-  padding: ${theme.spacing.md};
-  background: linear-gradient(135deg, ${theme.colors.accent.creamyYellow}, ${theme.colors.accent.lightCoral});
-  border-radius: ${theme.borderRadius.md};
-  color: ${theme.colors.text.primary};
+  padding: ${theme.spacing.md} ${theme.spacing.lg};
+  background: linear-gradient(135deg, ${theme.colors.accent.lightGreen}, #a8e6cf);
+  border-radius: ${theme.borderRadius.lg};
+  color: #2d6a4f;
   font-weight: 600;
-  animation: slideIn 0.5s ease;
-  
-  @keyframes slideIn {
-    from {
-      opacity: 0;
-      transform: translateY(-10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
+  font-size: ${theme.fontSizes.base};
+  animation: ${slideIn} 0.5s ${theme.transitions.smooth};
+  border: 1px solid #a8e6cf;
 `;
 
+/* V2: Larger pay button with glow animation when ready */
 const PayButton = styled(Button)<{ $isReady: boolean }>`
   position: relative;
-  transition: all 0.3s ease;
-  
-  ${props => props.$isReady && `
-    animation: pulse 1s ease;
-    box-shadow: 0 0 20px ${theme.colors.accent.coral}40;
-    
-    @keyframes pulse {
-      0%, 100% {
-        transform: scale(1);
-      }
-      50% {
-        transform: scale(1.05);
-      }
+  transition: all ${theme.transitions.smooth};
+
+  ${props => props.$isReady && css`
+    font-size: ${theme.fontSizes.lg};
+    padding: ${theme.spacing.lg} ${theme.spacing['2xl']};
+    animation: ${buttonPulse} 2s ease infinite;
+    box-shadow: 0 0 20px ${theme.colors.accent.coral}40, 0 0 40px ${theme.colors.accent.coral}20;
+
+    &:hover {
+      box-shadow: 0 0 30px ${theme.colors.accent.coral}60, 0 0 60px ${theme.colors.accent.coral}30;
     }
   `}
 `;
 
+/* V2: Softer error with icon */
 const ErrorMessage = styled.div`
-  background-color: #fee;
-  border: 1px solid #fcc;
-  border-radius: ${theme.borderRadius.md};
-  padding: ${theme.spacing.md};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: ${theme.spacing.sm};
+  background-color: #FFF5F5;
+  border: 1px solid #FED7D7;
+  border-radius: ${theme.borderRadius.lg};
+  padding: ${theme.spacing.md} ${theme.spacing.lg};
   margin-bottom: ${theme.spacing.lg};
-  color: #c33;
+  color: #C53030;
   font-size: ${theme.fontSizes.sm};
   text-align: center;
+  transition: all ${theme.transitions.base};
+
+  &::before {
+    content: '\u26A0\uFE0F';
+    font-size: ${theme.fontSizes.lg};
+    flex-shrink: 0;
+  }
 `;
 
-export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({ 
-  formData, 
-  onUpdate, 
+/* V2: Trust badges row */
+const TrustBadgesRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: ${theme.spacing.xl};
+  margin-top: ${theme.spacing.lg};
+  flex-wrap: wrap;
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    gap: ${theme.spacing.md};
+  }
+`;
+
+const TrustBadge = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${theme.spacing.xs};
+  font-size: ${theme.fontSizes.xs};
+  color: ${theme.colors.text.secondary};
+  font-weight: 500;
+
+  span.trust-icon {
+    font-size: ${theme.fontSizes.base};
+    line-height: 1;
+  }
+`;
+
+export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
+  formData,
+  onUpdate,
   onSubmit,
-  isSubmitting 
+  isSubmitting,
+  isAuthenticated = false,
+  isClub = false,
+  currentUser = null,
+  clubCredit = null
 }) => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [globalError, setGlobalError] = useState<string>('');
   const [showReligionSection, setShowReligionSection] = useState<boolean>(!!formData.religion);
   const [editingSection, setEditingSection] = useState<string | null>(null);
-  
+  const [emailStatus, setEmailStatus] = useState<{ exists: boolean; hasPassword: boolean } | null>(null);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
-  
+
   // Refs pour auto-scroll
   const themeRef = useRef<HTMLDivElement>(null);
   const subjectRef = useRef<HTMLDivElement>(null);
@@ -495,7 +746,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
       if (ref.current) {
         const elementPosition = ref.current.getBoundingClientRect().top;
         const offsetPosition = elementPosition + window.pageYOffset - offset;
-        
+
         window.scrollTo({
           top: offsetPosition,
           behavior: 'smooth'
@@ -506,25 +757,25 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
 
   // Vérifier la complétion des sections
   const isChoicesComplete = !!(
-    formData.ageRange && 
-    formData.generalTheme && 
-    formData.specificSubject && 
-    formData.centralMessage && 
+    formData.ageRange &&
+    formData.generalTheme &&
+    formData.specificSubject &&
+    formData.centralMessage &&
     formData.illustrationStyle
   );
 
   const isProtagonistComplete = !!(
-    formData.protagonistName && 
-    formData.protagonistAge && 
+    formData.protagonistName &&
+    formData.protagonistAge &&
     formData.protagonistGender &&
-    formData.eyeColor && 
+    formData.eyeColor &&
     formData.hairColor
   );
 
   const isPaymentInfoComplete = () => {
     if (formData.productType === 'ebook') {
       return !!(
-        formData.productType && 
+        formData.productType &&
         formData.userEmail &&
         formData.shippingAddress?.firstName &&
         formData.shippingAddress?.lastName
@@ -548,11 +799,11 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
   // Gestion des sélections avec auto-advance
   const handleSelection = (field: keyof StoryFormData, value: string) => {
     onUpdate({ [field]: value });
-    
+
     if (value === 'custom' || value === 'other') {
       return;
     }
-    
+
     switch (field) {
       case 'ageRange':
         scrollToSection(themeRef);
@@ -598,10 +849,31 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
     }
   };
 
-  const handleProductSelection = (productType: 'ebook' | 'printed') => {
+  const handleProductSelection = (productType: 'ebook' | 'printed', purchaseType?: 'single' | 'club') => {
     setGlobalError('');
-    onUpdate({ productType });
+    onUpdate({ productType, purchaseType: purchaseType || 'single' });
     scrollToSection(paymentRef, 150);
+  };
+
+  const handleEmailBlurCheck = async () => {
+    if (!formData.userEmail) return;
+    const emailValidation = validateEmail(formData.userEmail);
+    if (!emailValidation.isValid) return;
+    try {
+      const response = await ApiService.checkEmail(formData.userEmail);
+      if (response.success) {
+        setEmailStatus({ exists: response.exists, hasPassword: !!response.hasPassword });
+      }
+    } catch (error) {
+      // Silent fail - non-blocking
+    }
+  };
+
+  const handlePasswordChange = (value: string) => {
+    onUpdate({ password: value });
+    if (errors.password) {
+      setErrors(prev => ({ ...prev, password: '' }));
+    }
   };
 
   const handleShippingChange = (field: string, value: string) => {
@@ -638,7 +910,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
     }
 
     let validation: { isValid: boolean; error?: string };
-    
+
     switch (validationType) {
       case 'email':
         validation = validateEmail(value);
@@ -655,12 +927,12 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
       default:
         validation = validateRequired(value, field);
     }
-    
+
     if (!validation.isValid) {
       setErrors(prev => ({ ...prev, [field]: validation.error || '' }));
       return false;
     }
-    
+
     setErrors(prev => ({ ...prev, [field]: '' }));
     return true;
   };
@@ -706,7 +978,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
     }
 
     setErrors(newErrors);
-    
+
     if (!isValid) {
       scrollToSection(paymentRef, 150);
       if (formData.productType === 'printed') {
@@ -715,7 +987,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
         setGlobalError('Veuillez remplir tous les champs obligatoires (Email, Prénom, Nom)');
       }
     }
-    
+
     return isValid;
   };
 
@@ -750,8 +1022,8 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
   return (
     <FormContainer>
       {/* Section 1: Choix du conte */}
-      <Section 
-        $isVisible={true} 
+      <Section
+        $isVisible={true}
         $isCompleted={isChoicesComplete}
         id="choices-section"
       >
@@ -903,8 +1175,8 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
       </Section>
 
       {/* Section 2: Informations du protagoniste */}
-      <Section 
-        $isVisible={isProtagonistVisible} 
+      <Section
+        $isVisible={isProtagonistVisible}
         $isCompleted={isProtagonistComplete}
         ref={protagonistRef}
         id="protagonist-section"
@@ -932,7 +1204,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
                 onBlur={() => validateField('protagonistName', formData.protagonistName || '', undefined)}
               />
             </InputField>
-            
+
             <InputField>
               <AgeSelector
                 label="Âge *"
@@ -1040,7 +1312,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
           <OptionTitle>
             💡 Infos supplémentaires (facultatif)
           </OptionTitle>
-          
+
           <InputField style={{ marginBottom: theme.spacing.lg }}>
             <Label>Loisirs / Centres d'intérêt</Label>
             <TextArea
@@ -1074,7 +1346,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
           <OptionTitle>
             🕊️ Dimension religieuse (optionnel)
           </OptionTitle>
-          
+
           <ToggleButton
             $isActive={showReligionSection}
             onClick={() => {
@@ -1108,7 +1380,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
                   onClick={(value) => handleInputChange('religion', value)}
                 />
               </SelectionGrid>
-              
+
               {formData.religion === 'other' && (
                 <CustomInput
                   type="text"
@@ -1130,7 +1402,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
           <OptionTitle>
             🧑‍🎨 Créateur du livre (optionnel)
           </OptionTitle>
-          
+
           <InputField>
             <ValidatedInput
               label="Nom ou signature du créateur (facultatif)"
@@ -1144,8 +1416,8 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
       </Section>
 
       {/* Section 3: Paiement */}
-      <Section 
-        $isVisible={isPaymentVisible} 
+      <Section
+        $isVisible={isPaymentVisible}
         $isCompleted={false}
         id="payment-section"
       >
@@ -1159,6 +1431,38 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
           <OptionTitle style={{ textAlign: 'center' }}>
             📦 Choisissez votre format
           </OptionTitle>
+
+          {/* Club avec credit disponible : carte gratuite mise en avant */}
+          {isClub && clubCredit?.canSubmit && (
+            <div style={{ marginBottom: theme.spacing.xl }}>
+              <ClubFreeCard
+                $isSelected={formData.purchaseType === 'club'}
+                onClick={() => handleProductSelection('ebook', 'club')}
+              >
+                <ClubBadge>Membre Club</ClubBadge>
+                <div style={{ fontSize: theme.fontSizes['2xl'], marginBottom: theme.spacing.sm, marginTop: theme.spacing.sm }}>
+                  🎁
+                </div>
+                <h3 style={{ fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.xl, margin: `0 0 ${theme.spacing.xs}` }}>
+                  Utiliser mon eBook gratuit
+                </h3>
+                <p style={{ fontSize: theme.fontSizes.base, color: theme.colors.accent.coral, fontWeight: 700, margin: `0 0 ${theme.spacing.sm}` }}>
+                  0,00EUR — Inclus dans votre abonnement Club
+                </p>
+                <p style={{ fontSize: theme.fontSizes.sm, color: theme.colors.text.secondary, margin: 0 }}>
+                  Il vous reste {clubCredit.remaining} eBook(s) gratuit(s) cette semaine
+                </p>
+              </ClubFreeCard>
+            </div>
+          )}
+
+          {/* Club sans credit : message d'info */}
+          {isClub && clubCredit && !clubCredit.canSubmit && (
+            <ClubExhaustedMsg>
+              Votre credit hebdomadaire est epuise (0/1). Choisissez un format payant ci-dessous.
+            </ClubExhaustedMsg>
+          )}
+
           <PricingGrid>
             <PricingCard
               title="eBook Numérique"
@@ -1170,11 +1474,29 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
                 "Téléchargement immédiat",
                 "Compatible tous appareils"
               ]}
-              isPopular={formData.productType === 'ebook'}
+              isPopular={formData.productType === 'ebook' && formData.purchaseType !== 'club'}
               ctaText="Choisir l'eBook"
               onSelect={() => handleProductSelection('ebook')}
             />
-            
+
+            {!isClub && (
+              <PricingCard
+                title="Club des Histoires"
+                price="12,99€/mois"
+                features={[
+                  "Cet eBook est inclus immediatement",
+                  "1 eBook gratuit chaque semaine",
+                  "Bibliotheque illimitee",
+                  "Annulable a tout moment"
+                ]}
+                isPopular={formData.purchaseType === 'club' || (!formData.productType && !isClub)}
+                ctaText="Recevoir cet eBook + rejoindre le Club"
+                badge="Recommande"
+                subtitle="Soit ~3,25EUR par conte"
+                onSelect={() => handleProductSelection('ebook', 'club')}
+              />
+            )}
+
             <PricingCard
               title="Livre Relié Premium"
               price="29,99€"
@@ -1186,31 +1508,101 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
                 "Livraison gratuite",
                 "eBook inclus"
               ]}
-              isPopular={formData.productType === 'printed'}
+              isPopular={formData.productType === 'printed' && formData.purchaseType !== 'club'}
               ctaText="Choisir le livre"
               onSelect={() => handleProductSelection('printed')}
             />
           </PricingGrid>
+
+          {/* Order cost summary */}
+          {formData.productType && formData.purchaseType === 'club' && isClub && clubCredit?.canSubmit && (
+            <OrderCostSummary $variant="free">
+              Cette commande sera gratuite (credit Club)
+            </OrderCostSummary>
+          )}
+          {formData.purchaseType === 'club' && !isClub && (
+            <OrderCostSummary $variant="info">
+              Abonnement Club : 12,99EUR/mois — Cet eBook est inclus, sans frais supplementaires
+            </OrderCostSummary>
+          )}
+          {formData.productType === 'ebook' && formData.purchaseType !== 'club' && (
+            <OrderCostSummary $variant="paid">
+              Cette commande sera payante : 4,99EUR
+            </OrderCostSummary>
+          )}
+          {formData.productType === 'printed' && (
+            <OrderCostSummary $variant="paid">
+              Cette commande sera payante : 29,99EUR
+            </OrderCostSummary>
+          )}
         </FormSection>
 
         <ShippingSection $show={true} ref={paymentRef}>
           <OptionTitle>
             Informations de commande
           </OptionTitle>
+
+          {isAuthenticated && currentUser && (
+            <ConnectedBanner>
+              ✅ Connecte en tant que <strong>{currentUser.email}</strong>
+            </ConnectedBanner>
+          )}
+
           <ShippingGrid>
-            <FullWidthField>
-              <ValidatedInput
-                type="email"
-                label="Email"
-                value={formData.userEmail || ''}
-                onChange={handleEmailChange}
-                placeholder="votre@email.com"
-                required={true}
-                error={errors.userEmail}
-                onBlur={() => validateField('userEmail', formData.userEmail || '', 'email')}
-              />
-            </FullWidthField>
-            
+            {isAuthenticated ? (
+              <FullWidthField>
+                <ValidatedInput
+                  type="email"
+                  label="Email"
+                  value={formData.userEmail || ''}
+                  onChange={() => {}}
+                  placeholder=""
+                  required={true}
+                  disabled={true}
+                />
+              </FullWidthField>
+            ) : (
+              <>
+                <FullWidthField>
+                  <ValidatedInput
+                    type="email"
+                    label="Email"
+                    value={formData.userEmail || ''}
+                    onChange={handleEmailChange}
+                    placeholder="votre@email.com"
+                    required={true}
+                    error={errors.userEmail}
+                    onBlur={() => { validateField('userEmail', formData.userEmail || '', 'email'); handleEmailBlurCheck(); }}
+                  />
+                  {emailStatus?.exists && emailStatus?.hasPassword && (
+                    <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.accent.coral, marginTop: theme.spacing.xs }}>
+                      Ce compte existe deja. <span style={{ cursor: 'pointer', fontWeight: 600, textDecoration: 'underline' }} onClick={() => window.location.href = '/login'}>Connectez-vous</span>
+                    </p>
+                  )}
+                  {emailStatus?.exists && !emailStatus?.hasPassword && (
+                    <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.status.warning, marginTop: theme.spacing.xs }}>
+                      Ce compte existe mais n'a pas de mot de passe. Creez-en un ci-dessous pour securiser votre compte.
+                    </p>
+                  )}
+                </FullWidthField>
+
+                <FullWidthField>
+                  <ValidatedInput
+                    type="password"
+                    label="Mot de passe (creez votre compte)"
+                    value={formData.password || ''}
+                    onChange={handlePasswordChange}
+                    placeholder="Min. 8 caracteres"
+                    required={false}
+                    error={errors.password}
+                  />
+                  <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.text.light, marginTop: theme.spacing.xs }}>
+                    Creez un compte pour retrouver vos contes dans votre bibliotheque personnelle
+                  </p>
+                </FullWidthField>
+              </>
+            )}
+
             <InputField>
               <ValidatedInput
                 label="Prénom"
@@ -1222,7 +1614,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
                 onBlur={() => validateField('firstName', formData.shippingAddress?.firstName || '')}
               />
             </InputField>
-            
+
             <InputField>
               <ValidatedInput
                 label="Nom"
@@ -1234,7 +1626,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
                 onBlur={() => validateField('lastName', formData.shippingAddress?.lastName || '')}
               />
             </InputField>
-            
+
             {formData.productType === 'printed' && (
               <>
                 <FullWidthField>
@@ -1248,7 +1640,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
                     onBlur={() => validateField('address', formData.shippingAddress?.address || '', 'address')}
                   />
                 </FullWidthField>
-                
+
                 <InputField>
                   <ValidatedInput
                     label="Ville"
@@ -1260,7 +1652,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
                     onBlur={() => validateField('city', formData.shippingAddress?.city || '', 'city')}
                   />
                 </InputField>
-                
+
                 <InputField>
                   <ValidatedInput
                     label="Code postal"
@@ -1281,13 +1673,13 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
           <ReadyMessage $show={isPaymentInfoComplete()}>
             ✅ Tout est prêt
           </ReadyMessage>
-          
+
           {globalError && (
             <ErrorMessage>
               {globalError}
             </ErrorMessage>
           )}
-          
+
           <PayButton
             variant="primary"
             size="lg"
@@ -1295,16 +1687,39 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
             disabled={!formData.productType || isSubmitting}
             $isReady={isPaymentInfoComplete()}
           >
-            {isSubmitting ? '⏳ Traitement en cours...' : '✨ Créer le conte de mon enfant'}
+            {isSubmitting
+              ? '\u23F3 Traitement en cours...'
+              : formData.purchaseType === 'club' && isClub && clubCredit?.canSubmit
+                ? '\u2728 Creer mon eBook gratuit'
+                : '\u2728 Creer le conte de mon enfant'
+            }
           </PayButton>
-          
-          <p style={{ 
-            marginTop: theme.spacing.md, 
-            fontSize: theme.fontSizes.xs, 
-            color: theme.colors.text.light 
-          }}>
-            🔒 Paiement sécurisé par Stripe
-          </p>
+
+          {!(formData.purchaseType === 'club' && isClub && clubCredit?.canSubmit) && (
+            <p style={{
+              marginTop: theme.spacing.md,
+              fontSize: theme.fontSizes.xs,
+              color: theme.colors.text.light
+            }}>
+              Paiement securise par Stripe
+            </p>
+          )}
+
+          {/* V2: Trust badges */}
+          <TrustBadgesRow>
+            <TrustBadge>
+              <span className="trust-icon">🔒</span>
+              Paiement 100% sécurisé
+            </TrustBadge>
+            <TrustBadge>
+              <span className="trust-icon">✅</span>
+              Satisfait ou remboursé
+            </TrustBadge>
+            <TrustBadge>
+              <span className="trust-icon">🚚</span>
+              Livraison rapide
+            </TrustBadge>
+          </TrustBadgesRow>
         </PaymentSection>
       </Section>
     </FormContainer>

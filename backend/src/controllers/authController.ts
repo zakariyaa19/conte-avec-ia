@@ -1,0 +1,468 @@
+import { Request, Response } from 'express';
+import * as bcrypt from 'bcryptjs';
+import * as jwt from 'jsonwebtoken';
+import { OAuth2Client } from 'google-auth-library';
+import { prisma } from '../utils/database';
+import { ClientAuthRequest } from '../middleware/clientAuth';
+
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+function getClientSecret(): string {
+  const secret = process.env.JWT_CLIENT_SECRET || process.env.JWT_SECRET;
+  if (!secret) throw new Error('JWT secret non configure');
+  return secret;
+}
+
+function generateClientToken(user: { id: string; email: string; role: string }): string {
+  return jwt.sign(
+    { userId: user.id, email: user.email, role: user.role },
+    getClientSecret(),
+    { expiresIn: '7d' }
+  );
+}
+
+export class AuthController {
+  // Inscription client
+  static async register(req: Request, res: Response) {
+    try {
+      const { email, password, firstName, lastName } = req.body;
+
+      if (!email || !password) {
+        return res.status(400).json({
+          success: false,
+          message: 'Email et mot de passe requis'
+        });
+      }
+
+      if (password.length < 8) {
+        return res.status(400).json({
+          success: false,
+          message: 'Le mot de passe doit contenir au moins 8 caracteres'
+        });
+      }
+
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      // Upsert : si l'email existe sans mdp, on ajoute le mdp
+      const existingUser = await prisma.user.findUnique({ where: { email } });
+
+      let user;
+      if (existingUser) {
+        if (existingUser.password) {
+          return res.status(409).json({
+            success: false,
+            message: 'Un compte existe deja avec cet email'
+          });
+        }
+        // Utilisateur existe sans mot de passe -> securiser le compte
+        user = await prisma.user.update({
+          where: { email },
+          data: {
+            password: hashedPassword,
+            firstName: firstName || existingUser.firstName,
+            lastName: lastName || existingUser.lastName
+          }
+        });
+      } else {
+        user = await prisma.user.create({
+          data: {
+            email,
+            password: hashedPassword,
+            firstName,
+            lastName
+          }
+        });
+      }
+
+      const token = generateClientToken(user);
+
+      res.status(201).json({
+        success: true,
+        data: {
+          token,
+          user: {
+            id: user.id,
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            role: user.role
+          }
+        }
+      });
+    } catch (error) {
+      console.error('Erreur inscription:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Erreur lors de l\'inscription'
+      });
+    }
+  }
+
+  // Connexion client
+  static async login(req: Request, res: Response) {
+    try {
+      const { email, password } = req.body;
+
+      if (!email || !password) {
+        return res.status(400).json({
+          success: false,
+          message: 'Email et mot de passe requis'
+        });
+      }
+
+      const user = await prisma.user.findUnique({ where: { email } });
+
+      if (!user || !user.password) {
+        return res.status(401).json({
+          success: false,
+          message: 'Identifiants invalides'
+        });
+      }
+
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+
+      if (!isPasswordValid) {
+        return res.status(401).json({
+          success: false,
+          message: 'Identifiants invalides'
+        });
+      }
+
+      const token = generateClientToken(user);
+
+      console.log('[AUTH] Login:', user.id, 'role:', user.role, 'subStatus:', user.subscriptionStatus);
+
+      res.json({
+        success: true,
+        data: {
+          token,
+          user: {
+            id: user.id,
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            role: user.role,
+            subscriptionStatus: user.subscriptionStatus
+          }
+        }
+      });
+    } catch (error) {
+      console.error('Erreur connexion:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Erreur lors de la connexion'
+      });
+    }
+  }
+
+  // Profil utilisateur connecte
+  static async getProfile(req: ClientAuthRequest, res: Response) {
+    try {
+      const userId = req.clientUser!.id;
+
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        include: {
+          orders: {
+            orderBy: { createdAt: 'desc' },
+            take: 20
+          },
+          childProfiles: true
+        }
+      });
+
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          message: 'Utilisateur non trouve'
+        });
+      }
+
+      console.log('[AUTH] getProfile:', user.id, 'role:', user.role, 'subStatus:', user.subscriptionStatus);
+
+      res.json({
+        success: true,
+        data: {
+          id: user.id,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          role: user.role,
+          subscriptionStatus: user.subscriptionStatus,
+          subscriptionPeriodEnd: user.subscriptionPeriodEnd,
+          weeklySubmissionCount: user.weeklySubmissionCount,
+          weeklySubmissionReset: user.weeklySubmissionReset,
+          orders: user.orders,
+          children: user.childProfiles
+        }
+      });
+    } catch (error) {
+      console.error('Erreur profil:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Erreur lors de la recuperation du profil'
+      });
+    }
+  }
+
+  // Verifier si un email existe deja
+  static async checkEmail(req: Request, res: Response) {
+    try {
+      const { email } = req.query;
+
+      if (!email) {
+        return res.status(400).json({
+          success: false,
+          message: 'Email requis'
+        });
+      }
+
+      const user = await prisma.user.findUnique({
+        where: { email: email as string }
+      });
+
+      if (!user) {
+        return res.json({
+          success: true,
+          exists: false
+        });
+      }
+
+      res.json({
+        success: true,
+        exists: true,
+        hasPassword: !!user.password
+      });
+    } catch (error) {
+      console.error('Erreur check email:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Erreur lors de la verification'
+      });
+    }
+  }
+
+  // Login unifie : admin ou client
+  static async unifiedLogin(req: Request, res: Response) {
+    try {
+      const { email, password } = req.body;
+
+      if (!email || !password) {
+        return res.status(400).json({
+          success: false,
+          message: 'Email et mot de passe requis'
+        });
+      }
+
+      // 1. Essayer d'abord la table AdminUser
+      const admin = await prisma.adminUser.findUnique({ where: { email } });
+      if (admin && admin.isActive) {
+        const isValid = await bcrypt.compare(password, admin.password);
+        if (isValid) {
+          const token = jwt.sign(
+            { adminId: admin.id, email: admin.email, role: admin.role },
+            process.env.JWT_SECRET!,
+            { expiresIn: '24h' }
+          );
+          return res.json({
+            success: true,
+            data: {
+              token,
+              userType: 'admin',
+              user: {
+                id: admin.id,
+                email: admin.email,
+                firstName: admin.firstName,
+                lastName: admin.lastName,
+                role: admin.role
+              }
+            }
+          });
+        }
+      }
+
+      // 2. Sinon essayer la table User
+      const user = await prisma.user.findUnique({ where: { email } });
+      if (user && user.password) {
+        const isValid = await bcrypt.compare(password, user.password);
+        if (isValid) {
+          const token = generateClientToken(user);
+          return res.json({
+            success: true,
+            data: {
+              token,
+              userType: 'client',
+              user: {
+                id: user.id,
+                email: user.email,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                role: user.role,
+                subscriptionStatus: user.subscriptionStatus
+              }
+            }
+          });
+        }
+      }
+
+      // Aucun match
+      return res.status(401).json({
+        success: false,
+        message: 'Identifiants invalides'
+      });
+    } catch (error) {
+      console.error('Erreur unified login:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Erreur lors de la connexion'
+      });
+    }
+  }
+
+  // Mise a jour du profil (prenom, nom)
+  static async updateProfile(req: any, res: Response) {
+    try {
+      const userId = req.clientUser!.id;
+      const { firstName, lastName } = req.body;
+
+      const user = await prisma.user.update({
+        where: { id: userId },
+        data: {
+          ...(firstName !== undefined && { firstName }),
+          ...(lastName !== undefined && { lastName })
+        }
+      });
+
+      res.json({
+        success: true,
+        data: {
+          id: user.id,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          role: user.role
+        }
+      });
+    } catch (error) {
+      console.error('Erreur mise a jour profil:', error);
+      res.status(500).json({ success: false, message: 'Erreur lors de la mise a jour du profil' });
+    }
+  }
+
+  // Changement de mot de passe
+  static async changePassword(req: any, res: Response) {
+    try {
+      const userId = req.clientUser!.id;
+      const { currentPassword, newPassword } = req.body;
+
+      if (!newPassword || newPassword.length < 8) {
+        return res.status(400).json({ success: false, message: 'Le nouveau mot de passe doit contenir au moins 8 caracteres' });
+      }
+
+      const user = await prisma.user.findUnique({ where: { id: userId } });
+      if (!user) {
+        return res.status(404).json({ success: false, message: 'Utilisateur non trouve' });
+      }
+
+      // Verifier l'ancien mot de passe si le user en a un
+      if (user.password) {
+        if (!currentPassword) {
+          return res.status(400).json({ success: false, message: 'Mot de passe actuel requis' });
+        }
+        const isValid = await bcrypt.compare(currentPassword, user.password);
+        if (!isValid) {
+          return res.status(401).json({ success: false, message: 'Mot de passe actuel incorrect' });
+        }
+      }
+
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      await prisma.user.update({ where: { id: userId }, data: { password: hashedPassword } });
+
+      res.json({ success: true, message: 'Mot de passe modifie avec succes' });
+    } catch (error) {
+      console.error('Erreur changement mot de passe:', error);
+      res.status(500).json({ success: false, message: 'Erreur lors du changement de mot de passe' });
+    }
+  }
+
+  // Connexion / Inscription via Google OAuth
+  static async googleAuth(req: Request, res: Response) {
+    try {
+      const { credential } = req.body;
+
+      if (!credential) {
+        return res.status(400).json({ success: false, message: 'Google credential requis' });
+      }
+
+      const ticket = await googleClient.verifyIdToken({
+        idToken: credential,
+        audience: process.env.GOOGLE_CLIENT_ID
+      });
+
+      const payload = ticket.getPayload();
+      if (!payload || !payload.email) {
+        return res.status(400).json({ success: false, message: 'Token Google invalide' });
+      }
+
+      const { sub: googleId, email, given_name: firstName, family_name: lastName } = payload;
+
+      // Chercher user existant par googleId ou email
+      let user = await prisma.user.findFirst({
+        where: {
+          OR: [
+            { googleId: googleId },
+            { email: email }
+          ]
+        }
+      });
+
+      if (user) {
+        // Lier le googleId si pas encore fait
+        if (!user.googleId) {
+          user = await prisma.user.update({
+            where: { id: user.id },
+            data: {
+              googleId,
+              firstName: user.firstName || firstName,
+              lastName: user.lastName || lastName
+            }
+          });
+        }
+      } else {
+        // Creer un nouveau compte
+        user = await prisma.user.create({
+          data: {
+            email: email,
+            googleId,
+            firstName: firstName || undefined,
+            lastName: lastName || undefined
+          }
+        });
+      }
+
+      const token = generateClientToken(user);
+
+      console.log(`[Google Auth] ${user.id} - role: ${user.role}`);
+
+      res.json({
+        success: true,
+        data: {
+          token,
+          user: {
+            id: user.id,
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            role: user.role,
+            subscriptionStatus: user.subscriptionStatus
+          }
+        }
+      });
+    } catch (error: any) {
+      console.error('Erreur Google Auth:', error);
+      res.status(500).json({ success: false, message: 'Erreur lors de l\'authentification Google' });
+    }
+  }
+}
+
+export { generateClientToken };

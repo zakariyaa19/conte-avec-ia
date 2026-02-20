@@ -2,6 +2,7 @@ import { Router } from 'express';
 import express from 'express';
 import { AdminController } from '../controllers/adminController';
 import { authenticateAdmin, requireAdmin } from '../middleware/auth';
+import { uploadPdf } from '../middleware/upload';
 
 const router = Router();
 
@@ -11,14 +12,23 @@ router.use(express.json());
 // Authentification admin
 router.post('/login', AdminController.login);
 
-// Route temporaire de bootstrap admin (protégée par ADMIN_BOOTSTRAP_SECRET)
-// À appeler une seule fois, puis supprimer ADMIN_BOOTSTRAP_SECRET de l'env
+// Route temporaire de bootstrap admin
 router.post('/bootstrap', AdminController.createAdminTemp);
 
-// Routes protégées avec authentification
-router.get('/dashboard/stats', authenticateAdmin, requireAdmin, AdminController.getDashboardStats);
+// Routes protegees avec authentification
+router.get('/dashboard/stats', authenticateAdmin, requireAdmin, AdminController.getDashboardStatsExtended);
 router.get('/orders', authenticateAdmin, requireAdmin, AdminController.getOrders);
 router.get('/orders/:id', authenticateAdmin, requireAdmin, AdminController.getOrderDetails);
 router.patch('/orders/:id', authenticateAdmin, requireAdmin, AdminController.updateOrder);
+
+// Upload PDF et livraison
+router.post('/orders/:id/upload-pdf', authenticateAdmin, requireAdmin, uploadPdf.single('pdf'), AdminController.uploadStoryPdf);
+router.post('/orders/:id/deliver', authenticateAdmin, requireAdmin, AdminController.deliverStory);
+
+// Clients
+router.get('/clients', authenticateAdmin, requireAdmin, AdminController.getClients);
+router.get('/clients/:id', authenticateAdmin, requireAdmin, AdminController.getClientDetail);
+router.delete('/clients/:id', authenticateAdmin, requireAdmin, AdminController.deleteClient);
+router.patch('/clients/:id/password', authenticateAdmin, requireAdmin, AdminController.updateClientPassword);
 
 export default router;

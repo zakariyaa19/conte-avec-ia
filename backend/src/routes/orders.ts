@@ -1,13 +1,14 @@
 import { Router } from 'express';
 import { OrderController } from '../controllers/orderController';
 import { upload } from '../middleware/upload';
+import { optionalAuthenticateClient } from '../middleware/clientAuth';
 
 const router = Router();
 
-// Routes pour les commandes
-router.post('/', upload.single('photo'), OrderController.createOrder);
-router.get('/:id', OrderController.getOrder);
-router.put('/:id', OrderController.updateOrder);
-router.get('/', OrderController.getOrders);
+// Seule route publique : creation de commande (avec auth optionnelle)
+router.post('/', upload.single('photo'), optionalAuthenticateClient, OrderController.createOrder);
+
+// Marquer une commande comme abandonnee (appele depuis la page cancel)
+router.post('/:id/abandon', OrderController.abandonOrder);
 
 export default router;

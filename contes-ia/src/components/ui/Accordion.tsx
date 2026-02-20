@@ -15,59 +15,101 @@ interface AccordionProps {
 const AccordionContainer = styled.div`
   max-width: 800px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: ${theme.spacing.sm};
 `;
 
-const AccordionItemContainer = styled.div`
-  border: 1px solid #E5E5E5;
-  border-radius: ${theme.borderRadius.lg};
-  margin-bottom: ${theme.spacing.md};
+const AccordionItemContainer = styled.div<{ $isOpen: boolean }>`
+  border: 1px solid ${props => props.$isOpen ? theme.colors.accent.lightCoral : 'rgba(0, 0, 0, 0.06)'};
+  border-radius: ${theme.borderRadius.xl};
   overflow: hidden;
-  transition: box-shadow 0.2s ease;
-  
+  transition: all ${theme.transitions.smooth};
+  background: ${theme.colors.background.white};
+  box-shadow: ${props => props.$isOpen ? theme.shadows.md : 'none'};
+
   &:hover {
-    box-shadow: ${theme.shadows.sm};
+    border-color: ${props => props.$isOpen ? theme.colors.accent.lightCoral : 'rgba(0, 0, 0, 0.1)'};
   }
 `;
 
 const AccordionHeader = styled.button<{ $isOpen: boolean }>`
   width: 100%;
-  padding: ${theme.spacing.lg};
-  background-color: ${props => props.$isOpen ? theme.colors.accent.creamyYellow : theme.colors.background.white};
+  padding: ${theme.spacing.lg} ${theme.spacing.xl};
+  background-color: transparent;
   border: none;
   text-align: left;
   cursor: pointer;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: ${theme.spacing.md};
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.base};
   font-weight: 600;
-  color: ${theme.colors.text.primary};
-  transition: background-color 0.2s ease;
-  
+  color: ${props => props.$isOpen ? theme.colors.accent.coral : theme.colors.text.primary};
+  transition: all ${theme.transitions.base};
+  line-height: 1.4;
+
   &:hover {
-    background-color: ${theme.colors.accent.creamyYellow};
+    color: ${theme.colors.accent.coral};
+  }
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    padding: ${theme.spacing.md} ${theme.spacing.lg};
+    font-size: ${theme.fontSizes.sm};
   }
 `;
 
-const AccordionIcon = styled.span<{ $isOpen: boolean }>`
-  font-size: ${theme.fontSizes.lg};
-  transform: ${props => props.$isOpen ? 'rotate(180deg)' : 'rotate(0deg)'};
-  transition: transform 0.2s ease;
+const AccordionIcon = styled.div<{ $isOpen: boolean }>`
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: ${theme.borderRadius.full};
+  background: ${props => props.$isOpen ? theme.colors.accent.coral : theme.colors.background.secondary};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all ${theme.transitions.smooth};
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    background: ${props => props.$isOpen ? theme.colors.text.white : theme.colors.text.secondary};
+    transition: all ${theme.transitions.base};
+  }
+
+  &::before {
+    width: 12px;
+    height: 2px;
+  }
+
+  &::after {
+    width: 2px;
+    height: 12px;
+    transform: ${props => props.$isOpen ? 'rotate(90deg)' : 'rotate(0deg)'};
+    opacity: ${props => props.$isOpen ? 0 : 1};
+  }
+
+  position: relative;
 `;
 
 const AccordionContent = styled.div<{ $isOpen: boolean }>`
   max-height: ${props => props.$isOpen ? '500px' : '0'};
   overflow: hidden;
-  transition: max-height 0.3s ease;
+  transition: max-height ${theme.transitions.smooth};
 `;
 
 const AccordionBody = styled.div`
-  padding: ${theme.spacing.lg};
-  background-color: ${theme.colors.background.secondary};
+  padding: 0 ${theme.spacing.xl} ${theme.spacing.lg};
   color: ${theme.colors.text.secondary};
-  line-height: 1.6;
+  line-height: 1.7;
   font-size: ${theme.fontSizes.sm};
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    padding: 0 ${theme.spacing.lg} ${theme.spacing.md};
+  }
 `;
 
 export const Accordion: React.FC<AccordionProps> = ({ items }) => {
@@ -88,15 +130,13 @@ export const Accordion: React.FC<AccordionProps> = ({ items }) => {
       {items.map((item) => {
         const isOpen = openItems.has(item.id);
         return (
-          <AccordionItemContainer key={item.id}>
+          <AccordionItemContainer key={item.id} $isOpen={isOpen}>
             <AccordionHeader
               $isOpen={isOpen}
               onClick={() => toggleItem(item.id)}
             >
               {item.question}
-              <AccordionIcon $isOpen={isOpen}>
-                ▼
-              </AccordionIcon>
+              <AccordionIcon $isOpen={isOpen} />
             </AccordionHeader>
             <AccordionContent $isOpen={isOpen}>
               <AccordionBody>

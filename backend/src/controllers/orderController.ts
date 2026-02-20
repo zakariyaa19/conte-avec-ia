@@ -1,41 +1,35 @@
 import { Request, Response } from 'express';
+import * as bcrypt from 'bcryptjs';
 import { calculatePrice, PRODUCT_PRICES } from '../utils/pricing';
 import { StoryFormData, ApiResponse } from '../types';
 import { prisma } from '../utils/database';
 import { stringifySecondaryCharacters } from '../utils/formatters';
+import { generateClientToken } from './authController';
+import { ClientAuthRequest } from '../middleware/clientAuth';
+import { ClubService } from '../utils/clubService';
+import { MailjetService } from '../utils/mailjetService';
+import { buildOrderDetailsString } from '../utils/orderFormatter';
 
 export class OrderController {
   // Créer une nouvelle commande
-  static async createOrder(req: Request, res: Response) {
+  static async createOrder(req: ClientAuthRequest, res: Response) {
     try {
       console.log('📝 Création de commande reçue');
-      console.log('📋 Body reçu:', JSON.stringify(req.body, null, 2));
-      
-      // Récupérer les données depuis le body (pour FormData, les données JSON sont dans req.body)
+
+      // Récupérer les données depuis le body
       let formData, userEmail;
-      
+
       if (req.body.formData) {
-        // Si les données viennent de FormData
         formData = typeof req.body.formData === 'string' ? JSON.parse(req.body.formData) : req.body.formData;
         userEmail = req.body.userEmail || formData.userEmail;
       } else {
-        // Si les données viennent directement du JSON
         formData = req.body.formData || req.body;
         userEmail = req.body.userEmail || formData.userEmail;
       }
-      
-      console.log('📊 FormData parsé:', JSON.stringify(formData, null, 2));
-      console.log('📧 UserEmail:', userEmail);
-      
-      // Validation des données requises (champs essentiels seulement)
-      if (!formData.ageRange || !formData.generalTheme || !formData.protagonistName || 
+
+      // Validation des données requises
+      if (!formData.ageRange || !formData.generalTheme || !formData.protagonistName ||
           !formData.productType) {
-        console.log('❌ Validation échouée:', {
-          ageRange: !!formData.ageRange,
-          generalTheme: !!formData.generalTheme,
-          protagonistName: !!formData.protagonistName,
-          productType: !!formData.productType
-        });
         return res.status(400).json({
           success: false,
           message: 'Données obligatoires manquantes dans le formulaire'
@@ -43,35 +37,72 @@ export class OrderController {
       }
 
       // Calcul du prix
-      const price = calculatePrice(formData.productType?.toUpperCase() as keyof typeof PRODUCT_PRICES) || 4.99;
+      let price = calculatePrice(formData.productType?.toUpperCase() as keyof typeof PRODUCT_PRICES) || 4.99;
 
-      // Optimisation : Créer utilisateur et commande en parallèle si possible
       let user = null;
       let photoUrl = null;
-      let photoPath = null;
 
       // Gestion de l'upload de photo
       if (req.file) {
         photoUrl = `/uploads/${req.file.filename}`;
-        photoPath = req.file.path;
-        console.log('📸 Photo uploadée:', photoUrl, 'Chemin:', photoPath);
       }
 
-      // Créer l'utilisateur en parallèle si nécessaire
-      const userPromise = userEmail ? prisma.user.upsert({
-        where: { email: userEmail },
-        update: {},
-        create: { email: userEmail }
-      }) : Promise.resolve(null);
+      const password = req.body.password || formData.password;
+      let purchaseType = (formData.purchaseType || 'SINGLE').toUpperCase();
 
-      // Attendre la création de l'utilisateur
-      user = await userPromise;
+      // --- Resolution du user ---
+      if (req.clientUser) {
+        // Utilisateur connecte : on utilise directement son compte
+        user = await prisma.user.findUnique({ where: { id: req.clientUser.id } });
+        userEmail = req.clientUser.email;
+        console.log('👤 Utilisateur connecte:', userEmail);
+      } else if (userEmail) {
+        // Invité : chercher ou creer le user par email
+        const existingUser = await prisma.user.findUnique({ where: { email: userEmail } });
+        if (existingUser) {
+          if (password && !existingUser.password) {
+            const hashedPassword = await bcrypt.hash(password, 10);
+            user = await prisma.user.update({
+              where: { email: userEmail },
+              data: { password: hashedPassword }
+            });
+          } else {
+            user = existingUser;
+          }
+        } else {
+          const createData: any = { email: userEmail };
+          if (password) {
+            createData.password = await bcrypt.hash(password, 10);
+          }
+          user = await prisma.user.create({ data: createData });
+        }
+      }
 
-      // Créer la commande avec tous les nouveaux champs
+      // --- Logique Club : conte gratuit hebdomadaire ---
+      // Ne verifier le credit QUE si l'utilisateur est deja membre Club actif.
+      // Si l'utilisateur n'est pas encore Club (nouvel abonnement), on laisse
+      // purchaseType = 'CLUB' pour que le frontend redirige vers le checkout subscription.
+      let isClubFreeOrder = false;
+      let clubCreditExhausted = false;
+
+      const isExistingClubMember = user && user.role === 'CLUB' && user.subscriptionStatus === 'active';
+
+      if (isExistingClubMember && purchaseType === 'CLUB') {
+        const clubCheck = await ClubService.canSubmitFreeStory(user!.id);
+        if (clubCheck.canSubmit) {
+          price = 0;
+          isClubFreeOrder = true;
+        } else {
+          // Credit epuise cette semaine : fallback en achat unique
+          purchaseType = 'SINGLE';
+          clubCreditExhausted = true;
+        }
+      }
+
+      // Créer la commande
       const order = await prisma.order.create({
         data: {
           userId: user?.id,
-          // Étape 1 - Données du conte
           ageRange: formData.ageRange,
           generalTheme: formData.generalTheme,
           customTheme: formData.customTheme,
@@ -80,39 +111,24 @@ export class OrderController {
           centralMessage: formData.centralMessage,
           customMessage: formData.customMessage,
           illustrationStyle: formData.illustrationStyle,
-          
-          // Étape 2 - Données du protagoniste
           protagonistName: formData.protagonistName,
           protagonistAge: formData.protagonistAge,
           protagonistGender: formData.protagonistGender,
           eyeColor: formData.eyeColor,
           hairColor: formData.hairColor,
           photoUrl: photoUrl,
-          
-          // Langue du conte
           language: formData.language,
-          
-          // Informations supplémentaires
           hobbies: formData.hobbies,
           favoriteDish: formData.favoriteDish,
           specialEvents: formData.specialEvents,
-          
-          // Option religieuse
           religion: formData.religion,
           customReligion: formData.customReligion,
-          
-          // Personnages secondaires (nouveau format JSON)
           secondaryCharactersJson: stringifySecondaryCharacters(formData.secondaryCharacters),
-          
-          // Anciens champs personnage secondaire (rétrocompatibilité)
           secondaryCharacterName: formData.secondaryCharacterName,
           secondaryCharacterAge: formData.secondaryCharacterAge,
-          
-          // Détails personnels
           creatorName: formData.creatorName,
-          
-          // Produit et livraison
           productType: formData.productType?.toUpperCase() as 'EBOOK' | 'PRINTED',
+          purchaseType: purchaseType as 'SINGLE' | 'CLUB',
           price: price,
           shippingFirstName: formData.shippingAddress?.firstName,
           shippingLastName: formData.shippingAddress?.lastName,
@@ -122,14 +138,76 @@ export class OrderController {
         }
       });
 
-      // NOTE: Les emails sont maintenant envoyés uniquement après confirmation du paiement
-      // dans stripeController.ts pour éviter les doublons
-      console.log('📝 Commande créée, emails seront envoyés après paiement confirmé');
+      // --- Si commande Club gratuite : finaliser immediatement ---
+      if (isClubFreeOrder && user) {
+        await ClubService.recordSubmission(user.id);
+
+        const updatedOrder = await prisma.order.update({
+          where: { id: order.id },
+          data: { status: 'PAID', paidAt: new Date() },
+          include: { user: true }
+        });
+
+        // Envoyer notifications (emails + Telegram)
+        try {
+          const orderDetails = buildOrderDetailsString(updatedOrder);
+          const customerEmail = user.email;
+          const customerName = order.shippingFirstName || 'Client';
+
+          if (customerEmail) {
+            await MailjetService.sendOrderConfirmation({
+              customerName,
+              customerEmail,
+              orderNumber: order.id.slice(-8),
+              orderDetails
+            });
+          }
+
+          await MailjetService.sendAdminNotification({
+            customerName,
+            customerEmail: customerEmail || 'Email non fourni',
+            orderNumber: order.id.slice(-8),
+            orderDetails
+          });
+
+          const { TelegramService } = await import('../utils/telegramService');
+          await TelegramService.sendOrderNotification({
+            customerName,
+            customerEmail: customerEmail || 'Email non fourni',
+            orderNumber: order.id.slice(-8),
+            amount: 0,
+            orderDate: new Date(),
+            productType: order.productType,
+            purchaseType: 'CLUB',
+            orderDetails: updatedOrder
+          });
+        } catch (notifError) {
+          console.error('Erreur envoi notifications Club:', notifError);
+        }
+      }
+
+      // Generer un token JWT si l'utilisateur a un mot de passe
+      let token: string | undefined;
+      let userData: any = undefined;
+      if (user && user.password) {
+        token = generateClientToken(user);
+        userData = {
+          id: user.id,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          role: user.role
+        };
+      }
 
       res.status(201).json({
         success: true,
         data: order,
-        message: 'Commande créée avec succès'
+        token,
+        user: userData,
+        isClubFreeOrder,
+        clubCreditExhausted,
+        message: isClubFreeOrder ? 'Conte Club gratuit cree avec succes' : 'Commande creee avec succes'
       });
 
     } catch (error) {
@@ -137,6 +215,45 @@ export class OrderController {
       res.status(500).json({
         success: false,
         message: 'Erreur lors de la création de la commande'
+      });
+    }
+  }
+
+  // Marquer une commande comme abandonnee (paiement annule)
+  static async abandonOrder(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+
+      const order = await prisma.order.findUnique({
+        where: { id }
+      });
+
+      if (!order) {
+        return res.status(404).json({
+          success: false,
+          message: 'Commande non trouvee'
+        });
+      }
+
+      // Ne marquer comme abandonnee que si la commande n'est pas deja payee
+      if (order.status === 'PAID' || order.paidAt) {
+        return res.json({ success: true, message: 'Commande deja payee' });
+      }
+
+      await prisma.order.update({
+        where: { id },
+        data: { status: 'PENDING' }
+      });
+
+      res.json({
+        success: true,
+        message: 'Commande laissee en attente'
+      });
+    } catch (error) {
+      console.error('Erreur abandon commande:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Erreur lors de l\'abandon de la commande'
       });
     }
   }

@@ -1,235 +1,325 @@
-import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { PageLayout } from '../components/layout/PageLayout';
-import { Button } from '../components/ui/Button';
+import React from 'react';
+import { Helmet } from 'react-helmet-async';
+import { useNavigate } from 'react-router-dom';
+import { Header } from '../components/layout/Header';
+import { Footer } from '../components/layout/Footer';
+import { useScrollReveal, useStaggerReveal } from '../hooks/useScrollReveal';
+import { theme } from '../styles/theme';
 import {
-  Container,
-  PageHeader,
-  PageTitle,
-  PageIntro,
-  Section,
-  SectionTitle,
-  SectionIntro,
-  Grid,
-  Card,
-  CardHeader,
-  CardIcon,
-  CardTitle,
-  CardDescription,
-  CTASection,
-  CTATitle,
-  CTADescription,
-  CTAButtons,
-  CTALinks
-} from '../styles/CommonPageStyles';
+  PageContainer, HeroSection, HeroDecoBlur, HeroContent, HeroBadge,
+  HeroTitle, HeroDivider, HeroSubtitle, ContentSection, SectionDeco,
+  Container, SectionWrapper, SectionTitle, SectionSubtitle, SectionDivider,
+  CardsGrid, FeatureCard, CardIcon, CardTitle, CardDescription, CardTagsRow, CardTag,
+  TwoColumnGrid, StepNumber,
+  FinalCTASection, FinalCTAContent, FinalCTATitle, FinalCTAText, WhiteButton
+} from '../styles/DiscoverPageStyles';
+
+const giftOccasions = [
+  {
+    occasion: "Anniversaire",
+    description: "Le cadeau parfait pour marquer une annee de plus avec une histoire unique qui grandit avec l'enfant.",
+    icon: "\uD83C\uDF82",
+    ageRecommendations: ["2-4 ans", "5-7 ans", "8-12 ans"],
+    personalizations: ["Nom de l'enfant heros", "Age dans l'histoire", "Amis comme personnages", "Lieux familiers"],
+    color: "#FFE6F0"
+  },
+  {
+    occasion: "Noel",
+    description: "Un conte magique sous le sapin qui apportera emerveillement et joie pendant les fetes de fin d'annee.",
+    icon: "\uD83C\uDF84",
+    ageRecommendations: ["3-6 ans", "6-10 ans", "10+ ans"],
+    personalizations: ["Theme hivernal", "Magie de Noel", "Valeurs de partage", "Traditions familiales"],
+    color: "#E6F3FF"
+  },
+  {
+    occasion: "Rentree Scolaire",
+    description: "Rassurer et motiver avec une histoire qui transforme l'apprehension en excitation pour cette nouvelle aventure.",
+    icon: "\uD83C\uDF92",
+    ageRecommendations: ["4-6 ans", "6-8 ans", "8-10 ans"],
+    personalizations: ["Courage et confiance", "Nouvelles amities", "Apprentissages", "Adaptation"],
+    color: "#FFF0E6"
+  },
+  {
+    occasion: "Fete des Meres/Peres",
+    description: "Celebrer l'amour familial avec un conte personnalise qui honore les liens precieux entre parents et enfants.",
+    icon: "\uD83D\uDC9D",
+    ageRecommendations: ["3-8 ans", "8-12 ans"],
+    personalizations: ["Amour familial", "Moments partages", "Reconnaissance", "Tendresse"],
+    color: "#F0E6FF"
+  },
+  {
+    occasion: "Recompense",
+    description: "Feliciter un effort, un progres ou une reussite avec un cadeau enfant original qui valorise ses accomplissements.",
+    icon: "\uD83C\uDFC6",
+    ageRecommendations: ["4-8 ans", "8-12 ans"],
+    personalizations: ["Fierte et reussite", "Perseverance", "Talents uniques", "Encouragements"],
+    color: "#E6FFE6"
+  },
+  {
+    occasion: "Consolation",
+    description: "Apporter reconfort et espoir dans les moments difficiles avec une histoire douce et rassurante.",
+    icon: "\uD83E\uDD17",
+    ageRecommendations: ["3-6 ans", "6-10 ans", "10+ ans"],
+    personalizations: ["Resilience", "Espoir", "Soutien emotionnel", "Guerison"],
+    color: "#FFFAE6"
+  }
+];
+
+const giftFormats = [
+  {
+    format: "eBook Numerique",
+    price: "4,99€",
+    description: "Format digital immediat, parfait pour une surprise de derniere minute ou un cadeau eco-responsable.",
+    advantages: ["Livraison instantanee", "Ecologique", "Lecture sur tablette", "Prix accessible"],
+    bestFor: ["Cadeaux spontanes", "Familles nomades", "Lecture interactive", "Budget serre"],
+    icon: "\uD83D\uDCF1"
+  },
+  {
+    format: "Livre Relie Premium",
+    price: "29,99€",
+    description: "Objet precieux a conserver, avec impression haute qualite et reliure solide pour durer dans le temps.",
+    advantages: ["Qualite premium", "Objet de collection", "Papier haute qualite", "Reliure durable"],
+    bestFor: ["Cadeaux memorables", "Occasions speciales", "Bibliotheque personnelle", "Transmission familiale"],
+    icon: "\uD83D\uDCDA"
+  }
+];
+
+const personalizationIdeas = [
+  {
+    category: "Personnages",
+    ideas: ["L'enfant comme heros principal", "Freres et soeurs comme compagnons", "Animaux de compagnie", "Grands-parents sages", "Meilleurs amis"],
+    icon: "\uD83D\uDC65"
+  },
+  {
+    category: "Lieux",
+    ideas: ["Maison familiale", "Ecole de l'enfant", "Ville natale", "Lieux de vacances", "Pays d'origine"],
+    icon: "\uD83C\uDFE0"
+  },
+  {
+    category: "Passions",
+    ideas: ["Sport favori", "Instrument de musique", "Animaux preferes", "Couleurs favorites", "Activites creatives"],
+    icon: "\u26BD"
+  },
+  {
+    category: "Valeurs",
+    ideas: ["Courage et bravoure", "Amitie et partage", "Respect de la nature", "Curiosite scientifique", "Creativite artistique"],
+    icon: "\uD83D\uDC8E"
+  }
+];
+
+const ageSpecificGifts = [
+  {
+    age: "2-4 ans",
+    title: "Premiers Emerveillements",
+    description: "Des histoires courtes et colorees pour eveiller l'imagination des tout-petits.",
+    giftIdeas: ["Premier conte personnalise", "Histoire du doudou magique", "Aventure avec papa/maman", "Conte des premieres fois"],
+    themes: ["Animaux familiers", "Routine quotidienne", "Decouverte des couleurs", "Premiers apprentissages"]
+  },
+  {
+    age: "5-7 ans",
+    title: "Aventuriers en Herbe",
+    description: "L'age parfait pour les grandes aventures et les amities magiques.",
+    giftIdeas: ["Heros de l'ecole", "Aventure avec les copains", "Mystere a resoudre", "Voyage fantastique"],
+    themes: ["Magie et feerie", "Amitie", "Courage", "Decouverte du monde"]
+  },
+  {
+    age: "8-12 ans",
+    title: "Explorateurs Confirmes",
+    description: "Des recits plus complexes qui nourrissent leur soif de connaissances et d'aventures.",
+    giftIdeas: ["Enquete scientifique", "Voyage dans le temps", "Mission ecologique", "Aventure culturelle"],
+    themes: ["Sciences", "Histoire", "Ecologie", "Cultures du monde"]
+  }
+];
 
 const IdeesCadeauxPage: React.FC = () => {
-  useEffect(() => {
-    document.title = 'Idées Cadeaux Originaux pour Enfants | Livre Personnalisé Anniversaire';
-    
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', 'Découvrez le cadeau personnalisé enfant parfait ! Livre personnalisé pour anniversaire, Noël, rentrée. Histoire personnalisée pour un anniversaire d\'enfant unique et mémorable.');
-    } else {
-      const newMetaDescription = document.createElement('meta');
-      newMetaDescription.name = 'description';
-      newMetaDescription.content = 'Découvrez le cadeau personnalisé enfant parfait ! Livre personnalisé pour anniversaire, Noël, rentrée. Histoire personnalisée pour un anniversaire d\'enfant unique et mémorable.';
-      document.head.appendChild(newMetaDescription);
-    }
-
-    // Mots-clés longue traîne pour les cadeaux
-    const metaKeywords = document.querySelector('meta[name="keywords"]') || document.createElement('meta');
-    metaKeywords.setAttribute('name', 'keywords');
-    metaKeywords.setAttribute('content', 'cadeau personnalisé enfant, histoire personnalisée pour un anniversaire d\'enfant, idée cadeau original pour un enfant de 5 ans, livre personnalisé anniversaire, cadeau enfant original, livre personnalisé Noël, cadeau unique enfant, livre personnalisé rentrée');
-    if (!document.querySelector('meta[name="keywords"]')) {
-      document.head.appendChild(metaKeywords);
-    }
-  }, []);
-  const giftOccasions = [
-    {
-      occasion: "Anniversaire",
-      description: "Le cadeau parfait pour marquer une année de plus avec une histoire unique qui grandit avec l'enfant.",
-      icon: "🎂",
-      ageRecommendations: ["2-4 ans", "5-7 ans", "8-12 ans"],
-      personalizations: ["Nom de l'enfant héros", "Âge dans l'histoire", "Amis comme personnages", "Lieux familiers"],
-      color: "#FFE6F0"
-    },
-    {
-      occasion: "Noël",
-      description: "Un conte magique sous le sapin qui apportera émerveillement et joie pendant les fêtes de fin d'année.",
-      icon: "🎄",
-      ageRecommendations: ["3-6 ans", "6-10 ans", "10+ ans"],
-      personalizations: ["Thème hivernal", "Magie de Noël", "Valeurs de partage", "Traditions familiales"],
-      color: "#E6F3FF"
-    },
-    {
-      occasion: "Rentrée Scolaire",
-      description: "Rassurer et motiver avec une histoire qui transforme l'appréhension en excitation pour cette nouvelle aventure.",
-      icon: "🎒",
-      ageRecommendations: ["4-6 ans", "6-8 ans", "8-10 ans"],
-      personalizations: ["Courage et confiance", "Nouvelles amitiés", "Apprentissages", "Adaptation"],
-      color: "#FFF0E6"
-    },
-    {
-      occasion: "Fête des Mères/Pères",
-      description: "Célébrer l'amour familial avec un conte personnalisé qui honore les liens précieux entre parents et enfants.",
-      icon: "💝",
-      ageRecommendations: ["3-8 ans", "8-12 ans"],
-      personalizations: ["Amour familial", "Moments partagés", "Reconnaissance", "Tendresse"],
-      color: "#F0E6FF"
-    },
-    {
-      occasion: "Récompense",
-      description: "Féliciter un effort, un progrès ou une réussite avec un cadeau enfant original qui valorise ses accomplissements.",
-      icon: "🏆",
-      ageRecommendations: ["4-8 ans", "8-12 ans"],
-      personalizations: ["Fierté et réussite", "Persévérance", "Talents uniques", "Encouragements"],
-      color: "#E6FFE6"
-    },
-    {
-      occasion: "Consolation",
-      description: "Apporter réconfort et espoir dans les moments difficiles avec une histoire douce et rassurante.",
-      icon: "🤗",
-      ageRecommendations: ["3-6 ans", "6-10 ans", "10+ ans"],
-      personalizations: ["Résilience", "Espoir", "Soutien émotionnel", "Guérison"],
-      color: "#FFFAE6"
-    }
-  ];
-
-  const giftFormats = [
-    {
-      format: "eBook Numérique",
-      price: "4,99€",
-      description: "Format digital immédiat, parfait pour une surprise de dernière minute ou un cadeau éco-responsable.",
-      advantages: ["Livraison instantanée", "Écologique", "Lecture sur tablette", "Prix accessible"],
-      bestFor: ["Cadeaux spontanés", "Familles nomades", "Lecture interactive", "Budget serré"],
-      icon: "📱"
-    },
-    {
-      format: "Livre Relié Premium",
-      price: "29,99€",
-      description: "Objet précieux à conserver, avec impression haute qualité et reliure solide pour durer dans le temps.",
-      advantages: ["Qualité premium", "Objet de collection", "Papier haute qualité", "Reliure durable"],
-      bestFor: ["Cadeaux mémorables", "Occasions spéciales", "Bibliothèque personnelle", "Transmission familiale"],
-      icon: "📚"
-    }
-  ];
-
-  const personalizationIdeas = [
-    {
-      category: "Personnages",
-      ideas: ["L'enfant comme héros principal", "Frères et sœurs comme compagnons", "Animaux de compagnie", "Grands-parents sages", "Meilleurs amis"],
-      icon: "👥"
-    },
-    {
-      category: "Lieux",
-      ideas: ["Maison familiale", "École de l'enfant", "Ville natale", "Lieux de vacances", "Pays d'origine"],
-      icon: "🏠"
-    },
-    {
-      category: "Passions",
-      ideas: ["Sport favori", "Instrument de musique", "Animaux préférés", "Couleurs favorites", "Activités créatives"],
-      icon: "⚽"
-    },
-    {
-      category: "Valeurs",
-      ideas: ["Courage et bravoure", "Amitié et partage", "Respect de la nature", "Curiosité scientifique", "Créativité artistique"],
-      icon: "💎"
-    }
-  ];
-
-  const ageSpecificGifts = [
-    {
-      age: "2-4 ans",
-      title: "Premiers Émerveillements",
-      description: "Des histoires courtes et colorées pour éveiller l'imagination des tout-petits.",
-      giftIdeas: ["Premier conte personnalisé", "Histoire du doudou magique", "Aventure avec papa/maman", "Conte des premières fois"],
-      themes: ["Animaux familiers", "Routine quotidienne", "Découverte des couleurs", "Premiers apprentissages"]
-    },
-    {
-      age: "5-7 ans",
-      title: "Aventuriers en Herbe",
-      description: "L'âge parfait pour les grandes aventures et les amitiés magiques.",
-      giftIdeas: ["Héros de l'école", "Aventure avec les copains", "Mystère à résoudre", "Voyage fantastique"],
-      themes: ["Magie et féerie", "Amitié", "Courage", "Découverte du monde"]
-    },
-    {
-      age: "8-12 ans",
-      title: "Explorateurs Confirmés",
-      description: "Des récits plus complexes qui nourrissent leur soif de connaissances et d'aventures.",
-      giftIdeas: ["Enquête scientifique", "Voyage dans le temps", "Mission écologique", "Aventure culturelle"],
-      themes: ["Sciences", "Histoire", "Écologie", "Cultures du monde"]
-    }
-  ];
+  const navigate = useNavigate();
+  const occasionsReveal = useScrollReveal();
+  const occasionsCardsReveal = useStaggerReveal(giftOccasions.length);
+  const formatsReveal = useScrollReveal();
+  const formatsCardsReveal = useStaggerReveal(giftFormats.length);
+  const personalizationReveal = useScrollReveal();
+  const personalizationCardsReveal = useStaggerReveal(personalizationIdeas.length);
+  const ageReveal = useScrollReveal();
+  const ageCardsReveal = useStaggerReveal(ageSpecificGifts.length);
+  const ctaReveal = useScrollReveal();
 
   return (
-    <PageLayout>
-      <Container>
-        <PageHeader>
-          <PageTitle>Idées Cadeaux : Contes Personnalisés pour Enfants</PageTitle>
-          <PageIntro>
-            Offrez bien plus qu'un simple livre ! Découvrez le cadeau enfant original qui marquera 
-            sa mémoire pour toujours : un conte personnalisé où il devient le héros de sa propre histoire magique.
-          </PageIntro>
-        </PageHeader>
+    <PageContainer>
+      <Helmet>
+        <title>Idees Cadeaux Originaux pour Enfants | Livre Personnalise Anniversaire</title>
+        <meta name="description" content="Decouvrez le cadeau personnalise enfant parfait ! Livre personnalise pour anniversaire, Noel, rentree. Histoire personnalisee pour un anniversaire d'enfant unique et memorable." />
+        <meta name="keywords" content="cadeau personnalise enfant, histoire personnalisee pour un anniversaire d'enfant, idee cadeau original pour un enfant de 5 ans, livre personnalise anniversaire, cadeau enfant original, livre personnalise Noel, cadeau unique enfant, livre personnalise rentree" />
+      </Helmet>
+      <Header />
 
-        <Section>
-          <SectionTitle>Le Cadeau Parfait pour Chaque Occasion</SectionTitle>
-          <SectionIntro>
-            Que ce soit pour célébrer, récompenser, consoler ou simplement faire plaisir, 
-            nos contes personnalisés s'adaptent à tous les moments importants de la vie de votre enfant.
-          </SectionIntro>
-          
-          <Grid>
-            {giftOccasions.map((occasion, index) => (
-              <Card key={index}>
-                <CardHeader>
-                  <CardIcon>{occasion.icon}</CardIcon>
-                  <CardTitle>{occasion.occasion}</CardTitle>
-                </CardHeader>
-                <CardDescription>{occasion.description}</CardDescription>
-              </Card>
+      <HeroSection>
+        <HeroDecoBlur $size={350} $top="-10%" $left="-5%" $color={theme.colors.accent.coral} $opacity={0.08} />
+        <HeroDecoBlur $size={280} $top="60%" $left="85%" $color={theme.colors.accent.pastelBlue} $opacity={0.06} />
+        <HeroDecoBlur $size={200} $top="30%" $left="50%" $color={theme.colors.accent.paleYellow} $opacity={0.07} />
+        <HeroContent>
+          <HeroBadge>Idees cadeaux</HeroBadge>
+          <HeroTitle>Idees <span>Cadeaux</span></HeroTitle>
+          <HeroDivider />
+          <HeroSubtitle>
+            Offrez bien plus qu'un simple livre ! Un conte personnalise ou votre enfant
+            devient le heros de sa propre histoire magique, le cadeau original parfait.
+          </HeroSubtitle>
+        </HeroContent>
+      </HeroSection>
+
+      {/* Section 1: Gift Occasions Grid */}
+      <ContentSection ref={occasionsReveal.ref}>
+        <SectionDeco $size={300} $top="-50px" $right="-100px" $color={theme.colors.accent.softPink} />
+        <Container>
+          <SectionWrapper $visible={occasionsReveal.isVisible}>
+            <SectionTitle>Le Cadeau Parfait pour Chaque <span>Occasion</span></SectionTitle>
+            <SectionDivider />
+            <SectionSubtitle>
+              Que ce soit pour celebrer, recompenser, consoler ou simplement faire plaisir,
+              nos contes personnalises s'adaptent a tous les moments importants.
+            </SectionSubtitle>
+          </SectionWrapper>
+          <CardsGrid ref={occasionsCardsReveal.ref}>
+            {giftOccasions.map((item, i) => (
+              <FeatureCard
+                key={i}
+                $visible={occasionsCardsReveal.isVisible}
+                $delay={occasionsCardsReveal.getDelay(i)}
+                $accentColor={item.color}
+              >
+                <CardIcon>{item.icon}</CardIcon>
+                <CardTitle>{item.occasion}</CardTitle>
+                <CardDescription>{item.description}</CardDescription>
+                <CardTagsRow>
+                  {item.personalizations.map((tag, j) => (
+                    <CardTag key={j}>{tag}</CardTag>
+                  ))}
+                </CardTagsRow>
+              </FeatureCard>
             ))}
-          </Grid>
-        </Section>
+          </CardsGrid>
+        </Container>
+      </ContentSection>
 
-        <Section>
-          <SectionTitle>Choisissez le Format Parfait</SectionTitle>
-          <Grid columns={2}>
-            {giftFormats.map((format, index) => (
-              <Card key={index}>
-                <CardHeader>
-                  <CardIcon>{format.icon}</CardIcon>
-                  <CardTitle>{format.format}</CardTitle>
-                </CardHeader>
-                <CardDescription>{format.description}</CardDescription>
-                <div style={{ textAlign: 'center', margin: '1rem 0', fontSize: '1.5rem', fontWeight: 'bold', color: '#FF9999' }}>
-                  {format.price}
+      {/* Section 2: Gift Formats (2-column, alt background) */}
+      <ContentSection $alt ref={formatsReveal.ref}>
+        <SectionDeco $size={250} $top="10%" $left="-80px" $color={theme.colors.accent.paleYellow} />
+        <Container>
+          <SectionWrapper $visible={formatsReveal.isVisible}>
+            <SectionTitle>Choisissez le Format <span>Parfait</span></SectionTitle>
+            <SectionDivider />
+            <SectionSubtitle>
+              Deux formats disponibles pour s'adapter a toutes les envies et tous les budgets.
+            </SectionSubtitle>
+          </SectionWrapper>
+          <TwoColumnGrid ref={formatsCardsReveal.ref}>
+            {giftFormats.map((item, i) => (
+              <FeatureCard key={i} $visible={formatsCardsReveal.isVisible} $delay={formatsCardsReveal.getDelay(i)}>
+                <CardIcon>{item.icon}</CardIcon>
+                <CardTitle>{item.format}</CardTitle>
+                <div style={{
+                  fontSize: '1.5rem',
+                  fontWeight: 700,
+                  color: theme.colors.accent.coral,
+                  marginBottom: '12px'
+                }}>
+                  {item.price}
                 </div>
-              </Card>
+                <CardDescription>{item.description}</CardDescription>
+                <CardTagsRow>
+                  {item.advantages.map((adv, j) => (
+                    <CardTag key={j}>{adv}</CardTag>
+                  ))}
+                </CardTagsRow>
+                <CardTagsRow style={{ marginTop: '8px' }}>
+                  {item.bestFor.map((bf, j) => (
+                    <CardTag key={j} $color={theme.colors.accent.pastelBlue}>{bf}</CardTag>
+                  ))}
+                </CardTagsRow>
+              </FeatureCard>
             ))}
-          </Grid>
-        </Section>
+          </TwoColumnGrid>
+        </Container>
+      </ContentSection>
 
-        <CTASection>
-          <CTATitle>Créez le Cadeau Enfant Original Parfait</CTATitle>
-          <CTADescription>
-            Ne cherchez plus le cadeau idéal : créez-le ! Un conte personnalisé enfant unique 
-            qui célébrera sa personnalité et nourrira son imagination pour les années à venir.
-          </CTADescription>
-          <CTAButtons>
-            <Button variant="primary" size="lg" onClick={() => window.location.href = '/story-form'}>
-              ✨ Créer mon cadeau personnalisé
-            </Button>
-          </CTAButtons>
-          <CTALinks>
-            <Link to="/themes-de-contes">Explorer les thèmes</Link>
-            <Link to="/valeurs-educatives">Découvrir les valeurs éducatives</Link>
-            <Link to="/contes-multilingues">Cadeaux multilingues</Link>
-          </CTALinks>
-        </CTASection>
-      </Container>
-    </PageLayout>
+      {/* Section 3: Personalization Ideas */}
+      <ContentSection ref={personalizationReveal.ref}>
+        <SectionDeco $size={280} $top="-30px" $right="-60px" $color={theme.colors.accent.lightGreen} />
+        <Container>
+          <SectionWrapper $visible={personalizationReveal.isVisible}>
+            <SectionTitle>Idees de <span>Personnalisation</span></SectionTitle>
+            <SectionDivider />
+            <SectionSubtitle>
+              Rendez chaque conte unique en integrant les elements de la vie de votre enfant
+              pour une experience de lecture vraiment personnelle.
+            </SectionSubtitle>
+          </SectionWrapper>
+          <CardsGrid $columns={4} ref={personalizationCardsReveal.ref}>
+            {personalizationIdeas.map((item, i) => (
+              <FeatureCard key={i} $visible={personalizationCardsReveal.isVisible} $delay={personalizationCardsReveal.getDelay(i)}>
+                <CardIcon>{item.icon}</CardIcon>
+                <CardTitle>{item.category}</CardTitle>
+                <CardTagsRow>
+                  {item.ideas.map((idea, j) => (
+                    <CardTag key={j}>{idea}</CardTag>
+                  ))}
+                </CardTagsRow>
+              </FeatureCard>
+            ))}
+          </CardsGrid>
+        </Container>
+      </ContentSection>
+
+      {/* Section 4: Age-Specific Gifts */}
+      <ContentSection $alt ref={ageReveal.ref}>
+        <SectionDeco $size={260} $top="5%" $left="-70px" $color={theme.colors.accent.softPeach} />
+        <Container>
+          <SectionWrapper $visible={ageReveal.isVisible}>
+            <SectionTitle>Cadeaux par <span>Age</span></SectionTitle>
+            <SectionDivider />
+            <SectionSubtitle>
+              Chaque tranche d'age merite un conte adapte a ses centres d'interet
+              et a son niveau de comprehension.
+            </SectionSubtitle>
+          </SectionWrapper>
+          <CardsGrid $columns={3} ref={ageCardsReveal.ref}>
+            {ageSpecificGifts.map((item, i) => (
+              <FeatureCard key={i} $visible={ageCardsReveal.isVisible} $delay={ageCardsReveal.getDelay(i)}>
+                <StepNumber>{item.age}</StepNumber>
+                <CardTitle>{item.title}</CardTitle>
+                <CardDescription>{item.description}</CardDescription>
+                <CardTagsRow>
+                  {item.giftIdeas.map((idea, j) => (
+                    <CardTag key={j}>{idea}</CardTag>
+                  ))}
+                </CardTagsRow>
+                <CardTagsRow style={{ marginTop: '8px' }}>
+                  {item.themes.map((t, j) => (
+                    <CardTag key={j} $color={theme.colors.accent.pastelBlue}>{t}</CardTag>
+                  ))}
+                </CardTagsRow>
+              </FeatureCard>
+            ))}
+          </CardsGrid>
+        </Container>
+      </ContentSection>
+
+      {/* Final CTA */}
+      <FinalCTASection ref={ctaReveal.ref}>
+        <SectionWrapper $visible={ctaReveal.isVisible}>
+          <FinalCTAContent>
+            <FinalCTATitle>Creez le Cadeau Enfant Original Parfait</FinalCTATitle>
+            <FinalCTAText>
+              Ne cherchez plus le cadeau ideal : creez-le ! Un conte personnalise unique
+              qui celebrera sa personnalite et nourrira son imagination.
+            </FinalCTAText>
+            <WhiteButton onClick={() => navigate('/create-story')}>Creer mon conte</WhiteButton>
+          </FinalCTAContent>
+        </SectionWrapper>
+      </FinalCTASection>
+
+      <Footer />
+    </PageContainer>
   );
 };
 

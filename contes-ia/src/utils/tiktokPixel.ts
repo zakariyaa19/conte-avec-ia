@@ -89,7 +89,7 @@ async function sendTiktokServerEvent(payload: {
   };
 }): Promise<void> {
   try {
-    const apiUrl = process.env.REACT_APP_API_URL || 'https://conte-avec-ia-1.onrender.com';
+    const apiUrl = process.env.REACT_APP_API_URL || 'https://conte-avec-ia-backend.onrender.com';
     
     const response = await fetch(`${apiUrl}/api/tiktok/events`, {
       method: 'POST',

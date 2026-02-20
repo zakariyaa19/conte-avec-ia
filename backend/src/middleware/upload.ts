@@ -2,40 +2,73 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 
-// Créer le dossier uploads s'il n'existe pas
+// Creer les dossiers uploads s'ils n'existent pas
 const uploadsDir = path.join(__dirname, '../../uploads');
+const pdfsDir = path.join(__dirname, '../../uploads/pdfs');
+
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
+if (!fs.existsSync(pdfsDir)) {
+  fs.mkdirSync(pdfsDir, { recursive: true });
+}
 
-// Configuration du stockage
-const storage = multer.diskStorage({
+// Configuration du stockage pour les photos
+const photoStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, uploadsDir);
   },
   filename: (req, file, cb) => {
-    // Générer un nom unique pour le fichier
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
     const extension = path.extname(file.originalname);
     cb(null, `photo-${uniqueSuffix}${extension}`);
   }
 });
 
-// Filtrer les types de fichiers acceptés
-const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
-  // Accepter seulement les images
+// Configuration du stockage pour les PDFs
+const pdfStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, pdfsDir);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const extension = path.extname(file.originalname);
+    cb(null, `story-${uniqueSuffix}${extension}`);
+  }
+});
+
+// Filtrer les types de fichiers images
+const imageFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
   if (file.mimetype.startsWith('image/')) {
     cb(null, true);
   } else {
-    cb(new Error('Seuls les fichiers image sont acceptés'));
+    cb(new Error('Seuls les fichiers image sont acceptes'));
   }
 };
 
-// Configuration de multer
+// Filtrer les types de fichiers PDF
+const pdfFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
+  if (file.mimetype === 'application/pdf') {
+    cb(null, true);
+  } else {
+    cb(new Error('Seuls les fichiers PDF sont acceptes'));
+  }
+};
+
+// Upload de photos (5MB)
 export const upload = multer({
-  storage: storage,
-  fileFilter: fileFilter,
+  storage: photoStorage,
+  fileFilter: imageFilter,
   limits: {
-    fileSize: 5 * 1024 * 1024, // Limite à 5MB
+    fileSize: 5 * 1024 * 1024,
+  }
+});
+
+// Upload de PDFs (50MB)
+export const uploadPdf = multer({
+  storage: pdfStorage,
+  fileFilter: pdfFilter,
+  limits: {
+    fileSize: 50 * 1024 * 1024,
   }
 });

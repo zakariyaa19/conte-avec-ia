@@ -19,21 +19,53 @@ model User {
   email     String   @unique
   firstName String?
   lastName  String?
+  password  String?
+  googleId  String?  @unique
+  role      UserRole @default(USER)
+
+  // Stripe / Abonnement
+  stripeCustomerId      String?
+  subscriptionId        String?
+  subscriptionStatus    String?
+  subscriptionPeriodEnd DateTime?
+
+  // Compteur soumissions Club (reset hebdomadaire lazy)
+  weeklySubmissionCount Int       @default(0)
+  weeklySubmissionReset DateTime?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   // Relations
-  orders    Order[]
-  
+  orders        Order[]
+  childProfiles ChildProfile[]
+
   @@map("users")
+}
+
+model ChildProfile {
+  id       String  @id @default(cuid())
+  userId   String
+  name     String
+  age      Int?
+  photoUrl String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user   User    @relation(fields: [userId], references: [id])
+  orders Order[]
+
+  @@map("child_profiles")
 }
 
 model Order {
   id        String      @id @default(cuid())
   userId    String?
-  status    OrderStatus @default(NEW_ORDER)
-  
-  // Étape 1 - Données du conte
+  status    OrderStatus @default(PENDING)
+
+  // Etape 1 - Donnees du conte
   ageRange           String
   generalTheme       String
   customTheme        String?
@@ -42,62 +74,72 @@ model Order {
   centralMessage     String
   customMessage      String?
   illustrationStyle  String
-  
-  // Étape 2 - Données du protagoniste
+
+  // Etape 2 - Donnees du protagoniste
   protagonistName    String
   protagonistAge     String?
   protagonistGender  String?
   eyeColor          String?
   hairColor         String?
   photoUrl          String?
-  
+
   // Langue du conte
   language          String?
-  
-  // Informations supplémentaires (facultatif)
+
+  // Informations supplementaires (facultatif)
   hobbies           String?
   favoriteDish      String?
   specialEvents     String?
-  
+
   // Option religieuse (facultatif)
   religion          String?
   customReligion    String?
-  
-  // Personnages secondaires (jusqu'à 5) - stockés en JSON
-  secondaryCharactersJson String? @db.Text
-  
-  // Anciens champs personnage secondaire (rétrocompatibilité)
+
+  // Personnages secondaires (jusqu'a 5) - stockes en JSON
+  secondaryCharactersJson String?
+
+  // Anciens champs personnage secondaire (retrocompatibilite)
   secondaryCharacterName String?
   secondaryCharacterAge  String?
-  
-  // Détails personnels
+
+  // Details personnels
   creatorName       String?
-  
+
   // Informations produit
   productType       ProductType
+  purchaseType      PurchaseType @default(SINGLE)
   price            Decimal
-  
+
   // Adresse de livraison (optionnelle pour eBook)
   shippingFirstName String?
   shippingLastName  String?
   shippingAddress   String?
   shippingCity      String?
   shippingPostalCode String?
-  
+
   // Paiement
   stripePaymentIntentId String?
   paidAt               DateTime?
-  
-  // Fichiers générés
+
+  // Fichiers generes / livraison
   ebookUrl            String?
+  pdfUrl              String?
+  epubUrl             String?
   generatedAt         DateTime?
-  
+  storyStatus         StoryStatus @default(EN_COURS)
+  deliveredAt         DateTime?
+
+  // Favoris et profil enfant
+  isFavorite          Boolean @default(false)
+  childProfileId      String?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   // Relations
-  user User? @relation(fields: [userId], references: [id])
-  
+  user         User?         @relation(fields: [userId], references: [id])
+  childProfile ChildProfile? @relation(fields: [childProfileId], references: [id])
+
   @@map("orders")
 }
 
@@ -109,31 +151,39 @@ model AdminUser {
   lastName  String
   role      AdminRole @default(ADMIN)
   isActive  Boolean   @default(true)
-  
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   @@map("admin_users")
 }
 
+enum UserRole {
+  USER
+  CLUB
+  ADMIN
+}
+
 enum OrderStatus {
-  NEW_ORDER
-  IN_PROGRESS
-  DELIVERED
-  BLOCKED
   PENDING
   PAID
-  PROCESSING
-  GENERATED
-  PRINTED
-  SHIPPED
-  CANCELLED
-  REFUNDED
+  BLOCKED
+  DELIVERED
 }
 
 enum ProductType {
   EBOOK
   PRINTED
+}
+
+enum PurchaseType {
+  SINGLE
+  CLUB
+}
+
+enum StoryStatus {
+  EN_COURS
+  DISPONIBLE
 }
 
 enum AdminRole {

@@ -11,12 +11,12 @@ const getApiBaseUrl = () => {
     
     // Production sur contedia.fr
     if (hostname === 'contedia.fr' || hostname.includes('contedia')) {
-      return 'https://conte-avec-ia-1.onrender.com';
+      return 'https://conte-avec-ia-backend.onrender.com';
     }
     
     // Vercel preview deployments
     if (hostname.includes('vercel.app')) {
-      return 'https://conte-avec-ia-1.onrender.com';
+      return 'https://conte-avec-ia-backend.onrender.com';
     }
   }
   
