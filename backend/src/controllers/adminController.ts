@@ -653,6 +653,25 @@ export class AdminController {
     }
   }
 
+  // Supprimer une commande
+  static async deleteOrder(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+
+      const order = await prisma.order.findUnique({ where: { id } });
+      if (!order) {
+        return res.status(404).json({ success: false, message: 'Commande non trouvee' });
+      }
+
+      await prisma.order.delete({ where: { id } });
+
+      res.json({ success: true, message: `Commande #${id.slice(-8)} supprimee` });
+    } catch (error) {
+      console.error('Erreur suppression commande:', error);
+      res.status(500).json({ success: false, message: 'Erreur lors de la suppression de la commande' });
+    }
+  }
+
   // Nettoyer toutes les commandes (admin protege)
   static async cleanupOrders(req: Request, res: Response) {
     try {

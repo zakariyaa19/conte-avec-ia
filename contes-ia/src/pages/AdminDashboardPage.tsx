@@ -218,7 +218,7 @@ const StatusMenuItem = styled.button`
   &:last-child { border-radius: 0 0 ${theme.borderRadius.md} ${theme.borderRadius.md}; }
 `;
 
-const ActionBtn = styled.button<{ $variant?: 'primary' | 'success' | 'ghost' }>`
+const ActionBtn = styled.button<{ $variant?: 'primary' | 'success' | 'ghost' | 'danger' }>`
   padding: 4px 10px;
   border-radius: ${theme.borderRadius.sm};
   font-size: ${theme.fontSizes.xs};
@@ -233,6 +233,8 @@ const ActionBtn = styled.button<{ $variant?: 'primary' | 'success' | 'ghost' }>`
         return `background: ${theme.colors.status.success}; color: white; border: none; &:hover { opacity: 0.9; }`;
       case 'ghost':
         return `background: transparent; color: ${theme.colors.admin.accent}; border: 1px solid ${theme.colors.admin.accent}; &:hover { background: ${theme.colors.admin.accent}10; }`;
+      case 'danger':
+        return `background: transparent; color: #DC2626; border: 1px solid #DC2626; &:hover { background: #DC262610; }`;
       default:
         return `background: ${theme.colors.admin.accent}; color: white; border: none; &:hover { background: ${theme.colors.admin.accentHover}; }`;
     }
@@ -418,6 +420,34 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ token })
     }
   };
 
+  const handleDeleteOrder = async (orderId: string) => {
+    if (!window.confirm('Supprimer cette commande definitivement ?')) return;
+    try {
+      setUpdating(true);
+      setError('');
+      await ApiService.deleteAdminOrder(getToken(), orderId);
+      await Promise.all([loadStats(), loadActionOrders(), loadAllOrders()]);
+    } catch (err: any) {
+      setError('Erreur suppression: ' + err.message);
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  const handleDeleteClient = async (clientId: string, email: string) => {
+    if (!window.confirm(`Supprimer le compte ${email} et toutes ses commandes ?`)) return;
+    try {
+      setUpdating(true);
+      setError('');
+      await ApiService.deleteAdminClient(getToken(), clientId);
+      await Promise.all([loadStats(), loadActionOrders(), loadAllOrders()]);
+    } catch (err: any) {
+      setError('Erreur suppression client: ' + err.message);
+    } finally {
+      setUpdating(false);
+    }
+  };
+
   const renderStatusBadge = (status: string) => {
     const cfg = STATUS_CONFIG[status] || { label: status, color: '#6B7280', bg: '#F3F4F6' };
     return <Badge $color={cfg.color} $bg={cfg.bg}>{cfg.label}</Badge>;
@@ -480,6 +510,9 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ token })
                 Livrer
               </ActionBtn>
             )}
+            <ActionBtn $variant="danger" onClick={() => handleDeleteOrder(order.id)} disabled={updating}>
+              Suppr.
+            </ActionBtn>
           </ActionsCell>
         </Td>
       )}

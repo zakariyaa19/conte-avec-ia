@@ -258,6 +258,13 @@ export class ApiService {
     });
   }
 
+  static async deleteAdminOrder(token: string, orderId: string): Promise<{ success: boolean; message: string }> {
+    return this.request(`/api/admin/orders/${orderId}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+  }
+
   // Upload PDF admin
   static async uploadStoryPdf(token: string, orderId: string, file: File): Promise<{ success: boolean; data: any }> {
     const formData = new FormData();

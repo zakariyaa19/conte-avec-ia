@@ -499,6 +499,30 @@ export const AdminOrderDetailPage: React.FC<AdminOrderDetailPageProps> = ({ toke
               ))}
             </StatusMenuDropdown>
           </StatusDropdownWrapper>
+          <button
+            onClick={async () => {
+              if (!window.confirm('Supprimer cette commande definitivement ?')) return;
+              try {
+                await ApiService.deleteAdminOrder(localStorage.getItem('adminToken') || '', order.id);
+                navigate('/admin/orders');
+              } catch (err: any) {
+                setError('Erreur suppression: ' + err.message);
+              }
+            }}
+            style={{
+              padding: '6px 14px',
+              borderRadius: '6px',
+              fontSize: '13px',
+              fontWeight: 500,
+              cursor: 'pointer',
+              background: 'transparent',
+              color: '#DC2626',
+              border: '1px solid #DC2626',
+              transition: 'all 0.15s'
+            }}
+          >
+            Supprimer
+          </button>
         </HeaderActions>
       </PageHeader>
 

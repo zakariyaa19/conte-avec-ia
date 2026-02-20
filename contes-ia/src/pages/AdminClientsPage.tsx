@@ -117,6 +117,7 @@ export const AdminClientsPage: React.FC<AdminClientsPageProps> = ({ token }) => 
   const navigate = useNavigate();
   const [clients, setClients] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deleting, setDeleting] = useState(false);
   const [roleFilter, setRoleFilter] = useState('');
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
@@ -160,6 +161,20 @@ export const AdminClientsPage: React.FC<AdminClientsPageProps> = ({ token }) => 
     return <Badge $color="#D97706" $bg="#FEF3C7">{status}</Badge>;
   };
 
+  const handleDeleteClient = async (e: React.MouseEvent, clientId: string, email: string) => {
+    e.stopPropagation();
+    if (!window.confirm(`Supprimer le compte ${email} et toutes ses commandes ?`)) return;
+    try {
+      setDeleting(true);
+      await ApiService.deleteAdminClient(getToken(), clientId);
+      loadClients();
+    } catch (error: any) {
+      alert('Erreur: ' + error.message);
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   return (
     <AdminLayout>
       <PageTitle>Clients</PageTitle>
@@ -193,6 +208,7 @@ export const AdminClientsPage: React.FC<AdminClientsPageProps> = ({ token }) => 
                   <Th>Abonnement</Th>
                   <Th>Commandes</Th>
                   <Th>Inscription</Th>
+                  <Th>Actions</Th>
                 </tr>
               </thead>
               <tbody>
@@ -204,6 +220,26 @@ export const AdminClientsPage: React.FC<AdminClientsPageProps> = ({ token }) => 
                     <Td>{subBadge(client.subscriptionStatus)}</Td>
                     <Td>{client.orderCount ?? client._count?.orders ?? 0}</Td>
                     <Td>{new Date(client.createdAt).toLocaleDateString('fr-FR')}</Td>
+                    <Td>
+                      <button
+                        onClick={(e) => handleDeleteClient(e, client.id, client.email)}
+                        disabled={deleting}
+                        style={{
+                          padding: '4px 10px',
+                          borderRadius: '4px',
+                          fontSize: '12px',
+                          fontWeight: 500,
+                          cursor: 'pointer',
+                          background: 'transparent',
+                          color: '#DC2626',
+                          border: '1px solid #DC2626',
+                          transition: 'all 0.15s',
+                          opacity: deleting ? 0.5 : 1
+                        }}
+                      >
+                        Supprimer
+                      </button>
+                    </Td>
                   </tr>
                 ))}
               </tbody>

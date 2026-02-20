@@ -20,6 +20,7 @@ router.get('/dashboard/stats', authenticateAdmin, requireAdmin, AdminController.
 router.get('/orders', authenticateAdmin, requireAdmin, AdminController.getOrders);
 router.get('/orders/:id', authenticateAdmin, requireAdmin, AdminController.getOrderDetails);
 router.patch('/orders/:id', authenticateAdmin, requireAdmin, AdminController.updateOrder);
+router.delete('/orders/:id', authenticateAdmin, requireAdmin, AdminController.deleteOrder);
 
 // Upload PDF et livraison
 router.post('/orders/:id/upload-pdf', authenticateAdmin, requireAdmin, uploadPdf.single('pdf'), AdminController.uploadStoryPdf);
