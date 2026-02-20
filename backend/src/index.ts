@@ -50,6 +50,56 @@ app.use('/api/stripe', stripeRoutes);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+// Diagnostic temporaire (à supprimer après debug)
+app.post('/api/diag/login', async (req, res) => {
+  try {
+    const bcrypt = require('bcryptjs');
+    const jwt = require('jsonwebtoken');
+    const { prisma: db } = require('./utils/database');
+
+    const bodyType = typeof req.body;
+    const bodyKeys = req.body ? Object.keys(req.body) : [];
+    const hasJwtSecret = !!process.env.JWT_SECRET;
+    const jwtSecretLength = process.env.JWT_SECRET?.length || 0;
+
+    let dbTest = 'not tested';
+    let adminFound = 'not tested';
+    let passwordMatch = 'not tested';
+    let tokenCreated = 'not tested';
+
+    // Test DB
+    try {
+      await db.$queryRaw`SELECT 1`;
+      dbTest = 'OK';
+    } catch (e: any) { dbTest = `FAIL: ${e.message}`; }
+
+    // Test find admin
+    try {
+      const admin = await db.adminUser.findUnique({ where: { email: req.body?.email || 'test' } });
+      adminFound = admin ? `Found: ${admin.email}` : 'Not found';
+
+      if (admin && req.body?.password) {
+        const match = await bcrypt.compare(req.body.password, admin.password);
+        passwordMatch = match ? 'OK' : 'FAIL';
+
+        if (match && hasJwtSecret) {
+          try {
+            const token = jwt.sign({ adminId: admin.id }, process.env.JWT_SECRET, { expiresIn: '24h' });
+            tokenCreated = `OK (${token.substring(0, 20)}...)`;
+          } catch (e: any) { tokenCreated = `FAIL: ${e.message}`; }
+        }
+      }
+    } catch (e: any) { adminFound = `FAIL: ${e.message}`; }
+
+    res.json({
+      bodyType, bodyKeys, hasJwtSecret, jwtSecretLength,
+      dbTest, adminFound, passwordMatch, tokenCreated
+    });
+  } catch (e: any) {
+    res.status(500).json({ error: e.message, stack: e.stack?.split('\n').slice(0, 3) });
+  }
+});
+
 // Bloquer l'acces statique aux PDFs (securises via /api/client/stories/:id/pdf)
 app.use('/uploads/pdfs', (req, res) => {
   res.status(403).json({ error: 'Acces interdit. Utilisez l\'API pour telecharger les PDFs.' });
