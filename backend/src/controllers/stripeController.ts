@@ -43,7 +43,7 @@ export const createPaymentSession = async (req: Request, res: Response) => {
           price_data: {
             currency: 'eur',
             product_data: {
-              name: `Conte personnalise - ${order.productType === 'EBOOK' ? 'eBook Numerique' : 'Livre Relie Premium'}`,
+              name: 'Conte personnalise - eBook Numerique',
               description: `Conte pour ${order.protagonistName}`,
             },
             unit_amount: Math.round(Number(order.price) * 100),
@@ -154,7 +154,7 @@ async function finalizePendingClubOrders(userId: string) {
       try {
         const orderDetails = buildOrderDetailsString(updatedOrder);
         const customerEmail = order.user?.email;
-        const customerName = order.shippingFirstName || 'Client';
+        const customerName = order.user?.firstName || order.creatorName || 'Client';
 
         if (customerEmail) {
           await MailjetService.sendOrderConfirmation({
@@ -367,7 +367,7 @@ export const checkPaymentStatus = async (req: Request, res: Response) => {
       try {
         if (customerEmail) {
           await MailjetService.sendOrderConfirmation({
-            customerName: order.shippingFirstName || 'Client',
+            customerName: order.user?.firstName || order.creatorName || 'Client',
             customerEmail: customerEmail,
             orderNumber: order.id.slice(-8),
             orderDetails: orderDetails
@@ -375,7 +375,7 @@ export const checkPaymentStatus = async (req: Request, res: Response) => {
         }
 
         await MailjetService.sendAdminNotification({
-          customerName: order.shippingFirstName || 'Client',
+          customerName: order.user?.firstName || order.creatorName || 'Client',
           customerEmail: customerEmail || 'Email non fourni',
           orderNumber: order.id.slice(-8),
           orderDetails: orderDetails
@@ -383,7 +383,7 @@ export const checkPaymentStatus = async (req: Request, res: Response) => {
 
         const { TelegramService } = await import('../utils/telegramService');
         await TelegramService.sendOrderNotification({
-          customerName: order.shippingFirstName || 'Client',
+          customerName: order.user?.firstName || order.creatorName || 'Client',
           customerEmail: customerEmail || 'Email non fourni',
           orderNumber: order.id.slice(-8),
           amount: Number(order.price),
@@ -480,7 +480,7 @@ export const handleStripeWebhook = async (req: Request, res: Response) => {
                   try {
                     const orderDetails = buildOrderDetailsString(updatedOrder);
                     const customerEmail = updatedUser.email;
-                    const customerName = order.shippingFirstName || 'Client';
+                    const customerName = order.user?.firstName || order.creatorName || 'Client';
 
                     if (customerEmail) {
                       await MailjetService.sendOrderConfirmation({
@@ -517,7 +517,7 @@ export const handleStripeWebhook = async (req: Request, res: Response) => {
             }
           }
         } else if (session.mode === 'payment') {
-          // Achat unique (eBook ou livre relie)
+          // Achat unique eBook
           const orderId = session.metadata?.orderId;
           if (orderId) {
             const order = await prisma.order.findUnique({
@@ -537,7 +537,7 @@ export const handleStripeWebhook = async (req: Request, res: Response) => {
               try {
                 const orderDetails = buildOrderDetailsString(updatedOrder);
                 const customerEmail = order.user?.email || session.customer_details?.email || session.customer_email;
-                const customerName = order.shippingFirstName || 'Client';
+                const customerName = order.user?.firstName || order.creatorName || 'Client';
 
                 if (customerEmail) {
                   await MailjetService.sendOrderConfirmation({

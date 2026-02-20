@@ -162,7 +162,7 @@ export async function trackViewContent(contentId: string, contentName: string, v
 
 // Track InitiateCheckout (début du paiement) - UNE SEULE FOIS par session
 // IMPORTANT: Retourne une Promise qui se résout après confirmation d'envoi
-export async function trackInitiateCheckout(productType: 'ebook' | 'printed', userEmail?: string): Promise<void> {
+export async function trackInitiateCheckout(productType: string, userEmail?: string): Promise<void> {
   return new Promise(async (resolve) => {
     const ttqReady = await waitForTTQ();
     
@@ -182,16 +182,15 @@ export async function trackInitiateCheckout(productType: 'ebook' | 'printed', us
           return;
         }
 
-        const isEbook = productType === 'ebook';
-        const contentId = isEbook ? 'ebook_499' : 'livre_2999';
-        const contentName = isEbook ? 'Ebook conte personnalisé' : 'Livre conte personnalisé';
-        const value = isEbook ? 4.99 : 29.99;
-        
+        const contentId = 'ebook_499';
+        const contentName = 'Ebook conte personnalisé';
+        const value = 4.99;
+
         // Générer un event_id unique
         const eventId = generateEventId();
-        
+
         let callbackFired = false;
-        
+
         // Structure avec content_id à la racine + event_callback
         window.ttq.track('InitiateCheckout', {
           content_id: contentId,
@@ -252,7 +251,7 @@ export async function trackInitiateCheckout(productType: 'ebook' | 'printed', us
 }
 
 // Track Purchase (achat confirmé) - UNE SEULE FOIS par commande
-export async function trackPurchase(productType: 'ebook' | 'printed', orderId: string, userEmail?: string) {
+export async function trackPurchase(productType: string, orderId: string, userEmail?: string) {
   if (typeof window !== 'undefined' && window.ttq) {
     try {
       // Vérifier si déjà déclenché pour cette commande
@@ -262,10 +261,9 @@ export async function trackPurchase(productType: 'ebook' | 'printed', orderId: s
         return;
       }
 
-      const isEbook = productType === 'ebook';
-      const contentId = isEbook ? 'ebook_499' : 'livre_2999';
-      const contentName = isEbook ? 'Ebook conte personnalisé' : 'Livre conte personnalisé';
-      const value = isEbook ? 4.99 : 29.99;
+      const contentId = 'ebook_499';
+      const contentName = 'Ebook conte personnalisé';
+      const value = 4.99;
       
       // Générer un event_id unique
       const eventId = generateEventId();

@@ -95,9 +95,8 @@ app.post('/api/orders', async (req, res) => {
       });
     }
     
-    // Calculer le prix basique
-    let price = 4.99; // eBook par défaut
-    if (formData.productType === 'PRINTED') price = 29.99;
+    // Prix eBook
+    const price = 4.99;
     
     // Créer la commande
     const order = await prisma.order.create({
@@ -117,11 +116,6 @@ app.post('/api/orders', async (req, res) => {
         secondaryCharacterAge: formData.secondaryCharacterAge,
         productType: formData.productType || 'EBOOK',
         price: price,
-        shippingFirstName: formData.shippingAddress?.firstName,
-        shippingLastName: formData.shippingAddress?.lastName,
-        shippingAddress: formData.shippingAddress?.address,
-        shippingCity: formData.shippingAddress?.city,
-        shippingPostalCode: formData.shippingAddress?.postalCode,
       },
       include: { user: true }
     });

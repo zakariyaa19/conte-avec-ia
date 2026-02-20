@@ -127,14 +127,9 @@ export class OrderController {
           secondaryCharacterName: formData.secondaryCharacterName,
           secondaryCharacterAge: formData.secondaryCharacterAge,
           creatorName: formData.creatorName,
-          productType: formData.productType?.toUpperCase() as 'EBOOK' | 'PRINTED',
+          productType: 'EBOOK',
           purchaseType: purchaseType as 'SINGLE' | 'CLUB',
-          price: price,
-          shippingFirstName: formData.shippingAddress?.firstName,
-          shippingLastName: formData.shippingAddress?.lastName,
-          shippingAddress: formData.shippingAddress?.address,
-          shippingCity: formData.shippingAddress?.city,
-          shippingPostalCode: formData.shippingAddress?.postalCode
+          price: price
         }
       });
 
@@ -152,7 +147,7 @@ export class OrderController {
         try {
           const orderDetails = buildOrderDetailsString(updatedOrder);
           const customerEmail = user.email;
-          const customerName = order.shippingFirstName || 'Client';
+          const customerName = user.firstName || formData.creatorName || 'Client';
 
           if (customerEmail) {
             await MailjetService.sendOrderConfirmation({

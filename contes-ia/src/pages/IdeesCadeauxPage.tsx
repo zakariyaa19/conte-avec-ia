@@ -75,12 +75,12 @@ const giftFormats = [
     icon: "\uD83D\uDCF1"
   },
   {
-    format: "Livre Relie Premium",
-    price: "29,99€",
-    description: "Objet precieux a conserver, avec impression haute qualite et reliure solide pour durer dans le temps.",
-    advantages: ["Qualite premium", "Objet de collection", "Papier haute qualite", "Reliure durable"],
-    bestFor: ["Cadeaux memorables", "Occasions speciales", "Bibliotheque personnelle", "Transmission familiale"],
-    icon: "\uD83D\uDCDA"
+    format: "Club des Histoires",
+    price: "12,99€/mois",
+    description: "L'abonnement ideal pour les families qui adorent les histoires : 1 eBook gratuit chaque semaine, soit jusqu'a 4 contes par mois.",
+    advantages: ["1 eBook gratuit par semaine", "Bibliotheque personnelle", "Sans engagement", "Soit ~3,25EUR par conte"],
+    bestFor: ["Families passionnees", "Cadeaux reguliers", "Lecteurs assidus", "Budget maitrise"],
+    icon: "\u2B50"
   }
 ];
 

@@ -32,13 +32,6 @@ ${formatSecondaryCharacters(parseSecondaryCharacters(order.secondaryCharactersJs
 ${order.creatorName ? `Createur: ${order.creatorName}` : 'Non specifie'}
 
 === COMMANDE ===
-Type de produit: ${order.productType}
-Type d'achat: ${order.purchaseType}
-Prix: ${order.price}EUR
-${order.shippingAddress ? `
-Adresse de livraison:
-${order.shippingFirstName} ${order.shippingLastName}
-${order.shippingAddress}
-${order.shippingPostalCode} ${order.shippingCity}
-` : ''}`;
+Type d'achat: ${order.purchaseType === 'CLUB' ? 'Club' : 'Achat unique'}
+Prix: ${order.price}EUR`;
 }

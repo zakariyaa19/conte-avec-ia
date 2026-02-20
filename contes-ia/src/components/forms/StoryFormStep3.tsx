@@ -5,7 +5,7 @@ import { Button } from '../ui/Button';
 import { PricingCard } from '../ui/PricingCard';
 import { ValidatedInput } from '../ui/ValidatedInput';
 import { StoryFormData } from '../../types/FormTypes';
-import { validateEmail, validateAddress, validateCity, validatePostalCode, validateRequired } from '../../utils/validation';
+import { validateEmail, validateRequired } from '../../utils/validation';
 
 interface StoryFormStep3Props {
   formData: Partial<StoryFormData>;
@@ -265,28 +265,9 @@ export const StoryFormStep3: React.FC<StoryFormStep3Props> = ({ formData, onUpda
     }
   }, [formData.productType]);
 
-  const handleProductSelection = (productType: 'ebook' | 'printed') => {
-    setGlobalError(''); // Nettoyer l'erreur globale lors du changement de format
-    onUpdate({ productType });
-  };
-
-  const handleShippingChange = (field: string, value: string) => {
-    setGlobalError(''); // Nettoyer l'erreur globale lors de la saisie
-    onUpdate({
-      shippingAddress: {
-        firstName: formData.shippingAddress?.firstName || '',
-        lastName: formData.shippingAddress?.lastName || '',
-        address: formData.shippingAddress?.address || '',
-        city: formData.shippingAddress?.city || '',
-        postalCode: formData.shippingAddress?.postalCode || '',
-        ...formData.shippingAddress,
-        [field]: value
-      }
-    });
-    // Clear error when user starts typing
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
-    }
+  const handleProductSelection = () => {
+    setGlobalError('');
+    onUpdate({ productType: 'ebook' });
   };
 
   const handleEmailChange = (value: string) => {
@@ -299,28 +280,11 @@ export const StoryFormStep3: React.FC<StoryFormStep3Props> = ({ formData, onUpda
   };
 
   const validateField = (field: string, value: string, validationType?: 'email' | 'address' | 'city' | 'postalCode') => {
-    // Pour les champs d'adresse, ne valider que si le livre relié est sélectionné
-    const isAddressField = ['address', 'city', 'postalCode'].includes(field);
-    if (isAddressField && formData.productType !== 'printed') {
-      // Effacer l'erreur si elle existe et ne pas valider
-      setErrors(prev => ({ ...prev, [field]: '' }));
-      return true;
-    }
-
     let validation: { isValid: boolean; error?: string };
-    
+
     switch (validationType) {
       case 'email':
         validation = validateEmail(value);
-        break;
-      case 'address':
-        validation = validateAddress(value);
-        break;
-      case 'city':
-        validation = validateCity(value);
-        break;
-      case 'postalCode':
-        validation = validatePostalCode(value);
         break;
       default:
         validation = validateRequired(value, field);
@@ -335,14 +299,11 @@ export const StoryFormStep3: React.FC<StoryFormStep3Props> = ({ formData, onUpda
     return true;
   };
 
-  const needsShipping = formData.productType === 'printed';
-
   // Validation complète avant soumission
   const validateForm = () => {
     let isValid = true;
     const newErrors: { [key: string]: string } = {};
 
-    // Validation email (obligatoire pour tous)
     if (!formData.userEmail) {
       newErrors.userEmail = 'L\'email est obligatoire';
       isValid = false;
@@ -354,51 +315,14 @@ export const StoryFormStep3: React.FC<StoryFormStep3Props> = ({ formData, onUpda
       }
     }
 
-    // Validation prénom et nom (obligatoires pour tous)
-    if (!formData.shippingAddress?.firstName) {
+    if (!formData.firstName) {
       newErrors.firstName = 'Le prénom est obligatoire';
       isValid = false;
     }
 
-    if (!formData.shippingAddress?.lastName) {
+    if (!formData.lastName) {
       newErrors.lastName = 'Le nom est obligatoire';
       isValid = false;
-    }
-
-    // Validation adresse (obligatoire uniquement pour livre relié)
-    if (formData.productType === 'printed') {
-      if (!formData.shippingAddress?.address) {
-        newErrors.address = 'L\'adresse est obligatoire';
-        isValid = false;
-      } else {
-        const addressValidation = validateAddress(formData.shippingAddress.address);
-        if (!addressValidation.isValid) {
-          newErrors.address = addressValidation.error || 'Adresse invalide';
-          isValid = false;
-        }
-      }
-
-      if (!formData.shippingAddress?.city) {
-        newErrors.city = 'La ville est obligatoire';
-        isValid = false;
-      } else {
-        const cityValidation = validateCity(formData.shippingAddress.city);
-        if (!cityValidation.isValid) {
-          newErrors.city = cityValidation.error || 'Ville invalide';
-          isValid = false;
-        }
-      }
-
-      if (!formData.shippingAddress?.postalCode) {
-        newErrors.postalCode = 'Le code postal est obligatoire';
-        isValid = false;
-      } else {
-        const postalValidation = validatePostalCode(formData.shippingAddress.postalCode);
-        if (!postalValidation.isValid) {
-          newErrors.postalCode = postalValidation.error || 'Code postal invalide';
-          isValid = false;
-        }
-      }
     }
 
     setErrors(newErrors);
@@ -410,12 +334,7 @@ export const StoryFormStep3: React.FC<StoryFormStep3Props> = ({ formData, onUpda
     if (validateForm()) {
       onSubmit();
     } else {
-      // Définir un message d'erreur global selon le format
-      if (formData.productType === 'printed') {
-        setGlobalError('Veuillez remplir tous les champs obligatoires (Email, Prénom, Nom, Adresse, Ville, Code postal)');
-      } else {
-        setGlobalError('Veuillez remplir tous les champs obligatoires (Email, Prénom, Nom)');
-      }
+      setGlobalError('Veuillez remplir tous les champs obligatoires (Email, Prénom, Nom)');
     }
   };
 
@@ -480,34 +399,18 @@ export const StoryFormStep3: React.FC<StoryFormStep3Props> = ({ formData, onUpda
         </h4>
         <PricingGrid>
           <PricingCard
-            title="eBook Numérique"
+            title="eBook Numerique"
             price="4,99€"
             features={[
-              "Conte personnalisé de 20-30 pages",
-              "Illustrations haute qualité",
-              "Format PDF optimisé",
-              "Téléchargement immédiat",
+              "Conte personnalise de 20-30 pages",
+              "Illustrations haute qualite",
+              "Format PDF optimise",
+              "Telechargement immediat",
               "Compatible tous appareils"
             ]}
             isPopular={formData.productType === 'ebook'}
             ctaText="Choisir l'eBook"
-            onSelect={() => handleProductSelection('ebook')}
-          />
-          
-          <PricingCard
-            title="Livre Relié Premium"
-            price="29,99€"
-            features={[
-              "Conte personnalisé de 20 pages",
-              "Illustrations premium",
-              "Impression haute qualité",
-              "Couverture rigide",
-              "Livraison gratuite",
-              "eBook inclus"
-            ]}
-            isPopular={formData.productType === 'printed'}
-            ctaText="Choisir le livre"
-            onSelect={() => handleProductSelection('printed')}
+            onSelect={() => handleProductSelection()}
           />
         </PricingGrid>
       </PricingSection>
@@ -534,67 +437,26 @@ export const StoryFormStep3: React.FC<StoryFormStep3Props> = ({ formData, onUpda
           <InputField>
             <ValidatedInput
               label="Prénom"
-              value={formData.shippingAddress?.firstName || ''}
-              onChange={(value) => handleShippingChange('firstName', value)}
+              value={formData.firstName || ''}
+              onChange={(value) => { onUpdate({ firstName: value }); if (errors.firstName) setErrors(prev => ({ ...prev, firstName: '' })); }}
               placeholder="Votre prénom"
               required={true}
               error={errors.firstName}
-              onBlur={() => validateField('firstName', formData.shippingAddress?.firstName || '')}
+              onBlur={() => validateField('firstName', formData.firstName || '')}
             />
           </InputField>
-          
+
           <InputField>
             <ValidatedInput
               label="Nom"
-              value={formData.shippingAddress?.lastName || ''}
-              onChange={(value) => handleShippingChange('lastName', value)}
+              value={formData.lastName || ''}
+              onChange={(value) => { onUpdate({ lastName: value }); if (errors.lastName) setErrors(prev => ({ ...prev, lastName: '' })); }}
               placeholder="Votre nom"
               required={true}
               error={errors.lastName}
-              onBlur={() => validateField('lastName', formData.shippingAddress?.lastName || '')}
+              onBlur={() => validateField('lastName', formData.lastName || '')}
             />
           </InputField>
-          
-          {/* Champs d'adresse uniquement pour le livre relié */}
-          {formData.productType === 'printed' && (
-            <>
-              <FullWidthField>
-                <ValidatedInput
-                  label="Adresse"
-                  value={formData.shippingAddress?.address || ''}
-                  onChange={(value) => handleShippingChange('address', value)}
-                  placeholder="Numéro et nom de rue"
-                  required={true}
-                  error={errors.address}
-                  onBlur={() => validateField('address', formData.shippingAddress?.address || '', 'address')}
-                />
-              </FullWidthField>
-              
-              <InputField>
-                <ValidatedInput
-                  label="Ville"
-                  value={formData.shippingAddress?.city || ''}
-                  onChange={(value) => handleShippingChange('city', value)}
-                  placeholder="Votre ville"
-                  required={true}
-                  error={errors.city}
-                  onBlur={() => validateField('city', formData.shippingAddress?.city || '', 'city')}
-                />
-              </InputField>
-              
-              <InputField>
-                <ValidatedInput
-                  label="Code postal"
-                  value={formData.shippingAddress?.postalCode || ''}
-                  onChange={(value) => handleShippingChange('postalCode', value)}
-                  placeholder="Code postal"
-                  required={true}
-                  error={errors.postalCode}
-                  onBlur={() => validateField('postalCode', formData.shippingAddress?.postalCode || '', 'postalCode')}
-                />
-              </InputField>
-            </>
-          )}
         </ShippingGrid>
       </ShippingSection>
 
@@ -610,9 +472,7 @@ export const StoryFormStep3: React.FC<StoryFormStep3Props> = ({ formData, onUpda
           onClick={handleFormSubmit}
           disabled={!formData.productType}
         >
-          {formData.productType === 'ebook' ? 'Payer 4,99€' : 
-           formData.productType === 'printed' ? 'Payer 29,99€' : 
-           'Choisir un format'}
+          {formData.productType === 'ebook' ? 'Payer 4,99€' : 'Choisir un format'}
         </Button>
         <p style={{ 
           marginTop: theme.spacing.md, 

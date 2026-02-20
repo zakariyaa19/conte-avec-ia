@@ -82,13 +82,8 @@ async function main() {
         hairColor: 'brown',
         secondaryCharacterName: 'Rex',
         secondaryCharacterAge: 'chien',
-        productType: 'PRINTED',
-        price: 29.99,
-        shippingFirstName: 'Marc',
-        shippingLastName: 'Dubois',
-        shippingAddress: '123 Rue de la Paix',
-        shippingCity: 'Paris',
-        shippingPostalCode: '75001',
+        productType: 'EBOOK',
+        price: 4.99,
         paidAt: new Date()
       }
     }),

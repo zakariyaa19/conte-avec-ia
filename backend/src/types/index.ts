@@ -49,14 +49,7 @@ export interface StoryFormData {
   creatorName?: string;
   
   // Étape 3 - Paiement
-  productType: 'EBOOK' | 'PRINTED';
-  shippingAddress?: {
-    firstName: string;
-    lastName: string;
-    address: string;
-    city: string;
-    postalCode: string;
-  };
+  productType: 'EBOOK';
 }
 
 export interface CreateOrderRequest {

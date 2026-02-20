@@ -1091,14 +1091,15 @@ const PricingSection = styled.section`
 
 const PricingGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: ${theme.spacing.xl};
   align-items: start;
+  max-width: 800px;
+  margin: 0 auto;
 
   @media (max-width: ${theme.breakpoints.lg}) {
     grid-template-columns: 1fr;
     max-width: 440px;
-    margin: 0 auto;
     gap: ${theme.spacing.xl};
   }
 `;
@@ -1484,7 +1485,7 @@ const faqItems = [
   {
     id: '2',
     question: "Combien de temps faut-il pour recevoir mon conte ?",
-    answer: "Le delai de creation est generalement de quelques jours ouvrables. Vous recevez une notification par email des que votre eBook est disponible dans votre bibliotheque. Pour le livre relie, comptez 5-7 jours supplementaires pour l'impression et la livraison."
+    answer: "Le delai de creation est generalement de quelques jours ouvrables. Vous recevez une notification par email des que votre eBook est disponible dans votre bibliotheque."
   },
   {
     id: '3',
@@ -1632,7 +1633,7 @@ export const HomePage: React.FC = () => {
                 Votre enfant, <span>heros</span> de son propre conte
               </HeroTitle>
               <HeroSubtitle>
-                Creez un livre personnalise unique grace a l'IA : prenom, photo, theme et message educatif sur mesure. En eBook, livre relie ou via le Club.
+                Creez un livre personnalise unique grace a l'IA : prenom, photo, theme et message educatif sur mesure. En eBook ou via le Club.
               </HeroSubtitle>
               <CTAButtons>
                 <Button variant="primary" size="lg" onClick={() => navigate('/create-story')}>
@@ -1980,20 +1981,6 @@ export const HomePage: React.FC = () => {
                 onSelect={() => navigate('/club')}
               />
 
-              <PricingCard
-                title="Livre Relie Premium"
-                price="29,99€"
-                features={[
-                  'Conte personnalise de 20 pages',
-                  'Illustrations premium',
-                  'Impression haute qualite',
-                  'Couverture rigide',
-                  'Livraison offerte',
-                  'eBook inclus'
-                ]}
-                ctaText="Commander le livre"
-                onSelect={() => navigate('/create-story')}
-              />
             </PricingGrid>
           </Container>
         </PricingSection>
@@ -2047,7 +2034,7 @@ export const HomePage: React.FC = () => {
                 </FeatureIcon>
                 <FeatureTitle>Qualite professionnelle</FeatureTitle>
                 <FeatureDescription>
-                  eBook haute qualite ou livre relie imprime avec soin. Chaque conte est cree pour offrir une experience de lecture exceptionnelle.
+                  eBook haute qualite cree avec soin. Chaque conte est concu pour offrir une experience de lecture exceptionnelle.
                 </FeatureDescription>
               </FeatureCard>
 
@@ -2067,9 +2054,9 @@ export const HomePage: React.FC = () => {
                   />
                   <FeatureIconFallback style={{display: 'none'}}>⚡</FeatureIconFallback>
                 </FeatureIcon>
-                <FeatureTitle>Livraison rapide</FeatureTitle>
+                <FeatureTitle>Livraison instantanee</FeatureTitle>
                 <FeatureDescription>
-                  Votre conte est livre dans votre bibliotheque et par email des qu'il est pret. Le livre relie arrive directement chez vous.
+                  Votre conte est disponible dans votre bibliotheque et par email des qu'il est pret. Telechargez-le immediatement en PDF.
                 </FeatureDescription>
               </FeatureCard>
             </FeaturesGrid>

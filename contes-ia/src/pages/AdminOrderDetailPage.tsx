@@ -648,17 +648,6 @@ export const AdminOrderDetailPage: React.FC<AdminOrderDetailPageProps> = ({ toke
           </Card>
         )}
 
-        {/* Shipping */}
-        {(order.shippingFirstName || order.shippingAddress) && (
-          <Card>
-            <CardHeader>Adresse de livraison</CardHeader>
-            <CardBody>
-              {order.shippingFirstName && <InfoRow><Label>Nom</Label><Value>{order.shippingFirstName} {order.shippingLastName}</Value></InfoRow>}
-              {order.shippingAddress && <InfoRow><Label>Adresse</Label><Value>{order.shippingAddress}</Value></InfoRow>}
-              {order.shippingCity && <InfoRow><Label>Ville</Label><Value>{order.shippingPostalCode} {order.shippingCity}</Value></InfoRow>}
-            </CardBody>
-          </Card>
-        )}
 
         {/* PDF & Delivery */}
         <Card>

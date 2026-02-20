@@ -51,15 +51,10 @@ export interface StoryFormData {
   // Etape 3 - Paiement et informations
   userEmail: string;
   password?: string;
-  productType: 'ebook' | 'printed';
+  productType: 'ebook';
   purchaseType?: 'single' | 'club';
-  shippingAddress?: {
-    firstName: string;
-    lastName: string;
-    address: string;
-    city: string;
-    postalCode: string;
-  };
+  firstName?: string;
+  lastName?: string;
 }
 
 export interface FormStep {

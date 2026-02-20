@@ -5,6 +5,7 @@ import { theme } from '../styles/theme';
 import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
 import { Button } from '../components/ui/Button';
+import { StoryPDFViewer } from '../components/ui/StoryPDFViewer';
 import { ApiService } from '../config/api';
 
 const fadeInUp = keyframes`
@@ -26,6 +27,10 @@ const MainContent = styled.main`
   padding: ${theme.spacing['2xl']} ${theme.spacing.lg};
   width: 100%;
   animation: ${fadeInUp} 0.6s ease-out;
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    padding: ${theme.spacing.lg} ${theme.spacing.md};
+  }
 `;
 
 const BackLink = styled.button`
@@ -50,6 +55,11 @@ const Card = styled.div`
   border: 1px solid rgba(0, 0, 0, 0.04);
   padding: ${theme.spacing['2xl']};
   margin-bottom: ${theme.spacing.xl};
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    padding: ${theme.spacing.lg};
+    border-radius: ${theme.borderRadius.xl};
+  }
 `;
 
 const StoryTitle = styled.h1`
@@ -57,6 +67,11 @@ const StoryTitle = styled.h1`
   font-size: ${theme.fontSizes['3xl']};
   color: ${theme.colors.text.primary};
   margin: 0 0 ${theme.spacing.lg};
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    font-size: ${theme.fontSizes['2xl']};
+    margin: 0 0 ${theme.spacing.md};
+  }
 `;
 
 const InfoGrid = styled.div`
@@ -67,6 +82,8 @@ const InfoGrid = styled.div`
 
   @media (max-width: ${theme.breakpoints.sm}) {
     grid-template-columns: 1fr;
+    gap: ${theme.spacing.sm};
+    margin-bottom: ${theme.spacing.lg};
   }
 `;
 
@@ -100,18 +117,9 @@ const ActionsRow = styled.div`
   display: flex;
   gap: ${theme.spacing.md};
   flex-wrap: wrap;
-`;
 
-const PdfContainer = styled.div`
-  border: 1px solid rgba(0,0,0,0.08);
-  border-radius: ${theme.borderRadius.xl};
-  overflow: hidden;
-  margin-bottom: ${theme.spacing.xl};
-
-  iframe {
-    width: 100%;
-    height: 600px;
-    border: none;
+  @media (max-width: ${theme.breakpoints.sm}) {
+    gap: ${theme.spacing.sm};
   }
 `;
 
@@ -127,6 +135,7 @@ export const StoryDetailPage: React.FC = () => {
   const [story, setStory] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  const [viewerOpen, setViewerOpen] = useState(false);
 
   useEffect(() => {
     loadStory();
@@ -171,11 +180,19 @@ export const StoryDetailPage: React.FC = () => {
     if (!token || !id) return;
 
     try {
-      const blobUrl = await ApiService.downloadStoryPdf(token, id);
-      setPdfUrl(blobUrl);
+      // Si le PDF n'est pas encore charge, le charger
+      if (!pdfUrl) {
+        const blobUrl = await ApiService.downloadStoryPdf(token, id);
+        setPdfUrl(blobUrl);
+      }
+      setViewerOpen(true);
     } catch (error) {
       console.error('Erreur lecture PDF:', error);
     }
+  };
+
+  const handleCloseViewer = () => {
+    setViewerOpen(false);
   };
 
   const handleToggleFavorite = async () => {
@@ -253,7 +270,7 @@ export const StoryDetailPage: React.FC = () => {
             </InfoItem>
             <InfoItem>
               <label>Format</label>
-              <span>{story.productType === 'EBOOK' ? 'eBook' : 'Livre relie'}</span>
+              <span>eBook Numerique</span>
             </InfoItem>
           </InfoGrid>
 
@@ -277,14 +294,16 @@ export const StoryDetailPage: React.FC = () => {
             </Button>
           </ActionsRow>
         </Card>
-
-        {pdfUrl && (
-          <PdfContainer>
-            <iframe src={pdfUrl} title="Visionneuse PDF" />
-          </PdfContainer>
-        )}
       </MainContent>
       <Footer />
+
+      <StoryPDFViewer
+        isOpen={viewerOpen}
+        onClose={handleCloseViewer}
+        pdfUrl={pdfUrl}
+        title={`Conte de ${story.protagonistName}`}
+        onDownload={handleDownloadPdf}
+      />
     </PageContainer>
   );
 };

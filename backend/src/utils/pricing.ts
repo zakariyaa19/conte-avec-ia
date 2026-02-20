@@ -1,8 +1,7 @@
 // Logique de calcul des prix
 
 export const PRODUCT_PRICES = {
-  EBOOK: 4.99,
-  PRINTED: 29.99
+  EBOOK: 4.99
 } as const;
 
 export const CLUB_PRICES = {

@@ -118,11 +118,8 @@ export const StoryFormPage: React.FC = () => {
       setFormData(prev => ({
         ...prev,
         userEmail: user.email || prev.userEmail,
-        shippingAddress: {
-          ...prev.shippingAddress!,
-          firstName: user.firstName || prev.shippingAddress?.firstName || '',
-          lastName: user.lastName || prev.shippingAddress?.lastName || '',
-        }
+        firstName: user.firstName || prev.firstName || '',
+        lastName: user.lastName || prev.lastName || '',
       }));
     }
   }, [isAuthenticated, user]);
@@ -183,13 +180,8 @@ export const StoryFormPage: React.FC = () => {
     // Étape 3 - Paiement et informations
     userEmail: '',
     productType: 'ebook',
-    shippingAddress: {
-      firstName: '',
-      lastName: '',
-      address: '',
-      city: '',
-      postalCode: ''
-    }
+    firstName: '',
+    lastName: ''
   });
 
   // SEO optimisé pour la page de création de conte
@@ -319,7 +311,7 @@ export const StoryFormPage: React.FC = () => {
           throw new Error('URL abonnement non recue');
         }
       } else {
-        // Paiement unique (eBook, livre relie, ou Club credit epuise)
+        // Paiement unique (eBook ou Club credit epuise)
         const paymentResponse = await ApiService.createPaymentSession(orderResponse.data.id);
         if (paymentResponse.url) {
           setTimeout(() => { window.location.href = paymentResponse.url; }, 200);

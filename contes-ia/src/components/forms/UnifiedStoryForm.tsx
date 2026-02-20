@@ -29,7 +29,7 @@ import {
   StoryFormData,
   SecondaryCharacter
 } from '../../types/FormTypes';
-import { validateEmail, validateAddress, validateCity, validatePostalCode, validateRequired } from '../../utils/validation';
+import { validateEmail, validateRequired } from '../../utils/validation';
 import { ApiService } from '../../config/api';
 
 interface UnifiedStoryFormProps {
@@ -504,6 +504,23 @@ const ConnectedBanner = styled.div`
   font-size: ${theme.fontSizes.sm};
   color: ${theme.colors.text.primary};
   font-weight: 500;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+
+  strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    flex-wrap: wrap;
+    padding: ${theme.spacing.sm} ${theme.spacing.md};
+    font-size: ${theme.fontSizes.xs};
+    gap: ${theme.spacing.xs};
+    line-height: 1.4;
+  }
 `;
 
 const ClubFreeCard = styled.div<{ $isSelected: boolean }>`
@@ -552,14 +569,12 @@ const ClubExhaustedMsg = styled.div`
 
 const PricingGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: ${theme.spacing.xl};
   margin-bottom: ${theme.spacing.xl};
-  max-width: 1100px;
-
-  @media (max-width: ${theme.breakpoints.lg}) {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  }
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
 
   @media (max-width: ${theme.breakpoints.sm}) {
     grid-template-columns: 1fr;
@@ -601,7 +616,7 @@ const OrderCostSummary = styled.div<{ $variant: 'free' | 'paid' | 'info' }>`
   }};
 `;
 
-const ShippingSection = styled.div<{ $show: boolean }>`
+const OrderInfoSection = styled.div<{ $show: boolean }>`
   display: ${props => props.$show ? 'block' : 'none'};
   background-color: ${theme.colors.background.secondary};
   padding: ${theme.spacing.xl};
@@ -616,7 +631,7 @@ const ShippingSection = styled.div<{ $show: boolean }>`
   }
 `;
 
-const ShippingGrid = styled.div`
+const OrderInfoGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: ${theme.spacing.lg};
@@ -790,22 +805,11 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
   );
 
   const isPaymentInfoComplete = () => {
-    if (formData.productType === 'ebook') {
-      return !!(
-        formData.productType &&
-        formData.userEmail &&
-        formData.shippingAddress?.firstName &&
-        formData.shippingAddress?.lastName
-      );
-    }
     return !!(
       formData.productType &&
       formData.userEmail &&
-      formData.shippingAddress?.firstName &&
-      formData.shippingAddress?.lastName &&
-      formData.shippingAddress?.address &&
-      formData.shippingAddress?.city &&
-      formData.shippingAddress?.postalCode
+      formData.firstName &&
+      formData.lastName
     );
   };
 
@@ -866,9 +870,9 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
     }
   };
 
-  const handleProductSelection = (productType: 'ebook' | 'printed', purchaseType?: 'single' | 'club') => {
+  const handleProductSelection = (purchaseType: 'single' | 'club') => {
     setGlobalError('');
-    onUpdate({ productType, purchaseType: purchaseType || 'single' });
+    onUpdate({ productType: 'ebook', purchaseType });
     scrollToSection(paymentRef, 150);
   };
 
@@ -893,19 +897,9 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
     }
   };
 
-  const handleShippingChange = (field: string, value: string) => {
+  const handleNameChange = (field: 'firstName' | 'lastName', value: string) => {
     setGlobalError('');
-    onUpdate({
-      shippingAddress: {
-        firstName: formData.shippingAddress?.firstName || '',
-        lastName: formData.shippingAddress?.lastName || '',
-        address: formData.shippingAddress?.address || '',
-        city: formData.shippingAddress?.city || '',
-        postalCode: formData.shippingAddress?.postalCode || '',
-        ...formData.shippingAddress,
-        [field]: value
-      }
-    });
+    onUpdate({ [field]: value });
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
     }
@@ -919,27 +913,12 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
     }
   };
 
-  const validateField = (field: string, value: string, validationType?: 'email' | 'address' | 'city' | 'postalCode') => {
-    const isAddressField = ['address', 'city', 'postalCode'].includes(field);
-    if (isAddressField && formData.productType !== 'printed') {
-      setErrors(prev => ({ ...prev, [field]: '' }));
-      return true;
-    }
-
+  const validateField = (field: string, value: string, validationType?: 'email') => {
     let validation: { isValid: boolean; error?: string };
 
     switch (validationType) {
       case 'email':
         validation = validateEmail(value);
-        break;
-      case 'address':
-        validation = validateAddress(value);
-        break;
-      case 'city':
-        validation = validateCity(value);
-        break;
-      case 'postalCode':
-        validation = validatePostalCode(value);
         break;
       default:
         validation = validateRequired(value, field);
@@ -969,40 +948,21 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
       }
     }
 
-    if (!formData.shippingAddress?.firstName) {
+    if (!formData.firstName) {
       newErrors.firstName = 'Le prénom est obligatoire';
       isValid = false;
     }
 
-    if (!formData.shippingAddress?.lastName) {
+    if (!formData.lastName) {
       newErrors.lastName = 'Le nom est obligatoire';
       isValid = false;
-    }
-
-    if (formData.productType === 'printed') {
-      if (!formData.shippingAddress?.address) {
-        newErrors.address = 'L\'adresse est obligatoire';
-        isValid = false;
-      }
-      if (!formData.shippingAddress?.city) {
-        newErrors.city = 'La ville est obligatoire';
-        isValid = false;
-      }
-      if (!formData.shippingAddress?.postalCode) {
-        newErrors.postalCode = 'Le code postal est obligatoire';
-        isValid = false;
-      }
     }
 
     setErrors(newErrors);
 
     if (!isValid) {
       scrollToSection(paymentRef, 150);
-      if (formData.productType === 'printed') {
-        setGlobalError('Veuillez remplir tous les champs obligatoires (Email, Prénom, Nom, Adresse, Ville, Code postal)');
-      } else {
-        setGlobalError('Veuillez remplir tous les champs obligatoires (Email, Prénom, Nom)');
-      }
+      setGlobalError('Veuillez remplir tous les champs obligatoires (Email, Prénom, Nom)');
     }
 
     return isValid;
@@ -1454,7 +1414,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
             <div style={{ marginBottom: theme.spacing.xl }}>
               <ClubFreeCard
                 $isSelected={formData.purchaseType === 'club'}
-                onClick={() => handleProductSelection('ebook', 'club')}
+                onClick={() => handleProductSelection('club')}
               >
                 <ClubBadge>Membre Club</ClubBadge>
                 <div style={{ fontSize: theme.fontSizes['2xl'], marginBottom: theme.spacing.sm, marginTop: theme.spacing.sm }}>
@@ -1482,18 +1442,18 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
 
           <PricingGrid>
             <PricingCard
-              title="eBook Numérique"
+              title="eBook Numerique"
               price="4,99€"
               features={[
-                "Conte personnalisé de 20-30 pages",
-                "Illustrations haute qualité",
-                "Format PDF optimisé",
-                "Téléchargement immédiat",
+                "Conte personnalise de 20-30 pages",
+                "Illustrations haute qualite",
+                "Format PDF optimise",
+                "Telechargement immediat",
                 "Compatible tous appareils"
               ]}
-              isPopular={formData.productType === 'ebook' && formData.purchaseType !== 'club'}
+              isPopular={formData.purchaseType === 'single'}
               ctaText="Choisir l'eBook"
-              onSelect={() => handleProductSelection('ebook')}
+              onSelect={() => handleProductSelection('single')}
             />
 
             {!isClub && (
@@ -1506,33 +1466,17 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
                   "Bibliotheque illimitee",
                   "Annulable a tout moment"
                 ]}
-                isPopular={formData.purchaseType === 'club' || (!formData.productType && !isClub)}
+                isPopular={formData.purchaseType === 'club' || !formData.purchaseType}
                 ctaText="Recevoir cet eBook + rejoindre le Club"
                 badge="Recommande"
                 subtitle="Soit ~3,25EUR par conte"
-                onSelect={() => handleProductSelection('ebook', 'club')}
+                onSelect={() => handleProductSelection('club')}
               />
             )}
-
-            <PricingCard
-              title="Livre Relié Premium"
-              price="29,99€"
-              features={[
-                "Conte personnalisé de 20 pages",
-                "Illustrations premium",
-                "Impression haute qualité",
-                "Couverture rigide",
-                "Livraison gratuite",
-                "eBook inclus"
-              ]}
-              isPopular={formData.productType === 'printed' && formData.purchaseType !== 'club'}
-              ctaText="Choisir le livre"
-              onSelect={() => handleProductSelection('printed')}
-            />
           </PricingGrid>
 
           {/* Order cost summary */}
-          {formData.productType && formData.purchaseType === 'club' && isClub && clubCredit?.canSubmit && (
+          {formData.purchaseType === 'club' && isClub && clubCredit?.canSubmit && (
             <OrderCostSummary $variant="free">
               Cette commande sera gratuite (credit Club)
             </OrderCostSummary>
@@ -1542,19 +1486,14 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
               Abonnement Club : 12,99EUR/mois — Cet eBook est inclus, sans frais supplementaires
             </OrderCostSummary>
           )}
-          {formData.productType === 'ebook' && formData.purchaseType !== 'club' && (
+          {formData.purchaseType === 'single' && (
             <OrderCostSummary $variant="paid">
               Cette commande sera payante : 4,99EUR
             </OrderCostSummary>
           )}
-          {formData.productType === 'printed' && (
-            <OrderCostSummary $variant="paid">
-              Cette commande sera payante : 29,99EUR
-            </OrderCostSummary>
-          )}
         </FormSection>
 
-        <ShippingSection $show={true} ref={paymentRef}>
+        <OrderInfoSection $show={true} ref={paymentRef}>
           <OptionTitle>
             Informations de commande
           </OptionTitle>
@@ -1565,7 +1504,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
             </ConnectedBanner>
           )}
 
-          <ShippingGrid>
+          <OrderInfoGrid>
             {isAuthenticated ? (
               <FullWidthField>
                 <ValidatedInput
@@ -1623,68 +1562,28 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
             <InputField>
               <ValidatedInput
                 label="Prénom"
-                value={formData.shippingAddress?.firstName || ''}
-                onChange={(value) => handleShippingChange('firstName', value)}
+                value={formData.firstName || ''}
+                onChange={(value) => handleNameChange('firstName', value)}
                 placeholder="Votre prénom"
                 required={true}
                 error={errors.firstName}
-                onBlur={() => validateField('firstName', formData.shippingAddress?.firstName || '')}
+                onBlur={() => validateField('firstName', formData.firstName || '')}
               />
             </InputField>
 
             <InputField>
               <ValidatedInput
                 label="Nom"
-                value={formData.shippingAddress?.lastName || ''}
-                onChange={(value) => handleShippingChange('lastName', value)}
+                value={formData.lastName || ''}
+                onChange={(value) => handleNameChange('lastName', value)}
                 placeholder="Votre nom"
                 required={true}
                 error={errors.lastName}
-                onBlur={() => validateField('lastName', formData.shippingAddress?.lastName || '')}
+                onBlur={() => validateField('lastName', formData.lastName || '')}
               />
             </InputField>
-
-            {formData.productType === 'printed' && (
-              <>
-                <FullWidthField>
-                  <ValidatedInput
-                    label="Adresse"
-                    value={formData.shippingAddress?.address || ''}
-                    onChange={(value) => handleShippingChange('address', value)}
-                    placeholder="Numéro et nom de rue"
-                    required={true}
-                    error={errors.address}
-                    onBlur={() => validateField('address', formData.shippingAddress?.address || '', 'address')}
-                  />
-                </FullWidthField>
-
-                <InputField>
-                  <ValidatedInput
-                    label="Ville"
-                    value={formData.shippingAddress?.city || ''}
-                    onChange={(value) => handleShippingChange('city', value)}
-                    placeholder="Votre ville"
-                    required={true}
-                    error={errors.city}
-                    onBlur={() => validateField('city', formData.shippingAddress?.city || '', 'city')}
-                  />
-                </InputField>
-
-                <InputField>
-                  <ValidatedInput
-                    label="Code postal"
-                    value={formData.shippingAddress?.postalCode || ''}
-                    onChange={(value) => handleShippingChange('postalCode', value)}
-                    placeholder="Code postal"
-                    required={true}
-                    error={errors.postalCode}
-                    onBlur={() => validateField('postalCode', formData.shippingAddress?.postalCode || '', 'postalCode')}
-                  />
-                </InputField>
-              </>
-            )}
-          </ShippingGrid>
-        </ShippingSection>
+          </OrderInfoGrid>
+        </OrderInfoSection>
 
         <PaymentSection>
           <ReadyMessage $show={isPaymentInfoComplete()}>
@@ -1733,8 +1632,8 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
               Satisfait ou remboursé
             </TrustBadge>
             <TrustBadge>
-              <span className="trust-icon">🚚</span>
-              Livraison rapide
+              <span className="trust-icon">⚡</span>
+              Livraison instantanee
             </TrustBadge>
           </TrustBadgesRow>
         </PaymentSection>

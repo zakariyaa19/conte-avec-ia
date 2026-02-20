@@ -253,11 +253,11 @@ export const SuccessPage: React.FC = () => {
 
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', 'Felicitations ! Votre conte personnalise a imprimer chez soi est confirme. Votre livre personnalise enfant sera bientot pret.');
+      metaDescription.setAttribute('content', 'Felicitations ! Votre conte personnalise est confirme. Votre eBook personnalise sera bientot pret.');
     } else {
       const newMetaDescription = document.createElement('meta');
       newMetaDescription.name = 'description';
-      newMetaDescription.content = 'Felicitations ! Votre conte personnalise a imprimer chez soi est confirme. Votre livre personnalise enfant sera bientot pret.';
+      newMetaDescription.content = 'Felicitations ! Votre conte personnalise est confirme. Votre eBook personnalise sera bientot pret.';
       document.head.appendChild(newMetaDescription);
     }
 

@@ -193,7 +193,7 @@ export class TelegramService {
       minute: '2-digit'
     });
 
-    const productEmoji = orderData.productType === 'EBOOK' ? '📱' : '📚';
+    const productEmoji = '📱';
 
     const purchaseTypeLabel = orderData.purchaseType === 'CLUB' && orderData.amount === 0
       ? 'Club (gratuit)'
@@ -211,7 +211,7 @@ export class TelegramService {
 📋 <b>Commande #${safeOrderNumber}</b>
 👤 <b>Client:</b> ${safeName}
 📧 <b>Email:</b> ${safeEmail}
-${productEmoji} <b>Produit:</b> ${orderData.productType === 'EBOOK' ? 'eBook' : 'Livre relié'}
+${productEmoji} <b>Produit:</b> eBook Numérique
 🎫 <b>Type:</b> ${purchaseTypeLabel}
 💳 <b>Montant:</b> ${orderData.amount}€
 📅 <b>Date:</b> ${formattedDate}`;
@@ -276,15 +276,6 @@ ${order.secondaryCharacterAge ? `📝 Type/Âge: ${escapeHtml(order.secondaryCha
 👤 Nom: ${escapeHtml(order.creatorName)}`;
       }
 
-      // Adresse de livraison
-      if (order.productType === 'PRINTED' && order.shippingAddress) {
-        message += `
-
-📦 <b>Livraison</b>
-📍 ${escapeHtml(order.shippingFirstName)} ${escapeHtml(order.shippingLastName)}
-🏠 ${escapeHtml(order.shippingAddress)}
-📮 ${escapeHtml(order.shippingPostalCode)} ${escapeHtml(order.shippingCity)}`;
-      }
     }
 
     message += `

@@ -423,7 +423,7 @@ export class AdminController {
         const { MailjetService } = await import('../utils/mailjetService');
         if (order.user?.email) {
           await MailjetService.sendStoryDeliveryEmail({
-            customerName: order.shippingFirstName || order.user.firstName || 'Client',
+            customerName: order.user.firstName || order.creatorName || 'Client',
             customerEmail: order.user.email,
             orderNumber: order.id.slice(-8),
             protagonistName: order.protagonistName
