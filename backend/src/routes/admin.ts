@@ -1,13 +1,9 @@
 import { Router } from 'express';
-import express from 'express';
 import { AdminController } from '../controllers/adminController';
 import { authenticateAdmin, requireAdmin } from '../middleware/auth';
 import { uploadPdf } from '../middleware/upload';
 
 const router = Router();
-
-// Middleware pour parser le JSON
-router.use(express.json());
 
 // Authentification admin
 router.post('/login', AdminController.login);

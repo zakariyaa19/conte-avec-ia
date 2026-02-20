@@ -1,12 +1,9 @@
 import { Router } from 'express';
-import express from 'express';
 import rateLimit from 'express-rate-limit';
 import { AuthController } from '../controllers/authController';
 import { authenticateClient } from '../middleware/clientAuth';
 
 const router = Router();
-
-router.use(express.json());
 
 // Rate limiting pour les routes d'auth
 const authLimiter = rateLimit({

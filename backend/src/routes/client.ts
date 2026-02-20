@@ -1,11 +1,8 @@
 import { Router } from 'express';
-import express from 'express';
 import { ClientController } from '../controllers/clientController';
 import { authenticateClient } from '../middleware/clientAuth';
 
 const router = Router();
-
-router.use(express.json());
 
 // Toutes les routes client sont protegees
 router.use(authenticateClient);
