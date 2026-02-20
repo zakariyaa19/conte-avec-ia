@@ -58,9 +58,10 @@ const BlogArticleNouveau10: React.FC = () => {
             </div>
 
             <div className="article-image">
-              <img 
-                src="/images/blog/bienfaits-lecture-personnalisee-enfant.jpg" 
+              <img
+                src="/images/blog/bienfaits-lecture-personnalisee-enfant.jpg"
                 alt="Enfant exprimant ses émotions en lisant son livre personnalisé"
+                loading="lazy"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
                   target.src = '/images/placeholder-blog.jpg';

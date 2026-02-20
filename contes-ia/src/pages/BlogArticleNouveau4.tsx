@@ -58,9 +58,10 @@ const BlogArticleNouveau4: React.FC = () => {
             </div>
 
             <div className="article-image">
-              <img 
-                src="/images/blog/intelligence-artificielle-histoires-enfants.jpg" 
+              <img
+                src="/images/blog/intelligence-artificielle-histoires-enfants.jpg"
                 alt="Intelligence artificielle créant des histoires magiques pour enfants"
+                loading="lazy"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
                   target.src = '/images/placeholder-blog.jpg';

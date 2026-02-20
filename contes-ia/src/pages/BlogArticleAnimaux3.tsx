@@ -57,9 +57,10 @@ const BlogArticleAnimaux3: React.FC = () => {
             </div>
 
             <div className="article-image">
-              <img 
-                src="/images/blog/ia-transformation-animal.jpg" 
+              <img
+                src="/images/blog/ia-transformation-animal.jpg"
                 alt="Transformation d'une photo de chien en illustration de conte par l'intelligence artificielle"
+                loading="lazy"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
                   target.src = '/images/placeholder-blog.jpg';

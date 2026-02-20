@@ -56,9 +56,10 @@ const BlogArticleFoi2: React.FC = () => {
             </div>
 
             <div className="article-image">
-              <img 
-                src="/images/blog/fetes-religieuses-conte-personnalise.jpg" 
+              <img
+                src="/images/blog/fetes-religieuses-conte-personnalise.jpg"
                 alt="Enfants de différentes cultures célébrant leurs fêtes religieuses avec des livres personnalisés"
+                loading="lazy"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
                   target.src = '/images/placeholder-blog.jpg';

@@ -58,9 +58,10 @@ const BlogArticleNouveau9: React.FC = () => {
             </div>
 
             <div className="article-image">
-              <img 
-                src="/images/blog/creation-histoires-personnalisees-conte-ia.jpg" 
+              <img
+                src="/images/blog/creation-histoires-personnalisees-conte-ia.jpg"
                 alt="Processus de création d'histoires personnalisées avec l'intelligence artificielle de Conte d'IA"
+                loading="lazy"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
                   target.src = '/images/placeholder-blog.jpg';

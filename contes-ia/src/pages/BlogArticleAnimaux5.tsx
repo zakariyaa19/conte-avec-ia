@@ -57,9 +57,10 @@ const BlogArticleAnimaux5: React.FC = () => {
             </div>
 
             <div className="article-image">
-              <img 
-                src="/images/blog/themes-aventures-animaux.jpg" 
+              <img
+                src="/images/blog/themes-aventures-animaux.jpg"
                 alt="Collage montrant différents animaux dans des univers d'aventure variés"
+                loading="lazy"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
                   target.src = '/images/placeholder-blog.jpg';

@@ -56,9 +56,10 @@ const BlogArticleFoi5: React.FC = () => {
             </div>
 
             <div className="article-image">
-              <img 
-                src="/images/blog/tolerance-religieuse-conte-enfant.jpg" 
+              <img
+                src="/images/blog/tolerance-religieuse-conte-enfant.jpg"
                 alt="Enfants de différentes confessions partageant harmonieusement leurs histoires spirituelles"
+                loading="lazy"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
                   target.src = '/images/placeholder-blog.jpg';

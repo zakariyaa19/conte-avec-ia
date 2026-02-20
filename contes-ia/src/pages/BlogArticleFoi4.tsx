@@ -56,9 +56,10 @@ const BlogArticleFoi4: React.FC = () => {
             </div>
 
             <div className="article-image">
-              <img 
-                src="/images/blog/heros-spirituels-conte-enfant.jpg" 
+              <img
+                src="/images/blog/heros-spirituels-conte-enfant.jpg"
                 alt="Enfant découvrant des héros spirituels inspirants dans un livre personnalisé"
+                loading="lazy"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
                   target.src = '/images/placeholder-blog.jpg';

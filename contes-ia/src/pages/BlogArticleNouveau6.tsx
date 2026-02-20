@@ -58,9 +58,10 @@ const BlogArticleNouveau6: React.FC = () => {
             </div>
 
             <div className="article-image">
-              <img 
-                src="/images/blog/conte-personnalise-rituel-coucher.jpg" 
+              <img
+                src="/images/blog/conte-personnalise-rituel-coucher.jpg"
                 alt="Parent et enfant partageant un moment tendre avec un conte personnalisé au coucher"
+                loading="lazy"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
                   target.src = '/images/placeholder-blog.jpg';

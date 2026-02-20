@@ -56,9 +56,10 @@ const BlogArticleFoi3: React.FC = () => {
             </div>
 
             <div className="article-image">
-              <img 
-                src="/images/blog/ia-adaptation-valeurs-religieuses.jpg" 
+              <img
+                src="/images/blog/ia-adaptation-valeurs-religieuses.jpg"
                 alt="Interface d'IA s'adaptant respectueusement aux différentes traditions religieuses"
+                loading="lazy"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
                   target.src = '/images/placeholder-blog.jpg';

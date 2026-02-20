@@ -57,9 +57,10 @@ const BlogArticleAnimaux4: React.FC = () => {
             </div>
 
             <div className="article-image">
-              <img 
-                src="/images/blog/enfant-lecture-animal-rituel.jpg" 
+              <img
+                src="/images/blog/enfant-lecture-animal-rituel.jpg"
                 alt="Enfant lisant paisiblement avec son chat sur les genoux dans un coin lecture cosy"
+                loading="lazy"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
                   target.src = '/images/placeholder-blog.jpg';
