@@ -124,6 +124,7 @@ model Order {
   // Fichiers generes / livraison
   ebookUrl            String?
   pdfUrl              String?
+  pdfData             Bytes?
   epubUrl             String?
   generatedAt         DateTime?
   storyStatus         StoryStatus @default(EN_COURS)

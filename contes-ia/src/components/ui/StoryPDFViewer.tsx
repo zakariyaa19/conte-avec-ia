@@ -158,7 +158,7 @@ const PagesWrapper = styled.div`
 
 const PageWrapper = styled.div`
   width: 100%;
-  max-width: 700px;
+  max-width: 950px;
   display: flex;
   justify-content: center;
   animation: ${slideUp} 0.4s ease-out both;
@@ -191,8 +191,8 @@ const PageWrapper = styled.div`
 
 const PageSkeleton = styled.div`
   width: 100%;
-  max-width: 700px;
-  aspect-ratio: 0.707;
+  max-width: 950px;
+  aspect-ratio: 1.4;
   border-radius: ${theme.borderRadius.lg};
   background: linear-gradient(
     90deg,
@@ -347,7 +347,7 @@ export const StoryPDFViewer: React.FC<StoryPDFViewerProps> = ({
     const measure = () => {
       if (scrollRef.current) {
         const w = scrollRef.current.clientWidth;
-        setContainerWidth(Math.min(w, 700));
+        setContainerWidth(Math.min(w, 950));
       }
     };
 

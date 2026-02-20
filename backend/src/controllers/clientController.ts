@@ -86,26 +86,34 @@ export class ClientController {
         });
       }
 
-      if (!order.pdfUrl) {
+      if (!order.pdfUrl && !order.pdfData) {
         return res.status(404).json({
           success: false,
           message: 'PDF non disponible'
         });
       }
 
-      // Construire le chemin absolu du fichier
-      const pdfPath = path.join(__dirname, '../../', order.pdfUrl);
+      const filename = `conte-${order.protagonistName}-${order.id.slice(-8)}.pdf`;
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
 
-      if (!fs.existsSync(pdfPath)) {
-        return res.status(404).json({
-          success: false,
-          message: 'Fichier PDF non trouve'
-        });
+      // 1) Essayer depuis le fichier disque
+      if (order.pdfUrl) {
+        const pdfPath = path.join(__dirname, '../../', order.pdfUrl);
+        if (fs.existsSync(pdfPath)) {
+          return res.sendFile(pdfPath);
+        }
       }
 
-      res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', `attachment; filename="conte-${order.protagonistName}-${order.id.slice(-8)}.pdf"`);
-      res.sendFile(pdfPath);
+      // 2) Fallback : servir depuis la base de donnees
+      if (order.pdfData) {
+        return res.send(Buffer.from(order.pdfData));
+      }
+
+      return res.status(404).json({
+        success: false,
+        message: 'Fichier PDF non trouve'
+      });
     } catch (error) {
       console.error('Erreur telechargement PDF:', error);
       res.status(500).json({
