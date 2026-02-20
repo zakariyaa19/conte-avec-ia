@@ -25,9 +25,9 @@ const Container = styled.div`
   border-bottom: 1px solid rgba(0, 0, 0, 0.04);
 
   @media (max-width: ${theme.breakpoints.md}) {
-    top: 64px;
-    padding: ${theme.spacing.md} 0;
-    margin-bottom: ${theme.spacing.lg};
+    top: 56px;
+    padding: ${theme.spacing.sm} 0;
+    margin-bottom: ${theme.spacing.md};
   }
 `;
 

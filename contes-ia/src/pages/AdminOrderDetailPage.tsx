@@ -328,6 +328,7 @@ const LoadingState = styled.div`
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
   PENDING: { label: 'En attente', color: '#6B7280', bg: '#F3F4F6' },
+  UNPAID: { label: 'Non payee', color: '#9333EA', bg: '#F3E8FF' },
   PAID: { label: 'Payee - A traiter', color: '#D97706', bg: '#FEF3C7' },
   BLOCKED: { label: 'Bloquee', color: '#DC2626', bg: '#FEE2E2' },
   DELIVERED: { label: 'Livree', color: '#059669', bg: '#D1FAE5' },

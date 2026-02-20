@@ -242,12 +242,12 @@ export class OrderController {
 
       await prisma.order.update({
         where: { id },
-        data: { status: 'PENDING' }
+        data: { status: 'UNPAID' }
       });
 
       res.json({
         success: true,
-        message: 'Commande laissee en attente'
+        message: 'Commande marquee comme non payee'
       });
     } catch (error) {
       console.error('Erreur abandon commande:', error);

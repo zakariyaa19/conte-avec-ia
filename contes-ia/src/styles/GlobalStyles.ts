@@ -13,6 +13,7 @@ export const GlobalStyles = createGlobalStyle`
     font-size: 16px;
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
+    overflow-x: hidden;
   }
 
   body {
@@ -92,6 +93,8 @@ export const GlobalStyles = createGlobalStyle`
     padding: 0.75rem ${theme.spacing.md};
     transition: all ${theme.transitions.base};
     background-color: ${theme.colors.background.white};
+    box-sizing: border-box;
+    max-width: 100%;
 
     &:focus {
       border-color: ${theme.colors.accent.coral};
@@ -101,6 +104,10 @@ export const GlobalStyles = createGlobalStyle`
 
     &::placeholder {
       color: #B5B0AB;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 16px; /* Prevents iOS zoom on input focus */
     }
   }
 

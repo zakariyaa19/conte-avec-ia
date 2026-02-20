@@ -28,18 +28,21 @@ const Label = styled.label`
 `;
 
 const Input = styled.input<{ $hasError: boolean }>`
+  width: 100%;
   padding: ${theme.spacing.md};
   border: 2px solid ${props => props.$hasError ? '#e74c3c' : '#E5E5E5'};
   border-radius: ${theme.borderRadius.md};
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.base};
   transition: border-color 0.2s ease;
-  
+  box-sizing: border-box;
+  min-width: 0;
+
   &:focus {
     border-color: ${props => props.$hasError ? '#e74c3c' : theme.colors.accent.coral};
     outline: none;
   }
-  
+
   &::placeholder {
     color: ${theme.colors.text.light};
   }
@@ -48,6 +51,10 @@ const Input = styled.input<{ $hasError: boolean }>`
     background-color: ${theme.colors.background.secondary};
     color: ${theme.colors.text.secondary};
     cursor: not-allowed;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 16px; /* Prevents iOS zoom on focus */
   }
 `;
 

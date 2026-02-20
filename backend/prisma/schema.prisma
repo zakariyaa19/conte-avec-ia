@@ -166,6 +166,7 @@ enum UserRole {
 
 enum OrderStatus {
   PENDING
+  UNPAID
   PAID
   BLOCKED
   DELIVERED

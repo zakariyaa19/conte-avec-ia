@@ -607,6 +607,7 @@ export class AdminController {
     try {
       const [
         ordersToProcess,
+        unpaidOrders,
         totalRevenue,
         clubSubscribers,
         clubSubscribersActive,
@@ -614,6 +615,8 @@ export class AdminController {
       ] = await Promise.all([
         // A traiter : commandes payees non encore livrees
         prisma.order.count({ where: { status: 'PAID' } }),
+        // Non payees : commandes abandonnees
+        prisma.order.count({ where: { status: 'UNPAID' } }),
         // Chiffre d'affaires : somme des commandes payees ou livrees
         prisma.order.aggregate({
           where: { status: { in: ['PAID', 'DELIVERED'] } },
@@ -623,7 +626,7 @@ export class AdminController {
         prisma.user.count({ where: { role: 'CLUB', subscriptionStatus: { in: ['active', 'canceling'] } } }),
         // Abonnements Club qui vont renouveler (actifs uniquement, pas canceling)
         prisma.user.count({ where: { role: 'CLUB', subscriptionStatus: 'active' } }),
-        // Total contes generes (tout sauf PENDING)
+        // Total contes generes (tout sauf PENDING et UNPAID)
         prisma.order.count({ where: { status: { in: ['PAID', 'DELIVERED', 'BLOCKED'] } } })
       ]);
 
@@ -634,6 +637,7 @@ export class AdminController {
         success: true,
         data: {
           ordersToProcess,
+          unpaidOrders,
           totalRevenue: totalRevenue._sum.price || 0,
           clubSubscribers,
           mrr,
@@ -645,6 +649,26 @@ export class AdminController {
       res.status(500).json({
         success: false,
         message: 'Erreur lors de la recuperation des statistiques'
+      });
+    }
+  }
+
+  // Nettoyer toutes les commandes (admin protege)
+  static async cleanupOrders(req: Request, res: Response) {
+    try {
+      const deletedOrders = await prisma.order.deleteMany({});
+      const deletedProfiles = await prisma.childProfile.deleteMany({});
+      const deletedUsers = await prisma.user.deleteMany({});
+
+      res.json({
+        success: true,
+        message: `Nettoyage effectue: ${deletedOrders.count} commandes, ${deletedProfiles.count} profils enfants, ${deletedUsers.count} utilisateurs supprimes`
+      });
+    } catch (error) {
+      console.error('Erreur nettoyage:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Erreur lors du nettoyage'
       });
     }
   }

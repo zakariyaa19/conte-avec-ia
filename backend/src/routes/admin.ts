@@ -25,6 +25,9 @@ router.patch('/orders/:id', authenticateAdmin, requireAdmin, AdminController.upd
 router.post('/orders/:id/upload-pdf', authenticateAdmin, requireAdmin, uploadPdf.single('pdf'), AdminController.uploadStoryPdf);
 router.post('/orders/:id/deliver', authenticateAdmin, requireAdmin, AdminController.deliverStory);
 
+// Nettoyage (admin protege)
+router.post('/cleanup', authenticateAdmin, requireAdmin, AdminController.cleanupOrders);
+
 // Clients
 router.get('/clients', authenticateAdmin, requireAdmin, AdminController.getClients);
 router.get('/clients/:id', authenticateAdmin, requireAdmin, AdminController.getClientDetail);

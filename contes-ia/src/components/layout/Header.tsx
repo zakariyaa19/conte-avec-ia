@@ -6,18 +6,24 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 
 const HeaderContainer = styled.header<{ $scrolled: boolean }>`
-  background-color: ${props => props.$scrolled ? 'rgba(255, 255, 255, 0.72)' : theme.colors.background.white};
-  backdrop-filter: ${props => props.$scrolled ? 'blur(24px) saturate(200%)' : 'none'};
-  -webkit-backdrop-filter: ${props => props.$scrolled ? 'blur(24px) saturate(200%)' : 'none'};
-  box-shadow: ${props => props.$scrolled ? '0 1px 0 rgba(0, 0, 0, 0.08), 0 4px 20px rgba(0, 0, 0, 0.04)' : 'none'};
   position: sticky;
   top: 0;
   z-index: 1000;
-  transition: background-color 0.35s ease, backdrop-filter 0.35s ease, box-shadow 0.35s ease;
   border-bottom: 1px solid ${props => props.$scrolled ? 'rgba(0, 0, 0, 0.06)' : 'rgba(0,0,0,0.04)'};
+  transition: background-color 0.35s ease, backdrop-filter 0.35s ease, box-shadow 0.35s ease;
 
+  /* Desktop: glassmorphism */
+  @media (min-width: ${theme.breakpoints.lg}) {
+    background-color: ${props => props.$scrolled ? 'rgba(255, 255, 255, 0.72)' : theme.colors.background.white};
+    backdrop-filter: ${props => props.$scrolled ? 'blur(24px) saturate(200%)' : 'none'};
+    -webkit-backdrop-filter: ${props => props.$scrolled ? 'blur(24px) saturate(200%)' : 'none'};
+    box-shadow: ${props => props.$scrolled ? '0 1px 0 rgba(0, 0, 0, 0.08), 0 4px 20px rgba(0, 0, 0, 0.04)' : 'none'};
+  }
+
+  /* Mobile/tablet: solid background, lighter effect */
   @media (max-width: ${theme.breakpoints.lg}) {
-    position: relative;
+    background-color: ${theme.colors.background.white};
+    box-shadow: ${props => props.$scrolled ? '0 2px 8px rgba(0, 0, 0, 0.06)' : 'none'};
   }
 `;
 
@@ -31,8 +37,8 @@ const HeaderContent = styled.div`
   height: 72px;
 
   @media (max-width: ${theme.breakpoints.md}) {
-    padding: 0 ${theme.spacing.md};
-    height: 64px;
+    padding: 0 ${theme.spacing.sm};
+    height: 56px;
   }
 `;
 
@@ -44,6 +50,7 @@ const Logo = styled.div`
   cursor: pointer;
   transition: all ${theme.transitions.base};
   user-select: none;
+  white-space: nowrap;
 
   &:hover {
     opacity: 0.85;
@@ -51,7 +58,7 @@ const Logo = styled.div`
   }
 
   @media (max-width: ${theme.breakpoints.md}) {
-    font-size: ${theme.fontSizes.xl};
+    font-size: ${theme.fontSizes.base};
   }
 `;
 

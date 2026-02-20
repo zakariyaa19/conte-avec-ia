@@ -89,7 +89,9 @@ const FormContainer = styled.div`
   align-items: center;
 
   @media (max-width: ${theme.breakpoints.sm}) {
-    padding: 0 ${theme.spacing.md};
+    padding: 0 ${theme.spacing.sm};
+    overflow-x: hidden;
+    width: 100%;
   }
 `;
 
@@ -282,6 +284,8 @@ const CustomInput = styled.input`
   font-size: ${theme.fontSizes.base};
   margin-top: ${theme.spacing.md};
   transition: border-color ${theme.transitions.smooth};
+  box-sizing: border-box;
+  min-width: 0;
 
   &:focus {
     outline: none;
@@ -291,6 +295,10 @@ const CustomInput = styled.input`
 
   &::placeholder {
     color: ${theme.colors.text.light};
+  }
+
+  @media (max-width: 480px) {
+    font-size: 16px;
   }
 `;
 
@@ -313,6 +321,8 @@ const InputGroup = styled.div`
 const InputField = styled.div`
   display: flex;
   flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
 `;
 
 const ColorGrid = styled.div`
@@ -424,6 +434,8 @@ const TextArea = styled.textarea`
   resize: vertical;
   min-height: 80px;
   transition: border-color ${theme.transitions.smooth};
+  box-sizing: border-box;
+  min-width: 0;
 
   &:focus {
     outline: none;
@@ -433,6 +445,10 @@ const TextArea = styled.textarea`
 
   &::placeholder {
     color: ${theme.colors.text.light};
+  }
+
+  @media (max-width: 480px) {
+    font-size: 16px;
   }
 `;
 
@@ -592,9 +608,10 @@ const ShippingSection = styled.div<{ $show: boolean }>`
   border-radius: ${theme.borderRadius.lg};
   margin-bottom: ${theme.spacing.xl};
   transition: all ${theme.transitions.smooth};
+  overflow: hidden;
 
   @media (max-width: ${theme.breakpoints.sm}) {
-    padding: ${theme.spacing.lg};
+    padding: ${theme.spacing.md};
     margin-bottom: ${theme.spacing.lg};
   }
 `;
