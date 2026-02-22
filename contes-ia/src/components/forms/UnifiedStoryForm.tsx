@@ -396,16 +396,16 @@ const OptionalDividerSub = styled.p`
    ────────────────────────────────────────────── */
 
 const ShowMoreCard = styled.div<{ $isOpen: boolean }>`
-  display: flex;
+  display: ${props => props.$isOpen ? 'none' : 'flex'};
   align-items: center;
   justify-content: center;
   gap: ${theme.spacing.xs};
   padding: ${theme.spacing.md};
-  border: 2px dashed ${props => props.$isOpen ? theme.colors.accent.coral : '#E5E5E5'};
+  border: 2px dashed #E5E5E5;
   border-radius: ${theme.borderRadius.md};
   cursor: pointer;
   transition: all ${theme.transitions.smooth};
-  background: ${props => props.$isOpen ? theme.colors.accent.creamyYellow + '30' : 'transparent'};
+  background: transparent;
   font-size: ${theme.fontSizes.sm};
   font-weight: 600;
   color: ${theme.colors.text.secondary};
@@ -417,10 +417,30 @@ const ShowMoreCard = styled.div<{ $isOpen: boolean }>`
 `;
 
 const ExpandableSection = styled.div<{ $isOpen: boolean }>`
-  max-height: ${props => props.$isOpen ? '500px' : '0'};
+  max-height: ${props => props.$isOpen ? '800px' : '0'};
   overflow: hidden;
   transition: max-height 0.4s ease;
   margin-top: ${props => props.$isOpen ? theme.spacing.md : '0'};
+`;
+
+const CollapseLink = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: ${theme.spacing.xs};
+  width: 100%;
+  padding: ${theme.spacing.sm} 0;
+  margin-top: ${theme.spacing.sm};
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-family: ${theme.fonts.body};
+  font-size: ${theme.fontSizes.xs};
+  font-weight: 600;
+  color: ${theme.colors.accent.coral};
+  transition: opacity 0.2s ease;
+
+  &:hover { opacity: 0.7; }
 `;
 
 /* ──────────────────────────────────────────────
@@ -1186,6 +1206,9 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
                   />
                 ))}
               </SelectionGrid>
+              <CollapseLink onClick={() => setShowAllStyles(false)}>
+                Masquer {'\u25B2'}
+              </CollapseLink>
             </ExpandableSection>
           </FormSection>
 
@@ -1347,6 +1370,9 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
                   />
                 ))}
               </SelectionGrid>
+              <CollapseLink onClick={() => setShowAllMessages(false)}>
+                Masquer {'\u25B2'}
+              </CollapseLink>
             </ExpandableSection>
             {formData.centralMessage === 'custom' && (
               <CustomInput
@@ -1392,6 +1418,9 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
                   />
                 ))}
               </SelectionGrid>
+              <CollapseLink onClick={() => setShowAllLanguages(false)}>
+                Masquer {'\u25B2'}
+              </CollapseLink>
             </ExpandableSection>
           </FormSection>
 
