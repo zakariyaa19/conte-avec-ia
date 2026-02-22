@@ -209,10 +209,9 @@ export const StoryFormPage: React.FC = () => {
 
   // Déterminer les étapes complétées pour l'indicateur de progression
   const isChoicesComplete = !!(
-    formData.ageRange && 
-    formData.generalTheme && 
-    formData.specificSubject && 
-    formData.centralMessage && 
+    formData.ageRange &&
+    formData.generalTheme &&
+    formData.specificSubject &&
     formData.illustrationStyle
   );
 
@@ -229,19 +228,19 @@ export const StoryFormPage: React.FC = () => {
   const progressSteps = [
     {
       id: 'creation',
-      title: 'Creation',
+      title: 'Création',
       isCompleted: isChoicesComplete && isProtagonistComplete,
       isActive: !(isChoicesComplete && isProtagonistComplete)
     },
     {
       id: 'preview',
-      title: 'Apercu',
+      title: 'Aperçu',
       isCompleted: false,
       isActive: isChoicesComplete && isProtagonistComplete
     },
     {
       id: 'payment',
-      title: 'Paiement',
+      title: 'Commande',
       isCompleted: isPaymentComplete,
       isActive: false
     }
@@ -254,7 +253,7 @@ export const StoryFormPage: React.FC = () => {
 
   const handleSubmit = async () => {
     if (!formData.userEmail || !formData.productType) {
-      console.error('Donnees manquantes pour la soumission');
+      console.error('Données manquantes pour la soumission');
       setIsSubmitting(false);
       return;
     }
@@ -276,7 +275,7 @@ export const StoryFormPage: React.FC = () => {
       });
 
       if (!orderResponse.success) {
-        throw new Error(orderResponse.message || 'Erreur lors de la creation de la commande');
+        throw new Error(orderResponse.message || 'Erreur lors de la création de la commande');
       }
 
       // Store token if returned (user account created)
@@ -316,11 +315,11 @@ export const StoryFormPage: React.FC = () => {
 
     } catch (error: any) {
       console.error('Erreur soumission:', error);
-      let errorMessage = 'Une erreur est survenue lors de la soumission';
+      let errorMessage = 'Une erreur est survenue lors de la soumission.';
       if (error.message.includes('timeout') || error.message.includes('AbortError')) {
-        errorMessage = 'La requete a pris trop de temps. Veuillez reessayer dans quelques instants.';
+        errorMessage = 'La requête a pris trop de temps. Veuillez réessayer dans quelques instants.';
       } else if (error.message.includes('fetch')) {
-        errorMessage = 'Probleme de connexion. Verifiez votre connexion internet et reessayez.';
+        errorMessage = 'Problème de connexion. Vérifiez votre connexion internet et réessayez.';
       } else if (error.message) {
         errorMessage = error.message;
       }
@@ -337,9 +336,9 @@ export const StoryFormPage: React.FC = () => {
       <MainContent>
       <FormContainer>
         <FormHeader ref={formHeaderRef}>
-          <FormTitle>Creez un conte unique pour votre enfant</FormTitle>
+          <FormTitle>Créez un conte unique pour votre enfant</FormTitle>
           <FormSubtitle>
-            Quelques choix simples et decouvrez la couverture personnalisee de votre histoire
+            Quelques choix simples et découvrez la couverture personnalisée de votre histoire
           </FormSubtitle>
         </FormHeader>
 

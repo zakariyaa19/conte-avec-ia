@@ -126,12 +126,12 @@ export function useCoverPreview(formData: Partial<StoryFormData>): UseCoverPrevi
         lastGeneratedHashRef.current = computeFormHash(formData);
         setError(null);
       } else {
-        setError(result.message || 'Erreur de generation');
+        setError(result.message || 'Erreur de génération');
       }
     } catch (err: any) {
       if (err?.name === 'AbortError') return;
       console.error('Erreur cover preview:', err);
-      setError('Impossible de generer l\'apercu');
+      setError('Impossible de générer l\'aperçu');
     } finally {
       if (!controller.signal.aborted) {
         setIsGenerating(false);

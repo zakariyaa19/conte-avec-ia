@@ -44,6 +44,10 @@ interface UnifiedStoryFormProps {
   clubCredit?: { canSubmit: boolean; remaining: number; nextCreditDate?: string; totalEarned?: number } | null;
 }
 
+/* ── Language split: top 5 + others ── */
+const TOP_LANGUAGES = LANGUAGES.slice(0, 5);
+const OTHER_LANGUAGES = LANGUAGES.slice(5);
+
 /* ──────────────────────────────────────────────
    Animations
    ────────────────────────────────────────────── */
@@ -346,6 +350,121 @@ const HiddenFileInput = styled.input`
 `;
 
 /* ──────────────────────────────────────────────
+   Optional Section Divider
+   ────────────────────────────────────────────── */
+
+const OptionalDivider = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${theme.spacing.md};
+  margin: ${theme.spacing['2xl']} 0 ${theme.spacing.xl};
+  padding: ${theme.spacing.md} ${theme.spacing.lg};
+  background: linear-gradient(135deg, ${theme.colors.accent.creamyYellow}30, ${theme.colors.accent.lightCoral}08);
+  border-radius: ${theme.borderRadius.lg};
+  border: 1px dashed ${theme.colors.accent.lightCoral}60;
+`;
+
+const OptionalDividerIcon = styled.span`
+  font-size: 1.3rem;
+  flex-shrink: 0;
+`;
+
+const OptionalDividerText = styled.div`
+  flex: 1;
+`;
+
+const OptionalDividerTitle = styled.p`
+  font-family: ${theme.fonts.body};
+  font-size: ${theme.fontSizes.base};
+  font-weight: 600;
+  color: ${theme.colors.text.primary};
+  margin: 0;
+`;
+
+const OptionalDividerSub = styled.p`
+  font-family: ${theme.fonts.body};
+  font-size: ${theme.fontSizes.xs};
+  color: ${theme.colors.text.secondary};
+  margin: 0;
+`;
+
+/* ──────────────────────────────────────────────
+   "Autre langue" expand card
+   ────────────────────────────────────────────── */
+
+const ShowMoreCard = styled.div<{ $isOpen: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: ${theme.spacing.xs};
+  padding: ${theme.spacing.md};
+  border: 2px dashed ${props => props.$isOpen ? theme.colors.accent.coral : '#E5E5E5'};
+  border-radius: ${theme.borderRadius.md};
+  cursor: pointer;
+  transition: all ${theme.transitions.smooth};
+  background: ${props => props.$isOpen ? theme.colors.accent.creamyYellow + '30' : 'transparent'};
+  font-size: ${theme.fontSizes.sm};
+  font-weight: 600;
+  color: ${theme.colors.text.secondary};
+
+  &:hover {
+    border-color: ${theme.colors.accent.coral};
+    color: ${theme.colors.accent.coral};
+  }
+`;
+
+const ExpandedLanguages = styled.div<{ $isOpen: boolean }>`
+  max-height: ${props => props.$isOpen ? '500px' : '0'};
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+  margin-top: ${props => props.$isOpen ? theme.spacing.md : '0'};
+`;
+
+/* ──────────────────────────────────────────────
+   Collapsible Pill (religion + characters)
+   ────────────────────────────────────────────── */
+
+const CollapsiblePill = styled.button<{ $isOpen: boolean }>`
+  display: inline-flex;
+  align-items: center;
+  gap: ${theme.spacing.sm};
+  padding: ${theme.spacing.sm} ${theme.spacing.lg};
+  border: 1.5px solid ${props => props.$isOpen ? theme.colors.accent.coral : theme.colors.accent.lightCoral};
+  border-radius: ${theme.borderRadius.full};
+  background: ${props => props.$isOpen
+    ? `linear-gradient(135deg, ${theme.colors.accent.creamyYellow}50, ${theme.colors.accent.lightCoral}15)`
+    : 'transparent'
+  };
+  color: ${props => props.$isOpen ? theme.colors.accent.coral : theme.colors.text.secondary};
+  font-family: ${theme.fonts.body};
+  font-size: ${theme.fontSizes.sm};
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: ${theme.spacing.sm};
+
+  &:hover {
+    border-color: ${theme.colors.accent.coral};
+    color: ${theme.colors.accent.coral};
+    background: ${theme.colors.accent.creamyYellow}40;
+  }
+`;
+
+const CollapsibleChevron = styled.span<{ $isOpen: boolean }>`
+  display: inline-block;
+  font-size: 0.7rem;
+  transition: transform 0.3s ease;
+  transform: ${props => props.$isOpen ? 'rotate(180deg)' : 'rotate(0deg)'};
+`;
+
+const CollapsibleContent = styled.div<{ $isOpen: boolean }>`
+  max-height: ${props => props.$isOpen ? '5000px' : '0'};
+  overflow: hidden;
+  transition: max-height 0.5s ease;
+  margin-top: ${props => props.$isOpen ? theme.spacing.md : '0'};
+`;
+
+/* ──────────────────────────────────────────────
    Generate CTA Button
    ────────────────────────────────────────────── */
 
@@ -401,57 +520,12 @@ const CTASubtext = styled.p`
 `;
 
 /* ──────────────────────────────────────────────
-   Phase 2: Cover Reveal + Customization
+   Phase 2: Cover + Payment (merged)
    ────────────────────────────────────────────── */
 
 const CoverRevealSection = styled.div`
   text-align: center;
   margin-bottom: ${theme.spacing.xl};
-`;
-
-const CustomizationToggle = styled.button<{ $isOpen: boolean }>`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: ${theme.spacing.sm};
-  width: 100%;
-  padding: ${theme.spacing.md} ${theme.spacing.lg};
-  border: 1.5px solid ${theme.colors.accent.lightCoral};
-  border-radius: ${theme.borderRadius.lg};
-  background: ${props => props.$isOpen
-    ? `linear-gradient(135deg, ${theme.colors.accent.creamyYellow}40, ${theme.colors.accent.lightCoral}10)`
-    : theme.colors.background.white
-  };
-  color: ${theme.colors.text.primary};
-  font-family: ${theme.fonts.body};
-  font-size: ${theme.fontSizes.base};
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-
-  &:hover {
-    background: ${theme.colors.accent.creamyYellow}40;
-    border-color: ${theme.colors.accent.coral};
-  }
-
-  @media (max-width: ${theme.breakpoints.sm}) {
-    font-size: ${theme.fontSizes.sm};
-    padding: ${theme.spacing.sm} ${theme.spacing.md};
-  }
-`;
-
-const ChevronIcon = styled.span<{ $isOpen: boolean }>`
-  display: inline-block;
-  transition: transform 0.3s ease;
-  transform: ${props => props.$isOpen ? 'rotate(180deg)' : 'rotate(0deg)'};
-  animation: ${chevronBounce} 2s ease-in-out infinite;
-`;
-
-const CustomizationContent = styled.div<{ $isOpen: boolean }>`
-  max-height: ${props => props.$isOpen ? '5000px' : '0'};
-  overflow: hidden;
-  transition: max-height 0.5s ease;
-  margin-top: ${props => props.$isOpen ? theme.spacing.xl : '0'};
 `;
 
 const RegenerateNotice = styled.div`
@@ -487,37 +561,29 @@ const RegenerateBtn = styled.button`
   }
 `;
 
-const ContinueButton = styled.button`
-  display: block;
-  width: 100%;
-  max-width: 500px;
-  margin: ${theme.spacing.xl} auto 0;
-  padding: ${theme.spacing.md} ${theme.spacing['2xl']};
-  border: none;
-  border-radius: ${theme.borderRadius.xl};
-  font-family: ${theme.fonts.heading};
-  font-size: ${theme.fontSizes.lg};
-  font-weight: 700;
-  color: #fff;
-  background: linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover});
-  cursor: pointer;
-  transition: all 0.3s ease;
+const PaymentDivider = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${theme.spacing.md};
+  margin: ${theme.spacing['2xl']} 0;
 
-  &:hover {
-    transform: scale(1.02);
-    box-shadow: 0 6px 25px ${theme.colors.accent.coral}40;
-  }
-
-  @media (max-width: ${theme.breakpoints.sm}) {
-    font-size: ${theme.fontSizes.base};
-    padding: ${theme.spacing.md} ${theme.spacing.lg};
-    max-width: 100%;
+  &::before, &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, ${theme.colors.accent.lightCoral}60, transparent);
   }
 `;
 
-/* ──────────────────────────────────────────────
-   Phase 3: Payment
-   ────────────────────────────────────────────── */
+const PaymentDividerLabel = styled.span`
+  font-family: ${theme.fonts.body};
+  font-size: ${theme.fontSizes.xs};
+  color: ${theme.colors.text.light};
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+`;
 
 const TextArea = styled.textarea`
   width: 100%;
@@ -553,26 +619,6 @@ const Label = styled.label`
   @media (max-width: ${theme.breakpoints.sm}) {
     margin-bottom: ${theme.spacing.xs};
     font-size: ${theme.fontSizes.xs};
-  }
-`;
-
-const ToggleButton = styled.button<{ $isActive: boolean }>`
-  background: ${props => props.$isActive ?
-    `linear-gradient(135deg, ${theme.colors.accent.creamyYellow}, ${theme.colors.accent.lightCoral})` :
-    theme.colors.background.white
-  };
-  color: ${props => props.$isActive ? theme.colors.text.primary : theme.colors.text.secondary};
-  border: 2px solid ${props => props.$isActive ? 'transparent' : '#E5E7EB'};
-  border-radius: ${theme.borderRadius.md};
-  padding: ${theme.spacing.sm} ${theme.spacing.md};
-  font-weight: 600;
-  cursor: pointer;
-  transition: all ${theme.transitions.smooth};
-  margin-bottom: ${theme.spacing.lg};
-
-  &:hover {
-    border-color: ${theme.colors.accent.coral};
-    box-shadow: ${theme.shadows.sm};
   }
 `;
 
@@ -821,13 +867,17 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
 }) => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [globalError, setGlobalError] = useState<string>('');
-  const [showReligionSection, setShowReligionSection] = useState<boolean>(!!formData.religion);
   const [emailStatus, setEmailStatus] = useState<{ exists: boolean; hasPassword: boolean } | null>(null);
 
-  // Phase visibility
+  // Phase visibility (2 phases only)
   const [showPhase2, setShowPhase2] = useState(false);
-  const [showPhase3, setShowPhase3] = useState(false);
-  const [showCustomization, setShowCustomization] = useState(false);
+
+  // Optional section toggles
+  const [showAllLanguages, setShowAllLanguages] = useState(false);
+  const [showReligion, setShowReligion] = useState(!!formData.religion);
+  const [showSecondaryChars, setShowSecondaryChars] = useState(
+    (formData.secondaryCharacters?.length || 0) > 0
+  );
 
   // Cover preview hook (button-triggered)
   const {
@@ -851,7 +901,6 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
   const hairColorRef = useRef<HTMLDivElement>(null);
   const photoRef = useRef<HTMLDivElement>(null);
   const phase2Ref = useRef<HTMLDivElement>(null);
-  const phase3Ref = useRef<HTMLDivElement>(null);
   const paymentRef = useRef<HTMLDivElement>(null);
 
   const scrollToSection = (ref: React.RefObject<HTMLDivElement | null>, offset = 120) => {
@@ -864,7 +913,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
     }, 200);
   };
 
-  // Phase 1 completion check (no centralMessage required)
+  // Phase 1 completion check
   const phase1Ready = isPhase1Complete(formData);
 
   const isPaymentInfoComplete = () => {
@@ -984,7 +1033,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
       }
     }
 
-    if (!formData.firstName) { newErrors.firstName = 'Le prenom est obligatoire'; isValid = false; }
+    if (!formData.firstName) { newErrors.firstName = 'Le prénom est obligatoire'; isValid = false; }
     if (!formData.lastName) { newErrors.lastName = 'Le nom est obligatoire'; isValid = false; }
 
     setErrors(newErrors);
@@ -1010,32 +1059,19 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
     scrollToSection(phase2Ref, 80);
   };
 
-  // When cover image arrives, show Phase 3
-  useEffect(() => {
-    if (coverImageUrl && showPhase2) {
-      setShowPhase3(true);
-    }
-  }, [coverImageUrl, showPhase2]);
-
-  // --- Phase 2: Continue to payment ---
-  const handleContinueToPayment = () => {
-    setShowPhase3(true);
-    scrollToSection(phase3Ref, 80);
-  };
-
   return (
     <FormContainer>
       {/* ═══════════════════════════════════════════
-          PHASE 1 : Creez votre conte
+          PHASE 1 : Créez votre conte
           ═══════════════════════════════════════════ */}
       <Phase $isVisible={true}>
         <PhaseCard>
-          <PhaseTitle>Creez votre conte</PhaseTitle>
-          <PhaseSubtitle>Quelques choix rapides pour creer une histoire unique</PhaseSubtitle>
+          <PhaseTitle>Créez votre conte</PhaseTitle>
+          <PhaseSubtitle>Quelques choix rapides pour créer une histoire unique</PhaseSubtitle>
 
-          {/* Age */}
+          {/* Âge */}
           <FormSection>
-            <OptionTitle>Pour quel age ?</OptionTitle>
+            <OptionTitle>Pour quel âge ?</OptionTitle>
             <SelectionGrid $columns={4}>
               {AGE_RANGES.map((range) => (
                 <ImageAgeCard
@@ -1051,7 +1087,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
             </SelectionGrid>
           </FormSection>
 
-          {/* Theme */}
+          {/* Thème */}
           <FormSection ref={themeRef}>
             <OptionTitle>Quel univers ?</OptionTitle>
             <SelectionGrid>
@@ -1067,7 +1103,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
               ))}
               <CustomThemeCard
                 value="custom"
-                label="Personnalise"
+                label="Personnalisé"
                 imagePath="/image/themes/personnalise.png"
                 isSelected={formData.generalTheme === 'custom'}
                 onClick={(value) => handleSelection('generalTheme', value)}
@@ -1076,7 +1112,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
             {formData.generalTheme === 'custom' && (
               <CustomInput
                 type="text"
-                placeholder="Entrez le theme que vous souhaitez"
+                placeholder="Entrez le thème que vous souhaitez"
                 value={formData.customTheme || ''}
                 onChange={(e) => handleInputChange('customTheme', e.target.value)}
               />
@@ -1099,7 +1135,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
               ))}
               <CustomOccasionCard
                 value="custom"
-                label="Occasion personnalisee"
+                label="Occasion personnalisée"
                 imagePath="/image/occasions/personnalise.png"
                 isSelected={formData.specificSubject === 'custom'}
                 onClick={(value) => handleSelection('specificSubject', value)}
@@ -1108,14 +1144,14 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
             {formData.specificSubject === 'custom' && (
               <CustomInput
                 type="text"
-                placeholder="Entrez votre sujet souhaite"
+                placeholder="Entrez votre sujet souhaité"
                 value={formData.customSubject || ''}
                 onChange={(e) => handleInputChange('customSubject', e.target.value)}
               />
             )}
           </FormSection>
 
-          {/* Illustration style */}
+          {/* Style d'illustration */}
           <FormSection ref={styleRef}>
             <OptionTitle>Quel style d'illustration ?</OptionTitle>
             <SelectionGrid $columns={3}>
@@ -1132,17 +1168,17 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
             </SelectionGrid>
           </FormSection>
 
-          {/* Protagonist info */}
+          {/* Héros */}
           <FormSection ref={protagonistRef}>
-            <OptionTitle>Votre heros</OptionTitle>
+            <OptionTitle>Votre héros</OptionTitle>
 
             <InputGroup>
               <InputField>
                 <ValidatedInput
-                  label="Prenom du heros/heroine *"
+                  label="Prénom du héros / de l'héroïne *"
                   value={formData.protagonistName || ''}
                   onChange={(value) => handleInputChange('protagonistName', value)}
-                  placeholder="Ex: Emma, Lucas..."
+                  placeholder="Ex : Emma, Lucas..."
                   required={true}
                   error={errors.protagonistName}
                   onBlur={() => validateField('protagonistName', formData.protagonistName || '', undefined)}
@@ -1150,7 +1186,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
               </InputField>
               <InputField>
                 <AgeSelector
-                  label="Age *"
+                  label="Âge *"
                   value={formData.protagonistAge || ''}
                   onChange={(value) => handleInputChange('protagonistAge', value)}
                   required={true}
@@ -1176,7 +1212,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
             </FormSection>
           </FormSection>
 
-          {/* Eye color */}
+          {/* Couleur des yeux */}
           <FormSection ref={eyeColorRef}>
             <OptionTitle>Couleur des yeux *</OptionTitle>
             <ColorGrid>
@@ -1194,7 +1230,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
             </ColorGrid>
           </FormSection>
 
-          {/* Hair color */}
+          {/* Couleur des cheveux */}
           <FormSection ref={hairColorRef}>
             <OptionTitle>Couleur des cheveux *</OptionTitle>
             <ColorGrid>
@@ -1212,7 +1248,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
             </ColorGrid>
           </FormSection>
 
-          {/* Photo upload (prominent) */}
+          {/* Photo */}
           <FormSection ref={photoRef}>
             <OptionTitle>Photo de votre enfant</OptionTitle>
             <ProminentPhotoUpload
@@ -1226,7 +1262,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
               <PhotoSubText>
                 {formData.photo
                   ? 'Cliquez pour changer la photo'
-                  : 'Notre IA adaptera le personnage du conte pour qu\'il ressemble a votre enfant (optionnel)'
+                  : 'Notre IA adaptera le personnage du conte pour qu\'il ressemble à votre enfant (optionnel)'
                 }
               </PhotoSubText>
               <HiddenFileInput
@@ -1238,33 +1274,199 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
             </ProminentPhotoUpload>
           </FormSection>
 
-          {/* CTA: Generate cover */}
+          {/* ── Séparateur optionnel ── */}
+          <OptionalDivider>
+            <OptionalDividerIcon>{'\u2728'}</OptionalDividerIcon>
+            <OptionalDividerText>
+              <OptionalDividerTitle>Personnalisez davantage (facultatif)</OptionalDividerTitle>
+              <OptionalDividerSub>Ces options enrichissent votre conte mais ne sont pas obligatoires</OptionalDividerSub>
+            </OptionalDividerText>
+          </OptionalDivider>
+
+          {/* Message central (optionnel) */}
+          <FormSection>
+            <OptionTitle>Quel message transmettre ?</OptionTitle>
+            <SelectionGrid>
+              {CENTRAL_MESSAGES.map((message) => (
+                <ImageMessageCard
+                  key={message.value}
+                  value={message.value}
+                  label={message.label}
+                  imagePath={message.imagePath}
+                  isSelected={formData.centralMessage === message.value}
+                  onClick={(value) => handleInputChange('centralMessage', value)}
+                />
+              ))}
+              <CustomMessageCard
+                value="custom"
+                label="Message personnalisé"
+                imagePath="/image/messages/personnalise.png"
+                isSelected={formData.centralMessage === 'custom'}
+                onClick={(value) => handleInputChange('centralMessage', value)}
+              />
+            </SelectionGrid>
+            {formData.centralMessage === 'custom' && (
+              <CustomInput
+                type="text"
+                placeholder="Message central personnalisé"
+                value={formData.customMessage || ''}
+                onChange={(e) => handleInputChange('customMessage', e.target.value)}
+              />
+            )}
+          </FormSection>
+
+          {/* Langue (top 5 + "Autre langue") */}
+          <FormSection>
+            <OptionTitle>Langue du conte</OptionTitle>
+            <SelectionGrid>
+              {TOP_LANGUAGES.map((language) => (
+                <SelectionCard
+                  key={language.value}
+                  value={language.value}
+                  label={language.label}
+                  icon={language.flag}
+                  isSelected={formData.language === language.value}
+                  onClick={(value) => handleInputChange('language', value)}
+                />
+              ))}
+              <ShowMoreCard
+                $isOpen={showAllLanguages}
+                onClick={() => setShowAllLanguages(!showAllLanguages)}
+              >
+                {showAllLanguages ? 'Masquer' : 'Autre langue'} {showAllLanguages ? '\u25B2' : '\u25BC'}
+              </ShowMoreCard>
+            </SelectionGrid>
+            <ExpandedLanguages $isOpen={showAllLanguages}>
+              <SelectionGrid>
+                {OTHER_LANGUAGES.map((language) => (
+                  <SelectionCard
+                    key={language.value}
+                    value={language.value}
+                    label={language.label}
+                    icon={language.flag}
+                    isSelected={formData.language === language.value}
+                    onClick={(value) => handleInputChange('language', value)}
+                  />
+                ))}
+              </SelectionGrid>
+            </ExpandedLanguages>
+          </FormSection>
+
+          {/* Détails à intégrer */}
+          <FormSection>
+            <OptionTitle>Détails à intégrer dans l'histoire</OptionTitle>
+            <InputField>
+              <TextArea
+                placeholder="Décrivez des détails, événements ou éléments spéciaux à intégrer dans l'histoire..."
+                value={formData.specialEvents || ''}
+                onChange={(e) => handleInputChange('specialEvents', e.target.value)}
+              />
+            </InputField>
+          </FormSection>
+
+          {/* Religion (collapsible pill) */}
+          <FormSection>
+            <CollapsiblePill
+              $isOpen={showReligion}
+              onClick={() => {
+                setShowReligion(!showReligion);
+                if (showReligion) {
+                  onUpdate({ religion: undefined, customReligion: undefined });
+                }
+              }}
+            >
+              {'\u271A'} Ajouter une dimension religieuse
+              <CollapsibleChevron $isOpen={showReligion}>{'\u25BC'}</CollapsibleChevron>
+            </CollapsiblePill>
+            <CollapsibleContent $isOpen={showReligion}>
+              <SelectionGrid>
+                {RELIGIONS.map((religion) => (
+                  <SelectionCard
+                    key={religion.value}
+                    value={religion.value}
+                    label={religion.label}
+                    icon={religion.icon}
+                    isSelected={formData.religion === religion.value}
+                    onClick={(value) => handleInputChange('religion', value)}
+                  />
+                ))}
+                <SelectionCard
+                  value="other"
+                  label="Autre"
+                  icon={'\u270F\uFE0F'}
+                  isSelected={formData.religion === 'other'}
+                  onClick={(value) => handleInputChange('religion', value)}
+                />
+              </SelectionGrid>
+              {formData.religion === 'other' && (
+                <CustomInput
+                  type="text"
+                  placeholder="Précisez la religion..."
+                  value={formData.customReligion || ''}
+                  onChange={(e) => handleInputChange('customReligion', e.target.value)}
+                />
+              )}
+            </CollapsibleContent>
+          </FormSection>
+
+          {/* Secondary characters (collapsible pill) */}
+          <FormSection>
+            <CollapsiblePill
+              $isOpen={showSecondaryChars}
+              onClick={() => setShowSecondaryChars(!showSecondaryChars)}
+            >
+              {'\uD83E\uDDF8'} Ajouter des personnages secondaires
+              <CollapsibleChevron $isOpen={showSecondaryChars}>{'\u25BC'}</CollapsibleChevron>
+            </CollapsiblePill>
+            <CollapsibleContent $isOpen={showSecondaryChars}>
+              <SecondaryCharactersSection
+                secondaryCharacters={formData.secondaryCharacters || []}
+                onChange={(characters) => onUpdate({ secondaryCharacters: characters })}
+              />
+            </CollapsibleContent>
+          </FormSection>
+
+          {/* Créateur */}
+          <FormSection>
+            <OptionTitle>Créateur du livre (optionnel)</OptionTitle>
+            <InputField>
+              <ValidatedInput
+                label="Nom ou signature du créateur"
+                value={formData.creatorName || ''}
+                onChange={(value) => handleInputChange('creatorName', value)}
+                placeholder="Ex : Créé par Papa et Maman..."
+                required={false}
+              />
+            </InputField>
+          </FormSection>
+
+          {/* CTA : Découvrir mon conte */}
           <GenerateCTA
             $isReady={phase1Ready}
             disabled={!phase1Ready || isCoverGenerating}
             onClick={handleGenerateCover}
           >
             {isCoverGenerating
-              ? '\uD83C\uDFA8 Creation en cours...'
-              : '\u2728 Decouvrir mon conte'
+              ? '\uD83C\uDFA8 Création en cours...'
+              : '\u2728 Découvrir mon conte'
             }
           </GenerateCTA>
           {!phase1Ready && (
-            <CTASubtext>Completez tous les champs ci-dessus pour decouvrir votre conte</CTASubtext>
+            <CTASubtext>Complétez tous les champs obligatoires ci-dessus pour découvrir votre conte</CTASubtext>
           )}
         </PhaseCard>
       </Phase>
 
       {/* ═══════════════════════════════════════════
-          PHASE 2 : Votre conte prend vie
+          PHASE 2 : Votre conte prend vie + Paiement
           ═══════════════════════════════════════════ */}
       <Phase $isVisible={showPhase2} ref={phase2Ref}>
         <PhaseCard>
           <PhaseTitle>Votre conte prend vie</PhaseTitle>
           <PhaseSubtitle>
             {coverImageUrl
-              ? 'Voici la couverture de votre conte personnalise !'
-              : 'Notre IA cree votre couverture...'
+              ? 'Voici la couverture de votre conte personnalisé !'
+              : 'Notre IA crée votre couverture...'
             }
           </PhaseSubtitle>
 
@@ -1281,413 +1483,248 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
           {/* Regenerate notice if fields changed */}
           {coverHasChanged && coverImageUrl && !isCoverGenerating && (
             <RegenerateNotice>
-              Des champs ont ete modifies depuis la derniere generation
+              Des champs ont été modifiés depuis la dernière génération
               <RegenerateBtn onClick={regenerateCover}>
-                Regenerer
+                Régénérer
               </RegenerateBtn>
             </RegenerateNotice>
           )}
 
-          {/* Customization accordion (optional fields) */}
-          <CustomizationToggle
-            $isOpen={showCustomization}
-            onClick={() => setShowCustomization(!showCustomization)}
-          >
-            Personnalisez davantage votre conte
-            <ChevronIcon $isOpen={showCustomization}>{'\u25BC'}</ChevronIcon>
-          </CustomizationToggle>
+          {/* ── Payment section (appears when cover is ready) ── */}
+          {coverImageUrl && !isCoverGenerating && (
+            <>
+              <PaymentDivider>
+                <PaymentDividerLabel>Recevez votre conte</PaymentDividerLabel>
+              </PaymentDivider>
 
-          <CustomizationContent $isOpen={showCustomization}>
-            {/* Message central */}
-            <FormSection>
-              <OptionTitle>Quel message transmettre ?</OptionTitle>
-              <SelectionGrid>
-                {CENTRAL_MESSAGES.map((message) => (
-                  <ImageMessageCard
-                    key={message.value}
-                    value={message.value}
-                    label={message.label}
-                    imagePath={message.imagePath}
-                    isSelected={formData.centralMessage === message.value}
-                    onClick={(value) => handleInputChange('centralMessage', value)}
+              <PhaseSubtitle>
+                Plus qu'une étape pour offrir cette histoire unique
+              </PhaseSubtitle>
+
+              <FormSection>
+                <OptionTitle style={{ textAlign: 'center' }}>Choisissez votre format</OptionTitle>
+
+                {/* Club with available credit */}
+                {isClub && clubCredit?.canSubmit && (
+                  <div style={{ marginBottom: theme.spacing.xl }}>
+                    <ClubFreeCard
+                      $isSelected={formData.purchaseType === 'club'}
+                      onClick={() => handleProductSelection('club')}
+                    >
+                      <ClubBadge>Membre Club</ClubBadge>
+                      <div style={{ fontSize: theme.fontSizes['2xl'], marginBottom: theme.spacing.sm, marginTop: theme.spacing.sm }}>
+                        {'\uD83C\uDF81'}
+                      </div>
+                      <h3 style={{ fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.xl, margin: `0 0 ${theme.spacing.xs}` }}>
+                        Utiliser mon eBook gratuit
+                      </h3>
+                      <p style={{ fontSize: theme.fontSizes.base, color: theme.colors.accent.coral, fontWeight: 700, margin: `0 0 ${theme.spacing.sm}` }}>
+                        0,00 € — Inclus dans votre abonnement Club
+                      </p>
+                      <p style={{ fontSize: theme.fontSizes.sm, color: theme.colors.text.secondary, margin: 0 }}>
+                        Il vous reste {clubCredit.remaining} eBook(s) gratuit(s) cette semaine
+                      </p>
+                    </ClubFreeCard>
+                  </div>
+                )}
+
+                {/* Club exhausted */}
+                {isClub && clubCredit && !clubCredit.canSubmit && (
+                  <ClubExhaustedMsg>
+                    Votre crédit hebdomadaire est épuisé (0/1). Choisissez un format payant ci-dessous.
+                  </ClubExhaustedMsg>
+                )}
+
+                <PricingGrid>
+                  <PricingCard
+                    title="eBook Numérique"
+                    price="4,99 €"
+                    features={[
+                      "Conte personnalisé de 20-30 pages",
+                      "Illustrations haute qualité",
+                      "Format PDF optimisé",
+                      "Téléchargement immédiat",
+                      "Compatible tous appareils"
+                    ]}
+                    isPopular={formData.purchaseType === 'single'}
+                    ctaText="Recevoir mon conte maintenant"
+                    onSelect={() => handleProductSelection('single')}
                   />
-                ))}
-                <CustomMessageCard
-                  value="custom"
-                  label="Message personnalise"
-                  imagePath="/image/messages/personnalise.png"
-                  isSelected={formData.centralMessage === 'custom'}
-                  onClick={(value) => handleInputChange('centralMessage', value)}
-                />
-              </SelectionGrid>
-              {formData.centralMessage === 'custom' && (
-                <CustomInput
-                  type="text"
-                  placeholder="Message central personnalise"
-                  value={formData.customMessage || ''}
-                  onChange={(e) => handleInputChange('customMessage', e.target.value)}
-                />
-              )}
-            </FormSection>
 
-            {/* Langue */}
-            <FormSection>
-              <OptionTitle>Langue du conte</OptionTitle>
-              <SelectionGrid>
-                {LANGUAGES.map((language) => (
-                  <SelectionCard
-                    key={language.value}
-                    value={language.value}
-                    label={language.label}
-                    icon={language.flag}
-                    isSelected={formData.language === language.value}
-                    onClick={(value) => handleInputChange('language', value)}
-                  />
-                ))}
-              </SelectionGrid>
-            </FormSection>
-
-            {/* Infos supplementaires */}
-            <FormSection>
-              <OptionTitle>Infos supplementaires</OptionTitle>
-
-              <InputField style={{ marginBottom: theme.spacing.lg }}>
-                <Label>Loisirs / Centres d'interet</Label>
-                <TextArea
-                  placeholder="Ex. : dessin, velo, lecture..."
-                  value={formData.hobbies || ''}
-                  onChange={(e) => handleInputChange('hobbies', e.target.value)}
-                />
-              </InputField>
-
-              <InputField style={{ marginBottom: theme.spacing.lg }}>
-                <Label>Plat prefere</Label>
-                <CustomInput
-                  type="text"
-                  placeholder="Ex. : pizza, glace, pates..."
-                  value={formData.favoriteDish || ''}
-                  onChange={(e) => handleInputChange('favoriteDish', e.target.value)}
-                />
-              </InputField>
-
-              <InputField style={{ marginBottom: theme.spacing.lg }}>
-                <Label>Evenements particuliers a inclure</Label>
-                <TextArea
-                  placeholder="Decrivez des evenements speciaux a integrer dans l'histoire..."
-                  value={formData.specialEvents || ''}
-                  onChange={(e) => handleInputChange('specialEvents', e.target.value)}
-                />
-              </InputField>
-            </FormSection>
-
-            {/* Religion */}
-            <FormSection>
-              <OptionTitle>Dimension religieuse (optionnel)</OptionTitle>
-              <ToggleButton
-                $isActive={showReligionSection}
-                onClick={() => {
-                  setShowReligionSection(!showReligionSection);
-                  if (showReligionSection) {
-                    onUpdate({ religion: undefined, customReligion: undefined });
-                  }
-                }}
-              >
-                Definir une religion au personnage principal
-              </ToggleButton>
-
-              {showReligionSection && (
-                <>
-                  <SelectionGrid>
-                    {RELIGIONS.map((religion) => (
-                      <SelectionCard
-                        key={religion.value}
-                        value={religion.value}
-                        label={religion.label}
-                        icon={religion.icon}
-                        isSelected={formData.religion === religion.value}
-                        onClick={(value) => handleInputChange('religion', value)}
-                      />
-                    ))}
-                    <SelectionCard
-                      value="other"
-                      label="Autre"
-                      icon="✏️"
-                      isSelected={formData.religion === 'other'}
-                      onClick={(value) => handleInputChange('religion', value)}
-                    />
-                  </SelectionGrid>
-                  {formData.religion === 'other' && (
-                    <CustomInput
-                      type="text"
-                      placeholder="Precisez la religion..."
-                      value={formData.customReligion || ''}
-                      onChange={(e) => handleInputChange('customReligion', e.target.value)}
+                  {!isClub && (
+                    <PricingCard
+                      title="Club des Histoires"
+                      price="12,99 € / mois"
+                      features={[
+                        "Cet eBook est inclus immédiatement",
+                        "1 eBook gratuit chaque semaine",
+                        "Bibliothèque illimitée",
+                        "Annulable à tout moment"
+                      ]}
+                      isPopular={formData.purchaseType === 'club' || !formData.purchaseType}
+                      ctaText="Recevoir cet eBook + rejoindre le Club"
+                      badge="Meilleure offre"
+                      subtitle="Soit ~3,25 € par conte"
+                      onSelect={() => handleProductSelection('club')}
                     />
                   )}
-                </>
-              )}
-            </FormSection>
+                </PricingGrid>
 
-            {/* Secondary characters */}
-            <SecondaryCharactersSection
-              secondaryCharacters={formData.secondaryCharacters || []}
-              onChange={(characters) => onUpdate({ secondaryCharacters: characters })}
-            />
+                {/* Order cost summary */}
+                {formData.purchaseType === 'club' && isClub && clubCredit?.canSubmit && (
+                  <OrderCostSummary $variant="free">
+                    Cette commande sera gratuite (crédit Club)
+                  </OrderCostSummary>
+                )}
+                {formData.purchaseType === 'club' && !isClub && (
+                  <OrderCostSummary $variant="info">
+                    Abonnement Club : 12,99 € / mois — Cet eBook est inclus, sans frais supplémentaires
+                  </OrderCostSummary>
+                )}
+                {formData.purchaseType === 'single' && (
+                  <OrderCostSummary $variant="paid">
+                    Cette commande sera payante : 4,99 €
+                  </OrderCostSummary>
+                )}
+              </FormSection>
 
-            {/* Creator name */}
-            <FormSection style={{ marginTop: theme.spacing.xl }}>
-              <OptionTitle>Createur du livre (optionnel)</OptionTitle>
-              <InputField>
-                <ValidatedInput
-                  label="Nom ou signature du createur"
-                  value={formData.creatorName || ''}
-                  onChange={(value) => handleInputChange('creatorName', value)}
-                  placeholder="Ex: Cree par Papa et Maman..."
-                  required={false}
-                />
-              </InputField>
-            </FormSection>
-          </CustomizationContent>
+              <OrderInfoSection ref={paymentRef}>
+                <OptionTitle>Informations de commande</OptionTitle>
 
-          {/* Continue to payment */}
-          {coverImageUrl && !isCoverGenerating && (
-            <ContinueButton onClick={handleContinueToPayment}>
-              Continuer vers le paiement
-            </ContinueButton>
-          )}
-        </PhaseCard>
-      </Phase>
+                {isAuthenticated && currentUser && (
+                  <ConnectedBanner>
+                    Connecté en tant que <strong>{currentUser.email}</strong>
+                  </ConnectedBanner>
+                )}
 
-      {/* ═══════════════════════════════════════════
-          PHASE 3 : Paiement
-          ═══════════════════════════════════════════ */}
-      <Phase $isVisible={showPhase3} ref={phase3Ref}>
-        <PhaseCard>
-          <PhaseTitle>Finalisez votre commande</PhaseTitle>
-          <PhaseSubtitle>Plus qu'une etape pour offrir un conte unique</PhaseSubtitle>
+                <OrderInfoGrid>
+                  {isAuthenticated ? (
+                    <FullWidthField>
+                      <ValidatedInput
+                        type="email"
+                        label="Email"
+                        value={formData.userEmail || ''}
+                        onChange={() => {}}
+                        placeholder=""
+                        required={true}
+                        disabled={true}
+                      />
+                    </FullWidthField>
+                  ) : (
+                    <>
+                      <FullWidthField>
+                        <ValidatedInput
+                          type="email"
+                          label="Email"
+                          value={formData.userEmail || ''}
+                          onChange={handleEmailChange}
+                          placeholder="votre@email.com"
+                          required={true}
+                          error={errors.userEmail}
+                          onBlur={() => { validateField('userEmail', formData.userEmail || '', 'email'); handleEmailBlurCheck(); }}
+                        />
+                        {emailStatus?.exists && emailStatus?.hasPassword && (
+                          <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.accent.coral, marginTop: theme.spacing.xs }}>
+                            Ce compte existe déjà. <span style={{ cursor: 'pointer', fontWeight: 600, textDecoration: 'underline' }} onClick={() => window.location.href = '/login'}>Connectez-vous</span>
+                          </p>
+                        )}
+                        {emailStatus?.exists && !emailStatus?.hasPassword && (
+                          <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.status.warning, marginTop: theme.spacing.xs }}>
+                            Ce compte existe mais n'a pas de mot de passe. Créez-en un ci-dessous pour sécuriser votre compte.
+                          </p>
+                        )}
+                      </FullWidthField>
 
-          <FormSection>
-            <OptionTitle style={{ textAlign: 'center' }}>Choisissez votre format</OptionTitle>
+                      <FullWidthField>
+                        <ValidatedInput
+                          type="password"
+                          label="Mot de passe (créez votre compte)"
+                          value={formData.password || ''}
+                          onChange={handlePasswordChange}
+                          placeholder="Min. 8 caractères"
+                          required={false}
+                          error={errors.password}
+                        />
+                        <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.text.light, marginTop: theme.spacing.xs }}>
+                          Créez un compte pour retrouver vos contes dans votre bibliothèque personnelle
+                        </p>
+                      </FullWidthField>
+                    </>
+                  )}
 
-            {/* Club with available credit */}
-            {isClub && clubCredit?.canSubmit && (
-              <div style={{ marginBottom: theme.spacing.xl }}>
-                <ClubFreeCard
-                  $isSelected={formData.purchaseType === 'club'}
-                  onClick={() => handleProductSelection('club')}
-                >
-                  <ClubBadge>Membre Club</ClubBadge>
-                  <div style={{ fontSize: theme.fontSizes['2xl'], marginBottom: theme.spacing.sm, marginTop: theme.spacing.sm }}>
-                    {'\uD83C\uDF81'}
-                  </div>
-                  <h3 style={{ fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.xl, margin: `0 0 ${theme.spacing.xs}` }}>
-                    Utiliser mon eBook gratuit
-                  </h3>
-                  <p style={{ fontSize: theme.fontSizes.base, color: theme.colors.accent.coral, fontWeight: 700, margin: `0 0 ${theme.spacing.sm}` }}>
-                    0,00EUR — Inclus dans votre abonnement Club
-                  </p>
-                  <p style={{ fontSize: theme.fontSizes.sm, color: theme.colors.text.secondary, margin: 0 }}>
-                    Il vous reste {clubCredit.remaining} eBook(s) gratuit(s) cette semaine
-                  </p>
-                </ClubFreeCard>
-              </div>
-            )}
-
-            {/* Club exhausted */}
-            {isClub && clubCredit && !clubCredit.canSubmit && (
-              <ClubExhaustedMsg>
-                Votre credit hebdomadaire est epuise (0/1). Choisissez un format payant ci-dessous.
-              </ClubExhaustedMsg>
-            )}
-
-            <PricingGrid>
-              <PricingCard
-                title="eBook Numerique"
-                price="4,99\u20AC"
-                features={[
-                  "Conte personnalise de 20-30 pages",
-                  "Illustrations haute qualite",
-                  "Format PDF optimise",
-                  "Telechargement immediat",
-                  "Compatible tous appareils"
-                ]}
-                isPopular={formData.purchaseType === 'single'}
-                ctaText="Choisir l'eBook"
-                onSelect={() => handleProductSelection('single')}
-              />
-
-              {!isClub && (
-                <PricingCard
-                  title="Club des Histoires"
-                  price="12,99\u20AC/mois"
-                  features={[
-                    "Cet eBook est inclus immediatement",
-                    "1 eBook gratuit chaque semaine",
-                    "Bibliotheque illimitee",
-                    "Annulable a tout moment"
-                  ]}
-                  isPopular={formData.purchaseType === 'club' || !formData.purchaseType}
-                  ctaText="Recevoir cet eBook + rejoindre le Club"
-                  badge="Recommande"
-                  subtitle="Soit ~3,25EUR par conte"
-                  onSelect={() => handleProductSelection('club')}
-                />
-              )}
-            </PricingGrid>
-
-            {/* Order cost summary */}
-            {formData.purchaseType === 'club' && isClub && clubCredit?.canSubmit && (
-              <OrderCostSummary $variant="free">
-                Cette commande sera gratuite (credit Club)
-              </OrderCostSummary>
-            )}
-            {formData.purchaseType === 'club' && !isClub && (
-              <OrderCostSummary $variant="info">
-                Abonnement Club : 12,99EUR/mois — Cet eBook est inclus, sans frais supplementaires
-              </OrderCostSummary>
-            )}
-            {formData.purchaseType === 'single' && (
-              <OrderCostSummary $variant="paid">
-                Cette commande sera payante : 4,99EUR
-              </OrderCostSummary>
-            )}
-          </FormSection>
-
-          <OrderInfoSection ref={paymentRef}>
-            <OptionTitle>Informations de commande</OptionTitle>
-
-            {isAuthenticated && currentUser && (
-              <ConnectedBanner>
-                Connecte en tant que <strong>{currentUser.email}</strong>
-              </ConnectedBanner>
-            )}
-
-            <OrderInfoGrid>
-              {isAuthenticated ? (
-                <FullWidthField>
-                  <ValidatedInput
-                    type="email"
-                    label="Email"
-                    value={formData.userEmail || ''}
-                    onChange={() => {}}
-                    placeholder=""
-                    required={true}
-                    disabled={true}
-                  />
-                </FullWidthField>
-              ) : (
-                <>
-                  <FullWidthField>
+                  <InputField>
                     <ValidatedInput
-                      type="email"
-                      label="Email"
-                      value={formData.userEmail || ''}
-                      onChange={handleEmailChange}
-                      placeholder="votre@email.com"
+                      label="Prénom"
+                      value={formData.firstName || ''}
+                      onChange={(value) => handleNameChange('firstName', value)}
+                      placeholder="Votre prénom"
                       required={true}
-                      error={errors.userEmail}
-                      onBlur={() => { validateField('userEmail', formData.userEmail || '', 'email'); handleEmailBlurCheck(); }}
+                      error={errors.firstName}
+                      onBlur={() => validateField('firstName', formData.firstName || '')}
                     />
-                    {emailStatus?.exists && emailStatus?.hasPassword && (
-                      <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.accent.coral, marginTop: theme.spacing.xs }}>
-                        Ce compte existe deja. <span style={{ cursor: 'pointer', fontWeight: 600, textDecoration: 'underline' }} onClick={() => window.location.href = '/login'}>Connectez-vous</span>
-                      </p>
-                    )}
-                    {emailStatus?.exists && !emailStatus?.hasPassword && (
-                      <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.status.warning, marginTop: theme.spacing.xs }}>
-                        Ce compte existe mais n'a pas de mot de passe. Creez-en un ci-dessous pour securiser votre compte.
-                      </p>
-                    )}
-                  </FullWidthField>
+                  </InputField>
 
-                  <FullWidthField>
+                  <InputField>
                     <ValidatedInput
-                      type="password"
-                      label="Mot de passe (creez votre compte)"
-                      value={formData.password || ''}
-                      onChange={handlePasswordChange}
-                      placeholder="Min. 8 caracteres"
-                      required={false}
-                      error={errors.password}
+                      label="Nom"
+                      value={formData.lastName || ''}
+                      onChange={(value) => handleNameChange('lastName', value)}
+                      placeholder="Votre nom"
+                      required={true}
+                      error={errors.lastName}
+                      onBlur={() => validateField('lastName', formData.lastName || '')}
                     />
-                    <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.text.light, marginTop: theme.spacing.xs }}>
-                      Creez un compte pour retrouver vos contes dans votre bibliotheque personnelle
-                    </p>
-                  </FullWidthField>
-                </>
-              )}
+                  </InputField>
+                </OrderInfoGrid>
+              </OrderInfoSection>
 
-              <InputField>
-                <ValidatedInput
-                  label="Prenom"
-                  value={formData.firstName || ''}
-                  onChange={(value) => handleNameChange('firstName', value)}
-                  placeholder="Votre prenom"
-                  required={true}
-                  error={errors.firstName}
-                  onBlur={() => validateField('firstName', formData.firstName || '')}
-                />
-              </InputField>
+              <PaymentSection>
+                <ReadyMessage $show={isPaymentInfoComplete()}>
+                  Tout est prêt !
+                </ReadyMessage>
 
-              <InputField>
-                <ValidatedInput
-                  label="Nom"
-                  value={formData.lastName || ''}
-                  onChange={(value) => handleNameChange('lastName', value)}
-                  placeholder="Votre nom"
-                  required={true}
-                  error={errors.lastName}
-                  onBlur={() => validateField('lastName', formData.lastName || '')}
-                />
-              </InputField>
-            </OrderInfoGrid>
-          </OrderInfoSection>
+                {globalError && (
+                  <ErrorMessage>{globalError}</ErrorMessage>
+                )}
 
-          <PaymentSection>
-            <ReadyMessage $show={isPaymentInfoComplete()}>
-              Tout est pret
-            </ReadyMessage>
+                <PayButton
+                  variant="primary"
+                  size="lg"
+                  onClick={handleFormSubmit}
+                  disabled={!formData.productType || isSubmitting}
+                  $isReady={isPaymentInfoComplete()}
+                >
+                  {isSubmitting
+                    ? '\u23F3 Traitement en cours...'
+                    : formData.purchaseType === 'club' && isClub && clubCredit?.canSubmit
+                      ? '\u2728 Recevoir mon eBook gratuit'
+                      : '\u2728 Recevoir mon conte'
+                  }
+                </PayButton>
 
-            {globalError && (
-              <ErrorMessage>{globalError}</ErrorMessage>
-            )}
+                {!(formData.purchaseType === 'club' && isClub && clubCredit?.canSubmit) && (
+                  <p style={{ marginTop: theme.spacing.md, fontSize: theme.fontSizes.xs, color: theme.colors.text.light }}>
+                    Paiement sécurisé par Stripe
+                  </p>
+                )}
 
-            <PayButton
-              variant="primary"
-              size="lg"
-              onClick={handleFormSubmit}
-              disabled={!formData.productType || isSubmitting}
-              $isReady={isPaymentInfoComplete()}
-            >
-              {isSubmitting
-                ? '\u23F3 Traitement en cours...'
-                : formData.purchaseType === 'club' && isClub && clubCredit?.canSubmit
-                  ? '\u2728 Creer mon eBook gratuit'
-                  : '\u2728 Creer le conte de mon enfant'
-              }
-            </PayButton>
-
-            {!(formData.purchaseType === 'club' && isClub && clubCredit?.canSubmit) && (
-              <p style={{ marginTop: theme.spacing.md, fontSize: theme.fontSizes.xs, color: theme.colors.text.light }}>
-                Paiement securise par Stripe
-              </p>
-            )}
-
-            <TrustBadgesRow>
-              <TrustBadge>
-                <span className="trust-icon">{'\uD83D\uDD12'}</span>
-                Paiement 100% securise
-              </TrustBadge>
-              <TrustBadge>
-                <span className="trust-icon">{'\u2705'}</span>
-                Satisfait ou rembourse
-              </TrustBadge>
-              <TrustBadge>
-                <span className="trust-icon">{'\u26A1'}</span>
-                Livraison instantanee
-              </TrustBadge>
-            </TrustBadgesRow>
-          </PaymentSection>
+                <TrustBadgesRow>
+                  <TrustBadge>
+                    <span className="trust-icon">{'\uD83D\uDD12'}</span>
+                    Paiement 100% sécurisé
+                  </TrustBadge>
+                  <TrustBadge>
+                    <span className="trust-icon">{'\u2705'}</span>
+                    Satisfait ou remboursé
+                  </TrustBadge>
+                  <TrustBadge>
+                    <span className="trust-icon">{'\u26A1'}</span>
+                    Livraison instantanée
+                  </TrustBadge>
+                </TrustBadgesRow>
+              </PaymentSection>
+            </>
+          )}
         </PhaseCard>
       </Phase>
     </FormContainer>

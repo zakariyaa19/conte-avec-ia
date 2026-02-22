@@ -282,7 +282,7 @@ export const BookCoverPreview: React.FC<BookCoverPreviewProps> = React.memo(({
               <LoadingOverlay>
                 <LoadingIcon>{'\uD83C\uDFA8'}</LoadingIcon>
                 <LoadingText>
-                  Notre IA illustre votre conte personnalise...
+                  Notre IA illustre votre conte personnalisé...
                 </LoadingText>
                 <ShimmerBar />
                 <LoadingDots>
@@ -298,7 +298,7 @@ export const BookCoverPreview: React.FC<BookCoverPreviewProps> = React.memo(({
               <PlaceholderOverlay>
                 <PlaceholderIcon>{'\uD83D\uDCD6'}</PlaceholderIcon>
                 <PlaceholderText>
-                  Votre couverture personnalisee apparaitra ici
+                  Votre couverture personnalisée apparaîtra ici
                 </PlaceholderText>
               </PlaceholderOverlay>
             )}
@@ -320,7 +320,7 @@ export const BookCoverPreview: React.FC<BookCoverPreviewProps> = React.memo(({
       <ActionRow>
         {hasAIImage && onRegenerate && (
           <RegenerateButton onClick={onRegenerate} disabled={isGenerating}>
-            {'\uD83D\uDD04'} Regenerer la couverture
+            {'\uD83D\uDD04'} Régénérer la couverture
           </RegenerateButton>
         )}
       </ActionRow>
@@ -329,7 +329,7 @@ export const BookCoverPreview: React.FC<BookCoverPreviewProps> = React.memo(({
           {error}
           {onRegenerate && (
             <RegenerateButton onClick={onRegenerate} style={{ marginLeft: '8px', marginTop: '4px' }}>
-              Reessayer
+              Réessayer
             </RegenerateButton>
           )}
         </ErrorBanner>
