@@ -26,13 +26,12 @@ import {
   LANGUAGES,
   RELIGIONS,
   GENDERS,
-  StoryFormData,
-  SecondaryCharacter
+  StoryFormData
 } from '../../types/FormTypes';
 import { validateEmail, validateRequired } from '../../utils/validation';
 import { ApiService } from '../../config/api';
 import { BookCoverPreview } from '../ui/BookCoverPreview';
-import { useCoverPreview } from '../../hooks/useCoverPreview';
+import { useCoverPreview, isPhase1Complete } from '../../hooks/useCoverPreview';
 
 interface UnifiedStoryFormProps {
   formData: Partial<StoryFormData>;
@@ -46,40 +45,41 @@ interface UnifiedStoryFormProps {
 }
 
 /* ──────────────────────────────────────────────
-   V2 Keyframe Animations
+   Animations
    ────────────────────────────────────────────── */
 
 const slideIn = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 `;
 
 const glowPulse = keyframes`
-  0%, 100% {
-    box-shadow: 0 0 20px ${theme.colors.accent.coral}40, 0 0 40px ${theme.colors.accent.coral}20;
-  }
-  50% {
-    box-shadow: 0 0 30px ${theme.colors.accent.coral}60, 0 0 60px ${theme.colors.accent.coral}30;
-  }
+  0%, 100% { box-shadow: 0 0 20px ${theme.colors.accent.coral}40, 0 0 40px ${theme.colors.accent.coral}20; }
+  50% { box-shadow: 0 0 30px ${theme.colors.accent.coral}60, 0 0 60px ${theme.colors.accent.coral}30; }
 `;
 
 const buttonPulse = keyframes`
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.04);
-  }
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.04); }
+`;
+
+const ctaPulse = keyframes`
+  0%, 100% { transform: scale(1); box-shadow: 0 4px 20px ${theme.colors.accent.coral}40; }
+  50% { transform: scale(1.02); box-shadow: 0 6px 30px ${theme.colors.accent.coral}60; }
+`;
+
+const fadeSlideIn = keyframes`
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+`;
+
+const chevronBounce = keyframes`
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(3px); }
 `;
 
 /* ──────────────────────────────────────────────
-   V2 Styled Components
+   Layout
    ────────────────────────────────────────────── */
 
 const FormContainer = styled.div`
@@ -97,130 +97,64 @@ const FormContainer = styled.div`
   }
 `;
 
-const Section = styled.div<{ $isVisible: boolean; $isCompleted: boolean }>`
-  opacity: ${props => props.$isVisible ? 1 : 0.3};
-  pointer-events: ${props => props.$isVisible ? 'auto' : 'none'};
-  margin-bottom: ${theme.spacing['3xl']};
-  transition: all ${theme.transitions.smooth};
-  position: relative;
-  padding: ${theme.spacing.xl};
+const Phase = styled.div<{ $isVisible: boolean }>`
   width: 100%;
   max-width: 1100px;
+  opacity: ${props => props.$isVisible ? 1 : 0};
+  max-height: ${props => props.$isVisible ? '100000px' : '0'};
+  overflow: ${props => props.$isVisible ? 'visible' : 'hidden'};
+  transition: opacity 0.6s ease;
+  animation: ${props => props.$isVisible ? fadeSlideIn : 'none'} 0.7s ease;
+  margin-bottom: ${props => props.$isVisible ? theme.spacing['3xl'] : '0'};
+`;
 
-  /* V2: Better visual separation for active sections */
-  background: ${props => props.$isVisible && !props.$isCompleted
-    ? theme.colors.background.white
-    : props.$isCompleted
-      ? theme.colors.background.primary
-      : 'transparent'
-  };
+const PhaseCard = styled.div`
+  background: ${theme.colors.background.white};
   border-radius: ${theme.borderRadius['2xl']};
-  box-shadow: ${props => props.$isVisible && !props.$isCompleted
-    ? theme.shadows.card
-    : props.$isCompleted
-      ? theme.shadows.sm
-      : 'none'
-  };
-  border: ${props => props.$isVisible && !props.$isCompleted
-    ? '1px solid rgba(0,0,0,0.04)'
-    : props.$isCompleted
-      ? `1px solid ${theme.colors.accent.lightCoral}30`
-      : '1px solid transparent'
-  };
+  box-shadow: ${theme.shadows.card};
+  border: 1px solid rgba(0,0,0,0.04);
+  padding: ${theme.spacing.xl};
 
   @media (max-width: ${theme.breakpoints.sm}) {
-    margin-bottom: ${theme.spacing.lg};
     padding: ${theme.spacing.md};
     border-radius: ${theme.borderRadius.xl};
-    /* V2: Subtle background on mobile */
-    background: ${props => props.$isVisible
-      ? theme.colors.background.secondary
-      : 'transparent'
-    };
+    background: ${theme.colors.background.secondary};
     border: none;
-    box-shadow: ${props => props.$isVisible ? theme.shadows.sm : 'none'};
+    box-shadow: ${theme.shadows.sm};
   }
 `;
 
-const SectionHeader = styled.div<{ $isCompleted: boolean }>`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: ${theme.spacing.xl};
-  padding: ${theme.spacing.md} 0 ${theme.spacing.lg};
-  position: relative;
-
-  /* V2: Gradient underline instead of plain border */
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    border-radius: ${theme.borderRadius.full};
-    background: ${props => props.$isCompleted
-      ? `linear-gradient(90deg, ${theme.colors.accent.coral}, ${theme.colors.accent.softPink})`
-      : `linear-gradient(90deg, ${theme.colors.background.secondary}, ${theme.colors.background.secondary})`
-    };
-    transition: background ${theme.transitions.smooth};
-  }
-
-  @media (max-width: ${theme.breakpoints.sm}) {
-    display: none;
-  }
-`;
-
-const SectionTitle = styled.h3<{ $isCompleted: boolean }>`
+const PhaseTitle = styled.h2`
   font-family: ${theme.fonts.heading};
-  /* V2: Larger on desktop */
   font-size: ${theme.fontSizes['2xl']};
-  color: ${props => props.$isCompleted ? theme.colors.accent.coral : theme.colors.text.primary};
-  display: flex;
-  align-items: center;
-  gap: ${theme.spacing.sm};
-  transition: color ${theme.transitions.base};
-
-  @media (min-width: ${theme.breakpoints.md}) {
-    justify-content: center;
-  }
+  text-align: center;
+  margin: 0 0 ${theme.spacing.sm};
+  background: linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.accent.softPink});
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 
   @media (max-width: ${theme.breakpoints.sm}) {
-    font-size: ${theme.fontSizes.lg};
+    font-size: ${theme.fontSizes.xl};
   }
 `;
 
-const CompletedBadge = styled.span`
-  display: inline-flex;
-  align-items: center;
-  gap: ${theme.spacing.xs};
-  padding: ${theme.spacing.xs} ${theme.spacing.sm};
-  background: ${theme.colors.accent.creamyYellow};
-  border-radius: ${theme.borderRadius.full};
-  font-size: ${theme.fontSizes.xs};
-  font-weight: 600;
-  color: ${theme.colors.accent.coral};
-  transition: all ${theme.transitions.base};
-`;
+const PhaseSubtitle = styled.p`
+  font-family: ${theme.fonts.body};
+  font-size: ${theme.fontSizes.sm};
+  color: ${theme.colors.text.secondary};
+  text-align: center;
+  margin: 0 0 ${theme.spacing.xl};
 
-const EditButton = styled.button`
-  background: transparent;
-  border: 1px solid ${theme.colors.accent.coral};
-  color: ${theme.colors.accent.coral};
-  padding: ${theme.spacing.xs} ${theme.spacing.sm};
-  border-radius: ${theme.borderRadius.md};
-  font-size: ${theme.fontSizes.xs};
-  font-weight: 600;
-  cursor: pointer;
-  transition: all ${theme.transitions.smooth};
-
-  &:hover {
-    background: ${theme.colors.accent.coral};
-    color: ${theme.colors.background.white};
-    box-shadow: ${theme.shadows.glow};
+  @media (max-width: ${theme.breakpoints.sm}) {
+    font-size: ${theme.fontSizes.xs};
+    margin-bottom: ${theme.spacing.lg};
   }
 `;
 
+/* ──────────────────────────────────────────────
+   Form Sections
+   ────────────────────────────────────────────── */
 
 const FormSection = styled.div`
   margin-bottom: ${theme.spacing.xl};
@@ -239,7 +173,6 @@ const OptionTitle = styled.h4`
   align-items: center;
   gap: ${theme.spacing.sm};
 
-  /* V2: Subtle colored dot accent before the text */
   &::before {
     content: '';
     display: inline-block;
@@ -253,11 +186,7 @@ const OptionTitle = styled.h4`
   @media (min-width: ${theme.breakpoints.md}) {
     font-size: ${theme.fontSizes['2xl']};
     font-weight: 700;
-
-    &::before {
-      width: 10px;
-      height: 10px;
-    }
+    &::before { width: 10px; height: 10px; }
   }
 `;
 
@@ -271,7 +200,6 @@ const SelectionGrid = styled.div<{ $columns?: number }>`
     gap: ${theme.spacing.md};
   }
 
-  /* V2: Better gap on mobile */
   @media (max-width: ${theme.breakpoints.sm}) {
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: ${theme.spacing.md};
@@ -295,13 +223,9 @@ const CustomInput = styled.input`
     box-shadow: 0 0 0 3px ${theme.colors.accent.coral}15;
   }
 
-  &::placeholder {
-    color: ${theme.colors.text.light};
-  }
+  &::placeholder { color: ${theme.colors.text.light}; }
 
-  @media (max-width: 480px) {
-    font-size: 16px;
-  }
+  @media (max-width: 480px) { font-size: 16px; }
 `;
 
 const InputGroup = styled.div`
@@ -310,14 +234,8 @@ const InputGroup = styled.div`
   gap: ${theme.spacing.lg};
   margin-bottom: ${theme.spacing.lg};
 
-  @media (max-width: ${theme.breakpoints.md}) {
-    grid-template-columns: 1fr;
-  }
-
-  @media (max-width: ${theme.breakpoints.sm}) {
-    gap: ${theme.spacing.md};
-    margin-bottom: ${theme.spacing.md};
-  }
+  @media (max-width: ${theme.breakpoints.md}) { grid-template-columns: 1fr; }
+  @media (max-width: ${theme.breakpoints.sm}) { gap: ${theme.spacing.md}; margin-bottom: ${theme.spacing.md}; }
 `;
 
 const InputField = styled.div`
@@ -355,9 +273,7 @@ const ColorOption = styled.div<{ color: string; $isSelected: boolean }>`
     box-shadow: ${theme.shadows.sm};
   }
 
-  @media (max-width: ${theme.breakpoints.sm}) {
-    padding: ${theme.spacing.xs};
-  }
+  @media (max-width: ${theme.breakpoints.sm}) { padding: ${theme.spacing.xs}; }
 `;
 
 const ColorCircle = styled.div<{ color: string }>`
@@ -369,62 +285,239 @@ const ColorCircle = styled.div<{ color: string }>`
   border: 1px solid #ccc;
 
   @media (max-width: ${theme.breakpoints.sm}) {
-    width: 16px;
-    height: 16px;
-    margin-right: ${theme.spacing.xs};
+    width: 16px; height: 16px; margin-right: ${theme.spacing.xs};
   }
 `;
 
 const ColorLabel = styled.span`
   font-size: ${theme.fontSizes.sm};
   color: ${theme.colors.text.primary};
-
-  @media (max-width: ${theme.breakpoints.sm}) {
-    font-size: ${theme.fontSizes.xs};
-  }
+  @media (max-width: ${theme.breakpoints.sm}) { font-size: ${theme.fontSizes.xs}; }
 `;
 
-/* V2: More inviting PhotoUploadSection with icon and better background */
-const PhotoUploadSection = styled.div`
-  border: 2px dashed ${theme.colors.accent.lightCoral};
+/* ──────────────────────────────────────────────
+   Photo Upload (Prominent)
+   ────────────────────────────────────────────── */
+
+const ProminentPhotoUpload = styled.div<{ $hasPhoto: boolean }>`
+  border: 2px dashed ${props => props.$hasPhoto ? theme.colors.accent.coral : theme.colors.accent.lightCoral};
   border-radius: ${theme.borderRadius.xl};
   padding: ${theme.spacing['2xl']} ${theme.spacing.xl};
   text-align: center;
   margin-bottom: ${theme.spacing.lg};
   transition: all ${theme.transitions.smooth};
-  background: ${theme.colors.background.secondary};
+  background: ${props => props.$hasPhoto
+    ? `linear-gradient(135deg, ${theme.colors.accent.creamyYellow}40, ${theme.colors.accent.lightCoral}15)`
+    : `linear-gradient(135deg, ${theme.colors.background.secondary}, ${theme.colors.accent.creamyYellow}20)`
+  };
+  cursor: pointer;
   position: relative;
-
-  /* V2: Camera icon decoration */
-  &::before {
-    content: '📷';
-    display: block;
-    font-size: ${theme.fontSizes['3xl']};
-    margin-bottom: ${theme.spacing.sm};
-    opacity: 0.7;
-    transition: opacity ${theme.transitions.smooth};
-  }
 
   &:hover {
     border-color: ${theme.colors.accent.coral};
-    background: ${theme.colors.accent.creamyYellow};
+    background: linear-gradient(135deg, ${theme.colors.accent.creamyYellow}60, ${theme.colors.accent.lightCoral}20);
     box-shadow: ${theme.shadows.md};
-
-    &::before {
-      opacity: 1;
-    }
   }
 `;
 
-const PhotoUploadText = styled.p`
-  color: ${theme.colors.text.light};
-  margin-bottom: ${theme.spacing.md};
-  font-size: ${theme.fontSizes.sm};
+const PhotoIcon = styled.div`
+  font-size: 2.5rem;
+  margin-bottom: ${theme.spacing.sm};
+`;
+
+const PhotoMainText = styled.p`
+  font-family: ${theme.fonts.body};
+  font-size: ${theme.fontSizes.base};
+  font-weight: 600;
+  color: ${theme.colors.text.primary};
+  margin: 0 0 ${theme.spacing.xs};
+`;
+
+const PhotoSubText = styled.p`
+  font-family: ${theme.fonts.body};
+  font-size: ${theme.fontSizes.xs};
+  color: ${theme.colors.text.secondary};
+  margin: 0;
+  line-height: 1.5;
 `;
 
 const HiddenFileInput = styled.input`
   display: none;
 `;
+
+/* ──────────────────────────────────────────────
+   Generate CTA Button
+   ────────────────────────────────────────────── */
+
+const GenerateCTA = styled.button<{ $isReady: boolean }>`
+  display: block;
+  width: 100%;
+  max-width: 500px;
+  margin: ${theme.spacing.xl} auto 0;
+  padding: ${theme.spacing.lg} ${theme.spacing['2xl']};
+  border: none;
+  border-radius: ${theme.borderRadius.xl};
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.xl};
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  background: ${props => props.$isReady
+    ? `linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover})`
+    : '#ccc'
+  };
+
+  ${props => props.$isReady && css`
+    animation: ${ctaPulse} 2.5s ease-in-out infinite;
+    &:hover {
+      transform: scale(1.03);
+      box-shadow: 0 8px 35px ${theme.colors.accent.coral}50;
+    }
+  `}
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    animation: none;
+    transform: none;
+  }
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    font-size: ${theme.fontSizes.lg};
+    padding: ${theme.spacing.md} ${theme.spacing.lg};
+    max-width: 100%;
+  }
+`;
+
+const CTASubtext = styled.p`
+  text-align: center;
+  font-size: ${theme.fontSizes.xs};
+  color: ${theme.colors.text.light};
+  margin-top: ${theme.spacing.sm};
+`;
+
+/* ──────────────────────────────────────────────
+   Phase 2: Cover Reveal + Customization
+   ────────────────────────────────────────────── */
+
+const CoverRevealSection = styled.div`
+  text-align: center;
+  margin-bottom: ${theme.spacing.xl};
+`;
+
+const CustomizationToggle = styled.button<{ $isOpen: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: ${theme.spacing.sm};
+  width: 100%;
+  padding: ${theme.spacing.md} ${theme.spacing.lg};
+  border: 1.5px solid ${theme.colors.accent.lightCoral};
+  border-radius: ${theme.borderRadius.lg};
+  background: ${props => props.$isOpen
+    ? `linear-gradient(135deg, ${theme.colors.accent.creamyYellow}40, ${theme.colors.accent.lightCoral}10)`
+    : theme.colors.background.white
+  };
+  color: ${theme.colors.text.primary};
+  font-family: ${theme.fonts.body};
+  font-size: ${theme.fontSizes.base};
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: ${theme.colors.accent.creamyYellow}40;
+    border-color: ${theme.colors.accent.coral};
+  }
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    font-size: ${theme.fontSizes.sm};
+    padding: ${theme.spacing.sm} ${theme.spacing.md};
+  }
+`;
+
+const ChevronIcon = styled.span<{ $isOpen: boolean }>`
+  display: inline-block;
+  transition: transform 0.3s ease;
+  transform: ${props => props.$isOpen ? 'rotate(180deg)' : 'rotate(0deg)'};
+  animation: ${chevronBounce} 2s ease-in-out infinite;
+`;
+
+const CustomizationContent = styled.div<{ $isOpen: boolean }>`
+  max-height: ${props => props.$isOpen ? '5000px' : '0'};
+  overflow: hidden;
+  transition: max-height 0.5s ease;
+  margin-top: ${props => props.$isOpen ? theme.spacing.xl : '0'};
+`;
+
+const RegenerateNotice = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: ${theme.spacing.sm};
+  padding: ${theme.spacing.sm} ${theme.spacing.lg};
+  background: #FFF8E1;
+  border: 1px solid #FFE082;
+  border-radius: ${theme.borderRadius.lg};
+  margin-bottom: ${theme.spacing.lg};
+  font-size: ${theme.fontSizes.sm};
+  color: #F57F17;
+  font-weight: 500;
+  animation: ${slideIn} 0.4s ease;
+`;
+
+const RegenerateBtn = styled.button`
+  padding: ${theme.spacing.xs} ${theme.spacing.md};
+  border: 1.5px solid #F57F17;
+  border-radius: ${theme.borderRadius.full};
+  background: transparent;
+  color: #F57F17;
+  font-size: ${theme.fontSizes.xs};
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #F57F17;
+    color: #fff;
+  }
+`;
+
+const ContinueButton = styled.button`
+  display: block;
+  width: 100%;
+  max-width: 500px;
+  margin: ${theme.spacing.xl} auto 0;
+  padding: ${theme.spacing.md} ${theme.spacing['2xl']};
+  border: none;
+  border-radius: ${theme.borderRadius.xl};
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.lg};
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover});
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 25px ${theme.colors.accent.coral}40;
+  }
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    font-size: ${theme.fontSizes.base};
+    padding: ${theme.spacing.md} ${theme.spacing.lg};
+    max-width: 100%;
+  }
+`;
+
+/* ──────────────────────────────────────────────
+   Phase 3: Payment
+   ────────────────────────────────────────────── */
 
 const TextArea = styled.textarea`
   width: 100%;
@@ -445,13 +538,9 @@ const TextArea = styled.textarea`
     box-shadow: 0 0 0 3px ${theme.colors.accent.coral}15;
   }
 
-  &::placeholder {
-    color: ${theme.colors.text.light};
-  }
+  &::placeholder { color: ${theme.colors.text.light}; }
 
-  @media (max-width: 480px) {
-    font-size: 16px;
-  }
+  @media (max-width: 480px) { font-size: 16px; }
 `;
 
 const Label = styled.label`
@@ -487,13 +576,6 @@ const ToggleButton = styled.button<{ $isActive: boolean }>`
   }
 `;
 
-const SecondaryCharacterSection = styled.div`
-  background-color: ${theme.colors.background.secondary};
-  padding: ${theme.spacing.xl};
-  border-radius: ${theme.borderRadius.lg};
-  margin-top: ${theme.spacing.xl};
-`;
-
 const ConnectedBanner = styled.div`
   display: flex;
   align-items: center;
@@ -510,11 +592,7 @@ const ConnectedBanner = styled.div`
   overflow-wrap: anywhere;
   word-break: break-word;
 
-  strong {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    min-width: 0;
-  }
+  strong { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 
   @media (max-width: ${theme.breakpoints.sm}) {
     flex-wrap: wrap;
@@ -618,14 +696,11 @@ const OrderCostSummary = styled.div<{ $variant: 'free' | 'paid' | 'info' }>`
   }};
 `;
 
-const OrderInfoSection = styled.div<{ $show: boolean }>`
-  display: ${props => props.$show ? 'block' : 'none'};
+const OrderInfoSection = styled.div`
   background-color: ${theme.colors.background.secondary};
   padding: ${theme.spacing.xl};
   border-radius: ${theme.borderRadius.lg};
   margin-bottom: ${theme.spacing.xl};
-  transition: all ${theme.transitions.smooth};
-  overflow: hidden;
 
   @media (max-width: ${theme.breakpoints.sm}) {
     padding: ${theme.spacing.md};
@@ -638,26 +713,19 @@ const OrderInfoGrid = styled.div`
   grid-template-columns: 1fr 1fr;
   gap: ${theme.spacing.lg};
 
-  @media (max-width: ${theme.breakpoints.md}) {
-    grid-template-columns: 1fr;
-  }
-
-  @media (max-width: ${theme.breakpoints.sm}) {
-    gap: ${theme.spacing.md};
-  }
+  @media (max-width: ${theme.breakpoints.md}) { grid-template-columns: 1fr; }
+  @media (max-width: ${theme.breakpoints.sm}) { gap: ${theme.spacing.md}; }
 `;
 
 const FullWidthField = styled(InputField)`
   grid-column: 1 / -1;
 `;
 
-/* V2: Enhanced PaymentSection */
 const PaymentSection = styled.div`
   text-align: center;
   padding: ${theme.spacing.xl} 0;
 `;
 
-/* V2: Green gradient ReadyMessage instead of coral */
 const ReadyMessage = styled.div<{ $show: boolean }>`
   display: ${props => props.$show ? 'flex' : 'none'};
   align-items: center;
@@ -674,7 +742,6 @@ const ReadyMessage = styled.div<{ $show: boolean }>`
   border: 1px solid #a8e6cf;
 `;
 
-/* V2: Larger pay button with glow animation when ready */
 const PayButton = styled(Button)<{ $isReady: boolean }>`
   position: relative;
   transition: all ${theme.transitions.smooth};
@@ -691,7 +758,6 @@ const PayButton = styled(Button)<{ $isReady: boolean }>`
   `}
 `;
 
-/* V2: Softer error with icon */
 const ErrorMessage = styled.div`
   display: flex;
   align-items: center;
@@ -714,7 +780,6 @@ const ErrorMessage = styled.div`
   }
 `;
 
-/* V2: Trust badges row */
 const TrustBadgesRow = styled.div`
   display: flex;
   align-items: center;
@@ -723,9 +788,7 @@ const TrustBadgesRow = styled.div`
   margin-top: ${theme.spacing.lg};
   flex-wrap: wrap;
 
-  @media (max-width: ${theme.breakpoints.sm}) {
-    gap: ${theme.spacing.md};
-  }
+  @media (max-width: ${theme.breakpoints.sm}) { gap: ${theme.spacing.md}; }
 `;
 
 const TrustBadge = styled.div`
@@ -742,6 +805,10 @@ const TrustBadge = styled.div`
   }
 `;
 
+/* ──────────────────────────────────────────────
+   Component
+   ────────────────────────────────────────────── */
+
 export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
   formData,
   onUpdate,
@@ -755,80 +822,59 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [globalError, setGlobalError] = useState<string>('');
   const [showReligionSection, setShowReligionSection] = useState<boolean>(!!formData.religion);
-  const [editingSection, setEditingSection] = useState<string | null>(null);
-
-  // Hook de generation de couverture IA
-  const { coverImageUrl, isGenerating: isCoverGenerating, error: coverError, regenerate: regenerateCover } = useCoverPreview(formData);
   const [emailStatus, setEmailStatus] = useState<{ exists: boolean; hasPassword: boolean } | null>(null);
+
+  // Phase visibility
+  const [showPhase2, setShowPhase2] = useState(false);
+  const [showPhase3, setShowPhase3] = useState(false);
+  const [showCustomization, setShowCustomization] = useState(false);
+
+  // Cover preview hook (button-triggered)
+  const {
+    coverImageUrl,
+    coverTitle,
+    isGenerating: isCoverGenerating,
+    error: coverError,
+    generate: generateCover,
+    regenerate: regenerateCover,
+    hasChanged: coverHasChanged,
+  } = useCoverPreview(formData);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Refs pour auto-scroll
+  // Refs for scroll
   const themeRef = useRef<HTMLDivElement>(null);
   const subjectRef = useRef<HTMLDivElement>(null);
-  const messageRef = useRef<HTMLDivElement>(null);
   const styleRef = useRef<HTMLDivElement>(null);
   const protagonistRef = useRef<HTMLDivElement>(null);
-  const genderRef = useRef<HTMLDivElement>(null);
   const eyeColorRef = useRef<HTMLDivElement>(null);
   const hairColorRef = useRef<HTMLDivElement>(null);
   const photoRef = useRef<HTMLDivElement>(null);
-  const languageRef = useRef<HTMLDivElement>(null);
-  const optionsRef = useRef<HTMLDivElement>(null);
+  const phase2Ref = useRef<HTMLDivElement>(null);
+  const phase3Ref = useRef<HTMLDivElement>(null);
   const paymentRef = useRef<HTMLDivElement>(null);
 
-  // Fonction utilitaire pour auto-scroll optimisé
   const scrollToSection = (ref: React.RefObject<HTMLDivElement | null>, offset = 120) => {
     setTimeout(() => {
       if (ref.current) {
         const elementPosition = ref.current.getBoundingClientRect().top;
         const offsetPosition = elementPosition + window.pageYOffset - offset;
-
-        window.scrollTo({
-          top: offsetPosition,
-          behavior: 'smooth'
-        });
+        window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
       }
     }, 200);
   };
 
-  // Vérifier la complétion des sections
-  const isChoicesComplete = !!(
-    formData.ageRange &&
-    formData.generalTheme &&
-    formData.specificSubject &&
-    formData.centralMessage &&
-    formData.illustrationStyle
-  );
-
-  const isProtagonistComplete = !!(
-    formData.protagonistName &&
-    formData.protagonistAge &&
-    formData.protagonistGender &&
-    formData.eyeColor &&
-    formData.hairColor
-  );
+  // Phase 1 completion check (no centralMessage required)
+  const phase1Ready = isPhase1Complete(formData);
 
   const isPaymentInfoComplete = () => {
-    return !!(
-      formData.productType &&
-      formData.userEmail &&
-      formData.firstName &&
-      formData.lastName
-    );
+    return !!(formData.productType && formData.userEmail && formData.firstName && formData.lastName);
   };
 
-  // Déterminer quelles sections sont visibles
-  const isProtagonistVisible = isChoicesComplete || editingSection === 'protagonist';
-  const isPaymentVisible = isProtagonistComplete || editingSection === 'payment';
-
-  // Gestion des sélections avec auto-advance
+  // Auto-scroll on selections
   const handleSelection = (field: keyof StoryFormData, value: string) => {
     onUpdate({ [field]: value });
-
-    if (value === 'custom' || value === 'other') {
-      return;
-    }
+    if (value === 'custom' || value === 'other') return;
 
     switch (field) {
       case 'ageRange':
@@ -838,15 +884,10 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
         scrollToSection(subjectRef);
         break;
       case 'specificSubject':
-        scrollToSection(messageRef);
-        break;
-      case 'centralMessage':
         scrollToSection(styleRef);
         break;
       case 'illustrationStyle':
-        if (isChoicesComplete) {
-          scrollToSection(protagonistRef);
-        }
+        scrollToSection(protagonistRef);
         break;
       case 'protagonistGender':
         scrollToSection(eyeColorRef);
@@ -871,7 +912,6 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
     const file = event.target.files?.[0];
     if (file) {
       onUpdate({ photo: file });
-      scrollToSection(languageRef);
     }
   };
 
@@ -891,36 +931,29 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
         setEmailStatus({ exists: response.exists, hasPassword: !!response.hasPassword });
       }
     } catch (error) {
-      // Silent fail - non-blocking
+      // Silent fail
     }
   };
 
   const handlePasswordChange = (value: string) => {
     onUpdate({ password: value });
-    if (errors.password) {
-      setErrors(prev => ({ ...prev, password: '' }));
-    }
+    if (errors.password) setErrors(prev => ({ ...prev, password: '' }));
   };
 
   const handleNameChange = (field: 'firstName' | 'lastName', value: string) => {
     setGlobalError('');
     onUpdate({ [field]: value });
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
-    }
+    if (errors[field]) setErrors(prev => ({ ...prev, [field]: '' }));
   };
 
   const handleEmailChange = (value: string) => {
     setGlobalError('');
     onUpdate({ userEmail: value });
-    if (errors.userEmail) {
-      setErrors(prev => ({ ...prev, userEmail: '' }));
-    }
+    if (errors.userEmail) setErrors(prev => ({ ...prev, userEmail: '' }));
   };
 
   const validateField = (field: string, value: string, validationType?: 'email') => {
     let validation: { isValid: boolean; error?: string };
-
     switch (validationType) {
       case 'email':
         validation = validateEmail(value);
@@ -928,12 +961,10 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
       default:
         validation = validateRequired(value, field);
     }
-
     if (!validation.isValid) {
       setErrors(prev => ({ ...prev, [field]: validation.error || '' }));
       return false;
     }
-
     setErrors(prev => ({ ...prev, [field]: '' }));
     return true;
   };
@@ -953,21 +984,14 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
       }
     }
 
-    if (!formData.firstName) {
-      newErrors.firstName = 'Le prénom est obligatoire';
-      isValid = false;
-    }
-
-    if (!formData.lastName) {
-      newErrors.lastName = 'Le nom est obligatoire';
-      isValid = false;
-    }
+    if (!formData.firstName) { newErrors.firstName = 'Le prenom est obligatoire'; isValid = false; }
+    if (!formData.lastName) { newErrors.lastName = 'Le nom est obligatoire'; isValid = false; }
 
     setErrors(newErrors);
 
     if (!isValid) {
       scrollToSection(paymentRef, 150);
-      setGlobalError('Veuillez remplir tous les champs obligatoires (Email, Prénom, Nom)');
+      setGlobalError('Veuillez remplir tous les champs obligatoires');
     }
 
     return isValid;
@@ -975,685 +999,697 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
 
   const handleFormSubmit = () => {
     setGlobalError('');
-    if (validateForm()) {
-      onSubmit();
-    }
+    if (validateForm()) onSubmit();
   };
 
-  const handleEdit = (section: string) => {
-    setEditingSection(section);
-    if (section === 'choices') {
-      scrollToSection(themeRef);
-    } else if (section === 'protagonist') {
-      scrollToSection(protagonistRef);
-    }
+  // --- Phase 1 CTA: Generate cover ---
+  const handleGenerateCover = async () => {
+    if (!phase1Ready) return;
+    generateCover();
+    setShowPhase2(true);
+    scrollToSection(phase2Ref, 80);
   };
 
+  // When cover image arrives, show Phase 3
   useEffect(() => {
-    if (isChoicesComplete && !editingSection) {
-      scrollToSection(protagonistRef);
+    if (coverImageUrl && showPhase2) {
+      setShowPhase3(true);
     }
-  }, [isChoicesComplete]);
+  }, [coverImageUrl, showPhase2]);
 
-  useEffect(() => {
-    if (isProtagonistComplete && !editingSection) {
-      scrollToSection(optionsRef);
-    }
-  }, [isProtagonistComplete]);
+  // --- Phase 2: Continue to payment ---
+  const handleContinueToPayment = () => {
+    setShowPhase3(true);
+    scrollToSection(phase3Ref, 80);
+  };
 
   return (
     <FormContainer>
-      {/* Section 1: Choix du conte */}
-      <Section
-        $isVisible={true}
-        $isCompleted={isChoicesComplete}
-        id="choices-section"
-      >
-        <SectionHeader $isCompleted={isChoicesComplete}>
-          <SectionTitle $isCompleted={isChoicesComplete}>
-            ✨ Choix du conte
-            {isChoicesComplete && <CompletedBadge>✓ Complété</CompletedBadge>}
-          </SectionTitle>
-          {isChoicesComplete && !editingSection && (
-            <EditButton onClick={() => handleEdit('choices')}>Modifier</EditButton>
-          )}
-        </SectionHeader>
+      {/* ═══════════════════════════════════════════
+          PHASE 1 : Creez votre conte
+          ═══════════════════════════════════════════ */}
+      <Phase $isVisible={true}>
+        <PhaseCard>
+          <PhaseTitle>Creez votre conte</PhaseTitle>
+          <PhaseSubtitle>Quelques choix rapides pour creer une histoire unique</PhaseSubtitle>
 
-        <FormSection>
-          <OptionTitle>
-            Pour quel âge ?
-          </OptionTitle>
-          <SelectionGrid $columns={4}>
-            {AGE_RANGES.map((range) => (
-              <ImageAgeCard
-                key={range.value}
-                value={range.value}
-                label={range.label}
-                description={range.description}
-                imagePath={range.imagePath}
-                isSelected={formData.ageRange === range.value}
-                onClick={(value) => handleSelection('ageRange', value)}
-              />
-            ))}
-          </SelectionGrid>
-        </FormSection>
-
-        <FormSection ref={themeRef}>
-          <OptionTitle>
-            Quel univers ?
-          </OptionTitle>
-          <SelectionGrid>
-            {GENERAL_THEMES.map((theme_item) => (
-              <ImageThemeCard
-                key={theme_item.value}
-                value={theme_item.value}
-                label={theme_item.label}
-                imagePath={theme_item.imagePath}
-                isSelected={formData.generalTheme === theme_item.value}
-                onClick={(value) => handleSelection('generalTheme', value)}
-              />
-            ))}
-            <CustomThemeCard
-              value="custom"
-              label="Personnalisé"
-              imagePath="/image/themes/personnalise.png"
-              isSelected={formData.generalTheme === 'custom'}
-              onClick={(value) => handleSelection('generalTheme', value)}
-            />
-          </SelectionGrid>
-          {formData.generalTheme === 'custom' && (
-            <CustomInput
-              type="text"
-              placeholder="Entrez le thème que vous souhaitez"
-              value={formData.customTheme || ''}
-              onChange={(e) => handleInputChange('customTheme', e.target.value)}
-            />
-          )}
-        </FormSection>
-
-        <FormSection ref={subjectRef}>
-          <OptionTitle>
-            Quelle occasion ?
-          </OptionTitle>
-          <SelectionGrid>
-            {SPECIFIC_SUBJECTS.map((subject) => (
-              <ImageOccasionCard
-                key={subject.value}
-                value={subject.value}
-                label={subject.label}
-                imagePath={subject.imagePath}
-                isSelected={formData.specificSubject === subject.value}
-                onClick={(value) => handleSelection('specificSubject', value)}
-              />
-            ))}
-            <CustomOccasionCard
-              value="custom"
-              label="Occasion personnalisée"
-              imagePath="/image/occasions/personnalise.png"
-              isSelected={formData.specificSubject === 'custom'}
-              onClick={(value) => handleSelection('specificSubject', value)}
-            />
-          </SelectionGrid>
-          {formData.specificSubject === 'custom' && (
-            <CustomInput
-              type="text"
-              placeholder="Entrez votre sujet souhaité"
-              value={formData.customSubject || ''}
-              onChange={(e) => handleInputChange('customSubject', e.target.value)}
-            />
-          )}
-        </FormSection>
-
-        <FormSection ref={messageRef}>
-          <OptionTitle>
-            Quel message transmettre ?
-          </OptionTitle>
-          <SelectionGrid>
-            {CENTRAL_MESSAGES.map((message) => (
-              <ImageMessageCard
-                key={message.value}
-                value={message.value}
-                label={message.label}
-                imagePath={message.imagePath}
-                isSelected={formData.centralMessage === message.value}
-                onClick={(value) => handleSelection('centralMessage', value)}
-              />
-            ))}
-            <CustomMessageCard
-              value="custom"
-              label="Message personnalisé"
-              imagePath="/image/messages/personnalise.png"
-              isSelected={formData.centralMessage === 'custom'}
-              onClick={(value) => handleSelection('centralMessage', value)}
-            />
-          </SelectionGrid>
-          {formData.centralMessage === 'custom' && (
-            <CustomInput
-              type="text"
-              placeholder="Message central personnalisé"
-              value={formData.customMessage || ''}
-              onChange={(e) => handleInputChange('customMessage', e.target.value)}
-            />
-          )}
-        </FormSection>
-
-        <FormSection ref={styleRef}>
-          <OptionTitle>
-            Quel style d'illustration ?
-          </OptionTitle>
-          <SelectionGrid $columns={3}>
-            {ILLUSTRATION_STYLES.map((style) => (
-              <ImageSelectionCard
-                key={style.value}
-                value={style.value}
-                label={style.label}
-                imagePath={style.imagePath}
-                isSelected={formData.illustrationStyle === style.value}
-                onClick={(value) => handleSelection('illustrationStyle', value)}
-              />
-            ))}
-          </SelectionGrid>
-        </FormSection>
-      </Section>
-
-      {/* Section 2: Informations du protagoniste */}
-      <Section
-        $isVisible={isProtagonistVisible}
-        $isCompleted={isProtagonistComplete}
-        ref={protagonistRef}
-        id="protagonist-section"
-      >
-        <SectionHeader $isCompleted={isProtagonistComplete}>
-          <SectionTitle $isCompleted={isProtagonistComplete}>
-            🧍 Informations du protagoniste
-            {isProtagonistComplete && <CompletedBadge>✓ Complété</CompletedBadge>}
-          </SectionTitle>
-          {isProtagonistComplete && !editingSection && (
-            <EditButton onClick={() => handleEdit('protagonist')}>Modifier</EditButton>
-          )}
-        </SectionHeader>
-
-        <FormSection>
-          <InputGroup>
-            <InputField>
-              <ValidatedInput
-                label="Prénom du héros/héroïne *"
-                value={formData.protagonistName || ''}
-                onChange={(value) => handleInputChange('protagonistName', value)}
-                placeholder="Ex: Emma, Lucas..."
-                required={true}
-                error={errors.protagonistName}
-                onBlur={() => validateField('protagonistName', formData.protagonistName || '', undefined)}
-              />
-            </InputField>
-
-            <InputField>
-              <AgeSelector
-                label="Âge *"
-                value={formData.protagonistAge || ''}
-                onChange={(value) => handleInputChange('protagonistAge', value)}
-                required={true}
-                error={errors.protagonistAge}
-              />
-            </InputField>
-          </InputGroup>
-
-          <FormSection ref={genderRef}>
-            <OptionTitle>
-              Sexe *
-            </OptionTitle>
-            <SelectionGrid>
-              {GENDERS.map((gender) => (
-                <SelectionCard
-                  key={gender.value}
-                  value={gender.value}
-                  label={gender.label}
-                  icon={gender.icon}
-                  isSelected={formData.protagonistGender === gender.value}
-                  onClick={(value) => handleSelection('protagonistGender', value)}
+          {/* Age */}
+          <FormSection>
+            <OptionTitle>Pour quel age ?</OptionTitle>
+            <SelectionGrid $columns={4}>
+              {AGE_RANGES.map((range) => (
+                <ImageAgeCard
+                  key={range.value}
+                  value={range.value}
+                  label={range.label}
+                  description={range.description}
+                  imagePath={range.imagePath}
+                  isSelected={formData.ageRange === range.value}
+                  onClick={(value) => handleSelection('ageRange', value)}
                 />
               ))}
             </SelectionGrid>
           </FormSection>
-        </FormSection>
 
-        <FormSection ref={eyeColorRef}>
-          <OptionTitle>
-            Couleur des yeux *
-          </OptionTitle>
-          <ColorGrid>
-            {EYE_COLORS.map((eyeColor) => (
-              <ColorOption
-                key={eyeColor.value}
-                color={eyeColor.color}
-                $isSelected={formData.eyeColor === eyeColor.value}
-                onClick={() => handleSelection('eyeColor', eyeColor.value)}
-              >
-                <ColorCircle color={eyeColor.color} />
-                <ColorLabel>{eyeColor.label}</ColorLabel>
-              </ColorOption>
-            ))}
-          </ColorGrid>
-        </FormSection>
-
-        <FormSection ref={hairColorRef}>
-          <OptionTitle>
-            Couleur des cheveux *
-          </OptionTitle>
-          <ColorGrid>
-            {HAIR_COLORS.map((hairColor) => (
-              <ColorOption
-                key={hairColor.value}
-                color={hairColor.color}
-                $isSelected={formData.hairColor === hairColor.value}
-                onClick={() => handleSelection('hairColor', hairColor.value)}
-              >
-                <ColorCircle color={hairColor.color} />
-                <ColorLabel>{hairColor.label}</ColorLabel>
-              </ColorOption>
-            ))}
-          </ColorGrid>
-        </FormSection>
-
-        <FormSection ref={photoRef}>
-          <OptionTitle>
-            📸 Photo (optionnel)
-          </OptionTitle>
-          <PhotoUploadSection>
-            <Button variant="outline" onClick={() => fileInputRef.current?.click()}>
-              {formData.photo ? `✓ ${formData.photo.name}` : 'Choisir une photo'}
-            </Button>
-            <HiddenFileInput
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              onChange={handleFileUpload}
-            />
-          </PhotoUploadSection>
-        </FormSection>
-
-        <FormSection ref={languageRef}>
-          <OptionTitle>
-            🌍 Langue du conte
-          </OptionTitle>
-          <SelectionGrid>
-            {LANGUAGES.map((language) => (
-              <SelectionCard
-                key={language.value}
-                value={language.value}
-                label={language.label}
-                icon={language.flag}
-                isSelected={formData.language === language.value}
-                onClick={(value) => handleInputChange('language', value)}
+          {/* Theme */}
+          <FormSection ref={themeRef}>
+            <OptionTitle>Quel univers ?</OptionTitle>
+            <SelectionGrid>
+              {GENERAL_THEMES.map((t) => (
+                <ImageThemeCard
+                  key={t.value}
+                  value={t.value}
+                  label={t.label}
+                  imagePath={t.imagePath}
+                  isSelected={formData.generalTheme === t.value}
+                  onClick={(value) => handleSelection('generalTheme', value)}
+                />
+              ))}
+              <CustomThemeCard
+                value="custom"
+                label="Personnalise"
+                imagePath="/image/themes/personnalise.png"
+                isSelected={formData.generalTheme === 'custom'}
+                onClick={(value) => handleSelection('generalTheme', value)}
               />
-            ))}
-          </SelectionGrid>
-        </FormSection>
-
-        <FormSection ref={optionsRef}>
-          <OptionTitle>
-            💡 Infos supplémentaires (facultatif)
-          </OptionTitle>
-
-          <InputField style={{ marginBottom: theme.spacing.lg }}>
-            <Label>Loisirs / Centres d'intérêt</Label>
-            <TextArea
-              placeholder="Ex. : dessin, vélo, lecture..."
-              value={formData.hobbies || ''}
-              onChange={(e) => handleInputChange('hobbies', e.target.value)}
-            />
-          </InputField>
-
-          <InputField style={{ marginBottom: theme.spacing.lg }}>
-            <Label>Plat préféré</Label>
-            <CustomInput
-              type="text"
-              placeholder="Ex. : pizza, glace, pâtes..."
-              value={formData.favoriteDish || ''}
-              onChange={(e) => handleInputChange('favoriteDish', e.target.value)}
-            />
-          </InputField>
-
-          <InputField style={{ marginBottom: theme.spacing.lg }}>
-            <Label>Événements particuliers à inclure</Label>
-            <TextArea
-              placeholder="Décrivez des événements spéciaux à intégrer dans l'histoire..."
-              value={formData.specialEvents || ''}
-              onChange={(e) => handleInputChange('specialEvents', e.target.value)}
-            />
-          </InputField>
-        </FormSection>
-
-        <FormSection>
-          <OptionTitle>
-            🕊️ Dimension religieuse (optionnel)
-          </OptionTitle>
-
-          <ToggleButton
-            $isActive={showReligionSection}
-            onClick={() => {
-              setShowReligionSection(!showReligionSection);
-              if (showReligionSection) {
-                onUpdate({ religion: undefined, customReligion: undefined });
-              }
-            }}
-          >
-            Définir une religion au personnage principal
-          </ToggleButton>
-
-          {showReligionSection && (
-            <>
-              <SelectionGrid>
-                {RELIGIONS.map((religion) => (
-                  <SelectionCard
-                    key={religion.value}
-                    value={religion.value}
-                    label={religion.label}
-                    icon={religion.icon}
-                    isSelected={formData.religion === religion.value}
-                    onClick={(value) => handleInputChange('religion', value)}
-                  />
-                ))}
-                <SelectionCard
-                  value="other"
-                  label="Autre"
-                  icon="✏️"
-                  isSelected={formData.religion === 'other'}
-                  onClick={(value) => handleInputChange('religion', value)}
-                />
-              </SelectionGrid>
-
-              {formData.religion === 'other' && (
-                <CustomInput
-                  type="text"
-                  placeholder="Précisez la religion..."
-                  value={formData.customReligion || ''}
-                  onChange={(e) => handleInputChange('customReligion', e.target.value)}
-                />
-              )}
-            </>
-          )}
-        </FormSection>
-
-        <SecondaryCharactersSection
-          secondaryCharacters={formData.secondaryCharacters || []}
-          onChange={(characters) => onUpdate({ secondaryCharacters: characters })}
-        />
-
-        <FormSection style={{ marginTop: theme.spacing['3xl'], paddingTop: theme.spacing.xl, borderTop: `1px solid ${theme.colors.background.secondary}` }}>
-          <OptionTitle>
-            🧑‍🎨 Créateur du livre (optionnel)
-          </OptionTitle>
-
-          <InputField>
-            <ValidatedInput
-              label="Nom ou signature du créateur (facultatif)"
-              value={formData.creatorName || ''}
-              onChange={(value) => handleInputChange('creatorName', value)}
-              placeholder="Ex: Créé par Papa et Maman, Fait avec amour par Grand-mère..."
-              required={false}
-            />
-          </InputField>
-        </FormSection>
-      </Section>
-
-      {/* Prévisualisation couverture IA */}
-      {isProtagonistVisible && formData.protagonistName && (
-        <BookCoverPreview
-          formData={formData}
-          coverImageUrl={coverImageUrl}
-          isGenerating={isCoverGenerating}
-          error={coverError}
-          onRegenerate={regenerateCover}
-        />
-      )}
-
-      {/* Section 3: Paiement */}
-      <Section
-        $isVisible={isPaymentVisible}
-        $isCompleted={false}
-        id="payment-section"
-      >
-        <SectionHeader $isCompleted={false}>
-          <SectionTitle $isCompleted={false}>
-            💳 Paiement
-          </SectionTitle>
-        </SectionHeader>
-
-        <FormSection>
-          <OptionTitle style={{ textAlign: 'center' }}>
-            📦 Choisissez votre format
-          </OptionTitle>
-
-          {/* Club avec credit disponible : carte gratuite mise en avant */}
-          {isClub && clubCredit?.canSubmit && (
-            <div style={{ marginBottom: theme.spacing.xl }}>
-              <ClubFreeCard
-                $isSelected={formData.purchaseType === 'club'}
-                onClick={() => handleProductSelection('club')}
-              >
-                <ClubBadge>Membre Club</ClubBadge>
-                <div style={{ fontSize: theme.fontSizes['2xl'], marginBottom: theme.spacing.sm, marginTop: theme.spacing.sm }}>
-                  🎁
-                </div>
-                <h3 style={{ fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.xl, margin: `0 0 ${theme.spacing.xs}` }}>
-                  Utiliser mon eBook gratuit
-                </h3>
-                <p style={{ fontSize: theme.fontSizes.base, color: theme.colors.accent.coral, fontWeight: 700, margin: `0 0 ${theme.spacing.sm}` }}>
-                  0,00EUR — Inclus dans votre abonnement Club
-                </p>
-                <p style={{ fontSize: theme.fontSizes.sm, color: theme.colors.text.secondary, margin: 0 }}>
-                  Il vous reste {clubCredit.remaining} eBook(s) gratuit(s) cette semaine
-                </p>
-              </ClubFreeCard>
-            </div>
-          )}
-
-          {/* Club sans credit : message d'info */}
-          {isClub && clubCredit && !clubCredit.canSubmit && (
-            <ClubExhaustedMsg>
-              Votre credit hebdomadaire est epuise (0/1). Choisissez un format payant ci-dessous.
-            </ClubExhaustedMsg>
-          )}
-
-          <PricingGrid>
-            <PricingCard
-              title="eBook Numerique"
-              price="4,99€"
-              features={[
-                "Conte personnalise de 20-30 pages",
-                "Illustrations haute qualite",
-                "Format PDF optimise",
-                "Telechargement immediat",
-                "Compatible tous appareils"
-              ]}
-              isPopular={formData.purchaseType === 'single'}
-              ctaText="Choisir l'eBook"
-              onSelect={() => handleProductSelection('single')}
-            />
-
-            {!isClub && (
-              <PricingCard
-                title="Club des Histoires"
-                price="12,99€/mois"
-                features={[
-                  "Cet eBook est inclus immediatement",
-                  "1 eBook gratuit chaque semaine",
-                  "Bibliotheque illimitee",
-                  "Annulable a tout moment"
-                ]}
-                isPopular={formData.purchaseType === 'club' || !formData.purchaseType}
-                ctaText="Recevoir cet eBook + rejoindre le Club"
-                badge="Recommande"
-                subtitle="Soit ~3,25EUR par conte"
-                onSelect={() => handleProductSelection('club')}
+            </SelectionGrid>
+            {formData.generalTheme === 'custom' && (
+              <CustomInput
+                type="text"
+                placeholder="Entrez le theme que vous souhaitez"
+                value={formData.customTheme || ''}
+                onChange={(e) => handleInputChange('customTheme', e.target.value)}
               />
             )}
-          </PricingGrid>
+          </FormSection>
 
-          {/* Order cost summary */}
-          {formData.purchaseType === 'club' && isClub && clubCredit?.canSubmit && (
-            <OrderCostSummary $variant="free">
-              Cette commande sera gratuite (credit Club)
-            </OrderCostSummary>
-          )}
-          {formData.purchaseType === 'club' && !isClub && (
-            <OrderCostSummary $variant="info">
-              Abonnement Club : 12,99EUR/mois — Cet eBook est inclus, sans frais supplementaires
-            </OrderCostSummary>
-          )}
-          {formData.purchaseType === 'single' && (
-            <OrderCostSummary $variant="paid">
-              Cette commande sera payante : 4,99EUR
-            </OrderCostSummary>
-          )}
-        </FormSection>
-
-        <OrderInfoSection $show={true} ref={paymentRef}>
-          <OptionTitle>
-            Informations de commande
-          </OptionTitle>
-
-          {isAuthenticated && currentUser && (
-            <ConnectedBanner>
-              ✅ Connecte en tant que <strong>{currentUser.email}</strong>
-            </ConnectedBanner>
-          )}
-
-          <OrderInfoGrid>
-            {isAuthenticated ? (
-              <FullWidthField>
-                <ValidatedInput
-                  type="email"
-                  label="Email"
-                  value={formData.userEmail || ''}
-                  onChange={() => {}}
-                  placeholder=""
-                  required={true}
-                  disabled={true}
+          {/* Occasion */}
+          <FormSection ref={subjectRef}>
+            <OptionTitle>Quelle occasion ?</OptionTitle>
+            <SelectionGrid>
+              {SPECIFIC_SUBJECTS.map((subject) => (
+                <ImageOccasionCard
+                  key={subject.value}
+                  value={subject.value}
+                  label={subject.label}
+                  imagePath={subject.imagePath}
+                  isSelected={formData.specificSubject === subject.value}
+                  onClick={(value) => handleSelection('specificSubject', value)}
                 />
-              </FullWidthField>
-            ) : (
-              <>
+              ))}
+              <CustomOccasionCard
+                value="custom"
+                label="Occasion personnalisee"
+                imagePath="/image/occasions/personnalise.png"
+                isSelected={formData.specificSubject === 'custom'}
+                onClick={(value) => handleSelection('specificSubject', value)}
+              />
+            </SelectionGrid>
+            {formData.specificSubject === 'custom' && (
+              <CustomInput
+                type="text"
+                placeholder="Entrez votre sujet souhaite"
+                value={formData.customSubject || ''}
+                onChange={(e) => handleInputChange('customSubject', e.target.value)}
+              />
+            )}
+          </FormSection>
+
+          {/* Illustration style */}
+          <FormSection ref={styleRef}>
+            <OptionTitle>Quel style d'illustration ?</OptionTitle>
+            <SelectionGrid $columns={3}>
+              {ILLUSTRATION_STYLES.map((style) => (
+                <ImageSelectionCard
+                  key={style.value}
+                  value={style.value}
+                  label={style.label}
+                  imagePath={style.imagePath}
+                  isSelected={formData.illustrationStyle === style.value}
+                  onClick={(value) => handleSelection('illustrationStyle', value)}
+                />
+              ))}
+            </SelectionGrid>
+          </FormSection>
+
+          {/* Protagonist info */}
+          <FormSection ref={protagonistRef}>
+            <OptionTitle>Votre heros</OptionTitle>
+
+            <InputGroup>
+              <InputField>
+                <ValidatedInput
+                  label="Prenom du heros/heroine *"
+                  value={formData.protagonistName || ''}
+                  onChange={(value) => handleInputChange('protagonistName', value)}
+                  placeholder="Ex: Emma, Lucas..."
+                  required={true}
+                  error={errors.protagonistName}
+                  onBlur={() => validateField('protagonistName', formData.protagonistName || '', undefined)}
+                />
+              </InputField>
+              <InputField>
+                <AgeSelector
+                  label="Age *"
+                  value={formData.protagonistAge || ''}
+                  onChange={(value) => handleInputChange('protagonistAge', value)}
+                  required={true}
+                  error={errors.protagonistAge}
+                />
+              </InputField>
+            </InputGroup>
+
+            <FormSection>
+              <OptionTitle>Sexe *</OptionTitle>
+              <SelectionGrid>
+                {GENDERS.map((gender) => (
+                  <SelectionCard
+                    key={gender.value}
+                    value={gender.value}
+                    label={gender.label}
+                    icon={gender.icon}
+                    isSelected={formData.protagonistGender === gender.value}
+                    onClick={(value) => handleSelection('protagonistGender', value)}
+                  />
+                ))}
+              </SelectionGrid>
+            </FormSection>
+          </FormSection>
+
+          {/* Eye color */}
+          <FormSection ref={eyeColorRef}>
+            <OptionTitle>Couleur des yeux *</OptionTitle>
+            <ColorGrid>
+              {EYE_COLORS.map((eyeColor) => (
+                <ColorOption
+                  key={eyeColor.value}
+                  color={eyeColor.color}
+                  $isSelected={formData.eyeColor === eyeColor.value}
+                  onClick={() => handleSelection('eyeColor', eyeColor.value)}
+                >
+                  <ColorCircle color={eyeColor.color} />
+                  <ColorLabel>{eyeColor.label}</ColorLabel>
+                </ColorOption>
+              ))}
+            </ColorGrid>
+          </FormSection>
+
+          {/* Hair color */}
+          <FormSection ref={hairColorRef}>
+            <OptionTitle>Couleur des cheveux *</OptionTitle>
+            <ColorGrid>
+              {HAIR_COLORS.map((hairColor) => (
+                <ColorOption
+                  key={hairColor.value}
+                  color={hairColor.color}
+                  $isSelected={formData.hairColor === hairColor.value}
+                  onClick={() => handleSelection('hairColor', hairColor.value)}
+                >
+                  <ColorCircle color={hairColor.color} />
+                  <ColorLabel>{hairColor.label}</ColorLabel>
+                </ColorOption>
+              ))}
+            </ColorGrid>
+          </FormSection>
+
+          {/* Photo upload (prominent) */}
+          <FormSection ref={photoRef}>
+            <OptionTitle>Photo de votre enfant</OptionTitle>
+            <ProminentPhotoUpload
+              $hasPhoto={!!formData.photo}
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <PhotoIcon>{formData.photo ? '\u2705' : '\uD83D\uDCF7'}</PhotoIcon>
+              <PhotoMainText>
+                {formData.photo ? formData.photo.name : 'Ajoutez une photo pour que le personnage lui ressemble'}
+              </PhotoMainText>
+              <PhotoSubText>
+                {formData.photo
+                  ? 'Cliquez pour changer la photo'
+                  : 'Notre IA adaptera le personnage du conte pour qu\'il ressemble a votre enfant (optionnel)'
+                }
+              </PhotoSubText>
+              <HiddenFileInput
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleFileUpload}
+              />
+            </ProminentPhotoUpload>
+          </FormSection>
+
+          {/* CTA: Generate cover */}
+          <GenerateCTA
+            $isReady={phase1Ready}
+            disabled={!phase1Ready || isCoverGenerating}
+            onClick={handleGenerateCover}
+          >
+            {isCoverGenerating
+              ? '\uD83C\uDFA8 Creation en cours...'
+              : '\u2728 Decouvrir mon conte'
+            }
+          </GenerateCTA>
+          {!phase1Ready && (
+            <CTASubtext>Completez tous les champs ci-dessus pour decouvrir votre conte</CTASubtext>
+          )}
+        </PhaseCard>
+      </Phase>
+
+      {/* ═══════════════════════════════════════════
+          PHASE 2 : Votre conte prend vie
+          ═══════════════════════════════════════════ */}
+      <Phase $isVisible={showPhase2} ref={phase2Ref}>
+        <PhaseCard>
+          <PhaseTitle>Votre conte prend vie</PhaseTitle>
+          <PhaseSubtitle>
+            {coverImageUrl
+              ? 'Voici la couverture de votre conte personnalise !'
+              : 'Notre IA cree votre couverture...'
+            }
+          </PhaseSubtitle>
+
+          {/* Cover Preview */}
+          <CoverRevealSection>
+            <BookCoverPreview
+              coverImageUrl={coverImageUrl}
+              isGenerating={isCoverGenerating}
+              error={coverError}
+              onRegenerate={regenerateCover}
+            />
+          </CoverRevealSection>
+
+          {/* Regenerate notice if fields changed */}
+          {coverHasChanged && coverImageUrl && !isCoverGenerating && (
+            <RegenerateNotice>
+              Des champs ont ete modifies depuis la derniere generation
+              <RegenerateBtn onClick={regenerateCover}>
+                Regenerer
+              </RegenerateBtn>
+            </RegenerateNotice>
+          )}
+
+          {/* Customization accordion (optional fields) */}
+          <CustomizationToggle
+            $isOpen={showCustomization}
+            onClick={() => setShowCustomization(!showCustomization)}
+          >
+            Personnalisez davantage votre conte
+            <ChevronIcon $isOpen={showCustomization}>{'\u25BC'}</ChevronIcon>
+          </CustomizationToggle>
+
+          <CustomizationContent $isOpen={showCustomization}>
+            {/* Message central */}
+            <FormSection>
+              <OptionTitle>Quel message transmettre ?</OptionTitle>
+              <SelectionGrid>
+                {CENTRAL_MESSAGES.map((message) => (
+                  <ImageMessageCard
+                    key={message.value}
+                    value={message.value}
+                    label={message.label}
+                    imagePath={message.imagePath}
+                    isSelected={formData.centralMessage === message.value}
+                    onClick={(value) => handleInputChange('centralMessage', value)}
+                  />
+                ))}
+                <CustomMessageCard
+                  value="custom"
+                  label="Message personnalise"
+                  imagePath="/image/messages/personnalise.png"
+                  isSelected={formData.centralMessage === 'custom'}
+                  onClick={(value) => handleInputChange('centralMessage', value)}
+                />
+              </SelectionGrid>
+              {formData.centralMessage === 'custom' && (
+                <CustomInput
+                  type="text"
+                  placeholder="Message central personnalise"
+                  value={formData.customMessage || ''}
+                  onChange={(e) => handleInputChange('customMessage', e.target.value)}
+                />
+              )}
+            </FormSection>
+
+            {/* Langue */}
+            <FormSection>
+              <OptionTitle>Langue du conte</OptionTitle>
+              <SelectionGrid>
+                {LANGUAGES.map((language) => (
+                  <SelectionCard
+                    key={language.value}
+                    value={language.value}
+                    label={language.label}
+                    icon={language.flag}
+                    isSelected={formData.language === language.value}
+                    onClick={(value) => handleInputChange('language', value)}
+                  />
+                ))}
+              </SelectionGrid>
+            </FormSection>
+
+            {/* Infos supplementaires */}
+            <FormSection>
+              <OptionTitle>Infos supplementaires</OptionTitle>
+
+              <InputField style={{ marginBottom: theme.spacing.lg }}>
+                <Label>Loisirs / Centres d'interet</Label>
+                <TextArea
+                  placeholder="Ex. : dessin, velo, lecture..."
+                  value={formData.hobbies || ''}
+                  onChange={(e) => handleInputChange('hobbies', e.target.value)}
+                />
+              </InputField>
+
+              <InputField style={{ marginBottom: theme.spacing.lg }}>
+                <Label>Plat prefere</Label>
+                <CustomInput
+                  type="text"
+                  placeholder="Ex. : pizza, glace, pates..."
+                  value={formData.favoriteDish || ''}
+                  onChange={(e) => handleInputChange('favoriteDish', e.target.value)}
+                />
+              </InputField>
+
+              <InputField style={{ marginBottom: theme.spacing.lg }}>
+                <Label>Evenements particuliers a inclure</Label>
+                <TextArea
+                  placeholder="Decrivez des evenements speciaux a integrer dans l'histoire..."
+                  value={formData.specialEvents || ''}
+                  onChange={(e) => handleInputChange('specialEvents', e.target.value)}
+                />
+              </InputField>
+            </FormSection>
+
+            {/* Religion */}
+            <FormSection>
+              <OptionTitle>Dimension religieuse (optionnel)</OptionTitle>
+              <ToggleButton
+                $isActive={showReligionSection}
+                onClick={() => {
+                  setShowReligionSection(!showReligionSection);
+                  if (showReligionSection) {
+                    onUpdate({ religion: undefined, customReligion: undefined });
+                  }
+                }}
+              >
+                Definir une religion au personnage principal
+              </ToggleButton>
+
+              {showReligionSection && (
+                <>
+                  <SelectionGrid>
+                    {RELIGIONS.map((religion) => (
+                      <SelectionCard
+                        key={religion.value}
+                        value={religion.value}
+                        label={religion.label}
+                        icon={religion.icon}
+                        isSelected={formData.religion === religion.value}
+                        onClick={(value) => handleInputChange('religion', value)}
+                      />
+                    ))}
+                    <SelectionCard
+                      value="other"
+                      label="Autre"
+                      icon="✏️"
+                      isSelected={formData.religion === 'other'}
+                      onClick={(value) => handleInputChange('religion', value)}
+                    />
+                  </SelectionGrid>
+                  {formData.religion === 'other' && (
+                    <CustomInput
+                      type="text"
+                      placeholder="Precisez la religion..."
+                      value={formData.customReligion || ''}
+                      onChange={(e) => handleInputChange('customReligion', e.target.value)}
+                    />
+                  )}
+                </>
+              )}
+            </FormSection>
+
+            {/* Secondary characters */}
+            <SecondaryCharactersSection
+              secondaryCharacters={formData.secondaryCharacters || []}
+              onChange={(characters) => onUpdate({ secondaryCharacters: characters })}
+            />
+
+            {/* Creator name */}
+            <FormSection style={{ marginTop: theme.spacing.xl }}>
+              <OptionTitle>Createur du livre (optionnel)</OptionTitle>
+              <InputField>
+                <ValidatedInput
+                  label="Nom ou signature du createur"
+                  value={formData.creatorName || ''}
+                  onChange={(value) => handleInputChange('creatorName', value)}
+                  placeholder="Ex: Cree par Papa et Maman..."
+                  required={false}
+                />
+              </InputField>
+            </FormSection>
+          </CustomizationContent>
+
+          {/* Continue to payment */}
+          {coverImageUrl && !isCoverGenerating && (
+            <ContinueButton onClick={handleContinueToPayment}>
+              Continuer vers le paiement
+            </ContinueButton>
+          )}
+        </PhaseCard>
+      </Phase>
+
+      {/* ═══════════════════════════════════════════
+          PHASE 3 : Paiement
+          ═══════════════════════════════════════════ */}
+      <Phase $isVisible={showPhase3} ref={phase3Ref}>
+        <PhaseCard>
+          <PhaseTitle>Finalisez votre commande</PhaseTitle>
+          <PhaseSubtitle>Plus qu'une etape pour offrir un conte unique</PhaseSubtitle>
+
+          <FormSection>
+            <OptionTitle style={{ textAlign: 'center' }}>Choisissez votre format</OptionTitle>
+
+            {/* Club with available credit */}
+            {isClub && clubCredit?.canSubmit && (
+              <div style={{ marginBottom: theme.spacing.xl }}>
+                <ClubFreeCard
+                  $isSelected={formData.purchaseType === 'club'}
+                  onClick={() => handleProductSelection('club')}
+                >
+                  <ClubBadge>Membre Club</ClubBadge>
+                  <div style={{ fontSize: theme.fontSizes['2xl'], marginBottom: theme.spacing.sm, marginTop: theme.spacing.sm }}>
+                    {'\uD83C\uDF81'}
+                  </div>
+                  <h3 style={{ fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.xl, margin: `0 0 ${theme.spacing.xs}` }}>
+                    Utiliser mon eBook gratuit
+                  </h3>
+                  <p style={{ fontSize: theme.fontSizes.base, color: theme.colors.accent.coral, fontWeight: 700, margin: `0 0 ${theme.spacing.sm}` }}>
+                    0,00EUR — Inclus dans votre abonnement Club
+                  </p>
+                  <p style={{ fontSize: theme.fontSizes.sm, color: theme.colors.text.secondary, margin: 0 }}>
+                    Il vous reste {clubCredit.remaining} eBook(s) gratuit(s) cette semaine
+                  </p>
+                </ClubFreeCard>
+              </div>
+            )}
+
+            {/* Club exhausted */}
+            {isClub && clubCredit && !clubCredit.canSubmit && (
+              <ClubExhaustedMsg>
+                Votre credit hebdomadaire est epuise (0/1). Choisissez un format payant ci-dessous.
+              </ClubExhaustedMsg>
+            )}
+
+            <PricingGrid>
+              <PricingCard
+                title="eBook Numerique"
+                price="4,99\u20AC"
+                features={[
+                  "Conte personnalise de 20-30 pages",
+                  "Illustrations haute qualite",
+                  "Format PDF optimise",
+                  "Telechargement immediat",
+                  "Compatible tous appareils"
+                ]}
+                isPopular={formData.purchaseType === 'single'}
+                ctaText="Choisir l'eBook"
+                onSelect={() => handleProductSelection('single')}
+              />
+
+              {!isClub && (
+                <PricingCard
+                  title="Club des Histoires"
+                  price="12,99\u20AC/mois"
+                  features={[
+                    "Cet eBook est inclus immediatement",
+                    "1 eBook gratuit chaque semaine",
+                    "Bibliotheque illimitee",
+                    "Annulable a tout moment"
+                  ]}
+                  isPopular={formData.purchaseType === 'club' || !formData.purchaseType}
+                  ctaText="Recevoir cet eBook + rejoindre le Club"
+                  badge="Recommande"
+                  subtitle="Soit ~3,25EUR par conte"
+                  onSelect={() => handleProductSelection('club')}
+                />
+              )}
+            </PricingGrid>
+
+            {/* Order cost summary */}
+            {formData.purchaseType === 'club' && isClub && clubCredit?.canSubmit && (
+              <OrderCostSummary $variant="free">
+                Cette commande sera gratuite (credit Club)
+              </OrderCostSummary>
+            )}
+            {formData.purchaseType === 'club' && !isClub && (
+              <OrderCostSummary $variant="info">
+                Abonnement Club : 12,99EUR/mois — Cet eBook est inclus, sans frais supplementaires
+              </OrderCostSummary>
+            )}
+            {formData.purchaseType === 'single' && (
+              <OrderCostSummary $variant="paid">
+                Cette commande sera payante : 4,99EUR
+              </OrderCostSummary>
+            )}
+          </FormSection>
+
+          <OrderInfoSection ref={paymentRef}>
+            <OptionTitle>Informations de commande</OptionTitle>
+
+            {isAuthenticated && currentUser && (
+              <ConnectedBanner>
+                Connecte en tant que <strong>{currentUser.email}</strong>
+              </ConnectedBanner>
+            )}
+
+            <OrderInfoGrid>
+              {isAuthenticated ? (
                 <FullWidthField>
                   <ValidatedInput
                     type="email"
                     label="Email"
                     value={formData.userEmail || ''}
-                    onChange={handleEmailChange}
-                    placeholder="votre@email.com"
+                    onChange={() => {}}
+                    placeholder=""
                     required={true}
-                    error={errors.userEmail}
-                    onBlur={() => { validateField('userEmail', formData.userEmail || '', 'email'); handleEmailBlurCheck(); }}
+                    disabled={true}
                   />
-                  {emailStatus?.exists && emailStatus?.hasPassword && (
-                    <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.accent.coral, marginTop: theme.spacing.xs }}>
-                      Ce compte existe deja. <span style={{ cursor: 'pointer', fontWeight: 600, textDecoration: 'underline' }} onClick={() => window.location.href = '/login'}>Connectez-vous</span>
-                    </p>
-                  )}
-                  {emailStatus?.exists && !emailStatus?.hasPassword && (
-                    <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.status.warning, marginTop: theme.spacing.xs }}>
-                      Ce compte existe mais n'a pas de mot de passe. Creez-en un ci-dessous pour securiser votre compte.
-                    </p>
-                  )}
                 </FullWidthField>
+              ) : (
+                <>
+                  <FullWidthField>
+                    <ValidatedInput
+                      type="email"
+                      label="Email"
+                      value={formData.userEmail || ''}
+                      onChange={handleEmailChange}
+                      placeholder="votre@email.com"
+                      required={true}
+                      error={errors.userEmail}
+                      onBlur={() => { validateField('userEmail', formData.userEmail || '', 'email'); handleEmailBlurCheck(); }}
+                    />
+                    {emailStatus?.exists && emailStatus?.hasPassword && (
+                      <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.accent.coral, marginTop: theme.spacing.xs }}>
+                        Ce compte existe deja. <span style={{ cursor: 'pointer', fontWeight: 600, textDecoration: 'underline' }} onClick={() => window.location.href = '/login'}>Connectez-vous</span>
+                      </p>
+                    )}
+                    {emailStatus?.exists && !emailStatus?.hasPassword && (
+                      <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.status.warning, marginTop: theme.spacing.xs }}>
+                        Ce compte existe mais n'a pas de mot de passe. Creez-en un ci-dessous pour securiser votre compte.
+                      </p>
+                    )}
+                  </FullWidthField>
 
-                <FullWidthField>
-                  <ValidatedInput
-                    type="password"
-                    label="Mot de passe (creez votre compte)"
-                    value={formData.password || ''}
-                    onChange={handlePasswordChange}
-                    placeholder="Min. 8 caracteres"
-                    required={false}
-                    error={errors.password}
-                  />
-                  <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.text.light, marginTop: theme.spacing.xs }}>
-                    Creez un compte pour retrouver vos contes dans votre bibliotheque personnelle
-                  </p>
-                </FullWidthField>
-              </>
+                  <FullWidthField>
+                    <ValidatedInput
+                      type="password"
+                      label="Mot de passe (creez votre compte)"
+                      value={formData.password || ''}
+                      onChange={handlePasswordChange}
+                      placeholder="Min. 8 caracteres"
+                      required={false}
+                      error={errors.password}
+                    />
+                    <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.text.light, marginTop: theme.spacing.xs }}>
+                      Creez un compte pour retrouver vos contes dans votre bibliotheque personnelle
+                    </p>
+                  </FullWidthField>
+                </>
+              )}
+
+              <InputField>
+                <ValidatedInput
+                  label="Prenom"
+                  value={formData.firstName || ''}
+                  onChange={(value) => handleNameChange('firstName', value)}
+                  placeholder="Votre prenom"
+                  required={true}
+                  error={errors.firstName}
+                  onBlur={() => validateField('firstName', formData.firstName || '')}
+                />
+              </InputField>
+
+              <InputField>
+                <ValidatedInput
+                  label="Nom"
+                  value={formData.lastName || ''}
+                  onChange={(value) => handleNameChange('lastName', value)}
+                  placeholder="Votre nom"
+                  required={true}
+                  error={errors.lastName}
+                  onBlur={() => validateField('lastName', formData.lastName || '')}
+                />
+              </InputField>
+            </OrderInfoGrid>
+          </OrderInfoSection>
+
+          <PaymentSection>
+            <ReadyMessage $show={isPaymentInfoComplete()}>
+              Tout est pret
+            </ReadyMessage>
+
+            {globalError && (
+              <ErrorMessage>{globalError}</ErrorMessage>
             )}
 
-            <InputField>
-              <ValidatedInput
-                label="Prénom"
-                value={formData.firstName || ''}
-                onChange={(value) => handleNameChange('firstName', value)}
-                placeholder="Votre prénom"
-                required={true}
-                error={errors.firstName}
-                onBlur={() => validateField('firstName', formData.firstName || '')}
-              />
-            </InputField>
+            <PayButton
+              variant="primary"
+              size="lg"
+              onClick={handleFormSubmit}
+              disabled={!formData.productType || isSubmitting}
+              $isReady={isPaymentInfoComplete()}
+            >
+              {isSubmitting
+                ? '\u23F3 Traitement en cours...'
+                : formData.purchaseType === 'club' && isClub && clubCredit?.canSubmit
+                  ? '\u2728 Creer mon eBook gratuit'
+                  : '\u2728 Creer le conte de mon enfant'
+              }
+            </PayButton>
 
-            <InputField>
-              <ValidatedInput
-                label="Nom"
-                value={formData.lastName || ''}
-                onChange={(value) => handleNameChange('lastName', value)}
-                placeholder="Votre nom"
-                required={true}
-                error={errors.lastName}
-                onBlur={() => validateField('lastName', formData.lastName || '')}
-              />
-            </InputField>
-          </OrderInfoGrid>
-        </OrderInfoSection>
+            {!(formData.purchaseType === 'club' && isClub && clubCredit?.canSubmit) && (
+              <p style={{ marginTop: theme.spacing.md, fontSize: theme.fontSizes.xs, color: theme.colors.text.light }}>
+                Paiement securise par Stripe
+              </p>
+            )}
 
-        <PaymentSection>
-          <ReadyMessage $show={isPaymentInfoComplete()}>
-            ✅ Tout est prêt
-          </ReadyMessage>
-
-          {globalError && (
-            <ErrorMessage>
-              {globalError}
-            </ErrorMessage>
-          )}
-
-          <PayButton
-            variant="primary"
-            size="lg"
-            onClick={handleFormSubmit}
-            disabled={!formData.productType || isSubmitting}
-            $isReady={isPaymentInfoComplete()}
-          >
-            {isSubmitting
-              ? '\u23F3 Traitement en cours...'
-              : formData.purchaseType === 'club' && isClub && clubCredit?.canSubmit
-                ? '\u2728 Creer mon eBook gratuit'
-                : '\u2728 Creer le conte de mon enfant'
-            }
-          </PayButton>
-
-          {!(formData.purchaseType === 'club' && isClub && clubCredit?.canSubmit) && (
-            <p style={{
-              marginTop: theme.spacing.md,
-              fontSize: theme.fontSizes.xs,
-              color: theme.colors.text.light
-            }}>
-              Paiement securise par Stripe
-            </p>
-          )}
-
-          {/* V2: Trust badges */}
-          <TrustBadgesRow>
-            <TrustBadge>
-              <span className="trust-icon">🔒</span>
-              Paiement 100% sécurisé
-            </TrustBadge>
-            <TrustBadge>
-              <span className="trust-icon">✅</span>
-              Satisfait ou remboursé
-            </TrustBadge>
-            <TrustBadge>
-              <span className="trust-icon">⚡</span>
-              Livraison instantanee
-            </TrustBadge>
-          </TrustBadgesRow>
-        </PaymentSection>
-      </Section>
+            <TrustBadgesRow>
+              <TrustBadge>
+                <span className="trust-icon">{'\uD83D\uDD12'}</span>
+                Paiement 100% securise
+              </TrustBadge>
+              <TrustBadge>
+                <span className="trust-icon">{'\u2705'}</span>
+                Satisfait ou rembourse
+              </TrustBadge>
+              <TrustBadge>
+                <span className="trust-icon">{'\u26A1'}</span>
+                Livraison instantanee
+              </TrustBadge>
+            </TrustBadgesRow>
+          </PaymentSection>
+        </PhaseCard>
+      </Phase>
     </FormContainer>
   );
 };

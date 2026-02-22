@@ -1,15 +1,18 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { StoryFormData } from '../types/FormTypes';
 import { ApiService } from '../config/api';
 
 interface UseCoverPreviewReturn {
   coverImageUrl: string | null;
+  coverTitle: string | null;
   isGenerating: boolean;
   error: string | null;
+  generate: () => void;
   regenerate: () => void;
+  hasChanged: boolean;
 }
 
-// Hash simple des champs pertinents (pas besoin de crypto cote frontend)
+// Hash simple des champs pertinents
 function computeFormHash(formData: Partial<StoryFormData>): string {
   const relevantFields = [
     formData.illustrationStyle || '',
@@ -33,8 +36,8 @@ function computeFormHash(formData: Partial<StoryFormData>): string {
   return hash.toString(36);
 }
 
-// Verifie si tous les champs protagoniste sont remplis
-function isProtagonistComplete(formData: Partial<StoryFormData>): boolean {
+// Verifie si les champs essentiels (Phase 1) sont remplis
+export function isPhase1Complete(formData: Partial<StoryFormData>): boolean {
   return !!(
     formData.protagonistName &&
     formData.protagonistAge &&
@@ -63,22 +66,19 @@ function fileToBase64(file: File): Promise<string> {
 
 export function useCoverPreview(formData: Partial<StoryFormData>): UseCoverPreviewReturn {
   const [coverImageUrl, setCoverImageUrl] = useState<string | null>(null);
+  const [coverTitle, setCoverTitle] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const lastGeneratedHashRef = useRef<string | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
-  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const forceRegenerateRef = useRef(false);
+
+  // Detecter si les champs ont change depuis la derniere generation
+  const currentHash = computeFormHash(formData);
+  const hasChanged = lastGeneratedHashRef.current !== null && currentHash !== lastGeneratedHashRef.current;
 
   const generate = useCallback(async () => {
-    if (!isProtagonistComplete(formData)) return;
-
-    const currentHash = computeFormHash(formData);
-
-    // Ne pas regenerer si le hash n'a pas change (sauf si force)
-    if (currentHash === lastGeneratedHashRef.current && !forceRegenerateRef.current) return;
-    forceRegenerateRef.current = false;
+    if (!isPhase1Complete(formData)) return;
 
     // Annuler la requete precedente
     abortControllerRef.current?.abort();
@@ -122,7 +122,8 @@ export function useCoverPreview(formData: Partial<StoryFormData>): UseCoverPrevi
 
       if (result.success && result.data) {
         setCoverImageUrl(`data:image/png;base64,${result.data.imageBase64}`);
-        lastGeneratedHashRef.current = currentHash;
+        setCoverTitle(result.data.title || null);
+        lastGeneratedHashRef.current = computeFormHash(formData);
         setError(null);
       } else {
         setError(result.message || 'Erreur de generation');
@@ -138,61 +139,20 @@ export function useCoverPreview(formData: Partial<StoryFormData>): UseCoverPrevi
     }
   }, [formData]);
 
-  // Debounce : attendre 500ms apres le dernier changement
-  useEffect(() => {
-    if (!isProtagonistComplete(formData)) return;
-
-    const currentHash = computeFormHash(formData);
-    if (currentHash === lastGeneratedHashRef.current && !forceRegenerateRef.current) return;
-
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
-    }
-
-    debounceTimerRef.current = setTimeout(() => {
-      generate();
-    }, 500);
-
-    return () => {
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
-      }
-    };
-  }, [
-    formData.illustrationStyle,
-    formData.generalTheme,
-    formData.specificSubject,
-    formData.centralMessage,
-    formData.protagonistName,
-    formData.protagonistAge,
-    formData.protagonistGender,
-    formData.eyeColor,
-    formData.hairColor,
-    formData.photo,
-    generate
-  ]);
-
-  // Cleanup a l'unmount
-  useEffect(() => {
-    return () => {
-      abortControllerRef.current?.abort();
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
-      }
-    };
-  }, []);
-
   const regenerate = useCallback(() => {
-    forceRegenerateRef.current = true;
     lastGeneratedHashRef.current = null;
     setCoverImageUrl(null);
+    setCoverTitle(null);
     generate();
   }, [generate]);
 
   return {
     coverImageUrl,
+    coverTitle,
     isGenerating,
     error,
+    generate,
     regenerate,
+    hasChanged,
   };
 }

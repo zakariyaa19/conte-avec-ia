@@ -34,6 +34,7 @@ function getOpenAI(): OpenAI {
 
 interface CacheEntry {
   imageBase64: string;
+  title: string;
   timestamp: number;
 }
 
@@ -41,22 +42,22 @@ const previewCache = new Map<string, CacheEntry>();
 const CACHE_TTL_MS = 30 * 60 * 1000; // 30 minutes
 const MAX_CACHE_SIZE = 100;
 
-export function getCachedPreview(hash: string): string | null {
+export function getCachedPreview(hash: string): { imageBase64: string; title: string } | null {
   const entry = previewCache.get(hash);
   if (!entry) return null;
   if (Date.now() - entry.timestamp > CACHE_TTL_MS) {
     previewCache.delete(hash);
     return null;
   }
-  return entry.imageBase64;
+  return { imageBase64: entry.imageBase64, title: entry.title };
 }
 
-export function setCachedPreview(hash: string, imageBase64: string): void {
+export function setCachedPreview(hash: string, imageBase64: string, title: string): void {
   if (previewCache.size >= MAX_CACHE_SIZE) {
     const oldestKey = previewCache.keys().next().value;
     if (oldestKey) previewCache.delete(oldestKey);
   }
-  previewCache.set(hash, { imageBase64, timestamp: Date.now() });
+  previewCache.set(hash, { imageBase64, title, timestamp: Date.now() });
 }
 
 // --- Hash des parametres ---
@@ -77,6 +78,40 @@ export function computeParamsHash(params: CoverGenerationParams, hasPhoto: boole
   return crypto.createHash('sha256').update(relevantFields).digest('hex').substring(0, 16);
 }
 
+// --- Generation du titre du livre ---
+
+const OCCASION_TITLES: Record<string, (name: string) => string> = {
+  'birthday':    (n) => `${n} et la Fete Enchantee`,
+  'christmas':   (n) => `${n} et la Magie de Noel`,
+  'new-year':    (n) => `${n} et les Etoiles du Nouvel An`,
+  'easter':      (n) => `${n} et la Chasse aux Oeufs Magiques`,
+  'eid':         (n) => `${n} et les Lumieres de l'Aid`,
+  'mothers-day': (n) => `${n} et le Plus Beau Cadeau de Maman`,
+  'fathers-day': (n) => `${n} et l'Aventure avec Papa`,
+  'halloween':   (n) => `${n} et la Nuit des Sortileges`,
+};
+
+const THEME_TITLES: Record<string, (name: string) => string> = {
+  'educational':  (n) => `${n} et le Livre des Merveilles`,
+  'fairy-tales':  (n) => `${n} au Royaume des Fees`,
+  'activities':   (n) => `${n} et les Mille Decouvertes`,
+  'stories':      (n) => `${n} et l'Histoire Extraordinaire`,
+  'celebrations': (n) => `${n} et la Grande Celebration`,
+  'family':       (n) => `${n} et les Tresors de la Famille`,
+};
+
+export function generateBookTitle(params: CoverGenerationParams): string {
+  const name = params.protagonistName || 'Votre Enfant';
+
+  if (params.specificSubject && OCCASION_TITLES[params.specificSubject]) {
+    return OCCASION_TITLES[params.specificSubject](name);
+  }
+  if (params.generalTheme && THEME_TITLES[params.generalTheme]) {
+    return THEME_TITLES[params.generalTheme](name);
+  }
+  return `Les Aventures de ${name}`;
+}
+
 // --- Analyse photo avec GPT-4o-mini Vision ---
 
 async function analyzePhotoWithVision(photoBase64: string): Promise<string | null> {
@@ -90,14 +125,17 @@ async function analyzePhotoWithVision(photoBase64: string): Promise<string | nul
           content: [
             {
               type: 'text',
-              text: `Analyze this photo of a child and provide a concise physical description for use in an illustration prompt. Focus ONLY on:
-- Approximate age appearance
-- Skin tone (light, medium, tan, dark, etc.)
-- Hair: color, length, texture (straight, curly, wavy), style
-- Face shape (round, oval, etc.)
-- Any distinctive features (freckles, dimples, glasses, etc.)
+              text: `Analyze this photo of a child and provide a very detailed physical description for use as a reference in an illustration. Focus on:
+- Exact skin tone (light peach, olive, medium brown, dark brown, etc.)
+- Hair: exact color, length (short/medium/long), texture (straight, curly, wavy, coily), style (bangs, ponytail, braids, etc.)
+- Face shape and proportions (round cheeks, oval face, etc.)
+- Eye shape and expression
+- Any distinctive features (freckles, dimples, glasses, gap teeth, etc.)
+- Overall vibe/expression of the child (shy smile, big grin, serious, playful)
 
-Keep the description to 2-3 sentences maximum. If the photo does not clearly show a child's face, respond with exactly "UNIDENTIFIABLE".
+Be very specific and detailed — this description will be used to recreate the child as a character in an illustrated book cover. The character MUST be recognizable as the same child.
+
+Keep the description to 3-4 sentences. If the photo does not clearly show a child's face, respond with exactly "UNIDENTIFIABLE".
 
 Respond in English only.`
             },
@@ -105,14 +143,14 @@ Respond in English only.`
               type: 'image_url',
               image_url: {
                 url: `data:image/jpeg;base64,${photoBase64}`,
-                detail: 'low'
+                detail: 'high'
               }
             }
           ]
         }
       ],
-      max_tokens: 200,
-      temperature: 0.3
+      max_tokens: 300,
+      temperature: 0.2
     });
 
     const description = response.choices[0]?.message?.content?.trim();
@@ -131,10 +169,9 @@ Respond in English only.`
 function buildCharacterDescription(params: CoverGenerationParams, photoAnalysis: string | null): string {
   const genderWord = params.protagonistGender === 'girl' ? 'girl' : 'boy';
   const age = params.protagonistAge;
-  const name = params.protagonistName;
 
   if (photoAnalysis) {
-    return `a ${age}-year-old ${genderWord} named ${name}. Based on a real child: ${photoAnalysis}. The character should have ${params.eyeColor} eyes and ${params.hairColor} hair.`;
+    return `a ${age}-year-old ${genderWord}. IMPORTANT — this character must closely match this real child's appearance: ${photoAnalysis}. Ensure the illustrated character is clearly recognizable as this specific child, with matching skin tone, hair, and facial features.`;
   }
 
   const eyeColorMap: Record<string, string> = {
@@ -151,10 +188,10 @@ function buildCharacterDescription(params: CoverGenerationParams, photoAnalysis:
   const eyes = eyeColorMap[params.eyeColor] || params.eyeColor;
   const hair = hairColorMap[params.hairColor] || params.hairColor;
 
-  return `a cheerful ${age}-year-old ${genderWord} named ${name} with ${eyes} eyes and ${hair} hair, cute and expressive face, friendly smile`;
+  return `a cheerful ${age}-year-old ${genderWord} with ${eyes} eyes and ${hair} hair, cute and expressive face, friendly smile`;
 }
 
-// --- Mappings styles → directives DALL-E ---
+// --- Style directives + titre rendering ---
 
 const STYLE_DIRECTIVES: Record<string, string> = {
   'watercolor': 'delicate watercolor painting with soft washes, translucent layers, visible paper texture, gentle color bleeding at edges, dreamy and ethereal atmosphere, pastel tones',
@@ -166,6 +203,18 @@ const STYLE_DIRECTIVES: Record<string, string> = {
   'geometric': 'modern geometric illustration style, flat design with bold shapes, clean vector-like edges, limited but vibrant color palette, abstract forms composing recognizable figures',
   'illustrated-book': 'classic children\'s book illustration, warm gouache or colored pencil rendering, gentle lines, storybook charm like Beatrix Potter or Oliver Jeffers, inviting and nostalgic',
   'japanese-manga': 'Japanese manga/anime illustration style, expressive large eyes, dynamic composition, cel-shading, detailed hair rendering, vibrant colors, shojo/kodomo manga aesthetic',
+};
+
+const STYLE_TITLE_RENDERING: Record<string, string> = {
+  'watercolor': 'elegant hand-lettered calligraphy with watercolor texture, flowing script with paint splatters',
+  '3d-animation': 'bold 3D extruded letters with soft shadows and colorful gradients, Pixar movie title style',
+  'kawaii': 'round bubbly kawaii letters with pastel colors, cute decorative elements like stars and hearts around the letters',
+  'block-world': 'blocky pixelated 3D letters made of voxel cubes, Minecraft-style typography',
+  'paper-cut': 'letters that look cut from textured craft paper with visible paper layers and subtle shadows',
+  'clay-animation': 'letters sculpted from colorful clay/plasticine with visible finger marks and 3D depth',
+  'geometric': 'clean modern geometric sans-serif typography with bold shapes and flat design aesthetic',
+  'illustrated-book': 'classic storybook serif typography with warm golden or brown tones, elegant and timeless',
+  'japanese-manga': 'dynamic manga-style lettering with bold strokes, slight slant, colorful with outline effects',
 };
 
 const OCCASION_SCENES: Record<string, string> = {
@@ -199,24 +248,35 @@ const MESSAGE_MOODS: Record<string, string> = {
   'respect': 'themes of respect, kindness, and growing together with empathy',
 };
 
-// --- Construction du prompt DALL-E ---
+// --- Construction du prompt portrait avec titre ---
 
-function buildCoverPrompt(params: CoverGenerationParams, characterDescription: string): string {
+function buildCoverPrompt(params: CoverGenerationParams, characterDescription: string, title: string): string {
   const styleDirective = STYLE_DIRECTIVES[params.illustrationStyle] || STYLE_DIRECTIVES['illustrated-book'];
+  const titleStyle = STYLE_TITLE_RENDERING[params.illustrationStyle] || STYLE_TITLE_RENDERING['illustrated-book'];
   const scene = OCCASION_SCENES[params.specificSubject] || THEME_SCENES[params.generalTheme] || 'a magical and enchanting world full of wonder';
   const mood = params.centralMessage ? (MESSAGE_MOODS[params.centralMessage] || '') : '';
 
-  return `A beautiful children's book cover illustration in ${styleDirective} style.
+  return `Create a beautiful children's book COVER illustration. This is a PORTRAIT format image (taller than wide), designed exactly like a real children's book front cover.
 
-The scene shows ${characterDescription} as the main character, standing or playing in ${scene}.
+ART STYLE: ${styleDirective}.
 
-${mood ? `The atmosphere conveys ${mood}.` : ''}
+TITLE TEXT: The title "${title}" must be prominently displayed at the top of the cover, rendered in ${titleStyle}. The title must be perfectly legible, spelled correctly in French, and be a major visual element of the cover. Below the title, in smaller text, write "contedia.fr" as a subtle watermark near the bottom edge.
 
-The composition is a full-page landscape illustration (wider than tall), designed as a children's book first page or cover. The character is the central focus, shown from head to at least waist, with an expressive and inviting pose. The background is rich and detailed but does not overwhelm the character.
+MAIN CHARACTER: ${characterDescription}. The character should be the central focus of the illustration, shown from head to at least knees, facing slightly toward the viewer with a warm, inviting expression.
 
-IMPORTANT: Do NOT include any text, letters, words, numbers, or typography anywhere in the image. The illustration should be purely visual with no written elements.
+SCENE: The character is in ${scene}. The background should be rich and immersive but not overwhelm the character.
 
-The image should feel magical, warm, and inviting — the kind of illustration that makes a child excited to read the story.`;
+${mood ? `MOOD: The overall atmosphere should convey ${mood}.` : ''}
+
+COMPOSITION: This must look like a professional children's book cover:
+- Portrait orientation (taller than wide)
+- Title at the top, clearly readable
+- Character centered and prominent
+- Background fills the entire image with no white borders
+- Rich, detailed, and colorful
+- The kind of cover that makes a child say "I want THIS book!"
+
+The final image should feel magical, warm, and absolutely captivating.`;
 }
 
 // --- Generation de l'image ---
@@ -224,37 +284,40 @@ The image should feel magical, warm, and inviting — the kind of illustration t
 export async function generateCoverImage(
   params: CoverGenerationParams,
   photoBase64?: string
-): Promise<string> {
+): Promise<{ imageBase64: string; title: string }> {
   const openai = getOpenAI();
 
-  // 1. Analyse photo optionnelle
+  // 1. Generer le titre
+  const title = generateBookTitle(params);
+  console.log('Generated title:', title);
+
+  // 2. Analyse photo optionnelle
   let photoAnalysis: string | null = null;
   if (photoBase64) {
     photoAnalysis = await analyzePhotoWithVision(photoBase64);
     console.log('Photo analysis result:', photoAnalysis ? 'Description obtenue' : 'Non identifiable, fallback formulaire');
   }
 
-  // 2. Description du personnage
+  // 3. Description du personnage
   const characterDescription = buildCharacterDescription(params, photoAnalysis);
 
-  // 3. Prompt complet
-  const prompt = buildCoverPrompt(params, characterDescription);
-  console.log('DALL-E prompt length:', prompt.length);
+  // 4. Prompt complet
+  const prompt = buildCoverPrompt(params, characterDescription, title);
+  console.log('Cover prompt length:', prompt.length);
 
-  // 4. Appel DALL-E 3
+  // 5. Appel gpt-image-1 — portrait 1024x1536
   const response = await openai.images.generate({
-    model: 'dall-e-3',
+    model: 'gpt-image-1',
     prompt,
     n: 1,
-    size: '1792x1024', // Landscape format
-    quality: 'standard',
-    response_format: 'b64_json',
+    size: '1024x1536',
+    quality: 'medium',
   });
 
   const imageData = response.data?.[0]?.b64_json;
   if (!imageData) {
-    throw new Error('Aucune image generee par DALL-E');
+    throw new Error('Aucune image generee par gpt-image-1');
   }
 
-  return imageData;
+  return { imageBase64: imageData, title };
 }

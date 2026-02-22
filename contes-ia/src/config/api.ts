@@ -494,7 +494,7 @@ export class ApiService {
   static async generateCoverPreview(data: {
     formData: Record<string, any>;
     photoBase64?: string;
-  }, signal?: AbortSignal): Promise<{ success: boolean; data?: { imageBase64: string; paramsHash: string }; message?: string }> {
+  }, signal?: AbortSignal): Promise<{ success: boolean; data?: { imageBase64: string; paramsHash: string; title?: string }; message?: string }> {
     const url = `${this.baseUrl}/api/preview/generate`;
     const response = await fetch(url, {
       method: 'POST',

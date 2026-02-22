@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import {
   generateCoverImage,
+  generateBookTitle,
   computeParamsHash,
   getCachedPreview,
   setCachedPreview,
@@ -59,20 +60,20 @@ export class PreviewController {
         console.log('Cover preview: cache hit pour hash', paramsHash);
         return res.json({
           success: true,
-          data: { imageBase64: cached, paramsHash }
+          data: { imageBase64: cached.imageBase64, paramsHash, title: cached.title }
         });
       }
 
       // Generer l'image
       console.log('Cover preview: generation pour', params.protagonistName, '- style:', params.illustrationStyle);
-      const imageBase64 = await generateCoverImage(params, photoBase64);
+      const result = await generateCoverImage(params, photoBase64);
 
       // Stocker en cache
-      setCachedPreview(paramsHash, imageBase64);
+      setCachedPreview(paramsHash, result.imageBase64, result.title);
 
       res.json({
         success: true,
-        data: { imageBase64, paramsHash }
+        data: { imageBase64: result.imageBase64, paramsHash, title: result.title }
       });
 
     } catch (error: any) {

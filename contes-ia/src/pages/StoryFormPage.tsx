@@ -228,28 +228,22 @@ export const StoryFormPage: React.FC = () => {
 
   const progressSteps = [
     {
-      id: 'choices',
-      title: 'Choix du conte',
-      isCompleted: isChoicesComplete,
-      isActive: !isChoicesComplete
+      id: 'creation',
+      title: 'Creation',
+      isCompleted: isChoicesComplete && isProtagonistComplete,
+      isActive: !(isChoicesComplete && isProtagonistComplete)
     },
     {
-      id: 'protagonist',
-      title: 'Héros',
-      isCompleted: isProtagonistComplete,
-      isActive: isChoicesComplete && !isProtagonistComplete
-    },
-    {
-      id: 'options',
-      title: 'Options',
-      isCompleted: isProtagonistComplete,
-      isActive: isProtagonistComplete && !isPaymentComplete
+      id: 'preview',
+      title: 'Apercu',
+      isCompleted: false,
+      isActive: isChoicesComplete && isProtagonistComplete
     },
     {
       id: 'payment',
       title: 'Paiement',
       isCompleted: isPaymentComplete,
-      isActive: isProtagonistComplete
+      isActive: false
     }
   ];
 
@@ -343,9 +337,9 @@ export const StoryFormPage: React.FC = () => {
       <MainContent>
       <FormContainer>
         <FormHeader ref={formHeaderRef}>
-          <FormTitle>Créez votre conte personnalisé ✨</FormTitle>
+          <FormTitle>Creez un conte unique pour votre enfant</FormTitle>
           <FormSubtitle>
-            Créez une histoire unique en quelques clics - chaque choix débloque automatiquement la suite
+            Quelques choix simples et decouvrez la couverture personnalisee de votre histoire
           </FormSubtitle>
         </FormHeader>
 
