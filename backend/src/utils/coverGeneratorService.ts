@@ -251,7 +251,7 @@ export async function generateCoverImage(
     response_format: 'b64_json',
   });
 
-  const imageData = response.data[0]?.b64_json;
+  const imageData = response.data?.[0]?.b64_json;
   if (!imageData) {
     throw new Error('Aucune image generee par DALL-E');
   }
