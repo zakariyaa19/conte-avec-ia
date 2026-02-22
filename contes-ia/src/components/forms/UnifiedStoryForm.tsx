@@ -31,6 +31,7 @@ import {
 } from '../../types/FormTypes';
 import { validateEmail, validateRequired } from '../../utils/validation';
 import { ApiService } from '../../config/api';
+import { BookCoverPreview } from '../ui/BookCoverPreview';
 
 interface UnifiedStoryFormProps {
   formData: Partial<StoryFormData>;
@@ -1391,6 +1392,11 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
           </InputField>
         </FormSection>
       </Section>
+
+      {/* Prévisualisation couverture */}
+      {isProtagonistVisible && formData.protagonistName && (
+        <BookCoverPreview formData={formData} />
+      )}
 
       {/* Section 3: Paiement */}
       <Section
