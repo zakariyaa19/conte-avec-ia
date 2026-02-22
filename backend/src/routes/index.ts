@@ -5,6 +5,7 @@ import authRouter from './auth';
 import clientRouter from './client';
 import pdfRouter from './pdf';
 import tiktokRouter from './tiktok';
+import previewRouter from './preview';
 
 const router = Router();
 
@@ -15,6 +16,7 @@ router.use('/auth', authRouter);
 router.use('/client', clientRouter);
 router.use('/pdfs', pdfRouter);
 router.use('/tiktok', tiktokRouter);
+router.use('/preview', previewRouter);
 
 // Route de santé
 router.get('/health', (req, res) => {

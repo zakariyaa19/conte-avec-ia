@@ -32,6 +32,7 @@ import {
 import { validateEmail, validateRequired } from '../../utils/validation';
 import { ApiService } from '../../config/api';
 import { BookCoverPreview } from '../ui/BookCoverPreview';
+import { useCoverPreview } from '../../hooks/useCoverPreview';
 
 interface UnifiedStoryFormProps {
   formData: Partial<StoryFormData>;
@@ -755,6 +756,9 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
   const [globalError, setGlobalError] = useState<string>('');
   const [showReligionSection, setShowReligionSection] = useState<boolean>(!!formData.religion);
   const [editingSection, setEditingSection] = useState<string | null>(null);
+
+  // Hook de generation de couverture IA
+  const { coverImageUrl, isGenerating: isCoverGenerating, error: coverError, regenerate: regenerateCover } = useCoverPreview(formData);
   const [emailStatus, setEmailStatus] = useState<{ exists: boolean; hasPassword: boolean } | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -1393,9 +1397,15 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
         </FormSection>
       </Section>
 
-      {/* Prévisualisation couverture */}
+      {/* Prévisualisation couverture IA */}
       {isProtagonistVisible && formData.protagonistName && (
-        <BookCoverPreview formData={formData} />
+        <BookCoverPreview
+          formData={formData}
+          coverImageUrl={coverImageUrl}
+          isGenerating={isCoverGenerating}
+          error={coverError}
+          onRegenerate={regenerateCover}
+        />
       )}
 
       {/* Section 3: Paiement */}

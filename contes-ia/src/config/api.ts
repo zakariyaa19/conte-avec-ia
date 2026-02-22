@@ -490,6 +490,22 @@ export class ApiService {
     });
   }
 
+  // Generate AI cover preview
+  static async generateCoverPreview(data: {
+    formData: Record<string, any>;
+    photoBase64?: string;
+  }, signal?: AbortSignal): Promise<{ success: boolean; data?: { imageBase64: string; paramsHash: string }; message?: string }> {
+    const url = `${this.baseUrl}/api/preview/generate`;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+      signal,
+    });
+    const result = await response.json();
+    return result;
+  }
+
   // PDF download (returns blob URL)
   static async downloadStoryPdf(token: string, storyId: string): Promise<string> {
     const url = `${this.baseUrl}/api/client/stories/${storyId}/pdf`;

@@ -7,6 +7,10 @@ import { getCoverPalette, getStyleTreatment } from '../../utils/coverThemeConfig
 
 interface BookCoverPreviewProps {
   formData: Partial<StoryFormData>;
+  coverImageUrl?: string | null;
+  isGenerating?: boolean;
+  error?: string | null;
+  onRegenerate?: () => void;
 }
 
 /* ─── Animations ─── */
@@ -19,6 +23,21 @@ const slideInUp = keyframes`
 const floatAnim = keyframes`
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-6px); }
+`;
+
+const shimmer = keyframes`
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+`;
+
+const pulse = keyframes`
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+`;
+
+const fadeIn = keyframes`
+  from { opacity: 0; }
+  to { opacity: 1; }
 `;
 
 /* ─── Styled Components ─── */
@@ -49,7 +68,7 @@ const PreviewHeading = styled.h3`
 const BookContainer = styled.div`
   display: inline-block;
   width: 85%;
-  max-width: 520px;
+  max-width: 620px;
   perspective: 1200px;
 
   @media (max-width: ${theme.breakpoints.sm}) {
@@ -107,9 +126,180 @@ const BookInner = styled.div<{ $radius: string }>`
 
 const RatioContainer = styled.div`
   width: 100%;
-  padding-bottom: 71.43%;
+  padding-bottom: 57.14%;
   position: relative;
 `;
+
+/* ─── Mode Image IA ─── */
+
+const AIImage = styled.img`
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  animation: ${fadeIn} 0.6s ease;
+`;
+
+const TextOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 5% 6%;
+  z-index: 5;
+  pointer-events: none;
+`;
+
+const OverlayTitle = styled.h2`
+  font-family: ${theme.fonts.heading};
+  font-size: clamp(0.9rem, 3.5vw, 1.5rem);
+  color: #fff;
+  margin: 0;
+  line-height: 1.3;
+  text-align: center;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.5), 0 1px 3px rgba(0,0,0,0.3);
+  word-break: break-word;
+  padding: 6px 12px;
+  background: rgba(0,0,0,0.25);
+  border-radius: ${theme.borderRadius.lg};
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  align-self: center;
+  max-width: 90%;
+`;
+
+const OverlaySubtitle = styled.p`
+  font-family: ${theme.fonts.body};
+  font-size: clamp(0.55rem, 1.8vw, 0.75rem);
+  font-style: italic;
+  color: rgba(255,255,255,0.9);
+  text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+  margin: 4px 0 0;
+  text-align: center;
+`;
+
+const OverlayBottom = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: ${theme.spacing.sm};
+`;
+
+const OverlayPill = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: ${theme.borderRadius.full};
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  font-family: ${theme.fonts.body};
+  font-size: clamp(0.5rem, 1.6vw, 0.65rem);
+  font-weight: 600;
+  color: rgba(255,255,255,0.9);
+`;
+
+const OverlayCredit = styled.span`
+  font-family: ${theme.fonts.body};
+  font-size: clamp(0.45rem, 1.3vw, 0.55rem);
+  color: rgba(255,255,255,0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+`;
+
+/* ─── Mode Loading ─── */
+
+const LoadingOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: ${theme.spacing.md};
+  z-index: 6;
+`;
+
+const ShimmerBar = styled.div`
+  width: 60%;
+  height: 8px;
+  border-radius: ${theme.borderRadius.full};
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0.2) 0%,
+    rgba(255,255,255,0.5) 50%,
+    rgba(255,255,255,0.2) 100%
+  );
+  background-size: 200% 100%;
+  animation: ${shimmer} 1.5s ease-in-out infinite;
+`;
+
+const LoadingText = styled.p`
+  font-family: ${theme.fonts.body};
+  font-size: clamp(0.7rem, 2vw, 0.85rem);
+  color: rgba(0,0,0,0.5);
+  font-weight: 500;
+  animation: ${pulse} 2s ease-in-out infinite;
+  text-align: center;
+  padding: 0 ${theme.spacing.md};
+`;
+
+const LoadingIcon = styled.span`
+  font-size: clamp(2rem, 6vw, 3rem);
+  animation: ${pulse} 2s ease-in-out infinite;
+`;
+
+/* ─── Boutons ─── */
+
+const ActionRow = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: ${theme.spacing.sm};
+  margin-top: ${theme.spacing.md};
+`;
+
+const RegenerateButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  gap: ${theme.spacing.xs};
+  padding: ${theme.spacing.xs} ${theme.spacing.md};
+  border: 1px solid ${theme.colors.accent.coral};
+  border-radius: ${theme.borderRadius.full};
+  background: transparent;
+  color: ${theme.colors.accent.coral};
+  font-size: ${theme.fontSizes.xs};
+  font-weight: 600;
+  font-family: ${theme.fonts.body};
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: ${theme.colors.accent.coral};
+    color: #fff;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`;
+
+const ErrorBanner = styled.div`
+  margin-top: ${theme.spacing.sm};
+  padding: ${theme.spacing.xs} ${theme.spacing.md};
+  border-radius: ${theme.borderRadius.md};
+  background: ${theme.colors.background.secondary};
+  font-size: ${theme.fontSizes.xs};
+  color: ${theme.colors.text.secondary};
+  font-family: ${theme.fonts.body};
+`;
+
+/* ─── Fallback CSS Components ─── */
 
 const BackgroundLayer = styled.div<{ $primary: string; $secondary: string }>`
   position: absolute;
@@ -142,7 +332,7 @@ const FloatingEmoji = styled.span<{ $x: string; $y: string; $delay: string; $siz
   ${props => props.$extraStyle}
 `;
 
-const ContentLayer = styled.div`
+const FallbackContentLayer = styled.div`
   position: absolute;
   inset: 0;
   padding: 8%;
@@ -156,12 +346,12 @@ const ContentLayer = styled.div`
   }
 `;
 
-const TopRow = styled.div`
+const FallbackTopRow = styled.div`
   display: flex;
   justify-content: flex-end;
 `;
 
-const MessageBadge = styled.span<{ $accent: string }>`
+const FallbackBadge = styled.span<{ $accent: string }>`
   display: inline-flex;
   padding: 4px 12px;
   border-radius: ${theme.borderRadius.full};
@@ -175,45 +365,33 @@ const MessageBadge = styled.span<{ $accent: string }>`
   border: 1px solid rgba(255,255,255,0.3);
 `;
 
-const CenterArea = styled.div`
+const FallbackCenter = styled.div`
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
 `;
 
-const TitleBlock = styled.div`
-  text-align: center;
-  max-width: 85%;
-`;
-
-const MainTitle = styled.h2<{ $color: string; $extraStyle: string }>`
+const FallbackTitle = styled.h2<{ $color: string; $extraStyle: string }>`
   font-family: ${theme.fonts.heading};
   font-size: clamp(1rem, 4vw, 1.7rem);
   color: ${props => props.$color};
   margin: 0;
   line-height: 1.3;
+  text-align: center;
+  max-width: 85%;
   word-break: break-word;
   ${props => props.$extraStyle}
 `;
 
-const SubTitle = styled.p<{ $color: string }>`
-  font-family: ${theme.fonts.body};
-  font-size: clamp(0.6rem, 2vw, 0.8rem);
-  font-style: italic;
-  color: ${props => props.$color};
-  opacity: 0.7;
-  margin: 6px 0 0;
-`;
-
-const BottomRow = styled.div`
+const FallbackBottom = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
   gap: ${theme.spacing.sm};
 `;
 
-const ProtagonistPill = styled.div`
+const FallbackPill = styled.div`
   display: flex;
   align-items: center;
   gap: 4px;
@@ -229,7 +407,7 @@ const ProtagonistPill = styled.div`
   color: rgba(0,0,0,0.6);
 `;
 
-const CreatorCredit = styled.span<{ $color: string }>`
+const FallbackCredit = styled.span<{ $color: string }>`
   font-family: ${theme.fonts.body};
   font-size: clamp(0.5rem, 1.5vw, 0.6rem);
   color: ${props => props.$color};
@@ -251,7 +429,13 @@ const DECO_POSITIONS = [
 
 /* ─── Composant ─── */
 
-export const BookCoverPreview: React.FC<BookCoverPreviewProps> = React.memo(({ formData }) => {
+export const BookCoverPreview: React.FC<BookCoverPreviewProps> = React.memo(({
+  formData,
+  coverImageUrl,
+  isGenerating = false,
+  error,
+  onRegenerate,
+}) => {
   const palette = useMemo(
     () => getCoverPalette(formData.specificSubject, formData.generalTheme),
     [formData.specificSubject, formData.generalTheme]
@@ -276,65 +460,121 @@ export const BookCoverPreview: React.FC<BookCoverPreviewProps> = React.memo(({ f
     [formData.centralMessage]
   );
 
-  const genderIcon = formData.protagonistGender === 'girl' ? '👧' : formData.protagonistGender === 'boy' ? '👦' : '✨';
+  const genderIcon = formData.protagonistGender === 'girl' ? '\uD83D\uDC67' : formData.protagonistGender === 'boy' ? '\uD83D\uDC66' : '\u2728';
   const creatorName = formData.creatorName || 'Contes d\'IA';
-
   const protagonistLabel = [
     formData.protagonistName,
     formData.protagonistAge ? `${formData.protagonistAge} ans` : null,
   ].filter(Boolean).join(', ');
 
+  const hasAIImage = !!coverImageUrl;
+
   return (
     <PreviewWrapper>
-      <PreviewHeading>Apercu de votre conte</PreviewHeading>
+      <PreviewHeading>
+        {hasAIImage ? 'Apercu de votre conte' : isGenerating ? 'Creation de votre couverture...' : 'Apercu de votre conte'}
+      </PreviewHeading>
       <BookContainer>
         <BookInner $radius={treatment.borderRadius}>
           <RatioContainer>
-            <BackgroundLayer $primary={palette.primary} $secondary={palette.secondary} />
-            <StyleLayer $bgExtra={treatment.backgroundExtra} />
-            <DecorationLayer>
-              {palette.decorations.slice(0, 5).map((emoji, i) => (
-                <FloatingEmoji
-                  key={`${emoji}-${i}`}
-                  $x={DECO_POSITIONS[i].x}
-                  $y={DECO_POSITIONS[i].y}
-                  $size={DECO_POSITIONS[i].size}
-                  $delay={DECO_POSITIONS[i].delay}
-                  $extraStyle={treatment.decorationStyle}
-                >
-                  {emoji}
-                </FloatingEmoji>
-              ))}
-            </DecorationLayer>
-            <ContentLayer>
-              <TopRow>
-                {subtitle && (
-                  <MessageBadge $accent={palette.accent}>{subtitle}</MessageBadge>
-                )}
-              </TopRow>
-              <CenterArea>
-                <TitleBlock>
-                  <MainTitle $color={palette.textColor} $extraStyle={treatment.titleStyle}>
-                    {title}
-                  </MainTitle>
-                  {formData.centralMessage && subtitle && (
-                    <SubTitle $color={palette.textColor}>{subtitle}</SubTitle>
-                  )}
-                </TitleBlock>
-              </CenterArea>
-              <BottomRow>
-                <ProtagonistPill>
-                  <span>{genderIcon}</span>
-                  <span>{protagonistLabel}</span>
-                </ProtagonistPill>
-                <CreatorCredit $color={palette.textColor}>
-                  Par {creatorName}
-                </CreatorCredit>
-              </BottomRow>
-            </ContentLayer>
+            {/* Mode 1 : Image IA generee */}
+            {hasAIImage && !isGenerating && (
+              <>
+                <AIImage src={coverImageUrl!} alt="Couverture du conte" />
+                <TextOverlay>
+                  <div />
+                  <div style={{ textAlign: 'center' }}>
+                    <OverlayTitle>{title}</OverlayTitle>
+                    {subtitle && <OverlaySubtitle>{subtitle}</OverlaySubtitle>}
+                  </div>
+                  <OverlayBottom>
+                    <OverlayPill>
+                      <span>{genderIcon}</span>
+                      <span>{protagonistLabel}</span>
+                    </OverlayPill>
+                    <OverlayCredit>Par {creatorName}</OverlayCredit>
+                  </OverlayBottom>
+                </TextOverlay>
+              </>
+            )}
+
+            {/* Mode 2 : Generation en cours */}
+            {isGenerating && (
+              <>
+                <BackgroundLayer $primary={palette.primary} $secondary={palette.secondary} />
+                <StyleLayer $bgExtra={treatment.backgroundExtra} />
+                <LoadingOverlay>
+                  <LoadingIcon>{'\uD83C\uDFA8'}</LoadingIcon>
+                  <LoadingText>Notre IA cree votre couverture personnalisee...</LoadingText>
+                  <ShimmerBar />
+                </LoadingOverlay>
+              </>
+            )}
+
+            {/* Mode 3 : Fallback CSS (pas d'image, pas de generation en cours) */}
+            {!hasAIImage && !isGenerating && (
+              <>
+                <BackgroundLayer $primary={palette.primary} $secondary={palette.secondary} />
+                <StyleLayer $bgExtra={treatment.backgroundExtra} />
+                <DecorationLayer>
+                  {palette.decorations.slice(0, 5).map((emoji, i) => (
+                    <FloatingEmoji
+                      key={`${emoji}-${i}`}
+                      $x={DECO_POSITIONS[i].x}
+                      $y={DECO_POSITIONS[i].y}
+                      $size={DECO_POSITIONS[i].size}
+                      $delay={DECO_POSITIONS[i].delay}
+                      $extraStyle={treatment.decorationStyle}
+                    >
+                      {emoji}
+                    </FloatingEmoji>
+                  ))}
+                </DecorationLayer>
+                <FallbackContentLayer>
+                  <FallbackTopRow>
+                    {subtitle && (
+                      <FallbackBadge $accent={palette.accent}>{subtitle}</FallbackBadge>
+                    )}
+                  </FallbackTopRow>
+                  <FallbackCenter>
+                    <FallbackTitle $color={palette.textColor} $extraStyle={treatment.titleStyle}>
+                      {title}
+                    </FallbackTitle>
+                  </FallbackCenter>
+                  <FallbackBottom>
+                    <FallbackPill>
+                      <span>{genderIcon}</span>
+                      <span>{protagonistLabel}</span>
+                    </FallbackPill>
+                    <FallbackCredit $color={palette.textColor}>
+                      Par {creatorName}
+                    </FallbackCredit>
+                  </FallbackBottom>
+                </FallbackContentLayer>
+              </>
+            )}
           </RatioContainer>
         </BookInner>
       </BookContainer>
+
+      {/* Bouton Regenerer + Erreur */}
+      <ActionRow>
+        {hasAIImage && onRegenerate && (
+          <RegenerateButton onClick={onRegenerate} disabled={isGenerating}>
+            {'\uD83D\uDD04'} Regenerer
+          </RegenerateButton>
+        )}
+      </ActionRow>
+      {error && !isGenerating && (
+        <ErrorBanner>
+          {error}. Votre conte sera cree normalement.
+          {onRegenerate && (
+            <RegenerateButton onClick={onRegenerate} style={{ marginLeft: '8px' }}>
+              Reessayer
+            </RegenerateButton>
+          )}
+        </ErrorBanner>
+      )}
     </PreviewWrapper>
   );
 });
