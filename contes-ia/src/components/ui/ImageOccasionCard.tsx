@@ -125,8 +125,7 @@ export const ImageOccasionCard: React.FC<ImageOccasionCardProps> = ({
     'easter': '🐣',
     'eid': '🌙',
     'mothers-day': '💐',
-    'fathers-day': '👨‍👧',
-    'halloween': '👻'
+    'fathers-day': '👨‍👧'
   };
 
   return (

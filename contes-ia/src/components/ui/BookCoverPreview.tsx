@@ -6,7 +6,7 @@ interface BookCoverPreviewProps {
   coverImageUrl?: string | null;
   isGenerating?: boolean;
   error?: string | null;
-  onRegenerate?: () => void;
+  onClick?: () => void;
 }
 
 /* --- Animations --- */
@@ -17,19 +17,43 @@ const revealPulse = keyframes`
   100% { opacity: 1; transform: perspective(800px) rotateY(-2deg) scale(1); }
 `;
 
+const gradientShift = keyframes`
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+`;
+
+const bookOpen = keyframes`
+  0%, 100% { transform: rotateY(0deg); }
+  50% { transform: rotateY(-25deg); }
+`;
+
+const pageTurn = keyframes`
+  0% { transform: rotateY(0deg); opacity: 1; }
+  50% { transform: rotateY(-80deg); opacity: 0.6; }
+  100% { transform: rotateY(0deg); opacity: 1; }
+`;
+
+const sparkle = keyframes`
+  0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1) rotate(180deg); }
+`;
+
+const floatMessage = keyframes`
+  0% { opacity: 0; transform: translateY(12px); }
+  15% { opacity: 1; transform: translateY(0); }
+  85% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-12px); }
+`;
+
+const progressGlow = keyframes`
+  0% { width: 5%; }
+  50% { width: 70%; }
+  100% { width: 95%; }
+`;
+
 const shimmer = keyframes`
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
-`;
-
-const pulse = keyframes`
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
-`;
-
-const dotBounce = keyframes`
-  0%, 80%, 100% { transform: scale(0); }
-  40% { transform: scale(1); }
 `;
 
 /* --- Styled Components --- */
@@ -51,7 +75,45 @@ const BookContainer = styled.div`
   perspective: 1200px;
 `;
 
-const BookInner = styled.div<{ $revealed: boolean }>`
+const HoverOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  z-index: 5;
+  pointer-events: none;
+  padding: ${theme.spacing.xl};
+`;
+
+const HoverCTAText = styled.p`
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.xl};
+  color: white;
+  text-align: center;
+  font-weight: 700;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.6);
+  line-height: 1.4;
+  margin: 0;
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    font-size: ${theme.fontSizes.lg};
+  }
+`;
+
+const AIImage = styled.img`
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: filter 0.35s ease;
+`;
+
+const BookInner = styled.div<{ $revealed: boolean; $clickable: boolean }>`
   position: relative;
   border-radius: 8px;
   overflow: hidden;
@@ -62,9 +124,18 @@ const BookInner = styled.div<{ $revealed: boolean }>`
   animation: ${props => props.$revealed ? revealPulse : 'none'} 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
   transform: perspective(800px) rotateY(-2deg);
   transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  cursor: ${props => props.$clickable ? 'pointer' : 'default'};
 
   &:hover {
     transform: perspective(800px) rotateY(0deg) scale(1.02);
+  }
+
+  &:hover ${AIImage} {
+    filter: blur(3px);
+  }
+
+  &:hover ${HoverOverlay} {
+    opacity: 1;
   }
 
   /* Spine effect */
@@ -96,6 +167,8 @@ const BookInner = styled.div<{ $revealed: boolean }>`
 
   @media (max-width: ${theme.breakpoints.sm}) {
     &:hover { transform: perspective(800px) rotateY(0deg) scale(1.01); }
+    &:hover ${AIImage} { filter: none; }
+    &:hover ${HoverOverlay} { opacity: 0; }
   }
 `;
 
@@ -106,79 +179,179 @@ const RatioContainer = styled.div`
   background: ${theme.colors.background.secondary};
 `;
 
-/* --- AI Image --- */
+/* --- Magical Loading Animation --- */
 
-const AIImage = styled.img`
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-`;
-
-/* --- Loading State --- */
-
-const LoadingOverlay = styled.div`
+const MagicalLoadingScene = styled.div`
   position: absolute;
   inset: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: ${theme.spacing.lg};
-  background: linear-gradient(160deg, #fef3e8 0%, #fce4ec 50%, #e8eaf6 100%);
+  background: linear-gradient(160deg, #fef3e8 0%, #fce4ec 35%, #e8eaf6 65%, #fef3e8 100%);
+  background-size: 300% 300%;
+  animation: ${gradientShift} 8s ease-in-out infinite;
+  overflow: hidden;
 `;
 
-const LoadingIcon = styled.span`
-  font-size: 3.5rem;
-  animation: ${pulse} 2s ease-in-out infinite;
+const AnimatedBook = styled.div`
+  width: 70px;
+  height: 90px;
+  perspective: 300px;
+  margin-bottom: ${theme.spacing.md};
 
   @media (max-width: ${theme.breakpoints.sm}) {
-    font-size: 2.5rem;
+    width: 56px;
+    height: 72px;
   }
 `;
 
-const LoadingText = styled.p`
+const BookBody = styled.div`
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  animation: ${bookOpen} 3s ease-in-out infinite;
+`;
+
+const BookCoverShape = styled.div`
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.accent.softPink});
+  border-radius: 3px 6px 6px 3px;
+  box-shadow: 2px 2px 10px rgba(0,0,0,0.15);
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+    background: linear-gradient(90deg, rgba(0,0,0,0.2), transparent);
+    border-radius: 3px 0 0 3px;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255,255,255,0.5);
+    border-radius: 50%;
+  }
+`;
+
+const BookPage = styled.div<{ $delay: number }>`
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  bottom: 3px;
+  left: 6px;
+  background: white;
+  border-radius: 0 4px 4px 0;
+  transform-origin: left center;
+  animation: ${pageTurn} 3s ease-in-out infinite;
+  animation-delay: ${props => props.$delay}s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 15%;
+    left: 15%;
+    right: 15%;
+    height: 3px;
+    background: rgba(0,0,0,0.06);
+    border-radius: 2px;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 30%;
+    left: 15%;
+    right: 25%;
+    height: 3px;
+    background: rgba(0,0,0,0.04);
+    border-radius: 2px;
+  }
+`;
+
+const SparkleElement = styled.div<{ $x: string; $y: string; $delay: string; $size: string }>`
+  position: absolute;
+  left: ${props => props.$x};
+  top: ${props => props.$y};
+  width: ${props => props.$size};
+  height: ${props => props.$size};
+  animation: ${sparkle} 2.5s ease-in-out infinite;
+  animation-delay: ${props => props.$delay};
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: ${theme.colors.accent.coral};
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  }
+`;
+
+const RotatingMessages = styled.div`
+  text-align: center;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+  margin-top: ${theme.spacing.sm};
+`;
+
+const MessageText = styled.p<{ $index: number; $total: number }>`
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.sm};
   color: ${theme.colors.text.secondary};
   font-weight: 500;
-  animation: ${pulse} 2s ease-in-out infinite;
-  text-align: center;
+  position: absolute;
+  opacity: 0;
+  animation: ${floatMessage} ${props => props.$total * 3}s ease-in-out infinite;
+  animation-delay: ${props => props.$index * 3}s;
   padding: 0 ${theme.spacing.lg};
-  max-width: 280px;
+  max-width: 260px;
   line-height: 1.5;
   margin: 0;
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    font-size: ${theme.fontSizes.xs};
+    max-width: 220px;
+  }
 `;
 
-const ShimmerBar = styled.div`
-  width: 50%;
-  height: 6px;
+const ProgressBarContainer = styled.div`
+  width: 55%;
+  height: 4px;
+  background: rgba(0,0,0,0.06);
+  border-radius: ${theme.borderRadius.full};
+  margin-top: ${theme.spacing.lg};
+  overflow: hidden;
+`;
+
+const ProgressFill = styled.div`
+  height: 100%;
   border-radius: ${theme.borderRadius.full};
   background: linear-gradient(
     90deg,
-    rgba(0,0,0,0.05) 0%,
-    rgba(0,0,0,0.12) 50%,
-    rgba(0,0,0,0.05) 100%
+    ${theme.colors.accent.coral}80,
+    ${theme.colors.accent.softPink},
+    ${theme.colors.accent.coral}80
   );
   background-size: 200% 100%;
-  animation: ${shimmer} 1.5s ease-in-out infinite;
-`;
-
-const LoadingDots = styled.div`
-  display: flex;
-  gap: 6px;
-  margin-top: ${theme.spacing.xs};
-`;
-
-const Dot = styled.span<{ $delay: string }>`
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: ${theme.colors.accent.coral};
-  display: inline-block;
-  animation: ${dotBounce} 1.4s ease-in-out infinite;
-  animation-delay: ${props => props.$delay};
+  animation:
+    ${progressGlow} 15s ease-in-out forwards,
+    ${shimmer} 2s ease-in-out infinite;
 `;
 
 /* --- Empty / Placeholder --- */
@@ -210,52 +383,13 @@ const PlaceholderText = styled.p`
   margin: 0;
 `;
 
-/* --- Actions --- */
+/* --- Loading Messages --- */
 
-const ActionRow = styled.div`
-  display: flex;
-  justify-content: center;
-  gap: ${theme.spacing.sm};
-  margin-top: ${theme.spacing.md};
-`;
-
-const RegenerateButton = styled.button`
-  display: inline-flex;
-  align-items: center;
-  gap: ${theme.spacing.xs};
-  padding: ${theme.spacing.xs} ${theme.spacing.md};
-  border: 1.5px solid ${theme.colors.accent.coral};
-  border-radius: ${theme.borderRadius.full};
-  background: transparent;
-  color: ${theme.colors.accent.coral};
-  font-size: ${theme.fontSizes.xs};
-  font-weight: 600;
-  font-family: ${theme.fonts.body};
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background: ${theme.colors.accent.coral};
-    color: #fff;
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-`;
-
-const ErrorBanner = styled.div`
-  margin-top: ${theme.spacing.sm};
-  padding: ${theme.spacing.sm} ${theme.spacing.md};
-  border-radius: ${theme.borderRadius.md};
-  background: #fff3f3;
-  border: 1px solid #ffe0e0;
-  font-size: ${theme.fontSizes.xs};
-  color: ${theme.colors.text.secondary};
-  font-family: ${theme.fonts.body};
-  line-height: 1.5;
-`;
+const LOADING_MESSAGES = [
+  'Création de votre histoire...',
+  'Illustration en cours...',
+  'Votre conte prend vie...',
+];
 
 /* --- Component --- */
 
@@ -263,37 +397,75 @@ export const BookCoverPreview: React.FC<BookCoverPreviewProps> = React.memo(({
   coverImageUrl,
   isGenerating = false,
   error,
-  onRegenerate,
+  onClick,
 }) => {
   const hasAIImage = !!coverImageUrl;
+  const isClickable = hasAIImage && !isGenerating;
+
+  const handleClick = () => {
+    if (isClickable && onClick) {
+      onClick();
+    }
+  };
 
   return (
     <PreviewWrapper>
       <BookContainer>
-        <BookInner $revealed={hasAIImage && !isGenerating}>
+        <BookInner
+          $revealed={hasAIImage && !isGenerating}
+          $clickable={isClickable}
+          onClick={handleClick}
+        >
           <RatioContainer>
-            {/* Mode 1 : Image IA generee */}
+            {/* Mode 1 : Image IA générée + hover overlay */}
             {hasAIImage && !isGenerating && (
-              <AIImage src={coverImageUrl!} alt="Couverture de votre conte" loading="eager" />
+              <>
+                <AIImage src={coverImageUrl!} alt="Couverture de votre conte" loading="eager" />
+                <HoverOverlay>
+                  <HoverCTAText>
+                    Recevoir mon conte complet maintenant
+                  </HoverCTAText>
+                </HoverOverlay>
+              </>
             )}
 
-            {/* Mode 2 : Generation en cours */}
+            {/* Mode 2 : Génération en cours — animation magique */}
             {isGenerating && (
-              <LoadingOverlay>
-                <LoadingIcon>{'\uD83C\uDFA8'}</LoadingIcon>
-                <LoadingText>
-                  Notre IA illustre votre conte personnalisé...
-                </LoadingText>
-                <ShimmerBar />
-                <LoadingDots>
-                  <Dot $delay="0s" />
-                  <Dot $delay="0.2s" />
-                  <Dot $delay="0.4s" />
-                </LoadingDots>
-              </LoadingOverlay>
+              <MagicalLoadingScene>
+                {/* Sparkles */}
+                <SparkleElement $x="12%" $y="18%" $delay="0s" $size="10px" />
+                <SparkleElement $x="82%" $y="12%" $delay="0.6s" $size="7px" />
+                <SparkleElement $x="75%" $y="72%" $delay="1.2s" $size="9px" />
+                <SparkleElement $x="18%" $y="68%" $delay="1.8s" $size="12px" />
+                <SparkleElement $x="88%" $y="42%" $delay="0.4s" $size="6px" />
+                <SparkleElement $x="8%" $y="45%" $delay="1s" $size="8px" />
+
+                {/* Animated Book */}
+                <AnimatedBook>
+                  <BookBody>
+                    <BookPage $delay={0.4} />
+                    <BookPage $delay={0.8} />
+                    <BookCoverShape />
+                  </BookBody>
+                </AnimatedBook>
+
+                {/* Rotating Messages */}
+                <RotatingMessages>
+                  {LOADING_MESSAGES.map((msg, i) => (
+                    <MessageText key={i} $index={i} $total={LOADING_MESSAGES.length}>
+                      {msg}
+                    </MessageText>
+                  ))}
+                </RotatingMessages>
+
+                {/* Progress Bar */}
+                <ProgressBarContainer>
+                  <ProgressFill />
+                </ProgressBarContainer>
+              </MagicalLoadingScene>
             )}
 
-            {/* Mode 3 : Placeholder (avant toute generation) */}
+            {/* Mode 3 : Placeholder */}
             {!hasAIImage && !isGenerating && !error && (
               <PlaceholderOverlay>
                 <PlaceholderIcon>{'\uD83D\uDCD6'}</PlaceholderIcon>
@@ -303,7 +475,7 @@ export const BookCoverPreview: React.FC<BookCoverPreviewProps> = React.memo(({
               </PlaceholderOverlay>
             )}
 
-            {/* Mode 4 : Erreur sans image */}
+            {/* Mode 4 : Erreur */}
             {!hasAIImage && !isGenerating && error && (
               <PlaceholderOverlay>
                 <PlaceholderIcon>{'\u26A0\uFE0F'}</PlaceholderIcon>
@@ -315,25 +487,6 @@ export const BookCoverPreview: React.FC<BookCoverPreviewProps> = React.memo(({
           </RatioContainer>
         </BookInner>
       </BookContainer>
-
-      {/* Bouton Regenerer + Erreur */}
-      <ActionRow>
-        {hasAIImage && onRegenerate && (
-          <RegenerateButton onClick={onRegenerate} disabled={isGenerating}>
-            {'\uD83D\uDD04'} Régénérer la couverture
-          </RegenerateButton>
-        )}
-      </ActionRow>
-      {error && hasAIImage && !isGenerating && (
-        <ErrorBanner>
-          {error}
-          {onRegenerate && (
-            <RegenerateButton onClick={onRegenerate} style={{ marginLeft: '8px', marginTop: '4px' }}>
-              Réessayer
-            </RegenerateButton>
-          )}
-        </ErrorBanner>
-      )}
     </PreviewWrapper>
   );
 });

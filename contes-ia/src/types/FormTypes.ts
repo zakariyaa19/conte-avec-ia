@@ -89,14 +89,12 @@ export const SPECIFIC_SUBJECTS = [
   { value: 'easter', label: 'Pâques', icon: '🐣', imagePath: '/image/occasions/paques.png' },
   { value: 'eid', label: 'Aïd el-Fitr', icon: '🌙', imagePath: '/image/occasions/aid.png' },
   { value: 'mothers-day', label: 'Fête des mères', icon: '💐', imagePath: '/image/occasions/fete-meres.png' },
-  { value: 'fathers-day', label: 'Fête des pères', icon: '👨‍👧', imagePath: '/image/occasions/fete-peres.png' },
-  { value: 'halloween', label: 'Halloween', icon: '👻', imagePath: '/image/occasions/halloween.png' }
+  { value: 'fathers-day', label: 'Fête des pères', icon: '👨‍👧', imagePath: '/image/occasions/fete-peres.png' }
 ];
 
 export const CENTRAL_MESSAGES = [
   { value: 'friendship', label: 'Amitié', icon: '🤝', imagePath: '/image/messages/amitie.png' },
   { value: 'courage', label: 'Courage', icon: '💪', imagePath: '/image/messages/courage.png' },
-  { value: 'nature-care', label: 'Prendre soin de la nature', icon: '🌱', imagePath: '/image/messages/nature.png' },
   { value: 'love', label: 'Amour', icon: '❤️', imagePath: '/image/messages/amour.png' },
   { value: 'perseverance', label: 'Persévérance', icon: '🎯', imagePath: '/image/messages/perseverance.png' },
   { value: 'sharing', label: 'Partage', icon: '🤲', imagePath: '/image/messages/partage.png' },

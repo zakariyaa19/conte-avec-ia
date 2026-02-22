@@ -121,7 +121,6 @@ export const ImageMessageCard: React.FC<ImageMessageCardProps> = ({
   const fallbackEmojis: { [key: string]: string } = {
     'friendship': '🤝',
     'courage': '💪',
-    'nature-care': '🌱',
     'love': '❤️',
     'perseverance': '🎯',
     'sharing': '🤲',

@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { theme } from '../../styles/theme';
 import { Button } from '../ui/Button';
 import { ValidatedInput } from '../ui/ValidatedInput';
-import { SelectionCard } from '../ui/SelectionCard';
 import { SecondaryCharacter } from '../../types/FormTypes';
 
 interface SecondaryCharactersSectionProps {
@@ -13,17 +12,13 @@ interface SecondaryCharactersSectionProps {
 
 const MAX_CHARACTERS = 5;
 
+const slideIn = keyframes`
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+`;
+
 const SectionContainer = styled.div`
-  background-color: ${theme.colors.background.secondary};
-  padding: ${theme.spacing.xl};
-  border-radius: ${theme.borderRadius.lg};
-  margin-top: ${theme.spacing.xl};
-  
-  @media (max-width: ${theme.breakpoints.sm}) {
-    padding: ${theme.spacing.sm};
-    margin-left: -${theme.spacing.xs};
-    margin-right: -${theme.spacing.xs};
-  }
+  padding: ${theme.spacing.md} 0;
 `;
 
 const SectionHeader = styled.div`
@@ -32,31 +27,43 @@ const SectionHeader = styled.div`
 
 const SectionTitle = styled.h4`
   color: ${theme.colors.text.primary};
-  margin-bottom: ${theme.spacing.sm};
+  margin-bottom: ${theme.spacing.xs};
   font-family: ${theme.fonts.heading};
-  
+  font-size: ${theme.fontSizes.base};
+  display: flex;
+  align-items: center;
+  gap: ${theme.spacing.sm};
+
   @media (max-width: ${theme.breakpoints.sm}) {
-    font-size: ${theme.fontSizes.base};
+    font-size: ${theme.fontSizes.sm};
   }
 `;
 
 const SectionDescription = styled.p`
   color: ${theme.colors.text.secondary};
-  font-size: ${theme.fontSizes.sm};
-  margin-bottom: ${theme.spacing.md};
+  font-size: ${theme.fontSizes.xs};
+  margin: 0;
 `;
 
 const CharacterCard = styled.div`
   background: ${theme.colors.background.white};
-  border: 2px solid ${theme.colors.background.secondary};
-  border-radius: ${theme.borderRadius.md};
-  padding: ${theme.spacing.lg};
+  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: ${theme.borderRadius.xl};
+  padding: ${theme.spacing.xl};
   margin-bottom: ${theme.spacing.lg};
   position: relative;
-  
+  box-shadow: ${theme.shadows.sm};
+  transition: box-shadow 0.2s ease;
+  animation: ${slideIn} 0.3s ease;
+
+  &:hover {
+    box-shadow: ${theme.shadows.md};
+  }
+
   @media (max-width: ${theme.breakpoints.sm}) {
-    padding: ${theme.spacing.sm};
+    padding: ${theme.spacing.md};
     margin-bottom: ${theme.spacing.md};
+    border-radius: ${theme.borderRadius.lg};
   }
 `;
 
@@ -64,31 +71,109 @@ const CharacterHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: ${theme.spacing.md};
-  padding-bottom: ${theme.spacing.sm};
-  border-bottom: 1px solid ${theme.colors.background.secondary};
+  margin-bottom: ${theme.spacing.lg};
+  padding-bottom: ${theme.spacing.md};
+  border-bottom: 1px solid ${theme.colors.accent.creamyYellow};
 `;
 
-const CharacterNumber = styled.span`
+const CharacterNumberBadge = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${theme.spacing.sm};
   font-weight: 700;
-  color: ${theme.colors.accent.coral};
-  font-size: ${theme.fontSizes.lg};
+  color: ${theme.colors.text.primary};
+  font-size: ${theme.fontSizes.sm};
+`;
+
+const NumberCircle = styled.span`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: ${theme.borderRadius.full};
+  background: linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.accent.softPink});
+  color: white;
+  font-size: ${theme.fontSizes.xs};
+  font-weight: 700;
+  flex-shrink: 0;
 `;
 
 const DeleteButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: ${theme.spacing.xs};
   background: transparent;
-  border: 1px solid #ff4444;
-  color: #ff4444;
-  padding: ${theme.spacing.xs} ${theme.spacing.sm};
-  border-radius: ${theme.borderRadius.sm};
+  border: 1px solid #ffcdd2;
+  color: #c62828;
+  padding: ${theme.spacing.xs} ${theme.spacing.md};
+  border-radius: ${theme.borderRadius.full};
   font-size: ${theme.fontSizes.xs};
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  
+  min-height: 36px;
+
   &:hover {
-    background: #ff4444;
-    color: white;
+    background: #ffebee;
+    border-color: #ef9a9a;
+  }
+`;
+
+const TypeGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: ${theme.spacing.md};
+  margin-bottom: ${theme.spacing.lg};
+`;
+
+const TypeButton = styled.button<{ $isSelected: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: ${theme.spacing.sm};
+  padding: ${theme.spacing.md} ${theme.spacing.lg};
+  border: 2px solid ${props => props.$isSelected ? theme.colors.accent.coral : '#E5E7EB'};
+  border-radius: ${theme.borderRadius.lg};
+  background: ${props => props.$isSelected ? theme.colors.accent.creamyYellow : theme.colors.background.white};
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: ${theme.fonts.body};
+  font-size: ${theme.fontSizes.base};
+  font-weight: 600;
+  color: ${theme.colors.text.primary};
+  min-height: 48px;
+
+  &:hover {
+    border-color: ${theme.colors.accent.coral};
+    box-shadow: ${theme.shadows.sm};
+  }
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    padding: ${theme.spacing.sm} ${theme.spacing.md};
+    font-size: ${theme.fontSizes.sm};
+    min-height: 44px;
+  }
+`;
+
+const TypeIconCircle = styled.div<{ $variant: 'human' | 'animal' }>`
+  width: 36px;
+  height: 36px;
+  border-radius: ${theme.borderRadius.full};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  background: ${props => props.$variant === 'human'
+    ? `linear-gradient(135deg, ${theme.colors.accent.softPink}50, ${theme.colors.accent.coral}20)`
+    : `linear-gradient(135deg, ${theme.colors.accent.lightGreen}50, ${theme.colors.accent.pastelBlue}20)`
+  };
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  flex-shrink: 0;
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
   }
 `;
 
@@ -97,20 +182,13 @@ const InputGroup = styled.div`
   grid-template-columns: 1fr 1fr;
   gap: ${theme.spacing.md};
   margin-bottom: ${theme.spacing.md};
-  
+
   @media (max-width: ${theme.breakpoints.md}) {
     grid-template-columns: 1fr;
   }
 `;
 
 const FullWidthField = styled.div`
-  margin-bottom: ${theme.spacing.md};
-`;
-
-const TypeGrid = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: ${theme.spacing.md};
   margin-bottom: ${theme.spacing.md};
 `;
 
@@ -122,17 +200,21 @@ const TextArea = styled.textarea`
   font-size: ${theme.fontSizes.base};
   font-family: ${theme.fonts.body};
   resize: vertical;
-  min-height: 80px;
+  min-height: 70px;
   transition: border-color 0.3s ease;
-  
+  box-sizing: border-box;
+
   &:focus {
     outline: none;
     border-color: ${theme.colors.accent.coral};
+    box-shadow: 0 0 0 3px ${theme.colors.accent.coral}15;
   }
-  
+
   &::placeholder {
     color: ${theme.colors.text.light};
   }
+
+  @media (max-width: 480px) { font-size: 16px; }
 `;
 
 const Label = styled.label`
@@ -151,15 +233,16 @@ const AddButton = styled(Button)`
 const LimitMessage = styled.p`
   text-align: center;
   color: ${theme.colors.text.light};
-  font-size: ${theme.fontSizes.sm};
+  font-size: ${theme.fontSizes.xs};
   font-style: italic;
   margin-top: ${theme.spacing.md};
 `;
 
 const EmptyState = styled.div`
   text-align: center;
-  padding: ${theme.spacing.xl};
-  color: ${theme.colors.text.secondary};
+  padding: ${theme.spacing.lg};
+  color: ${theme.colors.text.light};
+  font-size: ${theme.fontSizes.sm};
 `;
 
 export const SecondaryCharactersSection: React.FC<SecondaryCharactersSectionProps> = ({
@@ -180,13 +263,11 @@ export const SecondaryCharactersSection: React.FC<SecondaryCharactersSectionProp
 
     onChange([...secondaryCharacters, newCharacter]);
 
-    // Auto-scroll vers le nouveau personnage
     setTimeout(() => {
       const cards = document.querySelectorAll('[data-character-card]');
       const lastCard = cards[cards.length - 1];
       if (lastCard) {
         lastCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        // Focus sur le premier champ
         const firstInput = lastCard.querySelector('input');
         if (firstInput) {
           (firstInput as HTMLInputElement).focus();
@@ -198,8 +279,7 @@ export const SecondaryCharactersSection: React.FC<SecondaryCharactersSectionProp
   const handleDeleteCharacter = (index: number) => {
     const updated = secondaryCharacters.filter((_, i) => i !== index);
     onChange(updated);
-    
-    // Clear errors for deleted character
+
     const newErrors = { ...errors };
     Object.keys(newErrors).forEach(key => {
       if (key.startsWith(`${index}-`)) {
@@ -214,7 +294,6 @@ export const SecondaryCharactersSection: React.FC<SecondaryCharactersSectionProp
     updated[index] = { ...updated[index], [field]: value };
     onChange(updated);
 
-    // Clear error for this field
     const errorKey = `${index}-${field}`;
     if (errors[errorKey]) {
       setErrors(prev => {
@@ -246,7 +325,7 @@ export const SecondaryCharactersSection: React.FC<SecondaryCharactersSectionProp
   return (
     <SectionContainer>
       <SectionHeader>
-        <SectionTitle>🧸 Personnages secondaires (optionnel)</SectionTitle>
+        <SectionTitle>Personnages secondaires</SectionTitle>
         <SectionDescription>
           Ajoutez jusqu'à {MAX_CHARACTERS} personnages secondaires à votre histoire
         </SectionDescription>
@@ -254,44 +333,46 @@ export const SecondaryCharactersSection: React.FC<SecondaryCharactersSectionProp
 
       {secondaryCharacters.length === 0 ? (
         <EmptyState>
-          <p>Aucun personnage secondaire ajouté</p>
+          Aucun personnage secondaire ajouté
         </EmptyState>
       ) : (
         secondaryCharacters.map((character, index) => (
           <CharacterCard key={index} data-character-card>
             <CharacterHeader>
-              <CharacterNumber>Personnage secondaire #{index + 1}</CharacterNumber>
+              <CharacterNumberBadge>
+                <NumberCircle>{index + 1}</NumberCircle>
+                Personnage #{index + 1}
+              </CharacterNumberBadge>
               <DeleteButton onClick={() => handleDeleteCharacter(index)}>
                 Supprimer
               </DeleteButton>
             </CharacterHeader>
 
-            <FullWidthField>
-              <Label>Type *</Label>
-              <TypeGrid>
-                <SelectionCard
-                  value="human"
-                  label="Humain"
-                  icon="👤"
-                  isSelected={character.kind === 'human'}
-                  onClick={() => handleUpdateCharacter(index, 'kind', 'human')}
-                />
-                <SelectionCard
-                  value="animal"
-                  label="Animal"
-                  icon="🐾"
-                  isSelected={character.kind === 'animal'}
-                  onClick={() => handleUpdateCharacter(index, 'kind', 'animal')}
-                />
-              </TypeGrid>
-            </FullWidthField>
+            <TypeGrid>
+              <TypeButton
+                $isSelected={character.kind === 'human'}
+                onClick={() => handleUpdateCharacter(index, 'kind', 'human')}
+                type="button"
+              >
+                <TypeIconCircle $variant="human">{'\uD83D\uDC64'}</TypeIconCircle>
+                Humain
+              </TypeButton>
+              <TypeButton
+                $isSelected={character.kind === 'animal'}
+                onClick={() => handleUpdateCharacter(index, 'kind', 'animal')}
+                type="button"
+              >
+                <TypeIconCircle $variant="animal">{'\uD83D\uDC3E'}</TypeIconCircle>
+                Animal
+              </TypeButton>
+            </TypeGrid>
 
             <InputGroup>
               <ValidatedInput
                 label={character.kind === 'human' ? 'Nom / Prénom *' : 'Nom *'}
                 value={character.name}
                 onChange={(value) => handleUpdateCharacter(index, 'name', value)}
-                placeholder={character.kind === 'human' ? 'Ex: Sophie, Max...' : 'Ex: Minou, Rex...'}
+                placeholder={character.kind === 'human' ? 'Ex : Sophie, Max...' : 'Ex : Minou, Rex...'}
                 required={true}
                 error={errors[`${index}-name`]}
                 onBlur={() => validateCharacter(index)}
@@ -301,7 +382,7 @@ export const SecondaryCharactersSection: React.FC<SecondaryCharactersSectionProp
                 label={character.kind === 'human' ? 'Âge' : 'Type / Espèce'}
                 value={character.ageOrType}
                 onChange={(value) => handleUpdateCharacter(index, 'ageOrType', value)}
-                placeholder={character.kind === 'human' ? 'Ex: 6 ans' : 'Ex: chat, chien...'}
+                placeholder={character.kind === 'human' ? 'Ex : 6 ans' : 'Ex : chat, chien...'}
                 required={false}
               />
             </InputGroup>
@@ -313,8 +394,8 @@ export const SecondaryCharactersSection: React.FC<SecondaryCharactersSectionProp
                 onChange={(e) => handleUpdateCharacter(index, 'physical', e.target.value)}
                 placeholder={
                   character.kind === 'human'
-                    ? 'Ex: cheveux bouclés, yeux verts, lunettes...'
-                    : 'Ex: pelage noir, petite tache blanche, longues oreilles...'
+                    ? 'Ex : cheveux bouclés, yeux verts, lunettes...'
+                    : 'Ex : pelage noir, petite tache blanche, longues oreilles...'
                 }
               />
             </FullWidthField>
@@ -324,11 +405,11 @@ export const SecondaryCharactersSection: React.FC<SecondaryCharactersSectionProp
 
       {canAddMore ? (
         <AddButton variant="outline" onClick={handleAddCharacter}>
-          + Ajouter {secondaryCharacters.length === 0 ? 'un' : 'un autre'} personnage secondaire
+          + Ajouter {secondaryCharacters.length === 0 ? 'un' : 'un autre'} personnage
         </AddButton>
       ) : (
         <LimitMessage>
-          Limite atteinte ({MAX_CHARACTERS} personnages secondaires maximum)
+          Limite atteinte ({MAX_CHARACTERS} personnages maximum)
         </LimitMessage>
       )}
     </SectionContainer>

@@ -88,7 +88,6 @@ const OCCASION_TITLES: Record<string, (name: string) => string> = {
   'eid':         (n) => `${n} et les Lumieres de l'Aid`,
   'mothers-day': (n) => `${n} et le Plus Beau Cadeau de Maman`,
   'fathers-day': (n) => `${n} et l'Aventure avec Papa`,
-  'halloween':   (n) => `${n} et la Nuit des Sortileges`,
 };
 
 const THEME_TITLES: Record<string, (name: string) => string> = {
@@ -225,7 +224,6 @@ const OCCASION_SCENES: Record<string, string> = {
   'eid': 'a warm and joyful Eid celebration scene with a crescent moon, glowing lanterns, and beautiful decorations',
   'mothers-day': 'a heartwarming scene with beautiful flowers, a loving embrace, and a sunlit garden full of warmth',
   'fathers-day': 'an adventurous outdoor scene with father and child, warm golden sunlight, and a sense of bonding',
-  'halloween': 'a playful and friendly Halloween scene with cute jack-o-lanterns, a moonlit night, bats, and fun costumes',
 };
 
 const THEME_SCENES: Record<string, string> = {
@@ -240,7 +238,6 @@ const THEME_SCENES: Record<string, string> = {
 const MESSAGE_MOODS: Record<string, string> = {
   'friendship': 'themes of friendship, togetherness, and joy of being with friends',
   'courage': 'themes of bravery, courage, and overcoming fears with determination',
-  'nature-care': 'themes of nature appreciation, caring for the planet, green and lush environment',
   'love': 'themes of love, warmth, and tender affection',
   'perseverance': 'themes of perseverance, never giving up, and achieving goals',
   'sharing': 'themes of generosity, sharing with others, and the joy of giving',

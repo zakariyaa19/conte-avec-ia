@@ -8,7 +8,6 @@ const OCCASION_TITLES: Record<string, (name: string) => string> = {
   'eid':         (n) => `${n} et les Lumieres de l'Aid`,
   'mothers-day': (n) => `${n} et le Plus Beau Cadeau de Maman`,
   'fathers-day': (n) => `${n} et l'Aventure avec Papa`,
-  'halloween':   (n) => `${n} et la Nuit des Sortileges`,
 };
 
 const THEME_TITLES: Record<string, (name: string) => string> = {
@@ -23,7 +22,6 @@ const THEME_TITLES: Record<string, (name: string) => string> = {
 const MESSAGE_SUBTITLES: Record<string, string> = {
   'friendship':   'Une histoire d\'amitie',
   'courage':      'Une histoire de courage',
-  'nature-care':  'Pour la planete',
   'love':         'Une histoire d\'amour',
   'perseverance': 'Ne jamais abandonner',
   'sharing':      'Le bonheur de partager',

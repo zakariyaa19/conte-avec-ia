@@ -46,10 +46,6 @@ const OCCASION_PALETTES: Record<string, CoverPalette> = {
     primary: '#E3F2FD', secondary: '#E8EAF6', accent: '#1565C0',
     textColor: '#0D47A1', decorations: ['⭐', '🏆', '💙', '🎁', '👔'],
   },
-  'halloween': {
-    primary: '#FFF3E0', secondary: '#F3E5F5', accent: '#FF6F00',
-    textColor: '#E65100', decorations: ['🎃', '👻', '🦇', '🕷️', '⭐'],
-  },
 };
 
 // --- Palettes par theme ---

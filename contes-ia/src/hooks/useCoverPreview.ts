@@ -8,35 +8,9 @@ interface UseCoverPreviewReturn {
   isGenerating: boolean;
   error: string | null;
   generate: () => void;
-  regenerate: () => void;
-  hasChanged: boolean;
 }
 
-// Hash simple des champs pertinents
-function computeFormHash(formData: Partial<StoryFormData>): string {
-  const relevantFields = [
-    formData.illustrationStyle || '',
-    formData.generalTheme || '',
-    formData.specificSubject || '',
-    formData.centralMessage || '',
-    formData.protagonistName || '',
-    formData.protagonistAge || '',
-    formData.protagonistGender || '',
-    formData.eyeColor || '',
-    formData.hairColor || '',
-    formData.photo?.name || 'no-photo',
-  ].join('|');
-
-  let hash = 0;
-  for (let i = 0; i < relevantFields.length; i++) {
-    const char = relevantFields.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
-    hash |= 0;
-  }
-  return hash.toString(36);
-}
-
-// Verifie si les champs essentiels (Phase 1) sont remplis
+// Vérifie si les champs essentiels (Phase 1) sont remplis
 export function isPhase1Complete(formData: Partial<StoryFormData>): boolean {
   return !!(
     formData.protagonistName &&
@@ -70,17 +44,12 @@ export function useCoverPreview(formData: Partial<StoryFormData>): UseCoverPrevi
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const lastGeneratedHashRef = useRef<string | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
-
-  // Detecter si les champs ont change depuis la derniere generation
-  const currentHash = computeFormHash(formData);
-  const hasChanged = lastGeneratedHashRef.current !== null && currentHash !== lastGeneratedHashRef.current;
 
   const generate = useCallback(async () => {
     if (!isPhase1Complete(formData)) return;
 
-    // Annuler la requete precedente
+    // Annuler la requête précédente
     abortControllerRef.current?.abort();
     const controller = new AbortController();
     abortControllerRef.current = controller;
@@ -89,7 +58,7 @@ export function useCoverPreview(formData: Partial<StoryFormData>): UseCoverPrevi
     setError(null);
 
     try {
-      // Convertir la photo en base64 si presente
+      // Convertir la photo en base64 si présente
       let photoBase64: string | undefined;
       if (formData.photo) {
         try {
@@ -117,13 +86,12 @@ export function useCoverPreview(formData: Partial<StoryFormData>): UseCoverPrevi
         controller.signal
       );
 
-      // Verifier que la requete n'a pas ete annulee
+      // Vérifier que la requête n'a pas été annulée
       if (controller.signal.aborted) return;
 
       if (result.success && result.data) {
         setCoverImageUrl(`data:image/png;base64,${result.data.imageBase64}`);
         setCoverTitle(result.data.title || null);
-        lastGeneratedHashRef.current = computeFormHash(formData);
         setError(null);
       } else {
         setError(result.message || 'Erreur de génération');
@@ -139,20 +107,11 @@ export function useCoverPreview(formData: Partial<StoryFormData>): UseCoverPrevi
     }
   }, [formData]);
 
-  const regenerate = useCallback(() => {
-    lastGeneratedHashRef.current = null;
-    setCoverImageUrl(null);
-    setCoverTitle(null);
-    generate();
-  }, [generate]);
-
   return {
     coverImageUrl,
     coverTitle,
     isGenerating,
     error,
     generate,
-    regenerate,
-    hasChanged,
   };
 }

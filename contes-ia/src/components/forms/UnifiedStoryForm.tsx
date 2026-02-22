@@ -5,11 +5,8 @@ import { SelectionCard } from '../ui/SelectionCard';
 import { ImageSelectionCard } from '../ui/ImageSelectionCard';
 import { ImageAgeCard } from '../ui/ImageAgeCard';
 import { ImageThemeCard } from '../ui/ImageThemeCard';
-import { CustomThemeCard } from '../ui/CustomThemeCard';
 import { ImageOccasionCard } from '../ui/ImageOccasionCard';
-import { CustomOccasionCard } from '../ui/CustomOccasionCard';
 import { ImageMessageCard } from '../ui/ImageMessageCard';
-import { CustomMessageCard } from '../ui/CustomMessageCard';
 import { Button } from '../ui/Button';
 import { ValidatedInput } from '../ui/ValidatedInput';
 import { AgeSelector } from '../ui/AgeSelector';
@@ -44,9 +41,15 @@ interface UnifiedStoryFormProps {
   clubCredit?: { canSubmit: boolean; remaining: number; nextCreditDate?: string; totalEarned?: number } | null;
 }
 
-/* ── Language split: top 5 + others ── */
-const TOP_LANGUAGES = LANGUAGES.slice(0, 5);
-const OTHER_LANGUAGES = LANGUAGES.slice(5);
+/* ── Splits: visible + hidden ── */
+const TOP_LANGUAGES = LANGUAGES.slice(0, 3);
+const OTHER_LANGUAGES = LANGUAGES.slice(3);
+
+const VISIBLE_STYLES = ILLUSTRATION_STYLES.slice(0, 6);
+const HIDDEN_STYLES = ILLUSTRATION_STYLES.slice(6);
+
+const VISIBLE_MESSAGES = CENTRAL_MESSAGES.slice(0, 2);
+const HIDDEN_MESSAGES = CENTRAL_MESSAGES.slice(2);
 
 /* ──────────────────────────────────────────────
    Animations
@@ -389,7 +392,7 @@ const OptionalDividerSub = styled.p`
 `;
 
 /* ──────────────────────────────────────────────
-   "Autre langue" expand card
+   ShowMore + ExpandableSection (shared)
    ────────────────────────────────────────────── */
 
 const ShowMoreCard = styled.div<{ $isOpen: boolean }>`
@@ -413,7 +416,7 @@ const ShowMoreCard = styled.div<{ $isOpen: boolean }>`
   }
 `;
 
-const ExpandedLanguages = styled.div<{ $isOpen: boolean }>`
+const ExpandableSection = styled.div<{ $isOpen: boolean }>`
   max-height: ${props => props.$isOpen ? '500px' : '0'};
   overflow: hidden;
   transition: max-height 0.4s ease;
@@ -448,6 +451,19 @@ const CollapsiblePill = styled.button<{ $isOpen: boolean }>`
     color: ${theme.colors.accent.coral};
     background: ${theme.colors.accent.creamyYellow}40;
   }
+`;
+
+const StyledIconCircle = styled.span<{ $gradient: string }>`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: ${theme.borderRadius.full};
+  background: ${props => props.$gradient};
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  font-size: 12px;
+  flex-shrink: 0;
 `;
 
 const CollapsibleChevron = styled.span<{ $isOpen: boolean }>`
@@ -526,39 +542,6 @@ const CTASubtext = styled.p`
 const CoverRevealSection = styled.div`
   text-align: center;
   margin-bottom: ${theme.spacing.xl};
-`;
-
-const RegenerateNotice = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: ${theme.spacing.sm};
-  padding: ${theme.spacing.sm} ${theme.spacing.lg};
-  background: #FFF8E1;
-  border: 1px solid #FFE082;
-  border-radius: ${theme.borderRadius.lg};
-  margin-bottom: ${theme.spacing.lg};
-  font-size: ${theme.fontSizes.sm};
-  color: #F57F17;
-  font-weight: 500;
-  animation: ${slideIn} 0.4s ease;
-`;
-
-const RegenerateBtn = styled.button`
-  padding: ${theme.spacing.xs} ${theme.spacing.md};
-  border: 1.5px solid #F57F17;
-  border-radius: ${theme.borderRadius.full};
-  background: transparent;
-  color: #F57F17;
-  font-size: ${theme.fontSizes.xs};
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background: #F57F17;
-    color: #fff;
-  }
 `;
 
 const PaymentDivider = styled.div`
@@ -874,20 +857,20 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
 
   // Optional section toggles
   const [showAllLanguages, setShowAllLanguages] = useState(false);
+  const [showAllStyles, setShowAllStyles] = useState(false);
+  const [showAllMessages, setShowAllMessages] = useState(false);
   const [showReligion, setShowReligion] = useState(!!formData.religion);
   const [showSecondaryChars, setShowSecondaryChars] = useState(
     (formData.secondaryCharacters?.length || 0) > 0
   );
 
-  // Cover preview hook (button-triggered)
+  // Cover preview hook (button-triggered, no regenerate)
   const {
     coverImageUrl,
     coverTitle,
     isGenerating: isCoverGenerating,
     error: coverError,
     generate: generateCover,
-    regenerate: regenerateCover,
-    hasChanged: coverHasChanged,
   } = useCoverPreview(formData);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -912,6 +895,25 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
       }
     }, 200);
   };
+
+  // Auto-expand hidden sections if a hidden option is already selected
+  useEffect(() => {
+    if (formData.illustrationStyle && HIDDEN_STYLES.some(s => s.value === formData.illustrationStyle)) {
+      setShowAllStyles(true);
+    }
+  }, [formData.illustrationStyle]);
+
+  useEffect(() => {
+    if (formData.centralMessage && HIDDEN_MESSAGES.some(m => m.value === formData.centralMessage)) {
+      setShowAllMessages(true);
+    }
+  }, [formData.centralMessage]);
+
+  useEffect(() => {
+    if (formData.language && OTHER_LANGUAGES.some(l => l.value === formData.language)) {
+      setShowAllLanguages(true);
+    }
+  }, [formData.language]);
 
   // Phase 1 completion check
   const phase1Ready = isPhase1Complete(formData);
@@ -1062,14 +1064,11 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
   return (
     <FormContainer>
       {/* ═══════════════════════════════════════════
-          PHASE 1 : Créez votre conte
+          PHASE 1 : Formulaire (no redundant title)
           ═══════════════════════════════════════════ */}
       <Phase $isVisible={true}>
         <PhaseCard>
-          <PhaseTitle>Créez votre conte</PhaseTitle>
-          <PhaseSubtitle>Quelques choix rapides pour créer une histoire unique</PhaseSubtitle>
-
-          {/* Âge */}
+          {/* Age */}
           <FormSection>
             <OptionTitle>Pour quel âge ?</OptionTitle>
             <SelectionGrid $columns={4}>
@@ -1087,7 +1086,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
             </SelectionGrid>
           </FormSection>
 
-          {/* Thème */}
+          {/* Theme */}
           <FormSection ref={themeRef}>
             <OptionTitle>Quel univers ?</OptionTitle>
             <SelectionGrid>
@@ -1101,7 +1100,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
                   onClick={(value) => handleSelection('generalTheme', value)}
                 />
               ))}
-              <CustomThemeCard
+              <ImageThemeCard
                 value="custom"
                 label="Personnalisé"
                 imagePath="/image/themes/personnalise.png"
@@ -1133,9 +1132,9 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
                   onClick={(value) => handleSelection('specificSubject', value)}
                 />
               ))}
-              <CustomOccasionCard
+              <ImageOccasionCard
                 value="custom"
-                label="Occasion personnalisée"
+                label="Personnalisée"
                 imagePath="/image/occasions/personnalise.png"
                 isSelected={formData.specificSubject === 'custom'}
                 onClick={(value) => handleSelection('specificSubject', value)}
@@ -1151,11 +1150,11 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
             )}
           </FormSection>
 
-          {/* Style d'illustration */}
+          {/* Style d'illustration: 6 visible + "Voir plus" */}
           <FormSection ref={styleRef}>
             <OptionTitle>Quel style d'illustration ?</OptionTitle>
             <SelectionGrid $columns={3}>
-              {ILLUSTRATION_STYLES.map((style) => (
+              {VISIBLE_STYLES.map((style) => (
                 <ImageSelectionCard
                   key={style.value}
                   value={style.value}
@@ -1165,10 +1164,32 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
                   onClick={(value) => handleSelection('illustrationStyle', value)}
                 />
               ))}
+              {HIDDEN_STYLES.length > 0 && (
+                <ShowMoreCard
+                  $isOpen={showAllStyles}
+                  onClick={() => setShowAllStyles(!showAllStyles)}
+                >
+                  {showAllStyles ? 'Masquer' : 'Voir plus'} {showAllStyles ? '\u25B2' : '\u25BC'}
+                </ShowMoreCard>
+              )}
             </SelectionGrid>
+            <ExpandableSection $isOpen={showAllStyles}>
+              <SelectionGrid $columns={3}>
+                {HIDDEN_STYLES.map((style) => (
+                  <ImageSelectionCard
+                    key={style.value}
+                    value={style.value}
+                    label={style.label}
+                    imagePath={style.imagePath}
+                    isSelected={formData.illustrationStyle === style.value}
+                    onClick={(value) => handleSelection('illustrationStyle', value)}
+                  />
+                ))}
+              </SelectionGrid>
+            </ExpandableSection>
           </FormSection>
 
-          {/* Héros */}
+          {/* Heros */}
           <FormSection ref={protagonistRef}>
             <OptionTitle>Votre héros</OptionTitle>
 
@@ -1274,7 +1295,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
             </ProminentPhotoUpload>
           </FormSection>
 
-          {/* ── Séparateur optionnel ── */}
+          {/* -- Separateur optionnel -- */}
           <OptionalDivider>
             <OptionalDividerIcon>{'\u2728'}</OptionalDividerIcon>
             <OptionalDividerText>
@@ -1283,11 +1304,11 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
             </OptionalDividerText>
           </OptionalDivider>
 
-          {/* Message central (optionnel) */}
+          {/* Message central: 2 visible + Personnalise + "Voir plus" */}
           <FormSection>
             <OptionTitle>Quel message transmettre ?</OptionTitle>
             <SelectionGrid>
-              {CENTRAL_MESSAGES.map((message) => (
+              {VISIBLE_MESSAGES.map((message) => (
                 <ImageMessageCard
                   key={message.value}
                   value={message.value}
@@ -1297,14 +1318,36 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
                   onClick={(value) => handleInputChange('centralMessage', value)}
                 />
               ))}
-              <CustomMessageCard
+              <ImageMessageCard
                 value="custom"
-                label="Message personnalisé"
+                label="Personnalisé"
                 imagePath="/image/messages/personnalise.png"
                 isSelected={formData.centralMessage === 'custom'}
                 onClick={(value) => handleInputChange('centralMessage', value)}
               />
+              {HIDDEN_MESSAGES.length > 0 && (
+                <ShowMoreCard
+                  $isOpen={showAllMessages}
+                  onClick={() => setShowAllMessages(!showAllMessages)}
+                >
+                  {showAllMessages ? 'Masquer' : 'Voir plus'} {showAllMessages ? '\u25B2' : '\u25BC'}
+                </ShowMoreCard>
+              )}
             </SelectionGrid>
+            <ExpandableSection $isOpen={showAllMessages}>
+              <SelectionGrid>
+                {HIDDEN_MESSAGES.map((message) => (
+                  <ImageMessageCard
+                    key={message.value}
+                    value={message.value}
+                    label={message.label}
+                    imagePath={message.imagePath}
+                    isSelected={formData.centralMessage === message.value}
+                    onClick={(value) => handleInputChange('centralMessage', value)}
+                  />
+                ))}
+              </SelectionGrid>
+            </ExpandableSection>
             {formData.centralMessage === 'custom' && (
               <CustomInput
                 type="text"
@@ -1315,7 +1358,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
             )}
           </FormSection>
 
-          {/* Langue (top 5 + "Autre langue") */}
+          {/* Langue: top 3 + "Autre langue" */}
           <FormSection>
             <OptionTitle>Langue du conte</OptionTitle>
             <SelectionGrid>
@@ -1336,7 +1379,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
                 {showAllLanguages ? 'Masquer' : 'Autre langue'} {showAllLanguages ? '\u25B2' : '\u25BC'}
               </ShowMoreCard>
             </SelectionGrid>
-            <ExpandedLanguages $isOpen={showAllLanguages}>
+            <ExpandableSection $isOpen={showAllLanguages}>
               <SelectionGrid>
                 {OTHER_LANGUAGES.map((language) => (
                   <SelectionCard
@@ -1349,10 +1392,10 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
                   />
                 ))}
               </SelectionGrid>
-            </ExpandedLanguages>
+            </ExpandableSection>
           </FormSection>
 
-          {/* Détails à intégrer */}
+          {/* Details a integrer */}
           <FormSection>
             <OptionTitle>Détails à intégrer dans l'histoire</OptionTitle>
             <InputField>
@@ -1364,7 +1407,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
             </InputField>
           </FormSection>
 
-          {/* Religion (collapsible pill) */}
+          {/* Religion (collapsible pill with styled icon) */}
           <FormSection>
             <CollapsiblePill
               $isOpen={showReligion}
@@ -1375,7 +1418,10 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
                 }
               }}
             >
-              {'\u271A'} Ajouter une dimension religieuse
+              <StyledIconCircle $gradient={`linear-gradient(135deg, ${theme.colors.accent.softPink}, ${theme.colors.accent.coral}40)`}>
+                {'\u271A'}
+              </StyledIconCircle>
+              Ajouter une dimension religieuse
               <CollapsibleChevron $isOpen={showReligion}>{'\u25BC'}</CollapsibleChevron>
             </CollapsiblePill>
             <CollapsibleContent $isOpen={showReligion}>
@@ -1409,13 +1455,16 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
             </CollapsibleContent>
           </FormSection>
 
-          {/* Secondary characters (collapsible pill) */}
+          {/* Secondary characters (collapsible pill with styled icon) */}
           <FormSection>
             <CollapsiblePill
               $isOpen={showSecondaryChars}
               onClick={() => setShowSecondaryChars(!showSecondaryChars)}
             >
-              {'\uD83E\uDDF8'} Ajouter des personnages secondaires
+              <StyledIconCircle $gradient={`linear-gradient(135deg, ${theme.colors.accent.creamyYellow}, ${theme.colors.accent.lightCoral}30)`}>
+                {'\uD83E\uDDF8'}
+              </StyledIconCircle>
+              Ajouter des personnages secondaires
               <CollapsibleChevron $isOpen={showSecondaryChars}>{'\u25BC'}</CollapsibleChevron>
             </CollapsiblePill>
             <CollapsibleContent $isOpen={showSecondaryChars}>
@@ -1426,7 +1475,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
             </CollapsibleContent>
           </FormSection>
 
-          {/* Créateur */}
+          {/* Createur */}
           <FormSection>
             <OptionTitle>Créateur du livre (optionnel)</OptionTitle>
             <InputField>
@@ -1440,7 +1489,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
             </InputField>
           </FormSection>
 
-          {/* CTA : Découvrir mon conte */}
+          {/* CTA : Decouvrir mon conte */}
           <GenerateCTA
             $isReady={phase1Ready}
             disabled={!phase1Ready || isCoverGenerating}
@@ -1470,27 +1519,17 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
             }
           </PhaseSubtitle>
 
-          {/* Cover Preview */}
+          {/* Cover Preview — click scrolls to payment */}
           <CoverRevealSection>
             <BookCoverPreview
               coverImageUrl={coverImageUrl}
               isGenerating={isCoverGenerating}
               error={coverError}
-              onRegenerate={regenerateCover}
+              onClick={() => scrollToSection(paymentRef, 150)}
             />
           </CoverRevealSection>
 
-          {/* Regenerate notice if fields changed */}
-          {coverHasChanged && coverImageUrl && !isCoverGenerating && (
-            <RegenerateNotice>
-              Des champs ont été modifiés depuis la dernière génération
-              <RegenerateBtn onClick={regenerateCover}>
-                Régénérer
-              </RegenerateBtn>
-            </RegenerateNotice>
-          )}
-
-          {/* ── Payment section (appears when cover is ready) ── */}
+          {/* -- Payment section (appears when cover is ready) -- */}
           {coverImageUrl && !isCoverGenerating && (
             <>
               <PaymentDivider>
