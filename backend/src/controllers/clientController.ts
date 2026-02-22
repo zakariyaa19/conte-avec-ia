@@ -22,6 +22,7 @@ export class ClientController {
       const orders = await prisma.order.findMany({
         where,
         orderBy: { createdAt: 'desc' },
+        omit: { pdfData: true },
         include: { childProfile: true }
       });
 
@@ -46,6 +47,7 @@ export class ClientController {
 
       const order = await prisma.order.findFirst({
         where: { id, userId },
+        omit: { pdfData: true },
         include: { childProfile: true }
       });
 
