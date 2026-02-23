@@ -112,9 +112,75 @@ const THEME_TITLES: Record<string, (name: string) => string> = {
   'family':       (n) => `${n} et les Tresors de la Famille`,
 };
 
-export function generateBookTitle(params: CoverGenerationParams): string {
+export async function generateBookTitle(params: CoverGenerationParams): Promise<string> {
   const name = params.protagonistName || 'Votre Enfant';
 
+  // Build context for GPT
+  const themeLabel = params.customTheme || ({
+    'educational': 'Educatif / Decouverte',
+    'fairy-tales': 'Contes de fees',
+    'activities': 'Activites',
+    'stories': 'Histoires',
+    'celebrations': 'Fetes',
+    'family': 'Famille',
+  }[params.generalTheme] || 'Aventure magique');
+
+  const occasionLabel = params.customSubject || ({
+    'birthday': 'Anniversaire',
+    'christmas': 'Noel',
+    'new-year': 'Nouvel An',
+    'easter': 'Paques',
+    'eid': 'Aid el-Fitr',
+    'mothers-day': 'Fete des meres',
+    'fathers-day': 'Fete des peres',
+  }[params.specificSubject] || '');
+
+  const ageContext = params.ageRange === '0-2' ? 'bebe/tout-petit (0-2 ans)'
+    : params.ageRange === '3-5' ? 'petit enfant (3-5 ans)'
+    : params.ageRange === '10+' ? 'pre-adolescent (10+ ans)'
+    : 'enfant (6-9 ans)';
+
+  try {
+    const openai = getOpenAI();
+    const response = await openai.chat.completions.create({
+      model: 'gpt-4o-mini',
+      messages: [{
+        role: 'user',
+        content: `Genere UN titre de livre pour enfant en francais.
+Heros: ${name} (${ageContext}).
+Theme: ${themeLabel}.
+${occasionLabel ? `Occasion: ${occasionLabel}.` : ''}
+${params.hobbies ? `Passions: ${params.hobbies}.` : ''}
+${params.specialEvents ? `Contexte: ${params.specialEvents}.` : ''}
+
+Regles:
+- Le titre DOIT contenir le prenom "${name}"
+- 3 a 7 mots maximum
+- Poetique, magique, evocateur
+- Adapte a l'age (${ageContext})
+- En rapport direct avec le theme et l'occasion
+- PAS de guillemets, PAS de ponctuation finale
+- Reponds UNIQUEMENT avec le titre`
+      }],
+      max_tokens: 40,
+      temperature: 0.9,
+    });
+
+    const title = response.choices[0]?.message?.content?.trim();
+    if (title && title.length > 2 && title.length < 80) {
+      console.log('GPT generated title:', title);
+      return title;
+    }
+  } catch (error) {
+    console.error('Erreur generation titre GPT:', error);
+  }
+
+  // Fallback statique
+  return generateStaticTitle(params);
+}
+
+function generateStaticTitle(params: CoverGenerationParams): string {
+  const name = params.protagonistName || 'Votre Enfant';
   if (params.specificSubject && OCCASION_TITLES[params.specificSubject]) {
     return OCCASION_TITLES[params.specificSubject](name);
   }
@@ -354,7 +420,7 @@ export async function generateCoverImage(
   const openai = getOpenAI();
 
   // 1. Generer le titre
-  const title = generateBookTitle(params);
+  const title = await generateBookTitle(params);
   console.log('Generated title:', title);
 
   // 2. Analyse photo optionnelle

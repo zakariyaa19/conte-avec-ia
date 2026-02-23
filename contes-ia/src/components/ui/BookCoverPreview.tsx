@@ -24,14 +24,7 @@ const gradientShift = keyframes`
 
 const bookFloat = keyframes`
   0%, 100% { transform: translateY(0) rotateY(0deg); }
-  25% { transform: translateY(-8px) rotateY(-8deg); }
-  75% { transform: translateY(-4px) rotateY(4deg); }
-`;
-
-const pageTurn = keyframes`
-  0% { transform: rotateY(0deg); opacity: 1; }
-  50% { transform: rotateY(-70deg); opacity: 0.5; }
-  100% { transform: rotateY(0deg); opacity: 1; }
+  50% { transform: translateY(-6px) rotateY(-3deg); }
 `;
 
 const sparkle = keyframes`
@@ -67,6 +60,26 @@ const orbitFloat = keyframes`
 const gentlePulse = keyframes`
   0%, 100% { opacity: 0.4; transform: scale(1); }
   50% { opacity: 0.15; transform: scale(1.5); }
+`;
+
+const magicSweep = keyframes`
+  0% { transform: translateX(-100%) skewX(-15deg); }
+  100% { transform: translateX(250%) skewX(-15deg); }
+`;
+
+const bookGlow = keyframes`
+  0%, 100% {
+    box-shadow:
+      3px 3px 15px rgba(0, 0, 0, 0.2),
+      0 0 15px rgba(255, 153, 153, 0.25),
+      0 0 30px rgba(255, 153, 153, 0.1);
+  }
+  50% {
+    box-shadow:
+      3px 3px 15px rgba(0, 0, 0, 0.2),
+      0 0 25px rgba(255, 153, 153, 0.45),
+      0 0 50px rgba(255, 179, 186, 0.25);
+  }
 `;
 
 /* --- Styled Components --- */
@@ -224,15 +237,15 @@ const AmbientGlow = styled.div<{ $x: string; $y: string; $color: string; $delay:
 
 /* Large animated book */
 const AnimatedBook = styled.div`
-  width: 100px;
-  height: 130px;
+  width: 130px;
+  height: 170px;
   perspective: 400px;
   margin-bottom: ${theme.spacing.lg};
   z-index: 2;
 
   @media (max-width: ${theme.breakpoints.sm}) {
-    width: 80px;
-    height: 104px;
+    width: 100px;
+    height: 130px;
   }
 `;
 
@@ -249,9 +262,8 @@ const BookCoverShape = styled.div`
   inset: 0;
   background: linear-gradient(145deg, ${theme.colors.accent.coral}, #e8456b, ${theme.colors.accent.softPink});
   border-radius: 4px 8px 8px 4px;
-  box-shadow:
-    3px 3px 15px rgba(0,0,0,0.2),
-    inset 0 0 20px rgba(255,255,255,0.15);
+  animation: ${bookGlow} 3s ease-in-out infinite;
+  overflow: hidden;
 
   /* Spine */
   &::before {
@@ -276,27 +288,29 @@ const BookCoverShape = styled.div`
   }
 `;
 
-const BookPage = styled.div<{ $delay: number }>`
+const MagicSweepOverlay = styled.div`
   position: absolute;
-  top: 4px; right: 4px; bottom: 4px; left: 8px;
-  background: linear-gradient(135deg, #fff 0%, #fafafa 100%);
-  border-radius: 0 6px 6px 0;
-  transform-origin: left center;
-  animation: ${pageTurn} 3.5s ease-in-out infinite;
-  animation-delay: ${p => p.$delay}s;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  inset: 0;
+  border-radius: 4px 8px 8px 4px;
+  overflow: hidden;
+  pointer-events: none;
 
-  /* Text lines decoration */
-  &::before {
+  &::after {
     content: '';
     position: absolute;
-    top: 20%; left: 18%; right: 18%;
-    height: 3px;
-    background: rgba(0,0,0,0.05);
-    border-radius: 2px;
-    box-shadow:
-      0 10px 0 rgba(0,0,0,0.04),
-      0 20px 0 rgba(0,0,0,0.03);
+    top: 0;
+    left: 0;
+    width: 40%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.35) 40%,
+      rgba(255, 255, 255, 0.5) 50%,
+      rgba(255, 255, 255, 0.35) 60%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    animation: ${magicSweep} 3s ease-in-out infinite;
   }
 `;
 
@@ -516,10 +530,8 @@ export const BookCoverPreview: React.FC<BookCoverPreviewProps> = React.memo(({
                 {/* Animated Book */}
                 <AnimatedBook>
                   <BookBody>
-                    <BookPage $delay={0.3} />
-                    <BookPage $delay={0.7} />
-                    <BookPage $delay={1.1} />
                     <BookCoverShape />
+                    <MagicSweepOverlay />
                   </BookBody>
                 </AnimatedBook>
 
@@ -548,7 +560,7 @@ export const BookCoverPreview: React.FC<BookCoverPreviewProps> = React.memo(({
               <PlaceholderOverlay>
                 <PlaceholderIcon>{'\uD83D\uDCD6'}</PlaceholderIcon>
                 <PlaceholderText>
-                  Votre couverture personnalis\u00e9e appara\u00eetra ici
+                  Votre couverture personnalisée apparaîtra ici
                 </PlaceholderText>
               </PlaceholderOverlay>
             )}
