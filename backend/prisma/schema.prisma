@@ -81,6 +81,7 @@ model Order {
   protagonistGender  String?
   eyeColor          String?
   hairColor         String?
+  skinColor         String?
   photoUrl          String?
 
   // Langue du conte

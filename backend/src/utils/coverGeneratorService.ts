@@ -9,6 +9,7 @@ export interface CoverGenerationParams {
   protagonistGender: string;
   eyeColor: string;
   hairColor: string;
+  skinColor: string;
   illustrationStyle: string;
   generalTheme: string;
   specificSubject: string;
@@ -73,6 +74,7 @@ export function computeParamsHash(params: CoverGenerationParams, hasPhoto: boole
     params.protagonistGender,
     params.eyeColor,
     params.hairColor,
+    params.skinColor,
     hasPhoto ? 'with-photo' : 'no-photo',
   ].join('|');
   return crypto.createHash('sha256').update(relevantFields).digest('hex').substring(0, 16);
@@ -183,11 +185,15 @@ function buildCharacterDescription(params: CoverGenerationParams, photoAnalysis:
     red: 'fiery red', auburn: 'auburn', gray: 'silver gray',
     white: 'platinum white'
   };
+  const skinColorMap: Record<string, string> = {
+    light: 'light fair', medium: 'medium warm', olive: 'olive tan', dark: 'dark brown'
+  };
 
   const eyes = eyeColorMap[params.eyeColor] || params.eyeColor;
   const hair = hairColorMap[params.hairColor] || params.hairColor;
+  const skin = skinColorMap[params.skinColor] || params.skinColor;
 
-  return `a cheerful ${age}-year-old ${genderWord} with ${eyes} eyes and ${hair} hair, cute and expressive face, friendly smile`;
+  return `a cheerful ${age}-year-old ${genderWord} with ${skin} skin, ${eyes} eyes and ${hair} hair, cute and expressive face, friendly smile`;
 }
 
 // --- Style directives + titre rendering ---

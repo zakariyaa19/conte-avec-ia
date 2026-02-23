@@ -235,6 +235,12 @@ const getDisplayValue = (key: string, value: string) => {
       'red': 'Roux',
       'auburn': 'Auburn',
       'gray': 'Gris'
+    },
+    skinColor: {
+      'light': 'Clair',
+      'medium': 'Moyen',
+      'olive': 'Mat',
+      'dark': 'Foncé'
     }
   };
   
@@ -382,6 +388,12 @@ export const StoryFormStep3: React.FC<StoryFormStep3Props> = ({ formData, onUpda
             <SummaryItem>
               <SummaryLabel>Couleur des cheveux</SummaryLabel>
               <SummaryValue>{getDisplayValue('hairColor', formData.hairColor)}</SummaryValue>
+            </SummaryItem>
+          )}
+          {formData.skinColor && (
+            <SummaryItem>
+              <SummaryLabel>Couleur de la peau</SummaryLabel>
+              <SummaryValue>{getDisplayValue('skinColor', formData.skinColor)}</SummaryValue>
             </SummaryItem>
           )}
           {formData.secondaryCharacterName && (

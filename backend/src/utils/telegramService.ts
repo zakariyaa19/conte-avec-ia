@@ -248,6 +248,7 @@ ${order.language ? `🌍 Langue: ${escapeHtml(order.language)}` : ''}
 ${order.protagonistGender ? `⚧️ Sexe: ${order.protagonistGender === 'boy' ? 'Garçon' : 'Fille'}` : ''}
 👁️ Yeux: ${escapeHtml(order.eyeColor) || 'Non spécifié'}
 💇 Cheveux: ${escapeHtml(order.hairColor) || 'Non spécifié'}
+🎨 Peau: ${escapeHtml(order.skinColor) || 'Non spécifié'}
 ${safeHobbies ? `🎮 Loisirs: ${safeHobbies}` : ''}
 ${safeFavoriteDish ? `🍽️ Plat préféré: ${safeFavoriteDish}` : ''}
 ${safeSpecialEvents ? `🎉 Événements: ${safeSpecialEvents}` : ''}

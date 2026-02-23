@@ -20,6 +20,7 @@ import {
   ILLUSTRATION_STYLES,
   EYE_COLORS,
   HAIR_COLORS,
+  SKIN_COLORS,
   LANGUAGES,
   RELIGIONS,
   GENDERS,
@@ -902,6 +903,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
   const protagonistRef = useRef<HTMLDivElement>(null);
   const eyeColorRef = useRef<HTMLDivElement>(null);
   const hairColorRef = useRef<HTMLDivElement>(null);
+  const skinColorRef = useRef<HTMLDivElement>(null);
   const photoRef = useRef<HTMLDivElement>(null);
   const phase2Ref = useRef<HTMLDivElement>(null);
   const paymentRef = useRef<HTMLDivElement>(null);
@@ -967,6 +969,9 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
         scrollToSection(hairColorRef);
         break;
       case 'hairColor':
+        scrollToSection(skinColorRef);
+        break;
+      case 'skinColor':
         scrollToSection(photoRef);
         break;
     }
@@ -1287,6 +1292,24 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
                 >
                   <ColorCircle color={hairColor.color} />
                   <ColorLabel>{hairColor.label}</ColorLabel>
+                </ColorOption>
+              ))}
+            </ColorGrid>
+          </FormSection>
+
+          {/* Couleur de la peau */}
+          <FormSection ref={skinColorRef}>
+            <OptionTitle>Couleur de la peau *</OptionTitle>
+            <ColorGrid>
+              {SKIN_COLORS.map((skinColor) => (
+                <ColorOption
+                  key={skinColor.value}
+                  color={skinColor.color}
+                  $isSelected={formData.skinColor === skinColor.value}
+                  onClick={() => handleSelection('skinColor', skinColor.value)}
+                >
+                  <ColorCircle color={skinColor.color} />
+                  <ColorLabel>{skinColor.label}</ColorLabel>
                 </ColorOption>
               ))}
             </ColorGrid>

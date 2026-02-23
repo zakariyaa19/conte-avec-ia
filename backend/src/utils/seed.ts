@@ -62,6 +62,7 @@ async function main() {
         protagonistAge: '5 ans',
         eyeColor: 'blue',
         hairColor: 'blonde',
+        skinColor: 'light',
         productType: 'EBOOK',
         price: 14.99,
         paidAt: new Date()
@@ -80,6 +81,7 @@ async function main() {
         protagonistAge: '7 ans',
         eyeColor: 'brown',
         hairColor: 'brown',
+        skinColor: 'medium',
         secondaryCharacterName: 'Rex',
         secondaryCharacterAge: 'chien',
         productType: 'EBOOK',
@@ -100,6 +102,7 @@ async function main() {
         protagonistAge: '2 ans',
         eyeColor: 'green',
         hairColor: 'red',
+        skinColor: 'olive',
         productType: 'EBOOK',
         price: 49.99
       }

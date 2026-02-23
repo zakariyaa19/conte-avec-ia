@@ -116,6 +116,7 @@ export class OrderController {
           protagonistGender: formData.protagonistGender,
           eyeColor: formData.eyeColor,
           hairColor: formData.hairColor,
+          skinColor: formData.skinColor,
           photoUrl: photoUrl,
           language: formData.language,
           hobbies: formData.hobbies,

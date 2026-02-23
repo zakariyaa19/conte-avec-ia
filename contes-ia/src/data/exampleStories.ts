@@ -10,6 +10,7 @@ export interface ExampleStory {
   protagonistAge: string;
   eyeColor: string;
   hairColor: string;
+  skinColor: string;
   secondaryCharacterName?: string;
   secondaryCharacterAge?: string;
   coverImage: string;
@@ -31,6 +32,7 @@ export const exampleStories: ExampleStory[] = [
     protagonistAge: "8 ans",
     eyeColor: "Marron",
     hairColor: "Châtain",
+    skinColor: "Moyen",
     secondaryCharacterName: "Rex",
     secondaryCharacterAge: "Chien",
     coverImage: "/images/covers/forest-adventure.jpg",
@@ -50,6 +52,7 @@ export const exampleStories: ExampleStory[] = [
     protagonistAge: "7 ans",
     eyeColor: "Bleu",
     hairColor: "Noir",
+    skinColor: "Clair",
     secondaryCharacterName: "Stella",
     secondaryCharacterAge: "Chat",
     coverImage: "/images/covers/space-adventure.jpg",
@@ -69,6 +72,7 @@ export const exampleStories: ExampleStory[] = [
     protagonistAge: "6 ans",
     eyeColor: "Vert",
     hairColor: "Blond",
+    skinColor: "Clair",
     secondaryCharacterName: "Grand-mère Marie",
     secondaryCharacterAge: "65 ans",
     coverImage: "/images/covers/cooking-adventure.jpg",
@@ -88,6 +92,7 @@ export const exampleStories: ExampleStory[] = [
     protagonistAge: "9 ans",
     eyeColor: "Bleu",
     hairColor: "Roux",
+    skinColor: "Clair",
     secondaryCharacterName: "Nemo",
     secondaryCharacterAge: "Poisson",
     coverImage: "/images/covers/ocean-adventure.jpg",
@@ -107,6 +112,7 @@ export const exampleStories: ExampleStory[] = [
     protagonistAge: "6 ans",
     eyeColor: "Marron",
     hairColor: "Brun",
+    skinColor: "Mat",
     coverImage: "/images/covers/school-adventure.jpg",
     userPhotos: ["/images/examples/boy-brown-hair.jpg"],
     characterCount: 1,
@@ -124,6 +130,7 @@ export const exampleStories: ExampleStory[] = [
     protagonistAge: "11 ans",
     eyeColor: "Bleu",
     hairColor: "châtains",
+    skinColor: "Foncé",
     secondaryCharacterName: "Sylvie",
     secondaryCharacterAge: "Chat-dragon",
     coverImage: "/images/covers/examen-hunter.jpg",

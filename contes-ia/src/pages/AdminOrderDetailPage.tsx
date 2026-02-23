@@ -590,6 +590,7 @@ export const AdminOrderDetailPage: React.FC<AdminOrderDetailPageProps> = ({ toke
             {order.protagonistGender && <InfoRow><Label>Sexe</Label><Value>{order.protagonistGender === 'boy' ? 'Garcon' : 'Fille'}</Value></InfoRow>}
             {order.eyeColor && <InfoRow><Label>Yeux</Label><Value>{order.eyeColor}</Value></InfoRow>}
             {order.hairColor && <InfoRow><Label>Cheveux</Label><Value>{order.hairColor}</Value></InfoRow>}
+            {order.skinColor && <InfoRow><Label>Peau</Label><Value>{order.skinColor}</Value></InfoRow>}
             {order.photoUrl && (
               <div style={{ marginTop: theme.spacing.sm }}>
                 <PhotoPreview

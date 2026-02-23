@@ -24,6 +24,7 @@ export interface StoryFormData {
   protagonistGender: 'boy' | 'girl';
   eyeColor: string;
   hairColor: string;
+  skinColor: string;
   photo?: Express.Multer.File;
   
   // Langue du conte

@@ -655,6 +655,7 @@ const StoryShowcase: React.FC<{
                 <CharacterDetail><strong>Age :</strong> {story.protagonistAge}</CharacterDetail>
                 <CharacterDetail><strong>Yeux :</strong> {story.eyeColor}</CharacterDetail>
                 <CharacterDetail><strong>Cheveux :</strong> {story.hairColor}</CharacterDetail>
+                <CharacterDetail><strong>Peau :</strong> {story.skinColor}</CharacterDetail>
                 {story.secondaryCharacterName && (
                   <>
                     <CharacterDetail><strong>Compagnon :</strong> {story.secondaryCharacterName}</CharacterDetail>

@@ -24,6 +24,7 @@ export interface StoryFormData {
   protagonistGender: 'boy' | 'girl';
   eyeColor: string;
   hairColor: string;
+  skinColor: string;
   photo?: File;
   
   // Langue du conte
@@ -130,6 +131,13 @@ export const HAIR_COLORS = [
   { value: 'red', label: 'Roux', color: '#FF4500' },
   { value: 'auburn', label: 'Auburn', color: '#A52A2A' },
   { value: 'gray', label: 'Gris', color: '#808080' }
+];
+
+export const SKIN_COLORS = [
+  { value: 'light', label: 'Clair', color: '#FDDCB5' },
+  { value: 'medium', label: 'Moyen', color: '#E8B88A' },
+  { value: 'olive', label: 'Mat', color: '#C8915E' },
+  { value: 'dark', label: 'Foncé', color: '#8D5524' }
 ];
 
 export const LANGUAGES = [

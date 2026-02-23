@@ -5,7 +5,7 @@ import { SelectionCard } from '../ui/SelectionCard';
 import { Button } from '../ui/Button';
 import { ValidatedInput } from '../ui/ValidatedInput';
 import { AgeSelector } from '../ui/AgeSelector';
-import { EYE_COLORS, HAIR_COLORS, LANGUAGES, RELIGIONS, GENDERS, StoryFormData } from '../../types/FormTypes';
+import { EYE_COLORS, HAIR_COLORS, SKIN_COLORS, LANGUAGES, RELIGIONS, GENDERS, StoryFormData } from '../../types/FormTypes';
 import { validateRequired } from '../../utils/validation';
 
 interface StoryFormStep2Props {
@@ -280,6 +280,7 @@ export const StoryFormStep2: React.FC<StoryFormStep2Props> = ({ formData, onUpda
   const genderRef = useRef<HTMLDivElement>(null);
   const eyeColorRef = useRef<HTMLDivElement>(null);
   const hairColorRef = useRef<HTMLDivElement>(null);
+  const skinColorRef = useRef<HTMLDivElement>(null);
   const photoRef = useRef<HTMLDivElement>(null);
   const languageRef = useRef<HTMLDivElement>(null);
 
@@ -324,6 +325,9 @@ export const StoryFormStep2: React.FC<StoryFormStep2Props> = ({ formData, onUpda
         scrollToNext(hairColorRef);
         break;
       case 'hairColor':
+        scrollToNext(skinColorRef);
+        break;
+      case 'skinColor':
         scrollToNext(photoRef);
         break;
     }
@@ -430,6 +434,25 @@ export const StoryFormStep2: React.FC<StoryFormStep2Props> = ({ formData, onUpda
             >
               <ColorCircle color={hairColor.color} />
               <ColorLabel>{hairColor.label}</ColorLabel>
+            </ColorOption>
+          ))}
+        </ColorGrid>
+      </FormSection>
+
+      <FormSection ref={skinColorRef}>
+        <h4 style={{ marginBottom: theme.spacing.lg, color: theme.colors.text.primary }}>
+          Couleur de la peau *
+        </h4>
+        <ColorGrid>
+          {SKIN_COLORS.map((skinColor) => (
+            <ColorOption
+              key={skinColor.value}
+              color={skinColor.color}
+              $isSelected={formData.skinColor === skinColor.value}
+              onClick={() => handleColorSelection('skinColor', skinColor.value)}
+            >
+              <ColorCircle color={skinColor.color} />
+              <ColorLabel>{skinColor.label}</ColorLabel>
             </ColorOption>
           ))}
         </ColorGrid>

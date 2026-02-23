@@ -112,6 +112,7 @@ app.post('/api/orders', async (req, res) => {
         protagonistAge: formData.protagonistAge,
         eyeColor: formData.eyeColor,
         hairColor: formData.hairColor,
+        skinColor: formData.skinColor,
         secondaryCharacterName: formData.secondaryCharacterName,
         secondaryCharacterAge: formData.secondaryCharacterAge,
         productType: formData.productType || 'EBOOK',

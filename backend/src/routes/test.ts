@@ -95,6 +95,7 @@ router.post('/telegram-order', async (req: Request, res: Response) => {
         protagonistGender: 'boy',
         eyeColor: 'bleus',
         hairColor: 'châtains',
+        skinColor: 'medium',
         hobbies: 'football, dessin',
         favoriteDish: 'pizza',
         specialEvents: 'anniversaire en septembre',

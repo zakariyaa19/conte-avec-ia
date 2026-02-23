@@ -18,6 +18,7 @@ export function isPhase1Complete(formData: Partial<StoryFormData>): boolean {
     formData.protagonistGender &&
     formData.eyeColor &&
     formData.hairColor &&
+    formData.skinColor &&
     formData.illustrationStyle &&
     formData.generalTheme &&
     formData.specificSubject
@@ -74,6 +75,7 @@ export function useCoverPreview(formData: Partial<StoryFormData>): UseCoverPrevi
         protagonistGender: formData.protagonistGender,
         eyeColor: formData.eyeColor,
         hairColor: formData.hairColor,
+        skinColor: formData.skinColor,
         illustrationStyle: formData.illustrationStyle,
         generalTheme: formData.generalTheme,
         specificSubject: formData.specificSubject,

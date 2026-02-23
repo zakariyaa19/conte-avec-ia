@@ -21,7 +21,7 @@ export class PreviewController {
       }
 
       // Valider les champs obligatoires
-      const required = ['protagonistName', 'protagonistAge', 'protagonistGender', 'eyeColor', 'hairColor', 'illustrationStyle', 'generalTheme', 'specificSubject'];
+      const required = ['protagonistName', 'protagonistAge', 'protagonistGender', 'eyeColor', 'hairColor', 'skinColor', 'illustrationStyle', 'generalTheme', 'specificSubject'];
       const missing = required.filter(f => !formData[f]);
       if (missing.length > 0) {
         return res.status(400).json({
@@ -44,6 +44,7 @@ export class PreviewController {
         protagonistGender: formData.protagonistGender,
         eyeColor: formData.eyeColor,
         hairColor: formData.hairColor,
+        skinColor: formData.skinColor,
         illustrationStyle: formData.illustrationStyle,
         generalTheme: formData.generalTheme,
         specificSubject: formData.specificSubject,

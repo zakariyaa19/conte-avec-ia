@@ -60,6 +60,7 @@ export const StoryFormPage: React.FC = () => {
     protagonistGender: undefined,
     eyeColor: '',
     hairColor: '',
+    skinColor: '',
     language: 'french',
     hobbies: '',
     favoriteDish: '',

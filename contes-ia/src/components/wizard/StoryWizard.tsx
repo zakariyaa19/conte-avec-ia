@@ -91,6 +91,13 @@ const HAIR_OPTIONS = [
   { value: 'red',    label: 'Roux',    color: '#D35400' },
 ];
 
+const SKIN_OPTIONS = [
+  { value: 'light',  label: 'Clair',  color: '#FDDCB5' },
+  { value: 'medium', label: 'Moyen',  color: '#E8B88A' },
+  { value: 'olive',  label: 'Mat',    color: '#C8915E' },
+  { value: 'dark',   label: 'Foncé',  color: '#8D5524' },
+];
+
 const LANG_TOP = [
   { value: 'french',  label: 'Français' },
   { value: 'english', label: 'Anglais' },
@@ -248,7 +255,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
   const handleFormSubmit = () => { setGlobalError(''); if (validatePaymentForm()) onSubmit(); };
 
   const isHeroComplete = !!(formData.protagonistName && formData.protagonistAge && formData.protagonistGender);
-  const isAppearanceComplete = !!(formData.eyeColor && formData.hairColor);
+  const isAppearanceComplete = !!(formData.eyeColor && formData.hairColor && formData.skinColor);
   const isPaymentInfoComplete = !!(formData.productType && formData.userEmail && formData.firstName && formData.lastName);
 
   /* ══════════════════════════════════════════════
@@ -392,6 +399,17 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 <ColorCard key={o.value} $isSelected={formData.hairColor === o.value} $color={o.color}
                   onClick={() => onUpdate({ hairColor: o.value })}>
                   <ColorBubble $color={o.color} $isSelected={formData.hairColor === o.value} />
+                  <ColorLabel>{o.label}</ColorLabel>
+                </ColorCard>
+              ))}
+            </ColorCardGrid>
+            <div style={{ height: theme.spacing.lg }} />
+            <ColorSectionLabel>Couleur de la peau</ColorSectionLabel>
+            <ColorCardGrid>
+              {SKIN_OPTIONS.map((o) => (
+                <ColorCard key={o.value} $isSelected={formData.skinColor === o.value} $color={o.color}
+                  onClick={() => onUpdate({ skinColor: o.value })}>
+                  <ColorBubble $color={o.color} $isSelected={formData.skinColor === o.value} />
                   <ColorLabel>{o.label}</ColorLabel>
                 </ColorCard>
               ))}
