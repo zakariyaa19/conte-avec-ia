@@ -7,6 +7,7 @@ import { Footer } from '../components/layout/Footer';
 import { Button } from '../components/ui/Button';
 import { StoryPDFViewer } from '../components/ui/StoryPDFViewer';
 import { ApiService } from '../config/api';
+import { getImageUrl } from '../config/constants';
 import {
   GENERAL_THEMES,
   SPECIFIC_SUBJECTS,
@@ -38,6 +39,11 @@ const spin = keyframes`
   to { transform: rotate(360deg); }
 `;
 
+const gentleFloat = keyframes`
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+`;
+
 /* ─── Styled Components ─── */
 
 const PageContainer = styled.div`
@@ -67,42 +73,99 @@ const BackLink = styled.button`
   font-size: ${theme.fontSizes.sm};
   font-weight: 600;
   cursor: pointer;
-  margin-bottom: ${theme.spacing.md};
+  margin-bottom: ${theme.spacing.lg};
   display: flex;
   align-items: center;
   gap: ${theme.spacing.xs};
   padding: 0;
 
   &:hover { text-decoration: underline; }
-
-  @media (max-width: ${theme.breakpoints.sm}) {
-    margin-bottom: ${theme.spacing.sm};
-    font-size: ${theme.fontSizes.xs};
-  }
 `;
 
-const Card = styled.div`
-  background: ${theme.colors.background.white};
-  border-radius: ${theme.borderRadius['2xl']};
-  box-shadow: ${theme.shadows.card};
-  border: 1px solid rgba(0, 0, 0, 0.04);
-  padding: ${theme.spacing.xl};
+/* ─── Hero : couverture + infos principales ─── */
 
-  @media (max-width: ${theme.breakpoints.sm}) {
-    padding: ${theme.spacing.md};
-    border-radius: ${theme.borderRadius.xl};
-  }
-`;
-
-const TitleRow = styled.div`
+const HeroSection = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: ${theme.spacing.sm};
-  margin-bottom: ${theme.spacing.md};
+  gap: ${theme.spacing.xl};
+  margin-bottom: ${theme.spacing.xl};
+  align-items: flex-start;
+
+  @media (max-width: ${theme.breakpoints.md}) {
+    flex-direction: column;
+    align-items: center;
+  }
+`;
+
+const CoverWrapper = styled.div`
+  flex-shrink: 0;
+  width: 220px;
+  aspect-ratio: 2 / 3;
+  border-radius: 4px 14px 14px 4px;
+  overflow: hidden;
+  position: relative;
+  box-shadow:
+    -4px 0 10px rgba(0,0,0,0.15),
+    6px 4px 20px rgba(0,0,0,0.25),
+    inset -2px 0 4px rgba(255,255,255,0.1);
+  animation: ${gentleFloat} 4s ease-in-out infinite;
 
   @media (max-width: ${theme.breakpoints.sm}) {
-    margin-bottom: ${theme.spacing.sm};
+    width: 180px;
+  }
+`;
+
+const CoverImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+`;
+
+const CoverPlaceholder = styled.div`
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, ${theme.colors.accent.softPink}, ${theme.colors.accent.creamyYellow});
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: ${theme.spacing.sm};
+`;
+
+const PlaceholderIcon = styled.div`
+  font-size: 3rem;
+  opacity: 0.5;
+`;
+
+const PlaceholderName = styled.div`
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.base};
+  color: ${theme.colors.text.secondary};
+  font-weight: 600;
+  text-align: center;
+  padding: 0 ${theme.spacing.sm};
+`;
+
+const CoverSpine = styled.div`
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  background: linear-gradient(to right, rgba(0,0,0,0.35), rgba(0,0,0,0.05));
+  z-index: 2;
+`;
+
+const HeroInfo = styled.div`
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: ${theme.spacing.sm};
+
+  @media (max-width: ${theme.breakpoints.md}) {
+    align-items: center;
+    text-align: center;
+    width: 100%;
   }
 `;
 
@@ -111,53 +174,102 @@ const StoryTitle = styled.h1`
   font-size: ${theme.fontSizes['2xl']};
   color: ${theme.colors.text.primary};
   margin: 0;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.3;
 
   @media (max-width: ${theme.breakpoints.sm}) {
     font-size: ${theme.fontSizes.xl};
   }
 `;
 
-const StatusBadge = styled.span<{ $color: string }>`
+const StorySubtitle = styled.p`
+  font-size: ${theme.fontSizes.base};
+  color: ${theme.colors.text.secondary};
+  margin: 0;
+  line-height: 1.5;
+`;
+
+const TagsRow = styled.div`
+  display: flex;
+  gap: ${theme.spacing.xs};
+  flex-wrap: wrap;
+
+  @media (max-width: ${theme.breakpoints.md}) {
+    justify-content: center;
+  }
+`;
+
+const Tag = styled.span<{ $color?: string }>`
   display: inline-flex;
-  padding: 4px ${theme.spacing.sm};
+  padding: 3px 10px;
   border-radius: ${theme.borderRadius.full};
   font-size: ${theme.fontSizes.xs};
-  font-weight: 700;
-  background: ${props => props.$color}20;
-  color: ${props => props.$color};
-  white-space: nowrap;
+  font-weight: 600;
+  background: ${props => props.$color ? `${props.$color}18` : theme.colors.background.secondary};
+  color: ${props => props.$color || theme.colors.text.secondary};
+`;
+
+const FavoriteRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${theme.spacing.sm};
+`;
+
+const FavoriteButton = styled.button<{ $active: boolean }>`
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 22px;
+  padding: 4px;
+  transition: transform 0.2s ease;
   flex-shrink: 0;
+
+  &:hover { transform: scale(1.15); }
+  &:active { transform: scale(0.95); }
+`;
+
+const FavoriteLabel = styled.span`
+  font-size: ${theme.fontSizes.xs};
+  color: ${theme.colors.text.light};
+`;
+
+const DateText = styled.span`
+  font-size: ${theme.fontSizes.xs};
+  color: ${theme.colors.text.light};
+`;
+
+/* ─── Actions ─── */
+
+const ActionsCard = styled.div`
+  background: ${theme.colors.background.white};
+  border-radius: ${theme.borderRadius.xl};
+  box-shadow: ${theme.shadows.card};
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  padding: ${theme.spacing.lg};
+  margin-bottom: ${theme.spacing.lg};
 `;
 
 const ActionsRow = styled.div`
   display: flex;
   gap: ${theme.spacing.sm};
-  margin-bottom: ${theme.spacing.lg};
 
   @media (max-width: ${theme.breakpoints.sm}) {
-    margin-bottom: ${theme.spacing.md};
     gap: ${theme.spacing.xs};
   }
 `;
 
-const ActionButton = styled.button<{ $variant: 'primary' | 'secondary' | 'ghost' }>`
+const ActionButton = styled.button<{ $variant: 'primary' | 'secondary' }>`
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 10px 16px;
+  padding: 12px 20px;
   border-radius: ${theme.borderRadius.lg};
   font-weight: 600;
   font-size: ${theme.fontSizes.sm};
   cursor: pointer;
   transition: all 0.2s ease;
   border: none;
-  flex: ${props => props.$variant === 'ghost' ? '0 0 auto' : '1'};
-  min-width: 0;
+  flex: 1;
 
   ${props => props.$variant === 'primary' && `
     background: ${theme.colors.accent.coral};
@@ -171,13 +283,6 @@ const ActionButton = styled.button<{ $variant: 'primary' | 'secondary' | 'ghost'
     &:hover { background: ${theme.colors.accent.coral}20; }
   `}
 
-  ${props => props.$variant === 'ghost' && `
-    background: transparent;
-    color: ${theme.colors.text.secondary};
-    padding: 10px 12px;
-    &:hover { background: rgba(0,0,0,0.04); }
-  `}
-
   &:active { transform: scale(0.97); }
 
   &:disabled {
@@ -187,7 +292,7 @@ const ActionButton = styled.button<{ $variant: 'primary' | 'secondary' | 'ghost'
   }
 
   @media (max-width: ${theme.breakpoints.sm}) {
-    padding: 10px 12px;
+    padding: 10px 14px;
     font-size: ${theme.fontSizes.xs};
   }
 `;
@@ -202,10 +307,37 @@ const ButtonSpinner = styled.span`
   animation: ${spin} 0.6s linear infinite;
 `;
 
+const WaitingMessage = styled.div`
+  text-align: center;
+  padding: ${theme.spacing.md};
+  color: ${theme.colors.text.secondary};
+  font-size: ${theme.fontSizes.sm};
+  background: ${theme.colors.status.warning}12;
+  border: 1px solid ${theme.colors.status.warning}30;
+  border-radius: ${theme.borderRadius.lg};
+`;
+
+/* ─── Details ─── */
+
+const DetailsCard = styled.div`
+  background: ${theme.colors.background.white};
+  border-radius: ${theme.borderRadius.xl};
+  box-shadow: ${theme.shadows.card};
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  padding: ${theme.spacing.lg};
+`;
+
+const DetailsTitle = styled.h2`
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.lg};
+  color: ${theme.colors.text.primary};
+  margin: 0 0 ${theme.spacing.md};
+`;
+
 const InfoGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: ${theme.spacing.sm} ${theme.spacing.md};
+  gap: ${theme.spacing.sm} ${theme.spacing.lg};
 
   @media (max-width: ${theme.breakpoints.sm}) {
     gap: ${theme.spacing.xs} ${theme.spacing.sm};
@@ -225,29 +357,6 @@ const InfoItem = styled.div`
   span {
     font-size: ${theme.fontSizes.sm};
     color: ${theme.colors.text.primary};
-  }
-`;
-
-const FavoriteButton = styled.button<{ $active: boolean }>`
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 20px;
-  padding: 4px;
-  transition: transform 0.2s ease;
-  flex-shrink: 0;
-
-  &:hover { transform: scale(1.15); }
-  &:active { transform: scale(0.95); }
-`;
-
-const Divider = styled.hr`
-  border: none;
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
-  margin: ${theme.spacing.md} 0;
-
-  @media (max-width: ${theme.breakpoints.sm}) {
-    margin: ${theme.spacing.sm} 0;
   }
 `;
 
@@ -278,6 +387,7 @@ export const StoryDetailPage: React.FC = () => {
   const [viewerOpen, setViewerOpen] = useState(false);
   const [pdfLoading, setPdfLoading] = useState(false);
   const [pdfError, setPdfError] = useState<string | null>(null);
+  const [coverError, setCoverError] = useState(false);
 
   useEffect(() => {
     loadStory();
@@ -339,10 +449,6 @@ export const StoryDetailPage: React.FC = () => {
     }
   };
 
-  const handleCloseViewer = () => {
-    setViewerOpen(false);
-  };
-
   const handleToggleFavorite = async () => {
     const token = localStorage.getItem('userToken');
     if (!token || !id) return;
@@ -382,69 +488,120 @@ export const StoryDetailPage: React.FC = () => {
 
   const isAvailable = story.storyStatus === 'DISPONIBLE';
   const statusColor = isAvailable ? theme.colors.status.success : theme.colors.status.warning;
+  const coverUrl = story.coverImageUrl ? getImageUrl(story.coverImageUrl) : null;
+  const displayTitle = story.coverTitle || `Conte de ${story.protagonistName}`;
 
   return (
     <PageContainer>
       <Header />
       <MainContent>
         <BackLink onClick={() => navigate('/dashboard')}>
-          &larr; Retour
+          &larr; Ma bibliotheque
         </BackLink>
 
-        <Card>
-          {/* Titre + statut + favori sur la meme ligne */}
-          <TitleRow>
-            <StoryTitle>Conte de {story.protagonistName}</StoryTitle>
-            <FavoriteButton
-              $active={story.isFavorite}
-              onClick={handleToggleFavorite}
-              title={story.isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'}
-            >
-              {story.isFavorite ? '❤️' : '🤍'}
-            </FavoriteButton>
-          </TitleRow>
+        {/* ─── Hero : couverture + infos ─── */}
+        <HeroSection>
+          <CoverWrapper>
+            <CoverSpine />
+            {coverUrl && !coverError ? (
+              <CoverImage
+                src={coverUrl}
+                alt={displayTitle}
+                onError={() => setCoverError(true)}
+              />
+            ) : (
+              <CoverPlaceholder>
+                <PlaceholderIcon>📖</PlaceholderIcon>
+                <PlaceholderName>{story.protagonistName}</PlaceholderName>
+              </CoverPlaceholder>
+            )}
+          </CoverWrapper>
 
-          <StatusBadge $color={statusColor} style={{ marginBottom: theme.spacing.md }}>
-            {isAvailable ? 'Disponible' : 'En cours de creation'}
-          </StatusBadge>
+          <HeroInfo>
+            <StoryTitle>{displayTitle}</StoryTitle>
+            <StorySubtitle>
+              L'histoire de {story.protagonistName}, {story.ageRange} ans
+            </StorySubtitle>
 
-          {/* Boutons d'action en haut — visibles immediatement */}
-          {isAvailable && story.pdfUrl && (
-            <>
-              {pdfError && <ErrorBanner>{pdfError}</ErrorBanner>}
-              <ActionsRow>
-                <ActionButton
-                  $variant="primary"
-                  onClick={handleViewPdf}
-                  disabled={pdfLoading}
-                >
-                  {pdfLoading ? <ButtonSpinner /> : (
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
-                      <circle cx="12" cy="12" r="3" />
-                    </svg>
-                  )}
-                  Lire le conte
-                </ActionButton>
-                <ActionButton
-                  $variant="secondary"
-                  onClick={handleDownloadPdf}
-                >
+            <TagsRow>
+              <Tag $color={statusColor}>
+                {isAvailable ? 'Disponible' : 'En cours de creation'}
+              </Tag>
+              <Tag>{translateTheme(story.generalTheme)}</Tag>
+              <Tag>{translateStyle(story.illustrationStyle)}</Tag>
+              {story.purchaseType === 'CLUB' && (
+                <Tag $color={theme.colors.accent.coral}>Club</Tag>
+              )}
+            </TagsRow>
+
+            <FavoriteRow>
+              <FavoriteButton
+                $active={story.isFavorite}
+                onClick={handleToggleFavorite}
+                title={story.isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'}
+              >
+                {story.isFavorite ? '\u2764\uFE0F' : '\uD83E\uDD0D'}
+              </FavoriteButton>
+              <FavoriteLabel>
+                {story.isFavorite ? 'Dans vos favoris' : 'Ajouter aux favoris'}
+              </FavoriteLabel>
+            </FavoriteRow>
+
+            <DateText>
+              Commande du {new Date(story.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
+            </DateText>
+          </HeroInfo>
+        </HeroSection>
+
+        {/* ─── Actions (lire / telecharger) ─── */}
+        {isAvailable && story.pdfUrl ? (
+          <ActionsCard>
+            {pdfError && <ErrorBanner>{pdfError}</ErrorBanner>}
+            <ActionsRow>
+              <ActionButton
+                $variant="primary"
+                onClick={handleViewPdf}
+                disabled={pdfLoading}
+              >
+                {pdfLoading ? <ButtonSpinner /> : (
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                    <polyline points="7 10 12 15 17 10" />
-                    <line x1="12" y1="15" x2="12" y2="3" />
+                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+                    <circle cx="12" cy="12" r="3" />
                   </svg>
-                  Telecharger
-                </ActionButton>
-              </ActionsRow>
-            </>
-          )}
+                )}
+                Lire le conte
+              </ActionButton>
+              <ActionButton
+                $variant="secondary"
+                onClick={handleDownloadPdf}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                Telecharger PDF
+              </ActionButton>
+            </ActionsRow>
+          </ActionsCard>
+        ) : (
+          <WaitingMessage>
+            Votre conte est en cours de creation. Vous serez notifie par email des qu'il sera disponible.
+          </WaitingMessage>
+        )}
 
-          <Divider />
-
-          {/* Infos du conte — grille compacte 2 colonnes */}
+        {/* ─── Details du conte ─── */}
+        <DetailsCard style={{ marginTop: theme.spacing.lg }}>
+          <DetailsTitle>Details du conte</DetailsTitle>
           <InfoGrid>
+            <InfoItem>
+              <label>Personnage</label>
+              <span>{story.protagonistName}</span>
+            </InfoItem>
+            <InfoItem>
+              <label>Age</label>
+              <span>{story.ageRange} ans</span>
+            </InfoItem>
             <InfoItem>
               <label>Theme</label>
               <span>{translateTheme(story.generalTheme)}</span>
@@ -454,31 +611,33 @@ export const StoryDetailPage: React.FC = () => {
               <span>{translateSubject(story.specificSubject)}</span>
             </InfoItem>
             <InfoItem>
-              <label>Age</label>
-              <span>{story.ageRange} ans</span>
+              <label>Message</label>
+              <span>{translateMessage(story.centralMessage)}</span>
             </InfoItem>
             <InfoItem>
               <label>Style</label>
               <span>{translateStyle(story.illustrationStyle)}</span>
             </InfoItem>
-            <InfoItem>
-              <label>Message</label>
-              <span>{translateMessage(story.centralMessage)}</span>
-            </InfoItem>
+            {story.language && (
+              <InfoItem>
+                <label>Langue</label>
+                <span>{story.language}</span>
+              </InfoItem>
+            )}
             <InfoItem>
               <label>Format</label>
-              <span>eBook</span>
+              <span>eBook numerique</span>
             </InfoItem>
           </InfoGrid>
-        </Card>
+        </DetailsCard>
       </MainContent>
       <Footer />
 
       <StoryPDFViewer
         isOpen={viewerOpen}
-        onClose={handleCloseViewer}
+        onClose={() => setViewerOpen(false)}
         pdfUrl={pdfUrl}
-        title={`Conte de ${story.protagonistName}`}
+        title={displayTitle}
         onDownload={handleDownloadPdf}
       />
     </PageContainer>
