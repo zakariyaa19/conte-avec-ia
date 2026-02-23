@@ -23,7 +23,7 @@ import {
   ExtrasSection, SectionTitle,
   CollapsiblePill, CollapsibleChevron, CollapsibleContent,
   PricingRow, PricingOption, PricingBadge, PricingName, PricingPrice, PricingSubtext,
-  PricingFeatures, PricingFeature, PricingLabel, PricingDivider,
+  PricingFeatures, PricingFeature, PricingHighlight, PricingLabel, PricingDivider,
   OrderInfoSection, OrderInfoGrid, FullWidthField, OrderCostSummary,
   PayButton, TrustBadgesRow, TrustBadge, ErrorMessage, ConnectedBanner,
   ClubFreeCard, ClubBadge, ClubExhaustedMsg,
@@ -264,7 +264,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
         return (
           <>
             <StepTitle>Pour quel âge ?</StepTitle>
-            <CardGrid $columns={2}>
+            <CardGrid $columns={4}>
               {AGE_OPTIONS.map((o, i) => (
                 <ImageCard key={o.value} $isSelected={formData.ageRange === o.value} $delay={i}
                   onClick={() => handleCardSelect('ageRange', o.value)}>
@@ -330,7 +330,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
         return (
           <>
             <StepTitle>Quel style d'illustration ?</StepTitle>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '6px', width: '100%', maxWidth: '360px' }}>
+            <CardGrid $columns={5} $compact>
               {ILLUSTRATION_STYLES.map((s, i) => (
                 <ImageCard key={s.value} $isSelected={formData.illustrationStyle === s.value} $delay={i}
                   onClick={() => handleCardSelect('illustrationStyle', s.value)}>
@@ -338,7 +338,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                   <CardImgLabel>{s.label}</CardImgLabel>
                 </ImageCard>
               ))}
-            </div>
+            </CardGrid>
           </>
         );
 
@@ -619,7 +619,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                   <PricingDivider />
                   <PricingFeatures>
                     <PricingFeature>Cet eBook inclus</PricingFeature>
-                    <PricingFeature>1 eBook gratuit / semaine</PricingFeature>
+                    <PricingHighlight>1 eBook gratuit / semaine</PricingHighlight>
                     <PricingFeature>Annulable à tout moment</PricingFeature>
                     <PricingFeature>Bibliothèque illimitée</PricingFeature>
                     <PricingFeature>Accès prioritaire</PricingFeature>
