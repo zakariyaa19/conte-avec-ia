@@ -12,8 +12,11 @@ export interface CoverGenerationParams {
   skinColor: string;
   illustrationStyle: string;
   generalTheme: string;
+  customTheme?: string;
   specificSubject: string;
+  customSubject?: string;
   centralMessage?: string;
+  customMessage?: string;
   ageRange?: string;
 }
 
@@ -67,8 +70,11 @@ export function computeParamsHash(params: CoverGenerationParams, hasPhoto: boole
   const relevantFields = [
     params.illustrationStyle,
     params.generalTheme,
+    params.customTheme || '',
     params.specificSubject,
+    params.customSubject || '',
     params.centralMessage || '',
+    params.customMessage || '',
     params.protagonistName,
     params.protagonistAge,
     params.protagonistGender,
@@ -256,8 +262,14 @@ const MESSAGE_MOODS: Record<string, string> = {
 function buildCoverPrompt(params: CoverGenerationParams, characterDescription: string, title: string): string {
   const styleDirective = STYLE_DIRECTIVES[params.illustrationStyle] || STYLE_DIRECTIVES['illustrated-book'];
   const titleStyle = STYLE_TITLE_RENDERING[params.illustrationStyle] || STYLE_TITLE_RENDERING['illustrated-book'];
-  const scene = OCCASION_SCENES[params.specificSubject] || THEME_SCENES[params.generalTheme] || 'a magical and enchanting world full of wonder';
-  const mood = params.centralMessage ? (MESSAGE_MOODS[params.centralMessage] || '') : '';
+  const scene = params.customSubject
+    ? `a scene inspired by: ${params.customSubject}`
+    : (OCCASION_SCENES[params.specificSubject] || (params.customTheme
+      ? `a scene inspired by the theme: ${params.customTheme}`
+      : (THEME_SCENES[params.generalTheme] || 'a magical and enchanting world full of wonder')));
+  const mood = params.customMessage
+    ? `themes of: ${params.customMessage}`
+    : (params.centralMessage ? (MESSAGE_MOODS[params.centralMessage] || '') : '');
 
   return `Create a beautiful children's book COVER illustration. This is a PORTRAIT format image (taller than wide), designed exactly like a real children's book front cover.
 

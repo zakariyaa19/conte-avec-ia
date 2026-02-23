@@ -47,8 +47,11 @@ export class PreviewController {
         skinColor: formData.skinColor,
         illustrationStyle: formData.illustrationStyle,
         generalTheme: formData.generalTheme,
+        customTheme: formData.customTheme,
         specificSubject: formData.specificSubject,
+        customSubject: formData.customSubject,
         centralMessage: formData.centralMessage,
+        customMessage: formData.customMessage,
         ageRange: formData.ageRange,
       };
 
