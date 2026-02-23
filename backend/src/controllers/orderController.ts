@@ -43,13 +43,16 @@ export class OrderController {
       let user = null;
       let photoUrl = null;
       let coverImageUrl: string | null = null;
+      let coverImageData: Buffer | null = null;
       const coverTitle = formData.coverTitle || null;
 
       // Gestion de la couverture generee par GPT
       if (formData.coverImageBase64) {
         try {
-          coverImageUrl = saveCoverImage(formData.coverImageBase64);
-          console.log('🖼️ Couverture sauvegardee:', coverImageUrl);
+          const result = saveCoverImage(formData.coverImageBase64);
+          coverImageUrl = result.url;
+          coverImageData = result.buffer;
+          console.log('🖼️ Couverture sauvegardee:', coverImageUrl, `(${coverImageData.length} bytes)`);
         } catch (coverErr) {
           console.error('Erreur sauvegarde couverture:', coverErr);
         }
@@ -133,6 +136,7 @@ export class OrderController {
           skinColor: formData.skinColor,
           photoUrl: photoUrl,
           coverImageUrl: coverImageUrl,
+          coverImageData: coverImageData,
           coverTitle: coverTitle,
           language: formData.language,
           hobbies: formData.hobbies,

@@ -3,7 +3,7 @@ import path from 'path';
 
 const coversDir = path.join(__dirname, '../../uploads/covers');
 
-export function saveCoverImage(base64Data: string): string {
+export function saveCoverImage(base64Data: string): { url: string; buffer: Buffer } {
   if (!fs.existsSync(coversDir)) {
     fs.mkdirSync(coversDir, { recursive: true });
   }
@@ -17,5 +17,5 @@ export function saveCoverImage(base64Data: string): string {
 
   console.log(`[COVER] Image saved: ${filePath} (${buffer.length} bytes)`);
 
-  return `/uploads/covers/${filename}`;
+  return { url: `/uploads/covers/${filename}`, buffer };
 }

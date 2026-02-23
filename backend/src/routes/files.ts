@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import path from 'path';
 import fs from 'fs';
+import { prisma } from '../utils/database';
 
 const router = Router();
 
@@ -8,7 +9,7 @@ const router = Router();
 router.get('/image/:filename', (req: Request, res: Response) => {
   try {
     const { filename } = req.params;
-    
+
     // Vérifier que le nom de fichier est sécurisé
     if (!filename || filename.includes('..') || filename.includes('/')) {
       return res.status(400).json({
@@ -20,7 +21,7 @@ router.get('/image/:filename', (req: Request, res: Response) => {
     // Chemins possibles pour les images
     const uploadPath = path.join(__dirname, '../../uploads', filename);
     const imagePath = path.join(__dirname, '../../images', filename);
-    
+
     // Vérifier d'abord dans uploads
     if (fs.existsSync(uploadPath)) {
       return res.sendFile(uploadPath);
@@ -47,7 +48,8 @@ router.get('/image/:filename', (req: Request, res: Response) => {
 });
 
 // Route pour servir les couvertures de contes
-router.get('/cover/:filename', (req: Request, res: Response) => {
+// Priorite : fichier disque > base de donnees (fallback apres redeploy Render)
+router.get('/cover/:filename', async (req: Request, res: Response) => {
   try {
     const { filename } = req.params;
 
@@ -58,10 +60,30 @@ router.get('/cover/:filename', (req: Request, res: Response) => {
       });
     }
 
+    // 1) Essayer depuis le disque
     const coverPath = path.join(__dirname, '../../uploads/covers', filename);
-
     if (fs.existsSync(coverPath)) {
       return res.sendFile(coverPath);
+    }
+
+    // 2) Fallback : chercher dans la base de donnees (survit aux redeploys)
+    const order = await prisma.order.findFirst({
+      where: { coverImageUrl: `/uploads/covers/${filename}` },
+      select: { coverImageData: true }
+    });
+
+    if (order?.coverImageData) {
+      // Re-ecrire le fichier sur disque pour les prochaines requetes
+      const coversDir = path.join(__dirname, '../../uploads/covers');
+      if (!fs.existsSync(coversDir)) {
+        fs.mkdirSync(coversDir, { recursive: true });
+      }
+      fs.writeFileSync(coverPath, Buffer.from(order.coverImageData));
+      console.log(`[COVER] Fichier restaure depuis DB: ${coverPath}`);
+
+      res.setHeader('Content-Type', 'image/png');
+      res.setHeader('Cache-Control', 'public, max-age=31536000');
+      return res.send(Buffer.from(order.coverImageData));
     }
 
     res.status(404).json({

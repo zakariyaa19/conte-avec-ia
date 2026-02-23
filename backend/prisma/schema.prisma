@@ -84,6 +84,7 @@ model Order {
   skinColor         String?
   photoUrl          String?
   coverImageUrl     String?
+  coverImageData    Bytes?
   coverTitle        String?
 
   // Langue du conte
