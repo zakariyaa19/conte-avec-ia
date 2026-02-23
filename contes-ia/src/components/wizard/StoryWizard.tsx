@@ -24,6 +24,7 @@ import {
   CollapsiblePill, CollapsibleChevron, CollapsibleContent,
   PricingRow, PricingOption, PricingBadge, PricingName, PricingPrice, PricingSubtext,
   PricingFeatures, PricingFeature, PricingHighlight, PricingLabel, PricingDivider,
+  ClubFreeTitle, ClubSmallPrice,
   OrderInfoSection, OrderInfoGrid, FullWidthField, OrderCostSummary,
   PayButton, TrustBadgesRow, TrustBadge, ErrorMessage, ConnectedBanner,
   ClubFreeCard, ClubBadge, ClubExhaustedMsg,
@@ -619,10 +620,8 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 <PricingFeatures>
                   <PricingFeature>20-30 pages illustrées</PricingFeature>
                   <PricingFeature>Illustrations HD</PricingFeature>
-                  <PricingFeature>Format PDF optimisé</PricingFeature>
+                  <PricingFeature>Format PDF</PricingFeature>
                   <PricingFeature>Téléchargement immédiat</PricingFeature>
-                  <PricingFeature>Bibliothèque en ligne</PricingFeature>
-                  <PricingFeature>Consultable en ligne</PricingFeature>
                 </PricingFeatures>
               </PricingOption>
 
@@ -630,17 +629,16 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 <PricingOption $isSelected={formData.purchaseType === 'club' || !formData.purchaseType}
                   onClick={() => handleProductSelection('club')}>
                   <PricingBadge />
-                  <PricingLabel>Meilleure offre</PricingLabel>
-                  <PricingName>Club des Histoires</PricingName>
-                  <PricingPrice>12,99 € / mois</PricingPrice>
-                  <PricingSubtext>Soit ~3,25 € par conte</PricingSubtext>
+                  <PricingLabel>Recommandé</PricingLabel>
+                  <ClubFreeTitle>Recevez ce conte gratuitement</ClubFreeTitle>
+                  <ClubSmallPrice>12,99 €/mois - sans engagement</ClubSmallPrice>
                   <PricingDivider />
                   <PricingFeatures>
-                    <PricingFeature>Cet eBook inclus</PricingFeature>
-                    <PricingHighlight>1 eBook gratuit / semaine</PricingHighlight>
+                    <PricingHighlight>1 conte offert chaque semaine</PricingHighlight>
+                    <PricingHighlight>Ce conte-ci est inclus</PricingHighlight>
+                    <PricingFeature>Bibliothèque illimitée en ligne</PricingFeature>
+                    <PricingFeature>Lecture + téléchargement PDF</PricingFeature>
                     <PricingFeature>Annulable à tout moment</PricingFeature>
-                    <PricingFeature>Bibliothèque illimitée</PricingFeature>
-                    <PricingFeature>Accès prioritaire</PricingFeature>
                   </PricingFeatures>
                 </PricingOption>
               )}

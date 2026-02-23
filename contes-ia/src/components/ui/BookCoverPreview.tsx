@@ -22,14 +22,15 @@ const gradientShift = keyframes`
   50% { background-position: 100% 50%; }
 `;
 
-const bookOpen = keyframes`
-  0%, 100% { transform: rotateY(0deg); }
-  50% { transform: rotateY(-25deg); }
+const bookFloat = keyframes`
+  0%, 100% { transform: translateY(0) rotateY(0deg); }
+  25% { transform: translateY(-8px) rotateY(-8deg); }
+  75% { transform: translateY(-4px) rotateY(4deg); }
 `;
 
 const pageTurn = keyframes`
   0% { transform: rotateY(0deg); opacity: 1; }
-  50% { transform: rotateY(-80deg); opacity: 0.6; }
+  50% { transform: rotateY(-70deg); opacity: 0.5; }
   100% { transform: rotateY(0deg); opacity: 1; }
 `;
 
@@ -55,6 +56,17 @@ const progressGlow = keyframes`
 const shimmer = keyframes`
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
+`;
+
+const orbitFloat = keyframes`
+  0% { transform: rotate(0deg) translateX(50px) rotate(0deg); opacity: 0.7; }
+  50% { opacity: 1; }
+  100% { transform: rotate(360deg) translateX(50px) rotate(-360deg); opacity: 0.7; }
+`;
+
+const gentlePulse = keyframes`
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.15; transform: scale(1.5); }
 `;
 
 /* --- Styled Components --- */
@@ -189,21 +201,38 @@ const MagicalLoadingScene = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(160deg, #fef3e8 0%, #fce4ec 35%, #e8eaf6 65%, #fef3e8 100%);
-  background-size: 300% 300%;
-  animation: ${gradientShift} 8s ease-in-out infinite;
+  background: linear-gradient(160deg, #fef3e8 0%, #fce4ec 25%, #e8eaf6 50%, #f3e5f5 75%, #fef3e8 100%);
+  background-size: 400% 400%;
+  animation: ${gradientShift} 10s ease-in-out infinite;
   overflow: hidden;
 `;
 
+/* Soft ambient glow circles */
+const AmbientGlow = styled.div<{ $x: string; $y: string; $color: string; $delay: string; $size: string }>`
+  position: absolute;
+  left: ${p => p.$x};
+  top: ${p => p.$y};
+  width: ${p => p.$size};
+  height: ${p => p.$size};
+  border-radius: 50%;
+  background: ${p => p.$color};
+  filter: blur(30px);
+  animation: ${gentlePulse} 6s ease-in-out infinite;
+  animation-delay: ${p => p.$delay};
+  pointer-events: none;
+`;
+
+/* Large animated book */
 const AnimatedBook = styled.div`
-  width: 70px;
-  height: 90px;
-  perspective: 300px;
-  margin-bottom: ${theme.spacing.md};
+  width: 100px;
+  height: 130px;
+  perspective: 400px;
+  margin-bottom: ${theme.spacing.lg};
+  z-index: 2;
 
   @media (max-width: ${theme.breakpoints.sm}) {
-    width: 56px;
-    height: 72px;
+    width: 80px;
+    height: 104px;
   }
 `;
 
@@ -212,84 +241,74 @@ const BookBody = styled.div`
   height: 100%;
   position: relative;
   transform-style: preserve-3d;
-  animation: ${bookOpen} 3s ease-in-out infinite;
+  animation: ${bookFloat} 4s ease-in-out infinite;
 `;
 
 const BookCoverShape = styled.div`
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.accent.softPink});
-  border-radius: 3px 6px 6px 3px;
-  box-shadow: 2px 2px 10px rgba(0,0,0,0.15);
+  background: linear-gradient(145deg, ${theme.colors.accent.coral}, #e8456b, ${theme.colors.accent.softPink});
+  border-radius: 4px 8px 8px 4px;
+  box-shadow:
+    3px 3px 15px rgba(0,0,0,0.2),
+    inset 0 0 20px rgba(255,255,255,0.15);
 
+  /* Spine */
   &::before {
     content: '';
     position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 5px;
-    background: linear-gradient(90deg, rgba(0,0,0,0.2), transparent);
-    border-radius: 3px 0 0 3px;
+    left: 0; top: 0; bottom: 0;
+    width: 7px;
+    background: linear-gradient(90deg, rgba(0,0,0,0.25), rgba(0,0,0,0.05));
+    border-radius: 4px 0 0 4px;
   }
 
+  /* Star decoration on cover */
   &::after {
     content: '';
     position: absolute;
-    top: 50%;
-    left: 50%;
+    top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    width: 20px;
-    height: 20px;
-    border: 2px solid rgba(255,255,255,0.5);
+    width: 30px; height: 30px;
+    border: 2.5px solid rgba(255,255,255,0.4);
     border-radius: 50%;
+    box-shadow: 0 0 12px rgba(255,255,255,0.2);
   }
 `;
 
 const BookPage = styled.div<{ $delay: number }>`
   position: absolute;
-  top: 3px;
-  right: 3px;
-  bottom: 3px;
-  left: 6px;
-  background: white;
-  border-radius: 0 4px 4px 0;
+  top: 4px; right: 4px; bottom: 4px; left: 8px;
+  background: linear-gradient(135deg, #fff 0%, #fafafa 100%);
+  border-radius: 0 6px 6px 0;
   transform-origin: left center;
-  animation: ${pageTurn} 3s ease-in-out infinite;
-  animation-delay: ${props => props.$delay}s;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  animation: ${pageTurn} 3.5s ease-in-out infinite;
+  animation-delay: ${p => p.$delay}s;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
 
+  /* Text lines decoration */
   &::before {
     content: '';
     position: absolute;
-    top: 15%;
-    left: 15%;
-    right: 15%;
+    top: 20%; left: 18%; right: 18%;
     height: 3px;
-    background: rgba(0,0,0,0.06);
+    background: rgba(0,0,0,0.05);
     border-radius: 2px;
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: 30%;
-    left: 15%;
-    right: 25%;
-    height: 3px;
-    background: rgba(0,0,0,0.04);
-    border-radius: 2px;
+    box-shadow:
+      0 10px 0 rgba(0,0,0,0.04),
+      0 20px 0 rgba(0,0,0,0.03);
   }
 `;
 
 const SparkleElement = styled.div<{ $x: string; $y: string; $delay: string; $size: string }>`
   position: absolute;
-  left: ${props => props.$x};
-  top: ${props => props.$y};
-  width: ${props => props.$size};
-  height: ${props => props.$size};
+  left: ${p => p.$x};
+  top: ${p => p.$y};
+  width: ${p => p.$size};
+  height: ${p => p.$size};
   animation: ${sparkle} 2.5s ease-in-out infinite;
-  animation-delay: ${props => props.$delay};
+  animation-delay: ${p => p.$delay};
+  z-index: 1;
 
   &::before {
     content: '';
@@ -300,44 +319,82 @@ const SparkleElement = styled.div<{ $x: string; $y: string; $delay: string; $siz
   }
 `;
 
+/* Orbiting particle */
+const OrbitParticle = styled.div<{ $delay: string; $duration: string; $size: string; $color: string }>`
+  position: absolute;
+  top: 50%; left: 50%;
+  width: ${p => p.$size};
+  height: ${p => p.$size};
+  border-radius: 50%;
+  background: ${p => p.$color};
+  animation: ${orbitFloat} ${p => p.$duration} linear infinite;
+  animation-delay: ${p => p.$delay};
+  z-index: 1;
+`;
+
+/* Loading title */
+const LoadingTitle = styled.h3`
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.lg};
+  font-weight: 700;
+  color: ${theme.colors.text.primary};
+  margin: 0 0 4px;
+  z-index: 2;
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    font-size: ${theme.fontSizes.base};
+  }
+`;
+
+const LoadingSubtitle = styled.p`
+  font-family: ${theme.fonts.body};
+  font-size: ${theme.fontSizes.xs};
+  color: ${theme.colors.text.light};
+  margin: 0 0 ${theme.spacing.md};
+  z-index: 2;
+`;
+
 const RotatingMessages = styled.div`
   text-align: center;
-  min-height: 44px;
+  min-height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   width: 100%;
   margin-top: ${theme.spacing.sm};
+  z-index: 2;
 `;
 
 const MessageText = styled.p<{ $index: number; $total: number }>`
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.sm};
   color: ${theme.colors.text.secondary};
-  font-weight: 500;
+  font-weight: 600;
   position: absolute;
   opacity: 0;
-  animation: ${floatMessage} ${props => props.$total * 3}s ease-in-out infinite;
-  animation-delay: ${props => props.$index * 3}s;
+  animation: ${floatMessage} ${p => p.$total * 3.5}s ease-in-out infinite;
+  animation-delay: ${p => p.$index * 3.5}s;
   padding: 0 ${theme.spacing.lg};
-  max-width: 260px;
+  max-width: 280px;
   line-height: 1.5;
   margin: 0;
 
   @media (max-width: ${theme.breakpoints.sm}) {
     font-size: ${theme.fontSizes.xs};
-    max-width: 220px;
+    max-width: 240px;
   }
 `;
 
 const ProgressBarContainer = styled.div`
-  width: 55%;
-  height: 4px;
+  width: 65%;
+  height: 6px;
   background: rgba(0,0,0,0.06);
   border-radius: ${theme.borderRadius.full};
   margin-top: ${theme.spacing.lg};
   overflow: hidden;
+  z-index: 2;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.04);
 `;
 
 const ProgressFill = styled.div`
@@ -345,13 +402,13 @@ const ProgressFill = styled.div`
   border-radius: ${theme.borderRadius.full};
   background: linear-gradient(
     90deg,
-    ${theme.colors.accent.coral}80,
+    ${theme.colors.accent.coral},
     ${theme.colors.accent.softPink},
-    ${theme.colors.accent.coral}80
+    ${theme.colors.accent.coral}
   );
   background-size: 200% 100%;
   animation:
-    ${progressGlow} 15s ease-in-out forwards,
+    ${progressGlow} 18s ease-in-out forwards,
     ${shimmer} 2s ease-in-out infinite;
 `;
 
@@ -387,9 +444,12 @@ const PlaceholderText = styled.p`
 /* --- Loading Messages --- */
 
 const LOADING_MESSAGES = [
-  'Création de votre histoire...',
-  'Illustration en cours...',
-  'Votre conte prend vie...',
+  'Notre IA imagine votre histoire...',
+  'Les personnages prennent vie...',
+  'Les illustrations se dessinent...',
+  'Votre conte se construit page par page...',
+  'Les couleurs et les details apparaissent...',
+  'Encore quelques instants magiques...',
 ];
 
 /* --- Component --- */
@@ -418,7 +478,7 @@ export const BookCoverPreview: React.FC<BookCoverPreviewProps> = React.memo(({
           onClick={handleClick}
         >
           <RatioContainer>
-            {/* Mode 1 : Image IA générée + hover overlay */}
+            {/* Mode 1 : Image IA */}
             {hasAIImage && !isGenerating && (
               <>
                 <AIImage src={coverImageUrl!} alt="Couverture de votre conte" loading="eager" />
@@ -430,25 +490,42 @@ export const BookCoverPreview: React.FC<BookCoverPreviewProps> = React.memo(({
               </>
             )}
 
-            {/* Mode 2 : Génération en cours — animation magique */}
+            {/* Mode 2 : Generation en cours */}
             {isGenerating && (
               <MagicalLoadingScene>
+                {/* Ambient glows */}
+                <AmbientGlow $x="10%" $y="20%" $color="rgba(255,154,139,0.3)" $delay="0s" $size="80px" />
+                <AmbientGlow $x="70%" $y="60%" $color="rgba(179,157,219,0.25)" $delay="2s" $size="100px" />
+                <AmbientGlow $x="50%" $y="10%" $color="rgba(255,213,180,0.3)" $delay="4s" $size="70px" />
+
                 {/* Sparkles */}
-                <SparkleElement $x="12%" $y="18%" $delay="0s" $size="10px" />
-                <SparkleElement $x="82%" $y="12%" $delay="0.6s" $size="7px" />
-                <SparkleElement $x="75%" $y="72%" $delay="1.2s" $size="9px" />
-                <SparkleElement $x="18%" $y="68%" $delay="1.8s" $size="12px" />
-                <SparkleElement $x="88%" $y="42%" $delay="0.4s" $size="6px" />
-                <SparkleElement $x="8%" $y="45%" $delay="1s" $size="8px" />
+                <SparkleElement $x="10%" $y="15%" $delay="0s" $size="12px" />
+                <SparkleElement $x="85%" $y="10%" $delay="0.5s" $size="8px" />
+                <SparkleElement $x="78%" $y="75%" $delay="1s" $size="11px" />
+                <SparkleElement $x="15%" $y="70%" $delay="1.5s" $size="14px" />
+                <SparkleElement $x="90%" $y="40%" $delay="0.3s" $size="7px" />
+                <SparkleElement $x="5%" $y="42%" $delay="0.8s" $size="9px" />
+                <SparkleElement $x="50%" $y="85%" $delay="1.8s" $size="10px" />
+                <SparkleElement $x="35%" $y="8%" $delay="2.2s" $size="6px" />
+
+                {/* Orbiting particles */}
+                <OrbitParticle $delay="0s" $duration="8s" $size="5px" $color={`${theme.colors.accent.coral}80`} />
+                <OrbitParticle $delay="2s" $duration="10s" $size="4px" $color={`${theme.colors.accent.softPink}90`} />
+                <OrbitParticle $delay="4s" $duration="7s" $size="3px" $color="rgba(179,157,219,0.6)" />
 
                 {/* Animated Book */}
                 <AnimatedBook>
                   <BookBody>
-                    <BookPage $delay={0.4} />
-                    <BookPage $delay={0.8} />
+                    <BookPage $delay={0.3} />
+                    <BookPage $delay={0.7} />
+                    <BookPage $delay={1.1} />
                     <BookCoverShape />
                   </BookBody>
                 </AnimatedBook>
+
+                {/* Title */}
+                <LoadingTitle>Votre conte prend vie</LoadingTitle>
+                <LoadingSubtitle>Cela prend environ 30 secondes</LoadingSubtitle>
 
                 {/* Rotating Messages */}
                 <RotatingMessages>
@@ -471,7 +548,7 @@ export const BookCoverPreview: React.FC<BookCoverPreviewProps> = React.memo(({
               <PlaceholderOverlay>
                 <PlaceholderIcon>{'\uD83D\uDCD6'}</PlaceholderIcon>
                 <PlaceholderText>
-                  Votre couverture personnalisée apparaîtra ici
+                  Votre couverture personnalis\u00e9e appara\u00eetra ici
                 </PlaceholderText>
               </PlaceholderOverlay>
             )}

@@ -640,6 +640,26 @@ export const PricingHighlight = styled.li`
   }
 `;
 
+/* Club CTA - "Recevez ce conte gratuitement" */
+export const ClubFreeTitle = styled.p`
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.base};
+  font-weight: 800;
+  color: ${theme.colors.accent.coral};
+  margin: 0 0 2px;
+  line-height: 1.2;
+  @media (max-width: ${theme.breakpoints.sm}) { font-size: ${theme.fontSizes.sm}; }
+  @media (min-width: ${theme.breakpoints.lg}) { font-size: ${theme.fontSizes.lg}; }
+`;
+
+export const ClubSmallPrice = styled.p`
+  font-size: 10px;
+  color: ${theme.colors.text.light};
+  margin: 0 0 6px;
+  font-weight: 500;
+  @media (min-width: ${theme.breakpoints.lg}) { font-size: 11px; }
+`;
+
 /* ══════════════════════════════════════════════
    ORDER / PAYMENT
    ══════════════════════════════════════════════ */

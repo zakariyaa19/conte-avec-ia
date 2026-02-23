@@ -37,7 +37,6 @@ export const createPaymentSession = async (req: Request, res: Response) => {
     }
 
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
       line_items: [
         {
           price_data: {
@@ -109,7 +108,6 @@ export const createSubscriptionSession = async (req: ClientAuthRequest, res: Res
 
     const session = await stripe.checkout.sessions.create({
       customer: stripeCustomerId,
-      payment_method_types: ['card'],
       line_items: [{ price: priceId, quantity: 1 }],
       mode: 'subscription',
       success_url: `${process.env.FRONTEND_URL}/dashboard?subscription=success`,

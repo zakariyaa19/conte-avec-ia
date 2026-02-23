@@ -173,12 +173,37 @@ Respond in English only.`
 
 // --- Construction de la description du personnage ---
 
+function getAgeDescription(ageRange: string | undefined, protagonistAge: string): { ageLabel: string; bodyType: string } {
+  if (ageRange === '0-2') {
+    return {
+      ageLabel: protagonistAge || 'baby',
+      bodyType: 'a tiny baby/toddler with chubby round cheeks, small pudgy body, very short or no hair, big round innocent eyes, baby proportions (large head relative to body)'
+    };
+  }
+  if (ageRange === '3-5') {
+    return {
+      ageLabel: protagonistAge || '4-year-old',
+      bodyType: 'a small young child with round soft face, chubby cheeks, short stature, playful toddler proportions'
+    };
+  }
+  if (ageRange === '10+') {
+    return {
+      ageLabel: protagonistAge || '11-year-old',
+      bodyType: 'a pre-teen/young adolescent with more mature proportions, taller build, defined facial features'
+    };
+  }
+  return {
+    ageLabel: protagonistAge || '7-year-old',
+    bodyType: 'a young child with friendly round face and kid proportions'
+  };
+}
+
 function buildCharacterDescription(params: CoverGenerationParams, photoAnalysis: string | null): string {
   const genderWord = params.protagonistGender === 'girl' ? 'girl' : 'boy';
-  const age = params.protagonistAge;
+  const { ageLabel, bodyType } = getAgeDescription(params.ageRange, params.protagonistAge);
 
   if (photoAnalysis) {
-    return `a ${age}-year-old ${genderWord}. IMPORTANT — this character must closely match this real child's appearance: ${photoAnalysis}. Ensure the illustrated character is clearly recognizable as this specific child, with matching skin tone, hair, and facial features.`;
+    return `${bodyType} (${ageLabel} ${genderWord}). IMPORTANT — this character must closely match this real child's appearance: ${photoAnalysis}. Ensure the illustrated character is clearly recognizable as this specific child, with matching skin tone, hair, facial features, and AGE-APPROPRIATE body proportions.`;
   }
 
   const eyeColorMap: Record<string, string> = {
@@ -199,7 +224,7 @@ function buildCharacterDescription(params: CoverGenerationParams, photoAnalysis:
   const hair = hairColorMap[params.hairColor] || params.hairColor;
   const skin = skinColorMap[params.skinColor] || params.skinColor;
 
-  return `a cheerful ${age}-year-old ${genderWord} with ${skin} skin, ${eyes} eyes and ${hair} hair, cute and expressive face, friendly smile`;
+  return `${bodyType} — a cheerful ${ageLabel} ${genderWord} with ${skin} skin, ${eyes} eyes and ${hair} hair, cute and expressive face, friendly smile`;
 }
 
 // --- Style directives + titre rendering ---
