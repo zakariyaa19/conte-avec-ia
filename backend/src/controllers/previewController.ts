@@ -73,6 +73,16 @@ export class PreviewController {
 
       // Generer l'image
       console.log('Cover preview: generation pour', params.protagonistName, '- style:', params.illustrationStyle);
+      console.log('Cover preview: custom fields =>', {
+        generalTheme: params.generalTheme,
+        customTheme: params.customTheme || '(vide)',
+        specificSubject: params.specificSubject,
+        customSubject: params.customSubject || '(vide)',
+        centralMessage: params.centralMessage || '(vide)',
+        customMessage: params.customMessage || '(vide)',
+        hobbies: params.hobbies || '(vide)',
+        specialEvents: params.specialEvents || '(vide)',
+      });
       const result = await generateCoverImage(params, photoBase64);
 
       // Stocker en cache

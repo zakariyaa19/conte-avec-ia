@@ -41,9 +41,9 @@ const sparkle = keyframes`
 
 const floatMessage = keyframes`
   0% { opacity: 0; transform: translateY(10px); }
-  5% { opacity: 1; transform: translateY(0); }
-  28% { opacity: 1; transform: translateY(0); }
-  33% { opacity: 0; transform: translateY(-10px); }
+  3% { opacity: 1; transform: translateY(0); }
+  14% { opacity: 1; transform: translateY(0); }
+  16.5% { opacity: 0; transform: translateY(-10px); }
   100% { opacity: 0; transform: translateY(-10px); }
 `;
 

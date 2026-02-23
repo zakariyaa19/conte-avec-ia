@@ -84,6 +84,8 @@ export function computeParamsHash(params: CoverGenerationParams, hasPhoto: boole
     params.eyeColor,
     params.hairColor,
     params.skinColor,
+    params.hobbies || '',
+    params.specialEvents || '',
     hasPhoto ? 'with-photo' : 'no-photo',
   ].join('|');
   return crypto.createHash('sha256').update(relevantFields).digest('hex').substring(0, 16);
@@ -298,6 +300,11 @@ function buildCoverPrompt(params: CoverGenerationParams, characterDescription: s
   const mood = params.customMessage
     ? `themes of: ${params.customMessage}`
     : (params.centralMessage ? (MESSAGE_MOODS[params.centralMessage] || '') : '');
+
+  console.log('buildCoverPrompt: scene =>', scene);
+  console.log('buildCoverPrompt: mood =>', mood || '(aucun)');
+  if (params.hobbies) console.log('buildCoverPrompt: hobbies =>', params.hobbies);
+  if (params.specialEvents) console.log('buildCoverPrompt: specialEvents =>', params.specialEvents);
 
   return `Create a beautiful children's book COVER illustration. This is a PORTRAIT format image (taller than wide), designed exactly like a real children's book front cover.
 
