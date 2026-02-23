@@ -1,86 +1,123 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { theme } from '../../styles/theme';
-import { SelectionCard } from '../ui/SelectionCard';
-import { ImageSelectionCard } from '../ui/ImageSelectionCard';
-import { ImageAgeCard } from '../ui/ImageAgeCard';
-import { ImageThemeCard } from '../ui/ImageThemeCard';
-import { ImageOccasionCard } from '../ui/ImageOccasionCard';
-import { ImageMessageCard } from '../ui/ImageMessageCard';
 import { ValidatedInput } from '../ui/ValidatedInput';
 import { AgeSelector } from '../ui/AgeSelector';
 import { PricingCard } from '../ui/PricingCard';
 import { BookCoverPreview } from '../ui/BookCoverPreview';
 import { SecondaryCharactersSection } from '../forms/SecondaryCharactersSection';
-import { useCoverPreview, isPhase1Complete } from '../../hooks/useCoverPreview';
+import { useCoverPreview } from '../../hooks/useCoverPreview';
 import { validateEmail, validateRequired } from '../../utils/validation';
 import { ApiService } from '../../config/api';
+import { ILLUSTRATION_STYLES, LANGUAGES, StoryFormData } from '../../types/FormTypes';
 import {
-  AGE_RANGES,
-  GENERAL_THEMES,
-  SPECIFIC_SUBJECTS,
-  CENTRAL_MESSAGES,
-  ILLUSTRATION_STYLES,
-  EYE_COLORS,
-  HAIR_COLORS,
-  LANGUAGES,
-  RELIGIONS,
-  GENDERS,
-  StoryFormData
-} from '../../types/FormTypes';
-import {
-  WizardOverlay,
-  WizardHeader,
-  BackArrow,
-  WizardTitle,
-  ProgressTrack,
-  ProgressFill,
-  WizardViewport,
-  StepContainerCentered,
-  StepContainerTop,
-  StepTitle,
-  StepSubtitle,
-  CardGrid,
-  ColorSectionLabel,
-  ColorGrid,
-  ColorOption,
-  ColorCircle,
-  ColorLabel,
-  InputRow,
-  InputField,
-  CustomInput,
-  TextArea,
-  PhotoUploadZone,
-  PhotoIcon,
-  PhotoMainText,
-  PhotoSubText,
-  HiddenFileInput,
-  ContinueButton,
-  SkipLink,
+  WizardOverlay, WizardHeader, BackArrow, WizardTitle, ProgressTrack, ProgressFill,
+  WizardViewport, StepContainerCentered, StepContainerTop,
+  StepTitle, StepSubtitle,
+  CardGrid, LivingCard, CardEmoji, CardLabel,
+  ColorCardGrid, ColorCard, ColorBubble, ColorLabel, ColorSectionLabel,
+  StyleCard, StyleImage, StyleLabel,
+  InputRow, InputField, CustomInput, TextArea,
+  PhotoUploadZone, PhotoIcon, PhotoMainText, PhotoSubText, HiddenFileInput,
+  ContinueButton, SkipLink,
+  ChoiceCard, ChoiceEmoji, ChoiceTitle, ChoiceDesc,
   DiscoverCTA,
-  CollapsiblePill,
-  CollapsibleChevron,
-  CollapsibleContent,
-  ExtrasSection,
-  SectionTitle,
-  PricingGrid,
-  OrderInfoSection,
-  OrderInfoGrid,
-  FullWidthField,
-  OrderCostSummary,
-  PayButton,
-  TrustBadgesRow,
-  TrustBadge,
-  ErrorMessage,
-  ConnectedBanner,
-  ClubFreeCard,
-  ClubBadge,
-  ClubExhaustedMsg,
-  StyledIconCircle,
+  ExtrasSection, SectionTitle,
+  CollapsiblePill, CollapsibleChevron, CollapsibleContent,
+  PricingGrid, OrderInfoSection, OrderInfoGrid, FullWidthField, OrderCostSummary,
+  PayButton, TrustBadgesRow, TrustBadge, ErrorMessage, ConnectedBanner,
+  ClubFreeCard, ClubBadge, ClubExhaustedMsg,
 } from './WizardSharedStyles';
 
-/* ──────────────────────────────────────────────
-   Types
-   ────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════
+   CARD DATA — Emoji + animated gradient cards
+   ══════════════════════════════════════════════ */
+
+const AGE_OPTIONS = [
+  { value: '0-2',  label: '0-2 ans',  emoji: '\uD83D\uDC76', gradient: 'linear-gradient(135deg, #FFECD2 0%, #FCB69F 100%)' },
+  { value: '3-5',  label: '3-5 ans',  emoji: '\uD83E\uDDD2', gradient: 'linear-gradient(135deg, #D6EAF8 0%, #AED6F1 100%)' },
+  { value: '6-9',  label: '6-9 ans',  emoji: '\uD83E\uDDB8', gradient: 'linear-gradient(135deg, #D5F5E3 0%, #ABEBC6 100%)' },
+  { value: '10+',  label: '10+ ans',  emoji: '\uD83D\uDCDA', gradient: 'linear-gradient(135deg, #F5EEF8 0%, #D7BDE2 100%)' },
+];
+
+const THEME_OPTIONS = [
+  { value: 'educational',  label: '\u00C9ducatif',       emoji: '\uD83C\uDF93', gradient: 'linear-gradient(135deg, #D4EFDF 0%, #A9DFBF 100%)' },
+  { value: 'fairy-tales',  label: 'Contes de f\u00E9es', emoji: '\uD83C\uDFF0', gradient: 'linear-gradient(135deg, #F5EEF8 0%, #D7BDE2 100%)' },
+  { value: 'activities',   label: 'Activit\u00E9s',      emoji: '\u26BD',        gradient: 'linear-gradient(135deg, #D6EAF8 0%, #AED6F1 100%)' },
+  { value: 'stories',      label: 'Histoires',           emoji: '\uD83D\uDCD6', gradient: 'linear-gradient(135deg, #FDEBD0 0%, #F9E79F 100%)' },
+  { value: 'celebrations', label: 'F\u00EAtes',          emoji: '\uD83C\uDF89', gradient: 'linear-gradient(135deg, #FDEDEC 0%, #F5B7B1 100%)' },
+  { value: 'family',       label: 'Famille',             emoji: '\uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC67', gradient: 'linear-gradient(135deg, #FFECD2 0%, #FCB69F 100%)' },
+  { value: 'custom',       label: 'Personnalis\u00E9',   emoji: '\u270F\uFE0F', gradient: 'linear-gradient(135deg, #F2F3F4 0%, #E5E7E9 100%)' },
+];
+
+const OCCASION_OPTIONS = [
+  { value: 'birthday',     label: 'Anniversaire',         emoji: '\uD83C\uDF82', gradient: 'linear-gradient(135deg, #FDEDEC 0%, #F5B7B1 100%)' },
+  { value: 'christmas',    label: 'No\u00EBl',            emoji: '\uD83C\uDF84', gradient: 'linear-gradient(135deg, #D5F5E3 0%, #82E0AA 100%)' },
+  { value: 'new-year',     label: 'Nouvel An',            emoji: '\uD83C\uDF86', gradient: 'linear-gradient(135deg, #D4E6F1 0%, #85C1E9 100%)' },
+  { value: 'easter',       label: 'P\u00E2ques',          emoji: '\uD83D\uDC23', gradient: 'linear-gradient(135deg, #FDEBD0 0%, #F9E79F 100%)' },
+  { value: 'eid',          label: 'A\u00EFd el-Fitr',     emoji: '\uD83C\uDF19', gradient: 'linear-gradient(135deg, #E8DAEF 0%, #D2B4DE 100%)' },
+  { value: 'mothers-day',  label: 'F\u00EAte des m\u00E8res', emoji: '\uD83D\uDC90', gradient: 'linear-gradient(135deg, #FADBD8 0%, #F1948A 100%)' },
+  { value: 'fathers-day',  label: 'F\u00EAte des p\u00E8res', emoji: '\uD83D\uDC54', gradient: 'linear-gradient(135deg, #D6EAF8 0%, #AED6F1 100%)' },
+  { value: 'custom',       label: 'Autre',                emoji: '\u270F\uFE0F', gradient: 'linear-gradient(135deg, #F2F3F4 0%, #E5E7E9 100%)' },
+];
+
+const GENDER_OPTIONS = [
+  { value: 'girl', label: 'Fille',   emoji: '\uD83D\uDC67', gradient: 'linear-gradient(135deg, #FADBD8 0%, #F5B7B1 100%)' },
+  { value: 'boy',  label: 'Gar\u00E7on', emoji: '\uD83D\uDC66', gradient: 'linear-gradient(135deg, #D6EAF8 0%, #AED6F1 100%)' },
+];
+
+const EYE_OPTIONS = [
+  { value: 'brown', label: 'Marron',   color: '#8B4513' },
+  { value: 'blue',  label: 'Bleu',     color: '#4169E1' },
+  { value: 'green', label: 'Vert',     color: '#228B22' },
+  { value: 'hazel', label: 'Noisette', color: '#CD853F' },
+];
+
+const HAIR_OPTIONS = [
+  { value: 'brown',  label: 'Ch\u00E2tain', color: '#8B4513' },
+  { value: 'blonde', label: 'Blond',        color: '#FFD700' },
+  { value: 'black',  label: 'Noir',         color: '#1a1a1a' },
+  { value: 'red',    label: 'Roux',         color: '#D35400' },
+];
+
+const MESSAGE_OPTIONS = [
+  { value: 'friendship',   label: 'Amiti\u00E9',       emoji: '\uD83E\uDD1D', gradient: 'linear-gradient(135deg, #D6EAF8 0%, #AED6F1 100%)' },
+  { value: 'courage',      label: 'Courage',            emoji: '\uD83E\uDD81', gradient: 'linear-gradient(135deg, #FDEBD0 0%, #F9E79F 100%)' },
+  { value: 'love',         label: 'Amour',              emoji: '\u2764\uFE0F', gradient: 'linear-gradient(135deg, #FADBD8 0%, #F5B7B1 100%)' },
+  { value: 'perseverance', label: 'Pers\u00E9v\u00E9rance', emoji: '\uD83C\uDFD4\uFE0F', gradient: 'linear-gradient(135deg, #D5F5E3 0%, #ABEBC6 100%)' },
+  { value: 'sharing',      label: 'Partage',            emoji: '\uD83C\uDF81', gradient: 'linear-gradient(135deg, #E8DAEF 0%, #D2B4DE 100%)' },
+  { value: 'honesty',      label: 'Honn\u00EAtet\u00E9', emoji: '\uD83D\uDC8E', gradient: 'linear-gradient(135deg, #D4E6F1 0%, #85C1E9 100%)' },
+  { value: 'respect',      label: 'Respect',            emoji: '\uD83D\uDE4F', gradient: 'linear-gradient(135deg, #FFECD2 0%, #FCB69F 100%)' },
+  { value: 'custom',       label: 'Autre',              emoji: '\u270F\uFE0F', gradient: 'linear-gradient(135deg, #F2F3F4 0%, #E5E7E9 100%)' },
+];
+
+const LANG_TOP = [
+  { value: 'french',  label: 'Fran\u00E7ais', emoji: '\uD83C\uDDEB\uD83C\uDDF7', gradient: 'linear-gradient(135deg, #D6EAF8 0%, #AED6F1 100%)' },
+  { value: 'english', label: 'Anglais',        emoji: '\uD83C\uDDEC\uD83C\uDDE7', gradient: 'linear-gradient(135deg, #FADBD8 0%, #F5B7B1 100%)' },
+  { value: 'spanish', label: 'Espagnol',       emoji: '\uD83C\uDDEA\uD83C\uDDF8', gradient: 'linear-gradient(135deg, #FDEBD0 0%, #F9E79F 100%)' },
+];
+
+const LANG_OTHER = LANGUAGES.slice(3).map(l => ({
+  value: l.value, label: l.label, emoji: l.flag, gradient: 'linear-gradient(135deg, #F2F3F4 0%, #E5E7E9 100%)'
+}));
+
+const RELIGION_OPTIONS = [
+  { value: 'christian', label: 'Chr\u00E9tien',   emoji: '\u271D\uFE0F', gradient: 'linear-gradient(135deg, #D4E6F1 0%, #85C1E9 100%)' },
+  { value: 'jewish',    label: 'Juif',             emoji: '\u2721\uFE0F', gradient: 'linear-gradient(135deg, #D6EAF8 0%, #AED6F1 100%)' },
+  { value: 'muslim',    label: 'Musulman',         emoji: '\u262A\uFE0F', gradient: 'linear-gradient(135deg, #D5F5E3 0%, #82E0AA 100%)' },
+  { value: 'buddhist',  label: 'Bouddhiste',       emoji: '\uD83D\uDD49\uFE0F', gradient: 'linear-gradient(135deg, #FDEBD0 0%, #F9E79F 100%)' },
+  { value: 'other',     label: 'Autre',            emoji: '\u270F\uFE0F', gradient: 'linear-gradient(135deg, #F2F3F4 0%, #E5E7E9 100%)' },
+];
+
+/* ══════════════════════════════════════════════
+   STEP IDS
+   ══════════════════════════════════════════════ */
+
+const ALL_STEPS = ['age','theme','occasion','style','hero','appearance','photo','choice','extras1','extras2','cover','payment'] as const;
+type StepId = (typeof ALL_STEPS)[number];
+
+/* ══════════════════════════════════════════════
+   TYPES
+   ══════════════════════════════════════════════ */
 
 interface StoryWizardProps {
   formData: Partial<StoryFormData>;
@@ -93,14 +130,9 @@ interface StoryWizardProps {
   clubCredit?: { canSubmit: boolean; remaining: number; nextCreditDate?: string; totalEarned?: number } | null;
 }
 
-const TOTAL_STEPS = 10;
-
-const TOP_LANGUAGES = LANGUAGES.slice(0, 3);
-const OTHER_LANGUAGES = LANGUAGES.slice(3);
-
-/* ──────────────────────────────────────────────
-   Component
-   ────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════
+   COMPONENT
+   ══════════════════════════════════════════════ */
 
 export const StoryWizard: React.FC<StoryWizardProps> = ({
   formData,
@@ -110,84 +142,92 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
   isAuthenticated = false,
   isClub = false,
   currentUser = null,
-  clubCredit = null
+  clubCredit = null,
 }) => {
-  /* ── Navigation state ── */
+  /* ── Navigation ── */
   const [currentStep, setCurrentStep] = useState(0);
   const [prevStep, setPrevStep] = useState<number | null>(null);
   const [direction, setDirection] = useState<'forward' | 'backward'>('forward');
   const [isAnimating, setIsAnimating] = useState(false);
+  const [wantsExtras, setWantsExtras] = useState(false);
+  const wantsExtrasRef = useRef(false);
 
-  /* ── Extras step toggles ── */
+  /* ── Extras toggles ── */
   const [showAllLanguages, setShowAllLanguages] = useState(false);
-  const [showReligion, setShowReligion] = useState(!!formData.religion);
-  const [showSecondaryChars, setShowSecondaryChars] = useState(
-    (formData.secondaryCharacters?.length || 0) > 0
-  );
+  const [showReligion, setShowReligion] = useState(false);
+  const [showSecondaryChars, setShowSecondaryChars] = useState(false);
 
   /* ── Form state ── */
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [globalError, setGlobalError] = useState('');
   const [emailStatus, setEmailStatus] = useState<{ exists: boolean; hasPassword: boolean } | null>(null);
 
-  /* ── Cover preview ── */
-  const {
-    coverImageUrl,
-    coverTitle,
-    isGenerating: isCoverGenerating,
-    error: coverError,
-    generate: generateCover,
-  } = useCoverPreview(formData);
+  /* ── Cover ── */
+  const { coverImageUrl, isGenerating: isCoverGenerating, error: coverError, generate: generateCover } = useCoverPreview(formData);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => { wantsExtrasRef.current = wantsExtras; }, [wantsExtras]);
 
   /* ── Progress ── */
-  const progress = ((currentStep + 1) / TOTAL_STEPS) * 100;
+  const totalSteps = wantsExtras ? 12 : 10;
+  const visiblePos = (!wantsExtras && currentStep > 7) ? currentStep - 2 : currentStep;
+  const progress = Math.min(((visiblePos + 1) / totalSteps) * 100, 100);
 
-  /* ──────────────────────────────────────────────
-     Navigation
-     ────────────────────────────────────────────── */
+  /* ── Scroll reset on step change ── */
+  useEffect(() => {
+    requestAnimationFrame(() => {
+      viewportRef.current?.querySelectorAll('[data-wizard-step]').forEach(el => {
+        (el as HTMLElement).scrollTop = 0;
+      });
+    });
+  }, [currentStep]);
 
+  /* ── Navigation functions ── */
   const goToStep = useCallback((target: number) => {
-    if (isAnimating || target < 0 || target >= TOTAL_STEPS) return;
+    if (isAnimating || target < 0 || target >= ALL_STEPS.length) return;
     setDirection(target > currentStep ? 'forward' : 'backward');
     setPrevStep(currentStep);
     setCurrentStep(target);
     setIsAnimating(true);
-    setTimeout(() => {
-      setPrevStep(null);
-      setIsAnimating(false);
-    }, 420);
+    setTimeout(() => { setPrevStep(null); setIsAnimating(false); }, 400);
   }, [currentStep, isAnimating]);
 
-  const goNext = useCallback(() => goToStep(currentStep + 1), [goToStep, currentStep]);
-  const goBack = useCallback(() => goToStep(currentStep - 1), [goToStep, currentStep]);
+  const goNext = useCallback(() => {
+    let next = currentStep + 1;
+    if (!wantsExtrasRef.current && next === 8) next = 10;
+    goToStep(next);
+  }, [currentStep, goToStep]);
 
-  /* ── Auto-advance helper for card selections ── */
+  const goBack = useCallback(() => {
+    let prev = currentStep - 1;
+    if (!wantsExtrasRef.current && prev === 9) prev = 7;
+    goToStep(prev);
+  }, [currentStep, goToStep]);
+
+  /* ── Auto-advance on card select ── */
   const handleCardSelect = useCallback((field: keyof StoryFormData, value: string) => {
     onUpdate({ [field]: value });
     if (value === 'custom' || value === 'other') return;
-    setTimeout(() => goNext(), 350);
+    setTimeout(() => goNext(), 400);
   }, [onUpdate, goNext]);
 
-  /* ── Cover generation on step 8 (index 8 = coverReveal) ── */
+  /* ── Cover generation on cover step ── */
   useEffect(() => {
-    if (currentStep === 8 && !coverImageUrl && !isCoverGenerating) {
+    if (ALL_STEPS[currentStep] === 'cover' && !coverImageUrl && !isCoverGenerating) {
       generateCover();
     }
-  }, [currentStep]);
+  }, [currentStep]); // eslint-disable-line
 
-  /* ──────────────────────────────────────────────
-     Form Helpers
-     ────────────────────────────────────────────── */
-
+  /* ── Form helpers ── */
   const handleInputChange = (field: keyof StoryFormData, value: string) => {
     onUpdate({ [field]: value });
     if (errors[field]) setErrors(prev => ({ ...prev, [field]: '' }));
   };
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
     if (file) {
       onUpdate({ photo: file });
       setTimeout(() => goNext(), 500);
@@ -201,39 +241,31 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
 
   const handleEmailBlurCheck = async () => {
     if (!formData.userEmail) return;
-    const emailValidation = validateEmail(formData.userEmail);
-    if (!emailValidation.isValid) return;
+    const ev = validateEmail(formData.userEmail);
+    if (!ev.isValid) return;
     try {
-      const response = await ApiService.checkEmail(formData.userEmail);
-      if (response.success) {
-        setEmailStatus({ exists: response.exists, hasPassword: !!response.hasPassword });
-      }
+      const res = await ApiService.checkEmail(formData.userEmail);
+      if (res.success) setEmailStatus({ exists: res.exists, hasPassword: !!res.hasPassword });
     } catch { /* silent */ }
   };
 
-  const validateField = (field: string, value: string, validationType?: 'email') => {
-    const validation = validationType === 'email' ? validateEmail(value) : validateRequired(value, field);
-    if (!validation.isValid) {
-      setErrors(prev => ({ ...prev, [field]: validation.error || '' }));
-      return false;
-    }
+  const validateField = (field: string, value: string, type?: 'email') => {
+    const v = type === 'email' ? validateEmail(value) : validateRequired(value, field);
+    if (!v.isValid) { setErrors(prev => ({ ...prev, [field]: v.error || '' })); return false; }
     setErrors(prev => ({ ...prev, [field]: '' }));
     return true;
   };
 
   const validatePaymentForm = () => {
-    let isValid = true;
-    const newErrors: { [key: string]: string } = {};
-    if (!formData.userEmail) { newErrors.userEmail = 'L\'email est obligatoire'; isValid = false; }
-    else {
-      const ev = validateEmail(formData.userEmail);
-      if (!ev.isValid) { newErrors.userEmail = ev.error || 'Email invalide'; isValid = false; }
-    }
-    if (!formData.firstName) { newErrors.firstName = 'Le prénom est obligatoire'; isValid = false; }
-    if (!formData.lastName) { newErrors.lastName = 'Le nom est obligatoire'; isValid = false; }
-    setErrors(newErrors);
-    if (!isValid) setGlobalError('Veuillez remplir tous les champs obligatoires');
-    return isValid;
+    let ok = true;
+    const e: Record<string, string> = {};
+    if (!formData.userEmail) { e.userEmail = "L'email est obligatoire"; ok = false; }
+    else { const ev = validateEmail(formData.userEmail); if (!ev.isValid) { e.userEmail = ev.error || 'Email invalide'; ok = false; } }
+    if (!formData.firstName) { e.firstName = 'Le pr\u00E9nom est obligatoire'; ok = false; }
+    if (!formData.lastName) { e.lastName = 'Le nom est obligatoire'; ok = false; }
+    setErrors(e);
+    if (!ok) setGlobalError('Veuillez remplir tous les champs obligatoires');
+    return ok;
   };
 
   const handleFormSubmit = () => {
@@ -241,78 +273,56 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
     if (validatePaymentForm()) onSubmit();
   };
 
-  /* ── Step completion checks ── */
+  /* ── Step completions ── */
   const isHeroComplete = !!(formData.protagonistName && formData.protagonistAge && formData.protagonistGender);
   const isAppearanceComplete = !!(formData.eyeColor && formData.hairColor);
   const isPaymentInfoComplete = !!(formData.productType && formData.userEmail && formData.firstName && formData.lastName);
 
-  /* ──────────────────────────────────────────────
-     Step Rendering
-     ────────────────────────────────────────────── */
+  /* ══════════════════════════════════════════════
+     RENDER STEPS
+     ══════════════════════════════════════════════ */
 
-  const renderStep = (step: number) => {
-    switch (step) {
-      /* ═══ Step 0: Age Range ═══ */
-      case 0:
+  const renderStep = (stepIndex: number) => {
+    const stepId = ALL_STEPS[stepIndex] as StepId;
+
+    switch (stepId) {
+
+      /* ═══ AGE ═══ */
+      case 'age':
         return (
           <>
-            <StepTitle>Pour quel âge ?</StepTitle>
-            <CardGrid $columns={4}>
-              {AGE_RANGES.map((range) => (
-                <ImageAgeCard
-                  key={range.value}
-                  value={range.value}
-                  label={range.label}
-                  description={range.description}
-                  imagePath={range.imagePath}
-                  isSelected={formData.ageRange === range.value}
-                  onClick={(value) => handleCardSelect('ageRange', value)}
-                />
+            <StepTitle>Pour quel \u00E2ge ?</StepTitle>
+            <CardGrid $columns={2}>
+              {AGE_OPTIONS.map((o, i) => (
+                <LivingCard key={o.value} $isSelected={formData.ageRange === o.value} $gradient={o.gradient} $delay={i}
+                  onClick={() => handleCardSelect('ageRange', o.value)}>
+                  <CardEmoji>{o.emoji}</CardEmoji>
+                  <CardLabel>{o.label}</CardLabel>
+                </LivingCard>
               ))}
             </CardGrid>
           </>
         );
 
-      /* ═══ Step 1: Theme ═══ */
-      case 1:
+      /* ═══ THEME ═══ */
+      case 'theme':
         return (
           <>
             <StepTitle>Quel univers ?</StepTitle>
-            <CardGrid $columns={4}>
-              {GENERAL_THEMES.map((t) => (
-                <ImageThemeCard
-                  key={t.value}
-                  value={t.value}
-                  label={t.label}
-                  imagePath={t.imagePath}
-                  isSelected={formData.generalTheme === t.value}
-                  onClick={(value) => handleCardSelect('generalTheme', value)}
-                />
+            <CardGrid $columns={4} $compact>
+              {THEME_OPTIONS.map((o, i) => (
+                <LivingCard key={o.value} $isSelected={formData.generalTheme === o.value} $gradient={o.gradient} $delay={i}
+                  onClick={() => o.value === 'custom' ? onUpdate({ generalTheme: 'custom' }) : handleCardSelect('generalTheme', o.value)}>
+                  <CardEmoji $size="1.4rem">{o.emoji}</CardEmoji>
+                  <CardLabel $small>{o.label}</CardLabel>
+                </LivingCard>
               ))}
-              <ImageThemeCard
-                value="custom"
-                label="Personnalisé"
-                imagePath="/image/themes/personnalise.png"
-                isSelected={formData.generalTheme === 'custom'}
-                onClick={(value) => {
-                  onUpdate({ generalTheme: value });
-                }}
-              />
             </CardGrid>
             {formData.generalTheme === 'custom' && (
               <>
-                <CustomInput
-                  type="text"
-                  placeholder="Entrez le thème que vous souhaitez"
-                  value={formData.customTheme || ''}
-                  onChange={(e) => handleInputChange('customTheme', e.target.value)}
-                  autoFocus
-                />
-                <ContinueButton
-                  $isReady={!!(formData.customTheme && formData.customTheme.trim())}
-                  disabled={!(formData.customTheme && formData.customTheme.trim())}
-                  onClick={goNext}
-                >
+                <CustomInput type="text" placeholder="D\u00E9crivez votre th\u00E8me..." value={formData.customTheme || ''}
+                  onChange={(e) => handleInputChange('customTheme', e.target.value)} autoFocus />
+                <ContinueButton $isReady={!!(formData.customTheme?.trim())} disabled={!formData.customTheme?.trim()} onClick={goNext}>
                   Continuer
                 </ContinueButton>
               </>
@@ -320,46 +330,25 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
           </>
         );
 
-      /* ═══ Step 2: Occasion ═══ */
-      case 2:
+      /* ═══ OCCASION ═══ */
+      case 'occasion':
         return (
           <>
             <StepTitle>Quelle occasion ?</StepTitle>
-            <CardGrid $columns={4}>
-              {SPECIFIC_SUBJECTS.map((subject) => (
-                <ImageOccasionCard
-                  key={subject.value}
-                  value={subject.value}
-                  label={subject.label}
-                  imagePath={subject.imagePath}
-                  isSelected={formData.specificSubject === subject.value}
-                  onClick={(value) => handleCardSelect('specificSubject', value)}
-                />
+            <CardGrid $columns={4} $compact>
+              {OCCASION_OPTIONS.map((o, i) => (
+                <LivingCard key={o.value} $isSelected={formData.specificSubject === o.value} $gradient={o.gradient} $delay={i}
+                  onClick={() => o.value === 'custom' ? onUpdate({ specificSubject: 'custom' }) : handleCardSelect('specificSubject', o.value)}>
+                  <CardEmoji $size="1.4rem">{o.emoji}</CardEmoji>
+                  <CardLabel $small>{o.label}</CardLabel>
+                </LivingCard>
               ))}
-              <ImageOccasionCard
-                value="custom"
-                label="Personnalisée"
-                imagePath="/image/occasions/personnalise.png"
-                isSelected={formData.specificSubject === 'custom'}
-                onClick={(value) => {
-                  onUpdate({ specificSubject: value });
-                }}
-              />
             </CardGrid>
             {formData.specificSubject === 'custom' && (
               <>
-                <CustomInput
-                  type="text"
-                  placeholder="Entrez votre occasion"
-                  value={formData.customSubject || ''}
-                  onChange={(e) => handleInputChange('customSubject', e.target.value)}
-                  autoFocus
-                />
-                <ContinueButton
-                  $isReady={!!(formData.customSubject && formData.customSubject.trim())}
-                  disabled={!(formData.customSubject && formData.customSubject.trim())}
-                  onClick={goNext}
-                >
+                <CustomInput type="text" placeholder="D\u00E9crivez votre occasion..." value={formData.customSubject || ''}
+                  onChange={(e) => handleInputChange('customSubject', e.target.value)} autoFocus />
+                <ContinueButton $isReady={!!(formData.customSubject?.trim())} disabled={!formData.customSubject?.trim()} onClick={goNext}>
                   Continuer
                 </ContinueButton>
               </>
@@ -367,567 +356,389 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
           </>
         );
 
-      /* ═══ Step 3: Illustration Style ═══ */
-      case 3:
+      /* ═══ ILLUSTRATION STYLE ═══ */
+      case 'style':
         return (
           <>
-            <StepTitle>Quel style d'illustration ?</StepTitle>
-            <CardGrid $columns={3}>
-              {ILLUSTRATION_STYLES.map((style) => (
-                <ImageSelectionCard
-                  key={style.value}
-                  value={style.value}
-                  label={style.label}
-                  imagePath={style.imagePath}
-                  isSelected={formData.illustrationStyle === style.value}
-                  onClick={(value) => handleCardSelect('illustrationStyle', value)}
-                />
+            <StepTitle>Quel style ?</StepTitle>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '6px', width: '100%', maxWidth: '360px' }}>
+              {ILLUSTRATION_STYLES.map((s) => (
+                <StyleCard key={s.value} $isSelected={formData.illustrationStyle === s.value}
+                  onClick={() => handleCardSelect('illustrationStyle', s.value)}>
+                  <StyleImage $src={s.imagePath} />
+                  <StyleLabel>{s.label}</StyleLabel>
+                </StyleCard>
               ))}
-            </CardGrid>
+            </div>
           </>
         );
 
-      /* ═══ Step 4: Hero Identity ═══ */
-      case 4:
+      /* ═══ HERO IDENTITY ═══ */
+      case 'hero':
         return (
           <>
-            <StepTitle>Votre héros</StepTitle>
-            <StepSubtitle>Qui sera le personnage principal de cette histoire ?</StepSubtitle>
+            <StepTitle>Votre h\u00E9ros</StepTitle>
+            <StepSubtitle>Qui sera le personnage principal ?</StepSubtitle>
             <InputRow>
               <InputField>
-                <ValidatedInput
-                  label="Prénom du héros / de l'héroïne *"
-                  value={formData.protagonistName || ''}
-                  onChange={(value) => handleInputChange('protagonistName', value)}
-                  placeholder="Ex : Emma, Lucas..."
-                  required={true}
-                  error={errors.protagonistName}
-                />
+                <ValidatedInput label="Pr\u00E9nom *" value={formData.protagonistName || ''}
+                  onChange={(v) => handleInputChange('protagonistName', v)} placeholder="Ex : Emma, Lucas..." required error={errors.protagonistName} />
               </InputField>
               <InputField>
-                <AgeSelector
-                  label="Âge *"
-                  value={formData.protagonistAge || ''}
-                  onChange={(value) => handleInputChange('protagonistAge', value)}
-                  required={true}
-                  error={errors.protagonistAge}
-                />
+                <AgeSelector label="\u00C2ge *" value={formData.protagonistAge || ''}
+                  onChange={(v) => handleInputChange('protagonistAge', v)} required error={errors.protagonistAge} />
               </InputField>
             </InputRow>
             <CardGrid $columns={2}>
-              {GENDERS.map((gender) => (
-                <SelectionCard
-                  key={gender.value}
-                  value={gender.value}
-                  label={gender.label}
-                  icon={gender.icon}
-                  isSelected={formData.protagonistGender === gender.value}
-                  onClick={(value) => onUpdate({ protagonistGender: value as 'boy' | 'girl' })}
-                />
+              {GENDER_OPTIONS.map((o, i) => (
+                <LivingCard key={o.value} $isSelected={formData.protagonistGender === o.value} $gradient={o.gradient} $delay={i}
+                  onClick={() => onUpdate({ protagonistGender: o.value as 'boy' | 'girl' })}>
+                  <CardEmoji>{o.emoji}</CardEmoji>
+                  <CardLabel>{o.label}</CardLabel>
+                </LivingCard>
               ))}
             </CardGrid>
-            <ContinueButton
-              $isReady={isHeroComplete}
-              disabled={!isHeroComplete}
-              onClick={goNext}
-            >
+            <ContinueButton $isReady={isHeroComplete} disabled={!isHeroComplete} onClick={goNext}>
               Continuer
             </ContinueButton>
           </>
         );
 
-      /* ═══ Step 5: Appearance (eye + hair color) ═══ */
-      case 5:
+      /* ═══ APPEARANCE ═══ */
+      case 'appearance':
         return (
           <>
             <StepTitle>Son apparence</StepTitle>
-            <ColorSectionLabel>Couleur des yeux *</ColorSectionLabel>
-            <ColorGrid>
-              {EYE_COLORS.map((ec) => (
-                <ColorOption
-                  key={ec.value}
-                  color={ec.color}
-                  $isSelected={formData.eyeColor === ec.value}
-                  onClick={() => onUpdate({ eyeColor: ec.value })}
-                >
-                  <ColorCircle color={ec.color} />
-                  <ColorLabel>{ec.label}</ColorLabel>
-                </ColorOption>
+            <ColorSectionLabel>Couleur des yeux</ColorSectionLabel>
+            <ColorCardGrid>
+              {EYE_OPTIONS.map((o) => (
+                <ColorCard key={o.value} $isSelected={formData.eyeColor === o.value} $color={o.color}
+                  onClick={() => onUpdate({ eyeColor: o.value })}>
+                  <ColorBubble $color={o.color} $isSelected={formData.eyeColor === o.value} />
+                  <ColorLabel>{o.label}</ColorLabel>
+                </ColorCard>
               ))}
-            </ColorGrid>
-            <ColorSectionLabel>Couleur des cheveux *</ColorSectionLabel>
-            <ColorGrid>
-              {HAIR_COLORS.map((hc) => (
-                <ColorOption
-                  key={hc.value}
-                  color={hc.color}
-                  $isSelected={formData.hairColor === hc.value}
-                  onClick={() => onUpdate({ hairColor: hc.value })}
-                >
-                  <ColorCircle color={hc.color} />
-                  <ColorLabel>{hc.label}</ColorLabel>
-                </ColorOption>
+            </ColorCardGrid>
+            <div style={{ height: theme.spacing.lg }} />
+            <ColorSectionLabel>Couleur des cheveux</ColorSectionLabel>
+            <ColorCardGrid>
+              {HAIR_OPTIONS.map((o) => (
+                <ColorCard key={o.value} $isSelected={formData.hairColor === o.value} $color={o.color}
+                  onClick={() => onUpdate({ hairColor: o.value })}>
+                  <ColorBubble $color={o.color} $isSelected={formData.hairColor === o.value} />
+                  <ColorLabel>{o.label}</ColorLabel>
+                </ColorCard>
               ))}
-            </ColorGrid>
-            <ContinueButton
-              $isReady={isAppearanceComplete}
-              disabled={!isAppearanceComplete}
-              onClick={goNext}
-            >
+            </ColorCardGrid>
+            <ContinueButton $isReady={isAppearanceComplete} disabled={!isAppearanceComplete} onClick={goNext}>
               Continuer
             </ContinueButton>
           </>
         );
 
-      /* ═══ Step 6: Photo ═══ */
-      case 6:
+      /* ═══ PHOTO ═══ */
+      case 'photo':
         return (
           <>
             <StepTitle>Ajoutez sa photo</StepTitle>
-            <StepSubtitle>Notre IA adaptera le personnage pour qu'il ressemble à votre enfant</StepSubtitle>
-            <PhotoUploadZone
-              $hasPhoto={!!formData.photo}
-              onClick={() => fileInputRef.current?.click()}
-            >
+            <StepSubtitle>Le personnage du conte ressemblera \u00E0 votre enfant</StepSubtitle>
+            <PhotoUploadZone $hasPhoto={!!formData.photo} onClick={() => fileInputRef.current?.click()}>
               <PhotoIcon>{formData.photo ? '\u2705' : '\uD83D\uDCF7'}</PhotoIcon>
-              <PhotoMainText>
-                {formData.photo ? formData.photo.name : 'Cliquez pour ajouter une photo'}
-              </PhotoMainText>
-              <PhotoSubText>
-                {formData.photo
-                  ? 'Cliquez pour changer la photo'
-                  : 'Le personnage du conte ressemblera à votre enfant (optionnel)'
-                }
-              </PhotoSubText>
-              <HiddenFileInput
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                onChange={handleFileUpload}
-              />
+              <PhotoMainText>{formData.photo ? (formData.photo as File).name : 'Cliquez pour ajouter une photo'}</PhotoMainText>
+              <PhotoSubText>{formData.photo ? 'Cliquez pour changer' : 'Optionnel \u2014 am\u00E9liore la personnalisation'}</PhotoSubText>
+              <HiddenFileInput ref={fileInputRef} type="file" accept="image/*" onChange={handleFileUpload} />
             </PhotoUploadZone>
-            <SkipLink onClick={goNext}>
-              Passer cette étape {'\u2192'}
-            </SkipLink>
+            <SkipLink onClick={goNext}>Passer cette \u00E9tape \u2192</SkipLink>
           </>
         );
 
-      /* ═══ Step 7: Optional Extras ═══ */
-      case 7:
+      /* ═══ CHOICE — Discover vs Personalize ═══ */
+      case 'choice':
         return (
           <>
-            <StepTitle>Personnalisez davantage</StepTitle>
-            <StepSubtitle>Ces options sont facultatives mais enrichissent votre conte</StepSubtitle>
+            <StepTitle>Votre histoire est pr\u00EAte !</StepTitle>
+            <StepSubtitle>Que souhaitez-vous faire ?</StepSubtitle>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: theme.spacing.lg, width: '100%', alignItems: 'center' }}>
+              <ChoiceCard $variant="primary" onClick={() => {
+                setWantsExtras(false);
+                wantsExtrasRef.current = false;
+                goToStep(10); // → cover
+              }}>
+                <ChoiceEmoji>{'\u2728'}</ChoiceEmoji>
+                <ChoiceTitle $variant="primary">D\u00E9couvrir mon conte</ChoiceTitle>
+                <ChoiceDesc $variant="primary">G\u00E9n\u00E9rer la couverture maintenant</ChoiceDesc>
+              </ChoiceCard>
+              <ChoiceCard $variant="secondary" onClick={() => {
+                setWantsExtras(true);
+                wantsExtrasRef.current = true;
+                goToStep(8); // → extras1
+              }}>
+                <ChoiceEmoji>{'\uD83C\uDFA8'}</ChoiceEmoji>
+                <ChoiceTitle $variant="secondary">Personnaliser davantage</ChoiceTitle>
+                <ChoiceDesc $variant="secondary">Message, langue, d\u00E9tails, personnages...</ChoiceDesc>
+              </ChoiceCard>
+            </div>
+          </>
+        );
 
-            <DiscoverCTA onClick={goNext}>
-              {'\u2728'} Découvrir mon conte
-            </DiscoverCTA>
-            <SkipLink onClick={goNext} style={{ marginBottom: theme.spacing['2xl'] }}>
-              Passer les options
-            </SkipLink>
+      /* ═══ EXTRAS 1 — Message + Language ═══ */
+      case 'extras1':
+        return (
+          <>
+            <StepTitle>Personnalisez votre conte</StepTitle>
 
-            {/* Message */}
             <ExtrasSection>
               <SectionTitle>Quel message transmettre ?</SectionTitle>
-              <CardGrid $columns={4}>
-                {CENTRAL_MESSAGES.map((msg) => (
-                  <ImageMessageCard
-                    key={msg.value}
-                    value={msg.value}
-                    label={msg.label}
-                    imagePath={msg.imagePath}
-                    isSelected={formData.centralMessage === msg.value}
-                    onClick={(value) => handleInputChange('centralMessage', value)}
-                  />
+              <CardGrid $columns={4} $compact>
+                {MESSAGE_OPTIONS.map((o, i) => (
+                  <LivingCard key={o.value} $isSelected={formData.centralMessage === o.value} $gradient={o.gradient} $delay={i}
+                    onClick={() => o.value === 'custom' ? handleInputChange('centralMessage', 'custom') : handleInputChange('centralMessage', o.value)}>
+                    <CardEmoji $size="1.2rem">{o.emoji}</CardEmoji>
+                    <CardLabel $small>{o.label}</CardLabel>
+                  </LivingCard>
                 ))}
-                <ImageMessageCard
-                  value="custom"
-                  label="Personnalisé"
-                  imagePath="/image/messages/personnalise.png"
-                  isSelected={formData.centralMessage === 'custom'}
-                  onClick={(value) => handleInputChange('centralMessage', value)}
-                />
               </CardGrid>
               {formData.centralMessage === 'custom' && (
-                <CustomInput
-                  type="text"
-                  placeholder="Message central personnalisé"
-                  value={formData.customMessage || ''}
-                  onChange={(e) => handleInputChange('customMessage', e.target.value)}
-                />
+                <CustomInput type="text" placeholder="Votre message personnalis\u00E9..." value={formData.customMessage || ''}
+                  onChange={(e) => handleInputChange('customMessage', e.target.value)} />
               )}
             </ExtrasSection>
 
-            {/* Language */}
             <ExtrasSection>
               <SectionTitle>Langue du conte</SectionTitle>
-              <CardGrid $columns={4}>
-                {TOP_LANGUAGES.map((lang) => (
-                  <SelectionCard
-                    key={lang.value}
-                    value={lang.value}
-                    label={lang.label}
-                    icon={lang.flag}
-                    isSelected={formData.language === lang.value}
-                    onClick={(value) => handleInputChange('language', value)}
-                  />
+              <CardGrid $columns={2} $compact>
+                {LANG_TOP.map((o, i) => (
+                  <LivingCard key={o.value} $isSelected={formData.language === o.value} $gradient={o.gradient} $delay={i}
+                    onClick={() => handleInputChange('language', o.value)}>
+                    <CardEmoji $size="1.2rem">{o.emoji}</CardEmoji>
+                    <CardLabel $small>{o.label}</CardLabel>
+                  </LivingCard>
                 ))}
-                <div
-                  style={{
-                    display: showAllLanguages ? 'none' : 'flex',
-                    alignItems: 'center', justifyContent: 'center',
-                    padding: theme.spacing.md,
-                    border: '2px dashed #E5E5E5', borderRadius: theme.borderRadius.md,
-                    cursor: 'pointer', fontSize: theme.fontSizes.sm, fontWeight: 600,
-                    color: theme.colors.text.secondary,
-                  }}
-                  onClick={() => setShowAllLanguages(true)}
-                >
-                  Autre langue {'\u25BC'}
-                </div>
+                <LivingCard $isSelected={false} $gradient="linear-gradient(135deg, #F2F3F4 0%, #E5E7E9 100%)" $delay={3}
+                  onClick={() => setShowAllLanguages(!showAllLanguages)}>
+                  <CardEmoji $size="1.2rem">{'\uD83C\uDF10'}</CardEmoji>
+                  <CardLabel $small>Autre {showAllLanguages ? '\u25B2' : '\u25BC'}</CardLabel>
+                </LivingCard>
               </CardGrid>
               {showAllLanguages && (
-                <CardGrid $columns={4} style={{ marginTop: theme.spacing.md }}>
-                  {OTHER_LANGUAGES.map((lang) => (
-                    <SelectionCard
-                      key={lang.value}
-                      value={lang.value}
-                      label={lang.label}
-                      icon={lang.flag}
-                      isSelected={formData.language === lang.value}
-                      onClick={(value) => handleInputChange('language', value)}
-                    />
+                <CardGrid $columns={2} $compact style={{ marginTop: theme.spacing.sm }}>
+                  {LANG_OTHER.map((o, i) => (
+                    <LivingCard key={o.value} $isSelected={formData.language === o.value} $gradient={o.gradient} $delay={i}
+                      onClick={() => handleInputChange('language', o.value)}>
+                      <CardEmoji $size="1.2rem">{o.emoji}</CardEmoji>
+                      <CardLabel $small>{o.label}</CardLabel>
+                    </LivingCard>
                   ))}
                 </CardGrid>
               )}
             </ExtrasSection>
 
-            {/* Details */}
+            <ContinueButton $isReady={true} onClick={goNext}>Continuer</ContinueButton>
+          </>
+        );
+
+      /* ═══ EXTRAS 2 — Details + Religion + Secondary + Creator ═══ */
+      case 'extras2':
+        return (
+          <>
+            <StepTitle>Derni\u00E8res touches</StepTitle>
+
             <ExtrasSection>
-              <SectionTitle>Détails à intégrer</SectionTitle>
-              <TextArea
-                placeholder="Décrivez des détails, événements ou éléments spéciaux à intégrer dans l'histoire..."
-                value={formData.specialEvents || ''}
-                onChange={(e) => handleInputChange('specialEvents', e.target.value)}
-              />
+              <SectionTitle>D\u00E9tails \u00E0 int\u00E9grer</SectionTitle>
+              <TextArea placeholder="D\u00E9crivez des d\u00E9tails ou \u00E9v\u00E9nements sp\u00E9ciaux..."
+                value={formData.specialEvents || ''} onChange={(e) => handleInputChange('specialEvents', e.target.value)} />
             </ExtrasSection>
 
-            {/* Religion */}
             <ExtrasSection>
-              <CollapsiblePill
-                $isOpen={showReligion}
-                onClick={() => {
-                  setShowReligion(!showReligion);
-                  if (showReligion) onUpdate({ religion: undefined, customReligion: undefined });
-                }}
-              >
-                <StyledIconCircle $gradient={`linear-gradient(135deg, ${theme.colors.accent.softPink}, ${theme.colors.accent.coral}40)`}>
-                  {'\u271A'}
-                </StyledIconCircle>
-                Ajouter une dimension religieuse
+              <CollapsiblePill $isOpen={showReligion} onClick={() => {
+                setShowReligion(!showReligion);
+                if (showReligion) onUpdate({ religion: undefined, customReligion: undefined });
+              }}>
+                {'\u271A'} Dimension religieuse
                 <CollapsibleChevron $isOpen={showReligion}>{'\u25BC'}</CollapsibleChevron>
               </CollapsiblePill>
               <CollapsibleContent $isOpen={showReligion}>
-                <CardGrid $columns={4}>
-                  {RELIGIONS.map((rel) => (
-                    <SelectionCard
-                      key={rel.value}
-                      value={rel.value}
-                      label={rel.label}
-                      icon={rel.icon}
-                      isSelected={formData.religion === rel.value}
-                      onClick={(value) => handleInputChange('religion', value)}
-                    />
+                <CardGrid $columns={3} $compact>
+                  {RELIGION_OPTIONS.map((o, i) => (
+                    <LivingCard key={o.value} $isSelected={formData.religion === o.value} $gradient={o.gradient} $delay={i}
+                      onClick={() => handleInputChange('religion', o.value)}>
+                      <CardEmoji $size="1.2rem">{o.emoji}</CardEmoji>
+                      <CardLabel $small>{o.label}</CardLabel>
+                    </LivingCard>
                   ))}
-                  <SelectionCard
-                    value="other"
-                    label="Autre"
-                    icon={'\u270F\uFE0F'}
-                    isSelected={formData.religion === 'other'}
-                    onClick={(value) => handleInputChange('religion', value)}
-                  />
                 </CardGrid>
                 {formData.religion === 'other' && (
-                  <CustomInput
-                    type="text"
-                    placeholder="Précisez la religion..."
-                    value={formData.customReligion || ''}
-                    onChange={(e) => handleInputChange('customReligion', e.target.value)}
-                  />
+                  <CustomInput type="text" placeholder="Pr\u00E9cisez..." value={formData.customReligion || ''}
+                    onChange={(e) => handleInputChange('customReligion', e.target.value)} />
                 )}
               </CollapsibleContent>
             </ExtrasSection>
 
-            {/* Secondary Characters */}
             <ExtrasSection>
-              <CollapsiblePill
-                $isOpen={showSecondaryChars}
-                onClick={() => setShowSecondaryChars(!showSecondaryChars)}
-              >
-                <StyledIconCircle $gradient={`linear-gradient(135deg, ${theme.colors.accent.creamyYellow}, ${theme.colors.accent.lightCoral}30)`}>
-                  {'\uD83E\uDDF8'}
-                </StyledIconCircle>
-                Ajouter des personnages secondaires
+              <CollapsiblePill $isOpen={showSecondaryChars} onClick={() => setShowSecondaryChars(!showSecondaryChars)}>
+                {'\uD83E\uDDF8'} Personnages secondaires
                 <CollapsibleChevron $isOpen={showSecondaryChars}>{'\u25BC'}</CollapsibleChevron>
               </CollapsiblePill>
               <CollapsibleContent $isOpen={showSecondaryChars}>
                 <SecondaryCharactersSection
                   secondaryCharacters={formData.secondaryCharacters || []}
-                  onChange={(characters) => onUpdate({ secondaryCharacters: characters })}
-                />
+                  onChange={(chars) => onUpdate({ secondaryCharacters: chars })} />
               </CollapsibleContent>
             </ExtrasSection>
 
-            {/* Creator */}
             <ExtrasSection>
-              <SectionTitle>Créateur du livre (optionnel)</SectionTitle>
+              <SectionTitle>Cr\u00E9ateur du livre</SectionTitle>
               <InputField>
-                <ValidatedInput
-                  label="Nom ou signature du créateur"
-                  value={formData.creatorName || ''}
-                  onChange={(value) => handleInputChange('creatorName', value)}
-                  placeholder="Ex : Créé par Papa et Maman..."
-                  required={false}
-                />
+                <ValidatedInput label="" value={formData.creatorName || ''}
+                  onChange={(v) => handleInputChange('creatorName', v)} placeholder="Ex : Cr\u00E9\u00E9 par Papa et Maman..." required={false} />
               </InputField>
             </ExtrasSection>
 
-            <DiscoverCTA onClick={goNext} style={{ marginTop: theme.spacing.xl }}>
-              {'\u2728'} Découvrir mon conte
+            <DiscoverCTA onClick={goNext}>
+              {'\u2728'} D\u00E9couvrir mon conte
             </DiscoverCTA>
           </>
         );
 
-      /* ═══ Step 8: Cover Reveal ═══ */
-      case 8:
+      /* ═══ COVER REVEAL ═══ */
+      case 'cover':
         return (
           <>
             <StepTitle>
               {coverImageUrl && !isCoverGenerating
-                ? 'Votre conte prend vie !'
-                : 'Création en cours...'
-              }
+                ? 'Votre conte est pr\u00EAt \u2728'
+                : 'Cr\u00E9ation en cours...'}
             </StepTitle>
             {coverImageUrl && !isCoverGenerating && (
-              <StepSubtitle>Voici la couverture de votre conte personnalisé</StepSubtitle>
+              <StepSubtitle>Voici la couverture de votre conte personnalis\u00E9</StepSubtitle>
             )}
-            <div style={{ width: '100%', maxWidth: 500, margin: '0 auto' }}>
-              <BookCoverPreview
-                coverImageUrl={coverImageUrl}
-                isGenerating={isCoverGenerating}
-                error={coverError}
-                onClick={goNext}
-              />
+            <div style={{ width: '100%', maxWidth: 380, margin: '0 auto' }}>
+              <BookCoverPreview coverImageUrl={coverImageUrl} isGenerating={isCoverGenerating} error={coverError} onClick={goNext} />
             </div>
             {coverImageUrl && !isCoverGenerating && (
-              <DiscoverCTA onClick={goNext} style={{ marginTop: theme.spacing['2xl'] }}>
-                Recevoir mon conte {'\u2192'}
+              <DiscoverCTA onClick={goNext} style={{ marginTop: theme.spacing.xl }}>
+                D\u00E9bloquez-le maintenant {'\u2192'}
               </DiscoverCTA>
             )}
           </>
         );
 
-      /* ═══ Step 9: Payment ═══ */
-      case 9:
+      /* ═══ PAYMENT ═══ */
+      case 'payment':
         return (
           <>
             <StepTitle>Recevez votre conte</StepTitle>
-            <StepSubtitle>Plus qu'une étape pour offrir cette histoire unique</StepSubtitle>
+            <StepSubtitle>Plus qu'une \u00E9tape pour offrir cette histoire unique</StepSubtitle>
 
-            {/* Club free card */}
             {isClub && clubCredit?.canSubmit && (
-              <ClubFreeCard
-                $isSelected={formData.purchaseType === 'club'}
-                onClick={() => handleProductSelection('club')}
-              >
+              <ClubFreeCard $isSelected={formData.purchaseType === 'club'} onClick={() => handleProductSelection('club')}>
                 <ClubBadge>Membre Club</ClubBadge>
-                <div style={{ fontSize: theme.fontSizes['2xl'], marginBottom: theme.spacing.sm, marginTop: theme.spacing.sm }}>
-                  {'\uD83C\uDF81'}
-                </div>
-                <h3 style={{ fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.xl, margin: `0 0 ${theme.spacing.xs}` }}>
-                  Utiliser mon eBook gratuit
-                </h3>
-                <p style={{ fontSize: theme.fontSizes.base, color: theme.colors.accent.coral, fontWeight: 700, margin: `0 0 ${theme.spacing.sm}` }}>
-                  0,00 € — Inclus dans votre abonnement Club
-                </p>
-                <p style={{ fontSize: theme.fontSizes.sm, color: theme.colors.text.secondary, margin: 0 }}>
-                  Il vous reste {clubCredit.remaining} eBook(s) gratuit(s) cette semaine
+                <div style={{ fontSize: '1.5rem', margin: `${theme.spacing.sm} 0` }}>{'\uD83C\uDF81'}</div>
+                <h3 style={{ fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.lg, margin: `0 0 4px` }}>Utiliser mon eBook gratuit</h3>
+                <p style={{ fontSize: theme.fontSizes.sm, color: theme.colors.accent.coral, fontWeight: 700, margin: `0 0 4px` }}>0,00 \u20AC</p>
+                <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.text.secondary, margin: 0 }}>
+                  Il vous reste {clubCredit.remaining} eBook(s) gratuit(s)
                 </p>
               </ClubFreeCard>
             )}
 
             {isClub && clubCredit && !clubCredit.canSubmit && (
-              <ClubExhaustedMsg>
-                Votre crédit hebdomadaire est épuisé (0/1). Choisissez un format payant ci-dessous.
-              </ClubExhaustedMsg>
+              <ClubExhaustedMsg>Cr\u00E9dit hebdomadaire \u00E9puis\u00E9. Choisissez un format payant.</ClubExhaustedMsg>
             )}
 
             <PricingGrid>
-              <PricingCard
-                title="eBook Numérique"
-                price="4,99 €"
-                features={[
-                  "Conte personnalisé de 20-30 pages",
-                  "Illustrations haute qualité",
-                  "Format PDF optimisé",
-                  "Téléchargement immédiat",
-                  "Compatible tous appareils"
-                ]}
-                isPopular={formData.purchaseType === 'single'}
-                ctaText="Recevoir mon conte maintenant"
-                onSelect={() => handleProductSelection('single')}
-              />
+              <PricingCard title="eBook Num\u00E9rique" price="4,99 \u20AC"
+                features={["Conte de 20-30 pages", "Illustrations HD", "Format PDF", "T\u00E9l\u00E9chargement imm\u00E9diat"]}
+                isPopular={formData.purchaseType === 'single'} ctaText="Recevoir mon conte"
+                onSelect={() => handleProductSelection('single')} />
               {!isClub && (
-                <PricingCard
-                  title="Club des Histoires"
-                  price="12,99 € / mois"
-                  features={[
-                    "Cet eBook est inclus immédiatement",
-                    "1 eBook gratuit chaque semaine",
-                    "Bibliothèque illimitée",
-                    "Annulable à tout moment"
-                  ]}
+                <PricingCard title="Club des Histoires" price="12,99 \u20AC / mois"
+                  features={["Cet eBook inclus", "1 eBook gratuit / semaine", "Annulable \u00E0 tout moment"]}
                   isPopular={formData.purchaseType === 'club' || !formData.purchaseType}
-                  ctaText="Recevoir cet eBook + rejoindre le Club"
-                  badge="Meilleure offre"
-                  subtitle="Soit ~3,25 € par conte"
-                  onSelect={() => handleProductSelection('club')}
-                />
+                  ctaText="Rejoindre le Club" badge="Meilleure offre" subtitle="~3,25 \u20AC / conte"
+                  onSelect={() => handleProductSelection('club')} />
               )}
             </PricingGrid>
 
-            {/* Cost summary */}
             {formData.purchaseType === 'club' && isClub && clubCredit?.canSubmit && (
-              <OrderCostSummary $variant="free">
-                Cette commande sera gratuite (crédit Club)
-              </OrderCostSummary>
+              <OrderCostSummary $variant="free">Commande gratuite (cr\u00E9dit Club)</OrderCostSummary>
             )}
             {formData.purchaseType === 'club' && !isClub && (
-              <OrderCostSummary $variant="info">
-                Abonnement Club : 12,99 € / mois — Cet eBook est inclus
-              </OrderCostSummary>
+              <OrderCostSummary $variant="info">Abonnement Club : 12,99 \u20AC / mois \u2014 Cet eBook est inclus</OrderCostSummary>
             )}
             {formData.purchaseType === 'single' && (
-              <OrderCostSummary $variant="paid">
-                Cette commande sera payante : 4,99 €
-              </OrderCostSummary>
+              <OrderCostSummary $variant="paid">Total : 4,99 \u20AC</OrderCostSummary>
             )}
 
-            {/* Order info */}
             <OrderInfoSection>
               <SectionTitle>Informations de commande</SectionTitle>
               {isAuthenticated && currentUser && (
-                <ConnectedBanner>
-                  Connecté en tant que <strong>{currentUser.email}</strong>
-                </ConnectedBanner>
+                <ConnectedBanner>Connect\u00E9 en tant que <strong>{currentUser.email}</strong></ConnectedBanner>
               )}
               <OrderInfoGrid>
                 {isAuthenticated ? (
                   <FullWidthField>
-                    <ValidatedInput
-                      type="email"
-                      label="Email"
-                      value={formData.userEmail || ''}
-                      onChange={() => {}}
-                      placeholder=""
-                      required={true}
-                      disabled={true}
-                    />
+                    <ValidatedInput type="email" label="Email" value={formData.userEmail || ''} onChange={() => {}} placeholder="" required disabled />
                   </FullWidthField>
                 ) : (
                   <>
                     <FullWidthField>
-                      <ValidatedInput
-                        type="email"
-                        label="Email"
-                        value={formData.userEmail || ''}
-                        onChange={(value) => { setGlobalError(''); onUpdate({ userEmail: value }); if (errors.userEmail) setErrors(prev => ({ ...prev, userEmail: '' })); }}
-                        placeholder="votre@email.com"
-                        required={true}
-                        error={errors.userEmail}
-                        onBlur={() => { validateField('userEmail', formData.userEmail || '', 'email'); handleEmailBlurCheck(); }}
-                      />
+                      <ValidatedInput type="email" label="Email" value={formData.userEmail || ''}
+                        onChange={(v) => { setGlobalError(''); onUpdate({ userEmail: v }); if (errors.userEmail) setErrors(p => ({ ...p, userEmail: '' })); }}
+                        placeholder="votre@email.com" required error={errors.userEmail}
+                        onBlur={() => { validateField('userEmail', formData.userEmail || '', 'email'); handleEmailBlurCheck(); }} />
                       {emailStatus?.exists && emailStatus?.hasPassword && (
-                        <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.accent.coral, marginTop: theme.spacing.xs }}>
-                          Ce compte existe déjà. <span style={{ cursor: 'pointer', fontWeight: 600, textDecoration: 'underline' }} onClick={() => window.location.href = '/login'}>Connectez-vous</span>
+                        <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.accent.coral, marginTop: '4px' }}>
+                          Ce compte existe. <span style={{ cursor: 'pointer', fontWeight: 600, textDecoration: 'underline' }}
+                            onClick={() => window.location.href = '/login'}>Connectez-vous</span>
                         </p>
                       )}
                     </FullWidthField>
                     <FullWidthField>
-                      <ValidatedInput
-                        type="password"
-                        label="Mot de passe (créez votre compte)"
-                        value={formData.password || ''}
-                        onChange={(value) => { onUpdate({ password: value }); if (errors.password) setErrors(prev => ({ ...prev, password: '' })); }}
-                        placeholder="Min. 8 caractères"
-                        required={false}
-                        error={errors.password}
-                      />
-                      <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.text.light, marginTop: theme.spacing.xs }}>
-                        Créez un compte pour retrouver vos contes
+                      <ValidatedInput type="password" label="Mot de passe" value={formData.password || ''}
+                        onChange={(v) => { onUpdate({ password: v }); if (errors.password) setErrors(p => ({ ...p, password: '' })); }}
+                        placeholder="Min. 8 caract\u00E8res" required={false} error={errors.password} />
+                      <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.text.light, marginTop: '4px' }}>
+                        Cr\u00E9ez un compte pour retrouver vos contes
                       </p>
                     </FullWidthField>
                   </>
                 )}
                 <InputField>
-                  <ValidatedInput
-                    label="Prénom"
-                    value={formData.firstName || ''}
-                    onChange={(value) => { setGlobalError(''); onUpdate({ firstName: value }); if (errors.firstName) setErrors(prev => ({ ...prev, firstName: '' })); }}
-                    placeholder="Votre prénom"
-                    required={true}
-                    error={errors.firstName}
-                    onBlur={() => validateField('firstName', formData.firstName || '')}
-                  />
+                  <ValidatedInput label="Pr\u00E9nom" value={formData.firstName || ''}
+                    onChange={(v) => { setGlobalError(''); onUpdate({ firstName: v }); if (errors.firstName) setErrors(p => ({ ...p, firstName: '' })); }}
+                    placeholder="Votre pr\u00E9nom" required error={errors.firstName}
+                    onBlur={() => validateField('firstName', formData.firstName || '')} />
                 </InputField>
                 <InputField>
-                  <ValidatedInput
-                    label="Nom"
-                    value={formData.lastName || ''}
-                    onChange={(value) => { setGlobalError(''); onUpdate({ lastName: value }); if (errors.lastName) setErrors(prev => ({ ...prev, lastName: '' })); }}
-                    placeholder="Votre nom"
-                    required={true}
-                    error={errors.lastName}
-                    onBlur={() => validateField('lastName', formData.lastName || '')}
-                  />
+                  <ValidatedInput label="Nom" value={formData.lastName || ''}
+                    onChange={(v) => { setGlobalError(''); onUpdate({ lastName: v }); if (errors.lastName) setErrors(p => ({ ...p, lastName: '' })); }}
+                    placeholder="Votre nom" required error={errors.lastName}
+                    onBlur={() => validateField('lastName', formData.lastName || '')} />
                 </InputField>
               </OrderInfoGrid>
             </OrderInfoSection>
 
             {globalError && <ErrorMessage>{globalError}</ErrorMessage>}
 
-            <PayButton
-              $isReady={isPaymentInfoComplete}
-              disabled={!formData.productType || isSubmitting}
-              onClick={handleFormSubmit}
-            >
+            <PayButton $isReady={isPaymentInfoComplete} disabled={!formData.productType || isSubmitting} onClick={handleFormSubmit}>
               {isSubmitting
                 ? '\u23F3 Traitement en cours...'
                 : formData.purchaseType === 'club' && isClub && clubCredit?.canSubmit
                   ? '\u2728 Recevoir mon eBook gratuit'
-                  : '\u2728 Recevoir mon conte'
-              }
+                  : '\u2728 Recevoir mon conte'}
             </PayButton>
 
             {!(formData.purchaseType === 'club' && isClub && clubCredit?.canSubmit) && (
-              <p style={{ marginTop: theme.spacing.md, fontSize: theme.fontSizes.xs, color: theme.colors.text.light, textAlign: 'center' }}>
-                Paiement sécurisé par Stripe
+              <p style={{ marginTop: theme.spacing.sm, fontSize: theme.fontSizes.xs, color: theme.colors.text.light, textAlign: 'center' }}>
+                Paiement s\u00E9curis\u00E9 par Stripe
               </p>
             )}
 
             <TrustBadgesRow>
-              <TrustBadge>
-                <span className="trust-icon">{'\uD83D\uDD12'}</span>
-                Paiement 100% sécurisé
-              </TrustBadge>
-              <TrustBadge>
-                <span className="trust-icon">{'\u2705'}</span>
-                Satisfait ou remboursé
-              </TrustBadge>
-              <TrustBadge>
-                <span className="trust-icon">{'\u26A1'}</span>
-                Livraison instantanée
-              </TrustBadge>
+              <TrustBadge><span className="trust-icon">{'\uD83D\uDD12'}</span>S\u00E9curis\u00E9</TrustBadge>
+              <TrustBadge><span className="trust-icon">{'\u2705'}</span>Satisfait ou rembours\u00E9</TrustBadge>
+              <TrustBadge><span className="trust-icon">{'\u26A1'}</span>Livraison instantan\u00E9e</TrustBadge>
             </TrustBadgesRow>
           </>
         );
@@ -937,53 +748,43 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
     }
   };
 
-  /* ──────────────────────────────────────────────
-     Determine step container type
-     ────────────────────────────────────────────── */
+  /* ══════════════════════════════════════════════
+     STEP CONTAINER — Scrollable vs Centered
+     ══════════════════════════════════════════════ */
 
-  const isScrollableStep = (step: number) => step === 7 || step === 9;
+  const isScrollableStep = (step: number) => {
+    const id = ALL_STEPS[step];
+    return id === 'extras1' || id === 'extras2' || id === 'payment';
+  };
 
   const renderStepInContainer = (step: number, state: 'entering' | 'active' | 'exiting') => {
     const Container = isScrollableStep(step) ? StepContainerTop : StepContainerCentered;
     return (
-      <Container
-        key={`step-${step}-${state}`}
-        $state={state}
-        $direction={direction}
-        onAnimationEnd={() => {
-          if (state === 'exiting') setPrevStep(null);
-        }}
-      >
+      <Container key={`step-${step}-${state}`} $state={state} $direction={direction}
+        data-wizard-step data-step={state}>
         {renderStep(step)}
       </Container>
     );
   };
 
-  /* ──────────────────────────────────────────────
-     Render
-     ────────────────────────────────────────────── */
+  /* ══════════════════════════════════════════════
+     RENDER
+     ══════════════════════════════════════════════ */
 
   return (
     <WizardOverlay>
-      {/* Header */}
       <WizardHeader>
         <BackArrow $visible={currentStep > 0} onClick={goBack}>
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <path d="M12 4L6 10L12 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M12 4L6 10L12 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </BackArrow>
-        <WizardTitle>Créez votre conte</WizardTitle>
-        <ProgressTrack>
-          <ProgressFill $progress={progress} />
-        </ProgressTrack>
+        <WizardTitle>Cr\u00E9ez votre conte</WizardTitle>
+        <ProgressTrack><ProgressFill $progress={progress} /></ProgressTrack>
       </WizardHeader>
 
-      {/* Step viewport */}
-      <WizardViewport>
-        {/* Exiting step */}
+      <WizardViewport ref={viewportRef}>
         {prevStep !== null && isAnimating && renderStepInContainer(prevStep, 'exiting')}
-
-        {/* Active step */}
         {renderStepInContainer(currentStep, isAnimating ? 'entering' : 'active')}
       </WizardViewport>
     </WizardOverlay>
