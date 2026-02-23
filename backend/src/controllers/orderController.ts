@@ -9,6 +9,7 @@ import { ClientAuthRequest } from '../middleware/clientAuth';
 import { ClubService } from '../utils/clubService';
 import { MailjetService } from '../utils/mailjetService';
 import { buildOrderDetailsString } from '../utils/orderFormatter';
+import { saveCoverImage } from '../utils/coverStorage';
 
 export class OrderController {
   // Créer une nouvelle commande
@@ -41,6 +42,19 @@ export class OrderController {
 
       let user = null;
       let photoUrl = null;
+      let coverImageUrl: string | null = null;
+      const coverTitle = formData.coverTitle || null;
+
+      // Gestion de la couverture generee par GPT
+      if (formData.coverImageBase64) {
+        try {
+          coverImageUrl = saveCoverImage(formData.coverImageBase64);
+          console.log('🖼️ Couverture sauvegardee:', coverImageUrl);
+        } catch (coverErr) {
+          console.error('Erreur sauvegarde couverture:', coverErr);
+        }
+        delete formData.coverImageBase64;
+      }
 
       // Gestion de l'upload de photo
       if (req.file) {
@@ -118,6 +132,8 @@ export class OrderController {
           hairColor: formData.hairColor,
           skinColor: formData.skinColor,
           photoUrl: photoUrl,
+          coverImageUrl: coverImageUrl,
+          coverTitle: coverTitle,
           language: formData.language,
           hobbies: formData.hobbies,
           favoriteDish: formData.favoriteDish,

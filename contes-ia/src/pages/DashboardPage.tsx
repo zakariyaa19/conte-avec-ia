@@ -7,6 +7,7 @@ import { Footer } from '../components/layout/Footer';
 import { Button } from '../components/ui/Button';
 import { useAuth } from '../contexts/AuthContext';
 import { ApiService } from '../config/api';
+import { getImageUrl } from '../config/constants';
 
 const fadeInUp = keyframes`
   from { opacity: 0; transform: translateY(16px); }
@@ -247,72 +248,147 @@ const FilterButton = styled.button<{ $active: boolean }>`
   }
 `;
 
-const StoriesGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: ${theme.spacing.lg};
+const bookFloat = keyframes`
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-6px) rotate(0.5deg); }
 `;
 
-const StoryCard = styled.div`
-  background: ${theme.colors.background.white};
-  border-radius: ${theme.borderRadius.xl};
-  box-shadow: ${theme.shadows.card};
-  border: 1px solid rgba(0, 0, 0, 0.04);
-  overflow: hidden;
-  transition: all ${theme.transitions.smooth};
-  cursor: pointer;
+const BookshelfGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: ${theme.spacing.xl};
 
-  &:hover {
-    box-shadow: ${theme.shadows.cardHover};
-    transform: translateY(-2px);
+  @media (max-width: ${theme.breakpoints.sm}) {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: ${theme.spacing.md};
   }
 `;
 
-const StoryCardContent = styled.div`
-  padding: ${theme.spacing.lg};
+const BookCard = styled.div<{ $hasImage: boolean }>`
+  position: relative;
+  aspect-ratio: 2 / 3;
+  border-radius: 4px 12px 12px 4px;
+  overflow: hidden;
+  cursor: pointer;
+  background: ${props => props.$hasImage ? '#1a1a2e' : `linear-gradient(135deg, ${theme.colors.accent.softPink}, ${theme.colors.accent.creamyYellow})`};
+  box-shadow:
+    -4px 0 8px rgba(0,0,0,0.15),
+    4px 2px 12px rgba(0,0,0,0.2),
+    inset -2px 0 4px rgba(255,255,255,0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    transform: scale(1.04) translateY(-4px);
+    box-shadow:
+      -6px 0 12px rgba(0,0,0,0.2),
+      6px 4px 20px rgba(0,0,0,0.3),
+      inset -2px 0 4px rgba(255,255,255,0.1);
+    animation: ${bookFloat} 3s ease-in-out infinite;
+  }
 `;
 
-const StoryTitle = styled.h3`
+const BookSpine = styled.div`
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  background: linear-gradient(to right, rgba(0,0,0,0.3), rgba(0,0,0,0.05));
+  z-index: 3;
+`;
+
+const BookCoverImage = styled.img`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+`;
+
+const BookOverlay = styled.div`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: ${theme.spacing.md} ${theme.spacing.sm};
+  background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.4) 60%, transparent 100%);
+  z-index: 2;
+`;
+
+const BookTitle = styled.h3`
   font-family: ${theme.fonts.heading};
-  font-size: ${theme.fontSizes.lg};
-  color: ${theme.colors.text.primary};
-  margin: 0 0 ${theme.spacing.sm};
+  font-size: ${theme.fontSizes.sm};
+  color: white;
+  margin: 0 0 4px;
+  line-height: 1.3;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 `;
 
-const StoryMeta = styled.div`
-  display: flex;
-  gap: ${theme.spacing.sm};
-  margin-bottom: ${theme.spacing.md};
-  flex-wrap: wrap;
+const BookDate = styled.span`
+  font-size: 10px;
+  color: rgba(255,255,255,0.7);
 `;
 
-const MetaTag = styled.span<{ $color?: string }>`
-  font-size: ${theme.fontSizes.xs};
-  padding: 2px ${theme.spacing.sm};
+const BookStatusBadge = styled.span<{ $color: string }>`
+  position: absolute;
+  top: ${theme.spacing.sm};
+  right: ${theme.spacing.sm};
+  padding: 2px 8px;
   border-radius: ${theme.borderRadius.full};
-  background: ${props => props.$color || theme.colors.background.secondary};
-  color: ${props => props.$color ? 'white' : theme.colors.text.secondary};
-  font-weight: 500;
+  font-size: 10px;
+  font-weight: 700;
+  color: white;
+  background: ${props => props.$color};
+  z-index: 3;
+  backdrop-filter: blur(4px);
 `;
 
-const StoryActions = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: ${theme.spacing.md};
-`;
-
-const FavoriteButton = styled.button<{ $active: boolean }>`
+const BookFavoriteBtn = styled.button<{ $active: boolean }>`
+  position: absolute;
+  top: ${theme.spacing.sm};
+  left: ${theme.spacing.md};
   background: none;
   border: none;
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   cursor: pointer;
-  transition: transform ${theme.transitions.fast};
-  color: ${props => props.$active ? theme.colors.accent.coral : theme.colors.text.light};
+  z-index: 3;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5));
+  color: ${props => props.$active ? theme.colors.accent.coral : 'rgba(255,255,255,0.8)'};
+  transition: transform 0.2s;
 
-  &:hover {
-    transform: scale(1.2);
-  }
+  &:hover { transform: scale(1.3); }
+`;
+
+const BookPlaceholder = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: ${theme.spacing.sm};
+  padding: ${theme.spacing.lg};
+  text-align: center;
+`;
+
+const PlaceholderIcon = styled.div`
+  font-size: 2.5rem;
+  opacity: 0.5;
+`;
+
+const PlaceholderName = styled.div`
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.base};
+  color: ${theme.colors.text.secondary};
+  font-weight: 600;
 `;
 
 const EmptyState = styled.div`
@@ -702,39 +778,35 @@ export const DashboardPage: React.FC = () => {
             </Button>
           </EmptyState>
         ) : (
-          <StoriesGrid>
-            {filteredStories.map(story => (
-              <StoryCard key={story.id} onClick={() => navigate(`/dashboard/story/${story.id}`)}>
-                <StoryCardContent>
-                  <StoryTitle>Conte de {story.protagonistName}</StoryTitle>
-                  <StoryMeta>
-                    <MetaTag>{story.generalTheme}</MetaTag>
-                    <MetaTag>{story.ageRange} ans</MetaTag>
-                    <MetaTag $color={getStatusColor(story.storyStatus)}>
-                      {getStatusLabel(story.storyStatus)}
-                    </MetaTag>
-                    {story.purchaseType === 'CLUB' && (
-                      <MetaTag $color={theme.colors.accent.coral}>Club</MetaTag>
-                    )}
-                  </StoryMeta>
-                  <p style={{ fontSize: theme.fontSizes.sm, color: theme.colors.text.secondary, margin: 0 }}>
-                    {story.illustrationStyle} - {story.centralMessage}
-                  </p>
-                  <StoryActions>
-                    <span style={{ fontSize: theme.fontSizes.xs, color: theme.colors.text.light }}>
-                      {new Date(story.createdAt).toLocaleDateString('fr-FR')}
-                    </span>
-                    <FavoriteButton
-                      $active={story.isFavorite}
-                      onClick={(e) => handleToggleFavorite(e, story.id)}
-                    >
-                      {story.isFavorite ? '\u2764\uFE0F' : '\u2661'}
-                    </FavoriteButton>
-                  </StoryActions>
-                </StoryCardContent>
-              </StoryCard>
-            ))}
-          </StoriesGrid>
+          <BookshelfGrid>
+            {filteredStories.map(story => {
+              const coverUrl = story.coverImageUrl ? getImageUrl(story.coverImageUrl) : null;
+              const title = story.coverTitle || `Conte de ${story.protagonistName}`;
+              return (
+                <BookCard key={story.id} $hasImage={!!coverUrl} onClick={() => navigate(`/dashboard/story/${story.id}`)}>
+                  <BookSpine />
+                  {coverUrl ? (
+                    <BookCoverImage src={coverUrl} alt={title} loading="lazy" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                  ) : (
+                    <BookPlaceholder>
+                      <PlaceholderIcon>📖</PlaceholderIcon>
+                      <PlaceholderName>{story.protagonistName}</PlaceholderName>
+                    </BookPlaceholder>
+                  )}
+                  <BookStatusBadge $color={getStatusColor(story.storyStatus)}>
+                    {getStatusLabel(story.storyStatus)}
+                  </BookStatusBadge>
+                  <BookFavoriteBtn $active={story.isFavorite} onClick={(e) => handleToggleFavorite(e, story.id)}>
+                    {story.isFavorite ? '\u2764\uFE0F' : '\u2661'}
+                  </BookFavoriteBtn>
+                  <BookOverlay>
+                    <BookTitle>{title}</BookTitle>
+                    <BookDate>{new Date(story.createdAt).toLocaleDateString('fr-FR')}</BookDate>
+                  </BookOverlay>
+                </BookCard>
+              );
+            })}
+          </BookshelfGrid>
         )}
       </MainContent>
       <Footer />

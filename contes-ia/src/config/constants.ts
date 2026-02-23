@@ -29,12 +29,17 @@ export const API_BASE_URL = getApiBaseUrl();
 // Helper pour construire les URLs d'images
 export const getImageUrl = (photoUrl: string | null): string | undefined => {
   if (!photoUrl) return undefined;
-  
+
   // Si l'URL commence déjà par http, la retourner telle quelle
   if (photoUrl.startsWith('http')) {
     return photoUrl;
   }
-  
+
+  // Sous-dossiers uploads (covers, pdfs) : servir directement via le static middleware
+  if (photoUrl.startsWith('/uploads/covers/') || photoUrl.startsWith('/uploads/pdfs/')) {
+    return `${API_BASE_URL}${photoUrl}`;
+  }
+
   // Extraire le nom du fichier du chemin
   let filename = photoUrl;
   if (photoUrl.startsWith('/uploads/')) {
@@ -46,7 +51,7 @@ export const getImageUrl = (photoUrl: string | null): string | undefined => {
   } else if (photoUrl.startsWith('images/')) {
     filename = photoUrl.replace('images/', '');
   }
-  
-  // Utiliser la nouvelle route API pour les images
+
+  // Utiliser la route API pour les images
   return `${API_BASE_URL}/files/image/${filename}`;
 };

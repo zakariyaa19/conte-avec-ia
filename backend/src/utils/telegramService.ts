@@ -56,6 +56,15 @@ export class TelegramService {
         });
       }
 
+      // 1.5 Envoyer la couverture si elle existe
+      if (orderData.orderDetails?.coverImageUrl) {
+        await this.sendCoverPhoto({
+          customerName: orderData.customerName,
+          orderNumber: orderData.orderNumber,
+          orderDetails: orderData.orderDetails
+        });
+      }
+
       // 2. Envoyer le message detaille
       const message = this.formatOrderMessage(orderData);
       console.log('[TELEGRAM] Message formate (' + message.length + ' chars). Envoi en cours...');
@@ -172,6 +181,62 @@ export class TelegramService {
   }
 
   /**
+   * Envoyer la couverture du conte via Telegram
+   */
+  private static async sendCoverPhoto(orderData: {
+    customerName: string;
+    orderNumber: string;
+    orderDetails: any;
+  }): Promise<void> {
+    try {
+      const coverImageUrl = orderData.orderDetails.coverImageUrl;
+      if (!coverImageUrl) return;
+
+      console.log('[TELEGRAM] Envoi couverture:', coverImageUrl);
+
+      // Construire le chemin du fichier
+      let coverPath = '';
+      if (coverImageUrl.startsWith('/uploads/')) {
+        coverPath = path.join(__dirname, '../../uploads', coverImageUrl.replace('/uploads/', ''));
+      } else if (coverImageUrl.startsWith('uploads/')) {
+        coverPath = path.join(__dirname, '../../uploads', coverImageUrl.replace('uploads/', ''));
+      } else {
+        coverPath = path.join(__dirname, '../../uploads', coverImageUrl);
+      }
+
+      // Verifier si le fichier existe
+      if (!fs.existsSync(coverPath)) {
+        console.log('[TELEGRAM] Couverture non trouvee sur le serveur, skip');
+        return;
+      }
+
+      const protagonistName = escapeHtml(orderData.orderDetails.protagonistName) || 'inconnu';
+      const caption = `🖼 Couverture du conte de ${protagonistName} — Commande #${escapeHtml(orderData.orderNumber)}`;
+
+      const FormData = require('form-data');
+      const form = new FormData();
+
+      form.append('chat_id', this.CHAT_ID);
+      form.append('photo', fs.createReadStream(coverPath));
+      form.append('caption', caption);
+      form.append('parse_mode', 'HTML');
+
+      const response = await axios.post(`${this.API_URL}/sendPhoto`, form, {
+        headers: { ...form.getHeaders() },
+      });
+
+      if (response.data.ok) {
+        console.log('[TELEGRAM] Couverture envoyee avec succes');
+      } else {
+        console.error('[TELEGRAM] Erreur envoi couverture:', response.data.description);
+      }
+
+    } catch (error: any) {
+      console.error('[TELEGRAM] Erreur envoi couverture (non bloquant):', error.message);
+    }
+  }
+
+  /**
    * Formater le message de commande avec emojis et mise en forme HTML
    * Toutes les donnees utilisateur sont echappees pour eviter les erreurs HTML
    */
@@ -240,6 +305,7 @@ ${productEmoji} <b>Produit:</b> eBook Numérique
 📖 Sujet: ${this.formatSubject(order.specificSubject)}${safeCustomSubject ? ` (${safeCustomSubject})` : ''}
 💭 Message central: ${this.formatMessage(order.centralMessage)}${safeCustomMessage ? ` (${safeCustomMessage})` : ''}
 🎨 Style: ${this.formatIllustrationStyle(order.illustrationStyle)}
+${order.coverTitle ? `📕 Titre couverture: ${escapeHtml(order.coverTitle)}` : ''}
 ${order.language ? `🌍 Langue: ${escapeHtml(order.language)}` : ''}
 
 👦👧 <b>Protagoniste</b>

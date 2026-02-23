@@ -153,7 +153,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
   const [globalError, setGlobalError] = useState('');
   const [emailStatus, setEmailStatus] = useState<{ exists: boolean; hasPassword: boolean } | null>(null);
 
-  const { coverImageUrl, isGenerating: isCoverGenerating, error: coverError, generate: generateCover } = useCoverPreview(formData);
+  const { coverImageUrl, coverTitle, rawBase64, isGenerating: isCoverGenerating, error: coverError, generate: generateCover } = useCoverPreview(formData);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
@@ -577,10 +577,16 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
               <StepSubtitle>Voici la couverture de votre conte personnalisé</StepSubtitle>
             )}
             <div style={{ width: '100%', maxWidth: 380, margin: '0 auto' }}>
-              <BookCoverPreview coverImageUrl={coverImageUrl} isGenerating={isCoverGenerating} error={coverError} onClick={goNext} />
+              <BookCoverPreview coverImageUrl={coverImageUrl} isGenerating={isCoverGenerating} error={coverError} onClick={() => {
+                if (rawBase64) onUpdate({ coverImageBase64: rawBase64, coverTitle: coverTitle || undefined });
+                goNext();
+              }} />
             </div>
             {coverImageUrl && !isCoverGenerating && (
-              <DiscoverCTA onClick={goNext} style={{ marginTop: theme.spacing.xl }}>
+              <DiscoverCTA onClick={() => {
+                if (rawBase64) onUpdate({ coverImageBase64: rawBase64, coverTitle: coverTitle || undefined });
+                goNext();
+              }} style={{ marginTop: theme.spacing.xl }}>
                 Débloquez-le maintenant →
               </DiscoverCTA>
             )}

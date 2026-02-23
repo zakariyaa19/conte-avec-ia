@@ -5,6 +5,7 @@ import { ApiService } from '../config/api';
 interface UseCoverPreviewReturn {
   coverImageUrl: string | null;
   coverTitle: string | null;
+  rawBase64: string | null;
   isGenerating: boolean;
   error: string | null;
   generate: () => void;
@@ -42,6 +43,7 @@ function fileToBase64(file: File): Promise<string> {
 export function useCoverPreview(formData: Partial<StoryFormData>): UseCoverPreviewReturn {
   const [coverImageUrl, setCoverImageUrl] = useState<string | null>(null);
   const [coverTitle, setCoverTitle] = useState<string | null>(null);
+  const [rawBase64, setRawBase64] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -109,6 +111,7 @@ export function useCoverPreview(formData: Partial<StoryFormData>): UseCoverPrevi
 
       if (result.success && result.data) {
         setCoverImageUrl(`data:image/png;base64,${result.data.imageBase64}`);
+        setRawBase64(result.data.imageBase64);
         setCoverTitle(result.data.title || null);
         setError(null);
       } else {
@@ -128,6 +131,7 @@ export function useCoverPreview(formData: Partial<StoryFormData>): UseCoverPrevi
   return {
     coverImageUrl,
     coverTitle,
+    rawBase64,
     isGenerating,
     error,
     generate,

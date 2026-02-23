@@ -83,6 +83,8 @@ model Order {
   hairColor         String?
   skinColor         String?
   photoUrl          String?
+  coverImageUrl     String?
+  coverTitle        String?
 
   // Langue du conte
   language          String?

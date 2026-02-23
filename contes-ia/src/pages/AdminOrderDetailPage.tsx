@@ -612,6 +612,40 @@ export const AdminOrderDetailPage: React.FC<AdminOrderDetailPageProps> = ({ toke
           </CardBody>
         </Card>
 
+        {/* Cover image */}
+        <Card>
+          <CardHeader>Couverture du conte</CardHeader>
+          <CardBody>
+            {order.coverImageUrl ? (
+              <>
+                {order.coverTitle && (
+                  <InfoRow><Label>Titre GPT</Label><Value>{order.coverTitle}</Value></InfoRow>
+                )}
+                <div style={{ marginTop: theme.spacing.sm }}>
+                  <PhotoPreview
+                    src={getImageUrl(order.coverImageUrl)}
+                    alt="Couverture"
+                    onClick={() => window.open(getImageUrl(order.coverImageUrl), '_blank')}
+                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                  />
+                  <PhotoActions>
+                    <SmallBtn $variant="fill" onClick={() => { const url = getImageUrl(order.coverImageUrl); if (url) downloadPhoto(url, `couverture-${order.protagonistName}-${order.id.slice(-8)}.png`); }}>
+                      Telecharger
+                    </SmallBtn>
+                    <SmallBtn onClick={() => window.open(getImageUrl(order.coverImageUrl), '_blank')}>
+                      Agrandir
+                    </SmallBtn>
+                  </PhotoActions>
+                </div>
+              </>
+            ) : (
+              <div style={{ padding: theme.spacing.lg, textAlign: 'center', color: theme.colors.text.light }}>
+                Aucune couverture generee
+              </div>
+            )}
+          </CardBody>
+        </Card>
+
         {/* Secondary characters */}
         {(secondaryChars.length > 0 || order.secondaryCharacterName) && (
           <Card>

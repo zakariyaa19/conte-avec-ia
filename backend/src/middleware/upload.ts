@@ -5,12 +5,16 @@ import fs from 'fs';
 // Creer les dossiers uploads s'ils n'existent pas
 const uploadsDir = path.join(__dirname, '../../uploads');
 const pdfsDir = path.join(__dirname, '../../uploads/pdfs');
+const coversDir = path.join(__dirname, '../../uploads/covers');
 
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
 if (!fs.existsSync(pdfsDir)) {
   fs.mkdirSync(pdfsDir, { recursive: true });
+}
+if (!fs.existsSync(coversDir)) {
+  fs.mkdirSync(coversDir, { recursive: true });
 }
 
 // Configuration du stockage pour les photos
@@ -61,6 +65,7 @@ export const upload = multer({
   fileFilter: imageFilter,
   limits: {
     fileSize: 5 * 1024 * 1024,
+    fieldSize: 10 * 1024 * 1024, // 10MB pour les champs texte (cover base64)
   }
 });
 

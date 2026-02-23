@@ -52,6 +52,8 @@ export interface StoryFormData {
   // Etape 3 - Paiement et informations
   userEmail: string;
   password?: string;
+  coverImageBase64?: string;
+  coverTitle?: string;
   productType: 'ebook';
   purchaseType?: 'single' | 'club';
   firstName?: string;
