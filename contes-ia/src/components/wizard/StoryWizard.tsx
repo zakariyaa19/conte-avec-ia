@@ -10,7 +10,7 @@ import { ApiService } from '../../config/api';
 import { ILLUSTRATION_STYLES, LANGUAGES, StoryFormData } from '../../types/FormTypes';
 import {
   WizardOverlay, WizardHeader, BackArrow, WizardTitle, ProgressTrack, ProgressFill,
-  WizardViewport, StepContainerCentered, StepContainerTop,
+  WizardViewport, StepContainerCentered,
   StepTitle, StepSubtitle,
   CardGrid, ImageCard, CardImg, CardImgLabel,
   TextCard,
@@ -23,7 +23,7 @@ import {
   ExtrasSection, SectionTitle,
   CollapsiblePill, CollapsibleChevron, CollapsibleContent,
   PricingRow, PricingOption, PricingBadge, PricingName, PricingPrice, PricingSubtext,
-  PricingFeatures, PricingFeature, PricingLabel,
+  PricingFeatures, PricingFeature, PricingLabel, PricingDivider,
   OrderInfoSection, OrderInfoGrid, FullWidthField, OrderCostSummary,
   PayButton, TrustBadgesRow, TrustBadge, ErrorMessage, ConnectedBanner,
   ClubFreeCard, ClubBadge, ClubExhaustedMsg,
@@ -597,13 +597,14 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 <PricingName>eBook Numérique</PricingName>
                 <PricingPrice>4,99 €</PricingPrice>
                 <PricingSubtext>Paiement unique</PricingSubtext>
+                <PricingDivider />
                 <PricingFeatures>
-                  <PricingFeature>Conte personnalisé de 20-30 pages</PricingFeature>
-                  <PricingFeature>Illustrations haute qualité</PricingFeature>
+                  <PricingFeature>20-30 pages illustrées</PricingFeature>
+                  <PricingFeature>Illustrations HD</PricingFeature>
                   <PricingFeature>Format PDF optimisé</PricingFeature>
                   <PricingFeature>Téléchargement immédiat</PricingFeature>
                   <PricingFeature>Bibliothèque en ligne</PricingFeature>
-                  <PricingFeature>Consultable en ligne à tout moment</PricingFeature>
+                  <PricingFeature>Consultable en ligne</PricingFeature>
                 </PricingFeatures>
               </PricingOption>
 
@@ -615,12 +616,13 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                   <PricingName>Club des Histoires</PricingName>
                   <PricingPrice>12,99 € / mois</PricingPrice>
                   <PricingSubtext>Soit ~3,25 € par conte</PricingSubtext>
+                  <PricingDivider />
                   <PricingFeatures>
-                    <PricingFeature>Cet eBook inclus immédiatement</PricingFeature>
-                    <PricingFeature>1 eBook gratuit par semaine</PricingFeature>
+                    <PricingFeature>Cet eBook inclus</PricingFeature>
+                    <PricingFeature>1 eBook gratuit / semaine</PricingFeature>
                     <PricingFeature>Annulable à tout moment</PricingFeature>
-                    <PricingFeature>Bibliothèque en ligne illimitée</PricingFeature>
-                    <PricingFeature>Accès prioritaire à tous les services</PricingFeature>
+                    <PricingFeature>Bibliothèque illimitée</PricingFeature>
+                    <PricingFeature>Accès prioritaire</PricingFeature>
                   </PricingFeatures>
                 </PricingOption>
               )}
@@ -714,19 +716,11 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
     }
   };
 
-  const isScrollableStep = (step: number) => {
-    const id = ALL_STEPS[step];
-    return id === 'extras1' || id === 'extras2' || id === 'payment';
-  };
-
-  const renderStepInContainer = (step: number, state: 'entering' | 'active' | 'exiting') => {
-    const Container = isScrollableStep(step) ? StepContainerTop : StepContainerCentered;
-    return (
-      <Container key={`step-${step}-${state}`} $state={state} $direction={direction} data-wizard-step>
-        {renderStep(step)}
-      </Container>
-    );
-  };
+  const renderStepInContainer = (step: number, state: 'entering' | 'active' | 'exiting') => (
+    <StepContainerCentered key={`step-${step}-${state}`} $state={state} $direction={direction} data-wizard-step>
+      {renderStep(step)}
+    </StepContainerCentered>
+  );
 
   return (
     <WizardOverlay>

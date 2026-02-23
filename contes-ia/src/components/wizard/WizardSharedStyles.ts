@@ -45,6 +45,11 @@ const cardReveal = keyframes`
   to   { opacity: 1; transform: translateY(0) scale(1); }
 `;
 
+const pricingShimmer = keyframes`
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+`;
+
 /* ══════════════════════════════════════════════
    WIZARD LAYOUT
    ══════════════════════════════════════════════ */
@@ -163,9 +168,10 @@ export const StepContainer = styled.div<{
 `;
 
 export const StepContainerCentered = styled(StepContainer)`
-  justify-content: center;
-  padding-top: ${theme.spacing.lg};
-  @media (max-width: ${theme.breakpoints.sm}) { padding-top: ${theme.spacing.md}; }
+  &::before, &::after {
+    content: '';
+    flex: 1;
+  }
 `;
 
 export const StepContainerTop = styled(StepContainer)`
@@ -213,8 +219,8 @@ export const CardGrid = styled.div<{ $columns?: number; $compact?: boolean }>`
   width: 100%;
   max-width: ${p => (p.$columns || 2) >= 3 ? '560px' : '380px'};
   @media (max-width: ${theme.breakpoints.sm}) {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 6px; max-width: 100%;
+    grid-template-columns: repeat(${p => p.$compact ? 3 : 2}, 1fr);
+    gap: ${p => p.$compact ? '4px' : '6px'}; max-width: 100%;
   }
 `;
 
@@ -497,65 +503,74 @@ export const CollapsibleContent = styled.div<{ $isOpen: boolean }>`
 
 export const PricingRow = styled.div`
   display: grid; grid-template-columns: 1fr 1fr;
-  gap: ${theme.spacing.md}; width: 100%; max-width: 560px;
-  margin-bottom: ${theme.spacing.md};
-  @media (max-width: ${theme.breakpoints.sm}) { gap: ${theme.spacing.sm}; }
+  gap: ${theme.spacing.sm}; width: 100%; max-width: 500px;
+  margin-bottom: ${theme.spacing.md}; align-items: stretch;
+  @media (max-width: ${theme.breakpoints.sm}) { gap: 8px; }
 `;
 
 export const PricingOption = styled.div<{ $isSelected: boolean }>`
   position: relative;
-  border: 2.5px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'rgba(0,0,0,0.06)'};
-  border-radius: 16px; padding: ${theme.spacing.md};
+  border: 2px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'rgba(0,0,0,0.06)'};
+  border-radius: 16px; padding: ${theme.spacing.lg} ${theme.spacing.md};
   cursor: pointer; transition: all 0.3s ease;
   background: ${p => p.$isSelected ? 'linear-gradient(160deg, #FFF8F5, #FFF)' : 'white'};
-  overflow: hidden;
-  ${p => p.$isSelected && css`box-shadow: 0 4px 20px ${theme.colors.accent.coral}20;`}
-  &:hover { border-color: ${theme.colors.accent.coral}; }
-  @media (max-width: ${theme.breakpoints.sm}) { padding: ${theme.spacing.sm}; }
+  overflow: hidden; -webkit-tap-highlight-color: transparent;
+  ${p => p.$isSelected && css`box-shadow: 0 4px 20px ${theme.colors.accent.coral}18;`}
+  &:hover { border-color: ${theme.colors.accent.coral}80; }
+  &:active { transform: scale(0.98); }
+  @media (max-width: ${theme.breakpoints.sm}) { padding: ${theme.spacing.md} ${theme.spacing.sm}; border-radius: 14px; }
 `;
 
 export const PricingBadge = styled.span`
   position: absolute; top: 0; left: 0; right: 0; height: 3px;
-  background: linear-gradient(90deg, ${theme.colors.accent.coral}, ${theme.colors.accent.softPink});
+  background: linear-gradient(90deg, ${theme.colors.accent.coral}, ${theme.colors.accent.softPink}, ${theme.colors.accent.coral});
+  background-size: 200% 100%;
+  animation: ${pricingShimmer} 3s linear infinite;
+`;
+
+export const PricingLabel = styled.span`
+  display: inline-block;
+  background: linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.accent.softPink});
+  color: white; padding: 3px 10px; border-radius: 10px;
+  font-size: 9px; font-weight: 700; letter-spacing: 0.3px;
+  margin-bottom: 8px;
 `;
 
 export const PricingName = styled.h4`
-  font-family: ${theme.fonts.heading}; font-size: ${theme.fontSizes.sm}; font-weight: 700;
+  font-family: ${theme.fonts.heading}; font-size: ${theme.fontSizes.base}; font-weight: 700;
   color: ${theme.colors.text.primary}; margin: 0 0 4px;
-  @media (max-width: ${theme.breakpoints.sm}) { font-size: ${theme.fontSizes.xs}; }
+  @media (max-width: ${theme.breakpoints.sm}) { font-size: ${theme.fontSizes.sm}; }
 `;
 
 export const PricingPrice = styled.p`
-  font-family: ${theme.fonts.heading}; font-size: ${theme.fontSizes.xl}; font-weight: 800;
-  color: ${theme.colors.accent.coral}; margin: 0 0 ${theme.spacing.sm}; line-height: 1;
-  @media (max-width: ${theme.breakpoints.sm}) { font-size: ${theme.fontSizes.lg}; }
+  font-family: ${theme.fonts.heading}; font-size: 1.4rem; font-weight: 800;
+  background: linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover});
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; margin: 0; line-height: 1.1;
+  @media (max-width: ${theme.breakpoints.sm}) { font-size: ${theme.fontSizes.xl}; }
 `;
 
 export const PricingSubtext = styled.p`
-  font-size: 10px; color: ${theme.colors.text.light}; margin: -6px 0 ${theme.spacing.sm};
+  font-size: 10px; color: ${theme.colors.text.light}; margin: 2px 0 0; font-weight: 500;
+`;
+
+export const PricingDivider = styled.div`
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0,0,0,0.06), transparent);
+  margin: ${theme.spacing.sm} 0;
 `;
 
 export const PricingFeatures = styled.ul`list-style: none; padding: 0; margin: 0;`;
 
 export const PricingFeature = styled.li`
   font-size: 11px; color: ${theme.colors.text.secondary};
-  padding: 2px 0; display: flex; align-items: flex-start; gap: 5px; line-height: 1.3;
+  padding: 2.5px 0; display: flex; align-items: center; gap: 6px; line-height: 1.3;
   &::before {
-    content: ''; flex-shrink: 0; width: 14px; height: 14px;
-    border-radius: ${theme.borderRadius.full};
-    background: linear-gradient(135deg, ${theme.colors.accent.lightGreen}, #8FE6A0);
-    margin-top: 1px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white' width='9' height='9'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat; background-position: center; background-size: 9px;
+    content: ''; flex-shrink: 0; width: 5px; height: 5px;
+    border-radius: 50%;
+    background: ${theme.colors.accent.coral};
   }
-  @media (max-width: ${theme.breakpoints.sm}) { font-size: 10px; }
-`;
-
-export const PricingLabel = styled.span`
-  display: inline-block;
-  background: linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover});
-  color: white; padding: 2px 8px; border-radius: 10px; font-size: 9px; font-weight: 700;
-  margin-bottom: 6px;
+  @media (max-width: ${theme.breakpoints.sm}) { font-size: 10px; padding: 2px 0; }
 `;
 
 /* ══════════════════════════════════════════════
