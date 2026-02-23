@@ -35,9 +35,10 @@ export const getImageUrl = (photoUrl: string | null): string | undefined => {
     return photoUrl;
   }
 
-  // Sous-dossiers uploads (covers, pdfs) : servir directement via le static middleware
-  if (photoUrl.startsWith('/uploads/covers/') || photoUrl.startsWith('/uploads/pdfs/')) {
-    return `${API_BASE_URL}${photoUrl}`;
+  // Couvertures : servir via la route API /files/cover/ (evite le blocage helmet CORP)
+  if (photoUrl.startsWith('/uploads/covers/')) {
+    const filename = photoUrl.replace('/uploads/covers/', '');
+    return `${API_BASE_URL}/files/cover/${filename}`;
   }
 
   // Extraire le nom du fichier du chemin

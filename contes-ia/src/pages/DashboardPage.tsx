@@ -302,6 +302,7 @@ const BookCoverImage = styled.img`
   top: 0;
   left: 0;
   width: 100%;
+  z-index: 1;
   height: 100%;
   object-fit: cover;
 `;
@@ -783,15 +784,14 @@ export const DashboardPage: React.FC = () => {
               const coverUrl = story.coverImageUrl ? getImageUrl(story.coverImageUrl) : null;
               const title = story.coverTitle || `Conte de ${story.protagonistName}`;
               return (
-                <BookCard key={story.id} $hasImage={!!coverUrl} onClick={() => navigate(`/dashboard/story/${story.id}`)}>
+                <BookCard key={story.id} $hasImage={false} onClick={() => navigate(`/dashboard/story/${story.id}`)}>
                   <BookSpine />
-                  {coverUrl ? (
+                  <BookPlaceholder>
+                    <PlaceholderIcon>📖</PlaceholderIcon>
+                    <PlaceholderName>{story.protagonistName}</PlaceholderName>
+                  </BookPlaceholder>
+                  {coverUrl && (
                     <BookCoverImage src={coverUrl} alt={title} loading="lazy" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
-                  ) : (
-                    <BookPlaceholder>
-                      <PlaceholderIcon>📖</PlaceholderIcon>
-                      <PlaceholderName>{story.protagonistName}</PlaceholderName>
-                    </BookPlaceholder>
                   )}
                   <BookStatusBadge $color={getStatusColor(story.storyStatus)}>
                     {getStatusLabel(story.storyStatus)}
