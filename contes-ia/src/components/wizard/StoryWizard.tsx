@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { theme } from '../../styles/theme';
 import { ValidatedInput } from '../ui/ValidatedInput';
 import { AgeSelector } from '../ui/AgeSelector';
-import { PricingCard } from '../ui/PricingCard';
 import { BookCoverPreview } from '../ui/BookCoverPreview';
 import { SecondaryCharactersSection } from '../forms/SecondaryCharactersSection';
 import { useCoverPreview } from '../../hooks/useCoverPreview';
@@ -13,56 +12,69 @@ import {
   WizardOverlay, WizardHeader, BackArrow, WizardTitle, ProgressTrack, ProgressFill,
   WizardViewport, StepContainerCentered, StepContainerTop,
   StepTitle, StepSubtitle,
-  CardGrid, LivingCard, CardEmoji, CardLabel,
+  CardGrid, ImageCard, CardImg, CardImgLabel,
+  TextCard,
   ColorCardGrid, ColorCard, ColorBubble, ColorLabel, ColorSectionLabel,
-  StyleCard, StyleImage, StyleLabel,
   InputRow, InputField, CustomInput, TextArea,
   PhotoUploadZone, PhotoIcon, PhotoMainText, PhotoSubText, HiddenFileInput,
   ContinueButton, SkipLink,
-  ChoiceCard, ChoiceEmoji, ChoiceTitle, ChoiceDesc,
+  ChoiceCard, ChoiceTitle, ChoiceDesc,
   DiscoverCTA,
   ExtrasSection, SectionTitle,
   CollapsiblePill, CollapsibleChevron, CollapsibleContent,
-  PricingGrid, OrderInfoSection, OrderInfoGrid, FullWidthField, OrderCostSummary,
+  PricingRow, PricingOption, PricingBadge, PricingName, PricingPrice, PricingSubtext,
+  PricingFeatures, PricingFeature, PricingLabel,
+  OrderInfoSection, OrderInfoGrid, FullWidthField, OrderCostSummary,
   PayButton, TrustBadgesRow, TrustBadge, ErrorMessage, ConnectedBanner,
   ClubFreeCard, ClubBadge, ClubExhaustedMsg,
 } from './WizardSharedStyles';
 
 /* ══════════════════════════════════════════════
-   CARD DATA — Emoji + animated gradient cards
+   CARD DATA — Images from existing assets
    ══════════════════════════════════════════════ */
 
 const AGE_OPTIONS = [
-  { value: '0-2',  label: '0-2 ans',  emoji: '\uD83D\uDC76', gradient: 'linear-gradient(135deg, #FFECD2 0%, #FCB69F 100%)' },
-  { value: '3-5',  label: '3-5 ans',  emoji: '\uD83E\uDDD2', gradient: 'linear-gradient(135deg, #D6EAF8 0%, #AED6F1 100%)' },
-  { value: '6-9',  label: '6-9 ans',  emoji: '\uD83E\uDDB8', gradient: 'linear-gradient(135deg, #D5F5E3 0%, #ABEBC6 100%)' },
-  { value: '10+',  label: '10+ ans',  emoji: '\uD83D\uDCDA', gradient: 'linear-gradient(135deg, #F5EEF8 0%, #D7BDE2 100%)' },
+  { value: '0-2', label: '0-2 ans', imagePath: '/image/ageenfant/age-0-2.png' },
+  { value: '3-5', label: '3-5 ans', imagePath: '/image/ageenfant/age-3-5.png' },
+  { value: '6-9', label: '6-9 ans', imagePath: '/image/ageenfant/age-6-9.png' },
+  { value: '10+', label: '10+ ans', imagePath: '/image/ageenfant/age-10-plus.png' },
 ];
 
 const THEME_OPTIONS = [
-  { value: 'educational',  label: '\u00C9ducatif',       emoji: '\uD83C\uDF93', gradient: 'linear-gradient(135deg, #D4EFDF 0%, #A9DFBF 100%)' },
-  { value: 'fairy-tales',  label: 'Contes de f\u00E9es', emoji: '\uD83C\uDFF0', gradient: 'linear-gradient(135deg, #F5EEF8 0%, #D7BDE2 100%)' },
-  { value: 'activities',   label: 'Activit\u00E9s',      emoji: '\u26BD',        gradient: 'linear-gradient(135deg, #D6EAF8 0%, #AED6F1 100%)' },
-  { value: 'stories',      label: 'Histoires',           emoji: '\uD83D\uDCD6', gradient: 'linear-gradient(135deg, #FDEBD0 0%, #F9E79F 100%)' },
-  { value: 'celebrations', label: 'F\u00EAtes',          emoji: '\uD83C\uDF89', gradient: 'linear-gradient(135deg, #FDEDEC 0%, #F5B7B1 100%)' },
-  { value: 'family',       label: 'Famille',             emoji: '\uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC67', gradient: 'linear-gradient(135deg, #FFECD2 0%, #FCB69F 100%)' },
-  { value: 'custom',       label: 'Personnalis\u00E9',   emoji: '\u270F\uFE0F', gradient: 'linear-gradient(135deg, #F2F3F4 0%, #E5E7E9 100%)' },
+  { value: 'educational',  label: 'Éducatif',       imagePath: '/image/themes/educatif.png' },
+  { value: 'fairy-tales',  label: 'Contes de fées', imagePath: '/image/themes/contes-de-fees.png' },
+  { value: 'activities',   label: 'Activités',      imagePath: '/image/themes/activites.png' },
+  { value: 'stories',      label: 'Histoires',      imagePath: '/image/themes/histoires.png' },
+  { value: 'celebrations', label: 'Fêtes',          imagePath: '/image/themes/fetes.png' },
+  { value: 'family',       label: 'Famille',        imagePath: '/image/themes/famille.png' },
+  { value: 'custom',       label: 'Personnalisé',   imagePath: '/image/themes/personnalise.png' },
 ];
 
 const OCCASION_OPTIONS = [
-  { value: 'birthday',     label: 'Anniversaire',         emoji: '\uD83C\uDF82', gradient: 'linear-gradient(135deg, #FDEDEC 0%, #F5B7B1 100%)' },
-  { value: 'christmas',    label: 'No\u00EBl',            emoji: '\uD83C\uDF84', gradient: 'linear-gradient(135deg, #D5F5E3 0%, #82E0AA 100%)' },
-  { value: 'new-year',     label: 'Nouvel An',            emoji: '\uD83C\uDF86', gradient: 'linear-gradient(135deg, #D4E6F1 0%, #85C1E9 100%)' },
-  { value: 'easter',       label: 'P\u00E2ques',          emoji: '\uD83D\uDC23', gradient: 'linear-gradient(135deg, #FDEBD0 0%, #F9E79F 100%)' },
-  { value: 'eid',          label: 'A\u00EFd el-Fitr',     emoji: '\uD83C\uDF19', gradient: 'linear-gradient(135deg, #E8DAEF 0%, #D2B4DE 100%)' },
-  { value: 'mothers-day',  label: 'F\u00EAte des m\u00E8res', emoji: '\uD83D\uDC90', gradient: 'linear-gradient(135deg, #FADBD8 0%, #F1948A 100%)' },
-  { value: 'fathers-day',  label: 'F\u00EAte des p\u00E8res', emoji: '\uD83D\uDC54', gradient: 'linear-gradient(135deg, #D6EAF8 0%, #AED6F1 100%)' },
-  { value: 'custom',       label: 'Autre',                emoji: '\u270F\uFE0F', gradient: 'linear-gradient(135deg, #F2F3F4 0%, #E5E7E9 100%)' },
+  { value: 'birthday',    label: 'Anniversaire',      imagePath: '/image/occasions/anniversaire.png' },
+  { value: 'christmas',   label: 'Noël',              imagePath: '/image/occasions/noel.png' },
+  { value: 'new-year',    label: 'Nouvel An',         imagePath: '/image/occasions/nouvel-an.png' },
+  { value: 'easter',      label: 'Pâques',            imagePath: '/image/occasions/paques.png' },
+  { value: 'eid',         label: 'Aïd el-Fitr',      imagePath: '/image/occasions/aid.png' },
+  { value: 'mothers-day', label: 'Fête des mères',    imagePath: '/image/occasions/fete-meres.png' },
+  { value: 'fathers-day', label: 'Fête des pères',    imagePath: '/image/occasions/fete-peres.png' },
+  { value: 'custom',      label: 'Autre',             imagePath: '/image/occasions/personnalise.png' },
+];
+
+const MESSAGE_OPTIONS = [
+  { value: 'friendship',   label: 'Amitié',        imagePath: '/image/messages/amitie.png' },
+  { value: 'courage',      label: 'Courage',       imagePath: '/image/messages/courage.png' },
+  { value: 'love',         label: 'Amour',         imagePath: '/image/messages/amour.png' },
+  { value: 'perseverance', label: 'Persévérance',  imagePath: '/image/messages/perseverance.png' },
+  { value: 'sharing',      label: 'Partage',       imagePath: '/image/messages/partage.png' },
+  { value: 'honesty',      label: 'Honnêteté',     imagePath: '/image/messages/honnetete.png' },
+  { value: 'respect',      label: 'Respect',       imagePath: '/image/messages/respect.png' },
+  { value: 'custom',       label: 'Autre',         imagePath: '/image/messages/personnalise.png' },
 ];
 
 const GENDER_OPTIONS = [
-  { value: 'girl', label: 'Fille',   emoji: '\uD83D\uDC67', gradient: 'linear-gradient(135deg, #FADBD8 0%, #F5B7B1 100%)' },
-  { value: 'boy',  label: 'Gar\u00E7on', emoji: '\uD83D\uDC66', gradient: 'linear-gradient(135deg, #D6EAF8 0%, #AED6F1 100%)' },
+  { value: 'girl', label: 'Fille' },
+  { value: 'boy',  label: 'Garçon' },
 ];
 
 const EYE_OPTIONS = [
@@ -73,51 +85,31 @@ const EYE_OPTIONS = [
 ];
 
 const HAIR_OPTIONS = [
-  { value: 'brown',  label: 'Ch\u00E2tain', color: '#8B4513' },
-  { value: 'blonde', label: 'Blond',        color: '#FFD700' },
-  { value: 'black',  label: 'Noir',         color: '#1a1a1a' },
-  { value: 'red',    label: 'Roux',         color: '#D35400' },
-];
-
-const MESSAGE_OPTIONS = [
-  { value: 'friendship',   label: 'Amiti\u00E9',       emoji: '\uD83E\uDD1D', gradient: 'linear-gradient(135deg, #D6EAF8 0%, #AED6F1 100%)' },
-  { value: 'courage',      label: 'Courage',            emoji: '\uD83E\uDD81', gradient: 'linear-gradient(135deg, #FDEBD0 0%, #F9E79F 100%)' },
-  { value: 'love',         label: 'Amour',              emoji: '\u2764\uFE0F', gradient: 'linear-gradient(135deg, #FADBD8 0%, #F5B7B1 100%)' },
-  { value: 'perseverance', label: 'Pers\u00E9v\u00E9rance', emoji: '\uD83C\uDFD4\uFE0F', gradient: 'linear-gradient(135deg, #D5F5E3 0%, #ABEBC6 100%)' },
-  { value: 'sharing',      label: 'Partage',            emoji: '\uD83C\uDF81', gradient: 'linear-gradient(135deg, #E8DAEF 0%, #D2B4DE 100%)' },
-  { value: 'honesty',      label: 'Honn\u00EAtet\u00E9', emoji: '\uD83D\uDC8E', gradient: 'linear-gradient(135deg, #D4E6F1 0%, #85C1E9 100%)' },
-  { value: 'respect',      label: 'Respect',            emoji: '\uD83D\uDE4F', gradient: 'linear-gradient(135deg, #FFECD2 0%, #FCB69F 100%)' },
-  { value: 'custom',       label: 'Autre',              emoji: '\u270F\uFE0F', gradient: 'linear-gradient(135deg, #F2F3F4 0%, #E5E7E9 100%)' },
+  { value: 'brown',  label: 'Châtain', color: '#8B4513' },
+  { value: 'blonde', label: 'Blond',   color: '#FFD700' },
+  { value: 'black',  label: 'Noir',    color: '#1a1a1a' },
+  { value: 'red',    label: 'Roux',    color: '#D35400' },
 ];
 
 const LANG_TOP = [
-  { value: 'french',  label: 'Fran\u00E7ais', emoji: '\uD83C\uDDEB\uD83C\uDDF7', gradient: 'linear-gradient(135deg, #D6EAF8 0%, #AED6F1 100%)' },
-  { value: 'english', label: 'Anglais',        emoji: '\uD83C\uDDEC\uD83C\uDDE7', gradient: 'linear-gradient(135deg, #FADBD8 0%, #F5B7B1 100%)' },
-  { value: 'spanish', label: 'Espagnol',       emoji: '\uD83C\uDDEA\uD83C\uDDF8', gradient: 'linear-gradient(135deg, #FDEBD0 0%, #F9E79F 100%)' },
+  { value: 'french',  label: 'Français' },
+  { value: 'english', label: 'Anglais' },
+  { value: 'spanish', label: 'Espagnol' },
 ];
-
-const LANG_OTHER = LANGUAGES.slice(3).map(l => ({
-  value: l.value, label: l.label, emoji: l.flag, gradient: 'linear-gradient(135deg, #F2F3F4 0%, #E5E7E9 100%)'
-}));
+const LANG_OTHER = LANGUAGES.slice(3).map(l => ({ value: l.value, label: l.label }));
 
 const RELIGION_OPTIONS = [
-  { value: 'christian', label: 'Chr\u00E9tien',   emoji: '\u271D\uFE0F', gradient: 'linear-gradient(135deg, #D4E6F1 0%, #85C1E9 100%)' },
-  { value: 'jewish',    label: 'Juif',             emoji: '\u2721\uFE0F', gradient: 'linear-gradient(135deg, #D6EAF8 0%, #AED6F1 100%)' },
-  { value: 'muslim',    label: 'Musulman',         emoji: '\u262A\uFE0F', gradient: 'linear-gradient(135deg, #D5F5E3 0%, #82E0AA 100%)' },
-  { value: 'buddhist',  label: 'Bouddhiste',       emoji: '\uD83D\uDD49\uFE0F', gradient: 'linear-gradient(135deg, #FDEBD0 0%, #F9E79F 100%)' },
-  { value: 'other',     label: 'Autre',            emoji: '\u270F\uFE0F', gradient: 'linear-gradient(135deg, #F2F3F4 0%, #E5E7E9 100%)' },
+  { value: 'christian', label: 'Chrétien' },
+  { value: 'jewish',    label: 'Juif' },
+  { value: 'muslim',    label: 'Musulman' },
+  { value: 'buddhist',  label: 'Bouddhiste' },
+  { value: 'other',     label: 'Autre' },
 ];
 
-/* ══════════════════════════════════════════════
-   STEP IDS
-   ══════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════ */
 
 const ALL_STEPS = ['age','theme','occasion','style','hero','appearance','photo','choice','extras1','extras2','cover','payment'] as const;
 type StepId = (typeof ALL_STEPS)[number];
-
-/* ══════════════════════════════════════════════
-   TYPES
-   ══════════════════════════════════════════════ */
 
 interface StoryWizardProps {
   formData: Partial<StoryFormData>;
@@ -135,16 +127,9 @@ interface StoryWizardProps {
    ══════════════════════════════════════════════ */
 
 export const StoryWizard: React.FC<StoryWizardProps> = ({
-  formData,
-  onUpdate,
-  onSubmit,
-  isSubmitting,
-  isAuthenticated = false,
-  isClub = false,
-  currentUser = null,
-  clubCredit = null,
+  formData, onUpdate, onSubmit, isSubmitting,
+  isAuthenticated = false, isClub = false, currentUser = null, clubCredit = null,
 }) => {
-  /* ── Navigation ── */
   const [currentStep, setCurrentStep] = useState(0);
   const [prevStep, setPrevStep] = useState<number | null>(null);
   const [direction, setDirection] = useState<'forward' | 'backward'>('forward');
@@ -152,17 +137,14 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
   const [wantsExtras, setWantsExtras] = useState(false);
   const wantsExtrasRef = useRef(false);
 
-  /* ── Extras toggles ── */
   const [showAllLanguages, setShowAllLanguages] = useState(false);
   const [showReligion, setShowReligion] = useState(false);
   const [showSecondaryChars, setShowSecondaryChars] = useState(false);
 
-  /* ── Form state ── */
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [globalError, setGlobalError] = useState('');
   const [emailStatus, setEmailStatus] = useState<{ exists: boolean; hasPassword: boolean } | null>(null);
 
-  /* ── Cover ── */
   const { coverImageUrl, isGenerating: isCoverGenerating, error: coverError, generate: generateCover } = useCoverPreview(formData);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -170,12 +152,11 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
 
   useEffect(() => { wantsExtrasRef.current = wantsExtras; }, [wantsExtras]);
 
-  /* ── Progress ── */
   const totalSteps = wantsExtras ? 12 : 10;
   const visiblePos = (!wantsExtras && currentStep > 7) ? currentStep - 2 : currentStep;
   const progress = Math.min(((visiblePos + 1) / totalSteps) * 100, 100);
 
-  /* ── Scroll reset on step change ── */
+  // Scroll reset
   useEffect(() => {
     requestAnimationFrame(() => {
       viewportRef.current?.querySelectorAll('[data-wizard-step]').forEach(el => {
@@ -184,7 +165,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
     });
   }, [currentStep]);
 
-  /* ── Navigation functions ── */
+  // Navigation
   const goToStep = useCallback((target: number) => {
     if (isAnimating || target < 0 || target >= ALL_STEPS.length) return;
     setDirection(target > currentStep ? 'forward' : 'backward');
@@ -206,21 +187,20 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
     goToStep(prev);
   }, [currentStep, goToStep]);
 
-  /* ── Auto-advance on card select ── */
   const handleCardSelect = useCallback((field: keyof StoryFormData, value: string) => {
     onUpdate({ [field]: value });
     if (value === 'custom' || value === 'other') return;
     setTimeout(() => goNext(), 400);
   }, [onUpdate, goNext]);
 
-  /* ── Cover generation on cover step ── */
+  // Cover generation
   useEffect(() => {
     if (ALL_STEPS[currentStep] === 'cover' && !coverImageUrl && !isCoverGenerating) {
       generateCover();
     }
   }, [currentStep]); // eslint-disable-line
 
-  /* ── Form helpers ── */
+  // Helpers
   const handleInputChange = (field: keyof StoryFormData, value: string) => {
     onUpdate({ [field]: value });
     if (errors[field]) setErrors(prev => ({ ...prev, [field]: '' }));
@@ -228,10 +208,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      onUpdate({ photo: file });
-      setTimeout(() => goNext(), 500);
-    }
+    if (file) { onUpdate({ photo: file }); setTimeout(() => goNext(), 500); }
   };
 
   const handleProductSelection = (purchaseType: 'single' | 'club') => {
@@ -261,19 +238,15 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
     const e: Record<string, string> = {};
     if (!formData.userEmail) { e.userEmail = "L'email est obligatoire"; ok = false; }
     else { const ev = validateEmail(formData.userEmail); if (!ev.isValid) { e.userEmail = ev.error || 'Email invalide'; ok = false; } }
-    if (!formData.firstName) { e.firstName = 'Le pr\u00E9nom est obligatoire'; ok = false; }
+    if (!formData.firstName) { e.firstName = 'Le prénom est obligatoire'; ok = false; }
     if (!formData.lastName) { e.lastName = 'Le nom est obligatoire'; ok = false; }
     setErrors(e);
     if (!ok) setGlobalError('Veuillez remplir tous les champs obligatoires');
     return ok;
   };
 
-  const handleFormSubmit = () => {
-    setGlobalError('');
-    if (validatePaymentForm()) onSubmit();
-  };
+  const handleFormSubmit = () => { setGlobalError(''); if (validatePaymentForm()) onSubmit(); };
 
-  /* ── Step completions ── */
   const isHeroComplete = !!(formData.protagonistName && formData.protagonistAge && formData.protagonistGender);
   const isAppearanceComplete = !!(formData.eyeColor && formData.hairColor);
   const isPaymentInfoComplete = !!(formData.productType && formData.userEmail && formData.firstName && formData.lastName);
@@ -287,40 +260,38 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
 
     switch (stepId) {
 
-      /* ═══ AGE ═══ */
       case 'age':
         return (
           <>
-            <StepTitle>Pour quel \u00E2ge ?</StepTitle>
+            <StepTitle>Pour quel âge ?</StepTitle>
             <CardGrid $columns={2}>
               {AGE_OPTIONS.map((o, i) => (
-                <LivingCard key={o.value} $isSelected={formData.ageRange === o.value} $gradient={o.gradient} $delay={i}
+                <ImageCard key={o.value} $isSelected={formData.ageRange === o.value} $delay={i}
                   onClick={() => handleCardSelect('ageRange', o.value)}>
-                  <CardEmoji>{o.emoji}</CardEmoji>
-                  <CardLabel>{o.label}</CardLabel>
-                </LivingCard>
+                  <CardImg $src={o.imagePath} />
+                  <CardImgLabel>{o.label}</CardImgLabel>
+                </ImageCard>
               ))}
             </CardGrid>
           </>
         );
 
-      /* ═══ THEME ═══ */
       case 'theme':
         return (
           <>
             <StepTitle>Quel univers ?</StepTitle>
             <CardGrid $columns={4} $compact>
               {THEME_OPTIONS.map((o, i) => (
-                <LivingCard key={o.value} $isSelected={formData.generalTheme === o.value} $gradient={o.gradient} $delay={i}
+                <ImageCard key={o.value} $isSelected={formData.generalTheme === o.value} $delay={i}
                   onClick={() => o.value === 'custom' ? onUpdate({ generalTheme: 'custom' }) : handleCardSelect('generalTheme', o.value)}>
-                  <CardEmoji $size="1.4rem">{o.emoji}</CardEmoji>
-                  <CardLabel $small>{o.label}</CardLabel>
-                </LivingCard>
+                  <CardImg $src={o.imagePath} />
+                  <CardImgLabel>{o.label}</CardImgLabel>
+                </ImageCard>
               ))}
             </CardGrid>
             {formData.generalTheme === 'custom' && (
               <>
-                <CustomInput type="text" placeholder="D\u00E9crivez votre th\u00E8me..." value={formData.customTheme || ''}
+                <CustomInput type="text" placeholder="Décrivez votre thème..." value={formData.customTheme || ''}
                   onChange={(e) => handleInputChange('customTheme', e.target.value)} autoFocus />
                 <ContinueButton $isReady={!!(formData.customTheme?.trim())} disabled={!formData.customTheme?.trim()} onClick={goNext}>
                   Continuer
@@ -330,23 +301,22 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
           </>
         );
 
-      /* ═══ OCCASION ═══ */
       case 'occasion':
         return (
           <>
             <StepTitle>Quelle occasion ?</StepTitle>
             <CardGrid $columns={4} $compact>
               {OCCASION_OPTIONS.map((o, i) => (
-                <LivingCard key={o.value} $isSelected={formData.specificSubject === o.value} $gradient={o.gradient} $delay={i}
+                <ImageCard key={o.value} $isSelected={formData.specificSubject === o.value} $delay={i}
                   onClick={() => o.value === 'custom' ? onUpdate({ specificSubject: 'custom' }) : handleCardSelect('specificSubject', o.value)}>
-                  <CardEmoji $size="1.4rem">{o.emoji}</CardEmoji>
-                  <CardLabel $small>{o.label}</CardLabel>
-                </LivingCard>
+                  <CardImg $src={o.imagePath} />
+                  <CardImgLabel>{o.label}</CardImgLabel>
+                </ImageCard>
               ))}
             </CardGrid>
             {formData.specificSubject === 'custom' && (
               <>
-                <CustomInput type="text" placeholder="D\u00E9crivez votre occasion..." value={formData.customSubject || ''}
+                <CustomInput type="text" placeholder="Décrivez votre occasion..." value={formData.customSubject || ''}
                   onChange={(e) => handleInputChange('customSubject', e.target.value)} autoFocus />
                 <ContinueButton $isReady={!!(formData.customSubject?.trim())} disabled={!formData.customSubject?.trim()} onClick={goNext}>
                   Continuer
@@ -356,46 +326,43 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
           </>
         );
 
-      /* ═══ ILLUSTRATION STYLE ═══ */
       case 'style':
         return (
           <>
-            <StepTitle>Quel style ?</StepTitle>
+            <StepTitle>Quel style d'illustration ?</StepTitle>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '6px', width: '100%', maxWidth: '360px' }}>
-              {ILLUSTRATION_STYLES.map((s) => (
-                <StyleCard key={s.value} $isSelected={formData.illustrationStyle === s.value}
+              {ILLUSTRATION_STYLES.map((s, i) => (
+                <ImageCard key={s.value} $isSelected={formData.illustrationStyle === s.value} $delay={i}
                   onClick={() => handleCardSelect('illustrationStyle', s.value)}>
-                  <StyleImage $src={s.imagePath} />
-                  <StyleLabel>{s.label}</StyleLabel>
-                </StyleCard>
+                  <CardImg $src={s.imagePath} />
+                  <CardImgLabel>{s.label}</CardImgLabel>
+                </ImageCard>
               ))}
             </div>
           </>
         );
 
-      /* ═══ HERO IDENTITY ═══ */
       case 'hero':
         return (
           <>
-            <StepTitle>Votre h\u00E9ros</StepTitle>
+            <StepTitle>Votre héros</StepTitle>
             <StepSubtitle>Qui sera le personnage principal ?</StepSubtitle>
             <InputRow>
               <InputField>
-                <ValidatedInput label="Pr\u00E9nom *" value={formData.protagonistName || ''}
+                <ValidatedInput label="Prénom *" value={formData.protagonistName || ''}
                   onChange={(v) => handleInputChange('protagonistName', v)} placeholder="Ex : Emma, Lucas..." required error={errors.protagonistName} />
               </InputField>
               <InputField>
-                <AgeSelector label="\u00C2ge *" value={formData.protagonistAge || ''}
+                <AgeSelector label="Âge *" value={formData.protagonistAge || ''}
                   onChange={(v) => handleInputChange('protagonistAge', v)} required error={errors.protagonistAge} />
               </InputField>
             </InputRow>
             <CardGrid $columns={2}>
               {GENDER_OPTIONS.map((o, i) => (
-                <LivingCard key={o.value} $isSelected={formData.protagonistGender === o.value} $gradient={o.gradient} $delay={i}
+                <TextCard key={o.value} $isSelected={formData.protagonistGender === o.value} $delay={i}
                   onClick={() => onUpdate({ protagonistGender: o.value as 'boy' | 'girl' })}>
-                  <CardEmoji>{o.emoji}</CardEmoji>
-                  <CardLabel>{o.label}</CardLabel>
-                </LivingCard>
+                  {o.label}
+                </TextCard>
               ))}
             </CardGrid>
             <ContinueButton $isReady={isHeroComplete} disabled={!isHeroComplete} onClick={goNext}>
@@ -404,7 +371,6 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
           </>
         );
 
-      /* ═══ APPEARANCE ═══ */
       case 'appearance':
         return (
           <>
@@ -436,70 +402,60 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
           </>
         );
 
-      /* ═══ PHOTO ═══ */
       case 'photo':
         return (
           <>
             <StepTitle>Ajoutez sa photo</StepTitle>
-            <StepSubtitle>Le personnage du conte ressemblera \u00E0 votre enfant</StepSubtitle>
+            <StepSubtitle>Le personnage du conte ressemblera à votre enfant</StepSubtitle>
             <PhotoUploadZone $hasPhoto={!!formData.photo} onClick={() => fileInputRef.current?.click()}>
-              <PhotoIcon>{formData.photo ? '\u2705' : '\uD83D\uDCF7'}</PhotoIcon>
+              <PhotoIcon>{formData.photo ? '✓' : '📷'}</PhotoIcon>
               <PhotoMainText>{formData.photo ? (formData.photo as File).name : 'Cliquez pour ajouter une photo'}</PhotoMainText>
-              <PhotoSubText>{formData.photo ? 'Cliquez pour changer' : 'Optionnel \u2014 am\u00E9liore la personnalisation'}</PhotoSubText>
+              <PhotoSubText>{formData.photo ? 'Cliquez pour changer' : 'Optionnel — améliore la personnalisation'}</PhotoSubText>
               <HiddenFileInput ref={fileInputRef} type="file" accept="image/*" onChange={handleFileUpload} />
             </PhotoUploadZone>
-            <SkipLink onClick={goNext}>Passer cette \u00E9tape \u2192</SkipLink>
+            <SkipLink onClick={goNext}>Passer cette étape →</SkipLink>
           </>
         );
 
-      /* ═══ CHOICE — Discover vs Personalize ═══ */
       case 'choice':
         return (
           <>
-            <StepTitle>Votre histoire est pr\u00EAte !</StepTitle>
+            <StepTitle>Votre histoire est prête !</StepTitle>
             <StepSubtitle>Que souhaitez-vous faire ?</StepSubtitle>
             <div style={{ display: 'flex', flexDirection: 'column', gap: theme.spacing.lg, width: '100%', alignItems: 'center' }}>
               <ChoiceCard $variant="primary" onClick={() => {
-                setWantsExtras(false);
-                wantsExtrasRef.current = false;
-                goToStep(10); // → cover
+                setWantsExtras(false); wantsExtrasRef.current = false; goToStep(10);
               }}>
-                <ChoiceEmoji>{'\u2728'}</ChoiceEmoji>
-                <ChoiceTitle $variant="primary">D\u00E9couvrir mon conte</ChoiceTitle>
-                <ChoiceDesc $variant="primary">G\u00E9n\u00E9rer la couverture maintenant</ChoiceDesc>
+                <ChoiceTitle $variant="primary">Découvrir mon conte</ChoiceTitle>
+                <ChoiceDesc $variant="primary">Générer la couverture maintenant</ChoiceDesc>
               </ChoiceCard>
               <ChoiceCard $variant="secondary" onClick={() => {
-                setWantsExtras(true);
-                wantsExtrasRef.current = true;
-                goToStep(8); // → extras1
+                setWantsExtras(true); wantsExtrasRef.current = true; goToStep(8);
               }}>
-                <ChoiceEmoji>{'\uD83C\uDFA8'}</ChoiceEmoji>
                 <ChoiceTitle $variant="secondary">Personnaliser davantage</ChoiceTitle>
-                <ChoiceDesc $variant="secondary">Message, langue, d\u00E9tails, personnages...</ChoiceDesc>
+                <ChoiceDesc $variant="secondary">Message, langue, détails, personnages...</ChoiceDesc>
               </ChoiceCard>
             </div>
           </>
         );
 
-      /* ═══ EXTRAS 1 — Message + Language ═══ */
       case 'extras1':
         return (
           <>
             <StepTitle>Personnalisez votre conte</StepTitle>
-
             <ExtrasSection>
               <SectionTitle>Quel message transmettre ?</SectionTitle>
               <CardGrid $columns={4} $compact>
                 {MESSAGE_OPTIONS.map((o, i) => (
-                  <LivingCard key={o.value} $isSelected={formData.centralMessage === o.value} $gradient={o.gradient} $delay={i}
-                    onClick={() => o.value === 'custom' ? handleInputChange('centralMessage', 'custom') : handleInputChange('centralMessage', o.value)}>
-                    <CardEmoji $size="1.2rem">{o.emoji}</CardEmoji>
-                    <CardLabel $small>{o.label}</CardLabel>
-                  </LivingCard>
+                  <ImageCard key={o.value} $isSelected={formData.centralMessage === o.value} $delay={i}
+                    onClick={() => handleInputChange('centralMessage', o.value)}>
+                    <CardImg $src={o.imagePath} />
+                    <CardImgLabel>{o.label}</CardImgLabel>
+                  </ImageCard>
                 ))}
               </CardGrid>
               {formData.centralMessage === 'custom' && (
-                <CustomInput type="text" placeholder="Votre message personnalis\u00E9..." value={formData.customMessage || ''}
+                <CustomInput type="text" placeholder="Votre message personnalisé..." value={formData.customMessage || ''}
                   onChange={(e) => handleInputChange('customMessage', e.target.value)} />
               )}
             </ExtrasSection>
@@ -508,26 +464,23 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
               <SectionTitle>Langue du conte</SectionTitle>
               <CardGrid $columns={2} $compact>
                 {LANG_TOP.map((o, i) => (
-                  <LivingCard key={o.value} $isSelected={formData.language === o.value} $gradient={o.gradient} $delay={i}
+                  <TextCard key={o.value} $isSelected={formData.language === o.value} $delay={i}
                     onClick={() => handleInputChange('language', o.value)}>
-                    <CardEmoji $size="1.2rem">{o.emoji}</CardEmoji>
-                    <CardLabel $small>{o.label}</CardLabel>
-                  </LivingCard>
+                    {o.label}
+                  </TextCard>
                 ))}
-                <LivingCard $isSelected={false} $gradient="linear-gradient(135deg, #F2F3F4 0%, #E5E7E9 100%)" $delay={3}
+                <TextCard $isSelected={false} $delay={3}
                   onClick={() => setShowAllLanguages(!showAllLanguages)}>
-                  <CardEmoji $size="1.2rem">{'\uD83C\uDF10'}</CardEmoji>
-                  <CardLabel $small>Autre {showAllLanguages ? '\u25B2' : '\u25BC'}</CardLabel>
-                </LivingCard>
+                  {showAllLanguages ? 'Masquer ▲' : 'Autre langue ▼'}
+                </TextCard>
               </CardGrid>
               {showAllLanguages && (
                 <CardGrid $columns={2} $compact style={{ marginTop: theme.spacing.sm }}>
                   {LANG_OTHER.map((o, i) => (
-                    <LivingCard key={o.value} $isSelected={formData.language === o.value} $gradient={o.gradient} $delay={i}
+                    <TextCard key={o.value} $isSelected={formData.language === o.value} $delay={i}
                       onClick={() => handleInputChange('language', o.value)}>
-                      <CardEmoji $size="1.2rem">{o.emoji}</CardEmoji>
-                      <CardLabel $small>{o.label}</CardLabel>
-                    </LivingCard>
+                      {o.label}
+                    </TextCard>
                   ))}
                 </CardGrid>
               )}
@@ -537,15 +490,13 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
           </>
         );
 
-      /* ═══ EXTRAS 2 — Details + Religion + Secondary + Creator ═══ */
       case 'extras2':
         return (
           <>
-            <StepTitle>Derni\u00E8res touches</StepTitle>
-
+            <StepTitle>Dernières touches</StepTitle>
             <ExtrasSection>
-              <SectionTitle>D\u00E9tails \u00E0 int\u00E9grer</SectionTitle>
-              <TextArea placeholder="D\u00E9crivez des d\u00E9tails ou \u00E9v\u00E9nements sp\u00E9ciaux..."
+              <SectionTitle>Détails à intégrer</SectionTitle>
+              <TextArea placeholder="Décrivez des détails ou événements spéciaux..."
                 value={formData.specialEvents || ''} onChange={(e) => handleInputChange('specialEvents', e.target.value)} />
             </ExtrasSection>
 
@@ -554,21 +505,20 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 setShowReligion(!showReligion);
                 if (showReligion) onUpdate({ religion: undefined, customReligion: undefined });
               }}>
-                {'\u271A'} Dimension religieuse
-                <CollapsibleChevron $isOpen={showReligion}>{'\u25BC'}</CollapsibleChevron>
+                Dimension religieuse
+                <CollapsibleChevron $isOpen={showReligion}>▼</CollapsibleChevron>
               </CollapsiblePill>
               <CollapsibleContent $isOpen={showReligion}>
                 <CardGrid $columns={3} $compact>
                   {RELIGION_OPTIONS.map((o, i) => (
-                    <LivingCard key={o.value} $isSelected={formData.religion === o.value} $gradient={o.gradient} $delay={i}
+                    <TextCard key={o.value} $isSelected={formData.religion === o.value} $delay={i}
                       onClick={() => handleInputChange('religion', o.value)}>
-                      <CardEmoji $size="1.2rem">{o.emoji}</CardEmoji>
-                      <CardLabel $small>{o.label}</CardLabel>
-                    </LivingCard>
+                      {o.label}
+                    </TextCard>
                   ))}
                 </CardGrid>
                 {formData.religion === 'other' && (
-                  <CustomInput type="text" placeholder="Pr\u00E9cisez..." value={formData.customReligion || ''}
+                  <CustomInput type="text" placeholder="Précisez..." value={formData.customReligion || ''}
                     onChange={(e) => handleInputChange('customReligion', e.target.value)} />
                 )}
               </CollapsibleContent>
@@ -576,8 +526,8 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
 
             <ExtrasSection>
               <CollapsiblePill $isOpen={showSecondaryChars} onClick={() => setShowSecondaryChars(!showSecondaryChars)}>
-                {'\uD83E\uDDF8'} Personnages secondaires
-                <CollapsibleChevron $isOpen={showSecondaryChars}>{'\u25BC'}</CollapsibleChevron>
+                Personnages secondaires
+                <CollapsibleChevron $isOpen={showSecondaryChars}>▼</CollapsibleChevron>
               </CollapsiblePill>
               <CollapsibleContent $isOpen={showSecondaryChars}>
                 <SecondaryCharactersSection
@@ -587,55 +537,49 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
             </ExtrasSection>
 
             <ExtrasSection>
-              <SectionTitle>Cr\u00E9ateur du livre</SectionTitle>
+              <SectionTitle>Créateur du livre</SectionTitle>
               <InputField>
                 <ValidatedInput label="" value={formData.creatorName || ''}
-                  onChange={(v) => handleInputChange('creatorName', v)} placeholder="Ex : Cr\u00E9\u00E9 par Papa et Maman..." required={false} />
+                  onChange={(v) => handleInputChange('creatorName', v)} placeholder="Ex : Créé par Papa et Maman..." required={false} />
               </InputField>
             </ExtrasSection>
 
-            <DiscoverCTA onClick={goNext}>
-              {'\u2728'} D\u00E9couvrir mon conte
-            </DiscoverCTA>
+            <DiscoverCTA onClick={goNext}>Découvrir mon conte</DiscoverCTA>
           </>
         );
 
-      /* ═══ COVER REVEAL ═══ */
       case 'cover':
         return (
           <>
             <StepTitle>
-              {coverImageUrl && !isCoverGenerating
-                ? 'Votre conte est pr\u00EAt \u2728'
-                : 'Cr\u00E9ation en cours...'}
+              {coverImageUrl && !isCoverGenerating ? 'Votre conte est prêt ✨' : 'Création en cours...'}
             </StepTitle>
             {coverImageUrl && !isCoverGenerating && (
-              <StepSubtitle>Voici la couverture de votre conte personnalis\u00E9</StepSubtitle>
+              <StepSubtitle>Voici la couverture de votre conte personnalisé</StepSubtitle>
             )}
             <div style={{ width: '100%', maxWidth: 380, margin: '0 auto' }}>
               <BookCoverPreview coverImageUrl={coverImageUrl} isGenerating={isCoverGenerating} error={coverError} onClick={goNext} />
             </div>
             {coverImageUrl && !isCoverGenerating && (
               <DiscoverCTA onClick={goNext} style={{ marginTop: theme.spacing.xl }}>
-                D\u00E9bloquez-le maintenant {'\u2192'}
+                Débloquez-le maintenant →
               </DiscoverCTA>
             )}
           </>
         );
 
-      /* ═══ PAYMENT ═══ */
       case 'payment':
         return (
           <>
             <StepTitle>Recevez votre conte</StepTitle>
-            <StepSubtitle>Plus qu'une \u00E9tape pour offrir cette histoire unique</StepSubtitle>
 
             {isClub && clubCredit?.canSubmit && (
               <ClubFreeCard $isSelected={formData.purchaseType === 'club'} onClick={() => handleProductSelection('club')}>
                 <ClubBadge>Membre Club</ClubBadge>
-                <div style={{ fontSize: '1.5rem', margin: `${theme.spacing.sm} 0` }}>{'\uD83C\uDF81'}</div>
-                <h3 style={{ fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.lg, margin: `0 0 4px` }}>Utiliser mon eBook gratuit</h3>
-                <p style={{ fontSize: theme.fontSizes.sm, color: theme.colors.accent.coral, fontWeight: 700, margin: `0 0 4px` }}>0,00 \u20AC</p>
+                <h3 style={{ fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.lg, margin: `${theme.spacing.sm} 0 4px` }}>
+                  Utiliser mon eBook gratuit
+                </h3>
+                <p style={{ fontSize: theme.fontSizes.sm, color: theme.colors.accent.coral, fontWeight: 700, margin: '0 0 4px' }}>0,00 €</p>
                 <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.text.secondary, margin: 0 }}>
                   Il vous reste {clubCredit.remaining} eBook(s) gratuit(s)
                 </p>
@@ -643,37 +587,59 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
             )}
 
             {isClub && clubCredit && !clubCredit.canSubmit && (
-              <ClubExhaustedMsg>Cr\u00E9dit hebdomadaire \u00E9puis\u00E9. Choisissez un format payant.</ClubExhaustedMsg>
+              <ClubExhaustedMsg>Crédit hebdomadaire épuisé. Choisissez un format payant.</ClubExhaustedMsg>
             )}
 
-            <PricingGrid>
-              <PricingCard title="eBook Num\u00E9rique" price="4,99 \u20AC"
-                features={["Conte de 20-30 pages", "Illustrations HD", "Format PDF", "T\u00E9l\u00E9chargement imm\u00E9diat"]}
-                isPopular={formData.purchaseType === 'single'} ctaText="Recevoir mon conte"
-                onSelect={() => handleProductSelection('single')} />
+            {/* Compact pricing cards */}
+            <PricingRow>
+              <PricingOption $isSelected={formData.purchaseType === 'single'}
+                onClick={() => handleProductSelection('single')}>
+                <PricingName>eBook Numérique</PricingName>
+                <PricingPrice>4,99 €</PricingPrice>
+                <PricingSubtext>Paiement unique</PricingSubtext>
+                <PricingFeatures>
+                  <PricingFeature>Conte personnalisé de 20-30 pages</PricingFeature>
+                  <PricingFeature>Illustrations haute qualité</PricingFeature>
+                  <PricingFeature>Format PDF optimisé</PricingFeature>
+                  <PricingFeature>Téléchargement immédiat</PricingFeature>
+                  <PricingFeature>Bibliothèque en ligne</PricingFeature>
+                  <PricingFeature>Consultable en ligne à tout moment</PricingFeature>
+                </PricingFeatures>
+              </PricingOption>
+
               {!isClub && (
-                <PricingCard title="Club des Histoires" price="12,99 \u20AC / mois"
-                  features={["Cet eBook inclus", "1 eBook gratuit / semaine", "Annulable \u00E0 tout moment"]}
-                  isPopular={formData.purchaseType === 'club' || !formData.purchaseType}
-                  ctaText="Rejoindre le Club" badge="Meilleure offre" subtitle="~3,25 \u20AC / conte"
-                  onSelect={() => handleProductSelection('club')} />
+                <PricingOption $isSelected={formData.purchaseType === 'club' || !formData.purchaseType}
+                  onClick={() => handleProductSelection('club')}>
+                  <PricingBadge />
+                  <PricingLabel>Meilleure offre</PricingLabel>
+                  <PricingName>Club des Histoires</PricingName>
+                  <PricingPrice>12,99 € / mois</PricingPrice>
+                  <PricingSubtext>Soit ~3,25 € par conte</PricingSubtext>
+                  <PricingFeatures>
+                    <PricingFeature>Cet eBook inclus immédiatement</PricingFeature>
+                    <PricingFeature>1 eBook gratuit par semaine</PricingFeature>
+                    <PricingFeature>Annulable à tout moment</PricingFeature>
+                    <PricingFeature>Bibliothèque en ligne illimitée</PricingFeature>
+                    <PricingFeature>Accès prioritaire à tous les services</PricingFeature>
+                  </PricingFeatures>
+                </PricingOption>
               )}
-            </PricingGrid>
+            </PricingRow>
 
             {formData.purchaseType === 'club' && isClub && clubCredit?.canSubmit && (
-              <OrderCostSummary $variant="free">Commande gratuite (cr\u00E9dit Club)</OrderCostSummary>
+              <OrderCostSummary $variant="free">Commande gratuite (crédit Club)</OrderCostSummary>
             )}
             {formData.purchaseType === 'club' && !isClub && (
-              <OrderCostSummary $variant="info">Abonnement Club : 12,99 \u20AC / mois \u2014 Cet eBook est inclus</OrderCostSummary>
+              <OrderCostSummary $variant="info">Abonnement : 12,99 € / mois — Cet eBook est inclus</OrderCostSummary>
             )}
             {formData.purchaseType === 'single' && (
-              <OrderCostSummary $variant="paid">Total : 4,99 \u20AC</OrderCostSummary>
+              <OrderCostSummary $variant="paid">Total : 4,99 €</OrderCostSummary>
             )}
 
             <OrderInfoSection>
               <SectionTitle>Informations de commande</SectionTitle>
               {isAuthenticated && currentUser && (
-                <ConnectedBanner>Connect\u00E9 en tant que <strong>{currentUser.email}</strong></ConnectedBanner>
+                <ConnectedBanner>Connecté en tant que <strong>{currentUser.email}</strong></ConnectedBanner>
               )}
               <OrderInfoGrid>
                 {isAuthenticated ? (
@@ -697,17 +663,17 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                     <FullWidthField>
                       <ValidatedInput type="password" label="Mot de passe" value={formData.password || ''}
                         onChange={(v) => { onUpdate({ password: v }); if (errors.password) setErrors(p => ({ ...p, password: '' })); }}
-                        placeholder="Min. 8 caract\u00E8res" required={false} error={errors.password} />
+                        placeholder="Min. 8 caractères" required={false} error={errors.password} />
                       <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.text.light, marginTop: '4px' }}>
-                        Cr\u00E9ez un compte pour retrouver vos contes
+                        Créez un compte pour retrouver vos contes
                       </p>
                     </FullWidthField>
                   </>
                 )}
                 <InputField>
-                  <ValidatedInput label="Pr\u00E9nom" value={formData.firstName || ''}
+                  <ValidatedInput label="Prénom" value={formData.firstName || ''}
                     onChange={(v) => { setGlobalError(''); onUpdate({ firstName: v }); if (errors.firstName) setErrors(p => ({ ...p, firstName: '' })); }}
-                    placeholder="Votre pr\u00E9nom" required error={errors.firstName}
+                    placeholder="Votre prénom" required error={errors.firstName}
                     onBlur={() => validateField('firstName', formData.firstName || '')} />
                 </InputField>
                 <InputField>
@@ -723,22 +689,22 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
 
             <PayButton $isReady={isPaymentInfoComplete} disabled={!formData.productType || isSubmitting} onClick={handleFormSubmit}>
               {isSubmitting
-                ? '\u23F3 Traitement en cours...'
+                ? 'Traitement en cours...'
                 : formData.purchaseType === 'club' && isClub && clubCredit?.canSubmit
-                  ? '\u2728 Recevoir mon eBook gratuit'
-                  : '\u2728 Recevoir mon conte'}
+                  ? 'Recevoir mon eBook gratuit'
+                  : 'Recevoir mon conte →'}
             </PayButton>
 
             {!(formData.purchaseType === 'club' && isClub && clubCredit?.canSubmit) && (
-              <p style={{ marginTop: theme.spacing.sm, fontSize: theme.fontSizes.xs, color: theme.colors.text.light, textAlign: 'center' }}>
-                Paiement s\u00E9curis\u00E9 par Stripe
+              <p style={{ marginTop: theme.spacing.sm, fontSize: '10px', color: theme.colors.text.light, textAlign: 'center' }}>
+                Paiement sécurisé par Stripe
               </p>
             )}
 
             <TrustBadgesRow>
-              <TrustBadge><span className="trust-icon">{'\uD83D\uDD12'}</span>S\u00E9curis\u00E9</TrustBadge>
-              <TrustBadge><span className="trust-icon">{'\u2705'}</span>Satisfait ou rembours\u00E9</TrustBadge>
-              <TrustBadge><span className="trust-icon">{'\u26A1'}</span>Livraison instantan\u00E9e</TrustBadge>
+              <TrustBadge>Sécurisé</TrustBadge>
+              <TrustBadge>Satisfait ou remboursé</TrustBadge>
+              <TrustBadge>Livraison instantanée</TrustBadge>
             </TrustBadgesRow>
           </>
         );
@@ -748,10 +714,6 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
     }
   };
 
-  /* ══════════════════════════════════════════════
-     STEP CONTAINER — Scrollable vs Centered
-     ══════════════════════════════════════════════ */
-
   const isScrollableStep = (step: number) => {
     const id = ALL_STEPS[step];
     return id === 'extras1' || id === 'extras2' || id === 'payment';
@@ -760,16 +722,11 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
   const renderStepInContainer = (step: number, state: 'entering' | 'active' | 'exiting') => {
     const Container = isScrollableStep(step) ? StepContainerTop : StepContainerCentered;
     return (
-      <Container key={`step-${step}-${state}`} $state={state} $direction={direction}
-        data-wizard-step data-step={state}>
+      <Container key={`step-${step}-${state}`} $state={state} $direction={direction} data-wizard-step>
         {renderStep(step)}
       </Container>
     );
   };
-
-  /* ══════════════════════════════════════════════
-     RENDER
-     ══════════════════════════════════════════════ */
 
   return (
     <WizardOverlay>
@@ -779,7 +736,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
             <path d="M12 4L6 10L12 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </BackArrow>
-        <WizardTitle>Cr\u00E9ez votre conte</WizardTitle>
+        <WizardTitle>Créez votre conte</WizardTitle>
         <ProgressTrack><ProgressFill $progress={progress} /></ProgressTrack>
       </WizardHeader>
 
