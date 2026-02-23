@@ -732,7 +732,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
   };
 
   const renderStepInContainer = (step: number, state: 'entering' | 'active' | 'exiting') => (
-    <StepContainerCentered key={`step-${step}-${state}`} $state={state} $direction={direction} data-wizard-step>
+    <StepContainerCentered key={`step-${step}`} $state={state} $direction={direction} data-wizard-step>
       {renderStep(step)}
     </StepContainerCentered>
   );
