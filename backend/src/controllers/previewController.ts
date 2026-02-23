@@ -53,6 +53,9 @@ export class PreviewController {
         centralMessage: formData.centralMessage,
         customMessage: formData.customMessage,
         ageRange: formData.ageRange,
+        hobbies: formData.hobbies,
+        favoriteDish: formData.favoriteDish,
+        specialEvents: formData.specialEvents,
       };
 
       // Verifier le cache

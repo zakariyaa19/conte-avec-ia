@@ -84,6 +84,8 @@ export function useCoverPreview(formData: Partial<StoryFormData>): UseCoverPrevi
         centralMessage: formData.centralMessage,
         customMessage: formData.customMessage,
         ageRange: formData.ageRange,
+        hobbies: formData.hobbies,
+        specialEvents: formData.specialEvents,
       };
 
       const result = await ApiService.generateCoverPreview(

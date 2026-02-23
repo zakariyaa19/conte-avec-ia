@@ -620,8 +620,8 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 <PricingFeatures>
                   <PricingFeature>20-30 pages illustrées</PricingFeature>
                   <PricingFeature>Illustrations HD</PricingFeature>
-                  <PricingFeature>Format PDF</PricingFeature>
-                  <PricingFeature>Téléchargement immédiat</PricingFeature>
+                  <PricingFeature>PDF téléchargeable</PricingFeature>
+                  <PricingFeature>Bibliothèque en ligne</PricingFeature>
                 </PricingFeatures>
               </PricingOption>
 
@@ -630,14 +630,13 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                   onClick={() => handleProductSelection('club')}>
                   <PricingBadge />
                   <PricingLabel>Recommandé</PricingLabel>
-                  <ClubFreeTitle>Recevez ce conte gratuitement</ClubFreeTitle>
+                  <ClubFreeTitle>Ce conte est gratuit</ClubFreeTitle>
                   <ClubSmallPrice>12,99 €/mois - sans engagement</ClubSmallPrice>
                   <PricingDivider />
                   <PricingFeatures>
-                    <PricingHighlight>1 conte offert chaque semaine</PricingHighlight>
-                    <PricingHighlight>Ce conte-ci est inclus</PricingHighlight>
-                    <PricingFeature>Bibliothèque illimitée en ligne</PricingFeature>
-                    <PricingFeature>Lecture + téléchargement PDF</PricingFeature>
+                    <PricingHighlight>1 conte gratuit / semaine</PricingHighlight>
+                    <PricingFeature>Bibliothèque illimitée</PricingFeature>
+                    <PricingFeature>Lecture + PDF</PricingFeature>
                     <PricingFeature>Annulable à tout moment</PricingFeature>
                   </PricingFeatures>
                 </PricingOption>

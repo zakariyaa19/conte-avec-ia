@@ -18,6 +18,9 @@ export interface CoverGenerationParams {
   centralMessage?: string;
   customMessage?: string;
   ageRange?: string;
+  hobbies?: string;
+  favoriteDish?: string;
+  specialEvents?: string;
 }
 
 // --- OpenAI Client ---
@@ -307,6 +310,8 @@ MAIN CHARACTER: ${characterDescription}. The character should be the central foc
 SCENE: The character is in ${scene}. The background should be rich and immersive but not overwhelm the character.
 
 ${mood ? `MOOD: The overall atmosphere should convey ${mood}.` : ''}
+${params.hobbies ? `PERSONAL TOUCHES: The character loves ${params.hobbies}. Subtly integrate visual hints of these hobbies into the scene or character's accessories/surroundings.` : ''}
+${params.specialEvents ? `SPECIAL CONTEXT: ${params.specialEvents}. Reflect this in the scene atmosphere.` : ''}
 
 COMPOSITION: This must look like a professional children's book cover:
 - Portrait orientation (taller than wide)

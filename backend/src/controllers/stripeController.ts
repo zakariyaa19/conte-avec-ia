@@ -37,6 +37,7 @@ export const createPaymentSession = async (req: Request, res: Response) => {
     }
 
     const session = await stripe.checkout.sessions.create({
+      customer_email: order.user?.email || undefined,
       line_items: [
         {
           price_data: {

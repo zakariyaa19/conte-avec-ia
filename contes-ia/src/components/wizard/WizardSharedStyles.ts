@@ -553,15 +553,16 @@ export const PricingRow = styled.div`
 
 export const PricingOption = styled.div<{ $isSelected: boolean }>`
   position: relative;
+  display: flex; flex-direction: column;
   border: 2px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'rgba(0,0,0,0.06)'};
-  border-radius: 16px; padding: ${theme.spacing.lg} ${theme.spacing.md};
+  border-radius: 16px; padding: ${theme.spacing.md} ${theme.spacing.sm};
   cursor: pointer; transition: all 0.3s ease;
   background: ${p => p.$isSelected ? 'linear-gradient(160deg, #FFF8F5, #FFF)' : 'white'};
   overflow: hidden; -webkit-tap-highlight-color: transparent;
   ${p => p.$isSelected && css`box-shadow: 0 4px 20px ${theme.colors.accent.coral}18;`}
   &:hover { border-color: ${theme.colors.accent.coral}80; }
   &:active { transform: scale(0.98); }
-  @media (max-width: ${theme.breakpoints.sm}) { padding: ${theme.spacing.md} ${theme.spacing.sm}; border-radius: 14px; }
+  @media (max-width: ${theme.breakpoints.sm}) { padding: 10px 8px; border-radius: 12px; }
   @media (min-width: ${theme.breakpoints.lg}) { padding: ${theme.spacing.xl}; border-radius: 20px;
     &:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.08); }
   }
@@ -577,25 +578,24 @@ export const PricingBadge = styled.span`
 export const PricingLabel = styled.span`
   display: inline-block;
   background: linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.accent.softPink});
-  color: white; padding: 3px 10px; border-radius: 10px;
-  font-size: 9px; font-weight: 700; letter-spacing: 0.3px;
-  margin-bottom: 8px;
+  color: white; padding: 2px 8px; border-radius: 8px;
+  font-size: 8px; font-weight: 700; letter-spacing: 0.3px;
+  margin-bottom: 4px;
 `;
 
 export const PricingName = styled.h4`
-  font-family: ${theme.fonts.heading}; font-size: ${theme.fontSizes.base}; font-weight: 700;
-  color: ${theme.colors.text.primary}; margin: 0 0 4px;
-  @media (max-width: ${theme.breakpoints.sm}) { font-size: ${theme.fontSizes.sm}; }
-  @media (min-width: ${theme.breakpoints.lg}) { font-size: ${theme.fontSizes.lg}; margin-bottom: 8px; }
+  font-family: ${theme.fonts.heading}; font-size: ${theme.fontSizes.sm}; font-weight: 700;
+  color: ${theme.colors.text.primary}; margin: 0 0 2px;
+  @media (min-width: ${theme.breakpoints.lg}) { font-size: ${theme.fontSizes.base}; margin-bottom: 4px; }
 `;
 
 export const PricingPrice = styled.p`
-  font-family: ${theme.fonts.heading}; font-size: 1.4rem; font-weight: 800;
+  font-family: ${theme.fonts.heading}; font-size: ${theme.fontSizes.lg}; font-weight: 800;
   background: linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover});
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   background-clip: text; margin: 0; line-height: 1.1;
-  @media (max-width: ${theme.breakpoints.sm}) { font-size: ${theme.fontSizes.xl}; }
-  @media (min-width: ${theme.breakpoints.lg}) { font-size: 1.8rem; }
+  @media (max-width: ${theme.breakpoints.sm}) { font-size: ${theme.fontSizes.base}; }
+  @media (min-width: ${theme.breakpoints.lg}) { font-size: 1.4rem; }
 `;
 
 export const PricingSubtext = styled.p`
@@ -611,53 +611,50 @@ export const PricingDivider = styled.div`
 export const PricingFeatures = styled.ul`list-style: none; padding: 0; margin: 0;`;
 
 export const PricingFeature = styled.li`
-  font-size: 11px; color: ${theme.colors.text.secondary};
-  padding: 2.5px 0; display: flex; align-items: center; gap: 6px; line-height: 1.3;
+  font-size: 9px; color: ${theme.colors.text.secondary};
+  padding: 1.5px 0; display: flex; align-items: center; gap: 4px; line-height: 1.3;
   &::before {
-    content: ''; flex-shrink: 0; width: 5px; height: 5px;
+    content: ''; flex-shrink: 0; width: 4px; height: 4px;
     border-radius: 50%;
     background: ${theme.colors.accent.coral};
   }
-  @media (max-width: ${theme.breakpoints.sm}) { font-size: 10px; padding: 2px 0; }
-  @media (min-width: ${theme.breakpoints.lg}) { font-size: 13px; padding: 3.5px 0; gap: 8px;
-    &::before { width: 6px; height: 6px; }
+  @media (min-width: ${theme.breakpoints.lg}) { font-size: 12px; padding: 3px 0; gap: 6px;
+    &::before { width: 5px; height: 5px; }
   }
 `;
 
 export const PricingHighlight = styled.li`
-  font-size: 12px; color: ${theme.colors.accent.coral};
-  padding: 4px 0; display: flex; align-items: center; gap: 6px; line-height: 1.3;
+  font-size: 10px; color: ${theme.colors.accent.coral};
+  padding: 2px 0; display: flex; align-items: center; gap: 4px; line-height: 1.3;
   font-weight: 700;
   &::before {
-    content: ''; flex-shrink: 0; width: 6px; height: 6px;
+    content: ''; flex-shrink: 0; width: 5px; height: 5px;
     border-radius: 50%;
     background: ${theme.colors.accent.coral};
-    box-shadow: 0 0 6px ${theme.colors.accent.coral}60;
+    box-shadow: 0 0 4px ${theme.colors.accent.coral}60;
   }
-  @media (max-width: ${theme.breakpoints.sm}) { font-size: 11px; padding: 3px 0; }
-  @media (min-width: ${theme.breakpoints.lg}) { font-size: 14px; padding: 5px 0; gap: 8px;
-    &::before { width: 7px; height: 7px; }
+  @media (min-width: ${theme.breakpoints.lg}) { font-size: 13px; padding: 4px 0; gap: 6px;
+    &::before { width: 6px; height: 6px; }
   }
 `;
 
 /* Club CTA - "Recevez ce conte gratuitement" */
 export const ClubFreeTitle = styled.p`
   font-family: ${theme.fonts.heading};
-  font-size: ${theme.fontSizes.base};
+  font-size: ${theme.fontSizes.sm};
   font-weight: 800;
   color: ${theme.colors.accent.coral};
-  margin: 0 0 2px;
+  margin: 0 0 1px;
   line-height: 1.2;
-  @media (max-width: ${theme.breakpoints.sm}) { font-size: ${theme.fontSizes.sm}; }
-  @media (min-width: ${theme.breakpoints.lg}) { font-size: ${theme.fontSizes.lg}; }
+  @media (min-width: ${theme.breakpoints.lg}) { font-size: ${theme.fontSizes.base}; }
 `;
 
 export const ClubSmallPrice = styled.p`
-  font-size: 10px;
+  font-size: 9px;
   color: ${theme.colors.text.light};
-  margin: 0 0 6px;
+  margin: 0 0 4px;
   font-weight: 500;
-  @media (min-width: ${theme.breakpoints.lg}) { font-size: 11px; }
+  @media (min-width: ${theme.breakpoints.lg}) { font-size: 10px; }
 `;
 
 /* ══════════════════════════════════════════════
