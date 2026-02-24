@@ -5,8 +5,15 @@ import { prisma } from '../utils/database';
 
 const router = Router();
 
+// Middleware pour autoriser le chargement cross-origin des fichiers
+// Nécessaire car helmet pose Cross-Origin-Resource-Policy: same-origin par défaut
+const allowCrossOrigin = (req: Request, res: Response, next: Function) => {
+  res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+  next();
+};
+
 // Route pour servir les images uploadées avec gestion d'erreur
-router.get('/image/:filename', (req: Request, res: Response) => {
+router.get('/image/:filename', allowCrossOrigin, (req: Request, res: Response) => {
   try {
     const { filename } = req.params;
 
@@ -49,7 +56,7 @@ router.get('/image/:filename', (req: Request, res: Response) => {
 
 // Route pour servir les couvertures de contes
 // Priorite : fichier disque > base de donnees (fallback apres redeploy Render)
-router.get('/cover/:filename', async (req: Request, res: Response) => {
+router.get('/cover/:filename', allowCrossOrigin, async (req: Request, res: Response) => {
   try {
     const { filename } = req.params;
 
