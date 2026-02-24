@@ -116,7 +116,7 @@ export class OrderController {
         }
       }
 
-      // Créer la commande
+      // Créer la commande (omit exclut les champs binaires volumineux de la reponse)
       const order = await prisma.order.create({
         data: {
           userId: user?.id,
@@ -151,7 +151,8 @@ export class OrderController {
           productType: 'EBOOK',
           purchaseType: purchaseType as 'SINGLE' | 'CLUB',
           price: price
-        }
+        },
+        omit: { coverImageData: true, pdfData: true }
       });
 
       // --- Si commande Club gratuite : finaliser immediatement ---
@@ -161,6 +162,7 @@ export class OrderController {
         const updatedOrder = await prisma.order.update({
           where: { id: order.id },
           data: { status: 'PAID', paidAt: new Date() },
+          omit: { coverImageData: true, pdfData: true },
           include: { user: true }
         });
 
@@ -216,12 +218,9 @@ export class OrderController {
         };
       }
 
-      // Exclure les champs binaires volumineux de la reponse
-      const { coverImageData: _cid, pdfData: _pd, ...orderResponse } = order as any;
-
       res.status(201).json({
         success: true,
-        data: orderResponse,
+        data: order,
         token,
         user: userData,
         isClubFreeOrder,
