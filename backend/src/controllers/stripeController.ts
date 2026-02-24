@@ -29,6 +29,7 @@ export const createPaymentSession = async (req: Request, res: Response) => {
 
     const order = await prisma.order.findUnique({
       where: { id: orderId },
+      omit: { coverImageData: true, pdfData: true },
       include: { user: true }
     });
 
@@ -137,6 +138,7 @@ async function finalizePendingClubOrders(userId: string) {
         purchaseType: 'CLUB',
         status: 'PENDING',
       },
+      omit: { coverImageData: true, pdfData: true },
       include: { user: true }
     });
 
@@ -144,6 +146,7 @@ async function finalizePendingClubOrders(userId: string) {
       const updatedOrder = await prisma.order.update({
         where: { id: order.id },
         data: { status: 'PAID', paidAt: new Date(), price: 0 },
+        omit: { coverImageData: true, pdfData: true },
         include: { user: true }
       });
       console.log('[POLLING] Commande CLUB finalisee:', order.id, 'prix=0');
@@ -328,6 +331,7 @@ export const checkPaymentStatus = async (req: Request, res: Response) => {
     if (session.payment_status === 'paid') {
       const order = await prisma.order.findUnique({
         where: { id: orderId as string },
+        omit: { coverImageData: true, pdfData: true },
         include: { user: true }
       });
 
@@ -355,6 +359,7 @@ export const checkPaymentStatus = async (req: Request, res: Response) => {
           status: 'PAID',
           paidAt: new Date()
         },
+        omit: { coverImageData: true, pdfData: true },
         include: { user: true }
       });
 
@@ -463,11 +468,12 @@ export const handleStripeWebhook = async (req: Request, res: Response) => {
             // Finaliser la commande liee a la souscription (eBook inclus dans l'abonnement)
             if (orderId) {
               try {
-                const order = await prisma.order.findUnique({ where: { id: orderId }, include: { user: true } });
+                const order = await prisma.order.findUnique({ where: { id: orderId }, omit: { coverImageData: true, pdfData: true }, include: { user: true } });
                 if (order && order.status !== 'PAID') {
                   const updatedOrder = await prisma.order.update({
                     where: { id: orderId },
                     data: { status: 'PAID', paidAt: new Date(), price: 0, purchaseType: 'CLUB' },
+                    omit: { coverImageData: true, pdfData: true },
                     include: { user: true }
                   });
                   console.log('[WEBHOOK] Commande finalisee via subscription:', orderId, 'prix=0');
@@ -521,6 +527,7 @@ export const handleStripeWebhook = async (req: Request, res: Response) => {
           if (orderId) {
             const order = await prisma.order.findUnique({
               where: { id: orderId },
+              omit: { coverImageData: true, pdfData: true },
               include: { user: true }
             });
 
@@ -528,6 +535,7 @@ export const handleStripeWebhook = async (req: Request, res: Response) => {
               const updatedOrder = await prisma.order.update({
                 where: { id: orderId },
                 data: { status: 'PAID', paidAt: new Date() },
+                omit: { coverImageData: true, pdfData: true },
                 include: { user: true }
               });
               console.log('[WEBHOOK] Commande paiement unique confirmee:', orderId);
