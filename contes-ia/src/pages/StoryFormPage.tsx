@@ -113,8 +113,9 @@ export const StoryFormPage: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      await trackInitiateCheckout(formData.productType, formData.userEmail);
-      await identifyUser(formData.userEmail);
+      // Fire-and-forget : le tracking ne doit pas bloquer le paiement
+      trackInitiateCheckout(formData.productType, formData.userEmail);
+      identifyUser(formData.userEmail);
 
       const authToken = localStorage.getItem('userToken') || undefined;
 
@@ -146,7 +147,7 @@ export const StoryFormPage: React.FC = () => {
         }
         const subResponse = await ApiService.createSubscriptionSession(token, orderResponse.data.id);
         if (subResponse.url) {
-          setTimeout(() => { window.location.href = subResponse.url; }, 200);
+          window.location.href = subResponse.url;
         } else {
           throw new Error('URL abonnement non recue');
         }
@@ -154,7 +155,7 @@ export const StoryFormPage: React.FC = () => {
         // Paiement unique (eBook ou Club credit epuise)
         const paymentResponse = await ApiService.createPaymentSession(orderResponse.data.id);
         if (paymentResponse.url) {
-          setTimeout(() => { window.location.href = paymentResponse.url; }, 200);
+          window.location.href = paymentResponse.url;
         } else {
           throw new Error('URL de paiement non recue');
         }
