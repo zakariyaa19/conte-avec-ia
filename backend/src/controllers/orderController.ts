@@ -216,9 +216,12 @@ export class OrderController {
         };
       }
 
+      // Exclure les champs binaires volumineux de la reponse
+      const { coverImageData: _cid, pdfData: _pd, ...orderResponse } = order as any;
+
       res.status(201).json({
         success: true,
-        data: order,
+        data: orderResponse,
         token,
         user: userData,
         isClubFreeOrder,
@@ -281,6 +284,7 @@ export class OrderController {
 
       const order = await prisma.order.findUnique({
         where: { id },
+        omit: { coverImageData: true, pdfData: true },
         include: { user: true }
       });
 
@@ -352,6 +356,7 @@ export class OrderController {
       const [orders, total] = await Promise.all([
         prisma.order.findMany({
           where,
+          omit: { coverImageData: true, pdfData: true },
           include: { user: true },
           orderBy: { createdAt: 'desc' },
           skip,
@@ -389,6 +394,7 @@ export class OrderController {
       const order = await prisma.order.update({
         where: { id },
         data: updateData,
+        omit: { coverImageData: true, pdfData: true },
         include: { user: true }
       });
 
@@ -417,6 +423,7 @@ export class OrderController {
 
       const orders = await prisma.order.findMany({
         where,
+        omit: { coverImageData: true, pdfData: true },
         include: { user: true },
         skip: (Number(page) - 1) * Number(limit),
         take: Number(limit),

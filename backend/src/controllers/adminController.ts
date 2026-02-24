@@ -146,6 +146,7 @@ export class AdminController {
       const [orders, total] = await Promise.all([
         prisma.order.findMany({
           where,
+          omit: { coverImageData: true, pdfData: true },
           include: { user: true },
           orderBy: { createdAt: 'desc' },
           skip,
@@ -181,6 +182,7 @@ export class AdminController {
 
       const order = await prisma.order.findUnique({
         where: { id },
+        omit: { coverImageData: true, pdfData: true },
         include: { user: true }
       });
 
@@ -264,6 +266,7 @@ export class AdminController {
       const order = await prisma.order.update({
         where: { id },
         data: filteredUpdates,
+        omit: { coverImageData: true, pdfData: true },
         include: { user: true }
       });
 
@@ -372,6 +375,7 @@ export class AdminController {
           pdfData,
           storyStatus: 'DISPONIBLE'
         },
+        omit: { coverImageData: true, pdfData: true },
         include: { user: true }
       });
 
@@ -420,6 +424,7 @@ export class AdminController {
           storyStatus: 'DISPONIBLE',
           deliveredAt: new Date()
         },
+        omit: { coverImageData: true, pdfData: true },
         include: { user: true }
       });
 
@@ -519,7 +524,10 @@ export class AdminController {
       const user = await prisma.user.findUnique({
         where: { id },
         include: {
-          orders: { orderBy: { createdAt: 'desc' } },
+          orders: {
+            orderBy: { createdAt: 'desc' },
+            omit: { coverImageData: true, pdfData: true }
+          },
           childProfiles: true
         }
       });
