@@ -186,17 +186,12 @@ export class ApiService {
     }
   }
 
-  // Sauvegarder le cover image en background (non-bloquant)
-  static async saveCoverImage(orderId: string, coverImageBase64: string, coverTitle?: string): Promise<void> {
-    try {
-      await fetch(`${this.baseUrl}/api/orders/${orderId}/cover`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ coverImageBase64, coverTitle }),
-      });
-    } catch (error) {
-      console.error('❌ Erreur sauvegarde cover (background):', error);
-    }
+  // Sauvegarder le cover image d'une commande
+  static async saveCoverImage(orderId: string, coverImageBase64: string, coverTitle?: string): Promise<{ success: boolean; coverImageUrl?: string }> {
+    return this.request(`/api/orders/${orderId}/cover`, {
+      method: 'POST',
+      body: JSON.stringify({ coverImageBase64, coverTitle }),
+    });
   }
 
   // Authentification admin

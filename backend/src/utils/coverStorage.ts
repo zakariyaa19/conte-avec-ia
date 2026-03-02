@@ -22,7 +22,9 @@ export function saveCoverImage(base64Data: string): { url: string; buffer: Buffe
   const filename = `cover-${uniqueSuffix}.png`;
   const url = `/uploads/covers/${filename}`;
 
-  const buffer = Buffer.from(base64Data, 'base64');
+  // Strip data URI prefix if present (e.g. "data:image/png;base64,")
+  const raw = base64Data.includes(',') ? base64Data.split(',')[1] : base64Data;
+  const buffer = Buffer.from(raw, 'base64');
 
   // Écriture disque en arrière-plan (fire-and-forget)
   // Si l'écriture échoue, le fallback DB→disque dans routes/files.ts restaure le fichier

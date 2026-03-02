@@ -312,7 +312,7 @@ export class OrderController {
     }
   }
 
-  // Sauvegarder le cover image en background (appele apres creation de commande)
+  // Sauvegarder le cover image (appele apres creation de commande ou depuis l'admin)
   static async saveCover(req: Request, res: Response) {
     try {
       const { id } = req.params;
@@ -323,18 +323,20 @@ export class OrderController {
       }
 
       const result = saveCoverImage(coverImageBase64);
-      console.log('🖼️ Cover sauvegardee (background):', result.url, `(${result.buffer.length} bytes)`);
+      console.log('🖼️ Cover sauvegardee:', result.url, `(${result.buffer.length} bytes)`);
 
-      await prisma.order.update({
+      const updated = await prisma.order.update({
         where: { id },
         data: {
           coverImageUrl: result.url,
           coverImageData: result.buffer,
           ...(coverTitle && { coverTitle })
-        }
+        },
+        select: { id: true, coverImageUrl: true }
       });
 
-      res.json({ success: true });
+      console.log('✅ Cover DB update verified:', updated.id, updated.coverImageUrl);
+      res.json({ success: true, coverImageUrl: updated.coverImageUrl });
     } catch (error) {
       console.error('Erreur sauvegarde cover:', error);
       res.status(500).json({ success: false, message: 'Erreur sauvegarde cover' });

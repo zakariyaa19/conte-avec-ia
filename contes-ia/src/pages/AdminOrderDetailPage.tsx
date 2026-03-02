@@ -353,10 +353,12 @@ export const AdminOrderDetailPage: React.FC<AdminOrderDetailPageProps> = ({ toke
   const [error, setError] = useState('');
   const [updating, setUpdating] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadingCover, setUploadingCover] = useState(false);
   const [delivering, setDelivering] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState('');
   const [isDragOver, setIsDragOver] = useState(false);
   const pdfInputRef = React.useRef<HTMLInputElement>(null);
+  const coverInputRef = React.useRef<HTMLInputElement>(null);
 
   const getToken = () => localStorage.getItem('adminToken') || token;
 
@@ -443,6 +445,34 @@ export const AdminOrderDetailPage: React.FC<AdminOrderDetailPageProps> = ({ toke
       window.URL.revokeObjectURL(url);
     } catch {
       setError('Erreur telechargement image');
+    }
+  };
+
+  const handleCoverUpload = async (file: File) => {
+    if (!file || !file.type.startsWith('image/')) {
+      setError('Veuillez selectionner une image (PNG, JPG)');
+      return;
+    }
+    try {
+      setUploadingCover(true);
+      setError('');
+      const reader = new FileReader();
+      const base64 = await new Promise<string>((resolve, reject) => {
+        reader.onload = () => {
+          const result = reader.result as string;
+          resolve(result.split(',')[1]);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+      await ApiService.saveCoverImage(orderId!, base64);
+      setUploadSuccess('Couverture uploadee avec succes');
+      await loadOrderDetails();
+      setTimeout(() => setUploadSuccess(''), 3000);
+    } catch (err: any) {
+      setError('Erreur upload couverture: ' + err.message);
+    } finally {
+      setUploadingCover(false);
     }
   };
 
@@ -639,8 +669,25 @@ export const AdminOrderDetailPage: React.FC<AdminOrderDetailPageProps> = ({ toke
                 </div>
               </>
             ) : (
-              <div style={{ padding: theme.spacing.lg, textAlign: 'center', color: theme.colors.text.light }}>
-                Aucune couverture generee
+              <div style={{ padding: theme.spacing.lg, textAlign: 'center' }}>
+                <div style={{ color: theme.colors.text.light, marginBottom: theme.spacing.md }}>
+                  Aucune couverture generee
+                </div>
+                <input
+                  ref={coverInputRef}
+                  type="file"
+                  accept="image/*"
+                  style={{ display: 'none' }}
+                  onChange={(e) => { if (e.target.files?.[0]) handleCoverUpload(e.target.files[0]); }}
+                />
+                <SmallBtn
+                  $variant="fill"
+                  onClick={() => coverInputRef.current?.click()}
+                  disabled={uploadingCover}
+                  style={{ padding: '6px 16px' }}
+                >
+                  {uploadingCover ? 'Upload en cours...' : 'Uploader une couverture'}
+                </SmallBtn>
               </div>
             )}
           </CardBody>
