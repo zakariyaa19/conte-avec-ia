@@ -6,6 +6,7 @@ import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
 import { Button } from '../components/ui/Button';
 import { trackPurchase } from '../utils/tiktokPixel';
+import { metaTrackPurchase } from '../utils/metaPixel';
 import { useAuth } from '../contexts/AuthContext';
 import { API_BASE_URL } from '../config/constants';
 
@@ -268,6 +269,10 @@ export const SuccessPage: React.FC = () => {
       if (localStorage.getItem('userToken')) {
         refreshProfile();
       }
+      // Tracker la conversion même pour les commandes Club gratuites
+      if (orderId) {
+        metaTrackPurchase('club', orderId, 0, 'EUR');
+      }
       return;
     }
 
@@ -287,6 +292,7 @@ export const SuccessPage: React.FC = () => {
             const productType = data.order?.formData?.productType || 'ebook';
             const userEmail = data.order?.userEmail;
             await trackPurchase(productType, orderId || 'unknown', userEmail);
+            await metaTrackPurchase(productType, orderId || 'unknown');
           }
         } catch (error) {
           console.error('Erreur lors de la verification du paiement:', error);

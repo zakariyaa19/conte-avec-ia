@@ -6,6 +6,7 @@ import { BookCoverPreview } from '../ui/BookCoverPreview';
 import { SecondaryCharactersSection } from '../forms/SecondaryCharactersSection';
 import { useCoverPreview } from '../../hooks/useCoverPreview';
 import { validateEmail, validateRequired } from '../../utils/validation';
+import { metaTrackAddToCart, metaTrackLead } from '../../utils/metaPixel';
 import { ApiService } from '../../config/api';
 import { ILLUSTRATION_STYLES, LANGUAGES, StoryFormData } from '../../types/FormTypes';
 import {
@@ -221,6 +222,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
 
   const handleProductSelection = (purchaseType: 'single' | 'club') => {
     setGlobalError('');
+    metaTrackAddToCart(purchaseType);
     onUpdate({ productType: 'ebook', purchaseType });
   };
 
@@ -228,6 +230,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
     if (!formData.userEmail) return;
     const ev = validateEmail(formData.userEmail);
     if (!ev.isValid) return;
+    metaTrackLead();
     try {
       const res = await ApiService.checkEmail(formData.userEmail);
       if (res.success) setEmailStatus({ exists: res.exists, hasPassword: !!res.hasPassword });

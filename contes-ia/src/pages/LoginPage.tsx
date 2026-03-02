@@ -8,6 +8,7 @@ import { Footer } from '../components/layout/Footer';
 import { Button } from '../components/ui/Button';
 import { useAuth } from '../contexts/AuthContext';
 import { ApiService } from '../config/api';
+import { metaTrackCompleteRegistration } from '../utils/metaPixel';
 
 const fadeInUp = keyframes`
   from { opacity: 0; transform: translateY(20px); }
@@ -367,6 +368,9 @@ export const LoginPage: React.FC = () => {
     setIsLoading(false);
 
     if (result.success) {
+      if (mode === 'register') {
+        metaTrackCompleteRegistration('google', selectedPlan);
+      }
       // If registering with Club plan, redirect to Stripe
       if (mode === 'register' && selectedPlan === 'club') {
         await handleClubStripeRedirect();
@@ -411,6 +415,7 @@ export const LoginPage: React.FC = () => {
       setIsLoading(false);
 
       if (result.success) {
+        metaTrackCompleteRegistration('email', selectedPlan);
         if (selectedPlan === 'club') {
           await handleClubStripeRedirect();
         } else {

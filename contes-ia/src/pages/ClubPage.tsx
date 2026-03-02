@@ -8,6 +8,7 @@ import { Button } from '../components/ui/Button';
 import { useAuth } from '../contexts/AuthContext';
 import { ApiService } from '../config/api';
 import { useScrollReveal, useStaggerReveal } from '../hooks/useScrollReveal';
+import { metaTrackSubscribe } from '../utils/metaPixel';
 
 // =============================================
 // ANIMATIONS
@@ -820,6 +821,7 @@ export const ClubPage: React.FC = () => {
 
   const handleJoinClub = async () => {
     if (!isAuthenticated) {
+      metaTrackSubscribe();
       navigate('/login?mode=register&plan=club');
       return;
     }
@@ -829,6 +831,7 @@ export const ClubPage: React.FC = () => {
       return;
     }
 
+    metaTrackSubscribe();
     setLoading(true);
     setError('');
     try {

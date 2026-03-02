@@ -3,6 +3,7 @@ import { StoryWizard } from '../components/wizard/StoryWizard';
 import { ApiService } from '../config/api';
 import { StoryFormData } from '../types/FormTypes';
 import { identifyUser, trackInitiateCheckout, trackViewContent } from '../utils/tiktokPixel';
+import { metaTrackViewContent, metaTrackInitiateCheckout } from '../utils/metaPixel';
 import { useAuth } from '../contexts/AuthContext';
 
 export const StoryFormPage: React.FC = () => {
@@ -15,6 +16,12 @@ export const StoryFormPage: React.FC = () => {
     trackViewContent(
       'product_story_creation',
       'Création de conte personnalisé',
+      4.99,
+      'EUR'
+    );
+    metaTrackViewContent(
+      'Création de conte personnalisé',
+      'Livre personnalisé enfant',
       4.99,
       'EUR'
     );
@@ -115,6 +122,7 @@ export const StoryFormPage: React.FC = () => {
     try {
       // Fire-and-forget : le tracking ne doit pas bloquer le paiement
       trackInitiateCheckout(formData.productType, formData.userEmail);
+      metaTrackInitiateCheckout(formData.productType);
       identifyUser(formData.userEmail);
 
       const authToken = localStorage.getItem('userToken') || undefined;
