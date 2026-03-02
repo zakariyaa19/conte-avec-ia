@@ -237,6 +237,35 @@ export class OrderController {
     }
   }
 
+  // Sauvegarder le cover image en background (appele apres creation de commande)
+  static async saveCover(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const { coverImageBase64, coverTitle } = req.body;
+
+      if (!coverImageBase64) {
+        return res.status(400).json({ success: false, message: 'Pas de cover image' });
+      }
+
+      const result = saveCoverImage(coverImageBase64);
+      console.log('🖼️ Cover sauvegardee (background):', result.url, `(${result.buffer.length} bytes)`);
+
+      await prisma.order.update({
+        where: { id },
+        data: {
+          coverImageUrl: result.url,
+          coverImageData: result.buffer,
+          ...(coverTitle && { coverTitle })
+        }
+      });
+
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Erreur sauvegarde cover:', error);
+      res.status(500).json({ success: false, message: 'Erreur sauvegarde cover' });
+    }
+  }
+
   // Marquer une commande comme abandonnee (paiement annule)
   static async abandonOrder(req: Request, res: Response) {
     try {

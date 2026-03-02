@@ -194,21 +194,34 @@ export class ApiService {
     }, 2);
   }
 
-  // Créer une session de paiement Stripe (avec retry)
+  // Créer une session de paiement Stripe (PAS de retry — fail fast pour UX rapide)
   static async createPaymentSession(orderId: string): Promise<{ sessionId: string; url: string }> {
     console.log('🔄 Création session Stripe pour commande:', orderId);
-    
+
     try {
-      const response = await this.requestWithRetry<{ sessionId: string; url: string }>('/api/stripe/create-payment-session', {
+      const response = await this.request<{ sessionId: string; url: string }>('/api/stripe/create-payment-session', {
         method: 'POST',
         body: JSON.stringify({ orderId }),
-      }, 2); // 2 retry pour cette requête critique
-      
+      });
+
       console.log('✅ Réponse session Stripe:', response);
       return response;
     } catch (error) {
       console.error('❌ Erreur création session Stripe:', error);
       throw error;
+    }
+  }
+
+  // Sauvegarder le cover image en background (non-bloquant)
+  static async saveCoverImage(orderId: string, coverImageBase64: string, coverTitle?: string): Promise<void> {
+    try {
+      await fetch(`${this.baseUrl}/api/orders/${orderId}/cover`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ coverImageBase64, coverTitle }),
+      });
+    } catch (error) {
+      console.error('❌ Erreur sauvegarde cover (background):', error);
     }
   }
 
