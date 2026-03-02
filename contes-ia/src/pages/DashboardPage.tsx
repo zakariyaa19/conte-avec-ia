@@ -464,23 +464,17 @@ export const DashboardPage: React.FC = () => {
       try {
         const result = await ApiService.checkSubscriptionStatus(token);
         if (result.success && result.status === 'active') {
+          // Subscription activee : rafraichir une seule fois
           await refreshProfile();
+          const [storiesRes, creditRes] = await Promise.all([
+            ApiService.getClientStories(token).catch(() => null),
+            ApiService.getClubCredit(token).catch(() => null)
+          ]);
+          if (storiesRes?.success) setStories(storiesRes.data);
+          if (creditRes?.success) setClubCredit(creditRes.data);
+
           setSubscriptionActivating(false);
-
-          // Recharger les contes (la commande Club a ete finalisee par le backend)
-          try {
-            const storiesRes = await ApiService.getClientStories(token);
-            if (storiesRes.success) setStories(storiesRes.data);
-          } catch {}
-
-          // Recharger les credits Club
-          try {
-            const creditRes = await ApiService.getClubCredit(token);
-            if (creditRes.success) setClubCredit(creditRes.data);
-          } catch {}
-
           setLoading(false);
-          // Nettoyer l'URL
           navigate('/dashboard', { replace: true });
           return;
         }
@@ -493,15 +487,11 @@ export const DashboardPage: React.FC = () => {
         setTimeout(pollSubscription, 2000);
       } else {
         setSubscriptionActivating(false);
-        // Forcer un refresh profile meme si le polling echoue
         await refreshProfile();
-
-        // Recharger les contes meme si le polling echoue
         try {
           const storiesRes = await ApiService.getClientStories(token);
           if (storiesRes.success) setStories(storiesRes.data);
         } catch {}
-
         setLoading(false);
         navigate('/dashboard', { replace: true });
       }

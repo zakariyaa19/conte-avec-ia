@@ -399,7 +399,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ token })
       setUpdating(true);
       setError('');
       await ApiService.updateAdminOrder(getToken(), orderId, { status: newStatus });
-      await Promise.all([loadStats(), loadActionOrders(), loadAllOrders()]);
+      await Promise.all([loadActionOrders(), loadAllOrders()]);
     } catch (err: any) {
       setError('Erreur mise a jour: ' + err.message);
     } finally {
@@ -412,7 +412,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ token })
     try {
       setUpdating(true);
       await ApiService.deliverStory(getToken(), orderId);
-      await Promise.all([loadStats(), loadActionOrders(), loadAllOrders()]);
+      await Promise.all([loadActionOrders(), loadAllOrders()]);
     } catch (err: any) {
       setError('Erreur livraison: ' + err.message);
     } finally {
@@ -426,7 +426,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ token })
       setUpdating(true);
       setError('');
       await ApiService.deleteAdminOrder(getToken(), orderId);
-      await Promise.all([loadStats(), loadActionOrders(), loadAllOrders()]);
+      await Promise.all([loadActionOrders(), loadAllOrders()]);
     } catch (err: any) {
       setError('Erreur suppression: ' + err.message);
     } finally {
@@ -440,7 +440,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ token })
       setUpdating(true);
       setError('');
       await ApiService.deleteAdminClient(getToken(), clientId);
-      await Promise.all([loadStats(), loadActionOrders(), loadAllOrders()]);
+      await Promise.all([loadActionOrders(), loadAllOrders()]);
     } catch (err: any) {
       setError('Erreur suppression client: ' + err.message);
     } finally {

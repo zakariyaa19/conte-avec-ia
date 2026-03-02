@@ -25,7 +25,6 @@ const getApiBaseUrl = () => {
 };
 
 const baseUrl = getApiBaseUrl();
-console.log('🌐 URL API configurée:', baseUrl);
 
 const API_CONFIG = {
   BASE_URL: baseUrl,
@@ -63,15 +62,12 @@ export class ApiService {
     for (let attempt = 0; attempt <= maxRetries; attempt++) {
       try {
         if (attempt > 0) {
-          console.log(`🔄 Tentative ${attempt + 1}/${maxRetries + 1} pour ${endpoint}`);
-          // Attendre avant de retry (backoff exponentiel)
           await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
         }
-        
+
         return await this.request<T>(endpoint, options);
       } catch (error) {
         lastError = error instanceof Error ? error : new Error(String(error));
-        console.warn(`⚠️ Échec tentative ${attempt + 1}:`, error);
         
         // Ne pas retry sur certaines erreurs (4xx sauf 408, 429)
         if (error instanceof Error && error.message.includes('40') && 
@@ -179,16 +175,11 @@ export class ApiService {
 
   // Créer une session de paiement Stripe (PAS de retry — fail fast pour UX rapide)
   static async createPaymentSession(orderId: string): Promise<{ sessionId: string; url: string }> {
-    console.log('🔄 Création session Stripe pour commande:', orderId);
-
     try {
-      const response = await this.request<{ sessionId: string; url: string }>('/api/stripe/create-payment-session', {
+      return await this.request<{ sessionId: string; url: string }>('/api/stripe/create-payment-session', {
         method: 'POST',
         body: JSON.stringify({ orderId }),
       });
-
-      console.log('✅ Réponse session Stripe:', response);
-      return response;
     } catch (error) {
       console.error('❌ Erreur création session Stripe:', error);
       throw error;

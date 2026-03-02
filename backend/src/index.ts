@@ -15,6 +15,7 @@ import filesRoutes from './routes/files';
 dotenv.config();
 
 const app = express();
+app.set('trust proxy', 1); // Render reverse proxy
 const PORT = process.env.PORT || 5001;
 
 // CORS: gérer plusieurs origines autorisées (FRONTEND_URL + CORS_ALLOWED_ORIGINS séparées par des virgules)
@@ -40,8 +41,8 @@ app.use(cors({
   optionsSuccessStatus: 200
 }));
 
-// Middleware de logging
-app.use(morgan('combined'));
+// Middleware de logging (short en production pour reduire l'overhead)
+app.use(morgan(process.env.NODE_ENV === 'production' ? 'short' : 'combined'));
 
 // Routes Stripe (avant express.json pour le webhook)
 app.use('/api/stripe', stripeRoutes);

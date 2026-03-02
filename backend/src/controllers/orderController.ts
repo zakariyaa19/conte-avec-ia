@@ -347,7 +347,8 @@ export class OrderController {
       const { id } = req.params;
 
       const order = await prisma.order.findUnique({
-        where: { id }
+        where: { id },
+        select: { id: true, status: true, paidAt: true }
       });
 
       if (!order) {
@@ -420,7 +421,8 @@ export class OrderController {
 
       const order = await prisma.order.update({
         where: { id },
-        data: { status }
+        data: { status },
+        omit: { coverImageData: true, pdfData: true }
       });
 
       res.json({

@@ -366,7 +366,7 @@ export class AdminController {
       const pdfUrl = `/uploads/pdfs/${req.file.filename}`;
 
       // Lire le contenu du fichier pour le stocker en base (survit aux redeploiements)
-      const pdfData = fs.readFileSync(req.file.path);
+      const pdfData = await fs.promises.readFile(req.file.path);
 
       const updated = await prisma.order.update({
         where: { id },
