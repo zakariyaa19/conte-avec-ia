@@ -6,6 +6,10 @@ import { ClientAuthRequest } from '../middleware/clientAuth';
 import { buildOrderDetailsString } from '../utils/orderFormatter';
 import { ClubService } from '../utils/clubService';
 
+if (!process.env.STRIPE_SECRET_KEY) {
+  console.error('STRIPE_SECRET_KEY is not set!');
+}
+
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
   typescript: true,
 });
@@ -29,12 +33,18 @@ export const createPaymentSession = async (req: Request, res: Response) => {
 
     const order = await prisma.order.findUnique({
       where: { id: orderId },
-      omit: { coverImageData: true, pdfData: true },
       include: { user: true }
     });
 
     if (!order) {
       return res.status(404).json({ error: 'Commande non trouvee' });
+    }
+
+    const unitAmount = Math.round(Number(order.price) * 100);
+    console.log('[Stripe] createPaymentSession — orderId:', orderId, 'price:', order.price, 'unitAmount:', unitAmount, 'email:', order.user?.email);
+
+    if (!unitAmount || unitAmount <= 0) {
+      return res.status(400).json({ error: 'Prix invalide pour cette commande' });
     }
 
     const session = await stripe.checkout.sessions.create({
@@ -47,7 +57,7 @@ export const createPaymentSession = async (req: Request, res: Response) => {
               name: 'Conte personnalise - eBook Numerique',
               description: `Conte pour ${order.protagonistName}`,
             },
-            unit_amount: Math.round(Number(order.price) * 100),
+            unit_amount: unitAmount,
           },
           quantity: 1,
         },
@@ -67,7 +77,7 @@ export const createPaymentSession = async (req: Request, res: Response) => {
 
     res.json({ sessionId: session.id, url: session.url });
   } catch (error) {
-    console.error('Erreur creation session Stripe:', error instanceof Error ? error.message : error);
+    console.error('Erreur creation session Stripe:', error);
     res.status(500).json({
       error: 'Erreur lors de la creation de la session de paiement'
     });
