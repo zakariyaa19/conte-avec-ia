@@ -84,56 +84,35 @@ export class ApiService {
     throw lastError ?? new Error('Request failed after retries');
   }
 
-  // Méthode générique pour les requêtes avec retry et timeout
+  // Méthode générique pour les requêtes avec timeout
   private static async request<T>(
-    endpoint: string, 
+    endpoint: string,
     options: RequestInit = {}
   ): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
-    
-    console.log('🔄 Requête API:', { url, options });
-    
+    const isFormData = options.body instanceof FormData;
+
     const config: RequestInit = {
-      headers: {
-        'Content-Type': 'application/json',
-        ...options.headers,
-      },
-      // Timeout de 60 secondes pour les requêtes importantes
-      signal: AbortSignal.timeout(60000),
       ...options,
+      headers: {
+        ...(!isFormData && { 'Content-Type': 'application/json' }),
+        ...(options.headers as Record<string, string>),
+      },
+      signal: options.signal || AbortSignal.timeout(60000),
     };
 
     try {
       const response = await fetch(url, config);
-      
-      console.log('📡 Réponse API:', {
-        url,
-        status: response.status,
-        statusText: response.statusText,
-        ok: response.ok
-      });
 
       if (!response.ok) {
-        let errorData = {};
-        let responseText = '';
-        
+        let errorData: any = {};
+
         try {
-          // Clone la réponse pour pouvoir la lire plusieurs fois
-          const responseClone = response.clone();
-          responseText = await responseClone.text();
-          console.log('📄 Response body brut:', responseText);
-          
-          // Essayer de parser en JSON
-          if (responseText) {
-            errorData = JSON.parse(responseText);
-          }
-        } catch (parseError) {
-          console.log('⚠️ Impossible de parser la réponse JSON:', parseError);
+          errorData = await response.json();
+        } catch {
+          // Response not JSON
         }
-        
-        console.log('❌ Erreur API:', { status: response.status, errorData, responseText });
-        
-        // Si c'est une erreur d'authentification (401), supprimer les tokens et rediriger vers /login
+
         if (response.status === 401) {
           localStorage.removeItem('adminToken');
           localStorage.removeItem('userToken');
@@ -141,15 +120,13 @@ export class ApiService {
             window.location.href = '/login';
           }
         }
-        
-        throw new Error((errorData as any).message || `Erreur ${response.status}: ${response.statusText}`);
+
+        throw new Error(errorData.message || `Erreur ${response.status}: ${response.statusText}`);
       }
 
-      const data = await response.json();
-      console.log('✅ Données reçues:', data);
-      return data;
+      return await response.json();
     } catch (error) {
-      console.error('❌ Erreur fetch:', { url, error });
+      console.error('❌ Erreur fetch:', url, error);
       throw error;
     }
   }
@@ -164,34 +141,40 @@ export class ApiService {
     return this.request(API_CONFIG.ENDPOINTS.TEST_DB);
   }
 
-  // Créer une commande (avec retry, auth optionnelle)
+  // Créer une commande (+ session Stripe inline, single round trip)
   static async createOrder(orderData: {
     userEmail: string;
     formData: any;
     authToken?: string;
-  }): Promise<{ success: boolean; data: any; token?: string; user?: any; message: string; isClubFreeOrder?: boolean; clubCreditExhausted?: boolean }> {
-    // Créer un FormData pour gérer l'upload de fichier
-    const formDataToSend = new FormData();
-
-    // Ajouter les données du formulaire
-    formDataToSend.append('userEmail', orderData.userEmail);
-    formDataToSend.append('formData', JSON.stringify(orderData.formData));
-
-    // Ajouter la photo si elle existe
-    if (orderData.formData.photo) {
-      formDataToSend.append('photo', orderData.formData.photo);
-    }
-
+  }): Promise<{ success: boolean; data: any; stripeUrl?: string; token?: string; user?: any; message: string; isClubFreeOrder?: boolean; clubCreditExhausted?: boolean }> {
     const headers: Record<string, string> = {};
     if (orderData.authToken) {
       headers['Authorization'] = `Bearer ${orderData.authToken}`;
     }
 
-    return this.requestWithRetry(API_CONFIG.ENDPOINTS.ORDERS, {
+    // Photo file upload: use FormData (multipart)
+    if (orderData.formData.photo instanceof File) {
+      const formDataToSend = new FormData();
+      formDataToSend.append('userEmail', orderData.userEmail);
+      formDataToSend.append('formData', JSON.stringify(orderData.formData));
+      formDataToSend.append('photo', orderData.formData.photo);
+
+      return this.request(API_CONFIG.ENDPOINTS.ORDERS, {
+        method: 'POST',
+        body: formDataToSend,
+        headers
+      });
+    }
+
+    // No photo: send JSON (faster, skips multer)
+    return this.request(API_CONFIG.ENDPOINTS.ORDERS, {
       method: 'POST',
-      body: formDataToSend,
+      body: JSON.stringify({
+        userEmail: orderData.userEmail,
+        formData: orderData.formData
+      }),
       headers
-    }, 2);
+    });
   }
 
   // Créer une session de paiement Stripe (PAS de retry — fail fast pour UX rapide)

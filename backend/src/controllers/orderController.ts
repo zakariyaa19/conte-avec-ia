@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import Stripe from 'stripe';
 import * as bcrypt from 'bcryptjs';
 import { calculatePrice, PRODUCT_PRICES } from '../utils/pricing';
 import { StoryFormData, ApiResponse } from '../types';
@@ -10,6 +11,8 @@ import { ClubService } from '../utils/clubService';
 import { MailjetService } from '../utils/mailjetService';
 import { buildOrderDetailsString } from '../utils/orderFormatter';
 import { saveCoverImage } from '../utils/coverStorage';
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', { typescript: true });
 
 export class OrderController {
   // Créer une nouvelle commande
@@ -155,6 +158,77 @@ export class OrderController {
         omit: { coverImageData: true, pdfData: true }
       });
 
+      // --- Create Stripe session inline (single HTTP round trip) ---
+      let stripeUrl: string | undefined;
+
+      if (!isClubFreeOrder) {
+        try {
+          if (purchaseType === 'CLUB' && !clubCreditExhausted && user) {
+            // Subscription checkout
+            let stripeCustomerId = user.stripeCustomerId;
+            if (!stripeCustomerId) {
+              const customer = await stripe.customers.create({
+                email: user.email,
+                metadata: { userId: user.id }
+              });
+              stripeCustomerId = customer.id;
+              await prisma.user.update({
+                where: { id: user.id },
+                data: { stripeCustomerId }
+              });
+            }
+
+            const priceId = process.env.STRIPE_CLUB_PRICE_ID;
+            if (priceId) {
+              const session = await stripe.checkout.sessions.create({
+                customer: stripeCustomerId,
+                line_items: [{ price: priceId, quantity: 1 }],
+                mode: 'subscription',
+                success_url: `${process.env.FRONTEND_URL}/dashboard?subscription=success`,
+                cancel_url: `${process.env.FRONTEND_URL}/create-story?subscription=cancelled`,
+                metadata: { userId: user.id, orderId: order.id }
+              });
+              stripeUrl = session.url || undefined;
+            }
+          } else {
+            // Single payment checkout
+            const unitAmount = Math.round(Number(price) * 100);
+            if (unitAmount > 0) {
+              const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+              const customerEmail = user?.email && emailRegex.test(user.email) ? user.email : undefined;
+
+              const session = await stripe.checkout.sessions.create({
+                customer_email: customerEmail,
+                line_items: [{
+                  price_data: {
+                    currency: 'eur',
+                    product_data: {
+                      name: 'Conte personnalise - eBook Numerique',
+                      description: `Conte pour ${formData.protagonistName}`,
+                    },
+                    unit_amount: unitAmount,
+                  },
+                  quantity: 1,
+                }],
+                mode: 'payment',
+                success_url: `${process.env.FRONTEND_URL}/success?session_id={CHECKOUT_SESSION_ID}&order_id=${order.id}`,
+                cancel_url: `${process.env.FRONTEND_URL}/cancel?order_id=${order.id}`,
+                metadata: { orderId: order.id },
+              });
+              stripeUrl = session.url || undefined;
+
+              await prisma.order.update({
+                where: { id: order.id },
+                data: { status: 'PENDING' }
+              });
+            }
+          }
+        } catch (stripeError) {
+          console.error('Erreur creation session Stripe inline:', stripeError);
+          // Don't fail — frontend will fallback to separate API call
+        }
+      }
+
       // --- Si commande Club gratuite : finaliser immediatement ---
       if (isClubFreeOrder && user) {
         await ClubService.recordSubmission(user.id);
@@ -221,6 +295,7 @@ export class OrderController {
       res.status(201).json({
         success: true,
         data: order,
+        stripeUrl,
         token,
         user: userData,
         isClubFreeOrder,

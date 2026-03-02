@@ -155,7 +155,13 @@ export const StoryFormPage: React.FC = () => {
         return;
       }
 
-      // Checkout Club (nouvel abonnement OU membre Club sans credit)
+      // Stripe URL returned inline (single round trip — fast path)
+      if (orderResponse.stripeUrl) {
+        window.location.href = orderResponse.stripeUrl;
+        return;
+      }
+
+      // Fallback: separate API call (should not happen normally)
       if (formData.purchaseType === 'club' && !orderResponse.clubCreditExhausted) {
         const token = localStorage.getItem('userToken');
         if (!token) {
@@ -168,7 +174,6 @@ export const StoryFormPage: React.FC = () => {
           throw new Error('URL abonnement non recue');
         }
       } else {
-        // Paiement unique (eBook ou Club credit epuise)
         const paymentResponse = await ApiService.createPaymentSession(orderResponse.data.id);
         if (paymentResponse.url) {
           window.location.href = paymentResponse.url;
