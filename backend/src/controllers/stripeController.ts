@@ -33,6 +33,7 @@ export const createPaymentSession = async (req: Request, res: Response) => {
 
     const order = await prisma.order.findUnique({
       where: { id: orderId },
+      omit: { coverImageData: true, pdfData: true },
       include: { user: true }
     });
 

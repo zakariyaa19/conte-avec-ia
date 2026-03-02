@@ -164,6 +164,7 @@ export class AuthController {
         where: { id: userId },
         include: {
           orders: {
+            omit: { coverImageData: true, pdfData: true },
             orderBy: { createdAt: 'desc' },
             take: 20
           },

@@ -77,8 +77,10 @@ export class ClientController {
       const userId = req.clientUser!.id;
       const { id } = req.params;
 
+      // 1) Requete legere : verifier existence + recuperer pdfUrl (sans charger les blobs)
       const order = await prisma.order.findFirst({
-        where: { id, userId }
+        where: { id, userId },
+        select: { id: true, protagonistName: true, pdfUrl: true }
       });
 
       if (!order) {
@@ -88,18 +90,11 @@ export class ClientController {
         });
       }
 
-      if (!order.pdfUrl && !order.pdfData) {
-        return res.status(404).json({
-          success: false,
-          message: 'PDF non disponible'
-        });
-      }
-
       const filename = `conte-${order.protagonistName}-${order.id.slice(-8)}.pdf`;
       res.setHeader('Content-Type', 'application/pdf');
       res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
 
-      // 1) Essayer depuis le fichier disque
+      // 2) Essayer depuis le fichier disque
       if (order.pdfUrl) {
         const pdfPath = path.join(__dirname, '../../', order.pdfUrl);
         if (fs.existsSync(pdfPath)) {
@@ -107,14 +102,19 @@ export class ClientController {
         }
       }
 
-      // 2) Fallback : servir depuis la base de donnees
-      if (order.pdfData) {
-        return res.send(Buffer.from(order.pdfData));
+      // 3) Fallback : charger pdfData depuis la BDD (uniquement si necessaire)
+      const orderWithPdf = await prisma.order.findFirst({
+        where: { id, userId },
+        select: { pdfData: true }
+      });
+
+      if (orderWithPdf?.pdfData) {
+        return res.send(Buffer.from(orderWithPdf.pdfData));
       }
 
       return res.status(404).json({
         success: false,
-        message: 'Fichier PDF non trouve'
+        message: 'PDF non disponible'
       });
     } catch (error) {
       console.error('Erreur telechargement PDF:', error);
@@ -132,7 +132,8 @@ export class ClientController {
       const { id } = req.params;
 
       const order = await prisma.order.findFirst({
-        where: { id, userId }
+        where: { id, userId },
+        select: { id: true, isFavorite: true }
       });
 
       if (!order) {
@@ -144,7 +145,8 @@ export class ClientController {
 
       const updated = await prisma.order.update({
         where: { id },
-        data: { isFavorite: !order.isFavorite }
+        data: { isFavorite: !order.isFavorite },
+        omit: { coverImageData: true, pdfData: true }
       });
 
       res.json({

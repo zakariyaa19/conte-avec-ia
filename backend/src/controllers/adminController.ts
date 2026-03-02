@@ -355,7 +355,7 @@ export class AdminController {
         });
       }
 
-      const order = await prisma.order.findUnique({ where: { id } });
+      const order = await prisma.order.findUnique({ where: { id }, omit: { coverImageData: true, pdfData: true } });
       if (!order) {
         return res.status(404).json({
           success: false,
@@ -400,6 +400,7 @@ export class AdminController {
 
       const order = await prisma.order.findUnique({
         where: { id },
+        omit: { coverImageData: true, pdfData: true },
         include: { user: true }
       });
 
@@ -671,7 +672,7 @@ export class AdminController {
     try {
       const { id } = req.params;
 
-      const order = await prisma.order.findUnique({ where: { id } });
+      const order = await prisma.order.findUnique({ where: { id }, select: { id: true } });
       if (!order) {
         return res.status(404).json({ success: false, message: 'Commande non trouvee' });
       }
