@@ -47,8 +47,14 @@ export const createPaymentSession = async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'Prix invalide pour cette commande' });
     }
 
+    // Valider l'email avant de l'envoyer a Stripe (sinon Stripe rejette la session)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const customerEmail = order.user?.email && emailRegex.test(order.user.email)
+      ? order.user.email
+      : undefined;
+
     const session = await stripe.checkout.sessions.create({
-      customer_email: order.user?.email || undefined,
+      customer_email: customerEmail,
       line_items: [
         {
           price_data: {
