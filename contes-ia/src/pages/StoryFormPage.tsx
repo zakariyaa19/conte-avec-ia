@@ -127,19 +127,11 @@ export const StoryFormPage: React.FC = () => {
 
       const authToken = localStorage.getItem('userToken') || undefined;
 
-      // Extraire le cover base64 (2-4 MB) pour ne pas l'envoyer dans le chemin critique
-      const { coverImageBase64, ...formDataWithoutCover } = formData;
-
       const orderResponse = await ApiService.createOrder({
         userEmail: formData.userEmail,
-        formData: formDataWithoutCover,
+        formData,
         authToken
       });
-
-      // Sauvegarder le cover en background (fire-and-forget, ne bloque pas Stripe)
-      if (coverImageBase64 && orderResponse.success) {
-        ApiService.saveCoverImage(orderResponse.data.id, coverImageBase64, formData.coverTitle).catch(() => {});
-      }
 
       if (!orderResponse.success) {
         throw new Error(orderResponse.message || 'Erreur lors de la création de la commande');
