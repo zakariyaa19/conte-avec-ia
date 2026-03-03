@@ -587,7 +587,7 @@ async function runGenerationPipeline(orderId: string, order: any, genLogId: stri
       where: { id: orderId },
       select: { coverImageData: true },
     });
-    const coverImageData = orderWithCover?.coverImageData
+    let coverImageData: Buffer | null = orderWithCover?.coverImageData
       ? Buffer.from(orderWithCover.coverImageData)
       : null;
 
@@ -693,7 +693,7 @@ async function runGenerationPipeline(orderId: string, order: any, genLogId: stri
     logStep('pdf', 'started');
     await updateProgress(orderId, 'ASSEMBLING_PDF', 93);
 
-    let coverImage: Buffer;
+    let coverImage: Buffer | null;
     if (coverImageData) {
       coverImage = coverImageData;
       console.log(`[Generation] Using existing cover image (${coverImageData.length} bytes)`);
@@ -705,26 +705,35 @@ async function runGenerationPipeline(orderId: string, order: any, genLogId: stri
       );
     }
 
-    const pdfBuffer = await assemblePdf({
+    let pdfBuffer: Buffer | null = await assemblePdf({
       title: storyText.title,
       creatorName: order.creatorName || '',
       paragraphs: storyText.paragraphs,
-      coverImage,
+      coverImage: coverImage!,
       images: imageResult.images,
     });
 
+    // Release image buffers — no longer needed after PDF assembly
+    coverImageData = null;
+    coverImage = null;
+    imageResult.images.length = 0;
+
     await updateProgress(orderId, 'ASSEMBLING_PDF', 97);
 
-    // --- Step 4: Store PDF ---
+    // --- Step 4: Store PDF to disk ---
     const uploadsDir = path.join(__dirname, '../../uploads/pdfs');
     await fs.promises.mkdir(uploadsDir, { recursive: true });
     const pdfFilename = `story-${orderId}-${Date.now()}.pdf`;
     const pdfPath = path.join(uploadsDir, pdfFilename);
     await fs.promises.writeFile(pdfPath, pdfBuffer);
 
+    // Release PDF buffer — written to disk, no longer needed in memory
+    pdfBuffer = null;
+    global.gc?.();
+
     const pdfUrl = `/uploads/pdfs/${pdfFilename}`;
 
-    // Update status first (fast, no large binary)
+    // Update status (no large binary — disk is the primary storage)
     await prisma.order.update({
       where: { id: orderId },
       data: {
@@ -748,11 +757,19 @@ async function runGenerationPipeline(orderId: string, order: any, genLogId: stri
       }
     });
 
-    // Store PDF binary in DB async (backup for ephemeral disk) — don't block pipeline
-    prisma.order.update({
-      where: { id: orderId },
-      data: { pdfData: pdfBuffer }
-    }).catch(err => console.warn(`[Generation] Non-critical: failed to store pdfData in DB for ${orderId}:`, err.message));
+    // Store PDF binary in DB (backup for ephemeral disk — survives redeploys)
+    // Re-read from disk so only one buffer is in memory at this point
+    // (all image buffers + assemblePdf doc already freed above)
+    try {
+      const pdfForDb = await fs.promises.readFile(pdfPath);
+      await prisma.order.update({
+        where: { id: orderId },
+        data: { pdfData: pdfForDb },
+      });
+      console.log(`[Generation] pdfData stored in DB for ${orderId} (${pdfForDb.length} bytes)`);
+    } catch (dbErr: any) {
+      console.warn(`[Generation] Non-critical: failed to store pdfData in DB for ${orderId}:`, dbErr.message);
+    }
 
     console.log(`[Generation] Pipeline completed for order ${orderId}`);
 
