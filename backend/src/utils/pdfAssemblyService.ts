@@ -381,11 +381,14 @@ export async function assemblePdf(params: PdfAssemblyParams): Promise<Buffer> {
       await drawImageHalf(page, pdfDoc, images[imageIndex], 0, imageIndex);
       drawTextBlock(page, paragraphs[p], creatorName, fonts, HALF_WIDTH, p + 2);
     }
+
+    // Release image buffer after embedding — allow GC to reclaim memory
+    (images as any)[imageIndex] = null;
   }
 
-  // Serialize
+  // Serialize and return directly as Buffer (avoid keeping both pdfBytes and Buffer)
   const pdfBytes = await pdfDoc.save();
   console.log(`[PdfAssembly] PDF assembled: ${pdfBytes.length} bytes, 13 pages`);
 
-  return Buffer.from(pdfBytes);
+  return Buffer.from(pdfBytes as Uint8Array);
 }
