@@ -623,6 +623,7 @@ const AdminGenerationPage: React.FC<Props> = ({ token }) => {
                 const isFailed = order.storyStatus === 'GENERATION_FAILED';
                 const isDone = order.storyStatus === 'DISPONIBLE';
                 const isValidated = order.status === 'GENERATED';
+                const isStuck = isGenerating && !actionLoading;
                 const progress = order.generationProgress || 0;
                 const isExpanded = expandedId === order.id;
 
@@ -679,6 +680,26 @@ const AdminGenerationPage: React.FC<Props> = ({ token }) => {
 
                           {/* FAILED: Retry + Delete */}
                           {isFailed && (
+                            <>
+                              <ActionBtn
+                                $variant="warning"
+                                onClick={() => handleRegenerate(order.id)}
+                                disabled={actionLoading === order.id}
+                              >
+                                Relancer
+                              </ActionBtn>
+                              <ActionBtn
+                                $variant="danger"
+                                onClick={() => handleDeleteGeneration(order.id)}
+                                disabled={actionLoading === order.id}
+                              >
+                                Suppr.
+                              </ActionBtn>
+                            </>
+                          )}
+
+                          {/* STUCK: In generating state but no active pipeline (e.g. server restarted) */}
+                          {isStuck && !isFailed && order.storyStatus !== 'EN_COURS' && (
                             <>
                               <ActionBtn
                                 $variant="warning"
