@@ -14,7 +14,7 @@ export class ClientController {
 
       const where: any = {
         userId,
-        status: { in: ['PAID', 'DELIVERED'] }
+        status: { in: ['PAID', 'GENERATING', 'GENERATED', 'DELIVERED'] }
       };
       if (status) where.storyStatus = status;
       if (favorite === 'true') where.isFavorite = true;
@@ -77,16 +77,24 @@ export class ClientController {
       const userId = req.clientUser!.id;
       const { id } = req.params;
 
-      // 1) Requete legere : verifier existence + recuperer pdfUrl (sans charger les blobs)
+      // 1) Requete legere : verifier existence + statut + recuperer pdfUrl (sans charger les blobs)
       const order = await prisma.order.findFirst({
         where: { id, userId },
-        select: { id: true, protagonistName: true, pdfUrl: true }
+        select: { id: true, status: true, protagonistName: true, pdfUrl: true }
       });
 
       if (!order) {
         return res.status(404).json({
           success: false,
           message: 'Conte non trouve'
+        });
+      }
+
+      // Only DELIVERED orders can be downloaded by clients
+      if (order.status !== 'DELIVERED') {
+        return res.status(403).json({
+          success: false,
+          message: 'Le conte n\'est pas encore disponible au telechargement'
         });
       }
 

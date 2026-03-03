@@ -78,6 +78,7 @@ function App() {
           <Route path="/admin" element={<AdminProtectedRoute><AdminPage /></AdminProtectedRoute>} />
           <Route path="/admin/orders" element={<AdminProtectedRoute><AdminPage /></AdminProtectedRoute>} />
           <Route path="/admin/order/:orderId" element={<AdminProtectedRoute><AdminPage /></AdminProtectedRoute>} />
+          <Route path="/admin/generation" element={<AdminProtectedRoute><AdminPage /></AdminProtectedRoute>} />
           <Route path="/admin/clients" element={<AdminProtectedRoute><AdminPage /></AdminProtectedRoute>} />
           <Route path="/admin/clients/:clientId" element={<AdminProtectedRoute><AdminPage /></AdminProtectedRoute>} />
           <Route path="/exemples" element={<ExemplesPage />} />

@@ -300,6 +300,8 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string }
   PENDING: { label: 'En attente', color: '#6B7280', bg: '#F3F4F6' },
   UNPAID: { label: 'Non payee', color: '#9333EA', bg: '#F3E8FF' },
   PAID: { label: 'Payee - A traiter', color: '#D97706', bg: '#FEF3C7' },
+  GENERATING: { label: 'En generation', color: '#2563EB', bg: '#DBEAFE' },
+  GENERATED: { label: 'Prete a livrer', color: '#10B981', bg: '#D1FAE5' },
   BLOCKED: { label: 'Bloquee', color: '#DC2626', bg: '#FEE2E2' },
   DELIVERED: { label: 'Livree', color: '#059669', bg: '#D1FAE5' },
 };
@@ -420,6 +422,19 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ token })
     }
   };
 
+  const handleSendToGeneration = async (orderId: string) => {
+    try {
+      setUpdating(true);
+      setError('');
+      await ApiService.sendToGeneration(getToken(), orderId);
+      await Promise.all([loadStats(), loadActionOrders(), loadAllOrders()]);
+    } catch (err: any) {
+      setError('Erreur envoi en generation: ' + err.message);
+    } finally {
+      setUpdating(false);
+    }
+  };
+
   const handleDeleteOrder = async (orderId: string) => {
     if (!window.confirm('Supprimer cette commande definitivement ?')) return;
     try {
@@ -505,7 +520,12 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ token })
             <ActionBtn $variant="ghost" onClick={() => navigate(`/admin/order/${order.id}`)}>
               Voir
             </ActionBtn>
-            {order.pdfUrl && !order.deliveredAt && (
+            {order.status === 'PAID' && (
+              <ActionBtn onClick={() => handleSendToGeneration(order.id)} disabled={updating}>
+                Generation
+              </ActionBtn>
+            )}
+            {order.status === 'GENERATED' && (
               <ActionBtn $variant="success" onClick={() => handleDeliver(order.id)} disabled={updating}>
                 Livrer
               </ActionBtn>

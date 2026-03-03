@@ -134,6 +134,13 @@ model Order {
   storyStatus         StoryStatus @default(EN_COURS)
   deliveredAt         DateTime?
 
+  // Generation automatique
+  generationProgress   Int?
+  generationError      String?
+  generationStartedAt  DateTime?
+  storyTextJson        String?
+  isTestOrder          Boolean    @default(false)
+
   // Favoris et profil enfant
   isFavorite          Boolean @default(false)
   childProfileId      String?
@@ -142,8 +149,9 @@ model Order {
   updatedAt DateTime @updatedAt
 
   // Relations
-  user         User?         @relation(fields: [userId], references: [id])
-  childProfile ChildProfile? @relation(fields: [childProfileId], references: [id])
+  user            User?            @relation(fields: [userId], references: [id])
+  childProfile    ChildProfile?    @relation(fields: [childProfileId], references: [id])
+  generationLogs  GenerationLog[]
 
   @@map("orders")
 }
@@ -163,6 +171,22 @@ model AdminUser {
   @@map("admin_users")
 }
 
+model GenerationLog {
+  id          String    @id @default(cuid())
+  orderId     String
+  attempt     Int       @default(1)
+  status      String    // 'started' | 'completed' | 'failed'
+  startedAt   DateTime  @default(now())
+  completedAt DateTime?
+  error       String?
+  stepsJson   String?   // JSON: [{step, status, timestamp, detail}]
+  pdfUrl      String?
+  source      String    @default("generation") // 'generation' | 'manual_upload'
+  order       Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@map("generation_logs")
+}
+
 enum UserRole {
   USER
   CLUB
@@ -173,6 +197,8 @@ enum OrderStatus {
   PENDING
   UNPAID
   PAID
+  GENERATING
+  GENERATED
   BLOCKED
   DELIVERED
 }
@@ -189,7 +215,11 @@ enum PurchaseType {
 
 enum StoryStatus {
   EN_COURS
+  GENERATING_TEXT
+  GENERATING_IMAGES
+  ASSEMBLING_PDF
   DISPONIBLE
+  GENERATION_FAILED
 }
 
 enum AdminRole {

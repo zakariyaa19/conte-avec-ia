@@ -3,6 +3,7 @@ import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
 import fs from 'fs';
 import { prisma } from '../utils/database';
+import { activeGenerations } from './storyGenerationController';
 
 export class AdminController {
   // Connexion administrateur
@@ -73,6 +74,47 @@ export class AdminController {
     }
   }
 
+  // POST /api/admin/orders/:id/send-to-generation — PAID → GENERATING + launch pipeline
+  static async sendToGeneration(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+
+      if (activeGenerations.has(id)) {
+        return res.status(409).json({ success: false, message: 'Generation deja en cours pour cette commande' });
+      }
+
+      const order = await prisma.order.findUnique({
+        where: { id },
+        select: { id: true, status: true },
+      });
+
+      if (!order) {
+        return res.status(404).json({ success: false, message: 'Commande non trouvee' });
+      }
+
+      if (order.status !== 'PAID') {
+        return res.status(400).json({
+          success: false,
+          message: `La commande doit etre en statut PAID (actuel: ${order.status})`
+        });
+      }
+
+      // Change status to GENERATING
+      await prisma.order.update({
+        where: { id },
+        data: {
+          status: 'GENERATING',
+          storyStatus: 'EN_COURS',
+        },
+      });
+
+      res.json({ success: true, message: 'Commande envoyee en generation' });
+    } catch (error) {
+      console.error('Erreur envoi en generation:', error);
+      res.status(500).json({ success: false, message: 'Erreur lors de l\'envoi en generation' });
+    }
+  }
+
   // Statistiques du dashboard
   static async getDashboardStats(req: Request, res: Response) {
     try {
@@ -124,8 +166,8 @@ export class AdminController {
       if (purchaseType) where.purchaseType = purchaseType;
       if (search) {
         where.OR = [
-          { protagonistName: { contains: search as string } },
-          { user: { email: { contains: search as string } } }
+          { protagonistName: { contains: search as string, mode: 'insensitive' } },
+          { user: { email: { contains: search as string, mode: 'insensitive' } } }
         ];
       }
       if (dateFrom || dateTo) {
@@ -138,9 +180,9 @@ export class AdminController {
         }
       }
 
-      // Filtre "a traiter" : commandes payees non encore livrees
+      // Filtre "a traiter" : commandes payees ou en generation
       if (actionRequired === 'true') {
-        where.status = 'PAID';
+        where.status = { in: ['PAID', 'GENERATING'] };
       }
 
       const [orders, total] = await Promise.all([
@@ -411,6 +453,13 @@ export class AdminController {
         });
       }
 
+      if (order.status !== 'GENERATED') {
+        return res.status(400).json({
+          success: false,
+          message: `La commande doit etre en statut GENERATED pour livrer (actuel: ${order.status})`
+        });
+      }
+
       if (!order.pdfUrl) {
         return res.status(400).json({
           success: false,
@@ -468,9 +517,9 @@ export class AdminController {
       if (role) where.role = role;
       if (search) {
         where.OR = [
-          { email: { contains: search as string } },
-          { firstName: { contains: search as string } },
-          { lastName: { contains: search as string } }
+          { email: { contains: search as string, mode: 'insensitive' } },
+          { firstName: { contains: search as string, mode: 'insensitive' } },
+          { lastName: { contains: search as string, mode: 'insensitive' } }
         ];
       }
 
@@ -627,13 +676,13 @@ export class AdminController {
         clubSubscribersActive,
         totalStories
       ] = await Promise.all([
-        // A traiter : commandes payees non encore livrees
-        prisma.order.count({ where: { status: 'PAID' } }),
+        // A traiter : commandes payees ou en generation
+        prisma.order.count({ where: { status: { in: ['PAID', 'GENERATING'] } } }),
         // Non payees : commandes abandonnees
         prisma.order.count({ where: { status: 'UNPAID' } }),
-        // Chiffre d'affaires : somme des commandes payees ou livrees
+        // Chiffre d'affaires : somme des commandes payees, en generation, generees ou livrees
         prisma.order.aggregate({
-          where: { status: { in: ['PAID', 'DELIVERED'] } },
+          where: { status: { in: ['PAID', 'GENERATING', 'GENERATED', 'DELIVERED'] } },
           _sum: { price: true }
         }),
         // Abonnements Club (actifs + en cours d'annulation)
@@ -641,7 +690,7 @@ export class AdminController {
         // Abonnements Club qui vont renouveler (actifs uniquement, pas canceling)
         prisma.user.count({ where: { role: 'CLUB', subscriptionStatus: 'active' } }),
         // Total contes generes (tout sauf PENDING et UNPAID)
-        prisma.order.count({ where: { status: { in: ['PAID', 'DELIVERED', 'BLOCKED'] } } })
+        prisma.order.count({ where: { status: { in: ['PAID', 'GENERATING', 'GENERATED', 'DELIVERED', 'BLOCKED'] } } })
       ]);
 
       // MRR = nombre d'abonnes qui vont renouveler x 12.99€

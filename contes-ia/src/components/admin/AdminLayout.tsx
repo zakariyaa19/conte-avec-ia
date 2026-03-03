@@ -158,6 +158,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   const navItems = [
     { path: '/admin', label: 'Accueil', icon: '📊', exact: true },
     { path: '/admin/orders', label: 'Commandes', icon: '📦' },
+    { path: '/admin/generation', label: 'Generation', icon: '✨' },
     { path: '/admin/clients', label: 'Clients', icon: '👥' },
   ];
 

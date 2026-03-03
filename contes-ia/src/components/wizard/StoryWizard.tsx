@@ -117,7 +117,7 @@ const RELIGION_OPTIONS = [
 
 /* ══════════════════════════════════════════════ */
 
-const ALL_STEPS = ['age','theme','occasion','style','hero','appearance','photo','choice','extras1','extras2','cover','payment'] as const;
+const ALL_STEPS = ['age','theme','occasion','style','hero','appearance','choice','extras1','extras2','cover','payment'] as const;
 type StepId = (typeof ALL_STEPS)[number];
 
 interface StoryWizardProps {
@@ -161,8 +161,8 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
 
   useEffect(() => { wantsExtrasRef.current = wantsExtras; }, [wantsExtras]);
 
-  const totalSteps = wantsExtras ? 12 : 10;
-  const visiblePos = (!wantsExtras && currentStep > 7) ? currentStep - 2 : currentStep;
+  const totalSteps = wantsExtras ? 11 : 9;
+  const visiblePos = (!wantsExtras && currentStep > 6) ? currentStep - 2 : currentStep;
   const progress = Math.min(((visiblePos + 1) / totalSteps) * 100, 100);
 
   // Scroll reset
@@ -186,13 +186,13 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
 
   const goNext = useCallback(() => {
     let next = currentStep + 1;
-    if (!wantsExtrasRef.current && next === 8) next = 10;
+    if (!wantsExtrasRef.current && next === 7) next = 9;
     goToStep(next);
   }, [currentStep, goToStep]);
 
   const goBack = useCallback(() => {
     let prev = currentStep - 1;
-    if (!wantsExtrasRef.current && prev === 9) prev = 7;
+    if (!wantsExtrasRef.current && prev === 8) prev = 6;
     goToStep(prev);
   }, [currentStep, goToStep]);
 
@@ -217,7 +217,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) { onUpdate({ photo: file }); setTimeout(() => goNext(), 500); }
+    if (file) { onUpdate({ photo: file, appearanceMode: 'photo', eyeColor: '', hairColor: '', skinColor: '' }); }
   };
 
   const handleProductSelection = (purchaseType: 'single' | 'club') => {
@@ -259,7 +259,9 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
   const handleFormSubmit = () => { setGlobalError(''); if (validatePaymentForm()) onSubmit(); };
 
   const isHeroComplete = !!(formData.protagonistName && formData.protagonistAge && formData.protagonistGender);
-  const isAppearanceComplete = !!(formData.eyeColor && formData.hairColor && formData.skinColor);
+  const isAppearanceComplete = formData.appearanceMode === 'photo'
+    ? !!formData.photo
+    : !!(formData.eyeColor && formData.hairColor && formData.skinColor);
   const isPaymentInfoComplete = !!(formData.productType && formData.userEmail && formData.firstName && formData.lastName);
 
   /* ══════════════════════════════════════════════
@@ -386,56 +388,150 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
         return (
           <>
             <StepTitle>Son apparence</StepTitle>
-            <ColorSectionLabel>Couleur des yeux</ColorSectionLabel>
-            <ColorCardGrid>
-              {EYE_OPTIONS.map((o) => (
-                <ColorCard key={o.value} $isSelected={formData.eyeColor === o.value} $color={o.color}
-                  onClick={() => onUpdate({ eyeColor: o.value })}>
-                  <ColorBubble $color={o.color} $isSelected={formData.eyeColor === o.value} />
-                  <ColorLabel>{o.label}</ColorLabel>
-                </ColorCard>
-              ))}
-            </ColorCardGrid>
-            <div style={{ height: theme.spacing.lg }} />
-            <ColorSectionLabel>Couleur des cheveux</ColorSectionLabel>
-            <ColorCardGrid>
-              {HAIR_OPTIONS.map((o) => (
-                <ColorCard key={o.value} $isSelected={formData.hairColor === o.value} $color={o.color}
-                  onClick={() => onUpdate({ hairColor: o.value })}>
-                  <ColorBubble $color={o.color} $isSelected={formData.hairColor === o.value} />
-                  <ColorLabel>{o.label}</ColorLabel>
-                </ColorCard>
-              ))}
-            </ColorCardGrid>
-            <div style={{ height: theme.spacing.lg }} />
-            <ColorSectionLabel>Couleur de la peau</ColorSectionLabel>
-            <ColorCardGrid>
-              {SKIN_OPTIONS.map((o) => (
-                <ColorCard key={o.value} $isSelected={formData.skinColor === o.value} $color={o.color}
-                  onClick={() => onUpdate({ skinColor: o.value })}>
-                  <ColorBubble $color={o.color} $isSelected={formData.skinColor === o.value} />
-                  <ColorLabel>{o.label}</ColorLabel>
-                </ColorCard>
-              ))}
-            </ColorCardGrid>
-            <ContinueButton $isReady={isAppearanceComplete} disabled={!isAppearanceComplete} onClick={goNext}>
-              Continuer
-            </ContinueButton>
-          </>
-        );
 
-      case 'photo':
-        return (
-          <>
-            <StepTitle>Ajoutez sa photo</StepTitle>
-            <StepSubtitle>Le personnage du conte ressemblera à votre enfant</StepSubtitle>
-            <PhotoUploadZone $hasPhoto={!!formData.photo} onClick={() => fileInputRef.current?.click()}>
-              <PhotoIcon>{formData.photo ? '✓' : '📷'}</PhotoIcon>
-              <PhotoMainText>{formData.photo ? (formData.photo as File).name : 'Cliquez pour ajouter une photo'}</PhotoMainText>
-              <PhotoSubText>{formData.photo ? 'Cliquez pour changer' : 'Optionnel — améliore la personnalisation'}</PhotoSubText>
-              <HiddenFileInput ref={fileInputRef} type="file" accept="image/*" onChange={handleFileUpload} />
-            </PhotoUploadZone>
-            <SkipLink onClick={goNext}>Passer cette étape →</SkipLink>
+            {/* ---- Mode choice ---- */}
+            {!formData.appearanceMode && (
+              <div style={{ display: 'flex', gap: '16px', width: '100%', maxWidth: 520, justifyContent: 'center', flexWrap: 'wrap' }}>
+                {/* Photo card */}
+                <button onClick={() => onUpdate({ appearanceMode: 'photo', eyeColor: '', hairColor: '', skinColor: '' })} style={{
+                  flex: '1 1 220px', maxWidth: 250, display: 'flex', flexDirection: 'column', alignItems: 'center',
+                  padding: '20px 16px 18px', border: '2px solid transparent', borderRadius: 20,
+                  cursor: 'pointer', transition: 'all 0.3s ease', WebkitTapHighlightColor: 'transparent',
+                  background: `linear-gradient(145deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover})`,
+                  boxShadow: `0 8px 28px ${theme.colors.accent.coral}35`,
+                }}>
+                  <div style={{ width: 72, height: 72, marginBottom: 10, position: 'relative' }}>
+                    <svg viewBox="0 0 80 80" fill="none" style={{ width: '100%', height: '100%' }}>
+                      <circle cx="40" cy="40" r="36" fill="rgba(255,255,255,0.2)" />
+                      <rect x="22" y="26" width="36" height="28" rx="4" fill="white" opacity="0.9">
+                        <animate attributeName="opacity" values="0.9;1;0.9" dur="2s" repeatCount="indefinite" />
+                      </rect>
+                      <circle cx="40" cy="38" r="8" fill="none" stroke={theme.colors.accent.coral} strokeWidth="2.5">
+                        <animate attributeName="r" values="8;9;8" dur="2s" repeatCount="indefinite" />
+                      </circle>
+                      <circle cx="40" cy="38" r="4" fill={theme.colors.accent.coral} opacity="0.6" />
+                      <rect x="50" y="29" width="5" height="3" rx="1" fill={theme.colors.accent.coral} opacity="0.7" />
+                      <circle cx="40" cy="62" r="5" fill="rgba(255,255,255,0.25)">
+                        <animate attributeName="r" values="4;6;4" dur="1.5s" repeatCount="indefinite" />
+                      </circle>
+                      <path d="M38 61 L42 61 L40 64 Z" fill="rgba(255,255,255,0.4)" />
+                    </svg>
+                  </div>
+                  <span style={{ fontFamily: theme.fonts.heading, fontSize: 16, fontWeight: 700, color: 'white', textAlign: 'center', lineHeight: 1.2 }}>
+                    Importer une photo
+                  </span>
+                  <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.85)', textAlign: 'center', marginTop: 4, lineHeight: 1.3 }}>
+                    Le personnage ressemblera a votre enfant
+                  </span>
+                </button>
+
+                {/* Manual card */}
+                <button onClick={() => onUpdate({ appearanceMode: 'manual', photo: undefined })} style={{
+                  flex: '1 1 220px', maxWidth: 250, display: 'flex', flexDirection: 'column', alignItems: 'center',
+                  padding: '20px 16px 18px', border: '2px solid rgba(0,0,0,0.08)', borderRadius: 20,
+                  cursor: 'pointer', transition: 'all 0.3s ease', WebkitTapHighlightColor: 'transparent',
+                  background: 'white', boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
+                }}>
+                  <div style={{ width: 72, height: 72, marginBottom: 10, position: 'relative' }}>
+                    <svg viewBox="0 0 80 80" fill="none" style={{ width: '100%', height: '100%' }}>
+                      <circle cx="40" cy="40" r="36" fill={`${theme.colors.accent.coral}12`} />
+                      {/* Eye */}
+                      <ellipse cx="29" cy="32" rx="8" ry="6" fill="#E8D5C4" stroke="#CCC" strokeWidth="1" />
+                      <circle cx="29" cy="32" r="4" fill="#4169E1">
+                        <animate attributeName="r" values="4;3.5;4" dur="2.5s" repeatCount="indefinite" />
+                      </circle>
+                      <circle cx="28" cy="31" r="1.2" fill="white" />
+                      {/* Hair swatch */}
+                      <circle cx="53" cy="28" r="8" fill="#FFD700">
+                        <animate attributeName="fill" values="#FFD700;#8B4513;#1a1a1a;#D35400;#FFD700" dur="4s" repeatCount="indefinite" />
+                      </circle>
+                      <path d="M48 24 Q53 18, 58 24" stroke="rgba(0,0,0,0.15)" strokeWidth="1.5" fill="none" />
+                      <path d="M49 28 Q53 22, 57 28" stroke="rgba(0,0,0,0.1)" strokeWidth="1" fill="none" />
+                      {/* Skin swatches */}
+                      <circle cx="28" cy="54" r="6" fill="#FDDCB5">
+                        <animate attributeName="fill" values="#FDDCB5;#E8B88A;#C8915E;#8D5524;#FDDCB5" dur="5s" repeatCount="indefinite" />
+                      </circle>
+                      <circle cx="44" cy="54" r="6" fill="#E8B88A">
+                        <animate attributeName="fill" values="#E8B88A;#C8915E;#8D5524;#FDDCB5;#E8B88A" dur="5s" repeatCount="indefinite" />
+                      </circle>
+                      <circle cx="60" cy="54" r="6" fill="#C8915E">
+                        <animate attributeName="fill" values="#C8915E;#8D5524;#FDDCB5;#E8B88A;#C8915E" dur="5s" repeatCount="indefinite" />
+                      </circle>
+                      {/* Palette icon */}
+                      <path d="M20 54 Q16 46, 20 40" stroke={theme.colors.accent.coral} strokeWidth="1.5" fill="none" opacity="0.3" />
+                    </svg>
+                  </div>
+                  <span style={{ fontFamily: theme.fonts.heading, fontSize: 16, fontWeight: 700, color: theme.colors.text.primary, textAlign: 'center', lineHeight: 1.2 }}>
+                    Personnaliser
+                  </span>
+                  <span style={{ fontSize: 12, color: theme.colors.text.secondary, textAlign: 'center', marginTop: 4, lineHeight: 1.3 }}>
+                    Choisir yeux, cheveux et peau
+                  </span>
+                </button>
+              </div>
+            )}
+
+            {/* ---- Photo mode ---- */}
+            {formData.appearanceMode === 'photo' && (
+              <>
+                <PhotoUploadZone $hasPhoto={!!formData.photo} onClick={() => fileInputRef.current?.click()}>
+                  <PhotoIcon>{formData.photo ? '✓' : '📷'}</PhotoIcon>
+                  <PhotoMainText>{formData.photo ? (formData.photo as File).name : 'Cliquez pour ajouter une photo'}</PhotoMainText>
+                  <PhotoSubText>{formData.photo ? 'Cliquez pour changer' : 'Photo de face, bien eclairee'}</PhotoSubText>
+                  <HiddenFileInput ref={fileInputRef} type="file" accept="image/*" onChange={handleFileUpload} />
+                </PhotoUploadZone>
+                <SkipLink onClick={() => onUpdate({ appearanceMode: undefined, photo: undefined })}>
+                  Changer de methode
+                </SkipLink>
+              </>
+            )}
+
+            {/* ---- Manual mode ---- */}
+            {formData.appearanceMode === 'manual' && (
+              <>
+                <ColorSectionLabel>Couleur des yeux</ColorSectionLabel>
+                <ColorCardGrid>
+                  {EYE_OPTIONS.map((o) => (
+                    <ColorCard key={o.value} $isSelected={formData.eyeColor === o.value} $color={o.color}
+                      onClick={() => onUpdate({ eyeColor: o.value })}>
+                      <ColorBubble $color={o.color} $isSelected={formData.eyeColor === o.value} />
+                      <ColorLabel>{o.label}</ColorLabel>
+                    </ColorCard>
+                  ))}
+                </ColorCardGrid>
+                <div style={{ height: theme.spacing.lg }} />
+                <ColorSectionLabel>Couleur des cheveux</ColorSectionLabel>
+                <ColorCardGrid>
+                  {HAIR_OPTIONS.map((o) => (
+                    <ColorCard key={o.value} $isSelected={formData.hairColor === o.value} $color={o.color}
+                      onClick={() => onUpdate({ hairColor: o.value })}>
+                      <ColorBubble $color={o.color} $isSelected={formData.hairColor === o.value} />
+                      <ColorLabel>{o.label}</ColorLabel>
+                    </ColorCard>
+                  ))}
+                </ColorCardGrid>
+                <div style={{ height: theme.spacing.lg }} />
+                <ColorSectionLabel>Couleur de la peau</ColorSectionLabel>
+                <ColorCardGrid>
+                  {SKIN_OPTIONS.map((o) => (
+                    <ColorCard key={o.value} $isSelected={formData.skinColor === o.value} $color={o.color}
+                      onClick={() => onUpdate({ skinColor: o.value })}>
+                      <ColorBubble $color={o.color} $isSelected={formData.skinColor === o.value} />
+                      <ColorLabel>{o.label}</ColorLabel>
+                    </ColorCard>
+                  ))}
+                </ColorCardGrid>
+                <SkipLink onClick={() => onUpdate({ appearanceMode: undefined, eyeColor: '', hairColor: '', skinColor: '' })}>
+                  Changer de methode
+                </SkipLink>
+              </>
+            )}
+
+            {formData.appearanceMode && (
+              <ContinueButton $isReady={isAppearanceComplete} disabled={!isAppearanceComplete} onClick={goNext}>
+                Continuer
+              </ContinueButton>
+            )}
           </>
         );
 
@@ -446,13 +542,13 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
             <StepSubtitle>Que souhaitez-vous faire ?</StepSubtitle>
             <div style={{ display: 'flex', flexDirection: 'column', gap: theme.spacing.lg, width: '100%', alignItems: 'center' }}>
               <ChoiceCard $variant="primary" onClick={() => {
-                setWantsExtras(false); wantsExtrasRef.current = false; goToStep(10);
+                setWantsExtras(false); wantsExtrasRef.current = false; goToStep(9);
               }}>
                 <ChoiceTitle $variant="primary">Découvrir mon conte</ChoiceTitle>
                 <ChoiceDesc $variant="primary">Générer la couverture maintenant</ChoiceDesc>
               </ChoiceCard>
               <ChoiceCard $variant="secondary" onClick={() => {
-                setWantsExtras(true); wantsExtrasRef.current = true; goToStep(8);
+                setWantsExtras(true); wantsExtrasRef.current = true; goToStep(7);
               }}>
                 <ChoiceTitle $variant="secondary">Personnaliser davantage</ChoiceTitle>
                 <ChoiceDesc $variant="secondary">Message, langue, détails, personnages...</ChoiceDesc>

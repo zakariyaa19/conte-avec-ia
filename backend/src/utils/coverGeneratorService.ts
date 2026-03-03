@@ -7,9 +7,9 @@ export interface CoverGenerationParams {
   protagonistName: string;
   protagonistAge: string;
   protagonistGender: string;
-  eyeColor: string;
-  hairColor: string;
-  skinColor: string;
+  eyeColor?: string;
+  hairColor?: string;
+  skinColor?: string;
   illustrationStyle: string;
   generalTheme: string;
   customTheme?: string;
@@ -81,9 +81,9 @@ export function computeParamsHash(params: CoverGenerationParams, hasPhoto: boole
     params.protagonistName,
     params.protagonistAge,
     params.protagonistGender,
-    params.eyeColor,
-    params.hairColor,
-    params.skinColor,
+    params.eyeColor || '',
+    params.hairColor || '',
+    params.skinColor || '',
     params.hobbies || '',
     params.specialEvents || '',
     hasPhoto ? 'with-photo' : 'no-photo',
@@ -269,14 +269,21 @@ function getAgeDescription(ageRange: string | undefined, protagonistAge: string)
   };
 }
 
-function buildCharacterDescription(params: CoverGenerationParams, photoAnalysis: string | null): string {
+function buildCharacterDescription(params: CoverGenerationParams, photoAnalysis: string | null, hasPhoto: boolean): string {
   const genderWord = params.protagonistGender === 'girl' ? 'girl' : 'boy';
   const { ageLabel, bodyType } = getAgeDescription(params.ageRange, params.protagonistAge);
 
   if (photoAnalysis) {
+    // Photo analyzed successfully — use the description from Vision API
     return `${bodyType} (${ageLabel} ${genderWord}). IMPORTANT — this character must closely match this real child's appearance: ${photoAnalysis}. Ensure the illustrated character is clearly recognizable as this specific child, with matching skin tone, hair, facial features, and AGE-APPROPRIATE body proportions.`;
   }
 
+  if (hasPhoto) {
+    // Photo was provided but analysis failed — do NOT inject manual colors
+    return `${bodyType} — a cheerful ${ageLabel} ${genderWord}. The character's appearance should be based on the provided reference photo. Cute and expressive face, friendly smile.`;
+  }
+
+  // Manual mode — use selected colors
   const eyeColorMap: Record<string, string> = {
     brown: 'warm brown', blue: 'bright blue', green: 'vivid green',
     hazel: 'hazel', gray: 'soft gray', amber: 'amber golden',
@@ -291,9 +298,9 @@ function buildCharacterDescription(params: CoverGenerationParams, photoAnalysis:
     light: 'light fair', medium: 'medium warm', olive: 'olive tan', dark: 'dark brown'
   };
 
-  const eyes = eyeColorMap[params.eyeColor] || params.eyeColor;
-  const hair = hairColorMap[params.hairColor] || params.hairColor;
-  const skin = skinColorMap[params.skinColor] || params.skinColor;
+  const eyes = eyeColorMap[params.eyeColor || 'brown'] || params.eyeColor || 'warm brown';
+  const hair = hairColorMap[params.hairColor || 'brown'] || params.hairColor || 'chestnut brown';
+  const skin = skinColorMap[params.skinColor || 'medium'] || params.skinColor || 'medium warm';
 
   return `${bodyType} — a cheerful ${ageLabel} ${genderWord} with ${skin} skin, ${eyes} eyes and ${hair} hair, cute and expressive face, friendly smile`;
 }
@@ -431,7 +438,7 @@ export async function generateCoverImage(
   }
 
   // 3. Description du personnage
-  const characterDescription = buildCharacterDescription(params, photoAnalysis);
+  const characterDescription = buildCharacterDescription(params, photoAnalysis, !!photoBase64);
 
   // 4. Prompt complet
   const prompt = buildCoverPrompt(params, characterDescription, title);

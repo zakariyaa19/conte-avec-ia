@@ -22,9 +22,10 @@ export interface StoryFormData {
   protagonistName: string;
   protagonistAge: string;
   protagonistGender: 'boy' | 'girl';
-  eyeColor: string;
-  hairColor: string;
-  skinColor: string;
+  appearanceMode?: 'photo' | 'manual';
+  eyeColor?: string;
+  hairColor?: string;
+  skinColor?: string;
   photo?: File;
   
   // Langue du conte

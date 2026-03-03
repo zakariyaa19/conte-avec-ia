@@ -18,9 +18,9 @@ ${order.language ? `Langue du conte: ${order.language}` : ''}
 Nom: ${order.protagonistName}
 Age: ${order.protagonistAge || 'Non specifie'}
 ${order.protagonistGender ? `Sexe: ${order.protagonistGender === 'boy' ? 'Garcon' : 'Fille'}` : ''}
-Couleur des yeux: ${order.eyeColor || 'Non specifie'}
+${order.photoUrl ? `Photo fournie: Oui` : `Couleur des yeux: ${order.eyeColor || 'Non specifie'}
 Couleur des cheveux: ${order.hairColor || 'Non specifie'}
-Couleur de la peau: ${order.skinColor || 'Non specifie'}
+Couleur de la peau: ${order.skinColor || 'Non specifie'}`}
 ${order.hobbies ? `Loisirs: ${order.hobbies}` : ''}
 ${order.favoriteDish ? `Plat prefere: ${order.favoriteDish}` : ''}
 ${order.specialEvents ? `Evenements speciaux: ${order.specialEvents}` : ''}

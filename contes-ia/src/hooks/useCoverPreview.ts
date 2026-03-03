@@ -13,17 +13,20 @@ interface UseCoverPreviewReturn {
 
 // Vérifie si les champs essentiels (Phase 1) sont remplis
 export function isPhase1Complete(formData: Partial<StoryFormData>): boolean {
-  return !!(
+  const baseComplete = !!(
     formData.protagonistName &&
     formData.protagonistAge &&
     formData.protagonistGender &&
-    formData.eyeColor &&
-    formData.hairColor &&
-    formData.skinColor &&
     formData.illustrationStyle &&
     formData.generalTheme &&
     formData.specificSubject
   );
+  if (!baseComplete) return false;
+
+  // Photo mode: only need a photo
+  if (formData.appearanceMode === 'photo') return !!formData.photo;
+  // Manual mode (or legacy orders with colors): need all 3 colors
+  return !!(formData.eyeColor && formData.hairColor && formData.skinColor);
 }
 
 // Convertir File en base64
@@ -71,13 +74,14 @@ export function useCoverPreview(formData: Partial<StoryFormData>): UseCoverPrevi
         }
       }
 
+      const isManualMode = formData.appearanceMode !== 'photo';
       const formFields = {
         protagonistName: formData.protagonistName,
         protagonistAge: formData.protagonistAge,
         protagonistGender: formData.protagonistGender,
-        eyeColor: formData.eyeColor,
-        hairColor: formData.hairColor,
-        skinColor: formData.skinColor,
+        eyeColor: isManualMode ? formData.eyeColor : undefined,
+        hairColor: isManualMode ? formData.hairColor : undefined,
+        skinColor: isManualMode ? formData.skinColor : undefined,
         illustrationStyle: formData.illustrationStyle,
         generalTheme: formData.generalTheme,
         customTheme: formData.customTheme,

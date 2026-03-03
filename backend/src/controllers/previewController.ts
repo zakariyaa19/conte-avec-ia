@@ -20,8 +20,11 @@ export class PreviewController {
         });
       }
 
-      // Valider les champs obligatoires
-      const required = ['protagonistName', 'protagonistAge', 'protagonistGender', 'eyeColor', 'hairColor', 'skinColor', 'illustrationStyle', 'generalTheme', 'specificSubject'];
+      // Valider les champs obligatoires (couleurs requises seulement si pas de photo)
+      const required = ['protagonistName', 'protagonistAge', 'protagonistGender', 'illustrationStyle', 'generalTheme', 'specificSubject'];
+      if (!photoBase64) {
+        required.push('eyeColor', 'hairColor', 'skinColor');
+      }
       const missing = required.filter(f => !formData[f]);
       if (missing.length > 0) {
         return res.status(400).json({

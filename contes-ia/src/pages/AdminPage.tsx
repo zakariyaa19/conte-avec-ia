@@ -5,6 +5,7 @@ import AdminDashboardPage from './AdminDashboardPage';
 import AdminOrderDetailPage from './AdminOrderDetailPage';
 import AdminClientsPage from './AdminClientsPage';
 import AdminClientDetailPage from './AdminClientDetailPage';
+import AdminGenerationPage from './AdminGenerationPage';
 
 export const AdminPage: React.FC = () => {
   const { orderId, clientId } = useParams<{ orderId?: string; clientId?: string }>();
@@ -21,6 +22,10 @@ export const AdminPage: React.FC = () => {
 
   if (clientId) {
     return <AdminClientDetailPage token={token} />;
+  }
+
+  if (location.pathname === '/admin/generation') {
+    return <AdminGenerationPage token={token} />;
   }
 
   if (location.pathname === '/admin/clients') {

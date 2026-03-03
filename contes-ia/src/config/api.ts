@@ -472,6 +472,119 @@ export class ApiService {
     });
   }
 
+  // Get base URL (used for PDF preview links)
+  static getBaseUrl(): string {
+    return this.baseUrl;
+  }
+
+  // ========== Generation Workflow (Admin) ==========
+
+  static async sendToGeneration(token: string, orderId: string): Promise<{ success: boolean; message: string }> {
+    return this.request(`/api/admin/orders/${orderId}/send-to-generation`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+  }
+
+  static async regenerateStory(token: string, orderId: string): Promise<{ success: boolean; message: string }> {
+    return this.request(`/api/admin/generation/orders/${orderId}/regenerate`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+  }
+
+  static async validateGeneration(token: string, orderId: string): Promise<{ success: boolean; message: string }> {
+    return this.request(`/api/admin/generation/orders/${orderId}/validate`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+  }
+
+  static async deleteGeneration(token: string, orderId: string): Promise<{ success: boolean; message: string }> {
+    return this.request(`/api/admin/generation/orders/${orderId}/delete-generation`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+  }
+
+  static async replacePdf(token: string, orderId: string, file: File): Promise<{ success: boolean; message: string }> {
+    const formData = new FormData();
+    formData.append('pdf', file);
+    return this.request(`/api/admin/generation/orders/${orderId}/replace-pdf`, {
+      method: 'POST',
+      body: formData,
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+  }
+
+  static async getGenerationLogs(token: string, orderId: string): Promise<{ success: boolean; data: any[] }> {
+    return this.request(`/api/admin/generation/orders/${orderId}/logs`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+  }
+
+  // ========== Story Generation (Admin) ==========
+
+  static async getGenerationQueue(token: string): Promise<{ success: boolean; data: any[] }> {
+    return this.request('/api/admin/generation/orders', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+  }
+
+  static async startGeneration(token: string, orderId: string): Promise<{ success: boolean; message: string }> {
+    return this.request(`/api/admin/generation/orders/${orderId}/generate`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+  }
+
+  static async getGenerationStatus(token: string, orderId: string): Promise<{ success: boolean; data: any }> {
+    return this.request(`/api/admin/generation/orders/${orderId}/status`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+  }
+
+  static async retryGeneration(token: string, orderId: string): Promise<{ success: boolean; message: string }> {
+    return this.request(`/api/admin/generation/orders/${orderId}/retry`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+  }
+
+  static async createTestOrder(token: string, data?: any, photoFile?: File): Promise<{ success: boolean; data: any; message?: string }> {
+    const formData = new FormData();
+
+    // Ajouter tous les champs du formulaire
+    if (data) {
+      Object.entries(data).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== '') {
+          formData.append(key, String(value));
+        }
+      });
+    }
+
+    // Ajouter la photo si presente
+    if (photoFile) {
+      formData.append('photo', photoFile);
+    }
+
+    const response = await fetch(`${this.baseUrl}/api/admin/generation/test-order`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        // Pas de Content-Type — le navigateur le met automatiquement avec le boundary multipart
+      },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: 'Erreur serveur' }));
+      throw new Error(errorData.message || `HTTP ${response.status}`);
+    }
+
+    return response.json();
+  }
+
   // Generate AI cover preview
   static async generateCoverPreview(data: {
     formData: Record<string, any>;

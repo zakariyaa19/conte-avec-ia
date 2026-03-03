@@ -330,6 +330,8 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string }
   PENDING: { label: 'En attente', color: '#6B7280', bg: '#F3F4F6' },
   UNPAID: { label: 'Non payee', color: '#9333EA', bg: '#F3E8FF' },
   PAID: { label: 'Payee - A traiter', color: '#D97706', bg: '#FEF3C7' },
+  GENERATING: { label: 'En generation', color: '#2563EB', bg: '#DBEAFE' },
+  GENERATED: { label: 'Prete a livrer', color: '#10B981', bg: '#D1FAE5' },
   BLOCKED: { label: 'Bloquee', color: '#DC2626', bg: '#FEE2E2' },
   DELIVERED: { label: 'Livree', color: '#059669', bg: '#D1FAE5' },
 };
@@ -431,6 +433,21 @@ export const AdminOrderDetailPage: React.FC<AdminOrderDetailPageProps> = ({ toke
     }
   };
 
+  const handleSendToGeneration = async () => {
+    try {
+      setUpdating(true);
+      setError('');
+      await ApiService.sendToGeneration(getToken(), orderId!);
+      setUploadSuccess('Commande envoyee en generation.');
+      await loadOrderDetails();
+      setTimeout(() => setUploadSuccess(''), 3000);
+    } catch (err: any) {
+      setError('Erreur envoi en generation: ' + err.message);
+    } finally {
+      setUpdating(false);
+    }
+  };
+
   const downloadPhoto = async (photoUrl: string, filename: string) => {
     try {
       const response = await fetch(photoUrl);
@@ -486,11 +503,14 @@ export const AdminOrderDetailPage: React.FC<AdminOrderDetailPageProps> = ({ toke
 
   const cfg = STATUS_CONFIG[order.status] || { label: order.status, color: '#6B7280', bg: '#F3F4F6' };
 
-  // Timeline steps
+  // Timeline 5 steps
+  const isGenerating = ['GENERATING', 'GENERATED', 'DELIVERED'].includes(order.status);
+  const isGenerated = ['GENERATED', 'DELIVERED'].includes(order.status);
   const steps = [
     { label: 'Cree', date: order.createdAt },
     { label: 'Paye', date: order.paidAt },
-    { label: 'PDF genere', date: order.generatedAt || (order.pdfUrl ? order.updatedAt : null) },
+    { label: 'Generation', date: isGenerating ? (order.generationStartedAt || order.updatedAt) : null },
+    { label: 'Genere', date: isGenerated ? (order.generatedAt || order.updatedAt) : null },
     { label: 'Livre', date: order.deliveredAt },
   ];
 
@@ -731,23 +751,39 @@ export const AdminOrderDetailPage: React.FC<AdminOrderDetailPageProps> = ({ toke
         )}
 
 
-        {/* PDF & Delivery */}
+        {/* Workflow & Actions */}
         <Card>
-          <CardHeader>PDF & Livraison</CardHeader>
+          <CardHeader>Actions</CardHeader>
           <CardBody>
-            {order.pdfUrl ? (
-              <>
-                <PdfInfo>PDF: {order.pdfUrl.split('/').pop()}</PdfInfo>
-                {order.storyStatus === 'DISPONIBLE' && !order.deliveredAt && (
-                  <DeliverButton onClick={handleDeliver} disabled={delivering}>
-                    {delivering ? 'Livraison...' : 'Livrer au client'}
-                  </DeliverButton>
-                )}
-                {order.deliveredAt && (
-                  <PdfInfo>Livre le {new Date(order.deliveredAt).toLocaleDateString('fr-FR')}</PdfInfo>
-                )}
-              </>
-            ) : (
+            {/* Send to generation button for PAID orders */}
+            {order.status === 'PAID' && (
+              <DeliverButton
+                onClick={handleSendToGeneration}
+                disabled={updating}
+                style={{ background: theme.colors.admin.accent, marginBottom: theme.spacing.sm }}
+              >
+                {updating ? 'Envoi...' : 'Envoyer en generation'}
+              </DeliverButton>
+            )}
+
+            {/* PDF info */}
+            {order.pdfUrl && (
+              <PdfInfo>PDF: {order.pdfUrl.split('/').pop()}</PdfInfo>
+            )}
+
+            {/* Deliver button — only for GENERATED orders */}
+            {order.status === 'GENERATED' && (
+              <DeliverButton onClick={handleDeliver} disabled={delivering}>
+                {delivering ? 'Livraison...' : 'Livrer au client'}
+              </DeliverButton>
+            )}
+
+            {order.deliveredAt && (
+              <PdfInfo>Livre le {new Date(order.deliveredAt).toLocaleDateString('fr-FR')}</PdfInfo>
+            )}
+
+            {/* PDF upload zone — only if no PDF */}
+            {!order.pdfUrl && (
               <>
                 <input
                   type="file"
