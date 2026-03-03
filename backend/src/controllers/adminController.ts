@@ -4,6 +4,7 @@ import * as jwt from 'jsonwebtoken';
 import fs from 'fs';
 import { prisma } from '../utils/database';
 import { activeGenerations } from './storyGenerationController';
+import { uploadPdfToCloudinary } from '../utils/cloudinaryService';
 
 export class AdminController {
   // Connexion administrateur
@@ -405,16 +406,17 @@ export class AdminController {
         });
       }
 
-      const pdfUrl = `/uploads/pdfs/${req.file.filename}`;
+      const pdfBuffer = await fs.promises.readFile(req.file.path);
+      const publicId = `story-${id}-${Date.now()}`;
+      const pdfUrl = await uploadPdfToCloudinary(pdfBuffer, publicId);
 
-      // Lire le contenu du fichier pour le stocker en base (survit aux redeploiements)
-      const pdfData = await fs.promises.readFile(req.file.path);
+      // Clean up temp file
+      try { await fs.promises.unlink(req.file.path); } catch { /* ignore */ }
 
       const updated = await prisma.order.update({
         where: { id },
         data: {
           pdfUrl,
-          pdfData,
           storyStatus: 'DISPONIBLE'
         },
         omit: { coverImageData: true, pdfData: true },

@@ -4,6 +4,7 @@ import { generateStoryText, StoryTextParams } from '../utils/storyTextGenerator'
 import { generateStoryImages, ImageGenerationParams } from '../utils/storyImageGenerator';
 import { assemblePdf } from '../utils/pdfAssemblyService';
 import { generateBookTitle, generateCoverImage, CoverGenerationParams } from '../utils/coverGeneratorService';
+import { uploadPdfToCloudinary, uploadCoverToCloudinary, deleteFromCloudinary, isCloudinaryUrl } from '../utils/cloudinaryService';
 import fs from 'fs';
 import path from 'path';
 
@@ -276,10 +277,16 @@ export class StoryGenerationController {
         });
       }
 
-      // Delete PDF file from disk
+      // Delete PDF file
       if (order.pdfUrl) {
-        const pdfPath = path.join(__dirname, '../../', order.pdfUrl);
-        try { await fs.promises.unlink(pdfPath); } catch { /* file may not exist */ }
+        if (isCloudinaryUrl(order.pdfUrl)) {
+          // Extract public_id from Cloudinary URL (e.g. conte-ia/pdfs/story-xxx)
+          const match = order.pdfUrl.match(/conte-ia\/pdfs\/[^.]+/);
+          if (match) await deleteFromCloudinary(match[0], 'raw');
+        } else {
+          const pdfPath = path.join(__dirname, '../../', order.pdfUrl);
+          try { await fs.promises.unlink(pdfPath); } catch { /* file may not exist */ }
+        }
       }
 
       await prisma.order.update({
@@ -328,8 +335,12 @@ export class StoryGenerationController {
         });
       }
 
-      const pdfUrl = `/uploads/pdfs/${req.file.filename}`;
-      const pdfData = await fs.promises.readFile(req.file.path);
+      const pdfBuffer = await fs.promises.readFile(req.file.path);
+      const publicId = `story-${id}-${Date.now()}`;
+      const pdfUrl = await uploadPdfToCloudinary(pdfBuffer, publicId);
+
+      // Clean up temp file
+      try { await fs.promises.unlink(req.file.path); } catch { /* ignore */ }
 
       // Create GenerationLog for manual upload
       await prisma.generationLog.create({
@@ -347,7 +358,6 @@ export class StoryGenerationController {
         where: { id },
         data: {
           pdfUrl,
-          pdfData,
           storyStatus: 'DISPONIBLE',
           generationProgress: 100,
           generatedAt: new Date(),
@@ -421,7 +431,12 @@ export class StoryGenerationController {
         return res.status(400).json({ success: false, message: 'Aucun PDF disponible pour cette commande' });
       }
 
-      // Try disk file first (fast), then fallback to DB pdfData
+      // Cloudinary URL → redirect (no memory usage)
+      if (order.pdfUrl && isCloudinaryUrl(order.pdfUrl)) {
+        return res.redirect(order.pdfUrl);
+      }
+
+      // Legacy: try disk file first, then fallback to DB pdfData
       let pdfBuffer: Buffer | null = null;
       if (order.pdfUrl) {
         const diskPath = path.join(__dirname, '../..', order.pdfUrl);
@@ -530,26 +545,22 @@ export class StoryGenerationController {
         const coverResult = await generateCoverImage(coverParams, photoBase64);
         const coverBuffer = Buffer.from(coverResult.imageBase64, 'base64');
 
-        const coversDir = path.join(__dirname, '../../uploads/covers');
-        await fs.promises.mkdir(coversDir, { recursive: true });
-        const coverFilename = `cover-test-${testOrder.id}-${Date.now()}.png`;
-        const coverPath = path.join(coversDir, coverFilename);
-        await fs.promises.writeFile(coverPath, coverBuffer);
+        const coverPublicId = `cover-test-${testOrder.id}-${Date.now()}`;
+        const coverUrl = await uploadCoverToCloudinary(coverBuffer, coverPublicId);
 
         await prisma.order.update({
           where: { id: testOrder.id },
           data: {
-            coverImageData: coverBuffer,
-            coverImageUrl: `/uploads/covers/${coverFilename}`,
+            coverImageUrl: coverUrl,
             coverTitle: coverResult.title,
           },
         });
 
-        console.log(`[Generation] Couverture generee: ${coverFilename} (${coverBuffer.length} bytes), titre: "${coverResult.title}"`);
+        console.log(`[Generation] Couverture generee: ${coverPublicId} (${coverBuffer.length} bytes), titre: "${coverResult.title}"`);
 
         res.json({
           success: true,
-          data: { ...testOrder, coverTitle: coverResult.title, coverImageUrl: `/uploads/covers/${coverFilename}` },
+          data: { ...testOrder, coverTitle: coverResult.title, coverImageUrl: coverUrl },
           message: `Commande test creee avec couverture "${coverResult.title}"`,
         });
 
@@ -583,13 +594,30 @@ async function runGenerationPipeline(orderId: string, order: any, genLogId: stri
     logStep('pipeline', 'started');
 
     // Fetch cover image data
-    const orderWithCover = await prisma.order.findUnique({
-      where: { id: orderId },
-      select: { coverImageData: true },
-    });
-    let coverImageData: Buffer | null = orderWithCover?.coverImageData
-      ? Buffer.from(orderWithCover.coverImageData)
-      : null;
+    let coverImageData: Buffer | null = null;
+
+    // New path: cover is on Cloudinary — download the buffer
+    if (order.coverImageUrl && isCloudinaryUrl(order.coverImageUrl)) {
+      try {
+        const axios = (await import('axios')).default;
+        const coverResp = await axios.get(order.coverImageUrl, { responseType: 'arraybuffer' });
+        coverImageData = Buffer.from(coverResp.data);
+        console.log(`[Generation] Cover fetched from Cloudinary (${coverImageData.length} bytes)`);
+      } catch (err: any) {
+        console.warn(`[Generation] Failed to fetch cover from Cloudinary:`, err.message);
+      }
+    }
+
+    // Legacy fallback: cover stored as blob in DB
+    if (!coverImageData) {
+      const orderWithCover = await prisma.order.findUnique({
+        where: { id: orderId },
+        select: { coverImageData: true },
+      });
+      coverImageData = orderWithCover?.coverImageData
+        ? Buffer.from(orderWithCover.coverImageData)
+        : null;
+    }
 
     // --- Step 1: Generate text (0-10%) ---
     logStep('text', 'started');
@@ -720,20 +748,15 @@ async function runGenerationPipeline(orderId: string, order: any, genLogId: stri
 
     await updateProgress(orderId, 'ASSEMBLING_PDF', 97);
 
-    // --- Step 4: Store PDF to disk ---
-    const uploadsDir = path.join(__dirname, '../../uploads/pdfs');
-    await fs.promises.mkdir(uploadsDir, { recursive: true });
-    const pdfFilename = `story-${orderId}-${Date.now()}.pdf`;
-    const pdfPath = path.join(uploadsDir, pdfFilename);
-    await fs.promises.writeFile(pdfPath, pdfBuffer);
+    // --- Step 4: Upload PDF to Cloudinary ---
+    const pdfPublicId = `story-${orderId}-${Date.now()}`;
+    const pdfUrl = await uploadPdfToCloudinary(pdfBuffer!, pdfPublicId);
 
-    // Release PDF buffer — written to disk, no longer needed in memory
+    // Release PDF buffer — uploaded to Cloudinary, no longer needed in memory
     pdfBuffer = null;
     global.gc?.();
 
-    const pdfUrl = `/uploads/pdfs/${pdfFilename}`;
-
-    // Update status (no large binary — disk is the primary storage)
+    // Update status with Cloudinary URL
     await prisma.order.update({
       where: { id: orderId },
       data: {
@@ -756,20 +779,6 @@ async function runGenerationPipeline(orderId: string, order: any, genLogId: stri
         stepsJson: JSON.stringify(steps),
       }
     });
-
-    // Store PDF binary in DB (backup for ephemeral disk — survives redeploys)
-    // Re-read from disk so only one buffer is in memory at this point
-    // (all image buffers + assemblePdf doc already freed above)
-    try {
-      const pdfForDb = await fs.promises.readFile(pdfPath);
-      await prisma.order.update({
-        where: { id: orderId },
-        data: { pdfData: pdfForDb },
-      });
-      console.log(`[Generation] pdfData stored in DB for ${orderId} (${pdfForDb.length} bytes)`);
-    } catch (dbErr: any) {
-      console.warn(`[Generation] Non-critical: failed to store pdfData in DB for ${orderId}:`, dbErr.message);
-    }
 
     console.log(`[Generation] Pipeline completed for order ${orderId}`);
 
