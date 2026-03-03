@@ -757,6 +757,20 @@ async function runGenerationPipeline(orderId: string, order: any, genLogId: stri
       }
     });
 
+    // Store PDF binary in DB (backup for ephemeral disk — survives redeploys)
+    // Re-read from disk so only one buffer is in memory at this point
+    // (all image buffers + assemblePdf doc already freed above)
+    try {
+      const pdfForDb = await fs.promises.readFile(pdfPath);
+      await prisma.order.update({
+        where: { id: orderId },
+        data: { pdfData: pdfForDb },
+      });
+      console.log(`[Generation] pdfData stored in DB for ${orderId} (${pdfForDb.length} bytes)`);
+    } catch (dbErr: any) {
+      console.warn(`[Generation] Non-critical: failed to store pdfData in DB for ${orderId}:`, dbErr.message);
+    }
+
     console.log(`[Generation] Pipeline completed for order ${orderId}`);
 
   } catch (error: any) {
