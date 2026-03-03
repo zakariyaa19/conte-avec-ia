@@ -410,18 +410,39 @@ export class StoryGenerationController {
 
       const order = await prisma.order.findUnique({
         where: { id },
-        select: { id: true, pdfData: true, pdfUrl: true, storyStatus: true, protagonistName: true }
+        select: { id: true, pdfUrl: true, storyStatus: true, protagonistName: true }
       });
 
       if (!order) {
         return res.status(404).json({ success: false, message: 'Commande non trouvee' });
       }
 
-      if (order.storyStatus !== 'DISPONIBLE' || !order.pdfData) {
+      if (order.storyStatus !== 'DISPONIBLE') {
         return res.status(400).json({ success: false, message: 'Aucun PDF disponible pour cette commande' });
       }
 
-      const pdfBuffer = Buffer.from(order.pdfData);
+      // Try disk file first (fast), then fallback to DB pdfData
+      let pdfBuffer: Buffer | null = null;
+      if (order.pdfUrl) {
+        const diskPath = path.join(__dirname, '../..', order.pdfUrl);
+        try {
+          pdfBuffer = await fs.promises.readFile(diskPath);
+        } catch { /* file not on disk, try DB */ }
+      }
+      if (!pdfBuffer) {
+        const orderWithPdf = await prisma.order.findUnique({
+          where: { id },
+          select: { pdfData: true }
+        });
+        if (orderWithPdf?.pdfData) {
+          pdfBuffer = Buffer.from(orderWithPdf.pdfData);
+        }
+      }
+
+      if (!pdfBuffer) {
+        return res.status(400).json({ success: false, message: 'Aucun PDF disponible pour cette commande' });
+      }
+
       res.setHeader('Content-Type', 'application/pdf');
       res.setHeader('Content-Disposition', `inline; filename="conte-${order.protagonistName || id}.pdf"`);
       res.setHeader('Content-Length', pdfBuffer.length);
@@ -703,11 +724,11 @@ async function runGenerationPipeline(orderId: string, order: any, genLogId: stri
 
     const pdfUrl = `/uploads/pdfs/${pdfFilename}`;
 
+    // Update status first (fast, no large binary)
     await prisma.order.update({
       where: { id: orderId },
       data: {
         pdfUrl,
-        pdfData: pdfBuffer,
         storyStatus: 'DISPONIBLE',
         generationProgress: 100,
         generatedAt: new Date(),
@@ -726,6 +747,12 @@ async function runGenerationPipeline(orderId: string, order: any, genLogId: stri
         stepsJson: JSON.stringify(steps),
       }
     });
+
+    // Store PDF binary in DB async (backup for ephemeral disk) — don't block pipeline
+    prisma.order.update({
+      where: { id: orderId },
+      data: { pdfData: pdfBuffer }
+    }).catch(err => console.warn(`[Generation] Non-critical: failed to store pdfData in DB for ${orderId}:`, err.message));
 
     console.log(`[Generation] Pipeline completed for order ${orderId}`);
 
