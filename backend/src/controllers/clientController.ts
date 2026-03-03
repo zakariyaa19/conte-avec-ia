@@ -2,6 +2,7 @@ import { Response } from 'express';
 import { prisma } from '../utils/database';
 import { ClientAuthRequest } from '../middleware/clientAuth';
 import { ClubService } from '../utils/clubService';
+import { isCloudinaryUrl } from '../utils/cloudinaryService';
 import path from 'path';
 import fs from 'fs';
 
@@ -98,11 +99,16 @@ export class ClientController {
         });
       }
 
+      // 2) Cloudinary URL → redirect (no memory usage)
+      if (order.pdfUrl && isCloudinaryUrl(order.pdfUrl)) {
+        return res.redirect(order.pdfUrl);
+      }
+
       const filename = `conte-${order.protagonistName}-${order.id.slice(-8)}.pdf`;
       res.setHeader('Content-Type', 'application/pdf');
       res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
 
-      // 2) Essayer depuis le fichier disque
+      // 3) Legacy: essayer depuis le fichier disque
       if (order.pdfUrl) {
         const pdfPath = path.join(__dirname, '../../', order.pdfUrl);
         if (fs.existsSync(pdfPath)) {
@@ -110,7 +116,7 @@ export class ClientController {
         }
       }
 
-      // 3) Fallback : charger pdfData depuis la BDD (uniquement si necessaire)
+      // 4) Fallback : charger pdfData depuis la BDD (retrocompat)
       const orderWithPdf = await prisma.order.findFirst({
         where: { id, userId },
         select: { pdfData: true }

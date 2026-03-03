@@ -46,16 +46,14 @@ export class OrderController {
       let user = null;
       let photoUrl = null;
       let coverImageUrl: string | null = null;
-      let coverImageData: Buffer | null = null;
       const coverTitle = formData.coverTitle || null;
 
       // Gestion de la couverture generee par GPT
       if (formData.coverImageBase64) {
         try {
-          const result = saveCoverImage(formData.coverImageBase64);
+          const result = await saveCoverImage(formData.coverImageBase64);
           coverImageUrl = result.url;
-          coverImageData = result.buffer;
-          console.log('🖼️ Couverture sauvegardee:', coverImageUrl, `(${coverImageData.length} bytes)`);
+          console.log('🖼️ Couverture sauvegardee:', coverImageUrl);
         } catch (coverErr) {
           console.error('Erreur sauvegarde couverture:', coverErr);
         }
@@ -139,7 +137,6 @@ export class OrderController {
           skinColor: photoUrl ? null : (formData.skinColor || null),
           photoUrl: photoUrl,
           coverImageUrl: coverImageUrl,
-          coverImageData: coverImageData,
           coverTitle: coverTitle,
           language: formData.language,
           hobbies: formData.hobbies,
@@ -322,14 +319,13 @@ export class OrderController {
         return res.status(400).json({ success: false, message: 'Pas de cover image' });
       }
 
-      const result = saveCoverImage(coverImageBase64);
-      console.log('🖼️ Cover sauvegardee:', result.url, `(${result.buffer.length} bytes)`);
+      const result = await saveCoverImage(coverImageBase64);
+      console.log('🖼️ Cover sauvegardee:', result.url);
 
       const updated = await prisma.order.update({
         where: { id },
         data: {
           coverImageUrl: result.url,
-          coverImageData: result.buffer,
           ...(coverTitle && { coverTitle })
         },
         select: { id: true, coverImageUrl: true }
