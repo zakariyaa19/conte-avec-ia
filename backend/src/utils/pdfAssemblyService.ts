@@ -1,5 +1,6 @@
 import { PDFDocument, rgb, StandardFonts, PDFFont, PDFPage } from 'pdf-lib';
 import fontkit from '@pdf-lib/fontkit';
+import sharp from 'sharp';
 import fs from 'fs';
 import path from 'path';
 
@@ -94,14 +95,31 @@ function isSvgPlaceholder(buf: Buffer): boolean {
   return head.includes('<svg') || head.includes('<?xml');
 }
 
-// --- Embed image (PNG/JPEG only — SVG must be filtered out before calling) ---
+// --- Compress image to JPEG for smaller PDF ---
+
+async function compressForPdf(imageBuffer: Buffer): Promise<Buffer> {
+  try {
+    return await sharp(imageBuffer)
+      .resize(1024, 1024, { fit: 'inside', withoutEnlargement: true })
+      .jpeg({ quality: 82 })
+      .toBuffer();
+  } catch (err) {
+    console.warn('[PdfAssembly] Compression failed, using original:', err);
+    return imageBuffer;
+  }
+}
+
+// --- Embed image (compress then embed as JPEG) ---
 
 async function embedImage(pdfDoc: PDFDocument, imageBuffer: Buffer): Promise<ReturnType<PDFDocument['embedPng']>> {
+  // Compress PNG→JPEG first (reduces PDF from ~35MB to ~3-5MB)
+  const compressed = await compressForPdf(imageBuffer);
   try {
-    return await pdfDoc.embedPng(imageBuffer);
+    return await pdfDoc.embedJpg(compressed);
   } catch {
+    // Fallback: try original as PNG
     try {
-      return await pdfDoc.embedJpg(imageBuffer);
+      return await pdfDoc.embedPng(imageBuffer);
     } catch (err) {
       throw new Error(`Image format non supporte: ${err}`);
     }
