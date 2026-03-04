@@ -664,7 +664,8 @@ export const ClubSmallPrice = styled.p`
 export const OrderInfoSection = styled.div`
   background: ${theme.colors.background.secondary};
   padding: ${theme.spacing.md}; border-radius: ${theme.borderRadius.lg};
-  margin-bottom: ${theme.spacing.md}; width: 100%; max-width: 560px;
+  margin-top: ${theme.spacing.xl}; margin-bottom: ${theme.spacing.md}; width: 100%; max-width: 560px;
+  @media (max-width: ${theme.breakpoints.sm}) { margin-top: ${theme.spacing.lg}; }
   @media (min-width: ${theme.breakpoints.lg}) { max-width: 680px; padding: ${theme.spacing.lg}; border-radius: ${theme.borderRadius.xl}; }
 `;
 
@@ -1506,6 +1507,7 @@ const timerPulse = keyframes`
 export const PreviewTimerBar = styled.div`
   width: 100%;
   max-width: 700px;
+  margin-top: ${theme.spacing.xl};
   background: linear-gradient(135deg, #FFF8F2, #FFF0E6, #FFF8F2);
   border: 1.5px solid rgba(255, 153, 153, 0.2);
   border-radius: ${theme.borderRadius.xl};
@@ -1525,6 +1527,7 @@ export const PreviewTimerBar = styled.div`
   }
 
   @media (max-width: ${theme.breakpoints.sm}) {
+    margin-top: ${theme.spacing.lg};
     padding: 12px 16px;
     border-radius: ${theme.borderRadius.lg};
     gap: 6px;
@@ -1554,6 +1557,7 @@ export const PreviewTimerDigits = styled.span`
 export const ValueBlock = styled.div`
   width: 100%;
   max-width: 500px;
+  margin-top: ${theme.spacing.xl};
   background: linear-gradient(160deg, #FFFCF5, #FFF8EE);
   border: 1px solid rgba(210, 175, 130, 0.2);
   border-radius: ${theme.borderRadius.xl};
@@ -1565,6 +1569,7 @@ export const ValueBlock = styled.div`
   animation: ${fadeIn} 0.6s ease 0.2s both;
 
   @media (max-width: ${theme.breakpoints.sm}) {
+    margin-top: ${theme.spacing.lg};
     padding: ${theme.spacing.md} ${theme.spacing.md};
     max-width: 360px;
     gap: 8px;
@@ -1624,14 +1629,14 @@ export const PreviewSectionTitle = styled.p`
   font-weight: 700;
   color: ${theme.colors.text.primary};
   text-align: center;
-  margin: 0 0 ${theme.spacing.md};
+  margin: ${theme.spacing.xl} 0 ${theme.spacing.lg};
   max-width: 420px;
   line-height: 1.4;
   animation: ${fadeIn} 0.5s ease both;
 
   @media (max-width: ${theme.breakpoints.sm}) {
     font-size: ${theme.fontSizes.base};
-    margin-bottom: ${theme.spacing.sm};
+    margin: ${theme.spacing.lg} 0 ${theme.spacing.md};
   }
   @media (min-width: ${theme.breakpoints.lg}) {
     font-size: ${theme.fontSizes.xl};
@@ -1662,7 +1667,7 @@ export const PricingGrid = styled.div`
 
   @media (max-width: ${theme.breakpoints.sm}) {
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: ${theme.spacing.md};
     max-width: 380px;
   }
   @media (min-width: ${theme.breakpoints.lg}) {
@@ -1908,7 +1913,7 @@ export const SocialProofLine = styled.p`
   font-size: ${theme.fontSizes.xs};
   color: ${theme.colors.text.secondary};
   text-align: center;
-  margin: ${theme.spacing.md} 0 0;
+  margin: ${theme.spacing.lg} 0 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1917,6 +1922,6 @@ export const SocialProofLine = styled.p`
 
   @media (min-width: ${theme.breakpoints.lg}) {
     font-size: ${theme.fontSizes.sm};
-    margin-top: ${theme.spacing.lg};
+    margin-top: ${theme.spacing.xl};
   }
 `;
