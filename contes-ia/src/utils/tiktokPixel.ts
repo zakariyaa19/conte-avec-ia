@@ -182,9 +182,9 @@ export async function trackInitiateCheckout(productType: string, userEmail?: str
           return;
         }
 
-        const contentId = 'ebook_499';
+        const contentId = 'ebook_699';
         const contentName = 'Ebook conte personnalisé';
-        const value = 4.99;
+        const value = 6.99;
 
         // Générer un event_id unique
         const eventId = generateEventId();
@@ -203,21 +203,21 @@ export async function trackInitiateCheckout(productType: string, userEmail?: str
           event_callback: () => {
             if (!callbackFired) {
               callbackFired = true;
-              console.log('✅ TikTok Pixel: InitiateCheckout callback confirmé');
+              console.log('TikTok Pixel: InitiateCheckout callback confirmé');
               // Délai de sécurité de 300ms après callback
               setTimeout(() => resolve(), 300);
             }
           }
         });
-        
+
         // Timeout de sécurité: résoudre après 1 seconde même sans callback
         setTimeout(() => {
           if (!callbackFired) {
-            console.log('⚠️ TikTok Pixel: InitiateCheckout timeout (pas de callback)');
+            console.log('TikTok Pixel: InitiateCheckout timeout (pas de callback)');
             resolve();
           }
         }, 1000);
-        
+
         // Envoyer aussi au backend (Server-Side) en parallèle
         const tiktokParams = getTikTokParams();
         sendTiktokServerEvent({
@@ -261,13 +261,13 @@ export async function trackPurchase(productType: string, orderId: string, userEm
         return;
       }
 
-      const contentId = 'ebook_499';
+      const contentId = 'ebook_699';
       const contentName = 'Ebook conte personnalisé';
-      const value = 4.99;
-      
+      const value = 6.99;
+
       // Générer un event_id unique
       const eventId = generateEventId();
-      
+
       // Structure avec content_id à la racine (pas dans contents[])
       window.ttq.track('Purchase', {
         content_id: contentId,
@@ -277,7 +277,7 @@ export async function trackPurchase(productType: string, orderId: string, userEm
         currency: 'EUR',
         event_id: eventId
       });
-      
+
       // Envoyer aussi au backend (Server-Side)
       const tiktokParams = getTikTokParams();
       await sendTiktokServerEvent({

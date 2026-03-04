@@ -64,7 +64,7 @@ export async function metaTrackViewContent(
 // Track InitiateCheckout - UNE SEULE FOIS par session
 export async function metaTrackInitiateCheckout(
   productType: string,
-  value: number = 4.99,
+  value: number = 6.99,
   currency: string = 'EUR'
 ): Promise<void> {
   const fbqReady = await waitForFbq();
@@ -81,11 +81,15 @@ export async function metaTrackInitiateCheckout(
       return;
     }
 
-    const contentId = productType === 'club' ? 'club_1299' : 'ebook_499';
-    const contentName = productType === 'club'
-      ? 'Abonnement Club Contes d\'IA'
-      : 'Ebook conte personnalisé';
-    const checkoutValue = productType === 'club' ? 12.99 : value;
+    const contentId = productType === 'club_annual' ? 'club_annual_7999'
+      : productType === 'club' ? 'club_999' : 'ebook_699';
+    const contentName = productType === 'club_annual'
+      ? 'Abonnement Club Annuel Contes d\'IA'
+      : productType === 'club'
+        ? 'Abonnement Club Contes d\'IA'
+        : 'Ebook conte personnalisé';
+    const checkoutValue = productType === 'club_annual' ? 79.99
+      : productType === 'club' ? 9.99 : value;
 
     window.fbq('track', 'InitiateCheckout', {
       content_ids: [contentId],
@@ -111,11 +115,11 @@ export function metaTrackAddToCart(
   if (typeof window === 'undefined' || !window.fbq) return;
 
   try {
-    const contentId = purchaseType === 'club' ? 'club_1299' : 'ebook_499';
+    const contentId = purchaseType === 'club' ? 'club_999' : 'ebook_699';
     const contentName = purchaseType === 'club'
       ? 'Abonnement Club Contes d\'IA'
       : 'Ebook conte personnalisé';
-    const value = purchaseType === 'club' ? 12.99 : 4.99;
+    const value = purchaseType === 'club' ? 9.99 : 6.99;
 
     window.fbq('track', 'AddToCart', {
       content_ids: [contentId],
@@ -145,7 +149,7 @@ export function metaTrackLead(
       content_name: 'Conte personnalisé',
       content_category: 'Livre personnalisé enfant',
       currency: currency,
-      value: 4.99
+      value: 6.99
     });
 
     sessionStorage.setItem(sessionKey, 'true');
@@ -166,7 +170,7 @@ export function metaTrackCompleteRegistration(
     window.fbq('track', 'CompleteRegistration', {
       content_name: plan === 'club' ? 'Club Registration' : 'Basic Registration',
       currency: 'EUR',
-      value: plan === 'club' ? 12.99 : 0,
+      value: plan === 'club' ? 9.99 : 0,
       status: true
     });
     console.log(`Meta Pixel: CompleteRegistration tracked - ${method} / ${plan}`);
@@ -186,8 +190,8 @@ export function metaTrackSubscribe(): void {
     window.fbq('track', 'Subscribe', {
       content_name: 'Club des Histoires',
       currency: 'EUR',
-      value: 12.99,
-      predicted_ltv: 77.94 // 6 mois de rétention estimée
+      value: 9.99,
+      predicted_ltv: 59.94 // 6 mois de rétention estimée
     });
 
     sessionStorage.setItem(sessionKey, 'true');
@@ -202,7 +206,7 @@ export function metaTrackSubscribe(): void {
 export async function metaTrackPurchase(
   productType: string,
   orderId: string,
-  value: number = 4.99,
+  value: number = 6.99,
   currency: string = 'EUR'
 ): Promise<void> {
   const fbqReady = await waitForFbq();
@@ -219,11 +223,15 @@ export async function metaTrackPurchase(
       return;
     }
 
-    const contentId = productType === 'club' ? 'club_1299' : 'ebook_499';
-    const contentName = productType === 'club'
-      ? 'Abonnement Club Contes d\'IA'
-      : 'Ebook conte personnalisé';
-    const purchaseValue = productType === 'club' ? 12.99 : value;
+    const contentId = productType === 'club_annual' ? 'club_annual_7999'
+      : productType === 'club' ? 'club_999' : 'ebook_699';
+    const contentName = productType === 'club_annual'
+      ? 'Abonnement Club Annuel Contes d\'IA'
+      : productType === 'club'
+        ? 'Abonnement Club Contes d\'IA'
+        : 'Ebook conte personnalisé';
+    const purchaseValue = productType === 'club_annual' ? 79.99
+      : productType === 'club' ? 9.99 : value;
 
     window.fbq('track', 'Purchase', {
       content_ids: [contentId],

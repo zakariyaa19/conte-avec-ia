@@ -5,6 +5,7 @@ import { theme } from '../styles/theme';
 import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
 import { Button } from '../components/ui/Button';
+import { PricingTiers, PricingPlan } from '../components/PricingTiers';
 import { useAuth } from '../contexts/AuthContext';
 import { ApiService } from '../config/api';
 import { useScrollReveal, useStaggerReveal } from '../hooks/useScrollReveal';
@@ -759,7 +760,7 @@ const ClubCTA: React.FC<{
     if (isAuthenticated) {
       return (
         <WhiteButton onClick={onJoin} disabled={loading}>
-          {loading ? 'Redirection...' : 'Passer au Club — 12,99€/mois'}
+          {loading ? 'Redirection...' : 'Passer au Club — 9,99€/mois'}
         </WhiteButton>
       );
     }
@@ -789,7 +790,7 @@ const ClubCTA: React.FC<{
       <>
         {error && <ErrorMsg>{error}</ErrorMsg>}
         <Button variant="primary" size="lg" onClick={onJoin} disabled={loading}>
-          {loading ? 'Redirection vers Stripe...' : 'Passer au Club — 12,99€/mois'}
+          {loading ? 'Redirection vers Stripe...' : 'Passer au Club — 9,99€/mois'}
         </Button>
       </>
     );
@@ -819,10 +820,10 @@ export const ClubPage: React.FC = () => {
   const priceReveal = useScrollReveal();
   const ctaReveal = useScrollReveal();
 
-  const handleJoinClub = async () => {
+  const handleJoinClub = async (plan: 'monthly' | 'annual' = 'monthly') => {
     if (!isAuthenticated) {
       metaTrackSubscribe();
-      navigate('/login?mode=register&plan=club');
+      navigate(`/login?mode=register&plan=${plan === 'annual' ? 'club_annual' : 'club'}`);
       return;
     }
 
@@ -836,7 +837,7 @@ export const ClubPage: React.FC = () => {
     setError('');
     try {
       const token = localStorage.getItem('userToken') || '';
-      const response = await ApiService.createSubscriptionSession(token);
+      const response = await ApiService.createSubscriptionSession(token, undefined, plan);
       if (response.url) {
         window.location.href = response.url;
       } else {
@@ -846,6 +847,14 @@ export const ClubPage: React.FC = () => {
       setError('Erreur lors de la connexion a Stripe');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSelectPlan = (plan: PricingPlan) => {
+    if (plan === 'single') {
+      navigate('/create-story');
+    } else {
+      handleJoinClub(plan);
     }
   };
 
@@ -864,7 +873,7 @@ export const ClubPage: React.FC = () => {
   const ctaProps = {
     loading,
     error,
-    onJoin: handleJoinClub,
+    onJoin: () => handleJoinClub('monthly'),
     onPortal: handlePortal,
     isAuthenticated,
     isClub,
@@ -888,10 +897,10 @@ export const ClubPage: React.FC = () => {
               Le Club des <span>Histoires Uniques</span>
             </HeroTitle>
             <HeroPrice>
-              12,99{'€'}<small> / mois</small>
+              A partir de 9,99{'€'}<small> / mois</small>
             </HeroPrice>
             <HeroSubtitle>
-              Recevez chaque semaine un eBook personnalise pour votre enfant. Credits cumulables, bibliotheque illimitee, sans engagement.
+              Recevez 3 eBooks personnalises par mois pour votre enfant. Credits cumulables, bibliotheque illimitee, sans engagement.
             </HeroSubtitle>
 
             <ClubCTA variant="hero" {...ctaProps} />
@@ -912,7 +921,7 @@ export const ClubPage: React.FC = () => {
                 <BookVisual>
                   <BookVisualInner>
                     <BookEmoji>📚</BookEmoji>
-                    <BookLabel>1 eBook / semaine</BookLabel>
+                    <BookLabel>3 eBooks / mois</BookLabel>
                     <BookSub>Personnalise pour votre enfant</BookSub>
                   </BookVisualInner>
                 </BookVisual>
@@ -920,9 +929,9 @@ export const ClubPage: React.FC = () => {
 
               <TextBlock $visible={ebookReveal.isVisible} $fromRight>
                 <SectionLabel>Avantage principal</SectionLabel>
-                <SectionTitle>1 eBook gratuit chaque semaine</SectionTitle>
+                <SectionTitle>3 eBooks gratuits chaque mois</SectionTitle>
                 <SectionText>
-                  Chaque semaine, recevez un credit pour creer un conte personnalise au format eBook. Choisissez le theme, les personnages, le style d'illustration et le message educatif.
+                  Chaque mois, recevez 3 credits pour creer des contes personnalises au format eBook. Choisissez le theme, les personnages, le style d'illustration et le message educatif.
                 </SectionText>
                 <FeatureList>
                   <FeatureItem>
@@ -931,7 +940,7 @@ export const ClubPage: React.FC = () => {
                   </FeatureItem>
                   <FeatureItem>
                     <FeatureCheck>&#10003;</FeatureCheck>
-                    Jusqu'a 4 contes par mois, soit 3,25{'€'} par conte
+                    3 contes par mois, soit 3,33{'€'} par conte
                   </FeatureItem>
                   <FeatureItem>
                     <FeatureCheck>&#10003;</FeatureCheck>
@@ -1006,7 +1015,7 @@ export const ClubPage: React.FC = () => {
               <StepCard $visible={stepsReveal.isVisible} $delay={stepsReveal.getDelay(1)}>
                 <StepNumber $color={theme.colors.accent.pastelBlue}>2</StepNumber>
                 <StepTitle>Recevez vos credits</StepTitle>
-                <StepText>1 credit par semaine, cumulable. Utilisez-les quand vous voulez pour creer un eBook.</StepText>
+                <StepText>3 credits par mois, cumulables. Utilisez-les quand vous voulez pour creer un eBook.</StepText>
               </StepCard>
 
               <StepCard $visible={stepsReveal.isVisible} $delay={stepsReveal.getDelay(2)}>
@@ -1027,56 +1036,44 @@ export const ClubPage: React.FC = () => {
         {/* ============ 5. PRIX + GARANTIES ============ */}
         <PriceSection ref={priceReveal.ref}>
           <Container>
-            <PriceGrid>
-              <PriceCard $visible={priceReveal.isVisible}>
-                <PriceCardBadge>Meilleure offre</PriceCardBadge>
-                <PriceAmount>
-                  12,99{'€'}<small> / mois</small>
-                </PriceAmount>
-                <PriceSavings>
-                  Soit 3,25{'€'} par conte au lieu de 4,99{'€'}
-                </PriceSavings>
-                <PriceFeatures>
-                  <PriceFeatureItem>1 eBook gratuit par semaine</PriceFeatureItem>
-                  <PriceFeatureItem>Credits cumulables (jamais perdus)</PriceFeatureItem>
-                  <PriceFeatureItem>Bibliotheque avec visionneuse en ligne</PriceFeatureItem>
-                  <PriceFeatureItem>Telechargement PDF illimite</PriceFeatureItem>
-                  <PriceFeatureItem>Notification email a chaque eBook</PriceFeatureItem>
-                  <PriceFeatureItem>Sans engagement — annulable a tout moment</PriceFeatureItem>
-                  <PriceFeatureItem>Support reactif par email</PriceFeatureItem>
-                </PriceFeatures>
-                <ClubCTA variant="section" {...ctaProps} />
-              </PriceCard>
+            <CenteredTitle $visible={priceReveal.isVisible}>
+              <SectionTitle style={{ textAlign: 'center' }}>Choisissez votre formule</SectionTitle>
+              <Divider />
+              <CenterSubtitle>Un conte unique pour chaque enfant. Choisissez la formule qui vous convient.</CenterSubtitle>
+            </CenteredTitle>
 
+            <PricingTiers onSelectPlan={handleSelectPlan} />
+
+            <div style={{ marginTop: theme.spacing['3xl'] }}>
               <GuaranteesBlock $visible={priceReveal.isVisible}>
-                <SectionTitle>Nos garanties</SectionTitle>
-                <SectionText>
+                <SectionTitle style={{ textAlign: 'center' }}>Nos garanties</SectionTitle>
+                <SectionText style={{ textAlign: 'center' }}>
                   Nous voulons que vous soyez 100% satisfait. Pas de mauvaise surprise, pas de piege.
                 </SectionText>
                 <GuaranteesGrid>
                   <GuaranteeCard>
-                    <GuaranteeIcon>🔓</GuaranteeIcon>
+                    <GuaranteeIcon>&#128275;</GuaranteeIcon>
                     <div>
                       <GuaranteeTitle>Sans engagement</GuaranteeTitle>
                       <GuaranteeText>Annulez quand vous voulez, en un clic depuis votre espace ou le portail Stripe.</GuaranteeText>
                     </div>
                   </GuaranteeCard>
                   <GuaranteeCard>
-                    <GuaranteeIcon>🛡️</GuaranteeIcon>
+                    <GuaranteeIcon>&#128737;&#65039;</GuaranteeIcon>
                     <div>
                       <GuaranteeTitle>Paiement securise</GuaranteeTitle>
                       <GuaranteeText>Paiement gere par Stripe, le leader mondial du paiement en ligne.</GuaranteeText>
                     </div>
                   </GuaranteeCard>
                   <GuaranteeCard>
-                    <GuaranteeIcon>💬</GuaranteeIcon>
+                    <GuaranteeIcon>&#128172;</GuaranteeIcon>
                     <div>
                       <GuaranteeTitle>Support reactif</GuaranteeTitle>
                       <GuaranteeText>Une question ? Notre equipe vous repond rapidement par email.</GuaranteeText>
                     </div>
                   </GuaranteeCard>
                   <GuaranteeCard>
-                    <GuaranteeIcon>⭐</GuaranteeIcon>
+                    <GuaranteeIcon>&#11088;</GuaranteeIcon>
                     <div>
                       <GuaranteeTitle>Satisfait ou rembourse</GuaranteeTitle>
                       <GuaranteeText>Si un conte ne vous plait pas, nous le modifions ou vous remboursons.</GuaranteeText>
@@ -1084,7 +1081,7 @@ export const ClubPage: React.FC = () => {
                   </GuaranteeCard>
                 </GuaranteesGrid>
               </GuaranteesBlock>
-            </PriceGrid>
+            </div>
           </Container>
         </PriceSection>
 
@@ -1101,7 +1098,7 @@ export const ClubPage: React.FC = () => {
               <FinalCTAText>
                 {isClub
                   ? 'Profitez de vos avantages et decouvrez vos contes dans votre bibliotheque.'
-                  : 'Offrez a votre enfant un nouveau conte personnalise chaque semaine. Premier credit disponible immediatement.'
+                  : 'Offrez a votre enfant 3 contes personnalises par mois. Premiers credits disponibles immediatement.'
                 }
               </FinalCTAText>
               <ClubCTA variant="final" {...ctaProps} />
