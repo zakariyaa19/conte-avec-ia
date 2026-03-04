@@ -34,7 +34,7 @@ import {
   BookPreviewWrapper, BookPageFrame, BookCoverImage,
   BookStoryLayout, BookTextHalf, BookImageHalf, BookCreatorTag, BookPageBadge,
   BookLockedOverlay, BookLockedContent, BookLockedIcon, BookLockedTitle, BookLockedFeatures,
-  CoverTitleOverlay,
+  PricingSelectedCheck,
   PreviewTimerBar, PreviewTimerDigits,
   PricingGrid, PricingCard, PricingCardBadge, PricingCardName, PricingCardPrice,
   PricingCardSub, PricingCardFeaturesList, PricingCardFeatureItem, PricingCardCTA,
@@ -171,6 +171,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
 
   // Countdown timer for preview step
   const [countdown, setCountdown] = useState(1200); // 20 minutes in seconds
+  const [selectedOffer, setSelectedOffer] = useState<'single' | 'club_monthly' | 'club_annual' | null>(null);
   const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -713,10 +714,12 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
         const creatorName = formData.creatorName || '';
         const storyTitle = coverTitle || previewTitle || `Le conte de ${heroName}`;
 
-        const handlePreviewSelect = (type: 'single' | 'club') => {
+        const handlePreviewSelect = (type: 'single' | 'club', billing?: 'monthly' | 'annual') => {
+          setSelectedOffer(billing === 'annual' ? 'club_annual' : type === 'club' ? 'club_monthly' : 'single');
           const previewUpdate: Partial<StoryFormData> = {
             productType: 'ebook',
             purchaseType: type,
+            billingPeriod: billing || undefined,
           };
           if (rawBase64) {
             previewUpdate.coverImageBase64 = rawBase64;
@@ -786,13 +789,10 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
 
             {/* ── Book preview: cover (portrait) + story page + locked page ── */}
             <BookPreviewWrapper>
-              {/* Cover — portrait with title overlay */}
+              {/* Cover — portrait (title already embedded in AI image) */}
               <BookPageFrame $delay={0} $portrait>
                 <BookCoverImage>
                   <img src={coverImageUrl} alt="Couverture" />
-                  <CoverTitleOverlay>
-                    <h2>{storyTitle}</h2>
-                  </CoverTitleOverlay>
                 </BookCoverImage>
               </BookPageFrame>
 
@@ -823,7 +823,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
 
             {/* ── Timer bar ── */}
             <PreviewTimerBar style={{ marginTop: theme.spacing.md }}>
-              <span>Votre conte expire dans</span>
+              <span>Votre histoire est prête et sera conservée pendant</span>
               <PreviewTimerDigits>{timerDisplay}</PreviewTimerDigits>
             </PreviewTimerBar>
 
@@ -846,7 +846,8 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 </ClubFreeCard>
               ) : (
                 <PricingGrid>
-                  <PricingCard $isSelected={formData.purchaseType === 'single'} onClick={() => handlePreviewSelect('single')}>
+                  <PricingCard $isSelected={selectedOffer === 'single'} onClick={() => handlePreviewSelect('single')}>
+                    {selectedOffer === 'single' && <PricingSelectedCheck>&#x2713;</PricingSelectedCheck>}
                     <PricingCardName>Offre Unique</PricingCardName>
                     <PricingCardPrice>6,99 EUR</PricingCardPrice>
                     <PricingCardSub>Paiement unique</PricingCardSub>
@@ -856,11 +857,12 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                       <PricingCardFeatureItem>6 illustrations HD</PricingCardFeatureItem>
                       <PricingCardFeatureItem>PDF téléchargeable</PricingCardFeatureItem>
                     </PricingCardFeaturesList>
-                    <PricingCardCTA>Choisir</PricingCardCTA>
+                    <PricingCardCTA $primary={selectedOffer === 'single'}>{selectedOffer === 'single' ? 'Sélectionné' : 'Choisir'}</PricingCardCTA>
                   </PricingCard>
 
-                  <PricingCard $isSelected={formData.purchaseType === 'club'} $featured onClick={() => handlePreviewSelect('club')}>
+                  <PricingCard $isSelected={selectedOffer === 'club_monthly'} $featured onClick={() => handlePreviewSelect('club', 'monthly')}>
                     <PricingCardBadge>Populaire</PricingCardBadge>
+                    {selectedOffer === 'club_monthly' && <PricingSelectedCheck>&#x2713;</PricingSelectedCheck>}
                     <PricingCardName>Club Mensuel</PricingCardName>
                     <PricingCardPrice>9,99 EUR</PricingCardPrice>
                     <PricingCardSub>/ mois — sans engagement</PricingCardSub>
@@ -871,10 +873,11 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                       <PricingCardFeatureItem>Bibliothèque illimitée</PricingCardFeatureItem>
                       <PricingCardFeatureItem>Annulable à tout moment</PricingCardFeatureItem>
                     </PricingCardFeaturesList>
-                    <PricingCardCTA $primary>Choisir</PricingCardCTA>
+                    <PricingCardCTA $primary>{selectedOffer === 'club_monthly' ? 'Sélectionné' : 'Choisir'}</PricingCardCTA>
                   </PricingCard>
 
-                  <PricingCard $isSelected={false} onClick={() => handlePreviewSelect('club')}>
+                  <PricingCard $isSelected={selectedOffer === 'club_annual'} onClick={() => handlePreviewSelect('club', 'annual')}>
+                    {selectedOffer === 'club_annual' && <PricingSelectedCheck>&#x2713;</PricingSelectedCheck>}
                     <PricingCardName>Club Annuel</PricingCardName>
                     <PricingCardPrice>79,99 EUR</PricingCardPrice>
                     <PricingCardSub>/ an — soit 6,67 EUR/mois</PricingCardSub>
@@ -885,7 +888,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                       <PricingCardFeatureItem>Économisez 40 EUR/an</PricingCardFeatureItem>
                       <PricingCardFeatureItem>Bibliothèque illimitée</PricingCardFeatureItem>
                     </PricingCardFeaturesList>
-                    <PricingCardCTA>Choisir</PricingCardCTA>
+                    <PricingCardCTA $primary={selectedOffer === 'club_annual'}>{selectedOffer === 'club_annual' ? 'Sélectionné' : 'Choisir'}</PricingCardCTA>
                   </PricingCard>
                 </PricingGrid>
               )}

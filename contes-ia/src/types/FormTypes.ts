@@ -61,6 +61,7 @@ export interface StoryFormData {
   coverTitle?: string;
   productType: 'ebook';
   purchaseType?: 'single' | 'club';
+  billingPeriod?: 'monthly' | 'annual';
   firstName?: string;
   lastName?: string;
 }

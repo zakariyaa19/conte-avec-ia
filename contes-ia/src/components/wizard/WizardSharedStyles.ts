@@ -1153,11 +1153,6 @@ export const BookStoryLayout = styled.div`
   grid-template-columns: 1fr 1fr;
   background: #FAF3E0;
   position: relative;
-
-  @media (max-width: ${theme.breakpoints.sm}) {
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr 1fr;
-  }
 `;
 
 export const BookTextHalf = styled.div`
@@ -1201,10 +1196,10 @@ export const BookTextHalf = styled.div`
   }
 
   @media (max-width: ${theme.breakpoints.sm}) {
-    padding: 24px 16px 36px;
-    &::before { inset: 12px; }
-    &::after { bottom: 40px; width: 60px; }
-    p { font-size: 11px; line-height: 1.7; }
+    padding: 16px 10px 28px;
+    &::before { inset: 8px; }
+    &::after { bottom: 32px; width: 40px; }
+    p { font-size: 9px; line-height: 1.6; max-width: 95%; }
   }
   @media (min-width: ${theme.breakpoints.lg}) {
     padding: 36px 28px 44px;
@@ -1225,9 +1220,10 @@ export const BookCreatorTag = styled.span`
   z-index: 1;
 
   @media (max-width: ${theme.breakpoints.sm}) {
-    top: 18px;
-    left: 18px;
-    font-size: 7px;
+    top: 12px;
+    left: 12px;
+    font-size: 6px;
+    letter-spacing: 1px;
   }
 `;
 
@@ -1276,10 +1272,10 @@ export const BookPageBadge = styled.span`
   &::after { bottom: -4px; left: -4px; }
 
   @media (max-width: ${theme.breakpoints.sm}) {
-    width: 26px;
-    height: 26px;
-    font-size: 11px;
-    bottom: 10px;
+    width: 22px;
+    height: 22px;
+    font-size: 9px;
+    bottom: 6px;
   }
 `;
 
@@ -1443,17 +1439,24 @@ export const PricingCard = styled.div<{ $isSelected: boolean; $featured?: boolea
   flex-direction: column;
   align-items: center;
   padding: ${theme.spacing.md} ${theme.spacing.sm};
-  border: 2px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'rgba(0,0,0,0.06)'};
+  border: 2.5px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'rgba(0,0,0,0.06)'};
   border-radius: 16px;
   cursor: pointer;
   transition: all 0.3s ease;
-  background: ${p => p.$isSelected ? 'linear-gradient(160deg, #FFF8F5, #FFF)' : 'white'};
+  background: ${p => p.$isSelected ? 'linear-gradient(160deg, #FFF0EC, #FFF8F5)' : 'white'};
   -webkit-tap-highlight-color: transparent;
-  ${p => p.$isSelected && css`box-shadow: 0 4px 20px ${theme.colors.accent.coral}18;`}
-  ${p => p.$featured && css`
+  ${p => p.$isSelected && css`
+    box-shadow: 0 4px 24px ${theme.colors.accent.coral}25, 0 0 0 1px ${theme.colors.accent.coral}15;
+    transform: scale(1.02);
+  `}
+  ${p => p.$featured && !p.$isSelected && css`
     transform: scale(1.03);
-    border-color: ${p.$isSelected ? theme.colors.accent.coral : theme.colors.accent.lightCoral};
+    border-color: ${theme.colors.accent.lightCoral};
     animation: ${glowPulse} 2.5s ease-in-out infinite;
+  `}
+  ${p => p.$featured && p.$isSelected && css`
+    transform: scale(1.04);
+    animation: none;
   `}
 
   &:hover { border-color: ${theme.colors.accent.coral}80; }
@@ -1462,13 +1465,32 @@ export const PricingCard = styled.div<{ $isSelected: boolean; $featured?: boolea
   @media (max-width: ${theme.breakpoints.sm}) {
     padding: ${theme.spacing.sm} ${theme.spacing.sm};
     border-radius: 12px;
-    ${p => p.$featured && css`transform: none;`}
+    ${p => p.$featured && !p.$isSelected && css`transform: none;`}
+    ${p => p.$isSelected && css`transform: none; box-shadow: 0 2px 16px ${theme.colors.accent.coral}20;`}
   }
   @media (min-width: ${theme.breakpoints.lg}) {
     padding: ${theme.spacing.lg} ${theme.spacing.md};
     border-radius: 20px;
     &:hover { transform: ${p => p.$featured ? 'scale(1.05)' : 'translateY(-2px)'}; box-shadow: 0 8px 30px rgba(0,0,0,0.08); }
   }
+`;
+
+export const PricingSelectedCheck = styled.span`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover});
+  color: white;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px ${theme.colors.accent.coral}40;
+  z-index: 2;
 `;
 
 export const PricingCardBadge = styled.span`
@@ -1581,9 +1603,9 @@ export const PreviewSectionTitle = styled.p`
   font-weight: 700;
   color: ${theme.colors.text.primary};
   text-align: center;
-  margin: 0 0 ${theme.spacing.sm};
+  margin: 0 0 ${theme.spacing.lg};
   max-width: 400px;
   line-height: 1.4;
-  @media (max-width: ${theme.breakpoints.sm}) { font-size: ${theme.fontSizes.sm}; }
+  @media (max-width: ${theme.breakpoints.sm}) { font-size: ${theme.fontSizes.sm}; margin-bottom: ${theme.spacing.md}; }
   @media (min-width: ${theme.breakpoints.lg}) { font-size: ${theme.fontSizes.lg}; }
 `;
