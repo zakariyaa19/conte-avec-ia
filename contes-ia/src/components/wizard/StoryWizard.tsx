@@ -25,19 +25,17 @@ import {
   DiscoverCTA,
   ExtrasSection, SectionTitle,
   CollapsiblePill, CollapsibleChevron, CollapsibleContent,
-  PricingRow, PricingOption, PricingBadge, PricingName, PricingPrice, PricingSubtext,
-  PricingFeatures, PricingFeature, PricingHighlight, PricingLabel, PricingDivider,
-  ClubFreeTitle, ClubSmallPrice,
-  OrderInfoSection, OrderInfoGrid, FullWidthField, OrderCostSummary,
+  PricingDivider,
+  OrderInfoSection, OrderInfoGrid, FullWidthField,
   PayButton, TrustBadgesRow, TrustBadge, ErrorMessage, ConnectedBanner,
-  ClubFreeCard, ClubBadge, ClubExhaustedMsg,
-  PaywallDivider, PaywallTitle, UnlockCard, LockIcon, UnlockTitle,
-  UnlockFeatures, UnlockFeature, TimerContainer, TimerDigits,
+  ClubFreeCard, ClubBadge,
   PreviewLoadingContainer, PreviewLoadingBook, PreviewLoadingSparkle,
   PreviewLoadingText, PreviewLoadingDots, PreviewLoadingStages, PreviewLoadingStage,
   BookPreviewWrapper, BookPageFrame, BookCoverImage,
   BookStoryLayout, BookTextHalf, BookImageHalf, BookCreatorTag, BookPageBadge,
   BookLockedOverlay, BookLockedContent, BookLockedIcon, BookLockedTitle, BookLockedFeatures,
+  CoverTitleOverlay,
+  PreviewTimerBar, PreviewTimerDigits,
   PricingGrid, PricingCard, PricingCardBadge, PricingCardName, PricingCardPrice,
   PricingCardSub, PricingCardFeaturesList, PricingCardFeatureItem, PricingCardCTA,
   PreviewSectionTitle,
@@ -129,7 +127,7 @@ const RELIGION_OPTIONS = [
 
 /* ══════════════════════════════════════════════ */
 
-const ALL_STEPS = ['age','theme','occasion','style','hero','appearance','choice','extras1','extras2','preview','payment'] as const;
+const ALL_STEPS = ['age','theme','occasion','style','hero','appearance','choice','extras1','extras2','preview'] as const;
 type StepId = (typeof ALL_STEPS)[number];
 
 interface StoryWizardProps {
@@ -172,11 +170,13 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
   const illustrationTriggeredRef = useRef(false);
 
   // Countdown timer for preview step
-  const [countdown, setCountdown] = useState(600); // 10 minutes in seconds
+  const [countdown, setCountdown] = useState(1200); // 20 minutes in seconds
   const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
+  const pricingRef = useRef<HTMLDivElement>(null);
+  const orderFormRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { wantsExtrasRef.current = wantsExtras; }, [wantsExtras]);
 
@@ -241,10 +241,10 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
   // Countdown timer for preview step
   useEffect(() => {
     if (ALL_STEPS[currentStep] === 'preview') {
-      setCountdown(600);
+      setCountdown(1200);
       countdownRef.current = setInterval(() => {
         setCountdown(prev => {
-          if (prev <= 1) return 600; // restart silently
+          if (prev <= 1) return 1200; // restart silently
           return prev - 1;
         });
       }, 1000);
@@ -263,12 +263,6 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) { onUpdate({ photo: file, appearanceMode: 'photo', eyeColor: '', hairColor: '', skinColor: '' }); }
-  };
-
-  const handleProductSelection = (purchaseType: 'single' | 'club') => {
-    setGlobalError('');
-    metaTrackAddToCart(purchaseType);
-    onUpdate({ productType: 'ebook', purchaseType });
   };
 
   const handleEmailBlurCheck = async () => {
@@ -717,6 +711,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
         const timerDisplay = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
         const heroName = formData.protagonistName || 'votre enfant';
         const creatorName = formData.creatorName || '';
+        const storyTitle = coverTitle || previewTitle || `Le conte de ${heroName}`;
 
         const handlePreviewSelect = (type: 'single' | 'club') => {
           const previewUpdate: Partial<StoryFormData> = {
@@ -735,7 +730,10 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
           }
           onUpdate(previewUpdate);
           metaTrackAddToCart(type);
-          goNext();
+          // Scroll to order form
+          setTimeout(() => {
+            orderFormRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 100);
         };
 
         // All content ready = show the book reveal
@@ -747,304 +745,230 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
         if (coverImageUrl && !isCoverGenerating && previewParagraphs) loadingStage = 2;
 
         const loadingTexts = [
-          `Creation de la couverture de ${heroName}`,
-          `Redaction de l'histoire`,
-          `Illustration de la premiere page`,
+          `Création de la couverture de ${heroName}`,
+          `Rédaction de l'histoire`,
+          `Illustration de la première page`,
         ];
+
+        if (!allReady) {
+          return (
+            <>
+              <StepTitle style={{ fontSize: theme.fontSizes.lg, marginBottom: theme.spacing.md }}>
+                Votre histoire prend vie...
+              </StepTitle>
+              <PreviewLoadingContainer>
+                <PreviewLoadingSparkle $delay={0} $left="15%" $size={5} />
+                <PreviewLoadingSparkle $delay={0.8} $left="30%" $size={7} />
+                <PreviewLoadingSparkle $delay={1.6} $left="50%" $size={4} />
+                <PreviewLoadingSparkle $delay={0.4} $left="68%" $size={6} />
+                <PreviewLoadingSparkle $delay={1.2} $left="82%" $size={5} />
+                <PreviewLoadingSparkle $delay={2.0} $left="40%" $size={3} />
+                <PreviewLoadingBook />
+                <PreviewLoadingText>
+                  {loadingTexts[loadingStage]}
+                  <PreviewLoadingDots><span /><span /><span /></PreviewLoadingDots>
+                </PreviewLoadingText>
+                <PreviewLoadingStages>
+                  <PreviewLoadingStage $active={loadingStage === 0} $done={loadingStage > 0} />
+                  <PreviewLoadingStage $active={loadingStage === 1} $done={loadingStage > 1} />
+                  <PreviewLoadingStage $active={loadingStage === 2} $done={false} />
+                </PreviewLoadingStages>
+              </PreviewLoadingContainer>
+            </>
+          );
+        }
 
         return (
           <>
-            {!allReady ? (
-              /* ── Premium loading animation ── */
-              <>
-                <StepTitle style={{ fontSize: theme.fontSizes.lg, marginBottom: theme.spacing.md }}>
-                  Votre histoire prend vie...
-                </StepTitle>
-                <PreviewLoadingContainer>
-                  {/* Sparkle particles */}
-                  <PreviewLoadingSparkle $delay={0} $left="15%" $size={5} />
-                  <PreviewLoadingSparkle $delay={0.8} $left="30%" $size={7} />
-                  <PreviewLoadingSparkle $delay={1.6} $left="50%" $size={4} />
-                  <PreviewLoadingSparkle $delay={0.4} $left="68%" $size={6} />
-                  <PreviewLoadingSparkle $delay={1.2} $left="82%" $size={5} />
-                  <PreviewLoadingSparkle $delay={2.0} $left="40%" $size={3} />
+            <StepTitle style={{ fontSize: theme.fontSizes.lg, marginBottom: theme.spacing.md }}>
+              Le conte de {heroName} est prêt !
+            </StepTitle>
 
-                  {/* Animated book icon */}
-                  <PreviewLoadingBook />
+            {/* ── Book preview: cover (portrait) + story page + locked page ── */}
+            <BookPreviewWrapper>
+              {/* Cover — portrait with title overlay */}
+              <BookPageFrame $delay={0} $portrait>
+                <BookCoverImage>
+                  <img src={coverImageUrl} alt="Couverture" />
+                  <CoverTitleOverlay>
+                    <h2>{storyTitle}</h2>
+                  </CoverTitleOverlay>
+                </BookCoverImage>
+              </BookPageFrame>
 
-                  {/* Status text */}
-                  <PreviewLoadingText>
-                    {loadingTexts[loadingStage]}
-                    <PreviewLoadingDots><span /><span /><span /></PreviewLoadingDots>
-                  </PreviewLoadingText>
+              {/* Story page — text left, illustration right */}
+              <BookPageFrame $delay={1}>
+                <BookStoryLayout>
+                  <BookTextHalf>
+                    {creatorName && <BookCreatorTag>{creatorName}</BookCreatorTag>}
+                    <p>{previewParagraphs[0]}</p>
+                    <BookPageBadge>1</BookPageBadge>
+                  </BookTextHalf>
+                  <BookImageHalf>
+                    <img src={`data:image/png;base64,${illustrationBase64}`} alt="Illustration" />
+                  </BookImageHalf>
+                </BookStoryLayout>
+              </BookPageFrame>
 
-                  {/* Progress dots */}
-                  <PreviewLoadingStages>
-                    <PreviewLoadingStage $active={loadingStage === 0} $done={loadingStage > 0} />
-                    <PreviewLoadingStage $active={loadingStage === 1} $done={loadingStage > 1} />
-                    <PreviewLoadingStage $active={loadingStage === 2} $done={false} />
-                  </PreviewLoadingStages>
-                </PreviewLoadingContainer>
-              </>
-            ) : (
-              /* ── Book reveal: cover + story page + locked page ── */
-              <>
-                <StepTitle style={{ fontSize: theme.fontSizes.lg, marginBottom: theme.spacing.md }}>
-                  Le conte de {heroName} est pret !
-                </StepTitle>
+              {/* Locked page — compact, clickable → scroll to pricing */}
+              <BookPageFrame $delay={2} $compact>
+                <BookLockedOverlay onClick={() => pricingRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })}>
+                  <BookLockedContent>
+                    <BookLockedIcon>&#x1F512;</BookLockedIcon>
+                    <BookLockedTitle>L'aventure de {heroName} continue...</BookLockedTitle>
+                  </BookLockedContent>
+                </BookLockedOverlay>
+              </BookPageFrame>
+            </BookPreviewWrapper>
 
-                <BookPreviewWrapper>
-                  {/* Page 1 — Cover */}
-                  <BookPageFrame $delay={0}>
-                    <BookCoverImage>
-                      <img src={coverImageUrl} alt="Couverture" />
-                    </BookCoverImage>
-                  </BookPageFrame>
+            {/* ── Timer bar ── */}
+            <PreviewTimerBar style={{ marginTop: theme.spacing.md }}>
+              <span>Votre conte expire dans</span>
+              <PreviewTimerDigits>{timerDisplay}</PreviewTimerDigits>
+            </PreviewTimerBar>
 
-                  {/* Page 2 — Story page (text left, illustration right) */}
-                  <BookPageFrame $delay={1}>
-                    <BookStoryLayout>
-                      <BookTextHalf>
-                        {creatorName && <BookCreatorTag>{creatorName}</BookCreatorTag>}
-                        <p>{previewParagraphs[0]}</p>
-                        <BookPageBadge>1</BookPageBadge>
-                      </BookTextHalf>
-                      <BookImageHalf>
-                        <img src={`data:image/png;base64,${illustrationBase64}`} alt="Illustration" />
-                      </BookImageHalf>
-                    </BookStoryLayout>
-                  </BookPageFrame>
+            {/* ── Pricing section ── */}
+            <div ref={pricingRef} style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <PreviewSectionTitle style={{ marginTop: theme.spacing.md }}>
+                Recevez l'histoire complète de {heroName}
+              </PreviewSectionTitle>
 
-                  {/* Page 3 — Locked page with conversion CTA */}
-                  <BookPageFrame $delay={2}>
-                    <BookLockedOverlay>
-                      <BookLockedContent>
-                        <BookLockedIcon>&#x1F512;</BookLockedIcon>
-                        <BookLockedTitle>L'aventure de {heroName} continue...</BookLockedTitle>
-                        <BookLockedFeatures>
-                          12 pages illustrees · 6 illustrations HD · PDF personnalise
-                        </BookLockedFeatures>
-                      </BookLockedContent>
-                    </BookLockedOverlay>
-                  </BookPageFrame>
-                </BookPreviewWrapper>
+              {isClub && clubCredit?.canSubmit ? (
+                <ClubFreeCard $isSelected={formData.purchaseType === 'club'} onClick={() => handlePreviewSelect('club')}>
+                  <ClubBadge>Membre Club</ClubBadge>
+                  <h3 style={{ fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.lg, margin: `${theme.spacing.sm} 0 4px` }}>
+                    Utiliser mon eBook gratuit
+                  </h3>
+                  <p style={{ fontSize: theme.fontSizes.sm, color: theme.colors.accent.coral, fontWeight: 700, margin: '0 0 4px' }}>0,00 EUR</p>
+                  <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.text.secondary, margin: 0 }}>
+                    Il vous reste {clubCredit.remaining} eBook(s) gratuit(s)
+                  </p>
+                </ClubFreeCard>
+              ) : (
+                <PricingGrid>
+                  <PricingCard $isSelected={formData.purchaseType === 'single'} onClick={() => handlePreviewSelect('single')}>
+                    <PricingCardName>Offre Unique</PricingCardName>
+                    <PricingCardPrice>6,99 EUR</PricingCardPrice>
+                    <PricingCardSub>Paiement unique</PricingCardSub>
+                    <PricingDivider />
+                    <PricingCardFeaturesList>
+                      <PricingCardFeatureItem>1 conte personnalisé</PricingCardFeatureItem>
+                      <PricingCardFeatureItem>6 illustrations HD</PricingCardFeatureItem>
+                      <PricingCardFeatureItem>PDF téléchargeable</PricingCardFeatureItem>
+                    </PricingCardFeaturesList>
+                    <PricingCardCTA>Choisir</PricingCardCTA>
+                  </PricingCard>
 
-                <PaywallDivider />
+                  <PricingCard $isSelected={formData.purchaseType === 'club'} $featured onClick={() => handlePreviewSelect('club')}>
+                    <PricingCardBadge>Populaire</PricingCardBadge>
+                    <PricingCardName>Club Mensuel</PricingCardName>
+                    <PricingCardPrice>9,99 EUR</PricingCardPrice>
+                    <PricingCardSub>/ mois — sans engagement</PricingCardSub>
+                    <PricingDivider />
+                    <PricingCardFeaturesList>
+                      <PricingCardFeatureItem $highlight>Ce conte est inclus</PricingCardFeatureItem>
+                      <PricingCardFeatureItem $highlight>3 contes / mois</PricingCardFeatureItem>
+                      <PricingCardFeatureItem>Bibliothèque illimitée</PricingCardFeatureItem>
+                      <PricingCardFeatureItem>Annulable à tout moment</PricingCardFeatureItem>
+                    </PricingCardFeaturesList>
+                    <PricingCardCTA $primary>Choisir</PricingCardCTA>
+                  </PricingCard>
 
-                <PreviewSectionTitle>
-                  Recevez l'histoire complete de {heroName}
-                </PreviewSectionTitle>
+                  <PricingCard $isSelected={false} onClick={() => handlePreviewSelect('club')}>
+                    <PricingCardName>Club Annuel</PricingCardName>
+                    <PricingCardPrice>79,99 EUR</PricingCardPrice>
+                    <PricingCardSub>/ an — soit 6,67 EUR/mois</PricingCardSub>
+                    <PricingDivider />
+                    <PricingCardFeaturesList>
+                      <PricingCardFeatureItem $highlight>Ce conte est inclus</PricingCardFeatureItem>
+                      <PricingCardFeatureItem $highlight>3 contes / mois</PricingCardFeatureItem>
+                      <PricingCardFeatureItem>Économisez 40 EUR/an</PricingCardFeatureItem>
+                      <PricingCardFeatureItem>Bibliothèque illimitée</PricingCardFeatureItem>
+                    </PricingCardFeaturesList>
+                    <PricingCardCTA>Choisir</PricingCardCTA>
+                  </PricingCard>
+                </PricingGrid>
+              )}
+            </div>
 
-                {/* 3-tier pricing */}
-                {isClub && clubCredit?.canSubmit ? (
-                  <ClubFreeCard $isSelected={true} onClick={() => handlePreviewSelect('club')}>
-                    <ClubBadge>Membre Club</ClubBadge>
-                    <h3 style={{ fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.lg, margin: `${theme.spacing.sm} 0 4px` }}>
-                      Utiliser mon eBook gratuit
-                    </h3>
-                    <p style={{ fontSize: theme.fontSizes.sm, color: theme.colors.accent.coral, fontWeight: 700, margin: '0 0 4px' }}>0,00 EUR</p>
-                    <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.text.secondary, margin: 0 }}>
-                      Il vous reste {clubCredit.remaining} eBook(s) gratuit(s)
-                    </p>
-                  </ClubFreeCard>
-                ) : (
-                  <PricingGrid>
-                    {/* Offre unique */}
-                    <PricingCard $isSelected={false} onClick={() => handlePreviewSelect('single')}>
-                      <PricingCardName>Offre Unique</PricingCardName>
-                      <PricingCardPrice>6,99 EUR</PricingCardPrice>
-                      <PricingCardSub>Paiement unique</PricingCardSub>
-                      <PricingDivider />
-                      <PricingCardFeaturesList>
-                        <PricingCardFeatureItem>1 conte personnalise</PricingCardFeatureItem>
-                        <PricingCardFeatureItem>6 illustrations HD</PricingCardFeatureItem>
-                        <PricingCardFeatureItem>PDF telechargeable</PricingCardFeatureItem>
-                      </PricingCardFeaturesList>
-                      <PricingCardCTA>Choisir</PricingCardCTA>
-                    </PricingCard>
+            {/* ── Order form (appears when offer selected) ── */}
+            {formData.productType && (
+              <div ref={orderFormRef} style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <OrderInfoSection>
+                  <SectionTitle>Informations de commande</SectionTitle>
+                  {isAuthenticated && currentUser && (
+                    <ConnectedBanner>Connecté en tant que <strong>{currentUser.email}</strong></ConnectedBanner>
+                  )}
+                  <OrderInfoGrid>
+                    {isAuthenticated ? (
+                      <FullWidthField>
+                        <ValidatedInput type="email" label="Email" value={formData.userEmail || ''} onChange={() => {}} placeholder="" required disabled />
+                      </FullWidthField>
+                    ) : (
+                      <>
+                        <FullWidthField>
+                          <ValidatedInput type="email" label="Email" value={formData.userEmail || ''}
+                            onChange={(v) => { setGlobalError(''); onUpdate({ userEmail: v }); if (errors.userEmail) setErrors(p => ({ ...p, userEmail: '' })); }}
+                            placeholder="votre@email.com" required error={errors.userEmail}
+                            onBlur={() => { validateField('userEmail', formData.userEmail || '', 'email'); handleEmailBlurCheck(); }} />
+                          {emailStatus?.exists && emailStatus?.hasPassword && (
+                            <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.accent.coral, marginTop: '4px' }}>
+                              Ce compte existe. <span style={{ cursor: 'pointer', fontWeight: 600, textDecoration: 'underline' }}
+                                onClick={() => window.location.href = '/login'}>Connectez-vous</span>
+                            </p>
+                          )}
+                        </FullWidthField>
+                        <FullWidthField>
+                          <ValidatedInput type="password" label="Mot de passe" value={formData.password || ''}
+                            onChange={(v) => { onUpdate({ password: v }); if (errors.password) setErrors(p => ({ ...p, password: '' })); }}
+                            placeholder="Min. 8 caractères" required={false} error={errors.password} />
+                          <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.text.light, marginTop: '4px' }}>
+                            Créez un compte pour retrouver vos contes
+                          </p>
+                        </FullWidthField>
+                      </>
+                    )}
+                    <InputField>
+                      <ValidatedInput label="Prénom" value={formData.firstName || ''}
+                        onChange={(v) => { setGlobalError(''); onUpdate({ firstName: v }); if (errors.firstName) setErrors(p => ({ ...p, firstName: '' })); }}
+                        placeholder="Votre prénom" required error={errors.firstName}
+                        onBlur={() => validateField('firstName', formData.firstName || '')} />
+                    </InputField>
+                    <InputField>
+                      <ValidatedInput label="Nom" value={formData.lastName || ''}
+                        onChange={(v) => { setGlobalError(''); onUpdate({ lastName: v }); if (errors.lastName) setErrors(p => ({ ...p, lastName: '' })); }}
+                        placeholder="Votre nom" required error={errors.lastName}
+                        onBlur={() => validateField('lastName', formData.lastName || '')} />
+                    </InputField>
+                  </OrderInfoGrid>
+                </OrderInfoSection>
 
-                    {/* Club mensuel — FEATURED */}
-                    <PricingCard $isSelected={false} $featured onClick={() => handlePreviewSelect('club')}>
-                      <PricingCardBadge>Populaire</PricingCardBadge>
-                      <PricingCardName>Club Mensuel</PricingCardName>
-                      <PricingCardPrice>9,99 EUR</PricingCardPrice>
-                      <PricingCardSub>/ mois — sans engagement</PricingCardSub>
-                      <PricingDivider />
-                      <PricingCardFeaturesList>
-                        <PricingCardFeatureItem $highlight>Ce conte est inclus</PricingCardFeatureItem>
-                        <PricingCardFeatureItem $highlight>3 contes / mois</PricingCardFeatureItem>
-                        <PricingCardFeatureItem>Bibliotheque illimitee</PricingCardFeatureItem>
-                        <PricingCardFeatureItem>Annulable a tout moment</PricingCardFeatureItem>
-                      </PricingCardFeaturesList>
-                      <PricingCardCTA $primary>Choisir</PricingCardCTA>
-                    </PricingCard>
+                {globalError && <ErrorMessage>{globalError}</ErrorMessage>}
 
-                    {/* Club annuel */}
-                    <PricingCard $isSelected={false} onClick={() => handlePreviewSelect('club')}>
-                      <PricingCardName>Club Annuel</PricingCardName>
-                      <PricingCardPrice>79,99 EUR</PricingCardPrice>
-                      <PricingCardSub>/ an — soit 6,67 EUR/mois</PricingCardSub>
-                      <PricingDivider />
-                      <PricingCardFeaturesList>
-                        <PricingCardFeatureItem $highlight>Ce conte est inclus</PricingCardFeatureItem>
-                        <PricingCardFeatureItem $highlight>3 contes / mois</PricingCardFeatureItem>
-                        <PricingCardFeatureItem>Economisez 40 EUR/an</PricingCardFeatureItem>
-                        <PricingCardFeatureItem>Bibliotheque illimitee</PricingCardFeatureItem>
-                      </PricingCardFeaturesList>
-                      <PricingCardCTA>Choisir</PricingCardCTA>
-                    </PricingCard>
-                  </PricingGrid>
+                <PayButton $isReady={isPaymentInfoComplete} disabled={!formData.productType || isSubmitting} onClick={handleFormSubmit}>
+                  {isSubmitting
+                    ? 'Traitement en cours...'
+                    : formData.purchaseType === 'club' && isClub && clubCredit?.canSubmit
+                      ? 'Recevoir mon eBook gratuit'
+                      : 'Recevoir mon conte →'}
+                </PayButton>
+
+                {!(formData.purchaseType === 'club' && isClub && clubCredit?.canSubmit) && (
+                  <p style={{ marginTop: theme.spacing.sm, fontSize: '10px', color: theme.colors.text.light, textAlign: 'center' }}>
+                    Paiement sécurisé par Stripe
+                  </p>
                 )}
 
-                <TimerContainer style={{ marginTop: theme.spacing.md }}>
-                  <span>&#x23F3;</span>
-                  <span>Histoire conservee :</span>
-                  <TimerDigits>{timerDisplay}</TimerDigits>
-                </TimerContainer>
-              </>
+                <TrustBadgesRow>
+                  <TrustBadge>Sécurisé</TrustBadge>
+                  <TrustBadge>Satisfait ou remboursé</TrustBadge>
+                  <TrustBadge>Livraison instantanée</TrustBadge>
+                </TrustBadgesRow>
+              </div>
             )}
           </>
         );
       }
-
-      case 'payment':
-        return (
-          <>
-            <StepTitle>Recevez votre conte</StepTitle>
-
-            {isClub && clubCredit?.canSubmit && (
-              <ClubFreeCard $isSelected={formData.purchaseType === 'club'} onClick={() => handleProductSelection('club')}>
-                <ClubBadge>Membre Club</ClubBadge>
-                <h3 style={{ fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.lg, margin: `${theme.spacing.sm} 0 4px` }}>
-                  Utiliser mon eBook gratuit
-                </h3>
-                <p style={{ fontSize: theme.fontSizes.sm, color: theme.colors.accent.coral, fontWeight: 700, margin: '0 0 4px' }}>0,00 €</p>
-                <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.text.secondary, margin: 0 }}>
-                  Il vous reste {clubCredit.remaining} eBook(s) gratuit(s)
-                </p>
-              </ClubFreeCard>
-            )}
-
-            {isClub && clubCredit && !clubCredit.canSubmit && (
-              <ClubExhaustedMsg>Crédit mensuel épuisé. Choisissez un format payant.</ClubExhaustedMsg>
-            )}
-
-            {/* Compact pricing cards */}
-            <PricingRow>
-              <PricingOption $isSelected={formData.purchaseType === 'single'}
-                onClick={() => handleProductSelection('single')}>
-                <PricingName>eBook Numérique</PricingName>
-                <PricingPrice>6,99 €</PricingPrice>
-                <PricingSubtext>Paiement unique</PricingSubtext>
-                <PricingDivider />
-                <PricingFeatures>
-                  <PricingFeature>20-30 pages illustrées</PricingFeature>
-                  <PricingFeature>Illustrations HD</PricingFeature>
-                  <PricingFeature>PDF téléchargeable</PricingFeature>
-                  <PricingFeature>Bibliothèque en ligne</PricingFeature>
-                </PricingFeatures>
-              </PricingOption>
-
-              {!isClub && (
-                <PricingOption $isSelected={formData.purchaseType === 'club' || !formData.purchaseType}
-                  onClick={() => handleProductSelection('club')}>
-                  <PricingBadge />
-                  <PricingLabel>Recommandé</PricingLabel>
-                  <ClubFreeTitle>Ce conte est gratuit</ClubFreeTitle>
-                  <ClubSmallPrice>9,99 €/mois - sans engagement</ClubSmallPrice>
-                  <PricingDivider />
-                  <PricingFeatures>
-                    <PricingHighlight>3 contes gratuits / mois</PricingHighlight>
-                    <PricingFeature>Bibliothèque illimitée</PricingFeature>
-                    <PricingFeature>Lecture + PDF</PricingFeature>
-                    <PricingFeature>Annulable à tout moment</PricingFeature>
-                  </PricingFeatures>
-                </PricingOption>
-              )}
-            </PricingRow>
-
-            {formData.purchaseType === 'club' && isClub && clubCredit?.canSubmit && (
-              <OrderCostSummary $variant="free">Commande gratuite (crédit Club)</OrderCostSummary>
-            )}
-            {formData.purchaseType === 'club' && !isClub && (
-              <OrderCostSummary $variant="info">Abonnement : 9,99 € / mois — Cet eBook est inclus</OrderCostSummary>
-            )}
-            {formData.purchaseType === 'single' && (
-              <OrderCostSummary $variant="paid">Total : 6,99 €</OrderCostSummary>
-            )}
-
-            <OrderInfoSection>
-              <SectionTitle>Informations de commande</SectionTitle>
-              {isAuthenticated && currentUser && (
-                <ConnectedBanner>Connecté en tant que <strong>{currentUser.email}</strong></ConnectedBanner>
-              )}
-              <OrderInfoGrid>
-                {isAuthenticated ? (
-                  <FullWidthField>
-                    <ValidatedInput type="email" label="Email" value={formData.userEmail || ''} onChange={() => {}} placeholder="" required disabled />
-                  </FullWidthField>
-                ) : (
-                  <>
-                    <FullWidthField>
-                      <ValidatedInput type="email" label="Email" value={formData.userEmail || ''}
-                        onChange={(v) => { setGlobalError(''); onUpdate({ userEmail: v }); if (errors.userEmail) setErrors(p => ({ ...p, userEmail: '' })); }}
-                        placeholder="votre@email.com" required error={errors.userEmail}
-                        onBlur={() => { validateField('userEmail', formData.userEmail || '', 'email'); handleEmailBlurCheck(); }} />
-                      {emailStatus?.exists && emailStatus?.hasPassword && (
-                        <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.accent.coral, marginTop: '4px' }}>
-                          Ce compte existe. <span style={{ cursor: 'pointer', fontWeight: 600, textDecoration: 'underline' }}
-                            onClick={() => window.location.href = '/login'}>Connectez-vous</span>
-                        </p>
-                      )}
-                    </FullWidthField>
-                    <FullWidthField>
-                      <ValidatedInput type="password" label="Mot de passe" value={formData.password || ''}
-                        onChange={(v) => { onUpdate({ password: v }); if (errors.password) setErrors(p => ({ ...p, password: '' })); }}
-                        placeholder="Min. 8 caractères" required={false} error={errors.password} />
-                      <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.text.light, marginTop: '4px' }}>
-                        Créez un compte pour retrouver vos contes
-                      </p>
-                    </FullWidthField>
-                  </>
-                )}
-                <InputField>
-                  <ValidatedInput label="Prénom" value={formData.firstName || ''}
-                    onChange={(v) => { setGlobalError(''); onUpdate({ firstName: v }); if (errors.firstName) setErrors(p => ({ ...p, firstName: '' })); }}
-                    placeholder="Votre prénom" required error={errors.firstName}
-                    onBlur={() => validateField('firstName', formData.firstName || '')} />
-                </InputField>
-                <InputField>
-                  <ValidatedInput label="Nom" value={formData.lastName || ''}
-                    onChange={(v) => { setGlobalError(''); onUpdate({ lastName: v }); if (errors.lastName) setErrors(p => ({ ...p, lastName: '' })); }}
-                    placeholder="Votre nom" required error={errors.lastName}
-                    onBlur={() => validateField('lastName', formData.lastName || '')} />
-                </InputField>
-              </OrderInfoGrid>
-            </OrderInfoSection>
-
-            {globalError && <ErrorMessage>{globalError}</ErrorMessage>}
-
-            <PayButton $isReady={isPaymentInfoComplete} disabled={!formData.productType || isSubmitting} onClick={handleFormSubmit}>
-              {isSubmitting
-                ? 'Traitement en cours...'
-                : formData.purchaseType === 'club' && isClub && clubCredit?.canSubmit
-                  ? 'Recevoir mon eBook gratuit'
-                  : 'Recevoir mon conte →'}
-            </PayButton>
-
-            {!(formData.purchaseType === 'club' && isClub && clubCredit?.canSubmit) && (
-              <p style={{ marginTop: theme.spacing.sm, fontSize: '10px', color: theme.colors.text.light, textAlign: 'center' }}>
-                Paiement sécurisé par Stripe
-              </p>
-            )}
-
-            <TrustBadgesRow>
-              <TrustBadge>Sécurisé</TrustBadge>
-              <TrustBadge>Satisfait ou remboursé</TrustBadge>
-              <TrustBadge>Livraison instantanée</TrustBadge>
-            </TrustBadgesRow>
-          </>
-        );
 
       default:
         return null;
