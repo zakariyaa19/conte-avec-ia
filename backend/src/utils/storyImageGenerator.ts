@@ -1,4 +1,15 @@
-import OpenAI, { toFile } from 'openai';
+import OpenAI, { toFile, APIError } from 'openai';
+
+// Timeout helper — abort after N ms
+function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error(`Timeout ${label} apres ${ms / 1000}s`)), ms);
+    promise.then(
+      (val) => { clearTimeout(timer); resolve(val); },
+      (err) => { clearTimeout(timer); reject(err); }
+    );
+  });
+}
 
 // Reuse constants from coverGeneratorService
 import {
@@ -376,20 +387,24 @@ export async function generateStoryImages(
         const openai = getOpenAI();
         let imageData: string | undefined;
 
+        const IMAGE_TIMEOUT = 120_000; // 2 minutes max par image
+
         if (referenceFile) {
           // gpt-image-1 avec image de reference (edit mode)
-          const response = await openai.images.edit({
-            model: 'gpt-image-1',
-            image: referenceFile,
-            prompt,
-            n: 1,
-            size: '1024x1024',
-            quality: 'medium',
-          });
-          // gpt-image-1 edit renvoie b64_json par defaut
+          const response = await withTimeout(
+            openai.images.edit({
+              model: 'gpt-image-1',
+              image: referenceFile,
+              prompt,
+              n: 1,
+              size: '1024x1024',
+              quality: 'medium',
+            }),
+            IMAGE_TIMEOUT,
+            `image ${i + 1} (edit)`
+          );
           imageData = response.data?.[0]?.b64_json;
 
-          // Si pas de b64_json, essayer l'URL
           if (!imageData && response.data?.[0]?.url) {
             const resp = await fetch(response.data[0].url);
             const arrBuf = await resp.arrayBuffer();
@@ -400,13 +415,17 @@ export async function generateStoryImages(
           }
         } else {
           // Fallback sans reference : gpt-image-1 generate
-          const response = await openai.images.generate({
-            model: 'gpt-image-1',
-            prompt,
-            n: 1,
-            size: '1024x1024',
-            quality: 'medium',
-          });
+          const response = await withTimeout(
+            openai.images.generate({
+              model: 'gpt-image-1',
+              prompt,
+              n: 1,
+              size: '1024x1024',
+              quality: 'medium',
+            }),
+            IMAGE_TIMEOUT,
+            `image ${i + 1} (generate)`
+          );
           imageData = response.data?.[0]?.b64_json;
 
           if (!imageData && response.data?.[0]?.url) {
