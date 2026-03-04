@@ -25,7 +25,6 @@ import {
   DiscoverCTA,
   ExtrasSection, SectionTitle,
   CollapsiblePill, CollapsibleChevron, CollapsibleContent,
-  PricingDivider,
   OrderInfoSection, OrderInfoGrid, FullWidthField,
   PayButton, TrustBadgesRow, TrustBadge, ErrorMessage, ConnectedBanner,
   ClubFreeCard, ClubBadge,
@@ -36,9 +35,10 @@ import {
   BookLockedOverlay, BookLockedContent, BookLockedIcon, BookLockedTitle, BookLockedSubtitle, BookLockedFeatures,
   PricingSelectedCheck,
   PreviewTimerBar, PreviewTimerDigits,
+  ValueBlock, ValueBlockTitle, ValueBlockItem,
   PricingGrid, PricingCard, PricingCardBadge, PricingCardName, PricingCardPrice,
-  PricingCardSub, PricingCardFeaturesList, PricingCardFeatureItem, PricingCardCTA,
-  PreviewSectionTitle,
+  PricingCardSub, PricingPerStory, PricingCardFeaturesList, PricingCardFeatureItem, PricingCardCTA,
+  PreviewSectionTitle, SocialProofLine,
 } from './WizardSharedStyles';
 
 /* ══════════════════════════════════════════════
@@ -830,16 +830,25 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
               </BookPageFrame>
             </BookPreviewWrapper>
 
-            {/* ── Timer bar ── */}
-            <PreviewTimerBar style={{ marginTop: theme.spacing.md }}>
-              <span>Votre histoire est prête et sera conservée pendant</span>
+            {/* ── Timer ── */}
+            <PreviewTimerBar>
+              <span>Votre conte est réservé pendant encore</span>
               <PreviewTimerDigits>{timerDisplay}</PreviewTimerDigits>
             </PreviewTimerBar>
 
+            {/* ── Value proposition ── */}
+            <ValueBlock>
+              <ValueBlockTitle>Votre conte personnalisé comprend</ValueBlockTitle>
+              <ValueBlockItem>7 illustrations HD uniques</ValueBlockItem>
+              <ValueBlockItem>Une histoire avec le prénom de votre enfant</ValueBlockItem>
+              <ValueBlockItem>PDF téléchargeable et imprimable</ValueBlockItem>
+              <ValueBlockItem>Lecture illimitée à vie</ValueBlockItem>
+            </ValueBlock>
+
             {/* ── Pricing section ── */}
             <div ref={pricingRef} style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <PreviewSectionTitle style={{ marginTop: theme.spacing.md }}>
-                Recevez l'histoire complète de {heroName}
+              <PreviewSectionTitle>
+                {heroName} est prêt pour la suite de son aventure
               </PreviewSectionTitle>
 
               {isClub && clubCredit?.canSubmit ? (
@@ -855,59 +864,65 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 </ClubFreeCard>
               ) : (
                 <PricingGrid>
-                  <PricingCard $isSelected={selectedOffer === 'single'} onClick={() => handlePreviewSelect('single')}>
+                  {/* Single — last on mobile */}
+                  <PricingCard $isSelected={selectedOffer === 'single'} $mobileOrder={2} onClick={() => handlePreviewSelect('single')}>
                     {selectedOffer === 'single' && <PricingSelectedCheck>&#x2713;</PricingSelectedCheck>}
                     <PricingCardName>Offre Unique</PricingCardName>
-                    <PricingCardPrice>6,99 EUR</PricingCardPrice>
+                    <PricingCardPrice>6,99€</PricingCardPrice>
                     <PricingCardSub>Paiement unique</PricingCardSub>
-                    <PricingDivider />
                     <PricingCardFeaturesList>
                       <PricingCardFeatureItem>1 conte personnalisé</PricingCardFeatureItem>
-                      <PricingCardFeatureItem>6 illustrations HD</PricingCardFeatureItem>
+                      <PricingCardFeatureItem>7 illustrations HD</PricingCardFeatureItem>
                       <PricingCardFeatureItem>PDF téléchargeable</PricingCardFeatureItem>
                     </PricingCardFeaturesList>
-                    <PricingCardCTA $primary={selectedOffer === 'single'}>{selectedOffer === 'single' ? 'Sélectionné' : 'Choisir'}</PricingCardCTA>
+                    <PricingCardCTA $primary={selectedOffer === 'single'}>{selectedOffer === 'single' ? 'Sélectionné !' : 'Choisir cette offre'}</PricingCardCTA>
                   </PricingCard>
 
-                  <PricingCard $isSelected={selectedOffer === 'club_monthly'} $featured onClick={() => handlePreviewSelect('club', 'monthly')}>
+                  {/* Club Mensuel — FIRST on mobile, center on desktop */}
+                  <PricingCard $isSelected={selectedOffer === 'club_monthly'} $featured $mobileOrder={0} onClick={() => handlePreviewSelect('club', 'monthly')}>
                     <PricingCardBadge>Populaire</PricingCardBadge>
                     {selectedOffer === 'club_monthly' && <PricingSelectedCheck>&#x2713;</PricingSelectedCheck>}
                     <PricingCardName>Club Mensuel</PricingCardName>
-                    <PricingCardPrice>9,99 EUR</PricingCardPrice>
+                    <PricingCardPrice>9,99€</PricingCardPrice>
                     <PricingCardSub>/ mois — sans engagement</PricingCardSub>
-                    <PricingDivider />
+                    <PricingPerStory>soit 3,33€ par histoire</PricingPerStory>
                     <PricingCardFeaturesList>
                       <PricingCardFeatureItem $highlight>Ce conte est inclus</PricingCardFeatureItem>
                       <PricingCardFeatureItem $highlight>3 contes / mois</PricingCardFeatureItem>
                       <PricingCardFeatureItem>Bibliothèque illimitée</PricingCardFeatureItem>
                       <PricingCardFeatureItem>Annulable à tout moment</PricingCardFeatureItem>
                     </PricingCardFeaturesList>
-                    <PricingCardCTA $primary>{selectedOffer === 'club_monthly' ? 'Sélectionné' : 'Choisir'}</PricingCardCTA>
+                    <PricingCardCTA $primary>{selectedOffer === 'club_monthly' ? 'Sélectionné !' : 'Débloquer l\'histoire'}</PricingCardCTA>
                   </PricingCard>
 
-                  <PricingCard $isSelected={selectedOffer === 'club_annual'} onClick={() => handlePreviewSelect('club', 'annual')}>
+                  {/* Club Annuel — second on mobile */}
+                  <PricingCard $isSelected={selectedOffer === 'club_annual'} $mobileOrder={1} onClick={() => handlePreviewSelect('club', 'annual')}>
                     {selectedOffer === 'club_annual' && <PricingSelectedCheck>&#x2713;</PricingSelectedCheck>}
                     <PricingCardName>Club Annuel</PricingCardName>
-                    <PricingCardPrice>79,99 EUR</PricingCardPrice>
-                    <PricingCardSub>/ an — soit 6,67 EUR/mois</PricingCardSub>
-                    <PricingDivider />
+                    <PricingCardPrice>79,99€</PricingCardPrice>
+                    <PricingCardSub>/ an — soit 6,67€/mois</PricingCardSub>
+                    <PricingPerStory>Économisez 40€/an</PricingPerStory>
                     <PricingCardFeaturesList>
                       <PricingCardFeatureItem $highlight>Ce conte est inclus</PricingCardFeatureItem>
                       <PricingCardFeatureItem $highlight>3 contes / mois</PricingCardFeatureItem>
-                      <PricingCardFeatureItem>Économisez 40 EUR/an</PricingCardFeatureItem>
                       <PricingCardFeatureItem>Bibliothèque illimitée</PricingCardFeatureItem>
+                      <PricingCardFeatureItem>Annulable à tout moment</PricingCardFeatureItem>
                     </PricingCardFeaturesList>
-                    <PricingCardCTA $primary={selectedOffer === 'club_annual'}>{selectedOffer === 'club_annual' ? 'Sélectionné' : 'Choisir'}</PricingCardCTA>
+                    <PricingCardCTA $primary={selectedOffer === 'club_annual'}>{selectedOffer === 'club_annual' ? 'Sélectionné !' : 'Choisir cette offre'}</PricingCardCTA>
                   </PricingCard>
                 </PricingGrid>
               )}
+
+              <SocialProofLine>
+                <span>&#x2B50;</span> Déjà +500 parents ont créé une histoire pour leur enfant
+              </SocialProofLine>
             </div>
 
             {/* ── Order form (appears when offer selected) ── */}
             {formData.productType && (
               <div ref={orderFormRef} style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <OrderInfoSection>
-                  <SectionTitle>Informations de commande</SectionTitle>
+                  <SectionTitle>Finalisez votre commande</SectionTitle>
                   {isAuthenticated && currentUser && (
                     <ConnectedBanner>Connecté en tant que <strong>{currentUser.email}</strong></ConnectedBanner>
                   )}
@@ -962,17 +977,17 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                     ? 'Traitement en cours...'
                     : formData.purchaseType === 'club' && isClub && clubCredit?.canSubmit
                       ? 'Recevoir mon eBook gratuit'
-                      : 'Recevoir mon conte →'}
+                      : 'Débloquer l\'histoire complète'}
                 </PayButton>
 
                 {!(formData.purchaseType === 'club' && isClub && clubCredit?.canSubmit) && (
                   <p style={{ marginTop: theme.spacing.sm, fontSize: '10px', color: theme.colors.text.light, textAlign: 'center' }}>
-                    Paiement sécurisé par Stripe
+                    Paiement 100% sécurisé par Stripe
                   </p>
                 )}
 
                 <TrustBadgesRow>
-                  <TrustBadge>Sécurisé</TrustBadge>
+                  <TrustBadge>Paiement sécurisé</TrustBadge>
                   <TrustBadge>Satisfait ou remboursé</TrustBadge>
                   <TrustBadge>Livraison instantanée</TrustBadge>
                 </TrustBadgesRow>

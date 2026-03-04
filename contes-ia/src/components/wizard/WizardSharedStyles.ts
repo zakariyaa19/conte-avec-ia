@@ -1494,19 +1494,28 @@ export const BookLockedFeatures = styled.p`
   }
 `;
 
-/* Timer bar — urgent, visible */
+/* ══════════════════════════════════════════════
+   TIMER BAR — urgency with pulse
+   ══════════════════════════════════════════════ */
+
+const timerPulse = keyframes`
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+`;
+
 export const PreviewTimerBar = styled.div`
   width: 100%;
   max-width: 700px;
-  background: linear-gradient(135deg, #FFF3E8, #FFE8D6);
-  border: 1.5px solid ${theme.colors.accent.coral}30;
-  border-radius: ${theme.borderRadius.lg};
-  padding: 10px 20px;
+  background: linear-gradient(135deg, #FFF8F2, #FFF0E6, #FFF8F2);
+  border: 1.5px solid rgba(255, 153, 153, 0.2);
+  border-radius: ${theme.borderRadius.xl};
+  padding: 14px 24px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   animation: ${fadeIn} 0.5s ease both;
+  box-shadow: 0 2px 12px rgba(255, 153, 153, 0.08);
 
   span {
     font-family: ${theme.fonts.body};
@@ -1516,137 +1525,267 @@ export const PreviewTimerBar = styled.div`
   }
 
   @media (max-width: ${theme.breakpoints.sm}) {
-    padding: 8px 14px;
-    span { font-size: ${theme.fontSizes.xs}; }
+    padding: 12px 16px;
+    border-radius: ${theme.borderRadius.lg};
+    gap: 6px;
+    span { font-size: 11px; }
   }
 `;
 
 export const PreviewTimerDigits = styled.span`
   && {
     font-family: ${theme.fonts.heading};
-    font-size: ${theme.fontSizes.lg};
+    font-size: ${theme.fontSizes.xl};
     font-weight: 800;
     color: ${theme.colors.accent.coral};
     font-variant-numeric: tabular-nums;
+    animation: ${timerPulse} 2s ease-in-out infinite;
 
     @media (max-width: ${theme.breakpoints.sm}) {
-      font-size: ${theme.fontSizes.base};
+      font-size: ${theme.fontSizes.lg};
     }
   }
 `;
 
 /* ══════════════════════════════════════════════
-   PAYWALL PRICING GRID — 3 columns
+   VALUE PROPOSITION — what's included
    ══════════════════════════════════════════════ */
+
+export const ValueBlock = styled.div`
+  width: 100%;
+  max-width: 500px;
+  background: linear-gradient(160deg, #FFFCF5, #FFF8EE);
+  border: 1px solid rgba(210, 175, 130, 0.2);
+  border-radius: ${theme.borderRadius.xl};
+  padding: ${theme.spacing.lg} ${theme.spacing.lg};
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 2px 16px rgba(120, 90, 60, 0.06);
+  animation: ${fadeIn} 0.6s ease 0.2s both;
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    padding: ${theme.spacing.md} ${theme.spacing.md};
+    max-width: 360px;
+    gap: 8px;
+  }
+`;
+
+export const ValueBlockTitle = styled.p`
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.sm};
+  font-weight: 700;
+  color: ${theme.colors.text.secondary};
+  text-align: center;
+  margin: 0 0 4px;
+  letter-spacing: 0.3px;
+
+  @media (min-width: ${theme.breakpoints.lg}) {
+    font-size: ${theme.fontSizes.base};
+  }
+`;
+
+export const ValueBlockItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: ${theme.fonts.body};
+  font-size: ${theme.fontSizes.sm};
+  color: ${theme.colors.text.primary};
+  font-weight: 500;
+  line-height: 1.4;
+
+  &::before {
+    content: '';
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(255, 153, 153, 0.15), rgba(255, 180, 120, 0.15));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    font-size: ${theme.fontSizes.xs};
+    gap: 8px;
+    &::before { width: 18px; height: 18px; }
+  }
+`;
+
+/* ══════════════════════════════════════════════
+   SECTION TITLE — emotional headline
+   ══════════════════════════════════════════════ */
+
+export const PreviewSectionTitle = styled.p`
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.lg};
+  font-weight: 700;
+  color: ${theme.colors.text.primary};
+  text-align: center;
+  margin: 0 0 ${theme.spacing.md};
+  max-width: 420px;
+  line-height: 1.4;
+  animation: ${fadeIn} 0.5s ease both;
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    font-size: ${theme.fontSizes.base};
+    margin-bottom: ${theme.spacing.sm};
+  }
+  @media (min-width: ${theme.breakpoints.lg}) {
+    font-size: ${theme.fontSizes.xl};
+  }
+`;
+
+/* ══════════════════════════════════════════════
+   PRICING GRID — conversion optimized
+   ══════════════════════════════════════════════ */
+
+const cardSlideUp = keyframes`
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+`;
+
+const badgeBounce = keyframes`
+  0%, 100% { transform: translateX(-50%) scale(1); }
+  50% { transform: translateX(-50%) scale(1.05); }
+`;
 
 export const PricingGrid = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: ${theme.spacing.sm};
+  grid-template-columns: 1fr 1.08fr 1fr;
+  gap: ${theme.spacing.md};
   width: 100%;
-  max-width: 640px;
+  max-width: 680px;
   align-items: stretch;
 
   @media (max-width: ${theme.breakpoints.sm}) {
     grid-template-columns: 1fr;
-    gap: ${theme.spacing.sm};
-    max-width: 340px;
+    gap: 12px;
+    max-width: 380px;
   }
   @media (min-width: ${theme.breakpoints.lg}) {
-    max-width: 780px;
-    gap: ${theme.spacing.md};
+    max-width: 820px;
+    gap: ${theme.spacing.lg};
+    grid-template-columns: 1fr 1.1fr 1fr;
   }
 `;
 
-export const PricingCard = styled.div<{ $isSelected: boolean; $featured?: boolean }>`
+export const PricingCard = styled.div<{ $isSelected: boolean; $featured?: boolean; $mobileOrder?: number }>`
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: ${theme.spacing.md} ${theme.spacing.sm};
-  border: 2.5px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'rgba(0,0,0,0.06)'};
-  border-radius: 16px;
+  padding: ${theme.spacing.lg} ${theme.spacing.md};
+  border: 2px solid ${p => p.$isSelected
+    ? theme.colors.accent.coral
+    : p.$featured
+      ? 'rgba(255, 153, 153, 0.35)'
+      : 'rgba(0, 0, 0, 0.06)'};
+  border-radius: 20px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  background: ${p => p.$isSelected ? 'linear-gradient(160deg, #FFF0EC, #FFF8F5)' : 'white'};
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: ${p => p.$isSelected
+    ? 'linear-gradient(160deg, #FFF0EC, #FFFAF8)'
+    : p.$featured
+      ? 'linear-gradient(160deg, #FFFBF8, #FFF5EE)'
+      : 'white'};
   -webkit-tap-highlight-color: transparent;
+  animation: ${cardSlideUp} 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: ${p => p.$featured ? '0s' : '0.1s'};
+
   ${p => p.$isSelected && css`
-    box-shadow: 0 4px 24px ${theme.colors.accent.coral}25, 0 0 0 1px ${theme.colors.accent.coral}15;
-    transform: scale(1.02);
-  `}
-  ${p => p.$featured && !p.$isSelected && css`
-    transform: scale(1.03);
-    border-color: ${theme.colors.accent.lightCoral};
-    animation: ${glowPulse} 2.5s ease-in-out infinite;
-  `}
-  ${p => p.$featured && p.$isSelected && css`
-    transform: scale(1.04);
-    animation: none;
+    border-color: ${theme.colors.accent.coral};
+    box-shadow:
+      0 4px 24px ${theme.colors.accent.coral}20,
+      0 0 0 1px ${theme.colors.accent.coral}10,
+      0 8px 32px rgba(0, 0, 0, 0.06);
   `}
 
-  &:hover { border-color: ${theme.colors.accent.coral}80; }
+  ${p => p.$featured && !p.$isSelected && css`
+    box-shadow:
+      0 8px 32px rgba(255, 153, 153, 0.12),
+      0 4px 16px rgba(0, 0, 0, 0.04);
+    animation: ${cardSlideUp} 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  `}
+
+  &:hover {
+    border-color: ${theme.colors.accent.coral}90;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+  }
   &:active { transform: scale(0.98); }
 
   @media (max-width: ${theme.breakpoints.sm}) {
-    padding: ${theme.spacing.sm} ${theme.spacing.sm};
-    border-radius: 12px;
-    ${p => p.$featured && !p.$isSelected && css`transform: none;`}
-    ${p => p.$isSelected && css`transform: none; box-shadow: 0 2px 16px ${theme.colors.accent.coral}20;`}
+    padding: ${theme.spacing.md} ${theme.spacing.md};
+    border-radius: 16px;
+    order: ${p => p.$mobileOrder ?? 0};
+    ${p => p.$featured && css`
+      padding: ${theme.spacing.lg} ${theme.spacing.md};
+      border-width: 2.5px;
+      border-color: ${p.$isSelected ? theme.colors.accent.coral : 'rgba(255, 153, 153, 0.4)'};
+    `}
+    &:hover { transform: none; }
+    ${p => p.$isSelected && css`transform: none;`}
   }
   @media (min-width: ${theme.breakpoints.lg}) {
-    padding: ${theme.spacing.lg} ${theme.spacing.md};
-    border-radius: 20px;
-    &:hover { transform: ${p => p.$featured ? 'scale(1.05)' : 'translateY(-2px)'}; box-shadow: 0 8px 30px rgba(0,0,0,0.08); }
+    padding: ${theme.spacing.xl} ${theme.spacing.lg};
+    border-radius: 24px;
+    &:hover { transform: ${p => p.$featured ? 'translateY(-4px)' : 'translateY(-2px)'}; }
   }
 `;
 
 export const PricingSelectedCheck = styled.span`
   position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 24px;
-  height: 24px;
+  top: 12px;
+  right: 12px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   background: linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover});
   color: white;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px ${theme.colors.accent.coral}40;
+  box-shadow: 0 2px 10px ${theme.colors.accent.coral}40;
   z-index: 2;
+  animation: ${cardSlideUp} 0.3s ease both;
 `;
 
 export const PricingCardBadge = styled.span`
   position: absolute;
-  top: -10px;
+  top: -11px;
   left: 50%;
   transform: translateX(-50%);
   background: linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover});
   color: white;
-  padding: 2px 12px;
+  padding: 4px 16px;
   border-radius: ${theme.borderRadius.full};
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 700;
   white-space: nowrap;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.5px;
   text-transform: uppercase;
+  box-shadow: 0 2px 8px ${theme.colors.accent.coral}30;
+  animation: ${badgeBounce} 3s ease-in-out 2s infinite;
 `;
 
 export const PricingCardName = styled.h4`
   font-family: ${theme.fonts.heading};
-  font-size: ${theme.fontSizes.sm};
+  font-size: ${theme.fontSizes.base};
   font-weight: 700;
   color: ${theme.colors.text.primary};
-  margin: 0 0 4px;
+  margin: 0 0 6px;
   text-align: center;
-  @media (min-width: ${theme.breakpoints.lg}) { font-size: ${theme.fontSizes.base}; }
+  @media (min-width: ${theme.breakpoints.lg}) { font-size: ${theme.fontSizes.lg}; }
 `;
 
 export const PricingCardPrice = styled.p`
   font-family: ${theme.fonts.heading};
-  font-size: ${theme.fontSizes.xl};
+  font-size: ${theme.fontSizes['2xl']};
   font-weight: 800;
   background: linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover});
   -webkit-background-clip: text;
@@ -1654,83 +1793,130 @@ export const PricingCardPrice = styled.p`
   background-clip: text;
   margin: 0;
   line-height: 1.1;
-  @media (max-width: ${theme.breakpoints.sm}) { font-size: ${theme.fontSizes.lg}; }
+
+  @media (max-width: ${theme.breakpoints.sm}) { font-size: ${theme.fontSizes.xl}; }
+  @media (min-width: ${theme.breakpoints.lg}) { font-size: ${theme.fontSizes['3xl']}; }
 `;
 
 export const PricingCardSub = styled.p`
-  font-size: 10px;
+  font-size: 11px;
   color: ${theme.colors.text.light};
-  margin: 2px 0 0;
+  margin: 4px 0 0;
   font-weight: 500;
   text-align: center;
+
+  @media (min-width: ${theme.breakpoints.lg}) { font-size: 12px; }
+`;
+
+/* Highlight price per story */
+export const PricingPerStory = styled.p`
+  font-family: ${theme.fonts.body};
+  font-size: 10px;
+  font-weight: 600;
+  color: ${theme.colors.accent.coral};
+  background: rgba(255, 153, 153, 0.08);
+  padding: 3px 10px;
+  border-radius: ${theme.borderRadius.full};
+  margin: 6px 0 0;
+  text-align: center;
+
+  @media (min-width: ${theme.breakpoints.lg}) { font-size: 11px; padding: 4px 12px; }
 `;
 
 export const PricingCardFeaturesList = styled.ul`
   list-style: none;
   padding: 0;
-  margin: ${theme.spacing.sm} 0 0;
+  margin: ${theme.spacing.md} 0 0;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    margin-top: ${theme.spacing.sm};
+    gap: 4px;
+  }
 `;
 
 export const PricingCardFeatureItem = styled.li<{ $highlight?: boolean }>`
-  font-size: 10px;
+  font-size: 12px;
   color: ${p => p.$highlight ? theme.colors.accent.coral : theme.colors.text.secondary};
-  font-weight: ${p => p.$highlight ? 700 : 400};
-  padding: 2px 0;
+  font-weight: ${p => p.$highlight ? 600 : 400};
+  padding: 0;
   display: flex;
   align-items: center;
-  gap: 4px;
-  line-height: 1.3;
+  gap: 8px;
+  line-height: 1.4;
+
   &::before {
-    content: '';
+    content: '${p => p.$highlight ? '\\2713' : '\\2713'}';
     flex-shrink: 0;
-    width: 4px;
-    height: 4px;
+    width: 16px;
+    height: 16px;
     border-radius: 50%;
-    background: ${p => p.$highlight ? theme.colors.accent.coral : theme.colors.text.light};
+    background: ${p => p.$highlight
+      ? 'linear-gradient(135deg, rgba(255,153,153,0.15), rgba(255,180,120,0.15))'
+      : 'rgba(0,0,0,0.04)'};
+    color: ${p => p.$highlight ? theme.colors.accent.coral : theme.colors.text.light};
+    font-size: 9px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
-  @media (min-width: ${theme.breakpoints.lg}) {
-    font-size: 12px;
-    padding: 3px 0;
-  }
+
+  @media (max-width: ${theme.breakpoints.sm}) { font-size: 11px; }
+  @media (min-width: ${theme.breakpoints.lg}) { font-size: 13px; gap: 10px; }
 `;
 
 export const PricingCardCTA = styled.button<{ $primary?: boolean }>`
   margin-top: auto;
-  padding: 8px 16px;
-  border: ${p => p.$primary ? 'none' : `1.5px solid ${theme.colors.accent.coral}`};
-  border-radius: ${theme.borderRadius.lg};
+  padding: 12px 20px;
+  border: ${p => p.$primary ? 'none' : `1.5px solid ${theme.colors.accent.coral}60`};
+  border-radius: ${theme.borderRadius.xl};
   background: ${p => p.$primary
     ? `linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover})`
     : 'transparent'};
   color: ${p => p.$primary ? 'white' : theme.colors.accent.coral};
   font-family: ${theme.fonts.heading};
-  font-size: ${theme.fontSizes.xs};
+  font-size: ${theme.fontSizes.sm};
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
   width: 100%;
-  margin-top: ${theme.spacing.sm};
+  margin-top: ${theme.spacing.md};
+  ${p => p.$primary && css`box-shadow: 0 4px 16px ${theme.colors.accent.coral}25;`}
 
   &:hover {
     transform: scale(1.02);
-    box-shadow: 0 2px 12px ${theme.colors.accent.coral}30;
+    box-shadow: 0 4px 20px ${theme.colors.accent.coral}30;
   }
+  &:active { transform: scale(0.97); }
+
   @media (min-width: ${theme.breakpoints.lg}) {
-    font-size: ${theme.fontSizes.sm};
-    padding: 10px 20px;
+    font-size: ${theme.fontSizes.base};
+    padding: 14px 24px;
   }
 `;
 
-export const PreviewSectionTitle = styled.p`
-  font-family: ${theme.fonts.heading};
-  font-size: ${theme.fontSizes.base};
-  font-weight: 700;
-  color: ${theme.colors.text.primary};
+/* ══════════════════════════════════════════════
+   SOCIAL PROOF
+   ══════════════════════════════════════════════ */
+
+export const SocialProofLine = styled.p`
+  font-family: ${theme.fonts.body};
+  font-size: ${theme.fontSizes.xs};
+  color: ${theme.colors.text.secondary};
   text-align: center;
-  margin: 0 0 ${theme.spacing.lg};
-  max-width: 400px;
-  line-height: 1.4;
-  @media (max-width: ${theme.breakpoints.sm}) { font-size: ${theme.fontSizes.sm}; margin-bottom: ${theme.spacing.md}; }
-  @media (min-width: ${theme.breakpoints.lg}) { font-size: ${theme.fontSizes.lg}; }
+  margin: ${theme.spacing.md} 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  animation: ${fadeIn} 0.5s ease 0.6s both;
+
+  @media (min-width: ${theme.breakpoints.lg}) {
+    font-size: ${theme.fontSizes.sm};
+    margin-top: ${theme.spacing.lg};
+  }
 `;
