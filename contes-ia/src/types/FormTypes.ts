@@ -50,6 +50,10 @@ export interface StoryFormData {
   // Détails personnels
   creatorName?: string;
   
+  // Preview data (passed to order for reuse in generation)
+  firstIllustrationUrl?: string;
+  storyPreviewTextJson?: string;
+
   // Etape 3 - Paiement et informations
   userEmail: string;
   password?: string;

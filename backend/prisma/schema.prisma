@@ -134,6 +134,10 @@ model Order {
   storyStatus         StoryStatus @default(EN_COURS)
   deliveredAt         DateTime?
 
+  // Preview data (reused in full generation)
+  firstIllustrationUrl   String?
+  storyPreviewTextJson   String?
+
   // Generation automatique
   generationProgress   Int?
   generationError      String?

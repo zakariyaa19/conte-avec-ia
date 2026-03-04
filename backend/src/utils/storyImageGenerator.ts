@@ -201,6 +201,88 @@ Square format (1:1), full illustration, no borders.
 CRITICAL: Absolutely NO text, NO letters, NO words, NO numbers anywhere. No signs, no books with visible text, no inscriptions on walls or objects. Pure illustration only.`;
 }
 
+// ====================================================================
+// FIRST ILLUSTRATION (preview) — Single image for preview step
+// ====================================================================
+
+export async function generateFirstIllustration(
+  params: ImageGenerationParams,
+  title: string,
+  paragraph0: string,
+  coverImageData?: Buffer
+): Promise<Buffer> {
+  const isDryRun = process.env.STORY_DRY_RUN === 'true';
+
+  if (isDryRun) {
+    console.log('[StoryImageGenerator] Dry run: first illustration placeholder');
+    return generatePlaceholderImage(1, 1);
+  }
+
+  const hasReferenceImage = !!coverImageData;
+  const visualBible = buildVisualBible(params, hasReferenceImage);
+  const prompt = buildPageImagePrompt(params, visualBible, paragraph0, 1, hasReferenceImage);
+
+  console.log(`[StoryImageGenerator] Generating first illustration (reference: ${hasReferenceImage})`);
+
+  const openai = getOpenAI();
+
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      if (attempt > 0) {
+        const delay = Math.pow(2, attempt) * 5000;
+        console.log(`[StoryImageGenerator] First illustration retry ${attempt}, waiting ${delay}ms`);
+        await new Promise(r => setTimeout(r, delay));
+      }
+
+      let imageData: string | undefined;
+
+      if (coverImageData) {
+        const refFile = await toFile(coverImageData, 'reference.png', { type: 'image/png' });
+        const response = await openai.images.edit({
+          model: 'gpt-image-1',
+          image: refFile,
+          prompt,
+          n: 1,
+          size: '1024x1024',
+          quality: 'medium',
+        });
+        imageData = response.data?.[0]?.b64_json;
+        if (!imageData && response.data?.[0]?.url) {
+          const resp = await fetch(response.data[0].url);
+          return Buffer.from(await resp.arrayBuffer());
+        }
+      } else {
+        const response = await openai.images.generate({
+          model: 'gpt-image-1',
+          prompt,
+          n: 1,
+          size: '1024x1024',
+          quality: 'medium',
+        });
+        imageData = response.data?.[0]?.b64_json;
+        if (!imageData && response.data?.[0]?.url) {
+          const resp = await fetch(response.data[0].url);
+          return Buffer.from(await resp.arrayBuffer());
+        }
+      }
+
+      if (!imageData) throw new Error('No image data returned');
+
+      console.log('[StoryImageGenerator] First illustration generated successfully');
+      return Buffer.from(imageData, 'base64');
+
+    } catch (error: any) {
+      console.error(`[StoryImageGenerator] First illustration attempt ${attempt + 1}:`, error.message);
+      if (error.status === 429) {
+        await new Promise(r => setTimeout(r, Math.pow(2, attempt + 1) * 10000));
+      }
+      if (attempt === 2) throw new Error(`Failed to generate first illustration: ${error.message}`);
+    }
+  }
+
+  throw new Error('Failed to generate first illustration after 3 attempts');
+}
+
 // --- Dry run placeholder ---
 
 function generatePlaceholderImage(index: number, total: number): Buffer {
@@ -230,16 +312,25 @@ export async function generateStoryImages(
   title: string,
   paragraphs: string[],
   onProgress?: ProgressCallback,
-  referenceImage?: Buffer  // Image de couverture comme reference visuelle
+  referenceImage?: Buffer,  // Image de couverture comme reference visuelle
+  existingFirstImage?: Buffer  // First illustration from preview (skip generation)
 ): Promise<ImageGenerationResult> {
   const isDryRun = process.env.STORY_DRY_RUN === 'true';
-  const totalImages = IMAGE_PARAGRAPH_INDICES.length; // 6 images
+  const hasExistingFirst = !!existingFirstImage;
+  const totalImages = hasExistingFirst ? IMAGE_PARAGRAPH_INDICES.length - 1 : IMAGE_PARAGRAPH_INDICES.length;
   const images: Buffer[] = [];
+
+  // If we have the first illustration from preview, prepend it
+  if (hasExistingFirst) {
+    images.push(existingFirstImage);
+    console.log(`[StoryImageGenerator] Reusing preview first illustration (${existingFirstImage.length} bytes)`);
+  }
 
   const hasReferenceImage = !!referenceImage;
   const visualBible = buildVisualBible(params, hasReferenceImage);
 
-  console.log(`[StoryImageGenerator] Demarrage generation ${totalImages} images sur ${paragraphs.length} paragraphes (dry run: ${isDryRun})`);
+  const imagesToGenerate = hasExistingFirst ? IMAGE_PARAGRAPH_INDICES.length - 1 : IMAGE_PARAGRAPH_INDICES.length;
+  console.log(`[StoryImageGenerator] Generating ${imagesToGenerate} images (${hasExistingFirst ? '1 reused from preview' : 'all new'}) on ${paragraphs.length} paragraphs (dry run: ${isDryRun})`);
   console.log(`[StoryImageGenerator] Paragraphes illustres: ${IMAGE_PARAGRAPH_INDICES.map(i => i + 1).join(', ')}`);
   console.log(`[StoryImageGenerator] Modele: gpt-image-1 avec reference visuelle: ${hasReferenceImage ? 'OUI' : 'NON'}`);
   console.log(`[StoryImageGenerator] Style: ${params.illustrationStyle}, Personnage: ${params.protagonistName}`);
@@ -255,8 +346,12 @@ export async function generateStoryImages(
     }
   }
 
-  for (let i = 0; i < totalImages; i++) {
-    if (onProgress) onProgress(i, totalImages);
+  // Skip first image index if we already have it from preview
+  const startIndex = hasExistingFirst ? 1 : 0;
+
+  for (let i = startIndex; i < IMAGE_PARAGRAPH_INDICES.length; i++) {
+    const progressIndex = hasExistingFirst ? i - 1 : i;
+    if (onProgress) onProgress(progressIndex, totalImages);
 
     const paragraphIndex = IMAGE_PARAGRAPH_INDICES[i];
 
@@ -355,6 +450,6 @@ export async function generateStoryImages(
     }
   }
 
-  console.log(`[StoryImageGenerator] Les ${totalImages} images generees avec succes`);
+  console.log(`[StoryImageGenerator] All ${images.length} images ready (${hasExistingFirst ? '1 reused' : 'all generated'})`);
   return { images };
 }
