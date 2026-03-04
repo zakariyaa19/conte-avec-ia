@@ -283,7 +283,7 @@ export async function generateStoryImages(
             prompt,
             n: 1,
             size: '1024x1024',
-            quality: 'low',
+            quality: 'medium',
           });
           // gpt-image-1 edit renvoie b64_json par defaut
           imageData = response.data?.[0]?.b64_json;
@@ -304,7 +304,7 @@ export async function generateStoryImages(
             prompt,
             n: 1,
             size: '1024x1024',
-            quality: 'low',
+            quality: 'medium',
           });
           imageData = response.data?.[0]?.b64_json;
 
