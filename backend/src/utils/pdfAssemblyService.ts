@@ -125,13 +125,20 @@ function isSvgPlaceholder(buf: Buffer): boolean {
 
 async function compressForPdf(imageBuffer: Buffer): Promise<Buffer> {
   try {
+    // Force PNG → JPEG conversion via sharp (handles all input formats)
     return await sharp(imageBuffer)
       .resize(1024, 1024, { fit: 'inside', withoutEnlargement: true })
       .jpeg({ quality: 82 })
       .toBuffer();
   } catch (err) {
-    console.warn('[PdfAssembly] Compression failed, using original:', err);
-    return imageBuffer;
+    console.warn('[PdfAssembly] JPEG compression failed, trying PNG re-encode:', err);
+    try {
+      // Fallback: re-encode as PNG via sharp (fixes corrupted headers)
+      return await sharp(imageBuffer).png().toBuffer();
+    } catch (err2) {
+      console.warn('[PdfAssembly] PNG re-encode also failed, using original:', err2);
+      return imageBuffer;
+    }
   }
 }
 
@@ -141,11 +148,14 @@ async function embedImage(pdfDoc: PDFDocument, imageBuffer: Buffer): Promise<Ret
   const compressed = await compressForPdf(imageBuffer);
   try {
     return await pdfDoc.embedJpg(compressed);
-  } catch {
+  } catch (jpgErr) {
+    // If JPEG embed fails, try re-compressing as PNG
     try {
-      return await pdfDoc.embedPng(imageBuffer);
-    } catch (err) {
-      throw new Error(`Image format non supporte: ${err}`);
+      const pngBuffer = await sharp(imageBuffer).png().toBuffer();
+      return await pdfDoc.embedPng(pngBuffer);
+    } catch (pngErr) {
+      console.error(`[PdfAssembly] Both JPG and PNG embedding failed. Buffer size: ${imageBuffer.length}`);
+      throw new Error(`Image format non supporte (${imageBuffer.length} bytes): jpg=${jpgErr}, png=${pngErr}`);
     }
   }
 }
@@ -669,8 +679,12 @@ export async function assemblePdf(params: PdfAssemblyParams): Promise<Buffer> {
   }
 
   // Serialize and return directly as Buffer (avoid keeping both pdfBytes and Buffer)
-  const pdfBytes = await pdfDoc.save();
-  console.log(`[PdfAssembly] PDF assembled: ${pdfBytes.length} bytes, 13 pages`);
-
-  return Buffer.from(pdfBytes as Uint8Array);
+  try {
+    const pdfBytes = await pdfDoc.save();
+    console.log(`[PdfAssembly] PDF assembled: ${pdfBytes.length} bytes, 13 pages`);
+    return Buffer.from(pdfBytes as Uint8Array);
+  } catch (saveError: any) {
+    console.error(`[PdfAssembly] PDF save failed:`, saveError.message, saveError.stack);
+    throw new Error(`Echec assemblage PDF: ${saveError.message}`);
+  }
 }
