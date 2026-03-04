@@ -908,13 +908,8 @@ export const TimerDigits = styled.span`
 `;
 
 /* ══════════════════════════════════════════════
-   PDF-LIKE PREVIEW — Immersive book pages
+   BOOK VIEWER PREVIEW — matches StoryPDFViewer style
    ══════════════════════════════════════════════ */
-
-const fadeInScale = keyframes`
-  from { opacity: 0; transform: scale(0.92); }
-  to   { opacity: 1; transform: scale(1); }
-`;
 
 const slideInUp = keyframes`
   from { opacity: 0; transform: translateY(40px); }
@@ -926,74 +921,90 @@ const glowPulse = keyframes`
   50%      { box-shadow: 0 0 20px 4px ${theme.colors.accent.coral}25; }
 `;
 
-export const PdfPageContainer = styled.div<{ $delay?: number }>`
-  position: relative;
+export const ViewerPagesWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
-  max-width: 580px;
-  aspect-ratio: 3 / 2;
-  background: #FFF9F0;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
-  animation: ${slideInUp} 0.7s cubic-bezier(0.4,0,0.2,1) ${p => (p.$delay || 0) * 0.4}s both;
+  gap: 12px;
 
-  @media (max-width: ${theme.breakpoints.sm}) {
-    max-width: 100%;
-    aspect-ratio: auto;
-    min-height: 200px;
-  }
-  @media (min-width: ${theme.breakpoints.lg}) {
-    max-width: 700px;
+  @media (min-width: ${theme.breakpoints.md}) {
+    gap: 24px;
   }
 `;
 
-export const PdfCoverPage = styled.div<{ $delay?: number }>`
-  position: relative;
+export const ViewerPageCard = styled.div<{ $delay?: number }>`
   width: 100%;
-  max-width: 300px;
-  border-radius: 12px;
+  max-width: 700px;
+  border-radius: ${theme.borderRadius.lg};
   overflow: hidden;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.15), 0 2px 8px rgba(0,0,0,0.06);
-  animation: ${fadeInScale} 0.8s cubic-bezier(0.4,0,0.2,1) ${p => (p.$delay || 0) * 0.4}s both;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  background: white;
+  animation: ${slideInUp} 0.5s ease-out ${p => (p.$delay || 0) * 0.25}s both;
 
+  @media (min-width: ${theme.breakpoints.md}) {
+    border-radius: ${theme.borderRadius.xl};
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+`;
+
+export const ViewerPageSkeleton = styled.div`
+  width: 100%;
+  max-width: 700px;
+  aspect-ratio: 0.75;
+  border-radius: ${theme.borderRadius.lg};
+  background: linear-gradient(
+    90deg,
+    ${theme.colors.background.secondary} 25%,
+    ${theme.colors.background.white} 50%,
+    ${theme.colors.background.secondary} 75%
+  );
+  background-size: 200% 100%;
+  animation: ${skeletonShimmer} 1.5s ease-in-out infinite;
+
+  @media (min-width: ${theme.breakpoints.md}) {
+    border-radius: ${theme.borderRadius.xl};
+  }
+`;
+
+export const ViewerCoverContent = styled.div`
   img {
     width: 100%;
     display: block;
   }
-
-  @media (max-width: ${theme.breakpoints.sm}) {
-    max-width: 220px;
-  }
-  @media (min-width: ${theme.breakpoints.lg}) {
-    max-width: 340px;
-  }
 `;
 
-export const PdfStoryPage = styled.div<{ $delay?: number }>`
+export const ViewerStoryLayout = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  width: 100%;
-  max-width: 580px;
-  min-height: 240px;
-  background: #FFF9F0;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
-  animation: ${slideInUp} 0.7s cubic-bezier(0.4,0,0.2,1) ${p => (p.$delay || 0) * 0.4}s both;
+  grid-template-rows: auto 1fr auto;
+  min-height: 280px;
 
   @media (max-width: ${theme.breakpoints.sm}) {
-    max-width: 100%;
     grid-template-columns: 1fr;
     min-height: auto;
   }
+`;
+
+export const ViewerCreatorLabel = styled.p`
+  grid-column: 1 / -1;
+  padding: 14px 20px 0;
+  font-family: ${theme.fonts.heading};
+  font-size: 10px;
+  font-weight: 600;
+  color: ${theme.colors.text.light};
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin: 0;
+
   @media (min-width: ${theme.breakpoints.lg}) {
-    max-width: 700px;
-    min-height: 280px;
+    padding: 18px 28px 0;
+    font-size: 11px;
   }
 `;
 
-export const PdfTextHalf = styled.div`
-  padding: ${theme.spacing.lg};
+export const ViewerTextBlock = styled.div`
+  padding: 14px 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -1007,19 +1018,18 @@ export const PdfTextHalf = styled.div`
   }
 
   @media (max-width: ${theme.breakpoints.sm}) {
-    padding: ${theme.spacing.md};
+    padding: 12px 16px;
     p { font-size: 12px; line-height: 1.6; }
   }
   @media (min-width: ${theme.breakpoints.lg}) {
-    padding: ${theme.spacing.xl};
+    padding: 18px 28px;
     p { font-size: 15px; }
   }
 `;
 
-export const PdfImageHalf = styled.div`
+export const ViewerImageBlock = styled.div`
   position: relative;
   overflow: hidden;
-  background: #f0e8dc;
 
   img {
     width: 100%;
@@ -1033,7 +1043,7 @@ export const PdfImageHalf = styled.div`
   }
 `;
 
-export const PdfImageSkeleton = styled.div`
+export const ViewerImageSkeleton = styled.div`
   width: 100%;
   height: 100%;
   min-height: 200px;
@@ -1044,58 +1054,62 @@ export const PdfImageSkeleton = styled.div`
   animation: ${skeletonShimmer} 1.4s ease-in-out infinite;
 `;
 
-export const PdfLockedPage = styled.div<{ $delay?: number }>`
-  position: relative;
-  width: 100%;
-  max-width: 580px;
-  min-height: 160px;
-  background: #FFF9F0;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.08);
-  animation: ${slideInUp} 0.7s cubic-bezier(0.4,0,0.2,1) ${p => (p.$delay || 0) * 0.4}s both;
+export const ViewerPageNum = styled.p`
+  grid-column: 1 / -1;
+  padding: 0 20px 12px;
+  font-family: ${theme.fonts.body};
+  font-size: 11px;
+  color: ${theme.colors.text.light};
+  margin: 0;
 
-  @media (max-width: ${theme.breakpoints.sm}) {
-    max-width: 100%;
-    min-height: 120px;
-  }
   @media (min-width: ${theme.breakpoints.lg}) {
-    max-width: 700px;
-    min-height: 180px;
+    padding: 0 28px 16px;
   }
 `;
 
-export const PdfLockedOverlay = styled.div`
+export const ViewerLockedContent = styled.div`
+  position: relative;
+  min-height: 200px;
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    min-height: 150px;
+  }
+  @media (min-width: ${theme.breakpoints.lg}) {
+    min-height: 240px;
+  }
+`;
+
+export const ViewerLockedOverlay = styled.div`
   position: absolute;
   inset: 0;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  background: rgba(255,249,240,0.6);
+  background: rgba(255,255,255,0.5);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
 
   span:first-child {
-    font-size: 2rem;
+    font-size: 2.5rem;
   }
   span:last-child {
     font-family: ${theme.fonts.heading};
     font-size: ${theme.fontSizes.sm};
     font-weight: 600;
-    color: ${theme.colors.text.secondary};
+    color: ${theme.colors.text.primary};
   }
 `;
 
-export const PdfLockedBg = styled.div`
+export const ViewerLockedBg = styled.div`
   width: 100%;
   height: 100%;
   min-height: inherit;
   background: repeating-linear-gradient(
     0deg,
-    #e8ddd0 0px, #e8ddd0 14px,
-    #f0e8dc 14px, #f0e8dc 28px
+    #e8e2da 0px, #e8e2da 16px,
+    #f2ede6 16px, #f2ede6 32px
   );
   opacity: 0.5;
 `;
