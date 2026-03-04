@@ -178,6 +178,8 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
   const viewportRef = useRef<HTMLDivElement>(null);
   const pricingRef = useRef<HTMLDivElement>(null);
   const orderFormRef = useRef<HTMLDivElement>(null);
+  const storyPageRef = useRef<HTMLDivElement>(null);
+  const lockedPageRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { wantsExtrasRef.current = wantsExtras; }, [wantsExtras]);
 
@@ -797,15 +799,15 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
               <MagicParticle $delay={2.2} $left="80%" $size={3} />
               <MagicParticle $delay={4} $left="92%" $size={4} />
 
-              {/* Cover — portrait */}
-              <BookPageFrame $portrait>
+              {/* Cover — portrait, click → scroll to story page */}
+              <BookPageFrame $portrait style={{ cursor: 'pointer' }} onClick={() => storyPageRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })}>
                 <BookCoverImage>
                   <img src={coverImageUrl} alt="Couverture" />
                 </BookCoverImage>
               </BookPageFrame>
 
-              {/* Story page — text left, illustration right */}
-              <BookPageFrame>
+              {/* Story page — text left, illustration right, click → scroll to locked */}
+              <BookPageFrame ref={storyPageRef} style={{ cursor: 'pointer' }} onClick={() => lockedPageRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })}>
                 <BookStoryLayout>
                   <BookTextHalf>
                     {creatorName && <BookCreatorTag>{creatorName}</BookCreatorTag>}
@@ -819,7 +821,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
               </BookPageFrame>
 
               {/* Locked page — compact, clickable → scroll to pricing */}
-              <BookPageFrame $compact>
+              <BookPageFrame $compact ref={lockedPageRef}>
                 <BookLockedOverlay onClick={() => pricingRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })}>
                   <BookLockedContent>
                     <BookLockedIcon>&#x1F512;</BookLockedIcon>
