@@ -31,9 +31,9 @@ import {
   ClubFreeCard, ClubBadge,
   PreviewLoadingContainer, PreviewLoadingBook, PreviewLoadingSparkle,
   PreviewLoadingText, PreviewLoadingDots, PreviewLoadingStages, PreviewLoadingStage,
-  BookPreviewWrapper, BookPageFrame, BookCoverImage,
+  BookPreviewWrapper, BookPageFrame, BookCoverImage, MagicParticle,
   BookStoryLayout, BookTextHalf, BookImageHalf, BookCreatorTag, BookPageBadge,
-  BookLockedOverlay, BookLockedContent, BookLockedIcon, BookLockedTitle, BookLockedFeatures,
+  BookLockedOverlay, BookLockedContent, BookLockedIcon, BookLockedTitle, BookLockedSubtitle, BookLockedFeatures,
   PricingSelectedCheck,
   PreviewTimerBar, PreviewTimerDigits,
   PricingGrid, PricingCard, PricingCardBadge, PricingCardName, PricingCardPrice,
@@ -787,17 +787,25 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
               Le conte de {heroName} est prêt !
             </StepTitle>
 
-            {/* ── Book preview: cover (portrait) + story page + locked page ── */}
+            {/* ── Book preview: cover + story page + locked page ── */}
             <BookPreviewWrapper>
-              {/* Cover — portrait (title already embedded in AI image) */}
-              <BookPageFrame $delay={0} $portrait>
+              {/* Magic particles — very subtle floating sparkles */}
+              <MagicParticle $delay={0} $left="8%" $size={3} />
+              <MagicParticle $delay={1.5} $left="22%" $size={5} />
+              <MagicParticle $delay={3} $left="42%" $size={3} />
+              <MagicParticle $delay={0.8} $left="65%" $size={4} />
+              <MagicParticle $delay={2.2} $left="80%" $size={3} />
+              <MagicParticle $delay={4} $left="92%" $size={4} />
+
+              {/* Cover — portrait */}
+              <BookPageFrame $portrait>
                 <BookCoverImage>
                   <img src={coverImageUrl} alt="Couverture" />
                 </BookCoverImage>
               </BookPageFrame>
 
               {/* Story page — text left, illustration right */}
-              <BookPageFrame $delay={1}>
+              <BookPageFrame>
                 <BookStoryLayout>
                   <BookTextHalf>
                     {creatorName && <BookCreatorTag>{creatorName}</BookCreatorTag>}
@@ -811,11 +819,12 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
               </BookPageFrame>
 
               {/* Locked page — compact, clickable → scroll to pricing */}
-              <BookPageFrame $delay={2} $compact>
+              <BookPageFrame $compact>
                 <BookLockedOverlay onClick={() => pricingRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })}>
                   <BookLockedContent>
                     <BookLockedIcon>&#x1F512;</BookLockedIcon>
                     <BookLockedTitle>L'aventure de {heroName} continue...</BookLockedTitle>
+                    <BookLockedSubtitle>La suite de l'histoire est prête...</BookLockedSubtitle>
                   </BookLockedContent>
                 </BookLockedOverlay>
               </BookPageFrame>
