@@ -195,3 +195,95 @@ export async function generateStoryText(params: StoryTextParams, title: string):
 
   throw new Error('Echec generation texte apres 2 tentatives');
 }
+
+// --- Story Preview (3 opening paragraphs) ---
+
+export interface StoryPreviewResult {
+  title: string;
+  paragraphs: string[];
+}
+
+function buildStoryPreviewPrompt(params: StoryTextParams): string {
+  const name = params.protagonistName || 'Enfant';
+  const genderWord = params.protagonistGender === 'girl' ? 'fille' : 'garcon';
+  const age = params.protagonistAge || params.ageRange || '6-9';
+
+  const theme = params.customTheme || THEME_LABELS[params.generalTheme] || params.generalTheme;
+  const occasion = params.customSubject || OCCASION_LABELS[params.specificSubject] || params.specificSubject || '';
+  const message = params.customMessage || MESSAGE_LABELS[params.centralMessage] || params.centralMessage || '';
+
+  const language = params.language || 'francais';
+
+  let secondaryChars = '';
+  if (params.secondaryCharactersJson) {
+    try {
+      const chars = JSON.parse(params.secondaryCharactersJson);
+      if (Array.isArray(chars) && chars.length > 0) {
+        secondaryChars = chars.map((c: any) => `${c.name || 'Ami(e)'}`).join(', ');
+      }
+    } catch { /* ignore */ }
+  }
+
+  return `Tu es un auteur de livres pour enfants reconnu. Ecris les 3 premiers paragraphes d'ouverture d'un conte en ${language}.
+
+PROTAGONISTE :
+- Prenom : ${name}
+- Age : ${age}
+- Genre : ${genderWord}
+${params.hobbies ? `- Passions : ${params.hobbies}` : ''}
+
+THEME : ${theme}
+${occasion ? `OCCASION : ${occasion}` : ''}
+${message ? `MESSAGE CENTRAL : ${message}` : ''}
+${secondaryChars ? `PERSONNAGES SECONDAIRES : ${secondaryChars}` : ''}
+
+EXIGENCES :
+1. Exactement 3 paragraphes captivants qui ouvrent l'histoire
+2. Le lecteur doit etre immerse et vouloir connaitre la suite
+3. Le prenom "${name}" doit apparaitre des le premier paragraphe
+4. Vocabulaire adapte a un enfant de ${age} ans
+5. Chaque paragraphe fait 3 a 5 phrases
+6. Terminer sur un moment de suspense ou d'excitation qui donne envie de lire la suite
+7. Ecris en ${language}
+
+FORMAT DE REPONSE :
+Reponds UNIQUEMENT avec un JSON array de exactement 3 strings.
+Pas de titre, pas de commentaire, JUSTE le JSON array.`;
+}
+
+export async function generateStoryPreview(params: StoryTextParams, title: string): Promise<StoryPreviewResult> {
+  const openai = getOpenAI();
+  const prompt = buildStoryPreviewPrompt(params);
+
+  console.log('[StoryPreview] Generating 3 preview paragraphs for:', params.protagonistName);
+
+  try {
+    const response = await openai.chat.completions.create({
+      model: 'gpt-4o-mini',
+      messages: [{ role: 'user', content: prompt }],
+      max_tokens: 500,
+      temperature: 0.8,
+    });
+
+    const content = response.choices[0]?.message?.content?.trim();
+    if (!content) throw new Error('Reponse GPT vide');
+
+    let jsonStr = content;
+    const jsonMatch = content.match(/\[[\s\S]*\]/);
+    if (jsonMatch) jsonStr = jsonMatch[0];
+
+    const paragraphs = JSON.parse(jsonStr);
+
+    if (!Array.isArray(paragraphs) || paragraphs.length < 2) {
+      throw new Error(`GPT a retourne ${Array.isArray(paragraphs) ? paragraphs.length : 0} paragraphes au lieu de 3`);
+    }
+
+    const validParagraphs = paragraphs.slice(0, 3).map((p: any) => String(p));
+    console.log('[StoryPreview] Successfully generated', validParagraphs.length, 'preview paragraphs');
+    return { title, paragraphs: validParagraphs };
+
+  } catch (error) {
+    console.error('[StoryPreview] Failed:', error);
+    throw error;
+  }
+}

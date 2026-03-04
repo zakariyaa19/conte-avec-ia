@@ -608,12 +608,12 @@ export const DashboardPage: React.FC = () => {
     }
   };
 
-  const getStatusLabel = (status: string) => {
-    switch (status) {
-      case 'DISPONIBLE': return 'Disponible';
-      case 'EN_COURS': return 'En cours';
-      default: return status;
-    }
+  const getStatusLabel = (story: any) => {
+    if (story.storyStatus === 'DISPONIBLE') return 'Disponible';
+    if (story.storyStatus === 'EN_COURS' && story.firstIllustrationUrl) return 'En preparation';
+    if (story.storyStatus === 'EN_COURS') return 'En cours';
+    if (story.storyStatus === 'GENERATING_TEXT' || story.storyStatus === 'GENERATING_IMAGES' || story.storyStatus === 'ASSEMBLING_PDF') return 'Generation...';
+    return story.storyStatus;
   };
 
   return (
@@ -784,7 +784,7 @@ export const DashboardPage: React.FC = () => {
                     <BookCoverImage src={coverUrl} alt={title} loading="lazy" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
                   )}
                   <BookStatusBadge $color={getStatusColor(story.storyStatus)}>
-                    {getStatusLabel(story.storyStatus)}
+                    {getStatusLabel(story)}
                   </BookStatusBadge>
                   <BookFavoriteBtn $active={story.isFavorite} onClick={(e) => handleToggleFavorite(e, story.id)}>
                     {story.isFavorite ? '\u2764\uFE0F' : '\u2661'}

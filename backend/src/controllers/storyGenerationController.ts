@@ -681,6 +681,19 @@ async function runGenerationPipeline(orderId: string, order: any, genLogId: stri
 
     await updateProgress(orderId, 'GENERATING_TEXT', 10);
 
+    // --- Fetch first illustration from preview (if available) ---
+    let firstIllustrationBuffer: Buffer | undefined;
+    if (order.firstIllustrationUrl) {
+      try {
+        const axios = (await import('axios')).default;
+        const illustResp = await axios.get(order.firstIllustrationUrl, { responseType: 'arraybuffer' });
+        firstIllustrationBuffer = Buffer.from(illustResp.data);
+        console.log(`[Generation] First illustration fetched from preview (${firstIllustrationBuffer.length} bytes)`);
+      } catch (err: any) {
+        console.warn(`[Generation] Failed to fetch first illustration:`, err.message);
+      }
+    }
+
     // --- Step 2: Generate images (10-93%) ---
     logStep('images', 'started');
     await updateProgress(orderId, 'GENERATING_IMAGES', 10);
@@ -713,7 +726,8 @@ async function runGenerationPipeline(orderId: string, order: any, genLogId: stri
         const progress = Math.round(10 + (imageIndex / total) * 83);
         await updateProgress(orderId, 'GENERATING_IMAGES', progress);
       },
-      coverImageData || undefined
+      coverImageData || undefined,
+      firstIllustrationBuffer
     );
     logStep('images', 'completed');
 

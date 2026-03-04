@@ -5,6 +5,8 @@ import { AgeSelector } from '../ui/AgeSelector';
 import { BookCoverPreview } from '../ui/BookCoverPreview';
 import { SecondaryCharactersSection } from '../forms/SecondaryCharactersSection';
 import { useCoverPreview } from '../../hooks/useCoverPreview';
+import { useStoryPreview } from '../../hooks/useStoryPreview';
+import { useFirstIllustration } from '../../hooks/useFirstIllustration';
 import { validateEmail, validateRequired } from '../../utils/validation';
 import { metaTrackAddToCart, metaTrackLead } from '../../utils/metaPixel';
 import { ApiService } from '../../config/api';
@@ -29,6 +31,14 @@ import {
   OrderInfoSection, OrderInfoGrid, FullWidthField, OrderCostSummary,
   PayButton, TrustBadgesRow, TrustBadge, ErrorMessage, ConnectedBanner,
   ClubFreeCard, ClubBadge, ClubExhaustedMsg,
+  StoryExcerptCard, StoryParagraph, FadeOverlay, StoryPreviewSkeleton,
+  PaywallDivider, PaywallTitle, UnlockCard, LockIcon, UnlockTitle,
+  UnlockFeatures, UnlockFeature, TimerContainer, TimerDigits,
+  PdfCoverPage, PdfStoryPage, PdfTextHalf, PdfImageHalf, PdfImageSkeleton,
+  PdfLockedPage, PdfLockedOverlay, PdfLockedBg,
+  PricingGrid, PricingCard, PricingCardBadge, PricingCardName, PricingCardPrice,
+  PricingCardSub, PricingCardFeaturesList, PricingCardFeatureItem, PricingCardCTA,
+  PreviewSectionTitle,
 } from './WizardSharedStyles';
 
 /* ══════════════════════════════════════════════
@@ -117,7 +127,7 @@ const RELIGION_OPTIONS = [
 
 /* ══════════════════════════════════════════════ */
 
-const ALL_STEPS = ['age','theme','occasion','style','hero','appearance','choice','extras1','extras2','cover','payment'] as const;
+const ALL_STEPS = ['age','theme','occasion','style','hero','appearance','choice','extras1','extras2','cover','preview','payment'] as const;
 type StepId = (typeof ALL_STEPS)[number];
 
 interface StoryWizardProps {
@@ -155,13 +165,20 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
   const [emailStatus, setEmailStatus] = useState<{ exists: boolean; hasPassword: boolean } | null>(null);
 
   const { coverImageUrl, coverTitle, rawBase64, isGenerating: isCoverGenerating, error: coverError, generate: generateCover } = useCoverPreview(formData);
+  const { previewTitle, previewParagraphs, isGenerating: isStoryPreviewGenerating, error: storyPreviewError, generate: generateStoryPreview } = useStoryPreview(formData);
+  const { illustrationUrl, illustrationBase64, isGenerating: isIllustrationGenerating, generate: generateIllustration } = useFirstIllustration(formData);
+  const illustrationTriggeredRef = useRef(false);
+
+  // Countdown timer for preview step
+  const [countdown, setCountdown] = useState(600); // 10 minutes in seconds
+  const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { wantsExtrasRef.current = wantsExtras; }, [wantsExtras]);
 
-  const totalSteps = wantsExtras ? 11 : 9;
+  const totalSteps = wantsExtras ? 12 : 10;
   const visiblePos = (!wantsExtras && currentStep > 6) ? currentStep - 2 : currentStep;
   const progress = Math.min(((visiblePos + 1) / totalSteps) * 100, 100);
 
@@ -202,12 +219,38 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
     setTimeout(() => goNext(), 400);
   }, [onUpdate, goNext]);
 
-  // Cover generation
+  // Cover + story preview generation (parallel)
   useEffect(() => {
-    if (ALL_STEPS[currentStep] === 'cover' && !coverImageUrl && !isCoverGenerating) {
-      generateCover();
+    if (ALL_STEPS[currentStep] === 'cover') {
+      if (!coverImageUrl && !isCoverGenerating) generateCover();
+      if (!previewParagraphs && !isStoryPreviewGenerating) generateStoryPreview();
     }
   }, [currentStep]); // eslint-disable-line
+
+  // Trigger first illustration when cover + text preview are both ready
+  useEffect(() => {
+    if (illustrationTriggeredRef.current) return;
+    if (previewParagraphs && previewParagraphs.length > 0 && rawBase64 && !isIllustrationGenerating && !illustrationUrl) {
+      illustrationTriggeredRef.current = true;
+      generateIllustration(previewParagraphs[0], rawBase64);
+    }
+  }, [previewParagraphs, rawBase64, isIllustrationGenerating, illustrationUrl]); // eslint-disable-line
+
+  // Countdown timer for preview step
+  useEffect(() => {
+    if (ALL_STEPS[currentStep] === 'preview') {
+      setCountdown(600);
+      countdownRef.current = setInterval(() => {
+        setCountdown(prev => {
+          if (prev <= 1) return 600; // restart silently
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => {
+      if (countdownRef.current) { clearInterval(countdownRef.current); countdownRef.current = null; }
+    };
+  }, [currentStep]);
 
   // Helpers
   const handleInputChange = (field: keyof StoryFormData, value: string) => {
@@ -542,7 +585,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
             <StepSubtitle>Que souhaitez-vous faire ?</StepSubtitle>
             <div style={{ display: 'flex', flexDirection: 'column', gap: theme.spacing.lg, width: '100%', alignItems: 'center' }}>
               <ChoiceCard $variant="primary" onClick={() => {
-                setWantsExtras(false); wantsExtrasRef.current = false; goToStep(9);
+                setWantsExtras(false); wantsExtrasRef.current = false; goToStep(9); // skip to 'cover'
               }}>
                 <ChoiceTitle $variant="primary">Découvrir mon conte</ChoiceTitle>
                 <ChoiceDesc $variant="primary">Générer la couverture maintenant</ChoiceDesc>
@@ -686,11 +729,179 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 if (rawBase64) onUpdate({ coverImageBase64: rawBase64, coverTitle: coverTitle || undefined });
                 goNext();
               }} style={{ marginTop: theme.spacing.xl }}>
-                Débloquez-le maintenant →
+                Découvrir mon histoire →
               </DiscoverCTA>
             )}
           </>
         );
+
+      case 'preview': {
+        const minutes = Math.floor(countdown / 60);
+        const seconds = countdown % 60;
+        const timerDisplay = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        const heroName = formData.protagonistName || 'votre enfant';
+
+        const handlePreviewSelect = (type: 'single' | 'club') => {
+          // Save preview data into formData for order
+          const previewUpdate: Partial<StoryFormData> = {
+            productType: 'ebook',
+            purchaseType: type,
+          };
+          if (rawBase64) {
+            previewUpdate.coverImageBase64 = rawBase64;
+            previewUpdate.coverTitle = coverTitle || undefined;
+          }
+          if (illustrationUrl) {
+            previewUpdate.firstIllustrationUrl = illustrationUrl;
+          }
+          if (previewParagraphs) {
+            previewUpdate.storyPreviewTextJson = JSON.stringify(previewParagraphs);
+          }
+          onUpdate(previewUpdate);
+          metaTrackAddToCart(type);
+          goNext();
+        };
+
+        return (
+          <>
+            <StepTitle style={{ fontSize: theme.fontSizes.lg, marginBottom: theme.spacing.sm }}>
+              Votre histoire prend vie...
+            </StepTitle>
+
+            {/* PDF Page 1 — Cover */}
+            {coverImageUrl && (
+              <PdfCoverPage $delay={0}>
+                <img src={coverImageUrl} alt="Couverture" />
+              </PdfCoverPage>
+            )}
+
+            <div style={{ height: theme.spacing.md }} />
+
+            {/* PDF Page 2 — Text + Illustration (50/50) */}
+            <PdfStoryPage $delay={1}>
+              <PdfTextHalf>
+                {isStoryPreviewGenerating || !previewParagraphs ? (
+                  <StoryPreviewSkeleton style={{ boxShadow: 'none', padding: 0, background: 'transparent' }}>
+                    <div /><div /><div /><div /><div />
+                  </StoryPreviewSkeleton>
+                ) : (
+                  <p>{previewParagraphs[0]}</p>
+                )}
+              </PdfTextHalf>
+              <PdfImageHalf>
+                {isIllustrationGenerating || !illustrationBase64 ? (
+                  <PdfImageSkeleton />
+                ) : (
+                  <img src={`data:image/png;base64,${illustrationBase64}`} alt="Illustration" />
+                )}
+              </PdfImageHalf>
+            </PdfStoryPage>
+
+            <div style={{ height: theme.spacing.md }} />
+
+            {/* PDF Page 3 — Locked */}
+            <PdfLockedPage $delay={2}>
+              <PdfLockedBg />
+              <PdfLockedOverlay>
+                <span>🔒</span>
+                <span>Suite de l'histoire...</span>
+              </PdfLockedOverlay>
+            </PdfLockedPage>
+
+            <PaywallDivider>✨</PaywallDivider>
+
+            <PreviewSectionTitle>
+              L'histoire complète de {heroName} est prête — 12 pages illustrées
+            </PreviewSectionTitle>
+
+            {/* 3-tier pricing */}
+            {isClub && clubCredit?.canSubmit ? (
+              /* Club member with credit: show free option prominently */
+              <>
+                <ClubFreeCard $isSelected={true} onClick={() => handlePreviewSelect('club')}>
+                  <ClubBadge>Membre Club</ClubBadge>
+                  <h3 style={{ fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.lg, margin: `${theme.spacing.sm} 0 4px` }}>
+                    Utiliser mon eBook gratuit
+                  </h3>
+                  <p style={{ fontSize: theme.fontSizes.sm, color: theme.colors.accent.coral, fontWeight: 700, margin: '0 0 4px' }}>0,00 EUR</p>
+                  <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.text.secondary, margin: 0 }}>
+                    Il vous reste {clubCredit.remaining} eBook(s) gratuit(s)
+                  </p>
+                </ClubFreeCard>
+              </>
+            ) : (
+              <PricingGrid>
+                {/* Offre unique */}
+                <PricingCard $isSelected={false} onClick={() => handlePreviewSelect('single')}>
+                  <PricingCardName>Offre Unique</PricingCardName>
+                  <PricingCardPrice>6,99 EUR</PricingCardPrice>
+                  <PricingCardSub>Paiement unique</PricingCardSub>
+                  <PricingDivider />
+                  <PricingCardFeaturesList>
+                    <PricingCardFeatureItem>1 conte personnalise</PricingCardFeatureItem>
+                    <PricingCardFeatureItem>6 illustrations HD</PricingCardFeatureItem>
+                    <PricingCardFeatureItem>PDF telechargeble</PricingCardFeatureItem>
+                  </PricingCardFeaturesList>
+                  <PricingCardCTA>Choisir</PricingCardCTA>
+                </PricingCard>
+
+                {/* Club mensuel — FEATURED */}
+                <PricingCard $isSelected={false} $featured onClick={() => handlePreviewSelect('club')}>
+                  <PricingCardBadge>Populaire</PricingCardBadge>
+                  <PricingCardName>Club Mensuel</PricingCardName>
+                  <PricingCardPrice>9,99 EUR</PricingCardPrice>
+                  <PricingCardSub>/ mois — sans engagement</PricingCardSub>
+                  <PricingDivider />
+                  <PricingCardFeaturesList>
+                    <PricingCardFeatureItem $highlight>Ce conte est inclus</PricingCardFeatureItem>
+                    <PricingCardFeatureItem $highlight>3 contes / mois</PricingCardFeatureItem>
+                    <PricingCardFeatureItem>Bibliotheque illimitee</PricingCardFeatureItem>
+                    <PricingCardFeatureItem>Annulable a tout moment</PricingCardFeatureItem>
+                  </PricingCardFeaturesList>
+                  <PricingCardCTA $primary>Choisir</PricingCardCTA>
+                </PricingCard>
+
+                {/* Club annuel */}
+                <PricingCard $isSelected={false} onClick={() => {
+                  onUpdate({ purchaseType: 'club' });
+                  // The payment step handles annual vs monthly via a flag
+                  const previewUpdate: Partial<StoryFormData> = {
+                    productType: 'ebook',
+                    purchaseType: 'club',
+                  };
+                  if (rawBase64) {
+                    previewUpdate.coverImageBase64 = rawBase64;
+                    previewUpdate.coverTitle = coverTitle || undefined;
+                  }
+                  if (illustrationUrl) previewUpdate.firstIllustrationUrl = illustrationUrl;
+                  if (previewParagraphs) previewUpdate.storyPreviewTextJson = JSON.stringify(previewParagraphs);
+                  onUpdate(previewUpdate);
+                  metaTrackAddToCart('club');
+                  goNext();
+                }}>
+                  <PricingCardName>Club Annuel</PricingCardName>
+                  <PricingCardPrice>79,99 EUR</PricingCardPrice>
+                  <PricingCardSub>/ an — soit 6,67 EUR/mois</PricingCardSub>
+                  <PricingDivider />
+                  <PricingCardFeaturesList>
+                    <PricingCardFeatureItem $highlight>Ce conte est inclus</PricingCardFeatureItem>
+                    <PricingCardFeatureItem $highlight>3 contes / mois</PricingCardFeatureItem>
+                    <PricingCardFeatureItem>Economisez 40 EUR/an</PricingCardFeatureItem>
+                    <PricingCardFeatureItem>Bibliotheque illimitee</PricingCardFeatureItem>
+                  </PricingCardFeaturesList>
+                  <PricingCardCTA>Choisir</PricingCardCTA>
+                </PricingCard>
+              </PricingGrid>
+            )}
+
+            <TimerContainer style={{ marginTop: theme.spacing.md }}>
+              <span>⏳</span>
+              <span>Histoire conservee :</span>
+              <TimerDigits>{timerDisplay}</TimerDigits>
+            </TimerContainer>
+          </>
+        );
+      }
 
       case 'payment':
         return (

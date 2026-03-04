@@ -91,6 +91,62 @@ export function computeParamsHash(params: CoverGenerationParams, hasPhoto: boole
   return crypto.createHash('sha256').update(relevantFields).digest('hex').substring(0, 16);
 }
 
+// --- Cache illustration preview ---
+
+interface IllustrationCacheEntry {
+  imageBase64: string;
+  timestamp: number;
+}
+
+const illustrationPreviewCache = new Map<string, IllustrationCacheEntry>();
+const ILLUSTRATION_CACHE_MAX = 50;
+
+export function getCachedIllustration(hash: string): string | null {
+  const entry = illustrationPreviewCache.get(hash);
+  if (!entry) return null;
+  if (Date.now() - entry.timestamp > CACHE_TTL_MS) {
+    illustrationPreviewCache.delete(hash);
+    return null;
+  }
+  return entry.imageBase64;
+}
+
+export function setCachedIllustration(hash: string, imageBase64: string): void {
+  if (illustrationPreviewCache.size >= ILLUSTRATION_CACHE_MAX) {
+    const oldestKey = illustrationPreviewCache.keys().next().value;
+    if (oldestKey) illustrationPreviewCache.delete(oldestKey);
+  }
+  illustrationPreviewCache.set(hash, { imageBase64, timestamp: Date.now() });
+}
+
+// --- Cache story preview ---
+
+interface StoryPreviewCacheEntry {
+  title: string;
+  paragraphs: string[];
+  timestamp: number;
+}
+
+const storyPreviewCache = new Map<string, StoryPreviewCacheEntry>();
+
+export function getCachedStoryPreview(hash: string): { title: string; paragraphs: string[] } | null {
+  const entry = storyPreviewCache.get(hash);
+  if (!entry) return null;
+  if (Date.now() - entry.timestamp > CACHE_TTL_MS) {
+    storyPreviewCache.delete(hash);
+    return null;
+  }
+  return { title: entry.title, paragraphs: entry.paragraphs };
+}
+
+export function setCachedStoryPreview(hash: string, title: string, paragraphs: string[]): void {
+  if (storyPreviewCache.size >= MAX_CACHE_SIZE) {
+    const oldestKey = storyPreviewCache.keys().next().value;
+    if (oldestKey) storyPreviewCache.delete(oldestKey);
+  }
+  storyPreviewCache.set(hash, { title, paragraphs, timestamp: Date.now() });
+}
+
 // --- Generation du titre du livre ---
 
 const OCCASION_TITLES: Record<string, (name: string) => string> = {

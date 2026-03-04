@@ -148,6 +148,8 @@ export class OrderController {
           secondaryCharacterName: formData.secondaryCharacterName,
           secondaryCharacterAge: formData.secondaryCharacterAge,
           creatorName: formData.creatorName,
+          firstIllustrationUrl: formData.firstIllustrationUrl || null,
+          storyPreviewTextJson: formData.storyPreviewTextJson || null,
           productType: 'EBOOK',
           purchaseType: purchaseType as 'SINGLE' | 'CLUB',
           price: price

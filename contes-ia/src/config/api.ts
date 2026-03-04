@@ -601,6 +601,37 @@ export class ApiService {
     return result;
   }
 
+  // Generate first illustration preview
+  static async generateFirstIllustration(data: {
+    formData: Record<string, any>;
+    paragraph: string;
+    coverImageBase64?: string;
+  }, signal?: AbortSignal): Promise<{ success: boolean; data?: { illustrationUrl: string; illustrationBase64: string }; message?: string }> {
+    const url = `${this.baseUrl}/api/preview/first-illustration`;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+      signal,
+    });
+    return response.json();
+  }
+
+  // Generate AI story preview (3 paragraphs)
+  static async generateStoryPreview(data: {
+    formData: Record<string, any>;
+  }, signal?: AbortSignal): Promise<{ success: boolean; data?: { title: string; paragraphs: string[] }; message?: string }> {
+    const url = `${this.baseUrl}/api/preview/story-preview`;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+      signal,
+    });
+    const result = await response.json();
+    return result;
+  }
+
   // PDF download (returns blob URL)
   static async downloadStoryPdf(token: string, storyId: string): Promise<string> {
     const url = `${this.baseUrl}/api/client/stories/${storyId}/pdf`;

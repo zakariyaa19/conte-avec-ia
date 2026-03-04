@@ -751,3 +751,525 @@ export const ClubExhaustedMsg = styled.div`
   margin-bottom: ${theme.spacing.md}; font-size: ${theme.fontSizes.xs};
   color: ${theme.colors.text.secondary}; text-align: center; max-width: 560px; width: 100%;
 `;
+
+/* ══════════════════════════════════════════════
+   STORY PREVIEW (emotional preview step)
+   ══════════════════════════════════════════════ */
+
+const skeletonShimmer = keyframes`
+  0% { background-position: -200px 0; }
+  100% { background-position: calc(200px + 100%) 0; }
+`;
+
+export const StoryExcerptCard = styled.div`
+  position: relative;
+  background: white;
+  border-radius: ${theme.borderRadius.xl};
+  padding: ${theme.spacing.lg} ${theme.spacing.lg} 48px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  width: 100%; max-width: 460px;
+  overflow: hidden;
+  @media (max-width: ${theme.breakpoints.sm}) {
+    padding: ${theme.spacing.md} ${theme.spacing.md} 40px;
+    border-radius: ${theme.borderRadius.lg};
+  }
+  @media (min-width: ${theme.breakpoints.lg}) {
+    max-width: 540px; padding: ${theme.spacing.xl} ${theme.spacing.xl} 56px;
+  }
+`;
+
+export const StoryParagraph = styled.p`
+  font-family: ${theme.fonts.body};
+  font-size: ${theme.fontSizes.sm};
+  color: ${theme.colors.text.primary};
+  line-height: 1.7;
+  margin: 0 0 ${theme.spacing.md};
+  &:last-child { margin-bottom: 0; }
+  @media (max-width: ${theme.breakpoints.sm}) { font-size: ${theme.fontSizes.xs}; line-height: 1.6; }
+  @media (min-width: ${theme.breakpoints.lg}) { font-size: ${theme.fontSizes.base}; }
+`;
+
+export const FadeOverlay = styled.div`
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 80px;
+  background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1));
+  pointer-events: none;
+`;
+
+export const StoryPreviewSkeleton = styled.div`
+  width: 100%; max-width: 460px;
+  background: white;
+  border-radius: ${theme.borderRadius.xl};
+  padding: ${theme.spacing.lg};
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+
+  & > div {
+    height: 14px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    background: #f0f0f0;
+    background-image: linear-gradient(90deg, #f0f0f0, #e0e0e0, #f0f0f0);
+    background-size: 200px 100%;
+    background-repeat: no-repeat;
+    animation: ${skeletonShimmer} 1.4s ease-in-out infinite;
+  }
+  & > div:nth-child(1) { width: 95%; }
+  & > div:nth-child(2) { width: 100%; }
+  & > div:nth-child(3) { width: 80%; }
+  & > div:nth-child(4) { width: 0; height: 8px; }
+  & > div:nth-child(5) { width: 100%; }
+  & > div:nth-child(6) { width: 90%; }
+  & > div:nth-child(7) { width: 70%; }
+  & > div:nth-child(8) { width: 0; height: 8px; }
+  & > div:nth-child(9) { width: 95%; }
+  & > div:nth-child(10) { width: 85%; }
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    padding: ${theme.spacing.md};
+    border-radius: ${theme.borderRadius.lg};
+  }
+`;
+
+export const PaywallDivider = styled.div`
+  display: flex; align-items: center; justify-content: center;
+  gap: ${theme.spacing.sm}; margin: ${theme.spacing.lg} 0;
+  width: 100%; max-width: 460px;
+  &::before, &::after {
+    content: ''; flex: 1; height: 1px;
+    background: linear-gradient(90deg, transparent, ${theme.colors.accent.coral}40, transparent);
+  }
+  font-size: 14px; color: ${theme.colors.accent.coral}; white-space: nowrap;
+`;
+
+export const PaywallTitle = styled.p`
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.lg};
+  font-weight: 700;
+  color: ${theme.colors.text.primary};
+  text-align: center;
+  margin: 0 0 ${theme.spacing.md};
+  @media (max-width: ${theme.breakpoints.sm}) { font-size: ${theme.fontSizes.base}; }
+`;
+
+export const UnlockCard = styled.div`
+  display: flex; flex-direction: column; align-items: center;
+  width: 100%; max-width: 460px;
+  padding: ${theme.spacing.lg};
+  background: ${theme.colors.background.secondary};
+  border-radius: ${theme.borderRadius.xl};
+  @media (max-width: ${theme.breakpoints.sm}) { padding: ${theme.spacing.md}; }
+  @media (min-width: ${theme.breakpoints.lg}) { max-width: 540px; }
+`;
+
+export const LockIcon = styled.span`
+  font-size: 1.6rem;
+  margin-bottom: ${theme.spacing.xs};
+`;
+
+export const UnlockTitle = styled.p`
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.sm};
+  font-weight: 700;
+  color: ${theme.colors.text.primary};
+  margin: 0 0 ${theme.spacing.sm};
+  @media (min-width: ${theme.breakpoints.lg}) { font-size: ${theme.fontSizes.base}; }
+`;
+
+export const UnlockFeatures = styled.ul`
+  list-style: none; padding: 0; margin: 0 0 ${theme.spacing.sm};
+  display: flex; flex-direction: column; gap: 4px;
+`;
+
+export const UnlockFeature = styled.li`
+  font-size: ${theme.fontSizes.xs};
+  color: ${theme.colors.text.secondary};
+  display: flex; align-items: center; gap: 6px;
+  &::before {
+    content: ''; width: 4px; height: 4px; border-radius: 50%;
+    background: ${theme.colors.accent.coral}; flex-shrink: 0;
+  }
+  @media (min-width: ${theme.breakpoints.lg}) { font-size: ${theme.fontSizes.sm}; }
+`;
+
+export const TimerContainer = styled.div`
+  display: flex; align-items: center; gap: 6px;
+  margin-top: ${theme.spacing.sm};
+  font-size: ${theme.fontSizes.xs};
+  color: ${theme.colors.text.light};
+`;
+
+export const TimerDigits = styled.span`
+  font-family: ${theme.fonts.heading};
+  font-weight: 700;
+  font-size: ${theme.fontSizes.sm};
+  color: ${theme.colors.text.secondary};
+  font-variant-numeric: tabular-nums;
+`;
+
+/* ══════════════════════════════════════════════
+   PDF-LIKE PREVIEW — Immersive book pages
+   ══════════════════════════════════════════════ */
+
+const fadeInScale = keyframes`
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+`;
+
+const slideInUp = keyframes`
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: translateY(0); }
+`;
+
+const glowPulse = keyframes`
+  0%, 100% { box-shadow: 0 0 0 0 ${theme.colors.accent.coral}30; }
+  50%      { box-shadow: 0 0 20px 4px ${theme.colors.accent.coral}25; }
+`;
+
+export const PdfPageContainer = styled.div<{ $delay?: number }>`
+  position: relative;
+  width: 100%;
+  max-width: 580px;
+  aspect-ratio: 3 / 2;
+  background: #FFF9F0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
+  animation: ${slideInUp} 0.7s cubic-bezier(0.4,0,0.2,1) ${p => (p.$delay || 0) * 0.4}s both;
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    max-width: 100%;
+    aspect-ratio: auto;
+    min-height: 200px;
+  }
+  @media (min-width: ${theme.breakpoints.lg}) {
+    max-width: 700px;
+  }
+`;
+
+export const PdfCoverPage = styled.div<{ $delay?: number }>`
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.15), 0 2px 8px rgba(0,0,0,0.06);
+  animation: ${fadeInScale} 0.8s cubic-bezier(0.4,0,0.2,1) ${p => (p.$delay || 0) * 0.4}s both;
+
+  img {
+    width: 100%;
+    display: block;
+  }
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    max-width: 220px;
+  }
+  @media (min-width: ${theme.breakpoints.lg}) {
+    max-width: 340px;
+  }
+`;
+
+export const PdfStoryPage = styled.div<{ $delay?: number }>`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 100%;
+  max-width: 580px;
+  min-height: 240px;
+  background: #FFF9F0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
+  animation: ${slideInUp} 0.7s cubic-bezier(0.4,0,0.2,1) ${p => (p.$delay || 0) * 0.4}s both;
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    max-width: 100%;
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+  @media (min-width: ${theme.breakpoints.lg}) {
+    max-width: 700px;
+    min-height: 280px;
+  }
+`;
+
+export const PdfTextHalf = styled.div`
+  padding: ${theme.spacing.lg};
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  p {
+    font-family: 'Georgia', serif;
+    font-size: 13px;
+    color: #3B2F2F;
+    line-height: 1.8;
+    margin: 0;
+  }
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    padding: ${theme.spacing.md};
+    p { font-size: 12px; line-height: 1.6; }
+  }
+  @media (min-width: ${theme.breakpoints.lg}) {
+    padding: ${theme.spacing.xl};
+    p { font-size: 15px; }
+  }
+`;
+
+export const PdfImageHalf = styled.div`
+  position: relative;
+  overflow: hidden;
+  background: #f0e8dc;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    aspect-ratio: 1;
+  }
+`;
+
+export const PdfImageSkeleton = styled.div`
+  width: 100%;
+  height: 100%;
+  min-height: 200px;
+  background: #f0e8dc;
+  background-image: linear-gradient(90deg, #f0e8dc, #e8ddd0, #f0e8dc);
+  background-size: 200px 100%;
+  background-repeat: no-repeat;
+  animation: ${skeletonShimmer} 1.4s ease-in-out infinite;
+`;
+
+export const PdfLockedPage = styled.div<{ $delay?: number }>`
+  position: relative;
+  width: 100%;
+  max-width: 580px;
+  min-height: 160px;
+  background: #FFF9F0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.08);
+  animation: ${slideInUp} 0.7s cubic-bezier(0.4,0,0.2,1) ${p => (p.$delay || 0) * 0.4}s both;
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    max-width: 100%;
+    min-height: 120px;
+  }
+  @media (min-width: ${theme.breakpoints.lg}) {
+    max-width: 700px;
+    min-height: 180px;
+  }
+`;
+
+export const PdfLockedOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  background: rgba(255,249,240,0.6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  span:first-child {
+    font-size: 2rem;
+  }
+  span:last-child {
+    font-family: ${theme.fonts.heading};
+    font-size: ${theme.fontSizes.sm};
+    font-weight: 600;
+    color: ${theme.colors.text.secondary};
+  }
+`;
+
+export const PdfLockedBg = styled.div`
+  width: 100%;
+  height: 100%;
+  min-height: inherit;
+  background: repeating-linear-gradient(
+    0deg,
+    #e8ddd0 0px, #e8ddd0 14px,
+    #f0e8dc 14px, #f0e8dc 28px
+  );
+  opacity: 0.5;
+`;
+
+/* ══════════════════════════════════════════════
+   PAYWALL PRICING GRID — 3 columns
+   ══════════════════════════════════════════════ */
+
+export const PricingGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: ${theme.spacing.sm};
+  width: 100%;
+  max-width: 640px;
+  align-items: stretch;
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    grid-template-columns: 1fr;
+    gap: ${theme.spacing.sm};
+    max-width: 340px;
+  }
+  @media (min-width: ${theme.breakpoints.lg}) {
+    max-width: 780px;
+    gap: ${theme.spacing.md};
+  }
+`;
+
+export const PricingCard = styled.div<{ $isSelected: boolean; $featured?: boolean }>`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: ${theme.spacing.md} ${theme.spacing.sm};
+  border: 2px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'rgba(0,0,0,0.06)'};
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: ${p => p.$isSelected ? 'linear-gradient(160deg, #FFF8F5, #FFF)' : 'white'};
+  -webkit-tap-highlight-color: transparent;
+  ${p => p.$isSelected && css`box-shadow: 0 4px 20px ${theme.colors.accent.coral}18;`}
+  ${p => p.$featured && css`
+    transform: scale(1.03);
+    border-color: ${p.$isSelected ? theme.colors.accent.coral : theme.colors.accent.lightCoral};
+    animation: ${glowPulse} 2.5s ease-in-out infinite;
+  `}
+
+  &:hover { border-color: ${theme.colors.accent.coral}80; }
+  &:active { transform: scale(0.98); }
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    padding: ${theme.spacing.sm} ${theme.spacing.sm};
+    border-radius: 12px;
+    ${p => p.$featured && css`transform: none;`}
+  }
+  @media (min-width: ${theme.breakpoints.lg}) {
+    padding: ${theme.spacing.lg} ${theme.spacing.md};
+    border-radius: 20px;
+    &:hover { transform: ${p => p.$featured ? 'scale(1.05)' : 'translateY(-2px)'}; box-shadow: 0 8px 30px rgba(0,0,0,0.08); }
+  }
+`;
+
+export const PricingCardBadge = styled.span`
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover});
+  color: white;
+  padding: 2px 12px;
+  border-radius: ${theme.borderRadius.full};
+  font-size: 9px;
+  font-weight: 700;
+  white-space: nowrap;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+`;
+
+export const PricingCardName = styled.h4`
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.sm};
+  font-weight: 700;
+  color: ${theme.colors.text.primary};
+  margin: 0 0 4px;
+  text-align: center;
+  @media (min-width: ${theme.breakpoints.lg}) { font-size: ${theme.fontSizes.base}; }
+`;
+
+export const PricingCardPrice = styled.p`
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.xl};
+  font-weight: 800;
+  background: linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover});
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+  line-height: 1.1;
+  @media (max-width: ${theme.breakpoints.sm}) { font-size: ${theme.fontSizes.lg}; }
+`;
+
+export const PricingCardSub = styled.p`
+  font-size: 10px;
+  color: ${theme.colors.text.light};
+  margin: 2px 0 0;
+  font-weight: 500;
+  text-align: center;
+`;
+
+export const PricingCardFeaturesList = styled.ul`
+  list-style: none;
+  padding: 0;
+  margin: ${theme.spacing.sm} 0 0;
+  width: 100%;
+`;
+
+export const PricingCardFeatureItem = styled.li<{ $highlight?: boolean }>`
+  font-size: 10px;
+  color: ${p => p.$highlight ? theme.colors.accent.coral : theme.colors.text.secondary};
+  font-weight: ${p => p.$highlight ? 700 : 400};
+  padding: 2px 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  line-height: 1.3;
+  &::before {
+    content: '';
+    flex-shrink: 0;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: ${p => p.$highlight ? theme.colors.accent.coral : theme.colors.text.light};
+  }
+  @media (min-width: ${theme.breakpoints.lg}) {
+    font-size: 12px;
+    padding: 3px 0;
+  }
+`;
+
+export const PricingCardCTA = styled.button<{ $primary?: boolean }>`
+  margin-top: auto;
+  padding: 8px 16px;
+  border: ${p => p.$primary ? 'none' : `1.5px solid ${theme.colors.accent.coral}`};
+  border-radius: ${theme.borderRadius.lg};
+  background: ${p => p.$primary
+    ? `linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover})`
+    : 'transparent'};
+  color: ${p => p.$primary ? 'white' : theme.colors.accent.coral};
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.xs};
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  margin-top: ${theme.spacing.sm};
+
+  &:hover {
+    transform: scale(1.02);
+    box-shadow: 0 2px 12px ${theme.colors.accent.coral}30;
+  }
+  @media (min-width: ${theme.breakpoints.lg}) {
+    font-size: ${theme.fontSizes.sm};
+    padding: 10px 20px;
+  }
+`;
+
+export const PreviewSectionTitle = styled.p`
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.base};
+  font-weight: 700;
+  color: ${theme.colors.text.primary};
+  text-align: center;
+  margin: 0 0 ${theme.spacing.sm};
+  max-width: 400px;
+  line-height: 1.4;
+  @media (max-width: ${theme.breakpoints.sm}) { font-size: ${theme.fontSizes.sm}; }
+  @media (min-width: ${theme.breakpoints.lg}) { font-size: ${theme.fontSizes.lg}; }
+`;
