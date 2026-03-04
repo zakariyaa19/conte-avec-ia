@@ -694,6 +694,10 @@ async function runGenerationPipeline(orderId: string, order: any, genLogId: stri
       }
     }
 
+    console.log(`[Generation] Cover data ready: ${coverImageData ? coverImageData.length + ' bytes' : 'NONE'}`);
+    console.log(`[Generation] First illustration from preview: ${firstIllustrationBuffer ? firstIllustrationBuffer.length + ' bytes' : 'NONE'}`);
+    console.log(`[Generation] Text generated: ${storyText.paragraphs.length} paragraphs, title: "${storyText.title}"`);
+
     // --- Step 2: Generate images (10-93%) ---
     logStep('images', 'started');
     await updateProgress(orderId, 'GENERATING_IMAGES', 10);
@@ -729,6 +733,7 @@ async function runGenerationPipeline(orderId: string, order: any, genLogId: stri
       coverImageData || undefined,
       firstIllustrationBuffer
     );
+    console.log(`[Generation] Images generated: ${imageResult.images.length} images, sizes: [${imageResult.images.map(b => b.length).join(', ')}]`);
     logStep('images', 'completed');
 
     // --- Step 3: Assemble PDF (93-100%) ---
@@ -746,6 +751,8 @@ async function runGenerationPipeline(orderId: string, order: any, genLogId: stri
         'utf-8'
       );
     }
+
+    console.log(`[Generation] Starting PDF assembly: cover=${coverImage.length} bytes, images=${imageResult.images.length}, paragraphs=${storyText.paragraphs.length}`);
 
     let pdfBuffer: Buffer | null = await assemblePdf({
       title: storyText.title,
@@ -797,15 +804,16 @@ async function runGenerationPipeline(orderId: string, order: any, genLogId: stri
     console.log(`[Generation] Pipeline completed for order ${orderId}`);
 
   } catch (error: any) {
-    console.error(`[Generation] Pipeline failed for order ${orderId}:`, error);
-    logStep('pipeline', 'failed', error.message || 'Erreur inconnue');
+    const errorDetail = `${error.message || 'Erreur inconnue'} | Stack: ${error.stack?.split('\n').slice(0, 5).join(' <- ')}`;
+    console.error(`[Generation] Pipeline failed for order ${orderId}:`, errorDetail);
+    logStep('pipeline', 'failed', errorDetail);
 
     try {
       await prisma.order.update({
         where: { id: orderId },
         data: {
           storyStatus: 'GENERATION_FAILED',
-          generationError: error.message || 'Erreur inconnue',
+          generationError: errorDetail.slice(0, 500),
         }
       });
 
