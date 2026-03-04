@@ -308,8 +308,8 @@ function getOrderStatusBadge(status: string) {
 function getProgressLabel(status: string, progress: number | null): string {
   if (status === 'GENERATING_TEXT') return 'Generation du texte...';
   if (status === 'GENERATING_IMAGES') {
-    const imgNum = progress ? Math.max(1, Math.round((progress - 10) / 83 * 12)) : 0;
-    return `Illustration ${Math.min(imgNum, 12)}/12...`;
+    const imgNum = progress ? Math.max(1, Math.round((progress - 10) / 83 * 6)) : 0;
+    return `Illustration ${Math.min(imgNum, 6)}/6...`;
   }
   if (status === 'ASSEMBLING_PDF') return 'Assemblage PDF...';
   if (status === 'DISPONIBLE') return 'Termine';
