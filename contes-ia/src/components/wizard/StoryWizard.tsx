@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { theme } from '../../styles/theme';
 import { ValidatedInput } from '../ui/ValidatedInput';
 import { AgeSelector } from '../ui/AgeSelector';
-import { BookCoverPreview } from '../ui/BookCoverPreview';
+
 import { SecondaryCharactersSection } from '../forms/SecondaryCharactersSection';
 import { useCoverPreview } from '../../hooks/useCoverPreview';
 import { useStoryPreview } from '../../hooks/useStoryPreview';
@@ -34,8 +34,10 @@ import {
   StoryExcerptCard, StoryParagraph, FadeOverlay, StoryPreviewSkeleton,
   PaywallDivider, PaywallTitle, UnlockCard, LockIcon, UnlockTitle,
   UnlockFeatures, UnlockFeature, TimerContainer, TimerDigits,
-  PdfCoverPage, PdfStoryPage, PdfTextHalf, PdfImageHalf, PdfImageSkeleton,
-  PdfLockedPage, PdfLockedOverlay, PdfLockedBg,
+  ViewerPagesWrapper, ViewerPageCard, ViewerPageSkeleton,
+  ViewerCoverContent, ViewerStoryLayout, ViewerCreatorLabel,
+  ViewerTextBlock, ViewerImageBlock, ViewerImageSkeleton, ViewerPageNum,
+  ViewerLockedContent, ViewerLockedOverlay, ViewerLockedBg,
   PricingGrid, PricingCard, PricingCardBadge, PricingCardName, PricingCardPrice,
   PricingCardSub, PricingCardFeaturesList, PricingCardFeatureItem, PricingCardCTA,
   PreviewSectionTitle,
@@ -127,7 +129,7 @@ const RELIGION_OPTIONS = [
 
 /* ══════════════════════════════════════════════ */
 
-const ALL_STEPS = ['age','theme','occasion','style','hero','appearance','choice','extras1','extras2','cover','preview','payment'] as const;
+const ALL_STEPS = ['age','theme','occasion','style','hero','appearance','choice','extras1','extras2','preview','payment'] as const;
 type StepId = (typeof ALL_STEPS)[number];
 
 interface StoryWizardProps {
@@ -219,9 +221,9 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
     setTimeout(() => goNext(), 400);
   }, [onUpdate, goNext]);
 
-  // Cover + story preview generation (parallel)
+  // Cover + story preview generation (parallel) — triggered when entering preview step
   useEffect(() => {
-    if (ALL_STEPS[currentStep] === 'cover') {
+    if (ALL_STEPS[currentStep] === 'preview') {
       if (!coverImageUrl && !isCoverGenerating) generateCover();
       if (!previewParagraphs && !isStoryPreviewGenerating) generateStoryPreview();
     }
@@ -709,40 +711,14 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
           </>
         );
 
-      case 'cover':
-        return (
-          <>
-            <StepTitle>
-              {coverImageUrl && !isCoverGenerating ? 'Votre conte est prêt ✨' : 'Création en cours...'}
-            </StepTitle>
-            {coverImageUrl && !isCoverGenerating && (
-              <StepSubtitle>Voici la couverture de votre conte personnalisé</StepSubtitle>
-            )}
-            <div style={{ width: '100%', maxWidth: 380, margin: '0 auto' }}>
-              <BookCoverPreview coverImageUrl={coverImageUrl} isGenerating={isCoverGenerating} error={coverError} onClick={() => {
-                if (rawBase64) onUpdate({ coverImageBase64: rawBase64, coverTitle: coverTitle || undefined });
-                goNext();
-              }} />
-            </div>
-            {coverImageUrl && !isCoverGenerating && (
-              <DiscoverCTA onClick={() => {
-                if (rawBase64) onUpdate({ coverImageBase64: rawBase64, coverTitle: coverTitle || undefined });
-                goNext();
-              }} style={{ marginTop: theme.spacing.xl }}>
-                Découvrir mon histoire →
-              </DiscoverCTA>
-            )}
-          </>
-        );
-
       case 'preview': {
         const minutes = Math.floor(countdown / 60);
         const seconds = countdown % 60;
         const timerDisplay = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
         const heroName = formData.protagonistName || 'votre enfant';
+        const creatorName = formData.creatorName || '';
 
         const handlePreviewSelect = (type: 'single' | 'club') => {
-          // Save preview data into formData for order
           const previewUpdate: Partial<StoryFormData> = {
             productType: 'ebook',
             purchaseType: type,
@@ -768,67 +744,74 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
               Votre histoire prend vie...
             </StepTitle>
 
-            {/* PDF Page 1 — Cover */}
-            {coverImageUrl && (
-              <PdfCoverPage $delay={0}>
-                <img src={coverImageUrl} alt="Couverture" />
-              </PdfCoverPage>
-            )}
-
-            <div style={{ height: theme.spacing.md }} />
-
-            {/* PDF Page 2 — Text + Illustration (50/50) */}
-            <PdfStoryPage $delay={1}>
-              <PdfTextHalf>
-                {isStoryPreviewGenerating || !previewParagraphs ? (
-                  <StoryPreviewSkeleton style={{ boxShadow: 'none', padding: 0, background: 'transparent' }}>
-                    <div /><div /><div /><div /><div />
-                  </StoryPreviewSkeleton>
+            <ViewerPagesWrapper>
+              {/* Page 1 — Cover */}
+              <ViewerPageCard $delay={0}>
+                {coverImageUrl && !isCoverGenerating ? (
+                  <ViewerCoverContent>
+                    <img src={coverImageUrl} alt="Couverture" />
+                  </ViewerCoverContent>
                 ) : (
-                  <p>{previewParagraphs[0]}</p>
+                  <ViewerPageSkeleton style={{ maxWidth: '100%' }} />
                 )}
-              </PdfTextHalf>
-              <PdfImageHalf>
-                {isIllustrationGenerating || !illustrationBase64 ? (
-                  <PdfImageSkeleton />
-                ) : (
-                  <img src={`data:image/png;base64,${illustrationBase64}`} alt="Illustration" />
-                )}
-              </PdfImageHalf>
-            </PdfStoryPage>
+              </ViewerPageCard>
 
-            <div style={{ height: theme.spacing.md }} />
+              {/* Page 2 — Story page (creator + text + illustration + page num) */}
+              <ViewerPageCard $delay={1}>
+                <ViewerStoryLayout>
+                  {creatorName && (
+                    <ViewerCreatorLabel>{creatorName}</ViewerCreatorLabel>
+                  )}
+                  <ViewerTextBlock>
+                    {isStoryPreviewGenerating || !previewParagraphs ? (
+                      <StoryPreviewSkeleton style={{ boxShadow: 'none', padding: 0, background: 'transparent' }}>
+                        <div /><div /><div /><div /><div />
+                      </StoryPreviewSkeleton>
+                    ) : (
+                      <p>{previewParagraphs[0]}</p>
+                    )}
+                  </ViewerTextBlock>
+                  <ViewerImageBlock>
+                    {isIllustrationGenerating || !illustrationBase64 ? (
+                      <ViewerImageSkeleton />
+                    ) : (
+                      <img src={`data:image/png;base64,${illustrationBase64}`} alt="Illustration" />
+                    )}
+                  </ViewerImageBlock>
+                  <ViewerPageNum>1</ViewerPageNum>
+                </ViewerStoryLayout>
+              </ViewerPageCard>
 
-            {/* PDF Page 3 — Locked */}
-            <PdfLockedPage $delay={2}>
-              <PdfLockedBg />
-              <PdfLockedOverlay>
-                <span>🔒</span>
-                <span>Suite de l'histoire...</span>
-              </PdfLockedOverlay>
-            </PdfLockedPage>
+              {/* Page 3 — Locked / blurred */}
+              <ViewerPageCard $delay={2}>
+                <ViewerLockedContent>
+                  <ViewerLockedBg />
+                  <ViewerLockedOverlay>
+                    <span>🔒</span>
+                    <span>Debloquez la suite de l'histoire</span>
+                  </ViewerLockedOverlay>
+                </ViewerLockedContent>
+              </ViewerPageCard>
+            </ViewerPagesWrapper>
 
             <PaywallDivider>✨</PaywallDivider>
 
             <PreviewSectionTitle>
-              L'histoire complète de {heroName} est prête — 12 pages illustrées
+              L'histoire complete de {heroName} est prete — 12 pages illustrees
             </PreviewSectionTitle>
 
             {/* 3-tier pricing */}
             {isClub && clubCredit?.canSubmit ? (
-              /* Club member with credit: show free option prominently */
-              <>
-                <ClubFreeCard $isSelected={true} onClick={() => handlePreviewSelect('club')}>
-                  <ClubBadge>Membre Club</ClubBadge>
-                  <h3 style={{ fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.lg, margin: `${theme.spacing.sm} 0 4px` }}>
-                    Utiliser mon eBook gratuit
-                  </h3>
-                  <p style={{ fontSize: theme.fontSizes.sm, color: theme.colors.accent.coral, fontWeight: 700, margin: '0 0 4px' }}>0,00 EUR</p>
-                  <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.text.secondary, margin: 0 }}>
-                    Il vous reste {clubCredit.remaining} eBook(s) gratuit(s)
-                  </p>
-                </ClubFreeCard>
-              </>
+              <ClubFreeCard $isSelected={true} onClick={() => handlePreviewSelect('club')}>
+                <ClubBadge>Membre Club</ClubBadge>
+                <h3 style={{ fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.lg, margin: `${theme.spacing.sm} 0 4px` }}>
+                  Utiliser mon eBook gratuit
+                </h3>
+                <p style={{ fontSize: theme.fontSizes.sm, color: theme.colors.accent.coral, fontWeight: 700, margin: '0 0 4px' }}>0,00 EUR</p>
+                <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.text.secondary, margin: 0 }}>
+                  Il vous reste {clubCredit.remaining} eBook(s) gratuit(s)
+                </p>
+              </ClubFreeCard>
             ) : (
               <PricingGrid>
                 {/* Offre unique */}
@@ -840,7 +823,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                   <PricingCardFeaturesList>
                     <PricingCardFeatureItem>1 conte personnalise</PricingCardFeatureItem>
                     <PricingCardFeatureItem>6 illustrations HD</PricingCardFeatureItem>
-                    <PricingCardFeatureItem>PDF telechargeble</PricingCardFeatureItem>
+                    <PricingCardFeatureItem>PDF telechargeable</PricingCardFeatureItem>
                   </PricingCardFeaturesList>
                   <PricingCardCTA>Choisir</PricingCardCTA>
                 </PricingCard>
@@ -862,23 +845,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 </PricingCard>
 
                 {/* Club annuel */}
-                <PricingCard $isSelected={false} onClick={() => {
-                  onUpdate({ purchaseType: 'club' });
-                  // The payment step handles annual vs monthly via a flag
-                  const previewUpdate: Partial<StoryFormData> = {
-                    productType: 'ebook',
-                    purchaseType: 'club',
-                  };
-                  if (rawBase64) {
-                    previewUpdate.coverImageBase64 = rawBase64;
-                    previewUpdate.coverTitle = coverTitle || undefined;
-                  }
-                  if (illustrationUrl) previewUpdate.firstIllustrationUrl = illustrationUrl;
-                  if (previewParagraphs) previewUpdate.storyPreviewTextJson = JSON.stringify(previewParagraphs);
-                  onUpdate(previewUpdate);
-                  metaTrackAddToCart('club');
-                  goNext();
-                }}>
+                <PricingCard $isSelected={false} onClick={() => handlePreviewSelect('club')}>
                   <PricingCardName>Club Annuel</PricingCardName>
                   <PricingCardPrice>79,99 EUR</PricingCardPrice>
                   <PricingCardSub>/ an — soit 6,67 EUR/mois</PricingCardSub>
