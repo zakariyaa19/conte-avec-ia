@@ -95,7 +95,7 @@ export const createPaymentSession = async (req: Request, res: Response) => {
 export const createSubscriptionSession = async (req: ClientAuthRequest, res: Response) => {
   try {
     const userId = req.clientUser?.id;
-    const { orderId } = req.body;
+    const { orderId, plan } = req.body;
 
     if (!userId) {
       return res.status(401).json({ error: 'Authentification requise' });
@@ -120,9 +120,15 @@ export const createSubscriptionSession = async (req: ClientAuthRequest, res: Res
       });
     }
 
-    const priceId = process.env.STRIPE_CLUB_PRICE_ID;
+    // Selectionner le bon Price ID selon le plan (monthly/annual)
+    let priceId: string | undefined;
+    if (plan === 'annual') {
+      priceId = process.env.STRIPE_CLUB_ANNUAL_PRICE_ID;
+    } else {
+      priceId = process.env.STRIPE_CLUB_MONTHLY_PRICE_ID || process.env.STRIPE_CLUB_PRICE_ID;
+    }
     if (!priceId) {
-      return res.status(500).json({ error: 'STRIPE_CLUB_PRICE_ID non configure' });
+      return res.status(500).json({ error: 'Stripe Price ID non configure pour ce plan' });
     }
 
     const session = await stripe.checkout.sessions.create({
@@ -133,6 +139,7 @@ export const createSubscriptionSession = async (req: ClientAuthRequest, res: Res
       cancel_url: `${process.env.FRONTEND_URL}/create-story?subscription=cancelled`,
       metadata: {
         userId: user.id,
+        plan: plan || 'monthly',
         ...(orderId && { orderId })
       }
     });

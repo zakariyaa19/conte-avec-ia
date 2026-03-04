@@ -1,11 +1,12 @@
 // Logique de calcul des prix
 
 export const PRODUCT_PRICES = {
-  EBOOK: 4.99
+  EBOOK: 6.99
 } as const;
 
 export const CLUB_PRICES = {
-  CLUB_MONTHLY: 12.99,
+  CLUB_MONTHLY: 9.99,
+  CLUB_ANNUAL: 79.99,
   CLUB_FREE_STORY: 0
 } as const;
 

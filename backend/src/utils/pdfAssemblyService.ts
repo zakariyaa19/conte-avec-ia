@@ -5,18 +5,14 @@ import fs from 'fs';
 import path from 'path';
 import { IMAGE_PARAGRAPH_INDICES } from './storyImageGenerator';
 
-// --- Constants ---
-
-const PAGE_WIDTH = 900;
-const PAGE_HEIGHT = 600;
-const HALF_WIDTH = 450;
-const CREAM_BG = rgb(250 / 255, 243 / 255, 224 / 255); // Warm cream/beige
-const GOLD_BADGE = rgb(218 / 255, 180 / 255, 100 / 255); // Warm gold for page number badge
-const TEXT_COLOR = rgb(55 / 255, 55 / 255, 55 / 255);
-const HEADER_COLOR = rgb(120 / 255, 110 / 255, 100 / 255); // Muted warm gray for header
-const WHITE = rgb(1, 1, 1);
-
 // --- Types ---
+
+type PdfColor = ReturnType<typeof rgb>;
+
+interface AccentColors {
+  bg: PdfColor;
+  dark: PdfColor;
+}
 
 export interface PdfAssemblyParams {
   title: string;
@@ -26,44 +22,67 @@ export interface PdfAssemblyParams {
   images: Buffer[];     // 6 interior images (mapped to IMAGE_PARAGRAPH_INDICES)
 }
 
-// --- Font loading ---
-
-async function loadFonts(pdfDoc: PDFDocument): Promise<{ regular: PDFFont; bold: PDFFont; storyFont: PDFFont }> {
-  pdfDoc.registerFontkit(fontkit);
-
-  const fontsDir = path.join(__dirname, '../../assets/fonts');
-  const nunitoRegPath = path.join(fontsDir, 'Nunito-Regular.ttf');
-  const nunitoBoldPath = path.join(fontsDir, 'Nunito-Bold.ttf');
-  const comicNeuePath = path.join(fontsDir, 'ComicNeue-Regular.ttf');
-
-  let regular: PDFFont;
-  let bold: PDFFont;
-  let storyFont: PDFFont;
-
-  try {
-    const regularBytes = fs.readFileSync(nunitoRegPath);
-    const boldBytes = fs.readFileSync(nunitoBoldPath);
-    regular = await pdfDoc.embedFont(regularBytes);
-    bold = await pdfDoc.embedFont(boldBytes);
-  } catch (error) {
-    console.warn('[PdfAssembly] Nunito non trouve, fallback Helvetica:', error);
-    regular = await pdfDoc.embedFont(StandardFonts.Helvetica);
-    bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-  }
-
-  try {
-    const comicNeueBytes = fs.readFileSync(comicNeuePath);
-    storyFont = await pdfDoc.embedFont(comicNeueBytes);
-    console.log('[PdfAssembly] Comic Neue charge avec succes');
-  } catch (error) {
-    console.warn('[PdfAssembly] Comic Neue non trouve, fallback Nunito:', error);
-    storyFont = regular;
-  }
-
-  return { regular, bold, storyFont };
+interface PdfFonts {
+  regular: PDFFont;
+  bold: PDFFont;
+  storyFont: PDFFont;
+  storyBold: PDFFont;
+  pageNumFont: PDFFont;
 }
 
-// --- Word wrap ---
+// --- Constants ---
+
+const PAGE_WIDTH = 900;
+const PAGE_HEIGHT = 600;
+const HALF_WIDTH = 450;
+const CREAM_BG = rgb(250 / 255, 243 / 255, 224 / 255);
+const TEXT_COLOR = rgb(55 / 255, 55 / 255, 55 / 255);
+const HEADER_COLOR = rgb(120 / 255, 110 / 255, 100 / 255);
+const WHITE = rgb(1, 1, 1);
+
+const PAGE_ACCENT_CYCLE: AccentColors[] = [
+  { bg: rgb(255 / 255, 218 / 255, 185 / 255), dark: rgb(242 / 255, 178 / 255, 135 / 255) }, // Peach
+  { bg: rgb(183 / 255, 228 / 255, 209 / 255), dark: rgb(143 / 255, 202 / 255, 175 / 255) }, // Mint
+  { bg: rgb(205 / 255, 193 / 255, 229 / 255), dark: rgb(175 / 255, 158 / 255, 210 / 255) }, // Lavande
+  { bg: rgb(186 / 255, 218 / 255, 241 / 255), dark: rgb(146 / 255, 188 / 255, 216 / 255) }, // Bleu ciel
+  { bg: rgb(253 / 255, 236 / 255, 179 / 255), dark: rgb(240 / 255, 210 / 255, 130 / 255) }, // Jaune doux
+  { bg: rgb(248 / 255, 196 / 255, 182 / 255), dark: rgb(230 / 255, 160 / 255, 142 / 255) }, // Corail
+];
+
+// --- Font loading ---
+
+async function loadFonts(pdfDoc: PDFDocument): Promise<PdfFonts> {
+  pdfDoc.registerFontkit(fontkit);
+  const fontsDir = path.join(__dirname, '../../assets/fonts');
+
+  async function tryEmbed(...filenames: string[]): Promise<PDFFont | null> {
+    for (const name of filenames) {
+      try {
+        const bytes = fs.readFileSync(path.join(fontsDir, name));
+        return await pdfDoc.embedFont(bytes);
+      } catch { /* try next */ }
+    }
+    return null;
+  }
+
+  // Regular & Bold (headers, metadata)
+  const regular = await tryEmbed('Nunito-Regular.ttf') ?? await pdfDoc.embedFont(StandardFonts.Helvetica);
+  const bold = await tryEmbed('Nunito-Bold.ttf') ?? await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+
+  // Story font: Baloo2 -> ComicNeue -> Nunito -> Helvetica
+  const storyFont = await tryEmbed('Baloo2-Regular.ttf', 'ComicNeue-Regular.ttf', 'Nunito-Regular.ttf')
+    ?? await pdfDoc.embedFont(StandardFonts.Helvetica);
+  const storyBold = await tryEmbed('Baloo2-Bold.ttf', 'ComicNeue-Bold.ttf', 'Nunito-Bold.ttf')
+    ?? await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+
+  // Page number font: ComicNeue-Bold -> Baloo2-Bold -> storyBold
+  const pageNumFont = await tryEmbed('ComicNeue-Bold.ttf', 'Baloo2-Bold.ttf') ?? storyBold;
+
+  console.log('[PdfAssembly] Fonts loaded (Baloo2 + ComicNeue)');
+  return { regular, bold, storyFont, storyBold, pageNumFont };
+}
+
+// --- Utility ---
 
 function wrapText(text: string, font: PDFFont, fontSize: number, maxWidth: number): string[] {
   const words = text.split(/\s+/);
@@ -89,7 +108,13 @@ function wrapText(text: string, font: PDFFont, fontSize: number, maxWidth: numbe
   return lines;
 }
 
-// --- Check if buffer is an SVG placeholder (dry run) ---
+function seededRandom(seed: number): () => number {
+  let s = seed;
+  return () => {
+    s = (s * 1103515245 + 12345) & 0x7fffffff;
+    return s / 0x7fffffff;
+  };
+}
 
 function isSvgPlaceholder(buf: Buffer): boolean {
   const head = buf.toString('utf-8', 0, Math.min(buf.length, 50));
@@ -113,17 +138,177 @@ async function compressForPdf(imageBuffer: Buffer): Promise<Buffer> {
 // --- Embed image (compress then embed as JPEG) ---
 
 async function embedImage(pdfDoc: PDFDocument, imageBuffer: Buffer): Promise<ReturnType<PDFDocument['embedPng']>> {
-  // Compress PNG→JPEG first (reduces PDF from ~35MB to ~3-5MB)
   const compressed = await compressForPdf(imageBuffer);
   try {
     return await pdfDoc.embedJpg(compressed);
   } catch {
-    // Fallback: try original as PNG
     try {
       return await pdfDoc.embedPng(imageBuffer);
     } catch (err) {
       throw new Error(`Image format non supporte: ${err}`);
     }
+  }
+}
+
+// --- Decoration functions (all vectorial, 0 external images) ---
+
+function drawStar(page: PDFPage, cx: number, cy: number, radius: number, color: PdfColor, opacity: number) {
+  const inner = radius * 0.4;
+  const parts: string[] = [];
+  for (let i = 0; i < 10; i++) {
+    const r = i % 2 === 0 ? radius : inner;
+    const angle = Math.PI / 2 + (i * Math.PI / 5);
+    const x = r * Math.cos(angle);
+    const y = r * Math.sin(angle);
+    parts.push(`${i === 0 ? 'M' : 'L'} ${x.toFixed(2)} ${y.toFixed(2)}`);
+  }
+  page.drawSvgPath(parts.join(' ') + ' Z', { x: cx, y: cy, color, opacity });
+}
+
+function drawHeart(page: PDFPage, cx: number, cy: number, size: number, color: PdfColor, opacity: number) {
+  const s = size;
+  const d = `M 0 ${-s} ` +
+    `C ${s * 0.6} ${-s} ${s * 0.7} ${s * 0.6} 0 ${s * 0.3} ` +
+    `C ${-s * 0.7} ${s * 0.6} ${-s * 0.6} ${-s} 0 ${-s} Z`;
+  page.drawSvgPath(d, { x: cx, y: cy, color, opacity });
+}
+
+function drawCornerDecoration(
+  page: PDFPage,
+  corner: 'tl' | 'tr' | 'bl' | 'br',
+  area: { x: number; y: number; w: number; h: number },
+  colors: AccentColors
+) {
+  const margin = 25;
+  let cx: number, cy: number, dx: number, dy: number;
+  switch (corner) {
+    case 'tl': cx = area.x + margin; cy = area.y + area.h - margin; dx = 1; dy = -1; break;
+    case 'tr': cx = area.x + area.w - margin; cy = area.y + area.h - margin; dx = -1; dy = -1; break;
+    case 'bl': cx = area.x + margin; cy = area.y + margin; dx = 1; dy = 1; break;
+    case 'br': cx = area.x + area.w - margin; cy = area.y + margin; dx = -1; dy = 1; break;
+  }
+
+  // Small star
+  drawStar(page, cx, cy, 6, colors.dark, 0.5);
+
+  // Cluster of dots around the star
+  const dotOffsets = [
+    { x: 10, y: 5 }, { x: 5, y: 12 }, { x: 14, y: 14 },
+    { x: -3, y: 10 }, { x: 12, y: -2 }, { x: 8, y: 18 },
+  ];
+  for (const dp of dotOffsets) {
+    page.drawCircle({
+      x: cx + dp.x * dx,
+      y: cy + dp.y * dy,
+      size: 1.5 + (dp.x % 3) * 0.5,
+      color: colors.bg,
+      opacity: 0.5,
+    });
+  }
+}
+
+function drawSoftBorder(
+  page: PDFPage,
+  x: number, y: number, w: number, h: number,
+  color: PdfColor,
+  inset: number
+) {
+  const ix = x + inset;
+  const iy = y + inset;
+  const iw = w - inset * 2;
+  const ih = h - inset * 2;
+  const r = 4;
+
+  // 4 lines
+  page.drawLine({ start: { x: ix + r, y: iy + ih }, end: { x: ix + iw - r, y: iy + ih }, thickness: 1, color, opacity: 0.4 });
+  page.drawLine({ start: { x: ix + r, y: iy }, end: { x: ix + iw - r, y: iy }, thickness: 1, color, opacity: 0.4 });
+  page.drawLine({ start: { x: ix, y: iy + r }, end: { x: ix, y: iy + ih - r }, thickness: 1, color, opacity: 0.4 });
+  page.drawLine({ start: { x: ix + iw, y: iy + r }, end: { x: ix + iw, y: iy + ih - r }, thickness: 1, color, opacity: 0.4 });
+
+  // 4 corner circles
+  page.drawCircle({ x: ix + r, y: iy + r, size: r, color, opacity: 0.3 });
+  page.drawCircle({ x: ix + iw - r, y: iy + r, size: r, color, opacity: 0.3 });
+  page.drawCircle({ x: ix + r, y: iy + ih - r, size: r, color, opacity: 0.3 });
+  page.drawCircle({ x: ix + iw - r, y: iy + ih - r, size: r, color, opacity: 0.3 });
+}
+
+function drawScatteredDots(
+  page: PDFPage,
+  area: { x: number; y: number; w: number; h: number },
+  color: PdfColor,
+  seed: number,
+  count: number = 8
+) {
+  const rng = seededRandom(seed);
+  const n = count + Math.floor(rng() * 3); // count to count+2
+  const edgeFrac = 0.15; // dots within 15% of edges
+
+  for (let i = 0; i < n; i++) {
+    const edge = Math.floor(rng() * 4);
+    let px: number, py: number;
+    switch (edge) {
+      case 0: px = area.x + rng() * area.w; py = area.y + area.h - rng() * area.h * edgeFrac; break;
+      case 1: px = area.x + rng() * area.w; py = area.y + rng() * area.h * edgeFrac; break;
+      case 2: px = area.x + rng() * area.w * edgeFrac; py = area.y + rng() * area.h; break;
+      default: px = area.x + area.w - rng() * area.w * edgeFrac; py = area.y + rng() * area.h; break;
+    }
+    page.drawCircle({
+      x: px, y: py,
+      size: 1 + rng() * 2,
+      color,
+      opacity: 0.15 + rng() * 0.2,
+    });
+  }
+}
+
+function drawTextDivider(page: PDFPage, cx: number, y: number, colors: AccentColors) {
+  const lineLen = 40;
+  const gap = 8;
+
+  // dot — line — star — line — dot
+  page.drawCircle({ x: cx - lineLen - gap, y, size: 2.5, color: colors.bg, opacity: 0.6 });
+  page.drawLine({ start: { x: cx - lineLen, y }, end: { x: cx - gap, y }, thickness: 1, color: colors.dark, opacity: 0.3 });
+  drawStar(page, cx, y, 5, colors.dark, 0.5);
+  page.drawLine({ start: { x: cx + gap, y }, end: { x: cx + lineLen, y }, thickness: 1, color: colors.dark, opacity: 0.3 });
+  page.drawCircle({ x: cx + lineLen + gap, y, size: 2.5, color: colors.bg, opacity: 0.6 });
+}
+
+function drawPlayfulPageNumber(
+  page: PDFPage,
+  num: number,
+  font: PDFFont,
+  cx: number,
+  colors: AccentColors
+) {
+  const y = 30;
+  const mainR = 16;
+
+  // Filled circle
+  page.drawCircle({ x: cx, y, size: mainR, color: colors.bg, opacity: 0.7 });
+  // Inner ring (outline only)
+  page.drawCircle({ x: cx, y, size: mainR - 3, borderColor: colors.dark, borderWidth: 1, borderOpacity: 0.3 });
+
+  // Page number text
+  const numStr = String(num);
+  const numWidth = font.widthOfTextAtSize(numStr, 13);
+  page.drawText(numStr, {
+    x: cx - numWidth / 2,
+    y: y - 5,
+    size: 13,
+    font,
+    color: TEXT_COLOR,
+  });
+
+  // Orbital dots
+  const orbitR = mainR + 6;
+  for (const angle of [Math.PI / 4, Math.PI * 3 / 4, Math.PI * 5 / 4]) {
+    page.drawCircle({
+      x: cx + orbitR * Math.cos(angle),
+      y: y + orbitR * Math.sin(angle),
+      size: 1.5,
+      color: colors.dark,
+      opacity: 0.4,
+    });
   }
 }
 
@@ -152,62 +337,22 @@ function drawPlaceholder(page: PDFPage, x: number, y: number, width: number, hei
   });
 }
 
-// --- Draw page number badge (rounded rectangle, bottom-left) ---
-
-function drawPageNumber(page: PDFPage, pageNum: number, font: PDFFont, xOffset: number) {
-  const badgeWidth = 36;
-  const badgeHeight = 28;
-  const badgeX = xOffset + 25;
-  const badgeY = 18;
-  const cornerRadius = 8;
-
-  // Draw rounded rectangle badge using overlapping rectangles + circles
-  // Main body
-  page.drawRectangle({
-    x: badgeX + cornerRadius,
-    y: badgeY,
-    width: badgeWidth - cornerRadius * 2,
-    height: badgeHeight,
-    color: GOLD_BADGE,
-  });
-  page.drawRectangle({
-    x: badgeX,
-    y: badgeY + cornerRadius,
-    width: badgeWidth,
-    height: badgeHeight - cornerRadius * 2,
-    color: GOLD_BADGE,
-  });
-  // Four corner circles
-  page.drawCircle({ x: badgeX + cornerRadius, y: badgeY + cornerRadius, size: cornerRadius, color: GOLD_BADGE });
-  page.drawCircle({ x: badgeX + badgeWidth - cornerRadius, y: badgeY + cornerRadius, size: cornerRadius, color: GOLD_BADGE });
-  page.drawCircle({ x: badgeX + cornerRadius, y: badgeY + badgeHeight - cornerRadius, size: cornerRadius, color: GOLD_BADGE });
-  page.drawCircle({ x: badgeX + badgeWidth - cornerRadius, y: badgeY + badgeHeight - cornerRadius, size: cornerRadius, color: GOLD_BADGE });
-
-  // Page number text
-  const numStr = String(pageNum);
-  const numWidth = font.widthOfTextAtSize(numStr, 12);
-  page.drawText(numStr, {
-    x: badgeX + (badgeWidth - numWidth) / 2,
-    y: badgeY + (badgeHeight - 12) / 2 + 1,
-    size: 12,
-    font,
-    color: WHITE,
-  });
-}
-
-// --- Draw text on a half-page (premium layout matching reference) ---
+// --- Draw text on a half-page (with light decorations) ---
 
 function drawTextBlock(
   page: PDFPage,
   paragraph: string,
   creatorName: string,
-  fonts: { regular: PDFFont; bold: PDFFont; storyFont: PDFFont },
+  fonts: PdfFonts,
   xOffset: number,
-  pageIndex: number
+  pageIndex: number,
+  imageOnRight: boolean
 ) {
   const padding = 40;
   const textAreaWidth = HALF_WIDTH - padding * 2;
   const centerX = xOffset + HALF_WIDTH / 2;
+  const colors = PAGE_ACCENT_CYCLE[(pageIndex - 2) % PAGE_ACCENT_CYCLE.length];
+  const area = { x: xOffset, y: 0, w: HALF_WIDTH, h: PAGE_HEIGHT };
 
   // Cream background
   page.drawRectangle({
@@ -215,6 +360,21 @@ function drawTextBlock(
     width: HALF_WIDTH, height: PAGE_HEIGHT,
     color: CREAM_BG,
   });
+
+  // --- Light decorations ---
+  drawSoftBorder(page, xOffset, 0, HALF_WIDTH, PAGE_HEIGHT, colors.dark, 18);
+
+  // 2 corner decorations on the side opposite the image
+  if (imageOnRight) {
+    drawCornerDecoration(page, 'tl', area, colors);
+    drawCornerDecoration(page, 'bl', area, colors);
+  } else {
+    drawCornerDecoration(page, 'tr', area, colors);
+    drawCornerDecoration(page, 'br', area, colors);
+  }
+
+  // ~6 scattered dots
+  drawScatteredDots(page, area, colors.bg, pageIndex * 7, 6);
 
   // Header: creatorName in small caps at top-left
   if (creatorName) {
@@ -228,7 +388,7 @@ function drawTextBlock(
     });
   }
 
-  // Body: paragraph text in Comic Neue, centered horizontally
+  // Body: paragraph text in Baloo2, centered horizontally
   const fontSize = 14;
   const lineHeight = fontSize * 2.0;
   const lines = wrapText(paragraph, fonts.storyFont, fontSize, textAreaWidth);
@@ -252,22 +412,30 @@ function drawTextBlock(
     });
   }
 
-  // Page number at bottom-left of text area
-  drawPageNumber(page, pageIndex - 1, fonts.bold, xOffset);
+  // Text divider below paragraph
+  const lastLineY = startY - (lines.length - 1) * lineHeight;
+  if (lastLineY - 25 > 55) {
+    drawTextDivider(page, centerX, lastLineY - 25, colors);
+  }
+
+  // Playful page number
+  drawPlayfulPageNumber(page, pageIndex - 1, fonts.pageNumFont, centerX, colors);
 }
 
-// --- Draw text on a full page (for pages without illustration) ---
+// --- Draw text on a full page (rich decorations) ---
 
 function drawFullPageText(
   page: PDFPage,
   paragraph: string,
   creatorName: string,
-  fonts: { regular: PDFFont; bold: PDFFont; storyFont: PDFFont },
+  fonts: PdfFonts,
   pageIndex: number
 ) {
   const padding = 80;
   const textAreaWidth = PAGE_WIDTH - padding * 2;
   const centerX = PAGE_WIDTH / 2;
+  const colors = PAGE_ACCENT_CYCLE[(pageIndex - 2) % PAGE_ACCENT_CYCLE.length];
+  const area = { x: 0, y: 0, w: PAGE_WIDTH, h: PAGE_HEIGHT };
 
   // Cream background
   page.drawRectangle({
@@ -276,7 +444,25 @@ function drawFullPageText(
     color: CREAM_BG,
   });
 
-  // Header: creatorName in small caps at top-left
+  // --- Rich decorations ---
+  // Double border (outer + inner)
+  drawSoftBorder(page, 0, 0, PAGE_WIDTH, PAGE_HEIGHT, colors.dark, 16);
+  drawSoftBorder(page, 0, 0, PAGE_WIDTH, PAGE_HEIGHT, colors.bg, 28);
+
+  // 4 corner decorations
+  drawCornerDecoration(page, 'tl', area, colors);
+  drawCornerDecoration(page, 'tr', area, colors);
+  drawCornerDecoration(page, 'bl', area, colors);
+  drawCornerDecoration(page, 'br', area, colors);
+
+  // 2 small hearts in opposite corners
+  drawHeart(page, 55, PAGE_HEIGHT - 55, 7, colors.dark, 0.3);
+  drawHeart(page, PAGE_WIDTH - 55, 55, 7, colors.dark, 0.3);
+
+  // ~10 scattered dots
+  drawScatteredDots(page, area, colors.bg, pageIndex * 13, 10);
+
+  // Header: creatorName in small caps
   if (creatorName) {
     const headerText = creatorName.toUpperCase();
     page.drawText(headerText, {
@@ -288,7 +474,7 @@ function drawFullPageText(
     });
   }
 
-  // Body: paragraph text in Comic Neue, centered
+  // Body: paragraph text in Baloo2, centered
   const fontSize = 16;
   const lineHeight = fontSize * 2.2;
   const lines = wrapText(paragraph, fonts.storyFont, fontSize, textAreaWidth);
@@ -297,6 +483,9 @@ function drawFullPageText(
   const totalTextHeight = lines.length * lineHeight;
   let startY = PAGE_HEIGHT / 2 + totalTextHeight / 2;
   if (startY > PAGE_HEIGHT - 60) startY = PAGE_HEIGHT - 60;
+
+  // Divider above text
+  drawTextDivider(page, centerX, startY + 20, colors);
 
   for (let i = 0; i < lines.length; i++) {
     const y = startY - i * lineHeight;
@@ -311,11 +500,17 @@ function drawFullPageText(
     });
   }
 
-  // Page number at bottom-left
-  drawPageNumber(page, pageIndex - 1, fonts.bold, 0);
+  // Divider below text
+  const lastLineY = startY - (lines.length - 1) * lineHeight;
+  if (lastLineY - 25 > 55) {
+    drawTextDivider(page, centerX, lastLineY - 25, colors);
+  }
+
+  // Playful page number
+  drawPlayfulPageNumber(page, pageIndex - 1, fonts.pageNumFont, centerX, colors);
 }
 
-// --- Draw image on a half-page ---
+// --- Draw image on a half-page (unchanged) ---
 
 async function drawImageHalf(
   page: PDFPage,
@@ -356,7 +551,7 @@ async function drawImageHalf(
   }
 }
 
-// --- Draw cover page: portrait image centered on white background ---
+// --- Draw cover page: portrait image centered on white background (unchanged) ---
 
 async function drawCoverPage(
   page: PDFPage,
@@ -372,7 +567,6 @@ async function drawCoverPage(
 
   // SVG placeholder (dry run)
   if (isSvgPlaceholder(coverImage)) {
-    // Draw a centered placeholder filling full height
     const placeholderW = 300;
     drawPlaceholder(
       page,
@@ -390,13 +584,10 @@ async function drawCoverPage(
     const imgWidth = coverImg.width;
     const imgHeight = coverImg.height;
 
-    // Scale to fill the FULL HEIGHT of the page (no top/bottom margins).
-    // Center horizontally — white sides only if the image is narrower than the page.
     const scale = PAGE_HEIGHT / imgHeight;
     const drawWidth = imgWidth * scale;
-    const drawHeight = PAGE_HEIGHT; // Fills full vertical space
+    const drawHeight = PAGE_HEIGHT;
 
-    // Center horizontally on page
     const drawX = (PAGE_WIDTH - drawWidth) / 2;
     const drawY = 0;
 
@@ -406,7 +597,6 @@ async function drawCoverPage(
     });
   } catch (error: any) {
     console.error('[PdfAssembly] Error embedding cover image:', error.message);
-    // Fallback placeholder fills full height too
     const placeholderW = 300;
     drawPlaceholder(
       page,
@@ -457,22 +647,23 @@ export async function assemblePdf(params: PdfAssemblyParams): Promise<Buffer> {
       // Page avec illustration — layout demi-page texte + demi-page image
       const imgIdx = imageCounter;
       const isEvenPage = imageCounter % 2 === 0;
+      const imageOnRight = isEvenPage;
 
       if (isEvenPage) {
         // Image RIGHT, Texte LEFT
         await drawImageHalf(page, pdfDoc, images[imgIdx], HALF_WIDTH, imgIdx);
-        drawTextBlock(page, paragraphs[p], creatorName, fonts, 0, p + 2);
+        drawTextBlock(page, paragraphs[p], creatorName, fonts, 0, p + 2, imageOnRight);
       } else {
         // Image LEFT, Texte RIGHT
         await drawImageHalf(page, pdfDoc, images[imgIdx], 0, imgIdx);
-        drawTextBlock(page, paragraphs[p], creatorName, fonts, HALF_WIDTH, p + 2);
+        drawTextBlock(page, paragraphs[p], creatorName, fonts, HALF_WIDTH, p + 2, imageOnRight);
       }
 
       // Release image buffer after embedding
       (images as any)[imgIdx] = null;
       imageCounter++;
     } else {
-      // Page texte seul — pleine page creme
+      // Page texte seul — pleine page avec decorations riches
       drawFullPageText(page, paragraphs[p], creatorName, fonts, p + 2);
     }
   }

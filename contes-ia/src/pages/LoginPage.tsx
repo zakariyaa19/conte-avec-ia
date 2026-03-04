@@ -324,7 +324,9 @@ const RedirectError = styled.div`
 export const LoginPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const initialMode = searchParams.get('mode') === 'register' ? 'register' : 'login';
-  const initialPlan = searchParams.get('plan') === 'club' ? 'club' : 'basic';
+  const planParam = searchParams.get('plan');
+  const initialPlan = (planParam === 'club' || planParam === 'club_annual') ? 'club' : 'basic';
+  const initialStripePlan: 'monthly' | 'annual' = planParam === 'club_annual' ? 'annual' : 'monthly';
 
   const [mode, setMode] = useState<'login' | 'register'>(initialMode);
   const [email, setEmail] = useState('');
@@ -332,6 +334,7 @@ export const LoginPage: React.FC = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [selectedPlan, setSelectedPlan] = useState<'basic' | 'club'>(initialPlan);
+  const [stripePlan] = useState<'monthly' | 'annual'>(initialStripePlan);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [stripeRedirect, setStripeRedirect] = useState(false);
@@ -346,7 +349,7 @@ export const LoginPage: React.FC = () => {
     try {
       const token = localStorage.getItem('userToken');
       if (!token) throw new Error('Token manquant');
-      const session = await ApiService.createSubscriptionSession(token);
+      const session = await ApiService.createSubscriptionSession(token, undefined, stripePlan);
       if (session.url) {
         window.location.href = session.url;
       } else {
@@ -585,8 +588,8 @@ export const LoginPage: React.FC = () => {
                       {selectedPlan === 'club' ? '\u2713' : ''}
                     </CheckMarkPro>
                     <PlanName $isPro>Club des Histoires</PlanName>
-                    <PlanPrice $isPro>12,99€ / mois</PlanPrice>
-                    <PlanFeature>1 eBook gratuit / semaine</PlanFeature>
+                    <PlanPrice $isPro>9,99€ / mois</PlanPrice>
+                    <PlanFeature>3 eBooks gratuits / mois</PlanFeature>
                     <PlanFeature>Bibliotheque illimitee</PlanFeature>
                     <PlanFeature>Annulation libre</PlanFeature>
                   </PlanCard>

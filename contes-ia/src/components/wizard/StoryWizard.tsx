@@ -711,7 +711,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
             )}
 
             {isClub && clubCredit && !clubCredit.canSubmit && (
-              <ClubExhaustedMsg>Crédit hebdomadaire épuisé. Choisissez un format payant.</ClubExhaustedMsg>
+              <ClubExhaustedMsg>Crédit mensuel épuisé. Choisissez un format payant.</ClubExhaustedMsg>
             )}
 
             {/* Compact pricing cards */}
@@ -719,7 +719,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
               <PricingOption $isSelected={formData.purchaseType === 'single'}
                 onClick={() => handleProductSelection('single')}>
                 <PricingName>eBook Numérique</PricingName>
-                <PricingPrice>4,99 €</PricingPrice>
+                <PricingPrice>6,99 €</PricingPrice>
                 <PricingSubtext>Paiement unique</PricingSubtext>
                 <PricingDivider />
                 <PricingFeatures>
@@ -736,10 +736,10 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                   <PricingBadge />
                   <PricingLabel>Recommandé</PricingLabel>
                   <ClubFreeTitle>Ce conte est gratuit</ClubFreeTitle>
-                  <ClubSmallPrice>12,99 €/mois - sans engagement</ClubSmallPrice>
+                  <ClubSmallPrice>9,99 €/mois - sans engagement</ClubSmallPrice>
                   <PricingDivider />
                   <PricingFeatures>
-                    <PricingHighlight>1 conte gratuit / semaine</PricingHighlight>
+                    <PricingHighlight>3 contes gratuits / mois</PricingHighlight>
                     <PricingFeature>Bibliothèque illimitée</PricingFeature>
                     <PricingFeature>Lecture + PDF</PricingFeature>
                     <PricingFeature>Annulable à tout moment</PricingFeature>
@@ -752,10 +752,10 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
               <OrderCostSummary $variant="free">Commande gratuite (crédit Club)</OrderCostSummary>
             )}
             {formData.purchaseType === 'club' && !isClub && (
-              <OrderCostSummary $variant="info">Abonnement : 12,99 € / mois — Cet eBook est inclus</OrderCostSummary>
+              <OrderCostSummary $variant="info">Abonnement : 9,99 € / mois — Cet eBook est inclus</OrderCostSummary>
             )}
             {formData.purchaseType === 'single' && (
-              <OrderCostSummary $variant="paid">Total : 4,99 €</OrderCostSummary>
+              <OrderCostSummary $variant="paid">Total : 6,99 €</OrderCostSummary>
             )}
 
             <OrderInfoSection>

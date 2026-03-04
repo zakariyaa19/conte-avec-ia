@@ -413,10 +413,10 @@ export class ApiService {
   }
 
   // ========== Stripe Subscription ==========
-  static async createSubscriptionSession(token: string, orderId?: string): Promise<{ sessionId: string; url: string }> {
+  static async createSubscriptionSession(token: string, orderId?: string, plan: 'monthly' | 'annual' = 'monthly'): Promise<{ sessionId: string; url: string }> {
     return this.request('/api/stripe/create-subscription-session', {
       method: 'POST',
-      body: JSON.stringify({ orderId }),
+      body: JSON.stringify({ orderId, plan }),
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'

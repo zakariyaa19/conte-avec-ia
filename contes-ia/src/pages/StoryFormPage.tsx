@@ -16,13 +16,13 @@ export const StoryFormPage: React.FC = () => {
     trackViewContent(
       'product_story_creation',
       'Création de conte personnalisé',
-      4.99,
+      6.99,
       'EUR'
     );
     metaTrackViewContent(
       'Création de conte personnalisé',
       'Livre personnalisé enfant',
-      4.99,
+      6.99,
       'EUR'
     );
   }, []);

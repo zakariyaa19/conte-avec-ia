@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled, { keyframes, css } from 'styled-components';
 import { theme } from '../styles/theme';
 import { Button } from '../components/ui/Button';
-import { PricingCard } from '../components/ui/PricingCard';
+import { PricingTiers, PricingPlan } from '../components/PricingTiers';
 import { Accordion } from '../components/ui/Accordion';
 import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
@@ -1490,7 +1490,7 @@ const faqItems = [
   {
     id: '3',
     question: "Qu'est-ce que le Club des Histoires Uniques ?",
-    answer: "C'est un abonnement a 12,99€ par mois qui vous donne droit a 1 eBook personnalise gratuit chaque semaine, soit jusqu'a 4 contes par mois. Vous accedez aussi a votre bibliotheque personnelle avec visionneuse et telechargement. L'abonnement est sans engagement, annulable a tout moment."
+    answer: "C'est un abonnement a partir de 9,99€ par mois qui vous donne droit a 3 eBooks personnalises par mois. Vous accedez aussi a votre bibliotheque personnelle avec visionneuse et telechargement. L'abonnement est sans engagement, annulable a tout moment. Une offre annuelle a 79,99€/an est egalement disponible."
   },
   {
     id: '4',
@@ -1523,7 +1523,7 @@ const testimonials = [
   },
   {
     stars: 5,
-    text: "Depuis qu'on est au Club, on recoit un nouveau conte chaque semaine. Les enfants n'ont jamais autant lu ! La bibliotheque en ligne est tres pratique.",
+    text: "Depuis qu'on est au Club, on recoit 3 nouveaux contes par mois. Les enfants n'ont jamais autant lu ! La bibliotheque en ligne est tres pratique.",
     author: 'Marc D.',
     detail: 'Papa de Thomas et Nina'
   },
@@ -1546,10 +1546,20 @@ export const HomePage: React.FC = () => {
   const [activeExample, setActiveExample] = useState(0);
   const [exampleKey, setExampleKey] = useState(0);
 
+  const handleSelectPlan = (plan: PricingPlan) => {
+    if (plan === 'single') {
+      navigate('/create-story');
+    } else if (plan === 'annual') {
+      navigate('/login?mode=register&plan=club_annual');
+    } else {
+      navigate('/login?mode=register&plan=club');
+    }
+  };
+
   // Scroll reveal hooks
   const stepsReveal = useScrollReveal();
   const examplesReveal = useScrollReveal();
-  const clubReveal = useScrollReveal();
+
   const libraryReveal = useStaggerReveal(3);
   const pricingReveal = useScrollReveal();
   const featuresReveal = useStaggerReveal(3);
@@ -1599,11 +1609,11 @@ export const HomePage: React.FC = () => {
 
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', "Offrez a votre enfant un livre unique et magique ! Creez facilement un conte personnalise avec l'intelligence artificielle. Rejoignez le Club pour 1 eBook gratuit par semaine.");
+      metaDescription.setAttribute('content', "Offrez a votre enfant un livre unique et magique ! Creez facilement un conte personnalise avec l'intelligence artificielle. Rejoignez le Club pour 3 eBooks gratuits par mois.");
     } else {
       const meta = document.createElement('meta');
       meta.name = 'description';
-      meta.content = "Offrez a votre enfant un livre unique et magique ! Creez facilement un conte personnalise avec l'intelligence artificielle. Rejoignez le Club pour 1 eBook gratuit par semaine.";
+      meta.content = "Offrez a votre enfant un livre unique et magique ! Creez facilement un conte personnalise avec l'intelligence artificielle. Rejoignez le Club pour 3 eBooks gratuits par mois.";
       document.head.appendChild(meta);
     }
   }, []);
@@ -1628,19 +1638,21 @@ export const HomePage: React.FC = () => {
 
           <HeroContent>
             <HeroTextBlock>
-              <HeroBadge>Nouveau : Club des Histoires Uniques</HeroBadge>
+              <HeroBadge>Rejoignez +500 familles</HeroBadge>
               <HeroTitle>
-                Votre enfant, <span>heros</span> de son propre conte
+                Votre enfant, <span>heros</span> de son propre conte personnalise
               </HeroTitle>
               <HeroSubtitle>
                 Creez un livre personnalise unique grace a l'IA : prenom, photo, theme et message educatif sur mesure. En eBook ou via le Club.
               </HeroSubtitle>
               <CTAButtons>
                 <Button variant="primary" size="lg" onClick={() => navigate('/create-story')}>
-                  Commencer mon conte
+                  Creer l'histoire de mon enfant
                 </Button>
-                <Button variant="outline" size="lg" onClick={() => navigate('/club')}>
-                  Decouvrir le Club
+                <Button variant="outline" size="lg" onClick={() => {
+                  document.getElementById('exemples')?.scrollIntoView({ behavior: 'smooth' });
+                }}>
+                  Voir un exemple gratuit
                 </Button>
               </CTAButtons>
               <TrustRow>
@@ -1671,7 +1683,36 @@ export const HomePage: React.FC = () => {
           </HeroContent>
         </HeroSection>
 
-        {/* ============ 2. COMMENT CA MARCHE ============ */}
+        {/* ============ 2. TEMOIGNAGES (Social proof) ============ */}
+        <TestimonialsSection ref={testimonialsReveal.ref}>
+          <Container>
+            <SectionWrapper $visible={testimonialsReveal.isVisible}>
+              <SectionTitle>Ce que disent nos clients</SectionTitle>
+              <Divider />
+              <SectionSubtitle>
+                +500 familles creent des histoires uniques pour leurs enfants
+              </SectionSubtitle>
+            </SectionWrapper>
+
+            <TestimonialGrid>
+              {testimonials.map((t, i) => (
+                <TestimonialCard
+                  key={i}
+                  $visible={testimonialsReveal.isVisible}
+                  $delay={testimonialsReveal.getDelay(i)}
+                >
+                  <StarRating>{'★'.repeat(t.stars)}</StarRating>
+                  <TestimonialText>"{t.text}"</TestimonialText>
+                  <TestimonialAuthor>
+                    {t.author} <span style={{ color: theme.colors.text.light, fontWeight: 400 }}>— {t.detail}</span>
+                  </TestimonialAuthor>
+                </TestimonialCard>
+              ))}
+            </TestimonialGrid>
+          </Container>
+        </TestimonialsSection>
+
+        {/* ============ 3. COMMENT CA MARCHE ============ */}
         <StepsSection ref={stepsReveal.ref}>
           <Container>
             <SectionWrapper $visible={stepsReveal.isVisible}>
@@ -1743,8 +1784,8 @@ export const HomePage: React.FC = () => {
           </Container>
         </StepsSection>
 
-        {/* ============ 3. EXEMPLES ============ */}
-        <ExamplesSection ref={examplesReveal.ref}>
+        {/* ============ 4. EXEMPLES ============ */}
+        <ExamplesSection id="exemples" ref={examplesReveal.ref}>
           <Container>
             <SectionWrapper $visible={examplesReveal.isVisible}>
               <SectionTitle>Decouvrez nos contes personnalises</SectionTitle>
@@ -1825,74 +1866,24 @@ export const HomePage: React.FC = () => {
           </Container>
         </ExamplesSection>
 
-        {/* ============ 4. CLUB DES HISTOIRES UNIQUES ============ */}
-        <ClubSection ref={clubReveal.ref}>
+        {/* ============ 5. TARIFS ============ */}
+        <PricingSection id="tarifs" ref={pricingReveal.ref}>
           <Container>
-            <ClubGrid>
-              <ClubTextBlock $visible={clubReveal.isVisible}>
-                <ClubBadge>Nouveau</ClubBadge>
-                <ClubTitle>Le Club des Histoires Uniques</ClubTitle>
-                <ClubPrice>
-                  12,99€<small> / mois</small>
-                </ClubPrice>
-                <ClubDescription>
-                  Recevez chaque semaine un eBook personnalise pour votre enfant. Jusqu'a 4 contes par mois, accessibles dans votre bibliotheque personnelle.
-                </ClubDescription>
-                <ClubFeatures>
-                  <ClubFeature>
-                    <FeatureCheck>&#10003;</FeatureCheck>
-                    1 eBook gratuit par semaine
-                  </ClubFeature>
-                  <ClubFeature>
-                    <FeatureCheck>&#10003;</FeatureCheck>
-                    Bibliotheque personnelle avec visionneuse
-                  </ClubFeature>
-                  <ClubFeature>
-                    <FeatureCheck>&#10003;</FeatureCheck>
-                    Telechargement PDF illimite
-                  </ClubFeature>
-                  <ClubFeature>
-                    <FeatureCheck>&#10003;</FeatureCheck>
-                    Sans engagement — annulable a tout moment
-                  </ClubFeature>
-                </ClubFeatures>
-                <Button variant="primary" size="lg" onClick={() => navigate('/club')}>
-                  Decouvrir le Club
-                </Button>
-              </ClubTextBlock>
+            <SectionWrapper $visible={pricingReveal.isVisible}>
+              <SectionTitle>Nos tarifs</SectionTitle>
+              <Divider />
+              <SectionSubtitle>
+                Un conte unique pour chaque enfant. Choisissez la formule qui vous convient.
+              </SectionSubtitle>
+            </SectionWrapper>
 
-              <ClubVisualBlock $visible={clubReveal.isVisible}>
-                <ClubCard>
-                  <ClubCardIcon>📚</ClubCardIcon>
-                  <ClubCardTitle>Votre semaine type</ClubCardTitle>
-                  <ClubCardText>
-                    Un nouveau conte personnalise chaque semaine, cree sur mesure pour votre enfant.
-                  </ClubCardText>
-                  <ClubCardFeatureList>
-                    <ClubCardFeatureItem>Vous personnalisez votre conte</ClubCardFeatureItem>
-                    <ClubCardFeatureItem>Votre eBook est pret dans la journee</ClubCardFeatureItem>
-                    <ClubCardFeatureItem>Notification email + bibliotheque</ClubCardFeatureItem>
-                    <ClubCardFeatureItem>Lecture en ligne ou telechargement</ClubCardFeatureItem>
-                  </ClubCardFeatureList>
-                  <div style={{
-                    padding: `${theme.spacing.md}`,
-                    background: `${theme.colors.accent.paleYellow}40`,
-                    borderRadius: theme.borderRadius.lg,
-                    fontSize: theme.fontSizes.sm,
-                    color: theme.colors.text.secondary,
-                    textAlign: 'center',
-                    lineHeight: 1.5
-                  }}>
-                    <strong style={{ color: theme.colors.text.primary }}>Jusqu'a 4 contes / mois</strong><br />
-                    soit 3,25€ par conte au lieu de 4,99€
-                  </div>
-                </ClubCard>
-              </ClubVisualBlock>
-            </ClubGrid>
+            <SectionWrapper $visible={pricingReveal.isVisible} $delay="200ms">
+              <PricingTiers onSelectPlan={handleSelectPlan} />
+            </SectionWrapper>
           </Container>
-        </ClubSection>
+        </PricingSection>
 
-        {/* ============ 5. BIBLIOTHEQUE ============ */}
+        {/* ============ 6. BIBLIOTHEQUE ============ */}
         <LibrarySection ref={libraryReveal.ref}>
           <Container>
             <SectionWrapper $visible={libraryReveal.isVisible}>
@@ -1936,54 +1927,6 @@ export const HomePage: React.FC = () => {
             </LibraryGrid>
           </Container>
         </LibrarySection>
-
-        {/* ============ 6. TARIFS ============ */}
-        <PricingSection id="tarifs" ref={pricingReveal.ref}>
-          <Container>
-            <SectionWrapper $visible={pricingReveal.isVisible}>
-              <SectionTitle>Nos tarifs</SectionTitle>
-              <Divider />
-              <SectionSubtitle>
-                Un conte unique pour chaque enfant. Choisissez la formule qui vous convient.
-              </SectionSubtitle>
-            </SectionWrapper>
-
-            <PricingGrid>
-              <PricingCard
-                title="eBook Numerique"
-                price="4,99€"
-                features={[
-                  'Conte personnalise de 20 pages',
-                  'Illustrations sur mesure',
-                  'Format PDF haute qualite',
-                  'Disponible dans votre bibliotheque',
-                  'Compatible tous appareils'
-                ]}
-                ctaText="Commander l'eBook"
-                onSelect={() => navigate('/create-story')}
-              />
-
-              <PricingCard
-                title="Club des Histoires"
-                price="12,99€/mois"
-                features={[
-                  '1 eBook gratuit par semaine',
-                  "Jusqu'a 4 contes par mois",
-                  'Bibliotheque avec visionneuse',
-                  'Telechargement PDF illimite',
-                  'Sans engagement',
-                  'Soit 3,25€ par conte'
-                ]}
-                isPopular={true}
-                badge="Meilleure offre"
-                subtitle="Soit ~3,25EUR par conte"
-                ctaText="Decouvrir le Club"
-                onSelect={() => navigate('/club')}
-              />
-
-            </PricingGrid>
-          </Container>
-        </PricingSection>
 
         {/* ============ 7. POURQUOI CHOISIR ============ */}
         <FeaturesSection ref={featuresReveal.ref}>
@@ -2063,33 +2006,7 @@ export const HomePage: React.FC = () => {
           </Container>
         </FeaturesSection>
 
-        {/* ============ 8. TEMOIGNAGES ============ */}
-        <TestimonialsSection ref={testimonialsReveal.ref}>
-          <Container>
-            <SectionWrapper $visible={testimonialsReveal.isVisible}>
-              <SectionTitle>Ce que disent nos clients</SectionTitle>
-              <Divider />
-            </SectionWrapper>
-
-            <TestimonialGrid>
-              {testimonials.map((t, i) => (
-                <TestimonialCard
-                  key={i}
-                  $visible={testimonialsReveal.isVisible}
-                  $delay={testimonialsReveal.getDelay(i)}
-                >
-                  <StarRating>{'★'.repeat(t.stars)}</StarRating>
-                  <TestimonialText>"{t.text}"</TestimonialText>
-                  <TestimonialAuthor>
-                    {t.author} <span style={{ color: theme.colors.text.light, fontWeight: 400 }}>— {t.detail}</span>
-                  </TestimonialAuthor>
-                </TestimonialCard>
-              ))}
-            </TestimonialGrid>
-          </Container>
-        </TestimonialsSection>
-
-        {/* ============ 9. FAQ ============ */}
+        {/* ============ 8. FAQ ============ */}
         <FAQSection ref={faqReveal.ref}>
           <Container>
             <SectionWrapper $visible={faqReveal.isVisible}>
@@ -2102,17 +2019,17 @@ export const HomePage: React.FC = () => {
           </Container>
         </FAQSection>
 
-        {/* ============ 10. CTA FINAL ============ */}
+        {/* ============ 9. CTA FINAL ============ */}
         <FinalCTASection ref={ctaReveal.ref}>
           <Container>
             <SectionWrapper $visible={ctaReveal.isVisible}>
-              <FinalCTATitle>Pret a creer un conte magique ?</FinalCTATitle>
+              <FinalCTATitle>Creez la premiere histoire de votre enfant</FinalCTATitle>
               <FinalCTAText>
-                Offrez a votre enfant une histoire unique dont il est le heros. Commencez maintenant ou rejoignez le Club.
+                A partir de 6,99{'€'} — Pret en 5 minutes
               </FinalCTAText>
               <FinalCTAButtons>
                 <WhiteButton onClick={() => navigate('/create-story')}>
-                  Commencer mon conte
+                  Creer l'histoire de mon enfant
                 </WhiteButton>
                 <GhostWhiteButton onClick={() => {
                   document.getElementById('tarifs')?.scrollIntoView({ behavior: 'smooth' });
