@@ -51,7 +51,7 @@ const PAGE_ACCENT_CYCLE: AccentColors[] = [
 
 // --- Font loading ---
 
-async function loadFonts(pdfDoc: PDFDocument): Promise<PdfFonts> {
+async function loadFontsCustom(pdfDoc: PDFDocument): Promise<PdfFonts> {
   pdfDoc.registerFontkit(fontkit);
   const fontsDir = path.join(__dirname, '../../assets/fonts');
 
@@ -65,20 +65,26 @@ async function loadFonts(pdfDoc: PDFDocument): Promise<PdfFonts> {
     return null;
   }
 
-  // Regular & Bold (headers, metadata)
   const regular = await tryEmbed('Nunito-Regular.ttf') ?? await pdfDoc.embedFont(StandardFonts.Helvetica);
   const bold = await tryEmbed('Nunito-Bold.ttf') ?? await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-
-  // Story font: Baloo2 -> ComicNeue -> Nunito -> Helvetica
-  const storyFont = await tryEmbed('Baloo2-Regular.ttf', 'ComicNeue-Regular.ttf', 'Nunito-Regular.ttf')
+  const storyFont = await tryEmbed('ComicNeue-Regular.ttf', 'Nunito-Regular.ttf')
     ?? await pdfDoc.embedFont(StandardFonts.Helvetica);
-  const storyBold = await tryEmbed('Baloo2-Bold.ttf', 'ComicNeue-Bold.ttf', 'Nunito-Bold.ttf')
+  const storyBold = await tryEmbed('ComicNeue-Bold.ttf', 'Nunito-Bold.ttf')
     ?? await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+  const pageNumFont = await tryEmbed('ComicNeue-Bold.ttf') ?? storyBold;
 
-  // Page number font: ComicNeue-Bold -> Baloo2-Bold -> storyBold
-  const pageNumFont = await tryEmbed('ComicNeue-Bold.ttf', 'Baloo2-Bold.ttf') ?? storyBold;
+  console.log('[PdfAssembly] Custom fonts loaded (ComicNeue + Nunito)');
+  return { regular, bold, storyFont, storyBold, pageNumFont };
+}
 
-  console.log('[PdfAssembly] Fonts loaded (Baloo2 + ComicNeue)');
+async function loadFontsStandard(pdfDoc: PDFDocument): Promise<PdfFonts> {
+  const regular = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+  const storyFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
+  const storyBold = await pdfDoc.embedFont(StandardFonts.TimesRomanBold);
+  const pageNumFont = bold;
+
+  console.log('[PdfAssembly] StandardFonts loaded (fallback)');
   return { regular, bold, storyFont, storyBold, pageNumFont };
 }
 
@@ -619,72 +625,81 @@ async function drawCoverPage(
   }
 }
 
-// --- Main assembly ---
+// --- Internal build (parameterized by font loader) ---
 
-export async function assemblePdf(params: PdfAssemblyParams): Promise<Buffer> {
-  const { title, creatorName, paragraphs, coverImage, images } = params;
-
-  const expectedImages = IMAGE_PARAGRAPH_INDICES.length; // 6
-
-  if (paragraphs.length !== 12) {
-    throw new Error(`Attendu 12 paragraphes, recu ${paragraphs.length}`);
-  }
-  if (images.length !== expectedImages) {
-    throw new Error(`Attendu ${expectedImages} images, recu ${images.length}`);
-  }
-
-  console.log(`[PdfAssembly] Starting PDF assembly: 13 pages (${expectedImages} illustrated, ${12 - expectedImages} text-only)`);
+async function buildPdfDocument(
+  params: PdfAssemblyParams,
+  fontLoader: (doc: PDFDocument) => Promise<PdfFonts>
+): Promise<Buffer> {
+  const { creatorName, paragraphs, coverImage, images } = params;
 
   const pdfDoc = await PDFDocument.create();
-  const fonts = await loadFonts(pdfDoc);
+  const fonts = await fontLoader(pdfDoc);
 
-  // Build set for quick lookup: which paragraph indices have an image
   const illustratedSet = new Set(IMAGE_PARAGRAPH_INDICES);
 
-  // --- Page 1: Cover (portrait image centered on white background, NO text) ---
+  // Page 1: Cover
   {
     const page = pdfDoc.addPage([PAGE_WIDTH, PAGE_HEIGHT]);
     await drawCoverPage(page, pdfDoc, coverImage);
   }
 
-  // --- Pages 2-13: Mix of text+image and text-only pages ---
-  let imageCounter = 0; // tracks which image buffer to use (0..5)
+  // Pages 2-13: text+image or text-only
+  let imageCounter = 0;
 
   for (let p = 0; p < 12; p++) {
     const page = pdfDoc.addPage([PAGE_WIDTH, PAGE_HEIGHT]);
 
     if (illustratedSet.has(p)) {
-      // Page avec illustration — layout demi-page texte + demi-page image
       const imgIdx = imageCounter;
       const isEvenPage = imageCounter % 2 === 0;
       const imageOnRight = isEvenPage;
 
       if (isEvenPage) {
-        // Image RIGHT, Texte LEFT
         await drawImageHalf(page, pdfDoc, images[imgIdx], HALF_WIDTH, imgIdx);
         drawTextBlock(page, paragraphs[p], creatorName, fonts, 0, p + 2, imageOnRight);
       } else {
-        // Image LEFT, Texte RIGHT
         await drawImageHalf(page, pdfDoc, images[imgIdx], 0, imgIdx);
         drawTextBlock(page, paragraphs[p], creatorName, fonts, HALF_WIDTH, p + 2, imageOnRight);
       }
 
-      // Release image buffer after embedding
-      (images as any)[imgIdx] = null;
       imageCounter++;
     } else {
-      // Page texte seul — pleine page avec decorations riches
       drawFullPageText(page, paragraphs[p], creatorName, fonts, p + 2);
     }
   }
 
-  // Serialize and return directly as Buffer (avoid keeping both pdfBytes and Buffer)
+  const pdfBytes = await pdfDoc.save();
+  console.log(`[PdfAssembly] PDF assembled: ${pdfBytes.length} bytes, 13 pages`);
+  return Buffer.from(pdfBytes as Uint8Array);
+}
+
+// --- Main assembly (with automatic font fallback) ---
+
+export async function assemblePdf(params: PdfAssemblyParams): Promise<Buffer> {
+  const expectedImages = IMAGE_PARAGRAPH_INDICES.length; // 6
+
+  if (params.paragraphs.length !== 12) {
+    throw new Error(`Attendu 12 paragraphes, recu ${params.paragraphs.length}`);
+  }
+  if (params.images.length !== expectedImages) {
+    throw new Error(`Attendu ${expectedImages} images, recu ${params.images.length}`);
+  }
+
+  console.log(`[PdfAssembly] Starting PDF assembly: 13 pages (${expectedImages} illustrated, ${12 - expectedImages} text-only)`);
+
+  // Pass 1: try with custom fonts (ComicNeue, Nunito)
   try {
-    const pdfBytes = await pdfDoc.save();
-    console.log(`[PdfAssembly] PDF assembled: ${pdfBytes.length} bytes, 13 pages`);
-    return Buffer.from(pdfBytes as Uint8Array);
+    return await buildPdfDocument(params, loadFontsCustom);
+  } catch (err: any) {
+    console.warn(`[PdfAssembly] Custom fonts failed: ${err.message} — retrying with StandardFonts...`);
+  }
+
+  // Pass 2: fallback to StandardFonts (guaranteed to work)
+  try {
+    return await buildPdfDocument(params, loadFontsStandard);
   } catch (saveError: any) {
-    console.error(`[PdfAssembly] PDF save failed:`, saveError.message, saveError.stack);
+    console.error(`[PdfAssembly] StandardFonts also failed:`, saveError.message, saveError.stack);
     throw new Error(`Echec assemblage PDF: ${saveError.message}`);
   }
 }
