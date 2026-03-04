@@ -3,6 +3,7 @@ import fontkit from '@pdf-lib/fontkit';
 import sharp from 'sharp';
 import fs from 'fs';
 import path from 'path';
+import { IMAGE_PARAGRAPH_INDICES } from './storyImageGenerator';
 
 // --- Constants ---
 
@@ -22,7 +23,7 @@ export interface PdfAssemblyParams {
   creatorName: string;
   paragraphs: string[]; // 12 paragraphs
   coverImage: Buffer;   // Cover image (portrait, from order's coverImageData)
-  images: Buffer[];     // 12 interior images
+  images: Buffer[];     // 6 interior images (mapped to IMAGE_PARAGRAPH_INDICES)
 }
 
 // --- Font loading ---
@@ -255,6 +256,65 @@ function drawTextBlock(
   drawPageNumber(page, pageIndex - 1, fonts.bold, xOffset);
 }
 
+// --- Draw text on a full page (for pages without illustration) ---
+
+function drawFullPageText(
+  page: PDFPage,
+  paragraph: string,
+  creatorName: string,
+  fonts: { regular: PDFFont; bold: PDFFont; storyFont: PDFFont },
+  pageIndex: number
+) {
+  const padding = 80;
+  const textAreaWidth = PAGE_WIDTH - padding * 2;
+  const centerX = PAGE_WIDTH / 2;
+
+  // Cream background
+  page.drawRectangle({
+    x: 0, y: 0,
+    width: PAGE_WIDTH, height: PAGE_HEIGHT,
+    color: CREAM_BG,
+  });
+
+  // Header: creatorName in small caps at top-left
+  if (creatorName) {
+    const headerText = creatorName.toUpperCase();
+    page.drawText(headerText, {
+      x: padding,
+      y: PAGE_HEIGHT - 40,
+      size: 9,
+      font: fonts.bold,
+      color: HEADER_COLOR,
+    });
+  }
+
+  // Body: paragraph text in Comic Neue, centered
+  const fontSize = 16;
+  const lineHeight = fontSize * 2.2;
+  const lines = wrapText(paragraph, fonts.storyFont, fontSize, textAreaWidth);
+
+  // Center text block vertically
+  const totalTextHeight = lines.length * lineHeight;
+  let startY = PAGE_HEIGHT / 2 + totalTextHeight / 2;
+  if (startY > PAGE_HEIGHT - 60) startY = PAGE_HEIGHT - 60;
+
+  for (let i = 0; i < lines.length; i++) {
+    const y = startY - i * lineHeight;
+    if (y < 60) break;
+    const lineWidth = fonts.storyFont.widthOfTextAtSize(lines[i], fontSize);
+    page.drawText(lines[i], {
+      x: centerX - lineWidth / 2,
+      y,
+      size: fontSize,
+      font: fonts.storyFont,
+      color: TEXT_COLOR,
+    });
+  }
+
+  // Page number at bottom-left
+  drawPageNumber(page, pageIndex - 1, fonts.bold, 0);
+}
+
 // --- Draw image on a half-page ---
 
 async function drawImageHalf(
@@ -364,17 +424,22 @@ async function drawCoverPage(
 export async function assemblePdf(params: PdfAssemblyParams): Promise<Buffer> {
   const { title, creatorName, paragraphs, coverImage, images } = params;
 
+  const expectedImages = IMAGE_PARAGRAPH_INDICES.length; // 6
+
   if (paragraphs.length !== 12) {
     throw new Error(`Attendu 12 paragraphes, recu ${paragraphs.length}`);
   }
-  if (images.length !== 12) {
-    throw new Error(`Attendu 12 images, recu ${images.length}`);
+  if (images.length !== expectedImages) {
+    throw new Error(`Attendu ${expectedImages} images, recu ${images.length}`);
   }
 
-  console.log('[PdfAssembly] Starting PDF assembly: 13 pages');
+  console.log(`[PdfAssembly] Starting PDF assembly: 13 pages (${expectedImages} illustrated, ${12 - expectedImages} text-only)`);
 
   const pdfDoc = await PDFDocument.create();
   const fonts = await loadFonts(pdfDoc);
+
+  // Build set for quick lookup: which paragraph indices have an image
+  const illustratedSet = new Set(IMAGE_PARAGRAPH_INDICES);
 
   // --- Page 1: Cover (portrait image centered on white background, NO text) ---
   {
@@ -382,26 +447,34 @@ export async function assemblePdf(params: PdfAssemblyParams): Promise<Buffer> {
     await drawCoverPage(page, pdfDoc, coverImage);
   }
 
-  // --- Pages 2-13: Alternating text/image layout ---
-  // IMPORTANT: Toujours dessiner l'image EN PREMIER, puis le texte PAR-DESSUS.
-  // Le fond creme du bloc texte couvre naturellement tout debordement de l'image.
+  // --- Pages 2-13: Mix of text+image and text-only pages ---
+  let imageCounter = 0; // tracks which image buffer to use (0..5)
+
   for (let p = 0; p < 12; p++) {
     const page = pdfDoc.addPage([PAGE_WIDTH, PAGE_HEIGHT]);
-    const imageIndex = p; // images[0] to images[11]
-    const isEvenPage = p % 2 === 0; // pages 2,4,6,8,10,12 -> text LEFT, image RIGHT
 
-    if (isEvenPage) {
-      // Image RIGHT (dessinee en premier), puis Texte LEFT (par-dessus)
-      await drawImageHalf(page, pdfDoc, images[imageIndex], HALF_WIDTH, imageIndex);
-      drawTextBlock(page, paragraphs[p], creatorName, fonts, 0, p + 2);
+    if (illustratedSet.has(p)) {
+      // Page avec illustration — layout demi-page texte + demi-page image
+      const imgIdx = imageCounter;
+      const isEvenPage = imageCounter % 2 === 0;
+
+      if (isEvenPage) {
+        // Image RIGHT, Texte LEFT
+        await drawImageHalf(page, pdfDoc, images[imgIdx], HALF_WIDTH, imgIdx);
+        drawTextBlock(page, paragraphs[p], creatorName, fonts, 0, p + 2);
+      } else {
+        // Image LEFT, Texte RIGHT
+        await drawImageHalf(page, pdfDoc, images[imgIdx], 0, imgIdx);
+        drawTextBlock(page, paragraphs[p], creatorName, fonts, HALF_WIDTH, p + 2);
+      }
+
+      // Release image buffer after embedding
+      (images as any)[imgIdx] = null;
+      imageCounter++;
     } else {
-      // Image LEFT (dessinee en premier), puis Texte RIGHT (par-dessus)
-      await drawImageHalf(page, pdfDoc, images[imageIndex], 0, imageIndex);
-      drawTextBlock(page, paragraphs[p], creatorName, fonts, HALF_WIDTH, p + 2);
+      // Page texte seul — pleine page creme
+      drawFullPageText(page, paragraphs[p], creatorName, fonts, p + 2);
     }
-
-    // Release image buffer after embedding — allow GC to reclaim memory
-    (images as any)[imageIndex] = null;
   }
 
   // Serialize and return directly as Buffer (avoid keeping both pdfBytes and Buffer)

@@ -33,8 +33,11 @@ export interface ImageGenerationParams {
 }
 
 export interface ImageGenerationResult {
-  images: Buffer[]; // 12 interior images (cover comes from order)
+  images: Buffer[]; // 6 interior images (cost-optimized: every other page)
 }
+
+// Indices des paragraphes qui recoivent une illustration (0-indexed, 6 sur 12)
+export const IMAGE_PARAGRAPH_INDICES = [0, 2, 4, 6, 8, 10];
 
 type ProgressCallback = (imageIndex: number, total: number) => void;
 
@@ -188,7 +191,7 @@ function buildPageImagePrompt(
 
 ${refNote}
 
-Scene (page ${pageIndex} of 12):
+Scene (page ${pageIndex} of 6):
 "${paragraph}"
 
 Show ${params.protagonistName} as the central visible character in this scene. Rich details, warm atmosphere.
@@ -230,13 +233,14 @@ export async function generateStoryImages(
   referenceImage?: Buffer  // Image de couverture comme reference visuelle
 ): Promise<ImageGenerationResult> {
   const isDryRun = process.env.STORY_DRY_RUN === 'true';
-  const totalImages = 12;
+  const totalImages = IMAGE_PARAGRAPH_INDICES.length; // 6 images
   const images: Buffer[] = [];
 
   const hasReferenceImage = !!referenceImage;
   const visualBible = buildVisualBible(params, hasReferenceImage);
 
-  console.log(`[StoryImageGenerator] Demarrage generation ${totalImages} images (dry run: ${isDryRun})`);
+  console.log(`[StoryImageGenerator] Demarrage generation ${totalImages} images sur ${paragraphs.length} paragraphes (dry run: ${isDryRun})`);
+  console.log(`[StoryImageGenerator] Paragraphes illustres: ${IMAGE_PARAGRAPH_INDICES.map(i => i + 1).join(', ')}`);
   console.log(`[StoryImageGenerator] Modele: gpt-image-1 avec reference visuelle: ${hasReferenceImage ? 'OUI' : 'NON'}`);
   console.log(`[StoryImageGenerator] Style: ${params.illustrationStyle}, Personnage: ${params.protagonistName}`);
 
@@ -254,14 +258,16 @@ export async function generateStoryImages(
   for (let i = 0; i < totalImages; i++) {
     if (onProgress) onProgress(i, totalImages);
 
+    const paragraphIndex = IMAGE_PARAGRAPH_INDICES[i];
+
     if (isDryRun) {
-      console.log(`[StoryImageGenerator] Dry run: placeholder ${i + 1}/${totalImages}`);
+      console.log(`[StoryImageGenerator] Dry run: placeholder ${i + 1}/${totalImages} (paragraphe ${paragraphIndex + 1})`);
       images.push(generatePlaceholderImage(i + 1, totalImages));
       await new Promise(r => setTimeout(r, 200));
       continue;
     }
 
-    const prompt = buildPageImagePrompt(params, visualBible, paragraphs[i], i + 1, hasReferenceImage);
+    const prompt = buildPageImagePrompt(params, visualBible, paragraphs[paragraphIndex], i + 1, hasReferenceImage);
 
     let lastError: Error | null = null;
     for (let attempt = 0; attempt < 3; attempt++) {
