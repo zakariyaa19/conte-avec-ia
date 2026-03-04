@@ -59,7 +59,7 @@ async function loadFonts(pdfDoc: PDFDocument): Promise<PdfFonts> {
     for (const name of filenames) {
       try {
         const bytes = fs.readFileSync(path.join(fontsDir, name));
-        return await pdfDoc.embedFont(bytes);
+        return await pdfDoc.embedFont(bytes, { subset: false });
       } catch { /* try next */ }
     }
     return null;
