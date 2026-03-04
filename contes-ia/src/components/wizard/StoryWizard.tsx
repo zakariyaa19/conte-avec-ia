@@ -31,13 +31,13 @@ import {
   OrderInfoSection, OrderInfoGrid, FullWidthField, OrderCostSummary,
   PayButton, TrustBadgesRow, TrustBadge, ErrorMessage, ConnectedBanner,
   ClubFreeCard, ClubBadge, ClubExhaustedMsg,
-  StoryExcerptCard, StoryParagraph, FadeOverlay, StoryPreviewSkeleton,
   PaywallDivider, PaywallTitle, UnlockCard, LockIcon, UnlockTitle,
   UnlockFeatures, UnlockFeature, TimerContainer, TimerDigits,
-  ViewerPagesWrapper, ViewerPageCard, ViewerPageSkeleton,
-  ViewerCoverContent, ViewerStoryLayout, ViewerCreatorLabel,
-  ViewerTextBlock, ViewerImageBlock, ViewerImageSkeleton, ViewerPageNum,
-  ViewerLockedContent, ViewerLockedOverlay, ViewerLockedBg,
+  PreviewLoadingContainer, PreviewLoadingBook, PreviewLoadingSparkle,
+  PreviewLoadingText, PreviewLoadingDots, PreviewLoadingStages, PreviewLoadingStage,
+  BookPreviewWrapper, BookPageFrame, BookCoverImage,
+  BookStoryLayout, BookTextHalf, BookImageHalf, BookCreatorTag, BookPageBadge,
+  BookLockedOverlay, BookLockedContent, BookLockedIcon, BookLockedTitle, BookLockedFeatures,
   PricingGrid, PricingCard, PricingCardBadge, PricingCardName, PricingCardPrice,
   PricingCardSub, PricingCardFeaturesList, PricingCardFeatureItem, PricingCardCTA,
   PreviewSectionTitle,
@@ -738,134 +738,171 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
           goNext();
         };
 
+        // All content ready = show the book reveal
+        const allReady = coverImageUrl && !isCoverGenerating && previewParagraphs && illustrationBase64;
+
+        // Loading stages: 0=cover, 1=text, 2=illustration
+        let loadingStage = 0;
+        if (coverImageUrl && !isCoverGenerating) loadingStage = 1;
+        if (coverImageUrl && !isCoverGenerating && previewParagraphs) loadingStage = 2;
+
+        const loadingTexts = [
+          `Creation de la couverture de ${heroName}`,
+          `Redaction de l'histoire`,
+          `Illustration de la premiere page`,
+        ];
+
         return (
           <>
-            <StepTitle style={{ fontSize: theme.fontSizes.lg, marginBottom: theme.spacing.sm }}>
-              Votre histoire prend vie...
-            </StepTitle>
+            {!allReady ? (
+              /* ── Premium loading animation ── */
+              <>
+                <StepTitle style={{ fontSize: theme.fontSizes.lg, marginBottom: theme.spacing.md }}>
+                  Votre histoire prend vie...
+                </StepTitle>
+                <PreviewLoadingContainer>
+                  {/* Sparkle particles */}
+                  <PreviewLoadingSparkle $delay={0} $left="15%" $size={5} />
+                  <PreviewLoadingSparkle $delay={0.8} $left="30%" $size={7} />
+                  <PreviewLoadingSparkle $delay={1.6} $left="50%" $size={4} />
+                  <PreviewLoadingSparkle $delay={0.4} $left="68%" $size={6} />
+                  <PreviewLoadingSparkle $delay={1.2} $left="82%" $size={5} />
+                  <PreviewLoadingSparkle $delay={2.0} $left="40%" $size={3} />
 
-            <ViewerPagesWrapper>
-              {/* Page 1 — Cover */}
-              <ViewerPageCard $delay={0}>
-                {coverImageUrl && !isCoverGenerating ? (
-                  <ViewerCoverContent>
-                    <img src={coverImageUrl} alt="Couverture" />
-                  </ViewerCoverContent>
-                ) : (
-                  <ViewerPageSkeleton style={{ maxWidth: '100%' }} />
-                )}
-              </ViewerPageCard>
+                  {/* Animated book icon */}
+                  <PreviewLoadingBook />
 
-              {/* Page 2 — Story page (creator + text + illustration + page num) */}
-              <ViewerPageCard $delay={1}>
-                <ViewerStoryLayout>
-                  {creatorName && (
-                    <ViewerCreatorLabel>{creatorName}</ViewerCreatorLabel>
-                  )}
-                  <ViewerTextBlock>
-                    {isStoryPreviewGenerating || !previewParagraphs ? (
-                      <StoryPreviewSkeleton style={{ boxShadow: 'none', padding: 0, background: 'transparent' }}>
-                        <div /><div /><div /><div /><div />
-                      </StoryPreviewSkeleton>
-                    ) : (
-                      <p>{previewParagraphs[0]}</p>
-                    )}
-                  </ViewerTextBlock>
-                  <ViewerImageBlock>
-                    {isIllustrationGenerating || !illustrationBase64 ? (
-                      <ViewerImageSkeleton />
-                    ) : (
-                      <img src={`data:image/png;base64,${illustrationBase64}`} alt="Illustration" />
-                    )}
-                  </ViewerImageBlock>
-                  <ViewerPageNum>1</ViewerPageNum>
-                </ViewerStoryLayout>
-              </ViewerPageCard>
+                  {/* Status text */}
+                  <PreviewLoadingText>
+                    {loadingTexts[loadingStage]}
+                    <PreviewLoadingDots><span /><span /><span /></PreviewLoadingDots>
+                  </PreviewLoadingText>
 
-              {/* Page 3 — Locked / blurred */}
-              <ViewerPageCard $delay={2}>
-                <ViewerLockedContent>
-                  <ViewerLockedBg />
-                  <ViewerLockedOverlay>
-                    <span>🔒</span>
-                    <span>Debloquez la suite de l'histoire</span>
-                  </ViewerLockedOverlay>
-                </ViewerLockedContent>
-              </ViewerPageCard>
-            </ViewerPagesWrapper>
-
-            <PaywallDivider>✨</PaywallDivider>
-
-            <PreviewSectionTitle>
-              L'histoire complete de {heroName} est prete — 12 pages illustrees
-            </PreviewSectionTitle>
-
-            {/* 3-tier pricing */}
-            {isClub && clubCredit?.canSubmit ? (
-              <ClubFreeCard $isSelected={true} onClick={() => handlePreviewSelect('club')}>
-                <ClubBadge>Membre Club</ClubBadge>
-                <h3 style={{ fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.lg, margin: `${theme.spacing.sm} 0 4px` }}>
-                  Utiliser mon eBook gratuit
-                </h3>
-                <p style={{ fontSize: theme.fontSizes.sm, color: theme.colors.accent.coral, fontWeight: 700, margin: '0 0 4px' }}>0,00 EUR</p>
-                <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.text.secondary, margin: 0 }}>
-                  Il vous reste {clubCredit.remaining} eBook(s) gratuit(s)
-                </p>
-              </ClubFreeCard>
+                  {/* Progress dots */}
+                  <PreviewLoadingStages>
+                    <PreviewLoadingStage $active={loadingStage === 0} $done={loadingStage > 0} />
+                    <PreviewLoadingStage $active={loadingStage === 1} $done={loadingStage > 1} />
+                    <PreviewLoadingStage $active={loadingStage === 2} $done={false} />
+                  </PreviewLoadingStages>
+                </PreviewLoadingContainer>
+              </>
             ) : (
-              <PricingGrid>
-                {/* Offre unique */}
-                <PricingCard $isSelected={false} onClick={() => handlePreviewSelect('single')}>
-                  <PricingCardName>Offre Unique</PricingCardName>
-                  <PricingCardPrice>6,99 EUR</PricingCardPrice>
-                  <PricingCardSub>Paiement unique</PricingCardSub>
-                  <PricingDivider />
-                  <PricingCardFeaturesList>
-                    <PricingCardFeatureItem>1 conte personnalise</PricingCardFeatureItem>
-                    <PricingCardFeatureItem>6 illustrations HD</PricingCardFeatureItem>
-                    <PricingCardFeatureItem>PDF telechargeable</PricingCardFeatureItem>
-                  </PricingCardFeaturesList>
-                  <PricingCardCTA>Choisir</PricingCardCTA>
-                </PricingCard>
+              /* ── Book reveal: cover + story page + locked page ── */
+              <>
+                <StepTitle style={{ fontSize: theme.fontSizes.lg, marginBottom: theme.spacing.md }}>
+                  Le conte de {heroName} est pret !
+                </StepTitle>
 
-                {/* Club mensuel — FEATURED */}
-                <PricingCard $isSelected={false} $featured onClick={() => handlePreviewSelect('club')}>
-                  <PricingCardBadge>Populaire</PricingCardBadge>
-                  <PricingCardName>Club Mensuel</PricingCardName>
-                  <PricingCardPrice>9,99 EUR</PricingCardPrice>
-                  <PricingCardSub>/ mois — sans engagement</PricingCardSub>
-                  <PricingDivider />
-                  <PricingCardFeaturesList>
-                    <PricingCardFeatureItem $highlight>Ce conte est inclus</PricingCardFeatureItem>
-                    <PricingCardFeatureItem $highlight>3 contes / mois</PricingCardFeatureItem>
-                    <PricingCardFeatureItem>Bibliotheque illimitee</PricingCardFeatureItem>
-                    <PricingCardFeatureItem>Annulable a tout moment</PricingCardFeatureItem>
-                  </PricingCardFeaturesList>
-                  <PricingCardCTA $primary>Choisir</PricingCardCTA>
-                </PricingCard>
+                <BookPreviewWrapper>
+                  {/* Page 1 — Cover */}
+                  <BookPageFrame $delay={0}>
+                    <BookCoverImage>
+                      <img src={coverImageUrl} alt="Couverture" />
+                    </BookCoverImage>
+                  </BookPageFrame>
 
-                {/* Club annuel */}
-                <PricingCard $isSelected={false} onClick={() => handlePreviewSelect('club')}>
-                  <PricingCardName>Club Annuel</PricingCardName>
-                  <PricingCardPrice>79,99 EUR</PricingCardPrice>
-                  <PricingCardSub>/ an — soit 6,67 EUR/mois</PricingCardSub>
-                  <PricingDivider />
-                  <PricingCardFeaturesList>
-                    <PricingCardFeatureItem $highlight>Ce conte est inclus</PricingCardFeatureItem>
-                    <PricingCardFeatureItem $highlight>3 contes / mois</PricingCardFeatureItem>
-                    <PricingCardFeatureItem>Economisez 40 EUR/an</PricingCardFeatureItem>
-                    <PricingCardFeatureItem>Bibliotheque illimitee</PricingCardFeatureItem>
-                  </PricingCardFeaturesList>
-                  <PricingCardCTA>Choisir</PricingCardCTA>
-                </PricingCard>
-              </PricingGrid>
+                  {/* Page 2 — Story page (text left, illustration right) */}
+                  <BookPageFrame $delay={1}>
+                    <BookStoryLayout>
+                      <BookTextHalf>
+                        {creatorName && <BookCreatorTag>{creatorName}</BookCreatorTag>}
+                        <p>{previewParagraphs[0]}</p>
+                        <BookPageBadge>1</BookPageBadge>
+                      </BookTextHalf>
+                      <BookImageHalf>
+                        <img src={`data:image/png;base64,${illustrationBase64}`} alt="Illustration" />
+                      </BookImageHalf>
+                    </BookStoryLayout>
+                  </BookPageFrame>
+
+                  {/* Page 3 — Locked page with conversion CTA */}
+                  <BookPageFrame $delay={2}>
+                    <BookLockedOverlay>
+                      <BookLockedContent>
+                        <BookLockedIcon>&#x1F512;</BookLockedIcon>
+                        <BookLockedTitle>L'aventure de {heroName} continue...</BookLockedTitle>
+                        <BookLockedFeatures>
+                          12 pages illustrees · 6 illustrations HD · PDF personnalise
+                        </BookLockedFeatures>
+                      </BookLockedContent>
+                    </BookLockedOverlay>
+                  </BookPageFrame>
+                </BookPreviewWrapper>
+
+                <PaywallDivider />
+
+                <PreviewSectionTitle>
+                  Recevez l'histoire complete de {heroName}
+                </PreviewSectionTitle>
+
+                {/* 3-tier pricing */}
+                {isClub && clubCredit?.canSubmit ? (
+                  <ClubFreeCard $isSelected={true} onClick={() => handlePreviewSelect('club')}>
+                    <ClubBadge>Membre Club</ClubBadge>
+                    <h3 style={{ fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.lg, margin: `${theme.spacing.sm} 0 4px` }}>
+                      Utiliser mon eBook gratuit
+                    </h3>
+                    <p style={{ fontSize: theme.fontSizes.sm, color: theme.colors.accent.coral, fontWeight: 700, margin: '0 0 4px' }}>0,00 EUR</p>
+                    <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.text.secondary, margin: 0 }}>
+                      Il vous reste {clubCredit.remaining} eBook(s) gratuit(s)
+                    </p>
+                  </ClubFreeCard>
+                ) : (
+                  <PricingGrid>
+                    {/* Offre unique */}
+                    <PricingCard $isSelected={false} onClick={() => handlePreviewSelect('single')}>
+                      <PricingCardName>Offre Unique</PricingCardName>
+                      <PricingCardPrice>6,99 EUR</PricingCardPrice>
+                      <PricingCardSub>Paiement unique</PricingCardSub>
+                      <PricingDivider />
+                      <PricingCardFeaturesList>
+                        <PricingCardFeatureItem>1 conte personnalise</PricingCardFeatureItem>
+                        <PricingCardFeatureItem>6 illustrations HD</PricingCardFeatureItem>
+                        <PricingCardFeatureItem>PDF telechargeable</PricingCardFeatureItem>
+                      </PricingCardFeaturesList>
+                      <PricingCardCTA>Choisir</PricingCardCTA>
+                    </PricingCard>
+
+                    {/* Club mensuel — FEATURED */}
+                    <PricingCard $isSelected={false} $featured onClick={() => handlePreviewSelect('club')}>
+                      <PricingCardBadge>Populaire</PricingCardBadge>
+                      <PricingCardName>Club Mensuel</PricingCardName>
+                      <PricingCardPrice>9,99 EUR</PricingCardPrice>
+                      <PricingCardSub>/ mois — sans engagement</PricingCardSub>
+                      <PricingDivider />
+                      <PricingCardFeaturesList>
+                        <PricingCardFeatureItem $highlight>Ce conte est inclus</PricingCardFeatureItem>
+                        <PricingCardFeatureItem $highlight>3 contes / mois</PricingCardFeatureItem>
+                        <PricingCardFeatureItem>Bibliotheque illimitee</PricingCardFeatureItem>
+                        <PricingCardFeatureItem>Annulable a tout moment</PricingCardFeatureItem>
+                      </PricingCardFeaturesList>
+                      <PricingCardCTA $primary>Choisir</PricingCardCTA>
+                    </PricingCard>
+
+                    {/* Club annuel */}
+                    <PricingCard $isSelected={false} onClick={() => handlePreviewSelect('club')}>
+                      <PricingCardName>Club Annuel</PricingCardName>
+                      <PricingCardPrice>79,99 EUR</PricingCardPrice>
+                      <PricingCardSub>/ an — soit 6,67 EUR/mois</PricingCardSub>
+                      <PricingDivider />
+                      <PricingCardFeaturesList>
+                        <PricingCardFeatureItem $highlight>Ce conte est inclus</PricingCardFeatureItem>
+                        <PricingCardFeatureItem $highlight>3 contes / mois</PricingCardFeatureItem>
+                        <PricingCardFeatureItem>Economisez 40 EUR/an</PricingCardFeatureItem>
+                        <PricingCardFeatureItem>Bibliotheque illimitee</PricingCardFeatureItem>
+                      </PricingCardFeaturesList>
+                      <PricingCardCTA>Choisir</PricingCardCTA>
+                    </PricingCard>
+                  </PricingGrid>
+                )}
+
+                <TimerContainer style={{ marginTop: theme.spacing.md }}>
+                  <span>&#x23F3;</span>
+                  <span>Histoire conservee :</span>
+                  <TimerDigits>{timerDisplay}</TimerDigits>
+                </TimerContainer>
+              </>
             )}
-
-            <TimerContainer style={{ marginTop: theme.spacing.md }}>
-              <span>⏳</span>
-              <span>Histoire conservee :</span>
-              <TimerDigits>{timerDisplay}</TimerDigits>
-            </TimerContainer>
           </>
         );
       }

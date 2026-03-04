@@ -908,12 +908,34 @@ export const TimerDigits = styled.span`
 `;
 
 /* ══════════════════════════════════════════════
-   BOOK VIEWER PREVIEW — matches StoryPDFViewer style
+   PREVIEW LOADING — premium animated wait screen
    ══════════════════════════════════════════════ */
 
-const slideInUp = keyframes`
-  from { opacity: 0; transform: translateY(40px); }
-  to   { opacity: 1; transform: translateY(0); }
+const gradientShift = keyframes`
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+`;
+
+const pageFlip = keyframes`
+  0%, 100% { transform: perspective(800px) rotateY(0deg); }
+  35% { transform: perspective(800px) rotateY(-30deg); }
+  65% { transform: perspective(800px) rotateY(-30deg); }
+`;
+
+const sparkleRise = keyframes`
+  0% { opacity: 0; transform: translateY(10px) scale(0); }
+  15% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-80px) scale(0.2); }
+`;
+
+const dotPulse = keyframes`
+  0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); }
+  40% { opacity: 1; transform: scale(1); }
+`;
+
+const bookReveal = keyframes`
+  from { opacity: 0; transform: translateY(30px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 `;
 
 const glowPulse = keyframes`
@@ -921,114 +943,287 @@ const glowPulse = keyframes`
   50%      { box-shadow: 0 0 20px 4px ${theme.colors.accent.coral}25; }
 `;
 
-export const ViewerPagesWrapper = styled.div`
+export const PreviewLoadingContainer = styled.div`
+  width: 100%;
+  max-width: 700px;
+  aspect-ratio: 3 / 2;
+  border-radius: ${theme.borderRadius.xl};
+  background: linear-gradient(135deg, #FFF9F0, #FFE8D6, #FFDAB9, #FFE5B4, #FFF9F0);
+  background-size: 300% 300%;
+  animation: ${gradientShift} 6s ease infinite;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    aspect-ratio: 4 / 3;
+    border-radius: ${theme.borderRadius.lg};
+    gap: 14px;
+  }
+`;
+
+export const PreviewLoadingBook = styled.div`
+  width: 80px;
+  height: 100px;
+  position: relative;
+  transform-style: preserve-3d;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 38px;
+    height: 100%;
+    background: #FFF9F0;
+    border-radius: 4px 0 0 4px;
+    box-shadow: -2px 2px 10px rgba(0,0,0,0.08);
+    border-right: 2px solid #E8D5C0;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 38px;
+    height: 100%;
+    background: linear-gradient(135deg, #FFF9F0, #FDF6E3);
+    border-radius: 0 4px 4px 0;
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.06);
+    transform-origin: left center;
+    animation: ${pageFlip} 3s ease-in-out infinite;
+  }
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    width: 60px;
+    height: 75px;
+    &::before { width: 28px; }
+    &::after { width: 28px; }
+  }
+`;
+
+export const PreviewLoadingSparkle = styled.span<{ $delay: number; $left: string; $size?: number }>`
+  position: absolute;
+  bottom: 35%;
+  left: ${p => p.$left};
+  width: ${p => p.$size || 6}px;
+  height: ${p => p.$size || 6}px;
+  background: radial-gradient(circle, #FFD700, #FF9999);
+  border-radius: 50%;
+  animation: ${sparkleRise} 3s ease-out ${p => p.$delay}s infinite;
+  pointer-events: none;
+`;
+
+export const PreviewLoadingText = styled.p`
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.base};
+  color: #6B5B4E;
+  margin: 0;
+  z-index: 1;
+  text-align: center;
+  padding: 0 20px;
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    font-size: ${theme.fontSizes.sm};
+  }
+`;
+
+export const PreviewLoadingDots = styled.span`
+  display: inline-flex;
+  gap: 4px;
+  margin-left: 4px;
+  vertical-align: middle;
+
+  span {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #D4A574;
+    display: inline-block;
+    animation: ${dotPulse} 1.4s ease-in-out infinite;
+    &:nth-child(2) { animation-delay: 0.2s; }
+    &:nth-child(3) { animation-delay: 0.4s; }
+  }
+`;
+
+export const PreviewLoadingStages = styled.div`
+  display: flex;
+  gap: 10px;
+  z-index: 1;
+`;
+
+export const PreviewLoadingStage = styled.div<{ $active: boolean; $done: boolean }>`
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: ${p => p.$done ? '#D4A574' : p.$active ? '#FFB088' : 'rgba(212, 165, 116, 0.25)'};
+  transition: all 0.6s ease;
+  ${p => p.$active && css`
+    transform: scale(1.4);
+    box-shadow: 0 0 10px rgba(255, 176, 136, 0.5);
+  `}
+`;
+
+/* ══════════════════════════════════════════════
+   BOOK PREVIEW — exact replica of PDF output
+   ══════════════════════════════════════════════ */
+
+export const BookPreviewWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
-  gap: 12px;
+  animation: ${bookReveal} 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
 
-  @media (min-width: ${theme.breakpoints.md}) {
-    gap: 24px;
+  /* Connected shadow on the whole book */
+  & > div {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+  & > div:first-child {
+    box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+  & > div:last-child {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.06);
   }
 `;
 
-export const ViewerPageCard = styled.div<{ $delay?: number }>`
+export const BookPageFrame = styled.div<{ $delay?: number }>`
   width: 100%;
   max-width: 700px;
-  border-radius: ${theme.borderRadius.lg};
+  aspect-ratio: 3 / 2;
   overflow: hidden;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-  background: white;
-  animation: ${slideInUp} 0.5s ease-out ${p => (p.$delay || 0) * 0.25}s both;
+  animation: ${bookReveal} 0.6s cubic-bezier(0.16, 1, 0.3, 1) ${p => (p.$delay || 0) * 0.12}s both;
+
+  &:first-child {
+    border-radius: ${theme.borderRadius.lg} ${theme.borderRadius.lg} 0 0;
+  }
+  &:last-child {
+    border-radius: 0 0 ${theme.borderRadius.lg} ${theme.borderRadius.lg};
+  }
+  &:only-child {
+    border-radius: ${theme.borderRadius.lg};
+  }
+
+  /* Thin separator between pages */
+  & + & {
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+  }
 
   @media (min-width: ${theme.breakpoints.md}) {
-    border-radius: ${theme.borderRadius.xl};
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    &:first-child { border-radius: ${theme.borderRadius.xl} ${theme.borderRadius.xl} 0 0; }
+    &:last-child { border-radius: 0 0 ${theme.borderRadius.xl} ${theme.borderRadius.xl}; }
+    &:only-child { border-radius: ${theme.borderRadius.xl}; }
   }
 `;
 
-export const ViewerPageSkeleton = styled.div`
+export const BookCoverImage = styled.div`
   width: 100%;
-  max-width: 700px;
-  aspect-ratio: 0.75;
-  border-radius: ${theme.borderRadius.lg};
-  background: linear-gradient(
-    90deg,
-    ${theme.colors.background.secondary} 25%,
-    ${theme.colors.background.white} 50%,
-    ${theme.colors.background.secondary} 75%
-  );
-  background-size: 200% 100%;
-  animation: ${skeletonShimmer} 1.5s ease-in-out infinite;
+  height: 100%;
+  background: white;
 
-  @media (min-width: ${theme.breakpoints.md}) {
-    border-radius: ${theme.borderRadius.xl};
-  }
-`;
-
-export const ViewerCoverContent = styled.div`
   img {
     width: 100%;
+    height: 100%;
+    object-fit: cover;
     display: block;
   }
 `;
 
-export const ViewerStoryLayout = styled.div`
+/* Story page: cream bg, 50/50 split — exact PDF match */
+export const BookStoryLayout = styled.div`
+  width: 100%;
+  height: 100%;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto 1fr auto;
-  min-height: 280px;
+  background: #FAF3E0;
+  position: relative;
 
   @media (max-width: ${theme.breakpoints.sm}) {
     grid-template-columns: 1fr;
-    min-height: auto;
+    grid-template-rows: 1fr 1fr;
   }
 `;
 
-export const ViewerCreatorLabel = styled.p`
-  grid-column: 1 / -1;
-  padding: 14px 20px 0;
-  font-family: ${theme.fonts.heading};
-  font-size: 10px;
-  font-weight: 600;
-  color: ${theme.colors.text.light};
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  margin: 0;
-
-  @media (min-width: ${theme.breakpoints.lg}) {
-    padding: 18px 28px 0;
-    font-size: 11px;
-  }
-`;
-
-export const ViewerTextBlock = styled.div`
-  padding: 14px 20px;
+export const BookTextHalf = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: center;
+  padding: 32px 24px 40px;
+  position: relative;
+
+  /* Decorative border — matches PDF drawSoftBorder (inset 18px, accent dark, opacity 0.4) */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 18px;
+    border: 1px solid rgba(242, 178, 135, 0.4);
+    border-radius: 4px;
+    pointer-events: none;
+  }
+
+  /* Text divider ornament below text */
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 52px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(242, 178, 135, 0.4), transparent);
+  }
 
   p {
-    font-family: 'Georgia', serif;
+    font-family: ${theme.fonts.heading};
     font-size: 13px;
-    color: #3B2F2F;
-    line-height: 1.8;
+    color: #373737;
+    line-height: 2.0;
     margin: 0;
+    text-align: center;
+    max-width: 88%;
   }
 
   @media (max-width: ${theme.breakpoints.sm}) {
-    padding: 12px 16px;
-    p { font-size: 12px; line-height: 1.6; }
+    padding: 24px 16px 36px;
+    &::before { inset: 12px; }
+    &::after { bottom: 40px; width: 60px; }
+    p { font-size: 11px; line-height: 1.7; }
   }
   @media (min-width: ${theme.breakpoints.lg}) {
-    padding: 18px 28px;
-    p { font-size: 15px; }
+    padding: 36px 28px 44px;
+    p { font-size: 14px; }
   }
 `;
 
-export const ViewerImageBlock = styled.div`
-  position: relative;
+export const BookCreatorTag = styled.span`
+  position: absolute;
+  top: 28px;
+  left: 28px;
+  font-family: ${theme.fonts.heading};
+  font-size: 9px;
+  font-weight: 700;
+  color: #786E64;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  z-index: 1;
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    top: 18px;
+    left: 18px;
+    font-size: 7px;
+  }
+`;
+
+export const BookImageHalf = styled.div`
+  width: 100%;
+  height: 100%;
   overflow: hidden;
 
   img {
@@ -1037,81 +1232,131 @@ export const ViewerImageBlock = styled.div`
     object-fit: cover;
     display: block;
   }
+`;
+
+/* Page number badge — matches PDF drawPlayfulPageNumber exactly */
+export const BookPageBadge = styled.span`
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 218, 185, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: ${theme.fonts.heading};
+  font-size: 13px;
+  font-weight: 700;
+  color: #373737;
+  box-shadow: inset 0 0 0 2px rgba(242, 178, 135, 0.3);
+
+  /* Orbital dots — matches PDF's 3 orbital dots */
+  &::before, &::after {
+    content: '';
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: rgba(242, 178, 135, 0.4);
+  }
+  &::before { top: -6px; right: -2px; }
+  &::after { bottom: -4px; left: -4px; }
 
   @media (max-width: ${theme.breakpoints.sm}) {
-    aspect-ratio: 1;
+    width: 26px;
+    height: 26px;
+    font-size: 11px;
+    bottom: 10px;
   }
 `;
 
-export const ViewerImageSkeleton = styled.div`
+/* Locked page — blurred with conversion CTA overlay */
+export const BookLockedOverlay = styled.div`
   width: 100%;
   height: 100%;
-  min-height: 200px;
-  background: #f0e8dc;
-  background-image: linear-gradient(90deg, #f0e8dc, #e8ddd0, #f0e8dc);
-  background-size: 200px 100%;
-  background-repeat: no-repeat;
-  animation: ${skeletonShimmer} 1.4s ease-in-out infinite;
-`;
-
-export const ViewerPageNum = styled.p`
-  grid-column: 1 / -1;
-  padding: 0 20px 12px;
-  font-family: ${theme.fonts.body};
-  font-size: 11px;
-  color: ${theme.colors.text.light};
-  margin: 0;
-
-  @media (min-width: ${theme.breakpoints.lg}) {
-    padding: 0 28px 16px;
-  }
-`;
-
-export const ViewerLockedContent = styled.div`
   position: relative;
-  min-height: 200px;
-
-  @media (max-width: ${theme.breakpoints.sm}) {
-    min-height: 150px;
-  }
-  @media (min-width: ${theme.breakpoints.lg}) {
-    min-height: 240px;
-  }
-`;
-
-export const ViewerLockedOverlay = styled.div`
-  position: absolute;
-  inset: 0;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  background: rgba(255,255,255,0.5);
+  background: #FAF3E0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
 
-  span:first-child {
-    font-size: 2.5rem;
+  /* Blurred fake content (text lines + image block) */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(90deg, #FAF3E0 50%, #E8DFD0 50%),
+      repeating-linear-gradient(
+        180deg,
+        transparent 0px, transparent 12px,
+        #E2D9C8 12px, #E2D9C8 14px
+      );
+    background-size: 100% 100%, 50% 100%;
+    background-position: 0 0, 0 0;
+    filter: blur(4px);
+    opacity: 0.6;
   }
-  span:last-child {
-    font-family: ${theme.fonts.heading};
-    font-size: ${theme.fontSizes.sm};
-    font-weight: 600;
-    color: ${theme.colors.text.primary};
+
+  /* Cream overlay gradient */
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(250, 243, 224, 0.5) 0%,
+      rgba(250, 243, 224, 0.8) 40%,
+      rgba(250, 243, 224, 0.92) 100%
+    );
   }
 `;
 
-export const ViewerLockedBg = styled.div`
-  width: 100%;
-  height: 100%;
-  min-height: inherit;
-  background: repeating-linear-gradient(
-    0deg,
-    #e8e2da 0px, #e8e2da 16px,
-    #f2ede6 16px, #f2ede6 32px
-  );
-  opacity: 0.5;
+export const BookLockedContent = styled.div`
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  padding: 0 24px;
+`;
+
+export const BookLockedIcon = styled.span`
+  font-size: 2.2rem;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.08));
+`;
+
+export const BookLockedTitle = styled.p`
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.lg};
+  font-weight: 700;
+  color: ${theme.colors.text.primary};
+  margin: 0;
+  line-height: 1.3;
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    font-size: ${theme.fontSizes.base};
+  }
+`;
+
+export const BookLockedFeatures = styled.p`
+  font-family: ${theme.fonts.body};
+  font-size: ${theme.fontSizes.xs};
+  color: ${theme.colors.text.secondary};
+  margin: 0;
+  line-height: 1.5;
+  max-width: 280px;
+
+  @media (min-width: ${theme.breakpoints.lg}) {
+    font-size: ${theme.fontSizes.sm};
+    max-width: 340px;
+  }
 `;
 
 /* ══════════════════════════════════════════════
