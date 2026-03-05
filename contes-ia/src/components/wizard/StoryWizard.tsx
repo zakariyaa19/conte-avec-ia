@@ -7,10 +7,12 @@ import { SecondaryCharactersSection } from '../forms/SecondaryCharactersSection'
 import { useCoverPreview } from '../../hooks/useCoverPreview';
 import { useStoryPreview } from '../../hooks/useStoryPreview';
 import { useFirstIllustration } from '../../hooks/useFirstIllustration';
+import { useWizardPersistence } from '../../hooks/useWizardPersistence';
 import { validateEmail, validateRequired } from '../../utils/validation';
 import { metaTrackAddToCart, metaTrackLead } from '../../utils/metaPixel';
 import { ApiService } from '../../config/api';
 import { ILLUSTRATION_STYLES, LANGUAGES, StoryFormData } from '../../types/FormTypes';
+import { SvgIcon, STEP_CONFIG, AGE_THEME_RECOMMENDATIONS, POPULAR_STYLES } from './choice-visuals';
 import {
   WizardOverlay, WizardHeader, BackArrow, WizardTitle, ProgressTrack, ProgressFill,
   WizardViewport, StepContainerCentered,
@@ -32,13 +34,24 @@ import {
   PreviewLoadingText, PreviewLoadingDots, PreviewLoadingStages, PreviewLoadingStage,
   BookPreviewWrapper, BookPageFrame, BookCoverImage, MagicParticle,
   BookStoryLayout, BookTextHalf, BookImageHalf, BookCreatorTag, BookPageBadge,
-  BookLockedOverlay, BookLockedContent, BookLockedIcon, BookLockedTitle, BookLockedSubtitle, BookLockedFeatures,
+  BookLockedOverlay, BookLockedContent, BookLockedIcon, BookLockedTitle, BookLockedSubtitle,
   PricingSelectedCheck,
   PreviewTimerBar, PreviewTimerDigits,
   ValueBlock, ValueBlockTitle, ValueBlockItem,
   PricingGrid, PricingCard, PricingCardBadge, PricingCardName, PricingCardPrice,
   PricingCardSub, PricingPerStory, PricingCardFeaturesList, PricingCardFeatureItem, PricingCardCTA,
   PreviewSectionTitle, SocialProofLine,
+  // V2 new components
+  WizardHeaderNew, HeaderTopRow, HeaderTitle, HeaderBadge, HeaderStepLabel,
+  SegmentedProgressBar, ProgressSegment,
+  StickyBottomBar, StickyBackButton, StickyContinueButton,
+  NewChoiceCardGrid, NewChoiceCard, NewCardLabel, NewCardDescription, CardBadgePill,
+  SummaryChipsRow, SummaryChip,
+  SegmentedGender, GenderPill,
+  RewardWrapper, RewardSparkle, RewardTitle,
+  DetailChipGroup, DetailChip,
+  AccordionHeader, AccordionChevron, AccordionBody,
+  DraftBanner, DraftBannerText, DraftBannerButton, DraftBannerDismiss,
 } from './WizardSharedStyles';
 
 /* ══════════════════════════════════════════════
@@ -46,43 +59,49 @@ import {
    ══════════════════════════════════════════════ */
 
 const AGE_OPTIONS = [
-  { value: '0-2', label: '0-2 ans', imagePath: '/image/ageenfant/age-0-2.png' },
-  { value: '3-5', label: '3-5 ans', imagePath: '/image/ageenfant/age-3-5.png' },
-  { value: '6-9', label: '6-9 ans', imagePath: '/image/ageenfant/age-6-9.png' },
-  { value: '10+', label: '10+ ans', imagePath: '/image/ageenfant/age-10-plus.png' },
+  { value: '0-2', label: '0-2 ans', description: 'Histoires simples et colorées', token: 'age_0_2' },
+  { value: '3-5', label: '3-5 ans', description: 'Aventures et découvertes', token: 'age_3_5' },
+  { value: '6-9', label: '6-9 ans', description: 'Récits captivants', token: 'age_6_9' },
+  { value: '10+', label: '10+ ans', description: 'Histoires complexes', token: 'age_10_plus' },
 ];
 
 const THEME_OPTIONS = [
-  { value: 'educational',  label: 'Éducatif',       imagePath: '/image/themes/educatif.png' },
-  { value: 'fairy-tales',  label: 'Contes de fées', imagePath: '/image/themes/contes-de-fees.png' },
-  { value: 'activities',   label: 'Activités',      imagePath: '/image/themes/activites.png' },
-  { value: 'stories',      label: 'Histoires',      imagePath: '/image/themes/histoires.png' },
-  { value: 'celebrations', label: 'Fêtes',          imagePath: '/image/themes/fetes.png' },
-  { value: 'family',       label: 'Famille',        imagePath: '/image/themes/famille.png' },
-  { value: 'custom',       label: 'Personnalisé',   imagePath: '/image/themes/personnalise.png' },
+  { value: 'educational',  label: 'Éducatif',       description: 'Apprendre en s\'amusant', token: 'theme_educational' },
+  { value: 'fairy-tales',  label: 'Contes de fées', description: 'Magie et merveilles', token: 'theme_fairy_tales' },
+  { value: 'activities',   label: 'Activités',      description: 'Jeux et aventures', token: 'theme_activities' },
+  { value: 'stories',      label: 'Histoires',      description: 'Récits enchanteurs', token: 'theme_stories' },
+  { value: 'celebrations', label: 'Fêtes',          description: 'Moments festifs', token: 'theme_celebrations' },
+  { value: 'family',       label: 'Famille',        description: 'Liens et tendresse', token: 'theme_family' },
+  { value: 'custom',       label: 'Personnalisé',   description: 'Votre idée unique', token: 'theme_custom' },
 ];
 
 const OCCASION_OPTIONS = [
-  { value: 'birthday',    label: 'Anniversaire',      imagePath: '/image/occasions/anniversaire.png' },
-  { value: 'christmas',   label: 'Noël',              imagePath: '/image/occasions/noel.png' },
-  { value: 'new-year',    label: 'Nouvel An',         imagePath: '/image/occasions/nouvel-an.png' },
-  { value: 'easter',      label: 'Pâques',            imagePath: '/image/occasions/paques.png' },
-  { value: 'eid',         label: 'Aïd el-Fitr',      imagePath: '/image/occasions/aid.png' },
-  { value: 'mothers-day', label: 'Fête des mères',    imagePath: '/image/occasions/fete-meres.png' },
-  { value: 'fathers-day', label: 'Fête des pères',    imagePath: '/image/occasions/fete-peres.png' },
-  { value: 'custom',      label: 'Autre',             imagePath: '/image/occasions/personnalise.png' },
+  { value: 'birthday',    label: 'Anniversaire',   description: 'Fêter son jour spécial', token: 'occasion_birthday' },
+  { value: 'christmas',   label: 'Noël',           description: 'Magie de Noël', token: 'occasion_christmas' },
+  { value: 'new-year',    label: 'Nouvel An',      description: 'Nouvelle année', token: 'occasion_new_year' },
+  { value: 'easter',      label: 'Pâques',         description: 'Chasse aux œufs', token: 'occasion_easter' },
+  { value: 'eid',         label: 'Aïd el-Fitr',    description: 'Célébration de l\'Aïd', token: 'occasion_eid' },
+  { value: 'mothers-day', label: 'Fête des mères', description: 'Hommage à maman', token: 'occasion_mothers_day' },
+  { value: 'fathers-day', label: 'Fête des pères', description: 'Hommage à papa', token: 'occasion_fathers_day' },
+  { value: 'custom',      label: 'Autre',          description: 'Votre occasion', token: 'occasion_custom' },
 ];
 
 const MESSAGE_OPTIONS = [
-  { value: 'friendship',   label: 'Amitié',        imagePath: '/image/messages/amitie.png' },
-  { value: 'courage',      label: 'Courage',       imagePath: '/image/messages/courage.png' },
-  { value: 'love',         label: 'Amour',         imagePath: '/image/messages/amour.png' },
-  { value: 'perseverance', label: 'Persévérance',  imagePath: '/image/messages/perseverance.png' },
-  { value: 'sharing',      label: 'Partage',       imagePath: '/image/messages/partage.png' },
-  { value: 'honesty',      label: 'Honnêteté',     imagePath: '/image/messages/honnetete.png' },
-  { value: 'respect',      label: 'Respect',       imagePath: '/image/messages/respect.png' },
-  { value: 'custom',       label: 'Autre',         imagePath: '/image/messages/personnalise.png' },
+  { value: 'friendship',   label: 'Amitié',       description: 'Les liens précieux', token: 'message_friendship' },
+  { value: 'courage',      label: 'Courage',      description: 'Oser et grandir', token: 'message_courage' },
+  { value: 'love',         label: 'Amour',        description: 'Tendresse et affection', token: 'message_love' },
+  { value: 'perseverance', label: 'Persévérance', description: 'Ne jamais abandonner', token: 'message_perseverance' },
+  { value: 'sharing',      label: 'Partage',      description: 'Donner et recevoir', token: 'message_sharing' },
+  { value: 'honesty',      label: 'Honnêteté',    description: 'Dire la vérité', token: 'message_honesty' },
+  { value: 'respect',      label: 'Respect',      description: 'Considération des autres', token: 'message_respect' },
+  { value: 'custom',       label: 'Autre',        description: 'Votre message', token: 'message_custom' },
 ];
+
+const STYLE_OPTIONS = ILLUSTRATION_STYLES.map(s => ({
+  value: s.value,
+  label: s.label,
+  token: `style_${s.value.replace(/-/g, '_')}`,
+}));
 
 const GENDER_OPTIONS = [
   { value: 'girl', label: 'Fille' },
@@ -159,10 +178,13 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
   const [showAllLanguages, setShowAllLanguages] = useState(false);
   const [showReligion, setShowReligion] = useState(false);
   const [showSecondaryChars, setShowSecondaryChars] = useState(false);
+  const [showDraftBanner, setShowDraftBanner] = useState(false);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [globalError, setGlobalError] = useState('');
   const [emailStatus, setEmailStatus] = useState<{ exists: boolean; hasPassword: boolean } | null>(null);
+
+  const { load: loadDraft, clear: clearDraft, autoSave, hasDraft } = useWizardPersistence();
 
   const { coverImageUrl, coverTitle, rawBase64, isGenerating: isCoverGenerating, error: coverError, generate: generateCover } = useCoverPreview(formData);
   const { previewTitle, previewParagraphs, isGenerating: isStoryPreviewGenerating, error: storyPreviewError, generate: generateStoryPreview } = useStoryPreview(formData);
@@ -182,6 +204,27 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
   const lockedPageRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { wantsExtrasRef.current = wantsExtras; }, [wantsExtras]);
+
+  // Draft resume on mount
+  useEffect(() => {
+    if (hasDraft()) setShowDraftBanner(true);
+  }, []); // eslint-disable-line
+
+  const handleResumeDraft = useCallback(() => {
+    const draft = loadDraft();
+    if (draft) {
+      onUpdate(draft.formData as Partial<StoryFormData>);
+      setCurrentStep(draft.currentStep);
+    }
+    setShowDraftBanner(false);
+  }, [loadDraft, onUpdate]);
+
+  // Auto-save on step/formData change (skip preview)
+  useEffect(() => {
+    if (currentStep < 9) {
+      autoSave(formData as Record<string, unknown>, currentStep);
+    }
+  }, [currentStep, formData, autoSave]);
 
   const totalSteps = wantsExtras ? 12 : 10;
   const visiblePos = (!wantsExtras && currentStep > 6) ? currentStep - 2 : currentStep;
@@ -298,13 +341,42 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
     return ok;
   };
 
-  const handleFormSubmit = () => { setGlobalError(''); if (validatePaymentForm()) onSubmit(); };
+  const handleFormSubmit = () => { setGlobalError(''); if (validatePaymentForm()) { clearDraft(); onSubmit(); } };
 
   const isHeroComplete = !!(formData.protagonistName && formData.protagonistAge && formData.protagonistGender);
   const isAppearanceComplete = formData.appearanceMode === 'photo'
     ? !!formData.photo
     : !!(formData.eyeColor && formData.hairColor && formData.skinColor);
   const isPaymentInfoComplete = !!(formData.productType && formData.userEmail && formData.firstName && formData.lastName);
+
+  // Summary chips data (shown from step 3+)
+  const summaryChips: { label: string; value: string }[] = [];
+  if (formData.ageRange) {
+    const age = AGE_OPTIONS.find(o => o.value === formData.ageRange);
+    if (age) summaryChips.push({ label: 'Âge', value: age.label });
+  }
+  if (formData.generalTheme) {
+    const th = THEME_OPTIONS.find(o => o.value === formData.generalTheme);
+    if (th) summaryChips.push({ label: 'Univers', value: th.label });
+  }
+  if (formData.specificSubject) {
+    const occ = OCCASION_OPTIONS.find(o => o.value === formData.specificSubject);
+    if (occ) summaryChips.push({ label: 'Occasion', value: occ.label });
+  }
+  if (formData.illustrationStyle) {
+    const st = STYLE_OPTIONS.find(o => o.value === formData.illustrationStyle);
+    if (st) summaryChips.push({ label: 'Style', value: st.label });
+  }
+
+  const stepId = ALL_STEPS[currentStep];
+  const showSummary = currentStep >= 3 && currentStep < 9 && summaryChips.length > 0;
+  const isAutoAdvanceStep = ['age', 'theme', 'occasion', 'style'].includes(stepId);
+  const showStickyBar = !isAutoAdvanceStep && currentStep < 9 && stepId !== 'choice';
+
+  // Recommended themes based on age
+  const recommendedThemes = formData.ageRange
+    ? AGE_THEME_RECOMMENDATIONS[formData.ageRange] || []
+    : [];
 
   /* ══════════════════════════════════════════════
      RENDER STEPS
@@ -319,15 +391,18 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
         return (
           <>
             <StepTitle>Pour quel âge ?</StepTitle>
-            <CardGrid $columns={4}>
+            <StepSubtitle>Choisissez la tranche d'âge pour adapter le conte</StepSubtitle>
+            <NewChoiceCardGrid>
               {AGE_OPTIONS.map((o, i) => (
-                <ImageCard key={o.value} $isSelected={formData.ageRange === o.value} $delay={i}
+                <NewChoiceCard key={o.value} $isSelected={formData.ageRange === o.value} $delay={i}
+                  aria-label={`${o.label} — ${o.description}`}
                   onClick={() => handleCardSelect('ageRange', o.value)}>
-                  <CardImg $src={o.imagePath} />
-                  <CardImgLabel>{o.label}</CardImgLabel>
-                </ImageCard>
+                  <SvgIcon token={o.token} size={56} selected={formData.ageRange === o.value} />
+                  <NewCardLabel>{o.label}</NewCardLabel>
+                  <NewCardDescription>{o.description}</NewCardDescription>
+                </NewChoiceCard>
               ))}
-            </CardGrid>
+            </NewChoiceCardGrid>
           </>
         );
 
@@ -335,15 +410,22 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
         return (
           <>
             <StepTitle>Quel univers ?</StepTitle>
-            <CardGrid $columns={4} $compact>
-              {THEME_OPTIONS.map((o, i) => (
-                <ImageCard key={o.value} $isSelected={formData.generalTheme === o.value} $delay={i}
-                  onClick={() => o.value === 'custom' ? onUpdate({ generalTheme: 'custom' }) : handleCardSelect('generalTheme', o.value)}>
-                  <CardImg $src={o.imagePath} />
-                  <CardImgLabel>{o.label}</CardImgLabel>
-                </ImageCard>
-              ))}
-            </CardGrid>
+            <StepSubtitle>Le cadre magique de votre histoire</StepSubtitle>
+            <NewChoiceCardGrid>
+              {THEME_OPTIONS.map((o, i) => {
+                const isRecommended = recommendedThemes.includes(o.value);
+                return (
+                  <NewChoiceCard key={o.value} $isSelected={formData.generalTheme === o.value} $delay={i}
+                    aria-label={`${o.label} — ${o.description}`}
+                    onClick={() => o.value === 'custom' ? onUpdate({ generalTheme: 'custom' }) : handleCardSelect('generalTheme', o.value)}>
+                    {isRecommended && <CardBadgePill $variant="recommended">Recommandé</CardBadgePill>}
+                    <SvgIcon token={o.token} size={52} selected={formData.generalTheme === o.value} />
+                    <NewCardLabel>{o.label}</NewCardLabel>
+                    <NewCardDescription>{o.description}</NewCardDescription>
+                  </NewChoiceCard>
+                );
+              })}
+            </NewChoiceCardGrid>
             {formData.generalTheme === 'custom' && (
               <>
                 <CustomInput type="text" placeholder="Décrivez votre thème..." value={formData.customTheme || ''}
@@ -360,15 +442,25 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
         return (
           <>
             <StepTitle>Quelle occasion ?</StepTitle>
-            <CardGrid $columns={4} $compact>
+            <StepSubtitle>Pour un moment encore plus spécial</StepSubtitle>
+            {showSummary && (
+              <SummaryChipsRow>
+                {summaryChips.map((c, i) => (
+                  <SummaryChip key={c.label} $delay={i}>{c.label}: {c.value}</SummaryChip>
+                ))}
+              </SummaryChipsRow>
+            )}
+            <NewChoiceCardGrid>
               {OCCASION_OPTIONS.map((o, i) => (
-                <ImageCard key={o.value} $isSelected={formData.specificSubject === o.value} $delay={i}
+                <NewChoiceCard key={o.value} $isSelected={formData.specificSubject === o.value} $delay={i}
+                  aria-label={`${o.label} — ${o.description}`}
                   onClick={() => o.value === 'custom' ? onUpdate({ specificSubject: 'custom' }) : handleCardSelect('specificSubject', o.value)}>
-                  <CardImg $src={o.imagePath} />
-                  <CardImgLabel>{o.label}</CardImgLabel>
-                </ImageCard>
+                  <SvgIcon token={o.token} size={52} selected={formData.specificSubject === o.value} />
+                  <NewCardLabel>{o.label}</NewCardLabel>
+                  <NewCardDescription>{o.description}</NewCardDescription>
+                </NewChoiceCard>
               ))}
-            </CardGrid>
+            </NewChoiceCardGrid>
             {formData.specificSubject === 'custom' && (
               <>
                 <CustomInput type="text" placeholder="Décrivez votre occasion..." value={formData.customSubject || ''}
@@ -385,15 +477,28 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
         return (
           <>
             <StepTitle>Quel style d'illustration ?</StepTitle>
-            <CardGrid $columns={5} $compact>
-              {ILLUSTRATION_STYLES.map((s, i) => (
-                <ImageCard key={s.value} $isSelected={formData.illustrationStyle === s.value} $delay={i}
-                  onClick={() => handleCardSelect('illustrationStyle', s.value)}>
-                  <CardImg $src={s.imagePath} />
-                  <CardImgLabel>{s.label}</CardImgLabel>
-                </ImageCard>
-              ))}
-            </CardGrid>
+            <StepSubtitle>L'ambiance visuelle de votre conte</StepSubtitle>
+            {showSummary && (
+              <SummaryChipsRow>
+                {summaryChips.map((c, i) => (
+                  <SummaryChip key={c.label} $delay={i}>{c.label}: {c.value}</SummaryChip>
+                ))}
+              </SummaryChipsRow>
+            )}
+            <NewChoiceCardGrid>
+              {STYLE_OPTIONS.map((s, i) => {
+                const isPopular = POPULAR_STYLES.includes(s.value);
+                return (
+                  <NewChoiceCard key={s.value} $isSelected={formData.illustrationStyle === s.value} $delay={i}
+                    aria-label={s.label}
+                    onClick={() => handleCardSelect('illustrationStyle', s.value)}>
+                    {isPopular && <CardBadgePill $variant="popular">Populaire</CardBadgePill>}
+                    <SvgIcon token={s.token} size={56} selected={formData.illustrationStyle === s.value} />
+                    <NewCardLabel>{s.label}</NewCardLabel>
+                  </NewChoiceCard>
+                );
+              })}
+            </NewChoiceCardGrid>
           </>
         );
 
@@ -402,6 +507,13 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
           <>
             <StepTitle>Votre héros</StepTitle>
             <StepSubtitle>Qui sera le personnage principal ?</StepSubtitle>
+            {showSummary && (
+              <SummaryChipsRow>
+                {summaryChips.map((c, i) => (
+                  <SummaryChip key={c.label} $delay={i}>{c.label}: {c.value}</SummaryChip>
+                ))}
+              </SummaryChipsRow>
+            )}
             <InputRow>
               <InputField>
                 <ValidatedInput label="Prénom *" value={formData.protagonistName || ''}
@@ -412,17 +524,15 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                   onChange={(v) => handleInputChange('protagonistAge', v)} required error={errors.protagonistAge} />
               </InputField>
             </InputRow>
-            <CardGrid $columns={2}>
-              {GENDER_OPTIONS.map((o, i) => (
-                <TextCard key={o.value} $isSelected={formData.protagonistGender === o.value} $delay={i}
+            <SegmentedGender>
+              {GENDER_OPTIONS.map((o) => (
+                <GenderPill key={o.value} $isSelected={formData.protagonistGender === o.value}
+                  aria-label={`Genre: ${o.label}`}
                   onClick={() => onUpdate({ protagonistGender: o.value as 'boy' | 'girl' })}>
-                  {o.label}
-                </TextCard>
+                  {o.value === 'girl' ? '👧 ' : '👦 '}{o.label}
+                </GenderPill>
               ))}
-            </CardGrid>
-            <ContinueButton $isReady={isHeroComplete} disabled={!isHeroComplete} onClick={goNext}>
-              Continuer
-            </ContinueButton>
+            </SegmentedGender>
           </>
         );
 
@@ -430,87 +540,38 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
         return (
           <>
             <StepTitle>Son apparence</StepTitle>
+            <StepSubtitle>Comment ressemble votre personnage ?</StepSubtitle>
 
             {/* ---- Mode choice ---- */}
             {!formData.appearanceMode && (
-              <div style={{ display: 'flex', gap: '16px', width: '100%', maxWidth: 520, justifyContent: 'center', flexWrap: 'wrap' }}>
-                {/* Photo card */}
-                <button onClick={() => onUpdate({ appearanceMode: 'photo', eyeColor: '', hairColor: '', skinColor: '' })} style={{
-                  flex: '1 1 220px', maxWidth: 250, display: 'flex', flexDirection: 'column', alignItems: 'center',
-                  padding: '20px 16px 18px', border: '2px solid transparent', borderRadius: 20,
-                  cursor: 'pointer', transition: 'all 0.3s ease', WebkitTapHighlightColor: 'transparent',
-                  background: `linear-gradient(145deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover})`,
-                  boxShadow: `0 8px 28px ${theme.colors.accent.coral}35`,
-                }}>
-                  <div style={{ width: 72, height: 72, marginBottom: 10, position: 'relative' }}>
-                    <svg viewBox="0 0 80 80" fill="none" style={{ width: '100%', height: '100%' }}>
-                      <circle cx="40" cy="40" r="36" fill="rgba(255,255,255,0.2)" />
-                      <rect x="22" y="26" width="36" height="28" rx="4" fill="white" opacity="0.9">
-                        <animate attributeName="opacity" values="0.9;1;0.9" dur="2s" repeatCount="indefinite" />
-                      </rect>
-                      <circle cx="40" cy="38" r="8" fill="none" stroke={theme.colors.accent.coral} strokeWidth="2.5">
-                        <animate attributeName="r" values="8;9;8" dur="2s" repeatCount="indefinite" />
-                      </circle>
-                      <circle cx="40" cy="38" r="4" fill={theme.colors.accent.coral} opacity="0.6" />
-                      <rect x="50" y="29" width="5" height="3" rx="1" fill={theme.colors.accent.coral} opacity="0.7" />
-                      <circle cx="40" cy="62" r="5" fill="rgba(255,255,255,0.25)">
-                        <animate attributeName="r" values="4;6;4" dur="1.5s" repeatCount="indefinite" />
-                      </circle>
-                      <path d="M38 61 L42 61 L40 64 Z" fill="rgba(255,255,255,0.4)" />
-                    </svg>
-                  </div>
-                  <span style={{ fontFamily: theme.fonts.heading, fontSize: 16, fontWeight: 700, color: 'white', textAlign: 'center', lineHeight: 1.2 }}>
-                    Importer une photo
-                  </span>
-                  <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.85)', textAlign: 'center', marginTop: 4, lineHeight: 1.3 }}>
-                    Le personnage ressemblera a votre enfant
-                  </span>
-                </button>
+              <NewChoiceCardGrid style={{ maxWidth: 400 }}>
+                <NewChoiceCard $isSelected={false} $delay={0}
+                  onClick={() => onUpdate({ appearanceMode: 'photo', eyeColor: '', hairColor: '', skinColor: '' })}
+                  style={{ padding: '24px 16px', background: `linear-gradient(145deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover})` }}>
+                  <svg viewBox="0 0 80 80" fill="none" width="56" height="56" aria-hidden="true">
+                    <circle cx="40" cy="40" r="36" fill="rgba(255,255,255,0.2)" />
+                    <rect x="22" y="26" width="36" height="28" rx="4" fill="white" opacity="0.9" />
+                    <circle cx="40" cy="38" r="8" fill="none" stroke="white" strokeWidth="2.5" />
+                    <circle cx="40" cy="38" r="4" fill="white" opacity="0.6" />
+                  </svg>
+                  <NewCardLabel style={{ color: 'white' }}>Importer une photo</NewCardLabel>
+                  <NewCardDescription style={{ color: 'rgba(255,255,255,0.85)' }}>Le personnage ressemblera à votre enfant</NewCardDescription>
+                </NewChoiceCard>
 
-                {/* Manual card */}
-                <button onClick={() => onUpdate({ appearanceMode: 'manual', photo: undefined })} style={{
-                  flex: '1 1 220px', maxWidth: 250, display: 'flex', flexDirection: 'column', alignItems: 'center',
-                  padding: '20px 16px 18px', border: '2px solid rgba(0,0,0,0.08)', borderRadius: 20,
-                  cursor: 'pointer', transition: 'all 0.3s ease', WebkitTapHighlightColor: 'transparent',
-                  background: 'white', boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
-                }}>
-                  <div style={{ width: 72, height: 72, marginBottom: 10, position: 'relative' }}>
-                    <svg viewBox="0 0 80 80" fill="none" style={{ width: '100%', height: '100%' }}>
-                      <circle cx="40" cy="40" r="36" fill={`${theme.colors.accent.coral}12`} />
-                      {/* Eye */}
-                      <ellipse cx="29" cy="32" rx="8" ry="6" fill="#E8D5C4" stroke="#CCC" strokeWidth="1" />
-                      <circle cx="29" cy="32" r="4" fill="#4169E1">
-                        <animate attributeName="r" values="4;3.5;4" dur="2.5s" repeatCount="indefinite" />
-                      </circle>
-                      <circle cx="28" cy="31" r="1.2" fill="white" />
-                      {/* Hair swatch */}
-                      <circle cx="53" cy="28" r="8" fill="#FFD700">
-                        <animate attributeName="fill" values="#FFD700;#8B4513;#1a1a1a;#D35400;#FFD700" dur="4s" repeatCount="indefinite" />
-                      </circle>
-                      <path d="M48 24 Q53 18, 58 24" stroke="rgba(0,0,0,0.15)" strokeWidth="1.5" fill="none" />
-                      <path d="M49 28 Q53 22, 57 28" stroke="rgba(0,0,0,0.1)" strokeWidth="1" fill="none" />
-                      {/* Skin swatches */}
-                      <circle cx="28" cy="54" r="6" fill="#FDDCB5">
-                        <animate attributeName="fill" values="#FDDCB5;#E8B88A;#C8915E;#8D5524;#FDDCB5" dur="5s" repeatCount="indefinite" />
-                      </circle>
-                      <circle cx="44" cy="54" r="6" fill="#E8B88A">
-                        <animate attributeName="fill" values="#E8B88A;#C8915E;#8D5524;#FDDCB5;#E8B88A" dur="5s" repeatCount="indefinite" />
-                      </circle>
-                      <circle cx="60" cy="54" r="6" fill="#C8915E">
-                        <animate attributeName="fill" values="#C8915E;#8D5524;#FDDCB5;#E8B88A;#C8915E" dur="5s" repeatCount="indefinite" />
-                      </circle>
-                      {/* Palette icon */}
-                      <path d="M20 54 Q16 46, 20 40" stroke={theme.colors.accent.coral} strokeWidth="1.5" fill="none" opacity="0.3" />
-                    </svg>
-                  </div>
-                  <span style={{ fontFamily: theme.fonts.heading, fontSize: 16, fontWeight: 700, color: theme.colors.text.primary, textAlign: 'center', lineHeight: 1.2 }}>
-                    Personnaliser
-                  </span>
-                  <span style={{ fontSize: 12, color: theme.colors.text.secondary, textAlign: 'center', marginTop: 4, lineHeight: 1.3 }}>
-                    Choisir yeux, cheveux et peau
-                  </span>
-                </button>
-              </div>
+                <NewChoiceCard $isSelected={false} $delay={1}
+                  onClick={() => onUpdate({ appearanceMode: 'manual', photo: undefined })}>
+                  <svg viewBox="0 0 80 80" fill="none" width="56" height="56" aria-hidden="true">
+                    <circle cx="40" cy="40" r="36" fill={`${theme.colors.accent.coral}12`} />
+                    <circle cx="25" cy="35" r="7" fill="#4169E1" opacity="0.8" />
+                    <circle cx="50" cy="28" r="7" fill="#FFD700" />
+                    <circle cx="28" cy="54" r="6" fill="#FDDCB5" />
+                    <circle cx="44" cy="54" r="6" fill="#E8B88A" />
+                    <circle cx="60" cy="54" r="6" fill="#8D5524" />
+                  </svg>
+                  <NewCardLabel>Personnaliser</NewCardLabel>
+                  <NewCardDescription>Choisir yeux, cheveux et peau</NewCardDescription>
+                </NewChoiceCard>
+              </NewChoiceCardGrid>
             )}
 
             {/* ---- Photo mode ---- */}
@@ -519,11 +580,11 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 <PhotoUploadZone $hasPhoto={!!formData.photo} onClick={() => fileInputRef.current?.click()}>
                   <PhotoIcon>{formData.photo ? '✓' : '📷'}</PhotoIcon>
                   <PhotoMainText>{formData.photo ? (formData.photo as File).name : 'Cliquez pour ajouter une photo'}</PhotoMainText>
-                  <PhotoSubText>{formData.photo ? 'Cliquez pour changer' : 'Photo de face, bien eclairee'}</PhotoSubText>
+                  <PhotoSubText>{formData.photo ? 'Cliquez pour changer' : 'Photo de face, bien éclairée'}</PhotoSubText>
                   <HiddenFileInput ref={fileInputRef} type="file" accept="image/*" onChange={handleFileUpload} />
                 </PhotoUploadZone>
                 <SkipLink onClick={() => onUpdate({ appearanceMode: undefined, photo: undefined })}>
-                  Changer de methode
+                  Changer de méthode
                 </SkipLink>
               </>
             )}
@@ -564,27 +625,33 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                   ))}
                 </ColorCardGrid>
                 <SkipLink onClick={() => onUpdate({ appearanceMode: undefined, eyeColor: '', hairColor: '', skinColor: '' })}>
-                  Changer de methode
+                  Changer de méthode
                 </SkipLink>
               </>
-            )}
-
-            {formData.appearanceMode && (
-              <ContinueButton $isReady={isAppearanceComplete} disabled={!isAppearanceComplete} onClick={goNext}>
-                Continuer
-              </ContinueButton>
             )}
           </>
         );
 
       case 'choice':
         return (
-          <>
-            <StepTitle>Votre histoire est prête !</StepTitle>
+          <RewardWrapper>
+            <RewardSparkle $delay={0} $left="15%" $size={5} />
+            <RewardSparkle $delay={0.8} $left="35%" $size={7} />
+            <RewardSparkle $delay={1.6} $left="55%" $size={4} />
+            <RewardSparkle $delay={0.4} $left="75%" $size={6} />
+            <RewardSparkle $delay={1.2} $left="90%" $size={5} />
+            <RewardTitle>Votre histoire est prête !</RewardTitle>
             <StepSubtitle>Que souhaitez-vous faire ?</StepSubtitle>
+            {showSummary && (
+              <SummaryChipsRow>
+                {summaryChips.map((c, i) => (
+                  <SummaryChip key={c.label} $delay={i}>{c.label}: {c.value}</SummaryChip>
+                ))}
+              </SummaryChipsRow>
+            )}
             <div style={{ display: 'flex', flexDirection: 'column', gap: theme.spacing.lg, width: '100%', alignItems: 'center' }}>
               <ChoiceCard $variant="primary" onClick={() => {
-                setWantsExtras(false); wantsExtrasRef.current = false; goToStep(9); // skip to 'cover'
+                setWantsExtras(false); wantsExtrasRef.current = false; goToStep(9);
               }}>
                 <ChoiceTitle $variant="primary">Découvrir mon conte</ChoiceTitle>
                 <ChoiceDesc $variant="primary">Générer la couverture maintenant</ChoiceDesc>
@@ -596,7 +663,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 <ChoiceDesc $variant="secondary">Message, langue, détails, personnages...</ChoiceDesc>
               </ChoiceCard>
             </div>
-          </>
+          </RewardWrapper>
         );
 
       case 'extras1':
@@ -605,15 +672,17 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
             <StepTitle>Personnalisez votre conte</StepTitle>
             <ExtrasSection>
               <SectionTitle>Quel message transmettre ?</SectionTitle>
-              <CardGrid $columns={4} $compact>
+              <NewChoiceCardGrid>
                 {MESSAGE_OPTIONS.map((o, i) => (
-                  <ImageCard key={o.value} $isSelected={formData.centralMessage === o.value} $delay={i}
+                  <NewChoiceCard key={o.value} $isSelected={formData.centralMessage === o.value} $delay={i}
+                    aria-label={`${o.label} — ${o.description}`}
                     onClick={() => handleInputChange('centralMessage', o.value)}>
-                    <CardImg $src={o.imagePath} />
-                    <CardImgLabel>{o.label}</CardImgLabel>
-                  </ImageCard>
+                    <SvgIcon token={o.token} size={48} selected={formData.centralMessage === o.value} />
+                    <NewCardLabel>{o.label}</NewCardLabel>
+                    <NewCardDescription>{o.description}</NewCardDescription>
+                  </NewChoiceCard>
                 ))}
-              </CardGrid>
+              </NewChoiceCardGrid>
               {formData.centralMessage === 'custom' && (
                 <CustomInput type="text" placeholder="Votre message personnalisé..." value={formData.customMessage || ''}
                   onChange={(e) => handleInputChange('customMessage', e.target.value)} />
@@ -622,31 +691,29 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
 
             <ExtrasSection>
               <SectionTitle>Langue du conte</SectionTitle>
-              <CardGrid $columns={2} $compact>
-                {LANG_TOP.map((o, i) => (
-                  <TextCard key={o.value} $isSelected={formData.language === o.value} $delay={i}
+              <DetailChipGroup>
+                {LANG_TOP.map((o) => (
+                  <DetailChip key={o.value} $isSelected={formData.language === o.value}
                     onClick={() => handleInputChange('language', o.value)}>
                     {o.label}
-                  </TextCard>
+                  </DetailChip>
                 ))}
-                <TextCard $isSelected={false} $delay={3}
+                <DetailChip $isSelected={false}
                   onClick={() => setShowAllLanguages(!showAllLanguages)}>
-                  {showAllLanguages ? 'Masquer ▲' : 'Autre langue ▼'}
-                </TextCard>
-              </CardGrid>
+                  {showAllLanguages ? 'Masquer ▲' : 'Autre ▼'}
+                </DetailChip>
+              </DetailChipGroup>
               {showAllLanguages && (
-                <CardGrid $columns={2} $compact style={{ marginTop: theme.spacing.sm }}>
-                  {LANG_OTHER.map((o, i) => (
-                    <TextCard key={o.value} $isSelected={formData.language === o.value} $delay={i}
+                <DetailChipGroup>
+                  {LANG_OTHER.map((o) => (
+                    <DetailChip key={o.value} $isSelected={formData.language === o.value}
                       onClick={() => handleInputChange('language', o.value)}>
                       {o.label}
-                    </TextCard>
+                    </DetailChip>
                   ))}
-                </CardGrid>
+                </DetailChipGroup>
               )}
             </ExtrasSection>
-
-            <ContinueButton $isReady={true} onClick={goNext}>Continuer</ContinueButton>
           </>
         );
 
@@ -661,39 +728,39 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
             </ExtrasSection>
 
             <ExtrasSection>
-              <CollapsiblePill $isOpen={showReligion} onClick={() => {
+              <AccordionHeader $isOpen={showReligion} onClick={() => {
                 setShowReligion(!showReligion);
                 if (showReligion) onUpdate({ religion: undefined, customReligion: undefined });
               }}>
-                Dimension religieuse
-                <CollapsibleChevron $isOpen={showReligion}>▼</CollapsibleChevron>
-              </CollapsiblePill>
-              <CollapsibleContent $isOpen={showReligion}>
-                <CardGrid $columns={3} $compact>
-                  {RELIGION_OPTIONS.map((o, i) => (
-                    <TextCard key={o.value} $isSelected={formData.religion === o.value} $delay={i}
+                <span>Dimension religieuse</span>
+                <AccordionChevron $isOpen={showReligion}>▼</AccordionChevron>
+              </AccordionHeader>
+              <AccordionBody $isOpen={showReligion}>
+                <DetailChipGroup>
+                  {RELIGION_OPTIONS.map((o) => (
+                    <DetailChip key={o.value} $isSelected={formData.religion === o.value}
                       onClick={() => handleInputChange('religion', o.value)}>
                       {o.label}
-                    </TextCard>
+                    </DetailChip>
                   ))}
-                </CardGrid>
+                </DetailChipGroup>
                 {formData.religion === 'other' && (
                   <CustomInput type="text" placeholder="Précisez..." value={formData.customReligion || ''}
                     onChange={(e) => handleInputChange('customReligion', e.target.value)} />
                 )}
-              </CollapsibleContent>
+              </AccordionBody>
             </ExtrasSection>
 
             <ExtrasSection>
-              <CollapsiblePill $isOpen={showSecondaryChars} onClick={() => setShowSecondaryChars(!showSecondaryChars)}>
-                Personnages secondaires
-                <CollapsibleChevron $isOpen={showSecondaryChars}>▼</CollapsibleChevron>
-              </CollapsiblePill>
-              <CollapsibleContent $isOpen={showSecondaryChars}>
+              <AccordionHeader $isOpen={showSecondaryChars} onClick={() => setShowSecondaryChars(!showSecondaryChars)}>
+                <span>Personnages secondaires</span>
+                <AccordionChevron $isOpen={showSecondaryChars}>▼</AccordionChevron>
+              </AccordionHeader>
+              <AccordionBody $isOpen={showSecondaryChars}>
                 <SecondaryCharactersSection
                   secondaryCharacters={formData.secondaryCharacters || []}
                   onChange={(chars) => onUpdate({ secondaryCharacters: chars })} />
-              </CollapsibleContent>
+              </AccordionBody>
             </ExtrasSection>
 
             <ExtrasSection>
@@ -703,8 +770,6 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                   onChange={(v) => handleInputChange('creatorName', v)} placeholder="Ex : Créé par Papa et Maman..." required={false} />
               </InputField>
             </ExtrasSection>
-
-            <DiscoverCTA onClick={goNext}>Découvrir mon conte</DiscoverCTA>
           </>
         );
 
@@ -1010,22 +1075,106 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
     </StepContainerCentered>
   );
 
+  const isPreviewStep = ALL_STEPS[currentStep] === 'preview';
+  const stepLabels = Object.entries(STEP_CONFIG);
+
+  // Determine which steps to show and their status
+  const getSegmentStatus = (idx: number): 'done' | 'current' | 'future' | 'skipped' => {
+    if (idx < currentStep) return 'done';
+    if (idx === currentStep) return 'current';
+    // If !wantsExtras, steps 7 & 8 are skipped
+    if (!wantsExtras && (idx === 7 || idx === 8) && currentStep > 6) return 'skipped';
+    return 'future';
+  };
+
+  // For sticky bar: determine readiness
+  const isStickyReady = (() => {
+    switch (stepId) {
+      case 'hero': return isHeroComplete;
+      case 'appearance': return isAppearanceComplete;
+      case 'extras1': return true;
+      case 'extras2': return true;
+      default: return false;
+    }
+  })();
+
+  // Sticky bar action
+  const handleStickyNext = () => {
+    if (stepId === 'extras2') {
+      // Go to preview
+      goToStep(9);
+    } else {
+      goNext();
+    }
+  };
+
   return (
     <WizardOverlay>
-      <WizardHeader>
-        <BackArrow $visible={currentStep > 0} onClick={goBack}>
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <path d="M12 4L6 10L12 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </BackArrow>
-        <WizardTitle>Créez votre conte</WizardTitle>
-        <ProgressTrack><ProgressFill $progress={progress} /></ProgressTrack>
-      </WizardHeader>
+      {/* ── Header: New for steps 0-8, Old for preview ── */}
+      {isPreviewStep ? (
+        <WizardHeader>
+          <BackArrow $visible={currentStep > 0} onClick={goBack}>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M12 4L6 10L12 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </BackArrow>
+          <WizardTitle>Créez votre conte</WizardTitle>
+          <ProgressTrack><ProgressFill $progress={progress} /></ProgressTrack>
+        </WizardHeader>
+      ) : (
+        <WizardHeaderNew>
+          <HeaderTopRow>
+            <BackArrow $visible={currentStep > 0} onClick={goBack} style={{ position: 'relative', left: 0 }}>
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+                <path d="M12 4L6 10L12 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </BackArrow>
+            <HeaderTitle>Créer votre conte</HeaderTitle>
+            <HeaderBadge>~1 min</HeaderBadge>
+          </HeaderTopRow>
+          <HeaderStepLabel aria-current="step">
+            Étape {currentStep + 1}/9 — {STEP_CONFIG[stepId]?.label || ''}
+          </HeaderStepLabel>
+          <SegmentedProgressBar role="progressbar" aria-valuenow={currentStep + 1} aria-valuemin={1} aria-valuemax={9}>
+            {ALL_STEPS.slice(0, 9).map((s, i) => (
+              <ProgressSegment key={s} $status={getSegmentStatus(i)} />
+            ))}
+          </SegmentedProgressBar>
+        </WizardHeaderNew>
+      )}
+
+      {/* ── Draft resume banner ── */}
+      {showDraftBanner && currentStep === 0 && (
+        <DraftBanner>
+          <DraftBannerText>Reprendre ma création ?</DraftBannerText>
+          <div style={{ display: 'flex', gap: 6 }}>
+            <DraftBannerButton onClick={handleResumeDraft}>Reprendre</DraftBannerButton>
+            <DraftBannerDismiss onClick={() => { setShowDraftBanner(false); clearDraft(); }} aria-label="Fermer">✕</DraftBannerDismiss>
+          </div>
+        </DraftBanner>
+      )}
 
       <WizardViewport ref={viewportRef}>
         {prevStep !== null && isAnimating && renderStepInContainer(prevStep, 'exiting')}
         {renderStepInContainer(currentStep, isAnimating ? 'entering' : 'active')}
       </WizardViewport>
+
+      {/* ── Sticky CTA bar for non-auto-advance steps ── */}
+      {showStickyBar && (
+        <StickyBottomBar>
+          {currentStep > 0 && (
+            <StickyBackButton onClick={goBack}>
+              <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
+                <path d="M12 4L6 10L12 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              Retour
+            </StickyBackButton>
+          )}
+          <StickyContinueButton $isReady={isStickyReady} disabled={!isStickyReady} onClick={handleStickyNext}>
+            {stepId === 'extras2' ? 'Découvrir mon conte' : 'Continuer'}
+          </StickyContinueButton>
+        </StickyBottomBar>
+      )}
     </WizardOverlay>
   );
 };

@@ -1925,3 +1925,572 @@ export const SocialProofLine = styled.p`
     margin-top: ${theme.spacing.xl};
   }
 `;
+
+/* ══════════════════════════════════════════════
+   V2 WIZARD — NEW COMPONENTS (steps 0-8 redesign)
+   Existing components above are kept for preview step
+   ══════════════════════════════════════════════ */
+
+/* ── Animations ── */
+
+export const shimmerSegment = keyframes`
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+`;
+
+export const cardPop = keyframes`
+  from { opacity: 0; transform: translateY(12px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+`;
+
+export const chipSlideIn = keyframes`
+  from { opacity: 0; transform: translateX(-8px); }
+  to   { opacity: 1; transform: translateX(0); }
+`;
+
+export const sparkleFloat = keyframes`
+  0%, 100% { opacity: 0; transform: translateY(0) scale(0.5); }
+  50%      { opacity: 1; transform: translateY(-20px) scale(1); }
+`;
+
+/* ── 2.1 Header Redesigné ── */
+
+export const WizardHeaderNew = styled.header`
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+  padding: ${theme.spacing.sm} ${theme.spacing.lg} ${theme.spacing.md};
+  flex-shrink: 0;
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    padding: ${theme.spacing.xs} ${theme.spacing.md} ${theme.spacing.sm};
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(255,255,255,0.98);
+  }
+`;
+
+export const HeaderTopRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2px;
+`;
+
+export const HeaderTitle = styled.span`
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.sm};
+  font-weight: 700;
+  background: linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.accent.softPink});
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+`;
+
+export const HeaderBadge = styled.span`
+  font-family: ${theme.fonts.body};
+  font-size: 10px;
+  font-weight: 600;
+  color: ${theme.colors.text.light};
+  background: ${theme.colors.background.secondary};
+  padding: 2px 8px;
+  border-radius: ${theme.borderRadius.full};
+`;
+
+export const HeaderStepLabel = styled.p`
+  font-family: ${theme.fonts.body};
+  font-size: ${theme.fontSizes.xs};
+  color: ${theme.colors.text.secondary};
+  margin: 0 0 ${theme.spacing.sm};
+  text-align: center;
+  font-weight: 500;
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    font-size: 11px;
+    margin-bottom: 6px;
+  }
+`;
+
+export const SegmentedProgressBar = styled.div`
+  display: flex;
+  gap: 3px;
+  width: 100%;
+  align-items: center;
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    gap: 2px;
+  }
+`;
+
+export const ProgressSegment = styled.div<{
+  $status: 'done' | 'current' | 'future' | 'skipped';
+}>`
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+
+  background: ${p => {
+    switch (p.$status) {
+      case 'done': return `linear-gradient(90deg, ${theme.colors.accent.coral}, ${theme.colors.accent.softPink})`;
+      case 'current': return theme.colors.accent.coral;
+      case 'skipped': return `${theme.colors.accent.coral}30`;
+      default: return '#E5E7EB';
+    }
+  }};
+
+  ${p => p.$status === 'current' && css`
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+      background-size: 200% 100%;
+      animation: ${shimmerSegment} 2s ease-in-out infinite;
+    }
+  `}
+
+  @media (prefers-reduced-motion: reduce) {
+    &::after { animation: none; }
+  }
+`;
+
+export const SegmentDot = styled.div<{ $active: boolean; $done: boolean }>`
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+  background: ${p => p.$done
+    ? theme.colors.accent.coral
+    : p.$active
+      ? theme.colors.accent.coral
+      : '#D1D5DB'};
+  ${p => p.$active && css`
+    box-shadow: 0 0 0 3px ${theme.colors.accent.coral}25;
+  `}
+`;
+
+/* ── 2.2 Sticky CTA Bar ── */
+
+export const StickyBottomBar = styled.div`
+  position: sticky;
+  bottom: 0;
+  z-index: 15;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(0,0,0,0.06);
+  padding: ${theme.spacing.sm} ${theme.spacing.lg};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: ${theme.spacing.md};
+  flex-shrink: 0;
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    padding: ${theme.spacing.sm} ${theme.spacing.md};
+  }
+`;
+
+export const StickyBackButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 16px;
+  background: none;
+  border: 1.5px solid #E5E7EB;
+  border-radius: ${theme.borderRadius.lg};
+  font-family: ${theme.fonts.body};
+  font-size: ${theme.fontSizes.sm};
+  font-weight: 600;
+  color: ${theme.colors.text.secondary};
+  cursor: pointer;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+
+  &:hover {
+    border-color: ${theme.colors.accent.coral};
+    color: ${theme.colors.accent.coral};
+  }
+`;
+
+export const StickyContinueButton = styled.button<{ $isReady: boolean }>`
+  flex: 1;
+  max-width: 300px;
+  padding: 12px ${theme.spacing.xl};
+  border: none;
+  border-radius: ${theme.borderRadius.lg};
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.base};
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
+  background: ${p => p.$isReady
+    ? `linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover})`
+    : '#D1D5DB'};
+
+  ${p => p.$isReady && css`
+    box-shadow: 0 4px 16px ${theme.colors.accent.coral}30;
+    &:hover { transform: scale(1.02); box-shadow: 0 6px 24px ${theme.colors.accent.coral}40; }
+  `}
+
+  &:disabled { cursor: not-allowed; opacity: 0.5; }
+  &:active { transform: scale(0.98); }
+`;
+
+/* ── 2.3 NewChoiceCard ── */
+
+export const NewChoiceCardGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: ${theme.spacing.sm};
+  width: 100%;
+  max-width: 560px;
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    max-width: 100%;
+  }
+
+  @media (min-width: ${theme.breakpoints.lg}) {
+    max-width: 700px;
+    gap: ${theme.spacing.md};
+  }
+`;
+
+export const NewChoiceCard = styled.button<{ $isSelected: boolean; $delay?: number }>`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: ${theme.spacing.md} ${theme.spacing.sm};
+  border: 2px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'rgba(0,0,0,0.06)'};
+  border-radius: 16px;
+  background: ${p => p.$isSelected
+    ? `linear-gradient(160deg, #FFF8F5, #FFF)`
+    : 'white'};
+  cursor: pointer;
+  transition: all 0.25s ease;
+  -webkit-tap-highlight-color: transparent;
+  animation: ${cardPop} 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) ${p => (p.$delay || 0) * 0.06}s both;
+
+  ${p => p.$isSelected && css`
+    box-shadow: 0 0 0 3px ${theme.colors.accent.coral}18, 0 4px 20px rgba(0,0,0,0.06);
+  `}
+
+  &:active { transform: scale(0.96); }
+
+  @media (min-width: ${theme.breakpoints.lg}) {
+    padding: ${theme.spacing.lg} ${theme.spacing.md};
+    border-radius: 18px;
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      border-color: ${theme.colors.accent.lightCoral};
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    opacity: 1;
+  }
+`;
+
+export const NewCardLabel = styled.span`
+  font-family: ${theme.fonts.body};
+  font-size: ${theme.fontSizes.xs};
+  font-weight: 600;
+  color: ${theme.colors.text.primary};
+  text-align: center;
+  line-height: 1.25;
+
+  @media (min-width: ${theme.breakpoints.lg}) {
+    font-size: ${theme.fontSizes.sm};
+  }
+`;
+
+export const NewCardDescription = styled.span`
+  font-family: ${theme.fonts.body};
+  font-size: 10px;
+  color: ${theme.colors.text.light};
+  text-align: center;
+  line-height: 1.3;
+
+  @media (min-width: ${theme.breakpoints.lg}) {
+    font-size: ${theme.fontSizes.xs};
+  }
+`;
+
+export const CardBadgePill = styled.span<{ $variant?: 'recommended' | 'popular' }>`
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-family: ${theme.fonts.body};
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  padding: 2px 8px;
+  border-radius: ${theme.borderRadius.full};
+  color: white;
+  background: ${p => p.$variant === 'popular'
+    ? 'linear-gradient(135deg, #A8D8EA, #7CB9D0)'
+    : `linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.accent.softPink})`};
+
+  @media (min-width: ${theme.breakpoints.lg}) {
+    font-size: 10px;
+    padding: 3px 10px;
+  }
+`;
+
+/* ── 2.4 Summary Chips ── */
+
+export const SummaryChipsRow = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  margin-bottom: ${theme.spacing.md};
+  max-width: 560px;
+  width: 100%;
+`;
+
+export const SummaryChip = styled.span<{ $delay?: number }>`
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: ${theme.colors.background.secondary};
+  border: 1px solid rgba(0,0,0,0.04);
+  border-radius: ${theme.borderRadius.full};
+  font-family: ${theme.fonts.body};
+  font-size: 10px;
+  font-weight: 500;
+  color: ${theme.colors.text.secondary};
+  animation: ${chipSlideIn} 0.3s ease ${p => (p.$delay || 0) * 0.08}s both;
+
+  @media (min-width: ${theme.breakpoints.lg}) {
+    font-size: ${theme.fontSizes.xs};
+    padding: 5px 12px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    opacity: 1;
+  }
+`;
+
+/* ── 2.5 Hero Step Specifics ── */
+
+export const SegmentedGender = styled.div`
+  display: flex;
+  background: ${theme.colors.background.secondary};
+  border-radius: ${theme.borderRadius.full};
+  padding: 3px;
+  gap: 0;
+  margin-bottom: ${theme.spacing.md};
+`;
+
+export const GenderPill = styled.button<{ $isSelected: boolean }>`
+  flex: 1;
+  padding: 10px 24px;
+  border: none;
+  border-radius: ${theme.borderRadius.full};
+  font-family: ${theme.fonts.body};
+  font-size: ${theme.fontSizes.sm};
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  -webkit-tap-highlight-color: transparent;
+  background: ${p => p.$isSelected
+    ? 'white'
+    : 'transparent'};
+  color: ${p => p.$isSelected
+    ? theme.colors.accent.coral
+    : theme.colors.text.secondary};
+  box-shadow: ${p => p.$isSelected
+    ? '0 2px 8px rgba(0,0,0,0.08)'
+    : 'none'};
+
+  &:active { transform: scale(0.96); }
+`;
+
+/* ── 2.6 Choice / Reward Step ── */
+
+export const RewardWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: ${theme.spacing.md};
+  position: relative;
+  padding: ${theme.spacing.xl} 0;
+`;
+
+export const RewardSparkle = styled.div<{ $delay: number; $left: string; $size: number }>`
+  position: absolute;
+  left: ${p => p.$left};
+  top: 20%;
+  width: ${p => p.$size}px;
+  height: ${p => p.$size}px;
+  border-radius: 50%;
+  background: ${theme.colors.accent.coral};
+  animation: ${sparkleFloat} 2.5s ease-in-out ${p => p.$delay}s infinite;
+  pointer-events: none;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    opacity: 0;
+  }
+`;
+
+export const RewardTitle = styled.h2`
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes['2xl']};
+  font-weight: 700;
+  text-align: center;
+  color: ${theme.colors.text.primary};
+  margin: 0;
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    font-size: ${theme.fontSizes.xl};
+  }
+`;
+
+/* ── 2.7 Extras — Detail Chips & Accordion ── */
+
+export const DetailChipGroup = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: ${theme.spacing.md};
+`;
+
+export const DetailChip = styled.button<{ $isSelected: boolean }>`
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  border: 1.5px solid ${p => p.$isSelected ? theme.colors.accent.coral : '#E5E7EB'};
+  border-radius: ${theme.borderRadius.full};
+  background: ${p => p.$isSelected ? theme.colors.accent.creamyYellow : 'white'};
+  font-family: ${theme.fonts.body};
+  font-size: ${theme.fontSizes.xs};
+  font-weight: 600;
+  color: ${p => p.$isSelected ? theme.colors.accent.coral : theme.colors.text.secondary};
+  cursor: pointer;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+
+  &:hover {
+    border-color: ${theme.colors.accent.coral};
+    color: ${theme.colors.accent.coral};
+  }
+  &:active { transform: scale(0.96); }
+`;
+
+export const AccordionHeader = styled.button<{ $isOpen: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: ${theme.spacing.sm} ${theme.spacing.md};
+  border: 1.5px solid ${p => p.$isOpen ? theme.colors.accent.coral : '#E5E7EB'};
+  border-radius: ${p => p.$isOpen ? '12px 12px 0 0' : '12px'};
+  background: ${p => p.$isOpen ? theme.colors.accent.creamyYellow : 'white'};
+  font-family: ${theme.fonts.body};
+  font-size: ${theme.fontSizes.sm};
+  font-weight: 600;
+  color: ${p => p.$isOpen ? theme.colors.accent.coral : theme.colors.text.primary};
+  cursor: pointer;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+  margin-bottom: 0;
+
+  &:hover { border-color: ${theme.colors.accent.coral}; }
+`;
+
+export const AccordionChevron = styled.span<{ $isOpen: boolean }>`
+  font-size: 0.7rem;
+  transition: transform 0.3s ease;
+  transform: ${p => p.$isOpen ? 'rotate(180deg)' : 'rotate(0)'};
+  color: ${p => p.$isOpen ? theme.colors.accent.coral : theme.colors.text.light};
+`;
+
+export const AccordionBody = styled.div<{ $isOpen: boolean }>`
+  max-height: ${p => p.$isOpen ? '800px' : '0'};
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+  border: ${p => p.$isOpen ? `1.5px solid ${theme.colors.accent.coral}` : '1.5px solid transparent'};
+  border-top: none;
+  border-radius: 0 0 12px 12px;
+  background: white;
+  padding: ${p => p.$isOpen ? `${theme.spacing.md}` : '0'};
+  width: 100%;
+`;
+
+/* ── 2.8 Draft Resume Banner ── */
+
+export const DraftBanner = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: ${theme.spacing.sm} ${theme.spacing.md};
+  background: linear-gradient(135deg, ${theme.colors.accent.creamyYellow}, #FFF8F0);
+  border: 1.5px solid ${theme.colors.accent.lightCoral}40;
+  border-radius: ${theme.borderRadius.lg};
+  margin: ${theme.spacing.sm} ${theme.spacing.lg};
+  animation: ${fadeIn} 0.4s ease;
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    margin: ${theme.spacing.xs} ${theme.spacing.md};
+    padding: ${theme.spacing.xs} ${theme.spacing.sm};
+  }
+`;
+
+export const DraftBannerText = styled.span`
+  font-family: ${theme.fonts.body};
+  font-size: ${theme.fontSizes.xs};
+  font-weight: 600;
+  color: ${theme.colors.text.primary};
+`;
+
+export const DraftBannerButton = styled.button`
+  padding: 4px 12px;
+  border: none;
+  border-radius: ${theme.borderRadius.md};
+  background: ${theme.colors.accent.coral};
+  color: white;
+  font-family: ${theme.fonts.body};
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+
+  &:hover { background: ${theme.colors.button.primaryHover}; }
+`;
+
+export const DraftBannerDismiss = styled.button`
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: ${theme.colors.text.light};
+  font-size: 14px;
+  line-height: 1;
+  &:hover { color: ${theme.colors.text.secondary}; }
+`;
