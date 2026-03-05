@@ -25,9 +25,9 @@ export const fadeIn = keyframes`
   to   { opacity: 1; transform: translateY(0); }
 `;
 
-const slowZoom = keyframes`
-  0%, 100% { transform: scale(1); }
-  50%      { transform: scale(1.06); }
+const cardShine = keyframes`
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 `;
 
 const breathe = keyframes`
@@ -270,7 +270,26 @@ export const CardImg = styled.div<{ $src: string }>`
   background-image: url(${p => p.$src});
   background-size: cover;
   background-position: center;
-  animation: ${slowZoom} 10s ease-in-out infinite;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      105deg,
+      transparent 40%,
+      rgba(255,255,255,0.25) 50%,
+      transparent 60%
+    );
+    background-size: 200% 100%;
+    animation: ${cardShine} 4s ease-in-out infinite;
+    pointer-events: none;
+
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+    }
+  }
 `;
 
 export const CardImgLabel = styled.span`
