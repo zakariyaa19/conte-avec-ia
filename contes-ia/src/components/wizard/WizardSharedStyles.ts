@@ -2494,3 +2494,70 @@ export const DraftBannerDismiss = styled.button`
   line-height: 1;
   &:hover { color: ${theme.colors.text.secondary}; }
 `;
+
+/* ── Gender Selection Cards ── */
+
+export const GenderCard = styled.button<{ $isSelected: boolean; $delay?: number }>`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: ${theme.spacing.lg} ${theme.spacing.md};
+  border: 2.5px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'rgba(0,0,0,0.06)'};
+  border-radius: 20px;
+  background: ${p => p.$isSelected
+    ? `linear-gradient(160deg, #FFF8F5, #FFF)`
+    : 'white'};
+  cursor: pointer;
+  transition: all 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+  animation: ${cardReveal} 0.4s cubic-bezier(0.34,1.56,0.64,1) ${p => (p.$delay || 0) * 0.1}s both;
+
+  ${p => p.$isSelected && css`
+    box-shadow: 0 0 0 4px ${theme.colors.accent.coral}18, 0 6px 24px rgba(0,0,0,0.08);
+    transform: scale(1.02);
+  `}
+
+  &:active { transform: scale(0.96); }
+
+  @media (min-width: ${theme.breakpoints.lg}) {
+    padding: ${theme.spacing.xl} ${theme.spacing.lg};
+    border-radius: 24px;
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 32px rgba(0,0,0,0.1);
+      border-color: ${theme.colors.accent.lightCoral};
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    opacity: 1;
+  }
+`;
+
+export const GenderCardIcon = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+
+  @media (min-width: ${theme.breakpoints.lg}) {
+    width: 72px;
+    height: 72px;
+  }
+`;
+
+export const GenderCardLabel = styled.span<{ $isSelected: boolean }>`
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.base};
+  font-weight: 700;
+  color: ${p => p.$isSelected ? theme.colors.accent.coral : theme.colors.text.primary};
+  transition: color 0.2s ease;
+
+  @media (min-width: ${theme.breakpoints.lg}) {
+    font-size: ${theme.fontSizes.lg};
+  }
+`;

@@ -12,7 +12,7 @@ import { validateEmail, validateRequired } from '../../utils/validation';
 import { metaTrackAddToCart, metaTrackLead } from '../../utils/metaPixel';
 import { ApiService } from '../../config/api';
 import { ILLUSTRATION_STYLES, LANGUAGES, StoryFormData } from '../../types/FormTypes';
-import { SvgIcon, STEP_CONFIG, AGE_THEME_RECOMMENDATIONS, POPULAR_STYLES } from './choice-visuals';
+import { STEP_CONFIG, AGE_THEME_RECOMMENDATIONS, POPULAR_STYLES } from './choice-visuals';
 import {
   WizardOverlay, WizardHeader, BackArrow, WizardTitle, ProgressTrack, ProgressFill,
   WizardViewport, StepContainerCentered,
@@ -47,7 +47,7 @@ import {
   StickyBottomBar, StickyBackButton, StickyContinueButton,
   NewChoiceCardGrid, NewChoiceCard, NewCardLabel, NewCardDescription, CardBadgePill,
   SummaryChipsRow, SummaryChip,
-  SegmentedGender, GenderPill,
+  GenderCard, GenderCardIcon, GenderCardLabel,
   RewardWrapper, RewardSparkle, RewardTitle,
   DetailChipGroup, DetailChip,
   AccordionHeader, AccordionChevron, AccordionBody,
@@ -59,49 +59,43 @@ import {
    ══════════════════════════════════════════════ */
 
 const AGE_OPTIONS = [
-  { value: '0-2', label: '0-2 ans', description: 'Histoires simples et colorées', token: 'age_0_2' },
-  { value: '3-5', label: '3-5 ans', description: 'Aventures et découvertes', token: 'age_3_5' },
-  { value: '6-9', label: '6-9 ans', description: 'Récits captivants', token: 'age_6_9' },
-  { value: '10+', label: '10+ ans', description: 'Histoires complexes', token: 'age_10_plus' },
+  { value: '0-2', label: '0-2 ans', imagePath: '/image/ageenfant/age-0-2.png' },
+  { value: '3-5', label: '3-5 ans', imagePath: '/image/ageenfant/age-3-5.png' },
+  { value: '6-9', label: '6-9 ans', imagePath: '/image/ageenfant/age-6-9.png' },
+  { value: '10+', label: '10+ ans', imagePath: '/image/ageenfant/age-10-plus.png' },
 ];
 
 const THEME_OPTIONS = [
-  { value: 'educational',  label: 'Éducatif',       description: 'Apprendre en s\'amusant', token: 'theme_educational' },
-  { value: 'fairy-tales',  label: 'Contes de fées', description: 'Magie et merveilles', token: 'theme_fairy_tales' },
-  { value: 'activities',   label: 'Activités',      description: 'Jeux et aventures', token: 'theme_activities' },
-  { value: 'stories',      label: 'Histoires',      description: 'Récits enchanteurs', token: 'theme_stories' },
-  { value: 'celebrations', label: 'Fêtes',          description: 'Moments festifs', token: 'theme_celebrations' },
-  { value: 'family',       label: 'Famille',        description: 'Liens et tendresse', token: 'theme_family' },
-  { value: 'custom',       label: 'Personnalisé',   description: 'Votre idée unique', token: 'theme_custom' },
+  { value: 'educational',  label: 'Éducatif',       imagePath: '/image/themes/educatif.png' },
+  { value: 'fairy-tales',  label: 'Contes de fées', imagePath: '/image/themes/contes-de-fees.png' },
+  { value: 'activities',   label: 'Activités',      imagePath: '/image/themes/activites.png' },
+  { value: 'stories',      label: 'Histoires',      imagePath: '/image/themes/histoires.png' },
+  { value: 'celebrations', label: 'Fêtes',          imagePath: '/image/themes/fetes.png' },
+  { value: 'family',       label: 'Famille',        imagePath: '/image/themes/famille.png' },
+  { value: 'custom',       label: 'Personnalisé',   imagePath: '/image/themes/personnalise.png' },
 ];
 
 const OCCASION_OPTIONS = [
-  { value: 'birthday',    label: 'Anniversaire',   description: 'Fêter son jour spécial', token: 'occasion_birthday' },
-  { value: 'christmas',   label: 'Noël',           description: 'Magie de Noël', token: 'occasion_christmas' },
-  { value: 'new-year',    label: 'Nouvel An',      description: 'Nouvelle année', token: 'occasion_new_year' },
-  { value: 'easter',      label: 'Pâques',         description: 'Chasse aux œufs', token: 'occasion_easter' },
-  { value: 'eid',         label: 'Aïd el-Fitr',    description: 'Célébration de l\'Aïd', token: 'occasion_eid' },
-  { value: 'mothers-day', label: 'Fête des mères', description: 'Hommage à maman', token: 'occasion_mothers_day' },
-  { value: 'fathers-day', label: 'Fête des pères', description: 'Hommage à papa', token: 'occasion_fathers_day' },
-  { value: 'custom',      label: 'Autre',          description: 'Votre occasion', token: 'occasion_custom' },
+  { value: 'birthday',    label: 'Anniversaire',      imagePath: '/image/occasions/anniversaire.png' },
+  { value: 'christmas',   label: 'Noël',              imagePath: '/image/occasions/noel.png' },
+  { value: 'new-year',    label: 'Nouvel An',         imagePath: '/image/occasions/nouvel-an.png' },
+  { value: 'easter',      label: 'Pâques',            imagePath: '/image/occasions/paques.png' },
+  { value: 'eid',         label: 'Aïd el-Fitr',      imagePath: '/image/occasions/aid.png' },
+  { value: 'mothers-day', label: 'Fête des mères',    imagePath: '/image/occasions/fete-meres.png' },
+  { value: 'fathers-day', label: 'Fête des pères',    imagePath: '/image/occasions/fete-peres.png' },
+  { value: 'custom',      label: 'Autre',             imagePath: '/image/occasions/personnalise.png' },
 ];
 
 const MESSAGE_OPTIONS = [
-  { value: 'friendship',   label: 'Amitié',       description: 'Les liens précieux', token: 'message_friendship' },
-  { value: 'courage',      label: 'Courage',      description: 'Oser et grandir', token: 'message_courage' },
-  { value: 'love',         label: 'Amour',        description: 'Tendresse et affection', token: 'message_love' },
-  { value: 'perseverance', label: 'Persévérance', description: 'Ne jamais abandonner', token: 'message_perseverance' },
-  { value: 'sharing',      label: 'Partage',      description: 'Donner et recevoir', token: 'message_sharing' },
-  { value: 'honesty',      label: 'Honnêteté',    description: 'Dire la vérité', token: 'message_honesty' },
-  { value: 'respect',      label: 'Respect',      description: 'Considération des autres', token: 'message_respect' },
-  { value: 'custom',       label: 'Autre',        description: 'Votre message', token: 'message_custom' },
+  { value: 'friendship',   label: 'Amitié',        imagePath: '/image/messages/amitie.png' },
+  { value: 'courage',      label: 'Courage',       imagePath: '/image/messages/courage.png' },
+  { value: 'love',         label: 'Amour',         imagePath: '/image/messages/amour.png' },
+  { value: 'perseverance', label: 'Persévérance',  imagePath: '/image/messages/perseverance.png' },
+  { value: 'sharing',      label: 'Partage',       imagePath: '/image/messages/partage.png' },
+  { value: 'honesty',      label: 'Honnêteté',     imagePath: '/image/messages/honnetete.png' },
+  { value: 'respect',      label: 'Respect',       imagePath: '/image/messages/respect.png' },
+  { value: 'custom',       label: 'Autre',         imagePath: '/image/messages/personnalise.png' },
 ];
-
-const STYLE_OPTIONS = ILLUSTRATION_STYLES.map(s => ({
-  value: s.value,
-  label: s.label,
-  token: `style_${s.value.replace(/-/g, '_')}`,
-}));
 
 const GENDER_OPTIONS = [
   { value: 'girl', label: 'Fille' },
@@ -364,7 +358,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
     if (occ) summaryChips.push({ label: 'Occasion', value: occ.label });
   }
   if (formData.illustrationStyle) {
-    const st = STYLE_OPTIONS.find(o => o.value === formData.illustrationStyle);
+    const st = ILLUSTRATION_STYLES.find(o => o.value === formData.illustrationStyle);
     if (st) summaryChips.push({ label: 'Style', value: st.label });
   }
 
@@ -391,18 +385,16 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
         return (
           <>
             <StepTitle>Pour quel âge ?</StepTitle>
-            <StepSubtitle>Choisissez la tranche d'âge pour adapter le conte</StepSubtitle>
-            <NewChoiceCardGrid>
+            <CardGrid $columns={4}>
               {AGE_OPTIONS.map((o, i) => (
-                <NewChoiceCard key={o.value} $isSelected={formData.ageRange === o.value} $delay={i}
-                  aria-label={`${o.label} — ${o.description}`}
+                <ImageCard key={o.value} $isSelected={formData.ageRange === o.value} $delay={i}
+                  aria-label={o.label}
                   onClick={() => handleCardSelect('ageRange', o.value)}>
-                  <SvgIcon token={o.token} size={56} selected={formData.ageRange === o.value} />
-                  <NewCardLabel>{o.label}</NewCardLabel>
-                  <NewCardDescription>{o.description}</NewCardDescription>
-                </NewChoiceCard>
+                  <CardImg $src={o.imagePath} />
+                  <CardImgLabel>{o.label}</CardImgLabel>
+                </ImageCard>
               ))}
-            </NewChoiceCardGrid>
+            </CardGrid>
           </>
         );
 
@@ -410,22 +402,20 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
         return (
           <>
             <StepTitle>Quel univers ?</StepTitle>
-            <StepSubtitle>Le cadre magique de votre histoire</StepSubtitle>
-            <NewChoiceCardGrid>
+            <CardGrid $columns={4} $compact>
               {THEME_OPTIONS.map((o, i) => {
                 const isRecommended = recommendedThemes.includes(o.value);
                 return (
-                  <NewChoiceCard key={o.value} $isSelected={formData.generalTheme === o.value} $delay={i}
-                    aria-label={`${o.label} — ${o.description}`}
+                  <ImageCard key={o.value} $isSelected={formData.generalTheme === o.value} $delay={i}
+                    aria-label={o.label} style={{ position: 'relative' }}
                     onClick={() => o.value === 'custom' ? onUpdate({ generalTheme: 'custom' }) : handleCardSelect('generalTheme', o.value)}>
                     {isRecommended && <CardBadgePill $variant="recommended">Recommandé</CardBadgePill>}
-                    <SvgIcon token={o.token} size={52} selected={formData.generalTheme === o.value} />
-                    <NewCardLabel>{o.label}</NewCardLabel>
-                    <NewCardDescription>{o.description}</NewCardDescription>
-                  </NewChoiceCard>
+                    <CardImg $src={o.imagePath} />
+                    <CardImgLabel>{o.label}</CardImgLabel>
+                  </ImageCard>
                 );
               })}
-            </NewChoiceCardGrid>
+            </CardGrid>
             {formData.generalTheme === 'custom' && (
               <>
                 <CustomInput type="text" placeholder="Décrivez votre thème..." value={formData.customTheme || ''}
@@ -442,7 +432,6 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
         return (
           <>
             <StepTitle>Quelle occasion ?</StepTitle>
-            <StepSubtitle>Pour un moment encore plus spécial</StepSubtitle>
             {showSummary && (
               <SummaryChipsRow>
                 {summaryChips.map((c, i) => (
@@ -450,17 +439,16 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 ))}
               </SummaryChipsRow>
             )}
-            <NewChoiceCardGrid>
+            <CardGrid $columns={4} $compact>
               {OCCASION_OPTIONS.map((o, i) => (
-                <NewChoiceCard key={o.value} $isSelected={formData.specificSubject === o.value} $delay={i}
-                  aria-label={`${o.label} — ${o.description}`}
+                <ImageCard key={o.value} $isSelected={formData.specificSubject === o.value} $delay={i}
+                  aria-label={o.label}
                   onClick={() => o.value === 'custom' ? onUpdate({ specificSubject: 'custom' }) : handleCardSelect('specificSubject', o.value)}>
-                  <SvgIcon token={o.token} size={52} selected={formData.specificSubject === o.value} />
-                  <NewCardLabel>{o.label}</NewCardLabel>
-                  <NewCardDescription>{o.description}</NewCardDescription>
-                </NewChoiceCard>
+                  <CardImg $src={o.imagePath} />
+                  <CardImgLabel>{o.label}</CardImgLabel>
+                </ImageCard>
               ))}
-            </NewChoiceCardGrid>
+            </CardGrid>
             {formData.specificSubject === 'custom' && (
               <>
                 <CustomInput type="text" placeholder="Décrivez votre occasion..." value={formData.customSubject || ''}
@@ -477,7 +465,6 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
         return (
           <>
             <StepTitle>Quel style d'illustration ?</StepTitle>
-            <StepSubtitle>L'ambiance visuelle de votre conte</StepSubtitle>
             {showSummary && (
               <SummaryChipsRow>
                 {summaryChips.map((c, i) => (
@@ -485,20 +472,20 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 ))}
               </SummaryChipsRow>
             )}
-            <NewChoiceCardGrid>
-              {STYLE_OPTIONS.map((s, i) => {
+            <CardGrid $columns={5} $compact>
+              {ILLUSTRATION_STYLES.map((s, i) => {
                 const isPopular = POPULAR_STYLES.includes(s.value);
                 return (
-                  <NewChoiceCard key={s.value} $isSelected={formData.illustrationStyle === s.value} $delay={i}
-                    aria-label={s.label}
+                  <ImageCard key={s.value} $isSelected={formData.illustrationStyle === s.value} $delay={i}
+                    aria-label={s.label} style={{ position: 'relative' }}
                     onClick={() => handleCardSelect('illustrationStyle', s.value)}>
                     {isPopular && <CardBadgePill $variant="popular">Populaire</CardBadgePill>}
-                    <SvgIcon token={s.token} size={56} selected={formData.illustrationStyle === s.value} />
-                    <NewCardLabel>{s.label}</NewCardLabel>
-                  </NewChoiceCard>
+                    <CardImg $src={s.imagePath} />
+                    <CardImgLabel>{s.label}</CardImgLabel>
+                  </ImageCard>
                 );
               })}
-            </NewChoiceCardGrid>
+            </CardGrid>
           </>
         );
 
@@ -524,15 +511,43 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                   onChange={(v) => handleInputChange('protagonistAge', v)} required error={errors.protagonistAge} />
               </InputField>
             </InputRow>
-            <SegmentedGender>
-              {GENDER_OPTIONS.map((o) => (
-                <GenderPill key={o.value} $isSelected={formData.protagonistGender === o.value}
+            <CardGrid $columns={2} style={{ maxWidth: 320 }}>
+              {GENDER_OPTIONS.map((o, i) => (
+                <GenderCard key={o.value} $isSelected={formData.protagonistGender === o.value} $delay={i}
                   aria-label={`Genre: ${o.label}`}
                   onClick={() => onUpdate({ protagonistGender: o.value as 'boy' | 'girl' })}>
-                  {o.value === 'girl' ? '👧 ' : '👦 '}{o.label}
-                </GenderPill>
+                  <GenderCardIcon>
+                    {o.value === 'girl' ? (
+                      <svg viewBox="0 0 80 80" fill="none" width="52" height="52">
+                        <circle cx="40" cy="32" r="18" fill="#FFE0EC" stroke={theme.colors.accent.coral} strokeWidth="2.5" />
+                        <circle cx="34" cy="29" r="2.5" fill={theme.colors.text.primary} />
+                        <circle cx="46" cy="29" r="2.5" fill={theme.colors.text.primary} />
+                        <path d="M35 36 Q40 41 45 36" fill="none" stroke={theme.colors.text.primary} strokeWidth="2" strokeLinecap="round" />
+                        <path d="M24 22 Q28 10 40 12 Q52 10 56 22" fill="none" stroke="#D4A574" strokeWidth="3" strokeLinecap="round" />
+                        <path d="M22 24 Q20 34 24 38" fill="none" stroke="#D4A574" strokeWidth="2.5" strokeLinecap="round" />
+                        <path d="M58 24 Q60 34 56 38" fill="none" stroke="#D4A574" strokeWidth="2.5" strokeLinecap="round" />
+                        <path d="M40 50 L40 62" stroke={theme.colors.accent.coral} strokeWidth="2.5" strokeLinecap="round" />
+                        <path d="M32 62 L48 62" stroke={theme.colors.accent.coral} strokeWidth="2.5" strokeLinecap="round" />
+                        <circle cx="40" cy="56" r="6" fill="none" stroke={theme.colors.accent.coral} strokeWidth="2.5" />
+                      </svg>
+                    ) : (
+                      <svg viewBox="0 0 80 80" fill="none" width="52" height="52">
+                        <circle cx="40" cy="34" r="18" fill="#E0F0FF" stroke="#7CB9D0" strokeWidth="2.5" />
+                        <circle cx="34" cy="31" r="2.5" fill={theme.colors.text.primary} />
+                        <circle cx="46" cy="31" r="2.5" fill={theme.colors.text.primary} />
+                        <path d="M35 38 Q40 43 45 38" fill="none" stroke={theme.colors.text.primary} strokeWidth="2" strokeLinecap="round" />
+                        <path d="M24 26 Q30 14 40 16 Q50 14 56 26" fill="none" stroke="#8B6914" strokeWidth="3" strokeLinecap="round" />
+                        <path d="M26 26 L24 20" stroke="#8B6914" strokeWidth="2.5" strokeLinecap="round" />
+                        <path d="M54 26 L56 20" stroke="#8B6914" strokeWidth="2.5" strokeLinecap="round" />
+                        <path d="M40 52 L52 64" stroke="#7CB9D0" strokeWidth="2.5" strokeLinecap="round" />
+                        <path d="M47 58 L57 58 M52 53 L52 63" stroke="#7CB9D0" strokeWidth="2" strokeLinecap="round" />
+                      </svg>
+                    )}
+                  </GenderCardIcon>
+                  <GenderCardLabel $isSelected={formData.protagonistGender === o.value}>{o.label}</GenderCardLabel>
+                </GenderCard>
               ))}
-            </SegmentedGender>
+            </CardGrid>
           </>
         );
 
@@ -672,17 +687,16 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
             <StepTitle>Personnalisez votre conte</StepTitle>
             <ExtrasSection>
               <SectionTitle>Quel message transmettre ?</SectionTitle>
-              <NewChoiceCardGrid>
+              <CardGrid $columns={4} $compact>
                 {MESSAGE_OPTIONS.map((o, i) => (
-                  <NewChoiceCard key={o.value} $isSelected={formData.centralMessage === o.value} $delay={i}
-                    aria-label={`${o.label} — ${o.description}`}
+                  <ImageCard key={o.value} $isSelected={formData.centralMessage === o.value} $delay={i}
+                    aria-label={o.label}
                     onClick={() => handleInputChange('centralMessage', o.value)}>
-                    <SvgIcon token={o.token} size={48} selected={formData.centralMessage === o.value} />
-                    <NewCardLabel>{o.label}</NewCardLabel>
-                    <NewCardDescription>{o.description}</NewCardDescription>
-                  </NewChoiceCard>
+                    <CardImg $src={o.imagePath} />
+                    <CardImgLabel>{o.label}</CardImgLabel>
+                  </ImageCard>
                 ))}
-              </NewChoiceCardGrid>
+              </CardGrid>
               {formData.centralMessage === 'custom' && (
                 <CustomInput type="text" placeholder="Votre message personnalisé..." value={formData.customMessage || ''}
                   onChange={(e) => handleInputChange('customMessage', e.target.value)} />
@@ -1133,7 +1147,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
             <HeaderBadge>~1 min</HeaderBadge>
           </HeaderTopRow>
           <HeaderStepLabel aria-current="step">
-            Étape {currentStep + 1}/9 — {STEP_CONFIG[stepId]?.label || ''}
+            {STEP_CONFIG[stepId]?.label || ''}
           </HeaderStepLabel>
           <SegmentedProgressBar role="progressbar" aria-valuenow={currentStep + 1} aria-valuemin={1} aria-valuemax={9}>
             {ALL_STEPS.slice(0, 9).map((s, i) => (
