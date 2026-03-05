@@ -2237,24 +2237,27 @@ export const NewCardDescription = styled.span`
 
 export const CardBadgePill = styled.span<{ $variant?: 'recommended' | 'popular' }>`
   position: absolute;
-  top: -8px;
+  top: 6px;
   left: 50%;
   transform: translateX(-50%);
+  z-index: 2;
   white-space: nowrap;
   font-family: ${theme.fonts.body};
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.3px;
-  padding: 2px 8px;
+  padding: 3px 10px;
   border-radius: ${theme.borderRadius.full};
   color: white;
   background: ${p => p.$variant === 'popular'
     ? 'linear-gradient(135deg, #A8D8EA, #7CB9D0)'
     : `linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.accent.softPink})`};
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 
   @media (min-width: ${theme.breakpoints.lg}) {
     font-size: 10px;
-    padding: 3px 10px;
+    padding: 4px 12px;
+    top: 8px;
   }
 `;
 
