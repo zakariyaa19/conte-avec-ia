@@ -2083,14 +2083,13 @@ export const SegmentDot = styled.div<{ $active: boolean; $done: boolean }>`
 /* ── 2.2 Sticky CTA Bar ── */
 
 export const StickyBottomBar = styled.div`
-  position: sticky;
-  bottom: 0;
   z-index: 15;
-  background: rgba(255,255,255,0.95);
+  background: rgba(255,255,255,0.97);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-top: 1px solid rgba(0,0,0,0.06);
   padding: ${theme.spacing.sm} ${theme.spacing.lg};
+  padding-bottom: max(${theme.spacing.sm}, env(safe-area-inset-bottom));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2099,6 +2098,7 @@ export const StickyBottomBar = styled.div`
 
   @media (max-width: ${theme.breakpoints.sm}) {
     padding: ${theme.spacing.sm} ${theme.spacing.md};
+    padding-bottom: max(${theme.spacing.sm}, env(safe-area-inset-bottom));
   }
 `;
 

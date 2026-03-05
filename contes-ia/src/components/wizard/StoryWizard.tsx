@@ -365,7 +365,9 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
   const stepId = ALL_STEPS[currentStep];
   const showSummary = currentStep >= 3 && currentStep < 9 && summaryChips.length > 0;
   const isAutoAdvanceStep = ['age', 'theme', 'occasion', 'style'].includes(stepId);
-  const showStickyBar = !isAutoAdvanceStep && currentStep < 9 && stepId !== 'choice';
+  // Show sticky bar for all steps except preview and step 0 (no back needed)
+  const showStickyBar = currentStep < 9 && stepId !== 'choice';
+  const showStickyContinue = !isAutoAdvanceStep; // auto-advance steps only show back
 
   // Recommended themes based on age
   const recommendedThemes = formData.ageRange
@@ -472,7 +474,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 ))}
               </SummaryChipsRow>
             )}
-            <CardGrid $columns={5} $compact>
+            <CardGrid $columns={3}>
               {ILLUSTRATION_STYLES.map((s, i) => {
                 const isPopular = POPULAR_STYLES.includes(s.value);
                 return (
@@ -480,7 +482,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                     aria-label={s.label} style={{ position: 'relative' }}
                     onClick={() => handleCardSelect('illustrationStyle', s.value)}>
                     {isPopular && <CardBadgePill $variant="popular">Populaire</CardBadgePill>}
-                    <CardImg $src={s.imagePath} />
+                    <CardImg $src={s.imagePath} style={{ aspectRatio: '1.1' }} />
                     <CardImgLabel>{s.label}</CardImgLabel>
                   </ImageCard>
                 );
@@ -1173,20 +1175,20 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
         {renderStepInContainer(currentStep, isAnimating ? 'entering' : 'active')}
       </WizardViewport>
 
-      {/* ── Sticky CTA bar for non-auto-advance steps ── */}
-      {showStickyBar && (
+      {/* ── Sticky bar: back for all steps, continue for non-auto-advance ── */}
+      {showStickyBar && currentStep > 0 && (
         <StickyBottomBar>
-          {currentStep > 0 && (
-            <StickyBackButton onClick={goBack}>
-              <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
-                <path d="M12 4L6 10L12 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              Retour
-            </StickyBackButton>
+          <StickyBackButton onClick={goBack}>
+            <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
+              <path d="M12 4L6 10L12 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            Retour
+          </StickyBackButton>
+          {showStickyContinue && (
+            <StickyContinueButton $isReady={isStickyReady} disabled={!isStickyReady} onClick={handleStickyNext}>
+              {stepId === 'extras2' ? 'Découvrir mon conte' : 'Continuer'}
+            </StickyContinueButton>
           )}
-          <StickyContinueButton $isReady={isStickyReady} disabled={!isStickyReady} onClick={handleStickyNext}>
-            {stepId === 'extras2' ? 'Découvrir mon conte' : 'Continuer'}
-          </StickyContinueButton>
         </StickyBottomBar>
       )}
     </WizardOverlay>
