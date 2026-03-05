@@ -6,7 +6,6 @@ import {
   PageTitle,
   PageIntro,
   Section,
-  SectionTitle
 } from '../styles/CommonPageStyles';
 import styled from 'styled-components';
 import { theme } from '../styles/theme';
@@ -18,7 +17,7 @@ const PrivacyContent = styled.div`
   box-shadow: ${theme.shadows.md};
   margin-bottom: ${theme.spacing.xl};
   line-height: 1.8;
-  
+
   h3 {
     color: ${theme.colors.text.primary};
     font-family: ${theme.fonts.heading};
@@ -26,34 +25,40 @@ const PrivacyContent = styled.div`
     margin: ${theme.spacing.xl} 0 ${theme.spacing.md} 0;
     font-weight: 600;
   }
-  
+
+  h4 {
+    color: ${theme.colors.text.primary};
+    font-size: ${theme.fontSizes.base};
+    margin: ${theme.spacing.md} 0 ${theme.spacing.sm} 0;
+    font-weight: 600;
+  }
+
   p {
     margin-bottom: ${theme.spacing.md};
     color: ${theme.colors.text.secondary};
   }
-  
+
   ul {
     margin: ${theme.spacing.md} 0;
     padding-left: ${theme.spacing.lg};
-    
+
     li {
       margin-bottom: ${theme.spacing.xs};
       color: ${theme.colors.text.secondary};
     }
   }
-  
+
   strong {
     color: ${theme.colors.text.primary};
     font-weight: 600;
   }
-  
-  .highlight {
-    background: ${theme.colors.accent.paleYellow};
-    padding: 2px 4px;
-    border-radius: 4px;
-    font-weight: bold;
+
+  a {
+    color: ${theme.colors.accent.coral};
+    text-decoration: none;
+    &:hover { text-decoration: underline; }
   }
-  
+
   .important {
     background: ${theme.colors.accent.lightCoral};
     padding: ${theme.spacing.md};
@@ -65,19 +70,8 @@ const PrivacyContent = styled.div`
 
 const PolitiqueConfidentialitePage: React.FC = () => {
   useEffect(() => {
-    document.title = 'Politique de Confidentialité | Protection des Données - Contes d\'IA';
-    
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', 'Politique de confidentialité de Contes d\'IA - Protection des données personnelles, RGPD, respect de votre vie privée lors de la création de livres personnalisés enfant.');
-    } else {
-      const newMetaDescription = document.createElement('meta');
-      newMetaDescription.name = 'description';
-      newMetaDescription.content = 'Politique de confidentialité de Contes d\'IA - Protection des données personnelles, RGPD, respect de votre vie privée lors de la création de livres personnalisés enfant.';
-      document.head.appendChild(newMetaDescription);
-    }
+    document.title = 'Politique de Confidentialite | Contes d\'IA';
 
-    // Empêcher l'indexation des pages légales
     const metaRobots = document.querySelector('meta[name="robots"]') || document.createElement('meta');
     metaRobots.setAttribute('name', 'robots');
     metaRobots.setAttribute('content', 'noindex, follow');
@@ -90,179 +84,156 @@ const PolitiqueConfidentialitePage: React.FC = () => {
     <PageLayout>
       <Container>
         <PageHeader>
-          <PageTitle>Politique de Confidentialité</PageTitle>
+          <PageTitle>Politique de Confidentialite</PageTitle>
           <PageIntro>
-            Protection de vos données personnelles et respect de votre vie privée sur Contes d'IA.
+            Protection de vos donnees personnelles conformement au Reglement General sur la Protection des Donnees (RGPD - Reglement UE 2016/679) et a la loi Informatique et Libertes du 6 janvier 1978 modifiee.
           </PageIntro>
         </PageHeader>
 
         <Section>
           <PrivacyContent>
             <div className="important">
-              <strong>Engagement de confidentialité :</strong> Nous nous engageons à protéger et respecter votre vie privée. Cette politique explique comment nous collectons, utilisons et protégeons vos informations personnelles.
+              <strong>Engagement :</strong> PAUSIA s'engage a proteger la vie privee de ses utilisateurs. Cette politique decrit les donnees collectees, leur utilisation, et vos droits.
             </div>
 
-            <h3>1. Responsable du traitement des données</h3>
+            <h3>1. Responsable du traitement</h3>
             <p>
-              <strong>Responsable :</strong> PAUSIA - Zakariya T<br/>
-              <strong>Adresse :</strong> 42 RUE du Westhoek 59760 Grande-Synthe<br/>
-              <strong>Email :</strong> contact@contedia.fr<br/>
-              <strong>Téléphone :</strong> +33780777110
+              <strong>Denomination :</strong> PAUSIA (Entrepreneur individuel)<br/>
+              <strong>SIRET :</strong> 99282930900010<br/>
+              <strong>Email (DPO) :</strong> contact@contedia.fr<br/>
+              <strong>Telephone :</strong> +33 7 80 77 71 10
             </p>
 
-            <h3>2. Données collectées</h3>
-            <p>Nous collectons les types de données suivantes :</p>
-            
-            <h4>2.1 Données fournies directement par vous :</h4>
+            <h3>2. Donnees collectees</h3>
+
+            <h4>2.1 Donnees fournies par l'utilisateur</h4>
             <ul>
-              <li>Informations de contact (nom, prénom, adresse email)</li>
-              <li>Informations de livraison (adresse postale, téléphone)</li>
-              <li>Informations de personnalisation du conte (nom de l'enfant, âge, préférences)</li>
-              <li>Photos uploadées (si vous choisissez cette option)</li>
-              <li>Informations de paiement (traitées par nos partenaires sécurisés)</li>
+              <li><strong>Compte utilisateur :</strong> adresse email, prenom (via inscription classique ou Google OAuth)</li>
+              <li><strong>Personnalisation du conte :</strong> prenom de l'enfant, age, couleur des yeux/cheveux/peau, theme, style d'illustration, message central</li>
+              <li><strong>Photos :</strong> photos du visage de l'enfant (si option choisie), utilisees exclusivement pour la generation des illustrations du conte</li>
+              <li><strong>Paiement :</strong> les donnees bancaires sont traitees directement par Stripe (certifie PCI DSS niveau 1). PAUSIA ne stocke jamais vos donnees de carte bancaire</li>
             </ul>
 
-            <h4>2.2 Données collectées automatiquement :</h4>
+            <h4>2.2 Donnees collectees automatiquement</h4>
             <ul>
-              <li>Adresse IP</li>
-              <li>Type de navigateur et version</li>
-              <li>Pages visitées et temps passé sur le site</li>
-              <li>Données de cookies et technologies similaires</li>
+              <li>Adresse IP, type de navigateur et systeme d'exploitation</li>
+              <li>Pages visitees et interactions avec le Site (Vercel Analytics)</li>
+              <li>Donnees de session et d'authentification (cookies techniques)</li>
             </ul>
 
-            <h3>3. Finalités du traitement</h3>
-            <p>Vos données sont utilisées pour :</p>
+            <h3>3. Finalites et bases legales du traitement</h3>
             <ul>
-              <li><strong>Création et livraison des contes :</strong> Personnalisation et impression de votre livre</li>
-              <li><strong>Gestion des commandes :</strong> Traitement des paiements et suivi des livraisons</li>
-              <li><strong>Communication :</strong> Confirmation de commande, support client</li>
-              <li><strong>Amélioration du service :</strong> Analyse des performances du site</li>
-              <li><strong>Marketing :</strong> Avec votre consentement, envoi d'offres personnalisées</li>
+              <li><strong>Execution du contrat (art. 6.1.b RGPD) :</strong> creation du conte personnalise, gestion de la commande, livraison du produit numerique, gestion de l'abonnement Club</li>
+              <li><strong>Obligation legale (art. 6.1.c RGPD) :</strong> conservation des factures et donnees comptables (10 ans)</li>
+              <li><strong>Interet legitime (art. 6.1.f RGPD) :</strong> amelioration du service, securite du Site, prevention de la fraude</li>
+              <li><strong>Consentement (art. 6.1.a RGPD) :</strong> cookies analytiques, communications marketing</li>
             </ul>
 
-            <h3>4. Base légale du traitement</h3>
-            <p>Le traitement de vos données repose sur :</p>
+            <h3>4. Destinataires des donnees</h3>
+            <p>Vos donnees peuvent etre transmises aux sous-traitants suivants :</p>
             <ul>
-              <li><strong>Exécution du contrat :</strong> Pour la création et livraison de votre conte</li>
-              <li><strong>Consentement :</strong> Pour les cookies non essentiels et le marketing</li>
-              <li><strong>Intérêt légitime :</strong> Pour l'amélioration de nos services</li>
-              <li><strong>Obligation légale :</strong> Pour la comptabilité et les obligations fiscales</li>
+              <li><strong>Stripe</strong> (San Francisco, USA) : traitement des paiements - Clauses contractuelles types (CCT) et certification PCI DSS</li>
+              <li><strong>Vercel</strong> (Covina, USA) : hebergement frontend et analytics - Clauses contractuelles types (CCT)</li>
+              <li><strong>Render</strong> (San Francisco, USA) : hebergement backend et base de donnees - Clauses contractuelles types (CCT)</li>
+              <li><strong>OpenAI</strong> (San Francisco, USA) : generation des textes et illustrations par IA - Data Processing Addendum (DPA)</li>
+              <li><strong>Google</strong> (Mountain View, USA) : authentification OAuth - Clauses contractuelles types (CCT)</li>
             </ul>
 
-            <h3>5. Partage des données</h3>
-            <p>Nous partageons vos données uniquement avec :</p>
-            <ul>
-              <li><strong>Prestataires techniques :</strong> <span className="highlight">................</span> (hébergement, paiement)</li>
-              <li><strong>Partenaires logistiques :</strong> <span className="highlight">................</span> (impression, livraison)</li>
-              <li><strong>Services de paiement :</strong> PayPal, Stripe (données chiffrées)</li>
-              <li><strong>Autorités compétentes :</strong> Si requis par la loi</li>
-            </ul>
-
-            <h3>6. Transferts internationaux</h3>
+            <h3>5. Transferts internationaux</h3>
             <p>
-              Certains de nos prestataires peuvent être situés hors de l'Union Européenne. Dans ce cas, nous nous assurons que des garanties appropriées sont mises en place (clauses contractuelles types, décisions d'adéquation).
-            </p>
-            <p>
-              <strong>Pays concernés :</strong> <span className="highlight">................</span><br/>
-              <strong>Garanties :</strong> <span className="highlight">................</span>
+              Certains de nos sous-traitants sont situes aux Etats-Unis. Les transferts de donnees sont encadres par des clauses contractuelles types (CCT) approuvees par la Commission europeenne, conformement a l'article 46.2.c du RGPD.
             </p>
 
-            <h3>7. Durée de conservation</h3>
+            <h3>6. Duree de conservation</h3>
             <ul>
-              <li><strong>Données de commande :</strong> 10 ans (obligations comptables)</li>
-              <li><strong>Données de personnalisation :</strong> 3 ans après la dernière commande</li>
-              <li><strong>Photos uploadées :</strong> Supprimées après création du conte (sauf demande contraire)</li>
-              <li><strong>Données marketing :</strong> Jusqu'à désabonnement + 3 ans</li>
+              <li><strong>Donnees de compte :</strong> duree de vie du compte + 3 ans apres suppression</li>
+              <li><strong>Donnees de commande et factures :</strong> 10 ans (obligation legale comptable)</li>
+              <li><strong>Photos uploadees :</strong> supprimees automatiquement 30 jours apres la generation du conte</li>
+              <li><strong>Contes generes (PDF) :</strong> conserves tant que le compte est actif</li>
+              <li><strong>Donnees analytiques :</strong> 26 mois</li>
               <li><strong>Cookies :</strong> 13 mois maximum</li>
             </ul>
 
-            <h3>8. Vos droits</h3>
-            <p>Conformément au RGPD, vous disposez des droits suivants :</p>
+            <h3>7. Vos droits</h3>
+            <p>Conformement au RGPD (articles 15 a 22), vous disposez des droits suivants :</p>
             <ul>
-              <li><strong>Droit d'accès :</strong> Connaître les données que nous détenons sur vous</li>
-              <li><strong>Droit de rectification :</strong> Corriger des données inexactes</li>
-              <li><strong>Droit à l'effacement :</strong> Demander la suppression de vos données</li>
-              <li><strong>Droit à la limitation :</strong> Limiter le traitement de vos données</li>
-              <li><strong>Droit à la portabilité :</strong> Récupérer vos données dans un format structuré</li>
-              <li><strong>Droit d'opposition :</strong> Vous opposer au traitement pour motifs légitimes</li>
-              <li><strong>Droit de retrait du consentement :</strong> Retirer votre consentement à tout moment</li>
+              <li><strong>Droit d'acces</strong> (art. 15) : obtenir une copie de vos donnees personnelles</li>
+              <li><strong>Droit de rectification</strong> (art. 16) : corriger des donnees inexactes</li>
+              <li><strong>Droit a l'effacement</strong> (art. 17) : demander la suppression de vos donnees</li>
+              <li><strong>Droit a la limitation du traitement</strong> (art. 18) : limiter l'utilisation de vos donnees</li>
+              <li><strong>Droit a la portabilite</strong> (art. 20) : recuperer vos donnees dans un format structure (JSON/CSV)</li>
+              <li><strong>Droit d'opposition</strong> (art. 21) : vous opposer au traitement pour motifs legitimes</li>
+              <li><strong>Droit de retrait du consentement</strong> (art. 7.3) : retirer votre consentement a tout moment sans affecter la liceite du traitement anterieur</li>
             </ul>
 
             <p>
-              <strong>Pour exercer vos droits, contactez-nous à :</strong><br/>
-              Email : contact@contedia.fr<br/>
+              <strong>Pour exercer vos droits :</strong> envoyez un email a <strong>contact@contedia.fr</strong> en indiquant votre demande et en justifiant votre identite. Nous repondrons dans un delai maximum de 30 jours.
             </p>
 
-            <h3>9. Cookies et technologies similaires</h3>
-            <p>Nous utilisons différents types de cookies :</p>
-            
-            <h4>9.1 Cookies essentiels :</h4>
+            <h3>8. Cookies</h3>
+
+            <h4>8.1 Cookies strictement necessaires (sans consentement)</h4>
             <ul>
-              <li>Fonctionnement du panier d'achat</li>
-              <li>Sécurité et authentification</li>
-              <li>Préférences de langue</li>
+              <li>Session d'authentification (JWT)</li>
+              <li>Preferences de langue</li>
+              <li>Securite (CSRF)</li>
             </ul>
 
-            <h4>9.2 Cookies analytiques :</h4>
+            <h4>8.2 Cookies analytiques (avec consentement)</h4>
             <ul>
-              <li>Google Analytics (avec votre consentement)</li>
-              <li>Statistiques de fréquentation</li>
+              <li>Vercel Analytics : mesure d'audience anonymisee</li>
+              <li>Vercel Speed Insights : performances du site</li>
             </ul>
 
-            <h4>9.3 Cookies marketing :</h4>
+            <p>
+              Aucun cookie publicitaire ou de remarketing n'est utilise sur le Site. Vous pouvez gerer vos preferences de cookies via les parametres de votre navigateur.
+            </p>
+
+            <h3>9. Securite des donnees</h3>
+            <p>PAUSIA met en oeuvre les mesures suivantes pour proteger vos donnees :</p>
             <ul>
-              <li>Publicités personnalisées</li>
-              <li>Réseaux sociaux</li>
-              <li>Remarketing</li>
+              <li>Chiffrement HTTPS/TLS sur l'ensemble du Site</li>
+              <li>Mots de passe hashes (bcrypt)</li>
+              <li>Authentification par tokens JWT avec expiration</li>
+              <li>Donnees bancaires traitees exclusivement par Stripe (jamais stockees par PAUSIA)</li>
+              <li>Acces restreint aux donnees en production</li>
+              <li>Sauvegardes automatiques et chiffrees de la base de donnees</li>
             </ul>
 
-            <p>Vous pouvez gérer vos préférences de cookies via notre bandeau de consentement ou les paramètres de votre navigateur.</p>
-
-            <h3>10. Sécurité des données</h3>
-            <p>Nous mettons en œuvre des mesures techniques et organisationnelles appropriées :</p>
-            <ul>
-              <li>Chiffrement des données sensibles (SSL/TLS)</li>
-              <li>Accès restreint aux données personnelles</li>
-              <li>Sauvegardes régulières et sécurisées</li>
-              <li>Formation du personnel à la protection des données</li>
-              <li>Audits de sécurité réguliers</li>
-            </ul>
-
-            <h3>11. Mineurs</h3>
+            <h3>10. Protection des mineurs</h3>
             <p>
-              Notre service s'adresse aux parents et tuteurs légaux. Nous ne collectons pas sciemment de données personnelles d'enfants de moins de 16 ans sans le consentement des parents.
+              Le service Contes d'IA est destine aux parents et tuteurs legaux. Les commandes sont passees par des adultes. Les donnees de personnalisation concernant les enfants (prenom, age) sont collectees aupres du parent/tuteur et utilisees uniquement pour la creation du conte.
             </p>
             <p>
-              Si vous pensez qu'un mineur a fourni des informations personnelles, contactez-nous immédiatement à contact@contedia.fr
+              Les photos d'enfants sont traitees de maniere securisee et supprimees automatiquement apres generation du conte. Aucune donnee d'enfant n'est partagee a des fins marketing.
             </p>
 
-            <h3>12. Modifications de cette politique</h3>
+            <h3>11. Modifications</h3>
             <p>
-              Cette politique peut être mise à jour occasionnellement. Nous vous informerons de tout changement significatif par email ou via une notification sur notre site.
+              Cette politique peut etre mise a jour. En cas de modification substantielle, les utilisateurs seront informes par email ou par notification sur le Site. La date de derniere mise a jour est indiquee ci-dessous.
             </p>
 
-            <h3>13. Réclamations</h3>
+            <h3>12. Reclamation aupres de la CNIL</h3>
             <p>
-              Si vous estimez que vos droits ne sont pas respectés, vous pouvez introduire une réclamation auprès de la CNIL :
+              Si vous estimez que le traitement de vos donnees ne respecte pas la reglementation, vous pouvez introduire une reclamation aupres de :
             </p>
             <p>
-              <strong>CNIL</strong><br/>
+              <strong>CNIL - Commission Nationale de l'Informatique et des Libertes</strong><br/>
               3 Place de Fontenoy - TSA 80715<br/>
               75334 PARIS CEDEX 07<br/>
-              Téléphone : 01 53 73 22 22<br/>
-              Site web : www.cnil.fr
+              Telephone : 01 53 73 22 22<br/>
+              Site web : <a href="https://www.cnil.fr" target="_blank" rel="noopener noreferrer">www.cnil.fr</a>
             </p>
 
-            <h3>14. Contact</h3>
+            <h3>13. Contact</h3>
             <p>
-              Pour toute question concernant cette politique de confidentialité :<br/>
+              Pour toute question relative a cette politique :<br/>
               <strong>Email :</strong> contact@contedia.fr<br/>
-              <strong>Téléphone :</strong> +33780777110<br/>
-              <strong>Adresse :</strong> 42 RUE du Westhoek 59760 Grande-Synthe
+              <strong>Telephone :</strong> +33 7 80 77 71 10
             </p>
 
             <p style={{ marginTop: '2rem', fontSize: '0.9rem', color: '#666' }}>
-              <em>Dernière mise à jour : {new Date().toLocaleDateString('fr-FR')}</em>
+              <em>Derniere mise a jour : mars 2026</em>
             </p>
           </PrivacyContent>
         </Section>

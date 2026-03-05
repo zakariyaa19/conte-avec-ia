@@ -16,7 +16,7 @@ import { StoryDetailPage } from './pages/StoryDetailPage';
 import { AccountPage } from './pages/AccountPage';
 import { ClubPage } from './pages/ClubPage';
 import { ExemplesPage } from './pages/ExemplesPage';
-import { FeaturesPage } from './pages/FeaturesPage';
+import { CGVPage } from './pages/CGVPage';
 import ThemesContesPage from './pages/ThemesContesPage';
 import ContesParAgePage from './pages/ContesParAgePage';
 import StylesIllustrationPage from './pages/StylesIllustrationPage';
@@ -82,8 +82,6 @@ function App() {
           <Route path="/admin/clients" element={<AdminProtectedRoute><AdminPage /></AdminProtectedRoute>} />
           <Route path="/admin/clients/:clientId" element={<AdminProtectedRoute><AdminPage /></AdminProtectedRoute>} />
           <Route path="/exemples" element={<ExemplesPage />} />
-          <Route path="/fonctionnalites" element={<FeaturesPage />} />
-          <Route path="/features" element={<FeaturesPage />} />
           {/* Nouvelles pages SEO */}
           <Route path="/themes-de-contes" element={<ThemesContesPage />} />
           <Route path="/contes-par-age" element={<ContesParAgePage />} />
@@ -125,6 +123,7 @@ function App() {
           {/* Pages légales */}
           <Route path="/mentions-legales" element={<MentionsLegalesPage />} />
           <Route path="/politique-confidentialite" element={<PolitiqueConfidentialitePage />} />
+          <Route path="/conditions-generales-de-vente" element={<CGVPage />} />
         </Routes>
         </AuthProvider>
       </Router>

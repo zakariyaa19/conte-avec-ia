@@ -963,6 +963,347 @@ const glowPulse = keyframes`
   50%      { box-shadow: 0 0 20px 4px ${theme.colors.accent.coral}25; }
 `;
 
+/* ══════════════════════════════════════════════
+   IMMERSIVE GENERATION CANVAS — fullscreen animated scene
+   ══════════════════════════════════════════════ */
+
+const materialize = keyframes`
+  0% { opacity: 0; filter: blur(12px) saturate(0.3); transform: scale(1.02); }
+  60% { opacity: 1; filter: blur(3px) saturate(0.7); transform: scale(1.005); }
+  100% { opacity: 1; filter: blur(0) saturate(1); transform: scale(1); }
+`;
+
+const textMaterialize = keyframes`
+  0% { opacity: 0; filter: blur(8px); }
+  40% { opacity: 0.6; filter: blur(3px); }
+  100% { opacity: 1; filter: blur(0); }
+`;
+
+/* Canvas animations */
+const canvasGradientAnim = keyframes`
+  0%   { background-position: 0% 50%; }
+  25%  { background-position: 50% 0%; }
+  50%  { background-position: 100% 50%; }
+  75%  { background-position: 50% 100%; }
+  100% { background-position: 0% 50%; }
+`;
+
+const pageFloatAnim = keyframes`
+  0%   { transform: translateY(0) rotate(var(--r)) scale(1); opacity: 0.15; }
+  25%  { transform: translateY(-12px) rotate(calc(var(--r) + 3deg)) scale(1.03); opacity: 0.25; }
+  50%  { transform: translateY(-6px) rotate(calc(var(--r) - 2deg)) scale(1.01); opacity: 0.2; }
+  75%  { transform: translateY(-14px) rotate(calc(var(--r) + 1deg)) scale(1.04); opacity: 0.22; }
+  100% { transform: translateY(0) rotate(var(--r)) scale(1); opacity: 0.15; }
+`;
+
+const splashPulseAnim = keyframes`
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50%      { transform: scale(1.3); opacity: 0.8; }
+`;
+
+const sparkleTwinkleAnim = keyframes`
+  0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
+  20%      { opacity: 1; transform: scale(1) rotate(90deg); }
+  50%      { opacity: 0.8; transform: scale(0.8) rotate(180deg); }
+  80%      { opacity: 1; transform: scale(1.1) rotate(270deg); }
+`;
+
+const bookBreathAnim = keyframes`
+  0%, 100% { transform: translateY(0) scale(1); }
+  50%      { transform: translateY(-8px) scale(1.04); }
+`;
+
+const bookGlowAnim = keyframes`
+  0%, 100% { opacity: 0.3; transform: scale(0.9); }
+  50%      { opacity: 0.6; transform: scale(1.1); }
+`;
+
+const bookPageFlipAnim = keyframes`
+  0%, 100% { transform: perspective(400px) rotateY(0); }
+  30%      { transform: perspective(400px) rotateY(-25deg); }
+  60%      { transform: perspective(400px) rotateY(-25deg); }
+`;
+
+const canvasMsgCycleAnim = keyframes`
+  0%, 100% { opacity: 0; transform: translateY(8px); }
+  10%, 30%  { opacity: 1; transform: translateY(0); }
+  38%       { opacity: 0; transform: translateY(-8px); }
+`;
+
+const progressStage0Anim = keyframes`
+  0% { width: 2%; } 100% { width: 30%; }
+`;
+const progressStage1Anim = keyframes`
+  0% { width: 33%; } 100% { width: 62%; }
+`;
+const progressStage2Anim = keyframes`
+  0% { width: 66%; } 100% { width: 92%; }
+`;
+
+/* ── Main canvas container ── */
+export const GenerationCanvas = styled.div`
+  width: 100%;
+  max-width: 680px;
+  aspect-ratio: 4 / 3;
+  border-radius: 24px;
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    0 8px 32px rgba(30, 20, 40, 0.15),
+    0 2px 8px rgba(30, 20, 40, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    aspect-ratio: 3 / 4;
+    border-radius: 18px;
+    max-width: 340px;
+  }
+`;
+
+export const CanvasLayer = styled.div<{ $z: number }>`
+  position: absolute;
+  inset: 0;
+  z-index: ${p => p.$z};
+  pointer-events: none;
+`;
+
+export const CanvasGradientBg = styled.div`
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    #1a1025 0%, #2d1b3d 15%, #1e2a4a 30%,
+    #2a1f3a 45%, #1a2540 60%, #2d1b3d 75%, #1a1025 100%
+  );
+  background-size: 400% 400%;
+  animation: ${canvasGradientAnim} 12s ease infinite;
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(10, 5, 20, 0.4) 100%);
+  }
+`;
+
+export const FloatingPage = styled.div<{ $delay: number; $left: string; $top: string; $rotate: number; $size: number }>`
+  position: absolute;
+  left: ${p => p.$left};
+  top: ${p => p.$top};
+  width: ${p => p.$size}px;
+  height: ${p => p.$size * 1.4}px;
+  background: linear-gradient(145deg, rgba(255, 250, 240, 0.12), rgba(255, 240, 220, 0.06));
+  border-radius: 3px;
+  border: 1px solid rgba(255, 250, 240, 0.08);
+  --r: ${p => p.$rotate}deg;
+  animation: ${pageFloatAnim} ${p => 5 + (p.$delay % 3)}s ease-in-out ${p => p.$delay}s infinite;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  &::before {
+    content: '';
+    position: absolute;
+    top: 25%; left: 15%; right: 15%;
+    height: 2px;
+    background: rgba(255, 250, 240, 0.06);
+    box-shadow: 0 8px 0 rgba(255, 250, 240, 0.05), 0 16px 0 rgba(255, 250, 240, 0.04), 0 24px 0 rgba(255, 250, 240, 0.03);
+  }
+  @media (max-width: ${theme.breakpoints.sm}) {
+    width: ${p => p.$size * 0.7}px;
+    height: ${p => p.$size * 0.7 * 1.4}px;
+  }
+`;
+
+export const CanvasSplash = styled.div<{ $delay: number; $left: string; $top: string; $color: string; $size: number }>`
+  position: absolute;
+  left: ${p => p.$left};
+  top: ${p => p.$top};
+  width: ${p => p.$size}px;
+  height: ${p => p.$size}px;
+  background: radial-gradient(circle, ${p => p.$color}, transparent 70%);
+  border-radius: 50%;
+  animation: ${splashPulseAnim} ${p => 4 + (p.$delay % 3)}s ease-in-out ${p => p.$delay}s infinite;
+  filter: blur(20px);
+  @media (max-width: ${theme.breakpoints.sm}) {
+    width: ${p => p.$size * 0.6}px;
+    height: ${p => p.$size * 0.6}px;
+    filter: blur(12px);
+  }
+`;
+
+export const CanvasSparkle = styled.div<{ $delay: number; $left: string; $top: string }>`
+  position: absolute;
+  left: ${p => p.$left};
+  top: ${p => p.$top};
+  width: 4px;
+  height: 4px;
+  background: radial-gradient(circle, rgba(255, 220, 150, 0.9), rgba(255, 180, 100, 0.4));
+  border-radius: 50%;
+  animation: ${sparkleTwinkleAnim} ${p => 3 + (p.$delay % 2)}s ease-in-out ${p => p.$delay}s infinite;
+  box-shadow: 0 0 6px 2px rgba(255, 220, 150, 0.3);
+  @media (max-width: ${theme.breakpoints.sm}) { width: 3px; height: 3px; }
+`;
+
+/* ── Central book icon ── */
+export const CanvasCenterContent = styled.div`
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+`;
+
+export const CanvasBookIcon = styled.div`
+  width: 90px; height: 120px;
+  position: relative;
+  animation: ${bookBreathAnim} 3s ease-in-out infinite;
+  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.3));
+  @media (max-width: ${theme.breakpoints.sm}) { width: 70px; height: 94px; }
+`;
+
+export const CanvasBookSpine = styled.div`
+  position: absolute; left: 0; top: 0;
+  width: 42%; height: 100%;
+  background: linear-gradient(135deg, #F5E6D0, #E8D5BE);
+  border-radius: 4px 0 0 4px;
+  box-shadow: -2px 2px 10px rgba(0, 0, 0, 0.15);
+  border-right: 2px solid rgba(200, 170, 130, 0.5);
+  &::after {
+    content: '';
+    position: absolute; top: 30%; left: 20%; right: 20%;
+    height: 1.5px;
+    background: rgba(180, 150, 110, 0.3);
+    box-shadow: 0 7px 0 rgba(180, 150, 110, 0.25), 0 14px 0 rgba(180, 150, 110, 0.2), 0 21px 0 rgba(180, 150, 110, 0.15);
+  }
+`;
+
+export const CanvasBookCover = styled.div`
+  position: absolute; right: 0; top: 0;
+  width: 55%; height: 100%;
+  background: linear-gradient(135deg, #F5E6D0, #EDD9C2);
+  border-radius: 0 4px 4px 0;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.12);
+  transform-origin: left center;
+  animation: ${bookPageFlipAnim} 4s ease-in-out infinite;
+  display: flex; align-items: center; justify-content: center;
+`;
+
+export const CanvasBookStar = styled.span`
+  font-size: 24px;
+  filter: drop-shadow(0 0 8px rgba(255, 200, 100, 0.5));
+  @media (max-width: ${theme.breakpoints.sm}) { font-size: 18px; }
+`;
+
+export const CanvasBookGlow = styled.div`
+  position: absolute; inset: -20px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 200, 100, 0.15), transparent 70%);
+  animation: ${bookGlowAnim} 3s ease-in-out infinite;
+  pointer-events: none;
+`;
+
+/* ── Text overlay ── */
+export const CanvasTextOverlay = styled.div`
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: flex-end;
+  padding-bottom: 70px; gap: 8px;
+  @media (max-width: ${theme.breakpoints.sm}) { padding-bottom: 60px; }
+`;
+
+export const CanvasTitle = styled.h3`
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.base};
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.5), 0 0 40px rgba(255, 200, 100, 0.15);
+  margin: 0; text-align: center;
+  letter-spacing: 0.02em; padding: 0 20px;
+  animation: ${fadeIn} 0.6s ease both;
+  @media (max-width: ${theme.breakpoints.sm}) { font-size: ${theme.fontSizes.sm}; }
+`;
+
+export const CanvasMessagesContainer = styled.div`
+  position: relative; height: 22px; width: 100%;
+  display: flex; align-items: center; justify-content: center;
+`;
+
+export const CanvasMessage = styled.span<{ $index: number; $total: number }>`
+  position: absolute;
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.xs};
+  color: rgba(255, 220, 180, 0.75);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+  white-space: nowrap;
+  animation: ${canvasMsgCycleAnim} ${p => p.$total * 3.5}s ease-in-out ${p => p.$index * 3.5}s infinite;
+  opacity: 0;
+  @media (max-width: ${theme.breakpoints.sm}) { font-size: 10px; }
+`;
+
+/* ── Progress bar ── */
+export const CanvasProgressContainer = styled.div`
+  position: absolute; bottom: 0; left: 0; right: 0;
+  z-index: 10; padding: 0 24px 16px;
+  @media (max-width: ${theme.breakpoints.sm}) { padding: 0 16px 12px; }
+`;
+
+export const CanvasProgressTrack = styled.div`
+  width: 100%; height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px; overflow: hidden; margin-bottom: 10px;
+`;
+
+export const CanvasProgressFill = styled.div<{ $stage: number }>`
+  height: 100%; border-radius: 4px;
+  background: linear-gradient(90deg, rgba(255, 200, 100, 0.9), rgba(255, 160, 100, 0.9), rgba(255, 200, 100, 0.9));
+  background-size: 200% 100%;
+  box-shadow: 0 0 12px rgba(255, 200, 100, 0.4);
+  animation:
+    ${p => p.$stage === 0 ? progressStage0Anim : p.$stage === 1 ? progressStage1Anim : progressStage2Anim}
+    ${p => p.$stage === 0 ? 20 : p.$stage === 1 ? 15 : 25}s
+    cubic-bezier(0.4, 0, 0.2, 1) both,
+    ${pricingShimmer} 2s linear infinite;
+`;
+
+export const CanvasProgressSteps = styled.div`
+  display: flex; justify-content: space-between; gap: 8px;
+`;
+
+export const CanvasProgressStep = styled.span<{ $done: boolean; $active: boolean }>`
+  font-family: ${theme.fonts.heading};
+  font-size: 10px;
+  font-weight: ${p => p.$active ? 600 : 400};
+  color: ${p => p.$done ? 'rgba(255, 200, 100, 0.8)' : p.$active ? 'rgba(255, 255, 255, 0.85)' : 'rgba(255, 255, 255, 0.3)'};
+  transition: all 0.5s ease;
+  display: flex; align-items: center; gap: 4px;
+  &::before {
+    content: '${p => p.$done ? '\\2713' : p.$active ? '\\25CF' : '\\25CB'}';
+    font-size: ${p => p.$active ? '8px' : '6px'};
+    ${p => p.$active && css`animation: ${dotPulse} 1.2s ease-in-out infinite;`}
+  }
+  @media (max-width: ${theme.breakpoints.sm}) { font-size: 8px; }
+`;
+
+
+export const MaterializeImage = styled.div<{ $ready: boolean }>`
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    ${p => p.$ready && css`
+      animation: ${materialize} 1.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+    `}
+  }
+`;
+
+export const MaterializeText = styled.div<{ $ready: boolean; $delay?: number }>`
+  ${p => p.$ready ? css`
+    animation: ${textMaterialize} 1s cubic-bezier(0.16, 1, 0.3, 1) ${p.$delay || 0}s both;
+  ` : css`
+    opacity: 0;
+  `}
+`;
+
 export const PreviewLoadingContainer = styled.div`
   width: 100%;
   max-width: 700px;

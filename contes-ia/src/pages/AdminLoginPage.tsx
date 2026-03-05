@@ -131,25 +131,19 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onLoginSuccess }
     setError('');
     setSuccess('');
 
-    console.log('🔄 Tentative de connexion admin:', { email: formData.email });
-
     try {
       const response = await ApiService.adminLogin(formData.email, formData.password);
-      console.log('📡 Réponse API admin:', { success: response.success, message: response.message });
-      
+
       if (response.success) {
         setSuccess('Connexion réussie ! Redirection...');
-        console.log('🔐 Token sauvegardé:', response.data.token.substring(0, 20) + '...');
         localStorage.setItem('adminToken', response.data.token);
         setTimeout(() => {
           onLoginSuccess(response.data.token);
         }, 1000);
       } else {
-        console.error('❌ Échec connexion:', response.message);
         setError(response.message || 'Erreur de connexion');
       }
     } catch (error: any) {
-      console.error('❌ Erreur connexion admin:', error);
       setError(error.message || 'Erreur de connexion au serveur');
     } finally {
       setIsLoading(false);

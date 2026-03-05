@@ -143,7 +143,6 @@ export const Footer: React.FC = () => {
             <FooterLinks>
               <FooterLink href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/'); }}>Accueil</FooterLink>
               <FooterLink href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/exemples'); }}>Exemples de contes</FooterLink>
-              <FooterLink href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/fonctionnalites'); }}>Fonctionnalites</FooterLink>
               <FooterLink href="#" onClick={(e) => { e.preventDefault(); handleNavigation('#tarifs'); }}>Nos tarifs</FooterLink>
               <FooterLink href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/create-story'); }}>Creer un conte</FooterLink>
             </FooterLinks>
@@ -161,6 +160,7 @@ export const Footer: React.FC = () => {
             <h4>Legal</h4>
             <FooterLinks>
               <FooterLink href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/mentions-legales'); }}>Mentions legales</FooterLink>
+              <FooterLink href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/conditions-generales-de-vente'); }}>Conditions generales de vente</FooterLink>
               <FooterLink href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/politique-confidentialite'); }}>Politique de confidentialite</FooterLink>
             </FooterLinks>
           </FooterSection>
@@ -169,7 +169,7 @@ export const Footer: React.FC = () => {
         <FooterBottom>
           <Copyright>&copy; 2025 Contes d'IA. Tous droits reserves.</Copyright>
           <LegalInfo>
-            SIRET: 12345678901234 | TVA: FR12345678901 | contact@contedia.fr
+            SIRET: 99282930900010 | TVA non applicable, art. 293 B du CGI | contact@contedia.fr
           </LegalInfo>
         </FooterBottom>
       </FooterContent>

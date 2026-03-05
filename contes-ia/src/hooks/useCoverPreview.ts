@@ -94,17 +94,6 @@ export function useCoverPreview(formData: Partial<StoryFormData>): UseCoverPrevi
         specialEvents: formData.specialEvents,
       };
 
-      console.log('[CoverPreview] Envoi des champs personnalisés:', {
-        generalTheme: formFields.generalTheme,
-        customTheme: formFields.customTheme || '(vide)',
-        specificSubject: formFields.specificSubject,
-        customSubject: formFields.customSubject || '(vide)',
-        centralMessage: formFields.centralMessage || '(vide)',
-        customMessage: formFields.customMessage || '(vide)',
-        hobbies: formFields.hobbies || '(vide)',
-        specialEvents: formFields.specialEvents || '(vide)',
-      });
-
       const result = await ApiService.generateCoverPreview(
         { formData: formFields, photoBase64 },
         controller.signal

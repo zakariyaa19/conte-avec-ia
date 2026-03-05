@@ -482,22 +482,9 @@ export const Header: React.FC = () => {
               </DropdownMenu>
             </DropdownContainer>
 
-            <DropdownContainer>
-              <NavItem
-                $hasDropdown
-                onClick={() => handleDropdownToggle('aide')}
-              >
-                Aide & Infos
-              </NavItem>
-              <DropdownMenu $isOpen={activeDropdown === 'aide'}>
-                <DropdownItem onClick={() => handleNavigation('/fonctionnalites')}>
-                  Fonctionnalites
-                </DropdownItem>
-                <DropdownItem onClick={() => handleNavigation('/blog')}>
-                  Blog
-                </DropdownItem>
-              </DropdownMenu>
-            </DropdownContainer>
+            <NavItem $active={currentPath === '/blog'} onClick={() => handleNavigation('/blog')}>
+              Blog
+            </NavItem>
           </Navigation>
 
           <CTASection>
@@ -585,7 +572,6 @@ export const Header: React.FC = () => {
 
         <MobileSection>
           <MobileSectionTitle>Aide & Infos</MobileSectionTitle>
-          <MobileItem onClick={() => handleNavigation('/fonctionnalites')}>Fonctionnalites</MobileItem>
           <MobileItem onClick={() => handleNavigation('/blog')}>Blog</MobileItem>
         </MobileSection>
 

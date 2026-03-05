@@ -6,7 +6,6 @@ import {
   PageTitle,
   PageIntro,
   Section,
-  SectionTitle
 } from '../styles/CommonPageStyles';
 import styled from 'styled-components';
 import { theme } from '../styles/theme';
@@ -18,7 +17,7 @@ const LegalContent = styled.div`
   box-shadow: ${theme.shadows.md};
   margin-bottom: ${theme.spacing.xl};
   line-height: 1.8;
-  
+
   h3 {
     color: ${theme.colors.text.primary};
     font-family: ${theme.fonts.heading};
@@ -26,50 +25,32 @@ const LegalContent = styled.div`
     margin: ${theme.spacing.xl} 0 ${theme.spacing.md} 0;
     font-weight: 600;
   }
-  
+
   p {
     margin-bottom: ${theme.spacing.md};
     color: ${theme.colors.text.secondary};
   }
-  
+
   ul {
     margin: ${theme.spacing.md} 0;
     padding-left: ${theme.spacing.lg};
-    
+
     li {
       margin-bottom: ${theme.spacing.xs};
       color: ${theme.colors.text.secondary};
     }
   }
-  
+
   strong {
     color: ${theme.colors.text.primary};
     font-weight: 600;
-  }
-  
-  .highlight {
-    background: ${theme.colors.accent.paleYellow};
-    padding: 2px 4px;
-    border-radius: 4px;
-    font-weight: bold;
   }
 `;
 
 const MentionsLegalesPage: React.FC = () => {
   useEffect(() => {
-    document.title = 'Mentions Légales | Contes d\'IA - Livre Personnalisé Enfant';
-    
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', 'Mentions légales de Contes d\'IA - Informations légales sur notre service de création de livres personnalisés enfant avec intelligence artificielle. Conditions d\'utilisation et responsabilités.');
-    } else {
-      const newMetaDescription = document.createElement('meta');
-      newMetaDescription.name = 'description';
-      newMetaDescription.content = 'Mentions légales de Contes d\'IA - Informations légales sur notre service de création de livres personnalisés enfant avec intelligence artificielle. Conditions d\'utilisation et responsabilités.';
-      document.head.appendChild(newMetaDescription);
-    }
+    document.title = 'Mentions Legales | Contes d\'IA';
 
-    // Empêcher l'indexation des pages légales
     const metaRobots = document.querySelector('meta[name="robots"]') || document.createElement('meta');
     metaRobots.setAttribute('name', 'robots');
     metaRobots.setAttribute('content', 'noindex, follow');
@@ -82,92 +63,104 @@ const MentionsLegalesPage: React.FC = () => {
     <PageLayout>
       <Container>
         <PageHeader>
-          <PageTitle>Mentions Légales</PageTitle>
+          <PageTitle>Mentions Legales</PageTitle>
           <PageIntro>
-            Informations légales concernant le site Contes d'IA et son exploitation.
+            Informations legales concernant le site contedia.fr, conformement a l'article 6 de la loi n&deg; 2004-575 du 21 juin 2004 pour la confiance dans l'economie numerique (LCEN).
           </PageIntro>
         </PageHeader>
 
         <Section>
           <LegalContent>
-            <h3>1. Éditeur du site</h3>
+            <h3>1. Editeur du site</h3>
             <p>
-              <strong>Raison sociale :</strong> PAUSIA<br/>
+              Le site <strong>contedia.fr</strong> (ci-apres &laquo; le Site &raquo;) est edite par :<br/>
+              <strong>Denomination :</strong> PAUSIA<br/>
               <strong>Forme juridique :</strong> Entrepreneur individuel<br/>
-              <strong>Capital social :</strong> 0 euro<br/>
-              <strong>Siège social :</strong> 42 RUE du Westhoek 59760 Grande-Synthe<br/>
-              <strong>Numéro SIRET :</strong> 99282930900010<br/>
-              <strong>Code APE :</strong> 6202A<br/>
+              <strong>Numero SIRET :</strong> 99282930900010<br/>
+              <strong>Code APE :</strong> 6202A - Conseil en systemes et logiciels informatiques<br/>
+              <strong>TVA :</strong> TVA non applicable, article 293 B du Code general des impots<br/>
+              <strong>Email :</strong> contact@contedia.fr<br/>
+              <strong>Telephone :</strong> +33 7 80 77 71 10
             </p>
 
             <h3>2. Directeur de la publication</h3>
             <p>
-              <strong>Nom :</strong> Zakariya T<br/>
-              <strong>Qualité :</strong> Entrepreneur individuel<br/>
+              Le directeur de la publication est le representant legal de PAUSIA, en sa qualite d'entrepreneur individuel.<br/>
               <strong>Email :</strong> contact@contedia.fr
             </p>
 
-            <h3>3. Hébergement</h3>
+            <h3>3. Hebergement</h3>
             <p>
-              Le site est hébergé par :<br/>
-              <strong>Nom de l'hébergeur :</strong> LWS<br/>
-              <strong>Adresse :</strong> 2 rue Jules-Ferry, 88190 Golbey, France<br/>
-              <strong>Téléphone :</strong> 01 77 62 30 03
+              Le Site est heberge par :<br/><br/>
+              <strong>Frontend :</strong><br/>
+              Vercel Inc.<br/>
+              440 N Barranca Ave #4133, Covina, CA 91723, Etats-Unis<br/>
+              Site web : vercel.com<br/><br/>
+              <strong>Backend / API :</strong><br/>
+              Render Services, Inc.<br/>
+              525 Brannan St, Suite 300, San Francisco, CA 94107, Etats-Unis<br/>
+              Site web : render.com
             </p>
 
-            <h3>4. Propriété intellectuelle</h3>
+            <h3>4. Activite</h3>
             <p>
-              L'ensemble de ce site relève de la législation française et internationale sur le droit d'auteur et la propriété intellectuelle. Tous les droits de reproduction sont réservés, y compris pour les documents téléchargeables et les représentations iconographiques et photographiques.
-            </p>
-            <p>
-              La reproduction de tout ou partie de ce site sur un support électronique quel qu'il soit est formellement interdite sauf autorisation expresse du directeur de la publication.
+              Contes d'IA est un service en ligne de creation de livres numeriques personnalises pour enfants, generes a l'aide de l'intelligence artificielle. Le service propose la creation de contes personnalises (produit numerique) et un abonnement mensuel (Club).
             </p>
 
-            <h3>5. Responsabilité</h3>
+            <h3>5. Propriete intellectuelle</h3>
             <p>
-              Les informations contenues sur ce site sont aussi précises que possible et le site remis à jour à différentes périodes de l'année, mais peut toutefois contenir des inexactitudes ou des omissions.
+              L'ensemble des elements du Site (textes, images, illustrations, logo, structure, code source) est protege par le droit d'auteur et la legislation francaise et internationale sur la propriete intellectuelle.
             </p>
             <p>
-              Si vous constatez une lacune, erreur ou ce qui parait être un dysfonctionnement, merci de bien vouloir le signaler par email à l'adresse contact@contedia.fr en décrivant le problème de la manière la plus précise possible.
+              Toute reproduction, representation, modification, publication ou adaptation de tout ou partie des elements du Site est interdite sans l'autorisation ecrite prealable de PAUSIA.
             </p>
-
-            <h3>6. Liens hypertextes</h3>
             <p>
-              Les liens hypertextes mis en place dans le cadre du présent site web en direction d'autres ressources présentes sur le réseau Internet ne sauraient engager la responsabilité de PAUSIA.
+              Les contes generes pour les clients restent la propriete de PAUSIA. Le client beneficie d'une licence d'utilisation personnelle et non commerciale pour les contes qu'il a commandes.
             </p>
 
-            <h3>7. Collecte et traitement de données personnelles</h3>
+            <h3>6. Responsabilite</h3>
             <p>
-              Conformément aux dispositions de la loi n° 78-17 du 6 janvier 1978 modifiée, vous disposez d'un droit d'accès, de modification et de suppression des données qui vous concernent.
+              PAUSIA s'efforce d'assurer l'exactitude des informations diffusees sur le Site, mais ne saurait etre tenu responsable des omissions, inexactitudes ou carences dans la mise a jour.
             </p>
             <p>
-              Pour exercer ce droit, adressez-vous à :<br/>
-              contact@contedia.fr
-            </p>
-
-            <h3>8. Cookies</h3>
-            <p>
-              Le site peut être amené à vous demander l'acceptation des cookies pour des besoins de statistiques et d'affichage. Un cookie est une information déposée sur votre disque dur par le serveur du site que vous visitez.
-            </p>
-            <p>
-              Vous pouvez configurer votre navigateur pour qu'il vous signale leur présence ou les refuse automatiquement.
+              PAUSIA ne saurait etre tenu responsable des dommages directs ou indirects causes au materiel de l'utilisateur lors de l'acces au Site, resultant soit de l'utilisation d'un materiel ne repondant pas aux specifications, soit de l'apparition d'un bug ou d'une incompatibilite.
             </p>
 
-            <h3>9. Droit applicable et juridiction compétente</h3>
+            <h3>7. Liens hypertextes</h3>
             <p>
-              Tout litige en relation avec l'utilisation du site <strong>contedia.fr</strong> est soumis au droit français. Il est fait attribution exclusive de juridiction aux tribunaux compétents de Dunkerque.
+              Le Site peut contenir des liens vers d'autres sites. PAUSIA n'exerce aucun controle sur ces sites et decline toute responsabilite quant a leur contenu.
             </p>
 
-            <h3>10. Contact</h3>
+            <h3>8. Donnees personnelles</h3>
             <p>
-              Pour toute question concernant ces mentions légales, vous pouvez nous contacter à :<br/>
+              Conformement au Reglement General sur la Protection des Donnees (RGPD) et a la loi Informatique et Libertes du 6 janvier 1978 modifiee, vous disposez de droits sur vos donnees personnelles. Pour en savoir plus, consultez notre <a href="/politique-confidentialite" style={{ color: '#E17055' }}>Politique de confidentialite</a>.
+            </p>
+            <p>
+              Pour exercer vos droits, contactez-nous a : <strong>contact@contedia.fr</strong>
+            </p>
+
+            <h3>9. Cookies</h3>
+            <p>
+              Le Site utilise des cookies necessaires a son fonctionnement (authentification, session) ainsi que des cookies analytiques (Vercel Analytics). Vous pouvez configurer votre navigateur pour refuser les cookies non essentiels.
+            </p>
+
+            <h3>10. Droit applicable et juridiction competente</h3>
+            <p>
+              Les presentes mentions legales sont soumises au droit francais. En cas de litige, et apres tentative de resolution amiable, les tribunaux francais seront seuls competents.
+            </p>
+            <p>
+              Conformement a l'article L. 612-1 du Code de la consommation, le consommateur peut recourir gratuitement au service de mediation MEDICYS, 73 Boulevard de Clichy, 75009 Paris, <a href="https://www.medicys.fr" target="_blank" rel="noopener noreferrer" style={{ color: '#E17055' }}>www.medicys.fr</a>.
+            </p>
+
+            <h3>11. Contact</h3>
+            <p>
+              Pour toute question concernant ces mentions legales :<br/>
               <strong>Email :</strong> contact@contedia.fr<br/>
-              <strong>Téléphone :</strong> +33780777110<br/>
-              <strong>Adresse postale :</strong> 42 RUE du Westhoek 59760 Grande-Synthe
+              <strong>Telephone :</strong> +33 7 80 77 71 10
             </p>
 
             <p style={{ marginTop: '2rem', fontSize: '0.9rem', color: '#666' }}>
-              <em>Dernière mise à jour : {new Date().toLocaleDateString('fr-FR')}</em>
+              <em>Derniere mise a jour : mars 2026</em>
             </p>
           </LegalContent>
         </Section>

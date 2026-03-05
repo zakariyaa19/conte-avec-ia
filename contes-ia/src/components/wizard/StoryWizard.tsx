@@ -41,6 +41,12 @@ import {
   PricingGrid, PricingCard, PricingCardBadge, PricingCardName, PricingCardPrice,
   PricingCardSub, PricingPerStory, PricingCardFeaturesList, PricingCardFeatureItem, PricingCardCTA,
   PreviewSectionTitle, SocialProofLine,
+  MaterializeImage, MaterializeText,
+  GenerationCanvas, CanvasLayer, CanvasGradientBg,
+  FloatingPage, CanvasSplash, CanvasSparkle,
+  CanvasCenterContent, CanvasBookIcon, CanvasBookSpine, CanvasBookCover, CanvasBookStar, CanvasBookGlow,
+  CanvasTextOverlay, CanvasTitle, CanvasMessagesContainer, CanvasMessage,
+  CanvasProgressContainer, CanvasProgressTrack, CanvasProgressFill, CanvasProgressSteps, CanvasProgressStep,
   // V2 new components
   WizardHeaderNew, HeaderTopRow, HeaderTitle, HeaderBadge, HeaderStepLabel,
   SegmentedProgressBar, ProgressSegment,
@@ -822,48 +828,115 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
           }, 100);
         };
 
-        // All content ready = show the book reveal
-        const allReady = coverImageUrl && !isCoverGenerating && previewParagraphs && illustrationBase64;
+        // All content ready
+        const allReady = !!(coverImageUrl && !isCoverGenerating && previewParagraphs && illustrationBase64);
 
-        // Loading stages: 0=cover, 1=text, 2=illustration
-        let loadingStage = 0;
-        if (coverImageUrl && !isCoverGenerating) loadingStage = 1;
-        if (coverImageUrl && !isCoverGenerating && previewParagraphs) loadingStage = 2;
-
-        const loadingTexts = [
-          `Création de la couverture de ${heroName}`,
-          `Rédaction de l'histoire`,
-          `Illustration de la première page`,
-        ];
-
+        // ── LOADING STATE: single immersive fullscreen canvas ──
         if (!allReady) {
+          // Progress stage for messages
+          let stage = 0;
+          if (coverImageUrl && !isCoverGenerating) stage = 1;
+          if (coverImageUrl && !isCoverGenerating && previewParagraphs) stage = 2;
+
+          const stageMessages = [
+            [
+              `Création de la couverture de ${heroName}...`,
+              'Notre IA imagine votre histoire...',
+              'Les couleurs prennent forme...',
+              'Votre conte se dessine...',
+            ],
+            [
+              `Rédaction de l'histoire de ${heroName}...`,
+              'Les personnages prennent vie...',
+              'Votre conte se construit page par page...',
+              'Les mots s\'assemblent avec soin...',
+            ],
+            [
+              'Les illustrations prennent vie...',
+              'Les détails apparaissent...',
+              'Encore quelques instants magiques...',
+              'Votre livre est presque prêt...',
+            ],
+          ];
+          const messages = stageMessages[stage];
+
           return (
-            <>
-              <StepTitle style={{ fontSize: theme.fontSizes.lg, marginBottom: theme.spacing.md }}>
-                Votre histoire prend vie...
-              </StepTitle>
-              <PreviewLoadingContainer>
-                <PreviewLoadingSparkle $delay={0} $left="15%" $size={5} />
-                <PreviewLoadingSparkle $delay={0.8} $left="30%" $size={7} />
-                <PreviewLoadingSparkle $delay={1.6} $left="50%" $size={4} />
-                <PreviewLoadingSparkle $delay={0.4} $left="68%" $size={6} />
-                <PreviewLoadingSparkle $delay={1.2} $left="82%" $size={5} />
-                <PreviewLoadingSparkle $delay={2.0} $left="40%" $size={3} />
-                <PreviewLoadingBook />
-                <PreviewLoadingText>
-                  {loadingTexts[loadingStage]}
-                  <PreviewLoadingDots><span /><span /><span /></PreviewLoadingDots>
-                </PreviewLoadingText>
-                <PreviewLoadingStages>
-                  <PreviewLoadingStage $active={loadingStage === 0} $done={loadingStage > 0} />
-                  <PreviewLoadingStage $active={loadingStage === 1} $done={loadingStage > 1} />
-                  <PreviewLoadingStage $active={loadingStage === 2} $done={false} />
-                </PreviewLoadingStages>
-              </PreviewLoadingContainer>
-            </>
+            <GenerationCanvas>
+              {/* Background animated layers */}
+              <CanvasLayer $z={0}>
+                <CanvasGradientBg />
+              </CanvasLayer>
+
+              {/* Floating book pages */}
+              <CanvasLayer $z={1}>
+                <FloatingPage $delay={0} $left="8%" $top="15%" $rotate={-12} $size={60} />
+                <FloatingPage $delay={1.5} $left="78%" $top="10%" $rotate={8} $size={50} />
+                <FloatingPage $delay={3} $left="15%" $top="65%" $rotate={-6} $size={45} />
+                <FloatingPage $delay={2.2} $left="72%" $top="60%" $rotate={15} $size={55} />
+                <FloatingPage $delay={4} $left="45%" $top="8%" $rotate={-3} $size={40} />
+              </CanvasLayer>
+
+              {/* Paint splashes */}
+              <CanvasLayer $z={2}>
+                <CanvasSplash $delay={0} $left="20%" $top="25%" $color="rgba(255, 180, 120, 0.12)" $size={120} />
+                <CanvasSplash $delay={1.8} $left="65%" $top="40%" $color="rgba(200, 160, 220, 0.10)" $size={140} />
+                <CanvasSplash $delay={3.5} $left="35%" $top="60%" $color="rgba(150, 200, 255, 0.08)" $size={100} />
+                <CanvasSplash $delay={0.9} $left="75%" $top="70%" $color="rgba(255, 215, 140, 0.10)" $size={110} />
+              </CanvasLayer>
+
+              {/* Sparkle particles */}
+              <CanvasLayer $z={3}>
+                <CanvasSparkle $delay={0} $left="12%" $top="20%" />
+                <CanvasSparkle $delay={0.8} $left="35%" $top="12%" />
+                <CanvasSparkle $delay={1.6} $left="55%" $top="25%" />
+                <CanvasSparkle $delay={2.4} $left="80%" $top="18%" />
+                <CanvasSparkle $delay={0.4} $left="25%" $top="75%" />
+                <CanvasSparkle $delay={1.2} $left="60%" $top="70%" />
+                <CanvasSparkle $delay={2.0} $left="88%" $top="55%" />
+                <CanvasSparkle $delay={3.2} $left="42%" $top="82%" />
+              </CanvasLayer>
+
+              {/* Central book icon */}
+              <CanvasLayer $z={4}>
+                <CanvasCenterContent>
+                  <CanvasBookIcon>
+                    <CanvasBookSpine />
+                    <CanvasBookCover>
+                      <CanvasBookStar>&#x2728;</CanvasBookStar>
+                    </CanvasBookCover>
+                    <CanvasBookGlow />
+                  </CanvasBookIcon>
+                </CanvasCenterContent>
+              </CanvasLayer>
+
+              {/* Text overlay */}
+              <CanvasLayer $z={5}>
+                <CanvasTextOverlay>
+                  <CanvasTitle>{messages[0]}</CanvasTitle>
+                  <CanvasMessagesContainer>
+                    {messages.slice(1).map((msg, i) => (
+                      <CanvasMessage key={`${stage}-${i}`} $index={i} $total={messages.length - 1}>{msg}</CanvasMessage>
+                    ))}
+                  </CanvasMessagesContainer>
+                </CanvasTextOverlay>
+              </CanvasLayer>
+
+              {/* Progress bar */}
+              <CanvasProgressContainer>
+                <CanvasProgressTrack>
+                  <CanvasProgressFill $stage={stage} />
+                </CanvasProgressTrack>
+                <CanvasProgressSteps>
+                  <CanvasProgressStep $done={stage > 0} $active={stage === 0}>Couverture</CanvasProgressStep>
+                  <CanvasProgressStep $done={stage > 1} $active={stage === 1}>Histoire</CanvasProgressStep>
+                  <CanvasProgressStep $done={false} $active={stage === 2}>Illustrations</CanvasProgressStep>
+                </CanvasProgressSteps>
+              </CanvasProgressContainer>
+            </GenerationCanvas>
           );
         }
 
+        // ── ALL READY: show the real preview ──
         return (
           <>
             <StepTitle style={{ fontSize: theme.fontSizes.lg, marginBottom: theme.spacing.md }}>
@@ -872,7 +945,6 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
 
             {/* ── Book preview: cover + story page + locked page ── */}
             <BookPreviewWrapper>
-              {/* Magic particles — very subtle floating sparkles */}
               <MagicParticle $delay={0} $left="8%" $size={3} />
               <MagicParticle $delay={1.5} $left="22%" $size={5} />
               <MagicParticle $delay={3} $left="42%" $size={3} />
@@ -880,28 +952,36 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
               <MagicParticle $delay={2.2} $left="80%" $size={3} />
               <MagicParticle $delay={4} $left="92%" $size={4} />
 
-              {/* Cover — portrait, click → scroll to story page */}
-              <BookPageFrame $portrait style={{ cursor: 'pointer' }} onClick={() => storyPageRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })}>
+              {/* Cover */}
+              <BookPageFrame $portrait style={{ cursor: 'pointer' }}
+                onClick={() => storyPageRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })}>
                 <BookCoverImage>
-                  <img src={coverImageUrl} alt="Couverture" />
+                  <MaterializeImage $ready>
+                    <img src={coverImageUrl} alt="Couverture" />
+                  </MaterializeImage>
                 </BookCoverImage>
               </BookPageFrame>
 
-              {/* Story page — text left, illustration right, click → scroll to locked */}
-              <BookPageFrame ref={storyPageRef} style={{ cursor: 'pointer' }} onClick={() => lockedPageRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })}>
+              {/* Story page */}
+              <BookPageFrame ref={storyPageRef} style={{ cursor: 'pointer' }}
+                onClick={() => lockedPageRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })}>
                 <BookStoryLayout>
                   <BookTextHalf>
                     {creatorName && <BookCreatorTag>{creatorName}</BookCreatorTag>}
-                    <p>{previewParagraphs[0]}</p>
+                    <MaterializeText $ready $delay={0.2}>
+                      <p>{previewParagraphs![0]}</p>
+                    </MaterializeText>
                     <BookPageBadge>1</BookPageBadge>
                   </BookTextHalf>
                   <BookImageHalf>
-                    <img src={`data:image/png;base64,${illustrationBase64}`} alt="Illustration" />
+                    <MaterializeImage $ready>
+                      <img src={`data:image/png;base64,${illustrationBase64}`} alt="Illustration" />
+                    </MaterializeImage>
                   </BookImageHalf>
                 </BookStoryLayout>
               </BookPageFrame>
 
-              {/* Locked page — compact, clickable → scroll to pricing */}
+              {/* Locked page */}
               <BookPageFrame $compact ref={lockedPageRef}>
                 <BookLockedOverlay onClick={() => pricingRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })}>
                   <BookLockedContent>

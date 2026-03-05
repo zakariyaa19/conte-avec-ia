@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled, { keyframes, css } from 'styled-components';
 import { theme } from '../styles/theme';
 import { Button } from '../components/ui/Button';
@@ -9,6 +9,7 @@ import { Footer } from '../components/layout/Footer';
 import { useNavigate } from 'react-router-dom';
 import { exampleStories } from '../data/exampleStories';
 import { useScrollReveal, useStaggerReveal } from '../hooks/useScrollReveal';
+import { StoryPDFViewer } from '../components/ui/StoryPDFViewer';
 
 // =============================================
 // ANIMATIONS
@@ -24,18 +25,11 @@ const fadeInRight = keyframes`
   to { opacity: 1; transform: translateX(0); }
 `;
 
-const float = keyframes`
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-14px); }
-`;
-
 const gradientShift = keyframes`
   0%, 100% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
 `;
 
-
-// Shared reveal styles
 const revealBase = css<{ $visible: boolean }>`
   opacity: ${p => p.$visible ? 1 : 0};
   transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
@@ -46,14 +40,39 @@ const revealUp = css<{ $visible: boolean }>`
   transform: translateY(${p => p.$visible ? 0 : '36px'});
 `;
 
-const revealLeft = css<{ $visible: boolean }>`
-  ${revealBase}
-  transform: translateX(${p => p.$visible ? 0 : '-36px'});
+const progressFill = keyframes`
+  from { width: 0%; }
+  to { width: 100%; }
 `;
 
-const revealRight = css<{ $visible: boolean }>`
-  ${revealBase}
-  transform: translateX(${p => p.$visible ? 0 : '36px'});
+const slideIn = keyframes`
+  0% { opacity: 0; transform: translateY(24px) scale(0.95); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+`;
+
+const floatSoft = keyframes`
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-6px) rotate(2deg); }
+`;
+
+const sparkle = keyframes`
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+`;
+
+const bookFloat = keyframes`
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-12px) rotate(1deg); }
+`;
+
+const coverSlideIn = keyframes`
+  0% { opacity: 0; transform: scale(0.9) translateY(20px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+`;
+
+const shimmerGlow = keyframes`
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
 `;
 
 // =============================================
@@ -125,19 +144,19 @@ const Divider = styled.div`
 `;
 
 // =============================================
-// 1. HERO
+// 1. HERO + EXEMPLES FUSIONNES
 // =============================================
 
 const HeroSection = styled.section`
   background: linear-gradient(135deg, ${theme.colors.background.primary} 0%, ${theme.colors.accent.paleYellow} 50%, ${theme.colors.accent.creamyYellow} 100%);
   background-size: 400% 400%;
   animation: ${gradientShift} 14s ease-in-out infinite;
-  padding: ${theme.spacing['4xl']} 0 ${theme.spacing['3xl']};
+  padding: ${theme.spacing['4xl']} 0 ${theme.spacing['2xl']};
   position: relative;
   overflow: hidden;
 
   @media (max-width: ${theme.breakpoints.md}) {
-    padding: ${theme.spacing['3xl']} 0 ${theme.spacing['2xl']};
+    padding: ${theme.spacing['3xl']} 0 ${theme.spacing.xl};
   }
 `;
 
@@ -285,53 +304,296 @@ const TrustItem = styled.div`
   font-weight: 500;
 `;
 
-const HeroImageBlock = styled.div`
+// Hero right side: Book carousel preview
+const HeroBooksBlock = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   animation: ${fadeInRight} 0.8s ease-out 0.2s both;
-`;
-
-const HeroImage = styled.img`
-  width: 110%;
-  max-width: 600px;
-  height: auto;
-  animation: ${float} 6s ease-in-out infinite;
-  filter: drop-shadow(0 20px 40px rgba(0,0,0,0.08));
+  position: relative;
+  min-height: 420px;
 
   @media (max-width: ${theme.breakpoints.lg}) {
-    width: 80%;
-    max-width: 480px;
+    min-height: 340px;
+  }
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    min-height: 280px;
   }
 `;
 
+const BookStack = styled.div`
+  position: relative;
+  width: 320px;
+  height: 420px;
+  perspective: 1000px;
+
+  @media (max-width: ${theme.breakpoints.md}) {
+    width: 260px;
+    height: 340px;
+  }
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    width: 220px;
+    height: 290px;
+  }
+`;
+
+const BookCover = styled.div<{ $active: boolean; $offset: number; $zIndex: number }>`
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: ${p => p.$active
+    ? 'translateX(0) translateY(0) scale(1) rotate(0deg)'
+    : `translateX(${p.$offset * 20}px) translateY(${p.$offset * 8}px) scale(${1 - p.$offset * 0.06}) rotate(${p.$offset * 2}deg)`
+  };
+  opacity: ${p => p.$active ? 1 : Math.max(0.3, 1 - p.$offset * 0.3)};
+  z-index: ${p => p.$zIndex};
+  box-shadow: ${p => p.$active
+    ? '0 25px 60px rgba(0, 0, 0, 0.2), 0 8px 20px rgba(0, 0, 0, 0.1)'
+    : '0 10px 30px rgba(0, 0, 0, 0.1)'
+  };
+
+  &:hover {
+    ${p => p.$active && `
+      transform: scale(1.03) translateY(-4px);
+      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.25), 0 12px 30px rgba(0, 0, 0, 0.12);
+    `}
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+  }
+`;
+
+const BookOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.5) 0%, transparent 50%);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: ${theme.spacing.lg};
+  opacity: 0;
+  transition: opacity 0.3s ease;
+
+  ${BookCover}:hover & {
+    opacity: 1;
+  }
+`;
+
+const BookOverlayText = styled.span`
+  color: white;
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.sm};
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  padding: 8px 20px;
+  border-radius: ${theme.borderRadius.full};
+`;
+
+const BookDots = styled.div`
+  position: absolute;
+  bottom: -32px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    bottom: -28px;
+  }
+`;
+
+const BookDot = styled.button<{ $active: boolean }>`
+  width: ${p => p.$active ? '24px' : '8px'};
+  height: 8px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  background: ${p => p.$active
+    ? `linear-gradient(90deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover})`
+    : 'rgba(0,0,0,0.15)'
+  };
+  transition: all 0.3s ease;
+  padding: 0;
+`;
+
 // =============================================
-// 2. COMMENT CA MARCHE — Animation conte enfant
+// 2. STORY SHOWCASE — Galerie detaillee sous le hero
 // =============================================
 
-const progressFill = keyframes`
-  from { width: 0%; }
-  to { width: 100%; }
+const ShowcaseSection = styled.section`
+  padding: ${theme.spacing['3xl']} 0 ${theme.spacing['4xl']};
+  background: ${theme.colors.background.white};
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
+    background: linear-gradient(to bottom, ${theme.colors.accent.creamyYellow}30, transparent);
+    pointer-events: none;
+  }
 `;
 
-const slideIn = keyframes`
-  0% { opacity: 0; transform: translateY(24px) scale(0.95); }
-  100% { opacity: 1; transform: translateY(0) scale(1); }
+const ShowcaseGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: ${theme.spacing.xl};
+
+  @media (max-width: ${theme.breakpoints.lg}) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: ${theme.breakpoints.md}) {
+    grid-template-columns: 1fr;
+    max-width: 400px;
+    margin: 0 auto;
+    gap: ${theme.spacing.lg};
+  }
 `;
 
-const floatSoft = keyframes`
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-6px) rotate(2deg); }
+const ShowcaseCard = styled.div<{ $visible: boolean; $delay: string }>`
+  background: ${theme.colors.background.white};
+  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: ${theme.borderRadius['2xl']};
+  overflow: hidden;
+  box-shadow: ${theme.shadows.card};
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  ${revealUp}
+  transition-delay: ${p => p.$delay};
+
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12), 0 8px 20px rgba(0, 0, 0, 0.06);
+    border-color: ${theme.colors.accent.lightCoral};
+  }
 `;
 
-const sparkle = keyframes`
-  0%, 100% { opacity: 0.3; transform: scale(0.8); }
-  50% { opacity: 1; transform: scale(1.2); }
+const ShowcardCover = styled.div`
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: transform 0.5s ease;
+  }
+
+  ${ShowcaseCard}:hover & img {
+    transform: scale(1.05);
+  }
 `;
+
+const ShowcardOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.1) 40%, transparent 70%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: ${theme.spacing.lg};
+  opacity: 0;
+  transition: opacity 0.3s ease;
+
+  ${ShowcaseCard}:hover & {
+    opacity: 1;
+  }
+`;
+
+const ShowcardHint = styled.span`
+  color: white;
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.sm};
+  font-weight: 600;
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(8px);
+  padding: 8px 20px;
+  border-radius: ${theme.borderRadius.full};
+  text-align: center;
+  align-self: center;
+`;
+
+const ShowcardInfo = styled.div`
+  padding: ${theme.spacing.lg};
+`;
+
+const ShowcardStyleBadge = styled.span<{ $color: string }>`
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: ${p => p.$color};
+  background: ${p => p.$color}12;
+  border: 1px solid ${p => p.$color}25;
+  padding: 3px 10px;
+  border-radius: ${theme.borderRadius.full};
+  margin-bottom: ${theme.spacing.sm};
+`;
+
+const ShowcardTitle = styled.h3`
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.lg};
+  font-weight: 700;
+  color: ${theme.colors.text.primary};
+  margin-bottom: 6px;
+  line-height: 1.3;
+`;
+
+const ShowcardMeta = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: ${theme.spacing.sm};
+`;
+
+const ShowcardTag = styled.span`
+  font-size: ${theme.fontSizes.xs};
+  color: ${theme.colors.text.secondary};
+  background: ${theme.colors.background.secondary};
+  padding: 3px 10px;
+  border-radius: ${theme.borderRadius.full};
+`;
+
+const ShowcardDescription = styled.p`
+  font-size: ${theme.fontSizes.xs};
+  color: ${theme.colors.text.light};
+  line-height: 1.6;
+  margin: 0;
+`;
+
+const ShowcaseFooter = styled.div`
+  text-align: center;
+  margin-top: ${theme.spacing['2xl']};
+`;
+
+// =============================================
+// 3. COMMENT CA MARCHE — Animation conte enfant
+// =============================================
 
 const StepsSection = styled.section`
   padding: ${theme.spacing['4xl']} 0;
-  background: ${theme.colors.background.white};
+  background: ${theme.colors.background.primary};
   position: relative;
   overflow: hidden;
 
@@ -572,448 +834,7 @@ const IndicatorLabel = styled.span<{ $active: boolean }>`
 `;
 
 // =============================================
-// 3. EXEMPLES — Carrousel dynamique
-// =============================================
-
-const coverSlideIn = keyframes`
-  0% { opacity: 0; transform: perspective(800px) rotateY(8deg) scale(0.92); }
-  100% { opacity: 1; transform: perspective(800px) rotateY(0deg) scale(1); }
-`;
-
-const infoSlideIn = keyframes`
-  0% { opacity: 0; transform: translateX(30px); }
-  100% { opacity: 1; transform: translateX(0); }
-`;
-
-const EXAMPLE_DURATION = 4500;
-
-const ExamplesSection = styled.section`
-  padding: ${theme.spacing['4xl']} 0;
-  background: ${theme.colors.background.primary};
-  position: relative;
-  overflow: hidden;
-`;
-
-const ExampleShowcase = styled.div`
-  max-width: 960px;
-  margin: 0 auto;
-  position: relative;
-`;
-
-const ExampleStage = styled.div`
-  position: relative;
-  height: 480px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  @media (max-width: ${theme.breakpoints.md}) {
-    height: auto;
-    min-height: 520px;
-  }
-`;
-
-const ExampleSlide = styled.div<{ $active: boolean; $direction: 'enter' | 'exit' | 'idle' }>`
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  gap: ${theme.spacing['3xl']};
-  padding: ${theme.spacing.lg};
-  opacity: ${p => p.$active ? 1 : 0};
-  pointer-events: ${p => p.$active ? 'auto' : 'none'};
-  transition: opacity 0.5s ease;
-
-  @media (max-width: ${theme.breakpoints.md}) {
-    flex-direction: column;
-    position: ${p => p.$active ? 'relative' : 'absolute'};
-    gap: ${theme.spacing.xl};
-    padding: ${theme.spacing.md} 0;
-  }
-`;
-
-const ExampleCoverWrap = styled.div<{ $active: boolean }>`
-  flex-shrink: 0;
-  width: 320px;
-  height: 420px;
-  border-radius: 20px;
-  overflow: hidden;
-  cursor: pointer;
-  position: relative;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.15), 0 4px 16px rgba(0,0,0,0.08);
-  animation: ${p => p.$active ? css`${coverSlideIn} 0.6s ease-out` : 'none'};
-  transition: transform 0.4s ease;
-
-  &:hover {
-    transform: scale(1.03);
-  }
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-
-  @media (max-width: ${theme.breakpoints.md}) {
-    width: 260px;
-    height: 340px;
-  }
-
-  @media (max-width: ${theme.breakpoints.sm}) {
-    width: 220px;
-    height: 290px;
-    border-radius: 16px;
-  }
-`;
-
-const CoverOverlayHint = styled.div`
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.45) 0%, transparent 40%);
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  padding: ${theme.spacing.lg};
-  opacity: 0;
-  transition: opacity 0.3s ease;
-
-  ${ExampleCoverWrap}:hover & {
-    opacity: 1;
-  }
-`;
-
-const CoverHintText = styled.span`
-  color: white;
-  font-family: ${theme.fonts.heading};
-  font-size: ${theme.fontSizes.sm};
-  font-weight: 600;
-  background: rgba(255,255,255,0.2);
-  backdrop-filter: blur(8px);
-  padding: 8px 20px;
-  border-radius: ${theme.borderRadius.full};
-  letter-spacing: 0.02em;
-`;
-
-const ExampleInfoPanel = styled.div<{ $active: boolean }>`
-  flex: 1;
-  animation: ${p => p.$active ? css`${infoSlideIn} 0.5s ease-out 0.2s both` : 'none'};
-
-  @media (max-width: ${theme.breakpoints.md}) {
-    text-align: center;
-  }
-`;
-
-const ExampleLabel = styled.span`
-  display: inline-block;
-  font-family: ${theme.fonts.heading};
-  font-size: ${theme.fontSizes.xs};
-  font-weight: 700;
-  color: ${theme.colors.accent.coral};
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin-bottom: ${theme.spacing.sm};
-`;
-
-const ExampleTitle = styled.h3`
-  font-family: ${theme.fonts.heading};
-  font-size: ${theme.fontSizes['2xl']};
-  font-weight: 700;
-  color: ${theme.colors.text.primary};
-  line-height: 1.3;
-  margin-bottom: ${theme.spacing.md};
-
-  @media (max-width: ${theme.breakpoints.sm}) {
-    font-size: ${theme.fontSizes.xl};
-  }
-`;
-
-const ExampleTagsRow = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: ${theme.spacing.lg};
-
-  @media (max-width: ${theme.breakpoints.md}) {
-    justify-content: center;
-  }
-`;
-
-const ExampleTag = styled.span<{ $color?: string }>`
-  display: inline-flex;
-  align-items: center;
-  font-size: ${theme.fontSizes.xs};
-  font-weight: 600;
-  color: ${p => p.$color || theme.colors.text.secondary};
-  background: ${p => p.$color ? p.$color + '15' : theme.colors.background.secondary};
-  padding: 5px 14px;
-  border-radius: ${theme.borderRadius.full};
-  border: 1px solid ${p => p.$color ? p.$color + '25' : 'transparent'};
-`;
-
-const ExampleDescription = styled.p`
-  font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.text.secondary};
-  line-height: 1.7;
-  margin-bottom: ${theme.spacing.xl};
-
-  @media (max-width: ${theme.breakpoints.sm}) {
-    font-size: ${theme.fontSizes.xs};
-  }
-`;
-
-const ExampleControls = styled.div`
-  padding: ${theme.spacing.lg} 0 0;
-  display: flex;
-  gap: ${theme.spacing.xs};
-  max-width: 960px;
-  margin: 0 auto;
-
-  @media (max-width: ${theme.breakpoints.sm}) {
-    padding: ${theme.spacing.md} 0 0;
-  }
-`;
-
-const ExampleDot = styled.button<{ $active: boolean; $completed: boolean; $duration: number }>`
-  flex: 1;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-`;
-
-const ExampleDotBar = styled.div<{ $active: boolean; $completed: boolean; $duration: number }>`
-  width: 100%;
-  height: 3px;
-  border-radius: 3px;
-  background: rgba(0,0,0,0.08);
-  overflow: hidden;
-  position: relative;
-
-  &::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    height: 100%;
-    background: linear-gradient(90deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover});
-    border-radius: 3px;
-    width: ${p => p.$completed ? '100%' : '0%'};
-    ${p => p.$active ? css`animation: ${progressFill} ${p.$duration}ms linear forwards;` : ''}
-  }
-`;
-
-const ExampleDotLabel = styled.span<{ $active: boolean }>`
-  font-family: ${theme.fonts.heading};
-  font-size: 0.6rem;
-  font-weight: ${p => p.$active ? 700 : 500};
-  color: ${p => p.$active ? theme.colors.text.primary : theme.colors.text.light};
-  transition: color 0.3s ease;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-`;
-
-// =============================================
-// 4. CLUB DES HISTOIRES UNIQUES
-// =============================================
-
-const ClubSection = styled.section`
-  padding: ${theme.spacing['4xl']} 0;
-  background: linear-gradient(135deg, ${theme.colors.accent.creamyYellow} 0%, ${theme.colors.background.primary} 50%, ${theme.colors.accent.paleYellow} 100%);
-  position: relative;
-  overflow: hidden;
-`;
-
-const ClubGrid = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: ${theme.spacing['3xl']};
-  align-items: center;
-
-  @media (max-width: ${theme.breakpoints.lg}) {
-    grid-template-columns: 1fr;
-    gap: ${theme.spacing['2xl']};
-  }
-`;
-
-const ClubTextBlock = styled.div<{ $visible: boolean }>`
-  ${revealLeft}
-`;
-
-const ClubVisualBlock = styled.div<{ $visible: boolean }>`
-  ${revealRight}
-  display: flex;
-  justify-content: center;
-`;
-
-const ClubBadge = styled.span`
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover});
-  color: white;
-  padding: 6px 16px;
-  border-radius: ${theme.borderRadius.full};
-  font-size: ${theme.fontSizes.xs};
-  font-weight: 700;
-  margin-bottom: ${theme.spacing.lg};
-  letter-spacing: 0.02em;
-  box-shadow: ${theme.shadows.glow};
-`;
-
-const ClubTitle = styled.h2`
-  font-family: ${theme.fonts.heading};
-  font-size: ${theme.fontSizes['4xl']};
-  font-weight: 700;
-  color: ${theme.colors.text.primary};
-  margin-bottom: ${theme.spacing.md};
-  line-height: 1.15;
-
-  @media (max-width: ${theme.breakpoints.md}) {
-    font-size: ${theme.fontSizes['3xl']};
-  }
-`;
-
-const ClubPrice = styled.div`
-  font-family: ${theme.fonts.heading};
-  font-size: ${theme.fontSizes['3xl']};
-  font-weight: 700;
-  color: ${theme.colors.accent.coral};
-  margin-bottom: ${theme.spacing.md};
-
-  small {
-    font-size: ${theme.fontSizes.base};
-    font-weight: 500;
-    color: ${theme.colors.text.secondary};
-  }
-`;
-
-const ClubDescription = styled.p`
-  font-size: ${theme.fontSizes.lg};
-  color: ${theme.colors.text.secondary};
-  margin-bottom: ${theme.spacing.xl};
-  line-height: 1.7;
-
-  @media (max-width: ${theme.breakpoints.md}) {
-    font-size: ${theme.fontSizes.base};
-  }
-`;
-
-const ClubFeatures = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${theme.spacing.md};
-  margin-bottom: ${theme.spacing.xl};
-`;
-
-const ClubFeature = styled.div`
-  display: flex;
-  align-items: flex-start;
-  gap: ${theme.spacing.md};
-  font-size: ${theme.fontSizes.base};
-  color: ${theme.colors.text.primary};
-  line-height: 1.5;
-`;
-
-const FeatureCheck = styled.div`
-  flex-shrink: 0;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, ${theme.colors.accent.lightGreen}, #8FE6A0);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  color: white;
-  margin-top: 1px;
-`;
-
-const ClubCard = styled.div`
-  background: ${theme.colors.background.white};
-  border-radius: ${theme.borderRadius['2xl']};
-  padding: ${theme.spacing['2xl']};
-  box-shadow: ${theme.shadows.lg};
-  border: 2px solid ${theme.colors.accent.lightCoral};
-  position: relative;
-  overflow: hidden;
-  max-width: 400px;
-  width: 100%;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, ${theme.colors.accent.coral}, ${theme.colors.accent.softPink}, ${theme.colors.accent.pastelBlue});
-  }
-`;
-
-const ClubCardIcon = styled.div`
-  width: 64px;
-  height: 64px;
-  border-radius: ${theme.borderRadius.xl};
-  background: linear-gradient(135deg, ${theme.colors.accent.paleYellow}, ${theme.colors.accent.creamyYellow});
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2rem;
-  margin-bottom: ${theme.spacing.lg};
-`;
-
-const ClubCardTitle = styled.h3`
-  font-family: ${theme.fonts.heading};
-  font-size: ${theme.fontSizes.xl};
-  font-weight: 700;
-  color: ${theme.colors.text.primary};
-  margin-bottom: ${theme.spacing.sm};
-`;
-
-const ClubCardText = styled.p`
-  font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.text.secondary};
-  line-height: 1.7;
-  margin-bottom: ${theme.spacing.lg};
-`;
-
-const ClubCardFeatureList = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${theme.spacing.sm};
-  margin-bottom: ${theme.spacing.xl};
-`;
-
-const ClubCardFeatureItem = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${theme.spacing.sm};
-  font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.text.primary};
-
-  &::before {
-    content: '';
-    flex-shrink: 0;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, ${theme.colors.accent.lightGreen}, #8FE6A0);
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white' width='10' height='10'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 10px;
-  }
-`;
-
-// =============================================
-// 5. BIBLIOTHEQUE
+// 4. BIBLIOTHEQUE
 // =============================================
 
 const LibrarySection = styled.section`
@@ -1077,7 +898,7 @@ const LibraryCardText = styled.p`
 `;
 
 // =============================================
-// 6. TARIFS
+// 5. TARIFS
 // =============================================
 
 const PricingSection = styled.section`
@@ -1089,23 +910,8 @@ const PricingSection = styled.section`
   }
 `;
 
-const PricingGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: ${theme.spacing.xl};
-  align-items: start;
-  max-width: 800px;
-  margin: 0 auto;
-
-  @media (max-width: ${theme.breakpoints.lg}) {
-    grid-template-columns: 1fr;
-    max-width: 440px;
-    gap: ${theme.spacing.xl};
-  }
-`;
-
 // =============================================
-// 7. POURQUOI CHOISIR
+// 6. POURQUOI CHOISIR
 // =============================================
 
 const FeaturesSection = styled.section`
@@ -1199,78 +1005,11 @@ const FeatureDescription = styled.p`
 `;
 
 // =============================================
-// 8. TEMOIGNAGES
+// 7. TEMOIGNAGES
 // =============================================
 
-const TestimonialsSection = styled.section`
-  padding: ${theme.spacing['4xl']} 0;
-  background: linear-gradient(135deg, ${theme.colors.background.primary} 0%, ${theme.colors.accent.paleYellow} 100%);
-`;
-
-const TestimonialGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: ${theme.spacing.xl};
-
-  @media (max-width: ${theme.breakpoints.lg}) {
-    grid-template-columns: 1fr;
-    max-width: 520px;
-    margin: 0 auto;
-  }
-`;
-
-const TestimonialCard = styled.div<{ $visible: boolean; $delay: string }>`
-  background: ${theme.colors.background.white};
-  padding: ${theme.spacing.xl};
-  border-radius: ${theme.borderRadius['2xl']};
-  box-shadow: ${theme.shadows.card};
-  border: 1px solid rgba(0,0,0,0.04);
-  transition: all ${theme.transitions.smooth};
-  position: relative;
-  ${revealUp}
-  transition-delay: ${p => p.$delay};
-
-  &::before {
-    content: '"';
-    position: absolute;
-    top: 16px;
-    right: 20px;
-    font-size: 4rem;
-    font-family: Georgia, serif;
-    color: ${theme.colors.accent.lightCoral};
-    opacity: 0.3;
-    line-height: 1;
-  }
-
-  &:hover {
-    transform: translateY(-4px);
-    box-shadow: ${theme.shadows.cardHover};
-  }
-`;
-
-const StarRating = styled.div`
-  color: #F5A623;
-  font-size: ${theme.fontSizes.sm};
-  margin-bottom: ${theme.spacing.md};
-  letter-spacing: 2px;
-`;
-
-const TestimonialText = styled.p`
-  font-style: italic;
-  color: ${theme.colors.text.secondary};
-  margin-bottom: ${theme.spacing.lg};
-  font-size: ${theme.fontSizes.base};
-  line-height: 1.7;
-`;
-
-const TestimonialAuthor = styled.div`
-  font-weight: 600;
-  color: ${theme.colors.text.primary};
-  font-size: ${theme.fontSizes.sm};
-`;
-
 // =============================================
-// 9. FAQ
+// 8. FAQ
 // =============================================
 
 const FAQSection = styled.section`
@@ -1279,7 +1018,7 @@ const FAQSection = styled.section`
 `;
 
 // =============================================
-// 10. CTA FINAL
+// 9. CTA FINAL
 // =============================================
 
 const FinalCTASection = styled.section`
@@ -1372,6 +1111,16 @@ const GhostWhiteButton = styled.button`
 // =============================================
 
 const STEP_DURATION = 3500;
+const HERO_BOOK_DURATION = 3000;
+
+const STYLE_COLORS: Record<string, string> = {
+  'Animation 3D': '#6C5CE7',
+  'Manga': '#D63031',
+  'Kawaii': '#E84393',
+  'Papier Decoupe': '#E17055',
+  'Aquarelle': '#00B894',
+  'Geometrique': '#0984E3',
+};
 
 const slidesData = [
   {
@@ -1386,7 +1135,7 @@ const slidesData = [
     label: 'Commander',
     stepLabel: 'Etape 2',
     title: 'Commandez en un clic',
-    subtitle: 'Paiement rapide et securise. eBook a 4,99€, ou rejoignez le Club pour 1 eBook gratuit par semaine.',
+    subtitle: 'Paiement rapide et securise. eBook a 4,99\u20AC, ou rejoignez le Club pour 1 eBook gratuit par semaine.',
     bgColor: `${theme.colors.accent.softPink}25`,
     illustrationId: 'order' as const
   },
@@ -1400,28 +1149,22 @@ const slidesData = [
   }
 ];
 
-// SVG illustrations style conte enfant
 const StepIllustration: React.FC<{ id: 'customize' | 'order' | 'receive'; size?: number }> = ({ id, size = 105 }) => {
   if (id === 'customize') {
     return (
       <svg width={size} height={size} viewBox="0 0 90 90" fill="none">
-        {/* Livre ouvert */}
         <rect x="10" y="25" width="32" height="44" rx="3" fill={theme.colors.accent.coral} opacity="0.85" />
         <rect x="48" y="25" width="32" height="44" rx="3" fill={theme.colors.accent.coralDark} opacity="0.7" />
         <rect x="12" y="27" width="28" height="40" rx="2" fill="#FFF" opacity="0.9" />
         <rect x="50" y="27" width="28" height="40" rx="2" fill="#FFF" opacity="0.85" />
-        {/* Lignes de texte */}
         <rect x="16" y="34" width="20" height="2.5" rx="1" fill={theme.colors.accent.coral} opacity="0.3" />
         <rect x="16" y="40" width="16" height="2.5" rx="1" fill={theme.colors.accent.coral} opacity="0.25" />
         <rect x="16" y="46" width="18" height="2.5" rx="1" fill={theme.colors.accent.coral} opacity="0.2" />
-        {/* Photo placeholder sur page droite */}
         <rect x="54" y="32" width="20" height="16" rx="3" fill={theme.colors.accent.paleYellow} />
         <circle cx="64" cy="38" r="4" fill={theme.colors.accent.coral} opacity="0.5" />
-        {/* Etoiles decoratives */}
         <circle cx="20" cy="14" r="3" fill={theme.colors.accent.paleYellow} />
         <circle cx="72" cy="18" r="2.5" fill={theme.colors.accent.softPink} />
         <circle cx="50" cy="10" r="2" fill={theme.colors.accent.lightGreen} />
-        {/* Crayon */}
         <rect x="68" y="52" width="4" height="18" rx="1" fill={theme.colors.accent.pastelBlue} transform="rotate(-20 70 61)" />
         <polygon points="66,68 70,70 68,72" fill={theme.colors.accent.paleYellow} transform="rotate(-20 68 70)" />
       </svg>
@@ -1431,45 +1174,34 @@ const StepIllustration: React.FC<{ id: 'customize' | 'order' | 'receive'; size?:
   if (id === 'order') {
     return (
       <svg width={size} height={size} viewBox="0 0 90 90" fill="none">
-        {/* Bouton / carte de paiement */}
         <rect x="15" y="22" width="60" height="40" rx="10" fill={theme.colors.accent.coral} opacity="0.85" />
         <rect x="19" y="26" width="52" height="32" rx="7" fill="#FFF" opacity="0.15" />
-        {/* Symbole check au centre */}
         <circle cx="45" cy="42" r="14" fill="#FFF" opacity="0.95" />
         <path d="M37 42 L42 47 L53 36" stroke={theme.colors.accent.lightGreen} strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-        {/* Petites etoiles / confettis */}
         <circle cx="22" cy="14" r="3" fill={theme.colors.accent.paleYellow} />
         <circle cx="70" cy="12" r="2.5" fill={theme.colors.accent.softPink} />
         <circle cx="12" cy="50" r="2" fill={theme.colors.accent.pastelBlue} />
         <circle cx="78" cy="48" r="2.5" fill={theme.colors.accent.lightGreen} />
-        {/* Petit cadenas securite */}
         <rect x="58" y="56" width="14" height="11" rx="3" fill={theme.colors.accent.pastelBlue} opacity="0.8" />
         <path d="M61 56 V52 A4 4 0 0 1 69 52 V56" stroke={theme.colors.accent.pastelBlue} strokeWidth="2" fill="none" opacity="0.8" />
-        {/* Eclair rapidite */}
         <polygon points="28,68 34,68 32,74 38,74 26,84 30,76 24,76" fill={theme.colors.accent.paleYellow} opacity="0.9" />
       </svg>
     );
   }
 
-  // receive
   return (
     <svg width={size} height={size} viewBox="0 0 90 90" fill="none">
-      {/* Enveloppe */}
       <rect x="12" y="30" width="50" height="35" rx="5" fill={theme.colors.accent.pastelBlue} opacity="0.8" />
       <path d="M12 35 L37 52 L62 35" stroke="#FFF" strokeWidth="2.5" fill="none" opacity="0.7" />
-      {/* Livre sortant de l'enveloppe */}
       <rect x="22" y="18" width="30" height="22" rx="3" fill={theme.colors.accent.coral} opacity="0.85" />
       <rect x="24" y="20" width="26" height="18" rx="2" fill="#FFF" opacity="0.9" />
       <rect x="28" y="24" width="18" height="2" rx="1" fill={theme.colors.accent.coral} opacity="0.3" />
       <rect x="28" y="29" width="14" height="2" rx="1" fill={theme.colors.accent.coral} opacity="0.25" />
       <rect x="28" y="34" width="10" height="2" rx="1" fill={theme.colors.accent.coral} opacity="0.2" />
-      {/* Coeur */}
       <path d="M72 28 C72 24, 78 24, 78 28 C78 24, 84 24, 84 28 C84 34, 78 38, 78 38 C78 38, 72 34, 72 28Z" fill={theme.colors.accent.softPink} opacity="0.7" />
-      {/* Etoiles decoratives */}
       <circle cx="75" cy="52" r="3" fill={theme.colors.accent.paleYellow} />
       <circle cx="8" cy="22" r="2.5" fill={theme.colors.accent.lightGreen} />
       <circle cx="68" cy="65" r="2" fill={theme.colors.accent.softPink} />
-      {/* Etincelles autour du livre */}
       <circle cx="18" cy="16" r="2" fill={theme.colors.accent.paleYellow} opacity="0.8" />
       <circle cx="56" cy="14" r="1.5" fill={theme.colors.accent.pastelBlue} opacity="0.6" />
     </svg>
@@ -1490,7 +1222,7 @@ const faqItems = [
   {
     id: '3',
     question: "Qu'est-ce que le Club des Histoires Uniques ?",
-    answer: "C'est un abonnement a partir de 9,99€ par mois qui vous donne droit a 3 eBooks personnalises par mois. Vous accedez aussi a votre bibliotheque personnelle avec visionneuse et telechargement. L'abonnement est sans engagement, annulable a tout moment. Une offre annuelle a 79,99€/an est egalement disponible."
+    answer: "C'est un abonnement a partir de 9,99\u20AC par mois qui vous donne droit a 3 eBooks personnalises par mois. Vous accedez aussi a votre bibliotheque personnelle avec visionneuse et telechargement. L'abonnement est sans engagement, annulable a tout moment. Une offre annuelle a 79,99\u20AC/an est egalement disponible."
   },
   {
     id: '4',
@@ -1514,27 +1246,6 @@ const faqItems = [
   }
 ];
 
-const testimonials = [
-  {
-    stars: 5,
-    text: "Ma fille de 5 ans adore son conte personnalise ! Elle se reconnait dans l'heroine et redemande l'histoire tous les soirs. Un cadeau magique !",
-    author: 'Sophie M.',
-    detail: 'Maman de Lea'
-  },
-  {
-    stars: 5,
-    text: "Depuis qu'on est au Club, on recoit 3 nouveaux contes par mois. Les enfants n'ont jamais autant lu ! La bibliotheque en ligne est tres pratique.",
-    author: 'Marc D.',
-    detail: 'Papa de Thomas et Nina'
-  },
-  {
-    stars: 5,
-    text: "La qualite des illustrations est bluffante. Mon fils etait emerveille de se voir en heros de sa propre aventure. Je recommande vivement !",
-    author: 'Julie L.',
-    detail: "Maman d'Emma"
-  }
-];
-
 // =============================================
 // COMPONENT
 // =============================================
@@ -1543,8 +1254,9 @@ export const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const [activeStep, setActiveStep] = useState(0);
   const [stepKey, setStepKey] = useState(0);
-  const [activeExample, setActiveExample] = useState(0);
-  const [exampleKey, setExampleKey] = useState(0);
+  const [activeBook, setActiveBook] = useState(0);
+  const [pdfViewerOpen, setPdfViewerOpen] = useState(false);
+  const [selectedStory, setSelectedStory] = useState<typeof exampleStories[0] | null>(null);
 
   const handleSelectPlan = (plan: PricingPlan) => {
     if (plan === 'single') {
@@ -1558,14 +1270,20 @@ export const HomePage: React.FC = () => {
 
   // Scroll reveal hooks
   const stepsReveal = useScrollReveal();
-  const examplesReveal = useScrollReveal();
-
+  const showcaseReveal = useStaggerReveal(6);
   const libraryReveal = useStaggerReveal(3);
   const pricingReveal = useScrollReveal();
   const featuresReveal = useStaggerReveal(3);
-  const testimonialsReveal = useStaggerReveal(3);
-  const faqReveal = useScrollReveal();
+const faqReveal = useScrollReveal();
   const ctaReveal = useScrollReveal();
+
+  // Auto-play hero books
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveBook(prev => (prev + 1) % exampleStories.length);
+    }, HERO_BOOK_DURATION);
+    return () => clearInterval(timer);
+  }, []);
 
   // Auto-play des etapes
   useEffect(() => {
@@ -1585,24 +1303,15 @@ export const HomePage: React.FC = () => {
     setStepKey(k => k + 1);
   };
 
-  // Auto-play des exemples
-  const allStories = exampleStories;
-  useEffect(() => {
-    if (!examplesReveal.isVisible) return;
-    const timer = setInterval(() => {
-      setActiveExample(prev => {
-        const next = (prev + 1) % allStories.length;
-        setExampleKey(k => k + 1);
-        return next;
-      });
-    }, EXAMPLE_DURATION);
-    return () => clearInterval(timer);
-  }, [examplesReveal.isVisible, allStories.length]);
+  const openStoryViewer = useCallback((story: typeof exampleStories[0]) => {
+    setSelectedStory(story);
+    setPdfViewerOpen(true);
+  }, []);
 
-  const goToExample = (index: number) => {
-    setActiveExample(index);
-    setExampleKey(k => k + 1);
-  };
+  const closeStoryViewer = useCallback(() => {
+    setPdfViewerOpen(false);
+    setSelectedStory(null);
+  }, []);
 
   useEffect(() => {
     document.title = "Creez un conte personnalise avec l'IA | Contes d'IA";
@@ -1618,20 +1327,12 @@ export const HomePage: React.FC = () => {
     }
   }, []);
 
-  const handleViewExample = (story?: any) => {
-    if (story && story.pdfUrl) {
-      window.open(story.pdfUrl, '_blank');
-    } else {
-      window.open('/pdfs/exemple-conte.pdf', '_blank');
-    }
-  };
-
   return (
     <PageContainer>
       <Header />
       <main>
 
-        {/* ============ 1. HERO ============ */}
+        {/* ============ 1. HERO + BOOK CAROUSEL ============ */}
         <HeroSection>
           <HeroDecoCircle $size={400} $top="-10%" $left="-5%" $opacity={0.04} />
           <HeroDecoCircle $size={250} $top="60%" $left="85%" $opacity={0.05} />
@@ -1650,9 +1351,9 @@ export const HomePage: React.FC = () => {
                   Creer l'histoire de mon enfant
                 </Button>
                 <Button variant="outline" size="lg" onClick={() => {
-                  document.getElementById('exemples')?.scrollIntoView({ behavior: 'smooth' });
+                  document.getElementById('contes-exemples')?.scrollIntoView({ behavior: 'smooth' });
                 }}>
-                  Voir un exemple gratuit
+                  Voir les exemples
                 </Button>
               </CTAButtons>
               <TrustRow>
@@ -1668,51 +1369,108 @@ export const HomePage: React.FC = () => {
               </TrustRow>
             </HeroTextBlock>
 
-            <HeroImageBlock>
-              <HeroImage
-                src="/images/homepage/hero-image.png"
-                alt="Enfants decouvrant des contes magiques personnalises"
-                width="1605"
-                height="1152"
-                fetchPriority="high"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).style.display = 'none';
-                }}
-              />
-            </HeroImageBlock>
+            <HeroBooksBlock>
+              <BookStack>
+                {exampleStories.map((story, i) => {
+                  const offset = (i - activeBook + exampleStories.length) % exampleStories.length;
+                  const isActive = offset === 0;
+                  return (
+                    <BookCover
+                      key={story.id}
+                      $active={isActive}
+                      $offset={offset > exampleStories.length / 2 ? exampleStories.length - offset : offset}
+                      $zIndex={exampleStories.length - (offset > exampleStories.length / 2 ? exampleStories.length - offset : offset)}
+                      onClick={() => isActive ? openStoryViewer(story) : setActiveBook(i)}
+                    >
+                      <img
+                        src={story.coverImage}
+                        alt={story.title}
+                        loading={i < 2 ? 'eager' : 'lazy'}
+                        crossOrigin="anonymous"
+                      />
+                      {isActive && (
+                        <BookOverlay>
+                          <BookOverlayText>Feuilleter ce conte</BookOverlayText>
+                        </BookOverlay>
+                      )}
+                    </BookCover>
+                  );
+                })}
+                <BookDots>
+                  {exampleStories.map((_, i) => (
+                    <BookDot
+                      key={i}
+                      $active={activeBook === i}
+                      onClick={() => setActiveBook(i)}
+                    />
+                  ))}
+                </BookDots>
+              </BookStack>
+            </HeroBooksBlock>
           </HeroContent>
         </HeroSection>
 
-        {/* ============ 2. TEMOIGNAGES (Social proof) ============ */}
-        <TestimonialsSection ref={testimonialsReveal.ref}>
+        {/* ============ 2. SHOWCASE — Galerie de contes ============ */}
+        <ShowcaseSection id="contes-exemples" ref={showcaseReveal.ref}>
           <Container>
-            <SectionWrapper $visible={testimonialsReveal.isVisible}>
-              <SectionTitle>Ce que disent nos clients</SectionTitle>
+            <SectionWrapper $visible={showcaseReveal.isVisible}>
+              <SectionTitle>Decouvrez nos contes personnalises</SectionTitle>
               <Divider />
               <SectionSubtitle>
-                +500 familles creent des histoires uniques pour leurs enfants
+                Chaque conte est une creation unique. Cliquez pour feuilleter directement dans votre navigateur.
               </SectionSubtitle>
             </SectionWrapper>
 
-            <TestimonialGrid>
-              {testimonials.map((t, i) => (
-                <TestimonialCard
-                  key={i}
-                  $visible={testimonialsReveal.isVisible}
-                  $delay={testimonialsReveal.getDelay(i)}
-                >
-                  <StarRating>{'★'.repeat(t.stars)}</StarRating>
-                  <TestimonialText>"{t.text}"</TestimonialText>
-                  <TestimonialAuthor>
-                    {t.author} <span style={{ color: theme.colors.text.light, fontWeight: 400 }}>— {t.detail}</span>
-                  </TestimonialAuthor>
-                </TestimonialCard>
-              ))}
-            </TestimonialGrid>
-          </Container>
-        </TestimonialsSection>
+            <ShowcaseGrid>
+              {exampleStories.map((story, i) => {
+                const styleColor = STYLE_COLORS[story.illustrationStyle] || theme.colors.accent.coral;
+                return (
+                  <ShowcaseCard
+                    key={story.id}
+                    $visible={showcaseReveal.isVisible}
+                    $delay={showcaseReveal.getDelay(i)}
+                    onClick={() => openStoryViewer(story)}
+                  >
+                    <ShowcardCover>
+                      <img
+                        src={story.coverImage}
+                        alt={story.title}
+                        loading="lazy"
+                        crossOrigin="anonymous"
+                      />
+                      <ShowcardOverlay>
+                        <ShowcardHint>Feuilleter le conte</ShowcardHint>
+                      </ShowcardOverlay>
+                    </ShowcardCover>
+                    <ShowcardInfo>
+                      <ShowcardStyleBadge $color={styleColor}>
+                        {story.illustrationStyle}
+                      </ShowcardStyleBadge>
+                      <ShowcardTitle>{story.title}</ShowcardTitle>
+                      <ShowcardMeta>
+                        <ShowcardTag>{story.ageRange}</ShowcardTag>
+                        <ShowcardTag>{story.generalTheme}</ShowcardTag>
+                        <ShowcardTag>{story.centralMessage}</ShowcardTag>
+                      </ShowcardMeta>
+                      <ShowcardDescription>
+                        L'histoire de {story.protagonistName}, {story.protagonistAge}
+                        {story.secondaryCharacterName && `, accompagne de ${story.secondaryCharacterName}`}.
+                      </ShowcardDescription>
+                    </ShowcardInfo>
+                  </ShowcaseCard>
+                );
+              })}
+            </ShowcaseGrid>
 
-        {/* ============ 3. COMMENT CA MARCHE ============ */}
+            <ShowcaseFooter>
+              <Button variant="primary" size="lg" onClick={() => navigate('/create-story')}>
+                Creer mon propre conte
+              </Button>
+            </ShowcaseFooter>
+          </Container>
+        </ShowcaseSection>
+
+        {/* ============ 4. COMMENT CA MARCHE ============ */}
         <StepsSection ref={stepsReveal.ref}>
           <Container>
             <SectionWrapper $visible={stepsReveal.isVisible}>
@@ -1723,7 +1481,6 @@ export const HomePage: React.FC = () => {
             <SectionWrapper $visible={stepsReveal.isVisible} $delay="200ms">
               <VideoShowcase>
                 <VideoStage>
-                  {/* Decorations fond */}
                   <StageDeco>
                     <DecoStar $top="12%" $left="8%" $size={10} $delay="0s" $color={theme.colors.accent.paleYellow} />
                     <DecoStar $top="20%" $left="88%" $size={8} $delay="1s" $color={theme.colors.accent.softPink} />
@@ -1783,88 +1540,6 @@ export const HomePage: React.FC = () => {
             </div>
           </Container>
         </StepsSection>
-
-        {/* ============ 4. EXEMPLES ============ */}
-        <ExamplesSection id="exemples" ref={examplesReveal.ref}>
-          <Container>
-            <SectionWrapper $visible={examplesReveal.isVisible}>
-              <SectionTitle>Decouvrez nos contes personnalises</SectionTitle>
-              <Divider />
-              <SectionSubtitle>
-                Chaque conte est une creation unique, adaptee a l'enfant qui le recoit.
-              </SectionSubtitle>
-            </SectionWrapper>
-
-            <SectionWrapper $visible={examplesReveal.isVisible} $delay="200ms">
-              <ExampleShowcase>
-                <ExampleStage>
-                  {allStories.map((story, i) => (
-                    <ExampleSlide
-                      key={story.id}
-                      $active={activeExample === i}
-                      $direction={i < activeExample ? 'exit' : i > activeExample ? 'enter' : 'idle'}
-                    >
-                      <ExampleCoverWrap
-                        $active={activeExample === i}
-                        key={`cover-${i}-${exampleKey}`}
-                        onClick={() => handleViewExample(story)}
-                      >
-                        <img
-                          src={story.coverImage}
-                          alt={story.title}
-                          loading="lazy"
-                          crossOrigin="anonymous"
-                        />
-                        <CoverOverlayHint>
-                          <CoverHintText>Feuilleter le conte</CoverHintText>
-                        </CoverOverlayHint>
-                      </ExampleCoverWrap>
-
-                      <ExampleInfoPanel $active={activeExample === i} key={`info-${i}-${exampleKey}`}>
-                        <ExampleLabel>Conte exemple</ExampleLabel>
-                        <ExampleTitle>{story.title}</ExampleTitle>
-                        <ExampleTagsRow>
-                          <ExampleTag $color={theme.colors.accent.coral}>{story.ageRange}</ExampleTag>
-                          <ExampleTag $color={theme.colors.accent.pastelBlue}>{story.illustrationStyle}</ExampleTag>
-                          <ExampleTag>{story.generalTheme}</ExampleTag>
-                        </ExampleTagsRow>
-                        <ExampleDescription>
-                          L'histoire de {story.protagonistName}, {story.protagonistAge}, dans un univers {story.specificSubject.toLowerCase()}. Un conte sur le theme : {story.centralMessage.toLowerCase()}.
-                          {story.secondaryCharacterName && ` Accompagne de ${story.secondaryCharacterName}.`}
-                        </ExampleDescription>
-                        <Button variant="primary" size="md" onClick={() => handleViewExample(story)}>
-                          Lire ce conte
-                        </Button>
-                      </ExampleInfoPanel>
-                    </ExampleSlide>
-                  ))}
-                </ExampleStage>
-
-                <ExampleControls>
-                  {allStories.map((story, i) => (
-                    <ExampleDot
-                      key={story.id}
-                      $active={activeExample === i}
-                      $completed={i < activeExample}
-                      $duration={EXAMPLE_DURATION}
-                      onClick={() => goToExample(i)}
-                    >
-                      <ExampleDotBar
-                        key={`ebar-${i}-${exampleKey}`}
-                        $active={activeExample === i}
-                        $completed={i < activeExample}
-                        $duration={EXAMPLE_DURATION}
-                      />
-                      <ExampleDotLabel $active={activeExample === i}>
-                        {story.protagonistName}
-                      </ExampleDotLabel>
-                    </ExampleDot>
-                  ))}
-                </ExampleControls>
-              </ExampleShowcase>
-            </SectionWrapper>
-          </Container>
-        </ExamplesSection>
 
         {/* ============ 5. TARIFS ============ */}
         <PricingSection id="tarifs" ref={pricingReveal.ref}>
@@ -1940,7 +1615,7 @@ export const HomePage: React.FC = () => {
               <FeatureCard $visible={featuresReveal.isVisible} $delay={featuresReveal.getDelay(0)}>
                 <FeatureIcon>
                   <FeatureImage
-                    src="/images/homepage/feature-personnalisation.png"
+                    src="/images/homepage/feature-personnalisation.jpg"
                     alt="Personnalisation complete"
                     width="766"
                     height="511"
@@ -1962,7 +1637,7 @@ export const HomePage: React.FC = () => {
               <FeatureCard $visible={featuresReveal.isVisible} $delay={featuresReveal.getDelay(1)}>
                 <FeatureIcon>
                   <FeatureImage
-                    src="/images/homepage/feature-qualite.png"
+                    src="/images/homepage/feature-qualite.jpg"
                     alt="Qualite professionnelle"
                     width="1024"
                     height="683"
@@ -1984,7 +1659,7 @@ export const HomePage: React.FC = () => {
               <FeatureCard $visible={featuresReveal.isVisible} $delay={featuresReveal.getDelay(2)}>
                 <FeatureIcon>
                   <FeatureImage
-                    src="/images/homepage/feature-livraison.png"
+                    src="/images/homepage/feature-livraison.jpg"
                     alt="Livraison rapide"
                     width="827"
                     height="551"
@@ -2025,7 +1700,7 @@ export const HomePage: React.FC = () => {
             <SectionWrapper $visible={ctaReveal.isVisible}>
               <FinalCTATitle>Creez la premiere histoire de votre enfant</FinalCTATitle>
               <FinalCTAText>
-                A partir de 6,99{'€'} — Pret en 5 minutes
+                A partir de 6,99{'\u20AC'} — Pret en 5 minutes
               </FinalCTAText>
               <FinalCTAButtons>
                 <WhiteButton onClick={() => navigate('/create-story')}>
@@ -2043,6 +1718,14 @@ export const HomePage: React.FC = () => {
 
       </main>
       <Footer />
+
+      {/* ============ PDF VIEWER MODAL ============ */}
+      <StoryPDFViewer
+        isOpen={pdfViewerOpen}
+        onClose={closeStoryViewer}
+        pdfUrl={selectedStory?.pdfUrl || null}
+        title={selectedStory?.title || ''}
+      />
 
     </PageContainer>
   );
