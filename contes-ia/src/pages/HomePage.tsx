@@ -156,7 +156,7 @@ const HeroSection = styled.section`
   overflow: hidden;
 
   @media (max-width: ${theme.breakpoints.md}) {
-    padding: ${theme.spacing['3xl']} 0 ${theme.spacing.xl};
+    padding: ${theme.spacing['3xl']} 0 ${theme.spacing['3xl']};
   }
 `;
 

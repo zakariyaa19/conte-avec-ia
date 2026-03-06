@@ -49,13 +49,14 @@ export class OrderController {
       const coverTitle = formData.coverTitle || null;
 
       // Gestion de la couverture generee par GPT
+      console.log('🖼️ coverImageBase64 present:', !!formData.coverImageBase64, 'length:', formData.coverImageBase64?.length || 0);
       if (formData.coverImageBase64) {
         try {
           const result = await saveCoverImage(formData.coverImageBase64);
           coverImageUrl = result.url;
           console.log('🖼️ Couverture sauvegardee:', coverImageUrl);
         } catch (coverErr) {
-          console.error('Erreur sauvegarde couverture:', coverErr);
+          console.error('❌ Erreur sauvegarde couverture:', coverErr);
         }
         delete formData.coverImageBase64;
       }
