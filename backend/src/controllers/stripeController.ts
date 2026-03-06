@@ -6,6 +6,18 @@ import { ClientAuthRequest } from '../middleware/clientAuth';
 import { buildOrderDetailsString } from '../utils/orderFormatter';
 import { ClubService } from '../utils/clubService';
 
+// Ordre de progression des statuts — un statut ne peut JAMAIS reculer
+const STATUS_ORDER = ['PENDING', 'PAID', 'GENERATING', 'GENERATED', 'DELIVERED'] as const;
+
+function isStatusRegression(currentStatus: string, newStatus: string): boolean {
+  const currentIndex = STATUS_ORDER.indexOf(currentStatus as any);
+  const newIndex = STATUS_ORDER.indexOf(newStatus as any);
+  // Si le statut actuel est inconnu, on autorise (sécurité)
+  if (currentIndex === -1) return false;
+  // Régression = le nouveau statut est inférieur ou égal au statut actuel
+  return newIndex <= currentIndex;
+}
+
 if (!process.env.STRIPE_SECRET_KEY) {
   console.error('STRIPE_SECRET_KEY is not set!');
 }
@@ -458,7 +470,7 @@ export const handleStripeWebhook = async (req: Request, res: Response) => {
             if (orderId) {
               try {
                 const order = await prisma.order.findUnique({ where: { id: orderId }, omit: { coverImageData: true, pdfData: true }, include: { user: true } });
-                if (order && order.status !== 'PAID') {
+                if (order && !order.paidAt && !isStatusRegression(order.status, 'PAID')) {
                   const updatedOrder = await prisma.order.update({
                     where: { id: orderId },
                     data: { status: 'PAID', paidAt: new Date(), price: 0, purchaseType: 'CLUB' },
@@ -520,7 +532,7 @@ export const handleStripeWebhook = async (req: Request, res: Response) => {
               include: { user: true }
             });
 
-            if (order && !order.paidAt && !['PAID', 'GENERATING', 'GENERATED', 'DELIVERED'].includes(order.status)) {
+            if (order && !order.paidAt && !isStatusRegression(order.status, 'PAID')) {
               const updatedOrder = await prisma.order.update({
                 where: { id: orderId },
                 data: { status: 'PAID', paidAt: new Date() },

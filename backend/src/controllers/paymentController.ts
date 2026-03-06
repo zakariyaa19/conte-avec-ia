@@ -116,7 +116,13 @@ export class PaymentController {
         return;
       }
 
-      // Mettre à jour la commande
+      // Vérifier que la commande n'a pas déjà avancé au-delà de PAID
+      const order = await prisma.order.findUnique({ where: { id: orderId }, select: { status: true, paidAt: true } });
+      if (!order || order.paidAt || ['PAID', 'GENERATING', 'GENERATED', 'DELIVERED'].includes(order.status)) {
+        console.log(`[Payment] Commande ${orderId} déjà traitée (status: ${order?.status}), skip`);
+        return;
+      }
+
       await prisma.order.update({
         where: { id: orderId },
         data: {
