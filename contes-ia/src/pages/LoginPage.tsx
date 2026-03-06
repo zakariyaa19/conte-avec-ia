@@ -589,7 +589,7 @@ export const LoginPage: React.FC = () => {
                     </CheckMarkPro>
                     <PlanName $isPro>Club des Histoires</PlanName>
                     <PlanPrice $isPro>9,99€ / mois</PlanPrice>
-                    <PlanFeature>3 eBooks gratuits / mois</PlanFeature>
+                    <PlanFeature>1 conte par semaine</PlanFeature>
                     <PlanFeature>Bibliotheque illimitee</PlanFeature>
                     <PlanFeature>Annulation libre</PlanFeature>
                   </PlanCard>

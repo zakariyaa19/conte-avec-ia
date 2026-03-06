@@ -287,11 +287,11 @@ export const PricingTiers: React.FC<PricingTiersProps> = ({ onSelectPlan }) => {
           <PriceBlock>
             <PriceValue>9,99&euro;/mois</PriceValue>
             <PriceNote>Sans engagement</PriceNote>
-            <Savings>3,33&euro; par conte (-52%)</Savings>
+            <Savings>~2,50&euro; par conte (-64%)</Savings>
           </PriceBlock>
           <Divider />
           <Features>
-            <Feature>3 histoires par mois</Feature>
+            <Feature>1 conte par semaine</Feature>
             <Feature>Credits cumulables</Feature>
             <Feature>Bibliotheque avec visionneuse</Feature>
             <Feature>Telechargement PDF illimite</Feature>
@@ -309,14 +309,14 @@ export const PricingTiers: React.FC<PricingTiersProps> = ({ onSelectPlan }) => {
           <PriceBlock>
             <PriceValue>79,99&euro;/an</PriceValue>
             <PriceNote>Soit 6,67&euro;/mois</PriceNote>
-            <Savings>2,22&euro; par conte (-68%)</Savings>
+            <Savings>~1,54&euro; par conte (-78%)</Savings>
           </PriceBlock>
           <Divider />
           <Features>
-            <Feature>3 histoires par mois</Feature>
-            <Feature>36 histoires par an</Feature>
+            <Feature>1 conte par semaine</Feature>
+            <Feature>52 contes par an</Feature>
             <Feature>Tout le Club Mensuel inclus</Feature>
-            <Feature>Economisez 40&euro; par an</Feature>
+            <Feature>Economisez 40&euro;+ par an</Feature>
             <Feature>Paiement unique annuel</Feature>
           </Features>
           <Button variant={showAnnual ? 'primary' : 'outline'} size="lg" onClick={() => onSelectPlan('annual')} fullWidth>

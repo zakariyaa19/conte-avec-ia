@@ -900,7 +900,7 @@ export const ClubPage: React.FC = () => {
               A partir de 9,99{'€'}<small> / mois</small>
             </HeroPrice>
             <HeroSubtitle>
-              Recevez 3 eBooks personnalises par mois pour votre enfant. Credits cumulables, bibliotheque illimitee, sans engagement.
+              Un nouveau conte personnalise chaque semaine pour votre enfant. Credits cumulables, bibliotheque illimitee, sans engagement.
             </HeroSubtitle>
 
             <ClubCTA variant="hero" {...ctaProps} />
@@ -921,7 +921,7 @@ export const ClubPage: React.FC = () => {
                 <BookVisual>
                   <BookVisualInner>
                     <BookEmoji>📚</BookEmoji>
-                    <BookLabel>3 eBooks / mois</BookLabel>
+                    <BookLabel>1 eBook / semaine</BookLabel>
                     <BookSub>Personnalise pour votre enfant</BookSub>
                   </BookVisualInner>
                 </BookVisual>
@@ -929,9 +929,9 @@ export const ClubPage: React.FC = () => {
 
               <TextBlock $visible={ebookReveal.isVisible} $fromRight>
                 <SectionLabel>Avantage principal</SectionLabel>
-                <SectionTitle>3 eBooks gratuits chaque mois</SectionTitle>
+                <SectionTitle>Un nouveau conte chaque semaine</SectionTitle>
                 <SectionText>
-                  Chaque mois, recevez 3 credits pour creer des contes personnalises au format eBook. Choisissez le theme, les personnages, le style d'illustration et le message educatif.
+                  Chaque semaine, recevez un credit pour creer un conte personnalise au format eBook. Choisissez le theme, les personnages, le style d'illustration et le message educatif.
                 </SectionText>
                 <FeatureList>
                   <FeatureItem>
@@ -940,7 +940,7 @@ export const ClubPage: React.FC = () => {
                   </FeatureItem>
                   <FeatureItem>
                     <FeatureCheck>&#10003;</FeatureCheck>
-                    3 contes par mois, soit 3,33{'€'} par conte
+                    1 conte par semaine, soit ~2,50{'€'} par conte
                   </FeatureItem>
                   <FeatureItem>
                     <FeatureCheck>&#10003;</FeatureCheck>
@@ -1015,7 +1015,7 @@ export const ClubPage: React.FC = () => {
               <StepCard $visible={stepsReveal.isVisible} $delay={stepsReveal.getDelay(1)}>
                 <StepNumber $color={theme.colors.accent.pastelBlue}>2</StepNumber>
                 <StepTitle>Recevez vos credits</StepTitle>
-                <StepText>3 credits par mois, cumulables. Utilisez-les quand vous voulez pour creer un eBook.</StepText>
+                <StepText>1 credit par semaine, cumulable. Utilisez-le quand vous voulez pour creer un eBook.</StepText>
               </StepCard>
 
               <StepCard $visible={stepsReveal.isVisible} $delay={stepsReveal.getDelay(2)}>
@@ -1098,7 +1098,7 @@ export const ClubPage: React.FC = () => {
               <FinalCTAText>
                 {isClub
                   ? 'Profitez de vos avantages et decouvrez vos contes dans votre bibliotheque.'
-                  : 'Offrez a votre enfant 3 contes personnalises par mois. Premiers credits disponibles immediatement.'
+                  : 'Offrez a votre enfant un conte personnalise chaque semaine. Premier credit disponible immediatement.'
                 }
               </FinalCTAText>
               <ClubCTA variant="final" {...ctaProps} />

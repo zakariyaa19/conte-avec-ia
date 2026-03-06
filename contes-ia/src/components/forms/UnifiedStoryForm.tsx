@@ -1613,7 +1613,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
                         0,00 € — Inclus dans votre abonnement Club
                       </p>
                       <p style={{ fontSize: theme.fontSizes.sm, color: theme.colors.text.secondary, margin: 0 }}>
-                        Il vous reste {clubCredit.remaining} eBook(s) gratuit(s) cette semaine
+                        {clubCredit.remaining} conte{clubCredit.remaining > 1 ? 's' : ''} gratuit{clubCredit.remaining > 1 ? 's' : ''} disponible{clubCredit.remaining > 1 ? 's' : ''}
                       </p>
                     </ClubFreeCard>
                   </div>
@@ -1622,7 +1622,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
                 {/* Club exhausted */}
                 {isClub && clubCredit && !clubCredit.canSubmit && (
                   <ClubExhaustedMsg>
-                    Votre crédit hebdomadaire est épuisé (0/1). Choisissez un format payant ci-dessous.
+                    Votre credit de la semaine est utilise. Prochain credit bientot ! Choisissez un format payant ci-dessous.
                   </ClubExhaustedMsg>
                 )}
 
@@ -1645,17 +1645,17 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
                   {!isClub && (
                     <PricingCard
                       title="Club des Histoires"
-                      price="12,99 € / mois"
+                      price="9,99 € / mois"
                       features={[
                         "Cet eBook est inclus immédiatement",
-                        "1 eBook gratuit chaque semaine",
+                        "Un nouveau conte chaque semaine",
                         "Bibliothèque illimitée",
                         "Annulable à tout moment"
                       ]}
                       isPopular={formData.purchaseType === 'club' || !formData.purchaseType}
                       ctaText="Recevoir cet eBook + rejoindre le Club"
                       badge="Meilleure offre"
-                      subtitle="Soit ~3,25 € par conte"
+                      subtitle="Soit ~2,50 € par conte"
                       onSelect={() => handleProductSelection('club')}
                     />
                   )}
@@ -1669,7 +1669,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
                 )}
                 {formData.purchaseType === 'club' && !isClub && (
                   <OrderCostSummary $variant="info">
-                    Abonnement Club : 12,99 € / mois — Cet eBook est inclus, sans frais supplémentaires
+                    Abonnement Club : 9,99 € / mois — Cet eBook est inclus, sans frais supplémentaires
                   </OrderCostSummary>
                 )}
                 {formData.purchaseType === 'single' && (

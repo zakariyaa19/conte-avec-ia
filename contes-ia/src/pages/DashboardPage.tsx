@@ -715,7 +715,7 @@ export const DashboardPage: React.FC = () => {
           <JoinClubBanner>
             <JoinClubText>
               <h3>Rejoindre le Club des Histoires Uniques</h3>
-              <p>3 eBooks gratuits/mois - 9,99EUR/mois</p>
+              <p>1 conte par semaine - 9,99EUR/mois</p>
             </JoinClubText>
             <Button variant="primary" size="sm" onClick={() => navigate('/club')}>
               Rejoindre le Club

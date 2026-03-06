@@ -4,12 +4,12 @@ export class ClubService {
   /**
    * Calcule les credits disponibles pour un membre Club.
    *
-   * Logique : 3 credits offerts a la souscription, puis 3 nouveaux credits tous les 30 jours.
+   * Logique : 1 credit offert a la souscription, puis 1 nouveau credit chaque semaine (7 jours).
    * Les credits non utilises s'accumulent.
    *
    * - weeklySubmissionReset = date de debut du comptage (date de souscription)
    * - weeklySubmissionCount = nombre total de credits utilises depuis la souscription
-   * - creditsGagnes = (floor(monthsSinceStart) + 1) * 3
+   * - creditsGagnes = floor(weeksSinceStart) + 1
    * - creditsDisponibles = creditsGagnes - creditsUtilises
    */
   static async canSubmitFreeStory(userId: string): Promise<{
@@ -41,15 +41,15 @@ export class ClubService {
       });
     }
 
-    // Calculer les credits gagnes depuis la souscription (3 par mois)
+    // Calculer les credits gagnes depuis la souscription (1 par semaine)
     const msSinceStart = now.getTime() - startDate.getTime();
-    const monthsSinceStart = msSinceStart / (30 * 24 * 60 * 60 * 1000);
-    const totalEarned = (Math.floor(monthsSinceStart) + 1) * 3;
+    const weeksSinceStart = msSinceStart / (7 * 24 * 60 * 60 * 1000);
+    const totalEarned = Math.floor(weeksSinceStart) + 1;
     const totalUsed = user.weeklySubmissionCount || 0;
     const remaining = Math.max(0, totalEarned - totalUsed);
 
-    // Calculer la date du prochain palier de credits (prochain multiple de 30 jours)
-    const nextCreditDate = new Date(startDate.getTime() + (Math.floor(monthsSinceStart) + 1) * 30 * 24 * 60 * 60 * 1000);
+    // Calculer la date du prochain credit (prochain multiple de 7 jours)
+    const nextCreditDate = new Date(startDate.getTime() + (Math.floor(weeksSinceStart) + 1) * 7 * 24 * 60 * 60 * 1000);
 
     return {
       canSubmit: remaining > 0,

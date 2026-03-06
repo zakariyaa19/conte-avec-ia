@@ -1048,10 +1048,10 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                     <PricingCardName>Club Mensuel</PricingCardName>
                     <PricingCardPrice>9,99€</PricingCardPrice>
                     <PricingCardSub>/ mois — sans engagement</PricingCardSub>
-                    <PricingPerStory>soit 3,33€ par histoire</PricingPerStory>
+                    <PricingPerStory>soit ~2,50€ par conte</PricingPerStory>
                     <PricingCardFeaturesList>
                       <PricingCardFeatureItem $highlight>Ce conte est inclus</PricingCardFeatureItem>
-                      <PricingCardFeatureItem $highlight>3 contes / mois</PricingCardFeatureItem>
+                      <PricingCardFeatureItem $highlight>1 conte par semaine</PricingCardFeatureItem>
                       <PricingCardFeatureItem>Bibliothèque illimitée</PricingCardFeatureItem>
                       <PricingCardFeatureItem>Annulable à tout moment</PricingCardFeatureItem>
                     </PricingCardFeaturesList>
@@ -1064,10 +1064,10 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                     <PricingCardName>Club Annuel</PricingCardName>
                     <PricingCardPrice>79,99€</PricingCardPrice>
                     <PricingCardSub>/ an — soit 6,67€/mois</PricingCardSub>
-                    <PricingPerStory>Économisez 40€/an</PricingPerStory>
+                    <PricingPerStory>Economisez 40€+/an</PricingPerStory>
                     <PricingCardFeaturesList>
                       <PricingCardFeatureItem $highlight>Ce conte est inclus</PricingCardFeatureItem>
-                      <PricingCardFeatureItem $highlight>3 contes / mois</PricingCardFeatureItem>
+                      <PricingCardFeatureItem $highlight>1 conte par semaine</PricingCardFeatureItem>
                       <PricingCardFeatureItem>Bibliothèque illimitée</PricingCardFeatureItem>
                       <PricingCardFeatureItem>Annulable à tout moment</PricingCardFeatureItem>
                     </PricingCardFeaturesList>

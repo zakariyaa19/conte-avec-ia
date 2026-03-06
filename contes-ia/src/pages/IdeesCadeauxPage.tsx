@@ -76,9 +76,9 @@ const giftFormats = [
   },
   {
     format: "Club des Histoires",
-    price: "12,99€/mois",
-    description: "L'abonnement ideal pour les families qui adorent les histoires : 1 eBook gratuit chaque semaine, soit jusqu'a 4 contes par mois.",
-    advantages: ["1 eBook gratuit par semaine", "Bibliotheque personnelle", "Sans engagement", "Soit ~3,25EUR par conte"],
+    price: "9,99€/mois",
+    description: "L'abonnement ideal pour les familles qui adorent les histoires : un nouveau conte personnalise chaque semaine, credits cumulables.",
+    advantages: ["Un conte par semaine", "Bibliotheque personnelle", "Sans engagement", "Soit ~2,50EUR par conte"],
     bestFor: ["Families passionnees", "Cadeaux reguliers", "Lecteurs assidus", "Budget maitrise"],
     icon: "\u2B50"
   }

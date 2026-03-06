@@ -1222,7 +1222,7 @@ const faqItems = [
   {
     id: '3',
     question: "Qu'est-ce que le Club des Histoires Uniques ?",
-    answer: "C'est un abonnement a partir de 9,99\u20AC par mois qui vous donne droit a 3 eBooks personnalises par mois. Vous accedez aussi a votre bibliotheque personnelle avec visionneuse et telechargement. L'abonnement est sans engagement, annulable a tout moment. Une offre annuelle a 79,99\u20AC/an est egalement disponible."
+    answer: "C'est un abonnement a 9,99\u20AC par mois qui vous donne droit a un nouveau conte personnalise chaque semaine. Les credits sont cumulables et vous accedez a votre bibliotheque personnelle avec visionneuse et telechargement. Sans engagement, annulable a tout moment. Une offre annuelle a 79,99\u20AC/an est egalement disponible."
   },
   {
     id: '4',
@@ -1318,11 +1318,11 @@ const faqReveal = useScrollReveal();
 
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', "Offrez a votre enfant un livre unique et magique ! Creez facilement un conte personnalise avec l'intelligence artificielle. Rejoignez le Club pour 3 eBooks gratuits par mois.");
+      metaDescription.setAttribute('content', "Offrez a votre enfant un livre unique et magique ! Creez facilement un conte personnalise avec l'intelligence artificielle. Rejoignez le Club pour un nouveau conte chaque semaine.");
     } else {
       const meta = document.createElement('meta');
       meta.name = 'description';
-      meta.content = "Offrez a votre enfant un livre unique et magique ! Creez facilement un conte personnalise avec l'intelligence artificielle. Rejoignez le Club pour 3 eBooks gratuits par mois.";
+      meta.content = "Offrez a votre enfant un livre unique et magique ! Creez facilement un conte personnalise avec l'intelligence artificielle. Rejoignez le Club pour un nouveau conte chaque semaine.";
       document.head.appendChild(meta);
     }
   }, []);
