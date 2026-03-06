@@ -777,11 +777,12 @@ async function runGenerationPipeline(orderId: string, order: any, genLogId: stri
     pdfBuffer = null;
     global.gc?.();
 
-    // Update status with Cloudinary URL
+    // Update status with Cloudinary URL — mark as GENERATED so admin can deliver
     await prisma.order.update({
       where: { id: orderId },
       data: {
         pdfUrl,
+        status: 'GENERATED',
         storyStatus: 'DISPONIBLE',
         generationProgress: 100,
         generatedAt: new Date(),

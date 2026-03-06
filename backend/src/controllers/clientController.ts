@@ -91,8 +91,9 @@ export class ClientController {
         });
       }
 
-      // Only DELIVERED orders can be downloaded by clients
-      if (order.status !== 'DELIVERED') {
+      // Allow download when PDF is ready (GENERATED or DELIVERED)
+      if (!['GENERATED', 'DELIVERED'].includes(order.status)) {
+        console.log('[PDF] Acces refuse — orderId:', order.id, 'status:', order.status, 'pdfUrl:', order.pdfUrl || 'null');
         return res.status(403).json({
           success: false,
           message: 'Le conte n\'est pas encore disponible au telechargement'
