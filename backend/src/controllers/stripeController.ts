@@ -377,6 +377,7 @@ export const checkPaymentStatus = async (req: Request, res: Response) => {
         });
       }
 
+      // Mettre a jour le statut en PAID (les notifications sont envoyees par le webhook Stripe)
       const updatedOrder = await prisma.order.update({
         where: { id: orderId as string },
         data: {
@@ -384,50 +385,14 @@ export const checkPaymentStatus = async (req: Request, res: Response) => {
           paidAt: new Date()
         },
         omit: { coverImageData: true, pdfData: true },
-        include: { user: true }
       });
 
-      // Preparer les details pour email
-      const orderDetails = buildOrderDetailsString(order);
-
-      const customerEmail = order.user?.email || session.customer_details?.email || session.customer_email;
-
-      try {
-        if (customerEmail) {
-          await MailjetService.sendOrderConfirmation({
-            customerName: order.user?.firstName || order.creatorName || 'Client',
-            customerEmail: customerEmail,
-            orderNumber: order.id.slice(-8),
-            orderDetails: orderDetails
-          });
-        }
-
-        await MailjetService.sendAdminNotification({
-          customerName: order.user?.firstName || order.creatorName || 'Client',
-          customerEmail: customerEmail || 'Email non fourni',
-          orderNumber: order.id.slice(-8),
-          orderDetails: orderDetails
-        });
-
-        const { TelegramService } = await import('../utils/telegramService');
-        await TelegramService.sendOrderNotification({
-          customerName: order.user?.firstName || order.creatorName || 'Client',
-          customerEmail: customerEmail || 'Email non fourni',
-          orderNumber: order.id.slice(-8),
-          amount: Number(order.price),
-          orderDate: new Date(),
-          productType: order.productType,
-          purchaseType: order.purchaseType || 'SINGLE',
-          orderDetails: updatedOrder
-        });
-      } catch (emailError) {
-        console.error('Erreur envoi emails/Telegram:', emailError);
-      }
+      console.log('[checkPaymentStatus] Commande confirmee:', orderId, '(notifications via webhook)');
 
       res.json({
         success: true,
         status: 'paid',
-        message: 'Paiement confirme et emails envoyes',
+        message: 'Paiement confirme',
         order: {
           id: updatedOrder.id,
           productType: updatedOrder.productType,
