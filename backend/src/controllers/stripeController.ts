@@ -363,8 +363,9 @@ export const checkPaymentStatus = async (req: Request, res: Response) => {
         return res.status(404).json({ error: 'Commande non trouvee' });
       }
 
-      // Eviter les doublons : si deja PAID, renvoyer succes sans re-envoyer les notifs
-      if (order.status === 'PAID' && order.paidAt) {
+      // Si la commande a deja ete traitee (PAID, GENERATING, GENERATED, DELIVERED),
+      // ne JAMAIS ecraser le statut — juste confirmer au frontend
+      if (order.paidAt || ['PAID', 'GENERATING', 'GENERATED', 'DELIVERED'].includes(order.status)) {
         return res.json({
           success: true,
           status: 'paid',
@@ -377,26 +378,25 @@ export const checkPaymentStatus = async (req: Request, res: Response) => {
         });
       }
 
-      // Mettre a jour le statut en PAID (les notifications sont envoyees par le webhook Stripe)
-      const updatedOrder = await prisma.order.update({
+      // Premiere confirmation : mettre a jour le statut en PAID
+      await prisma.order.update({
         where: { id: orderId as string },
         data: {
           status: 'PAID',
           paidAt: new Date()
         },
-        omit: { coverImageData: true, pdfData: true },
       });
 
-      console.log('[checkPaymentStatus] Commande confirmee:', orderId, '(notifications via webhook)');
+      console.log('[checkPaymentStatus] Commande confirmee:', orderId);
 
       res.json({
         success: true,
         status: 'paid',
         message: 'Paiement confirme',
         order: {
-          id: updatedOrder.id,
-          productType: updatedOrder.productType,
-          purchaseType: updatedOrder.purchaseType
+          id: order.id,
+          productType: order.productType,
+          purchaseType: order.purchaseType
         }
       });
     } else {
@@ -520,7 +520,7 @@ export const handleStripeWebhook = async (req: Request, res: Response) => {
               include: { user: true }
             });
 
-            if (order && order.status !== 'PAID') {
+            if (order && !order.paidAt && !['PAID', 'GENERATING', 'GENERATED', 'DELIVERED'].includes(order.status)) {
               const updatedOrder = await prisma.order.update({
                 where: { id: orderId },
                 data: { status: 'PAID', paidAt: new Date() },
