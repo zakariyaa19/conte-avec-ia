@@ -2148,19 +2148,33 @@ export const PricingCardName = styled.h4`
   @media (min-width: ${theme.breakpoints.lg}) { font-size: ${theme.fontSizes.lg}; }
 `;
 
-export const PricingCardPrice = styled.p`
+export const PricingCardPrice = styled.p<{ $small?: boolean }>`
   font-family: ${theme.fonts.heading};
-  font-size: ${theme.fontSizes['2xl']};
-  font-weight: 800;
+  font-size: ${p => p.$small ? theme.fontSizes.base : theme.fontSizes['2xl']};
+  font-weight: ${p => p.$small ? 600 : 800};
   background: linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover});
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   margin: 0;
   line-height: 1.1;
+  opacity: ${p => p.$small ? 0.7 : 1};
 
-  @media (max-width: ${theme.breakpoints.sm}) { font-size: ${theme.fontSizes.xl}; }
-  @media (min-width: ${theme.breakpoints.lg}) { font-size: ${theme.fontSizes['3xl']}; }
+  @media (max-width: ${theme.breakpoints.sm}) { font-size: ${p => p.$small ? theme.fontSizes.sm : theme.fontSizes.xl}; }
+  @media (min-width: ${theme.breakpoints.lg}) { font-size: ${p => p.$small ? theme.fontSizes.lg : theme.fontSizes['3xl']}; }
+`;
+
+export const PricingFreeLabel = styled.div`
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.xl};
+  font-weight: 800;
+  color: #16a34a;
+  margin: 0 0 2px;
+  text-align: center;
+  line-height: 1.2;
+
+  @media (max-width: ${theme.breakpoints.sm}) { font-size: ${theme.fontSizes.lg}; }
+  @media (min-width: ${theme.breakpoints.lg}) { font-size: ${theme.fontSizes['2xl']}; }
 `;
 
 export const PricingCardSub = styled.p`

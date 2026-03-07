@@ -38,7 +38,7 @@ import {
   PricingSelectedCheck,
   PreviewTimerBar, PreviewTimerDigits,
   ValueBlock, ValueBlockTitle, ValueBlockItem,
-  PricingGrid, PricingCard, PricingCardBadge, PricingCardName, PricingCardPrice,
+  PricingGrid, PricingCard, PricingCardBadge, PricingCardName, PricingCardPrice, PricingFreeLabel,
   PricingCardSub, PricingPerStory, PricingCardFeaturesList, PricingCardFeatureItem, PricingCardCTA,
   PreviewSectionTitle, SocialProofLine,
   MaterializeImage, MaterializeText,
@@ -1046,11 +1046,11 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                     <PricingCardBadge>Populaire</PricingCardBadge>
                     {selectedOffer === 'club_monthly' && <PricingSelectedCheck>&#x2713;</PricingSelectedCheck>}
                     <PricingCardName>Club Mensuel</PricingCardName>
-                    <PricingCardPrice>9,99€</PricingCardPrice>
-                    <PricingCardSub>/ mois — sans engagement</PricingCardSub>
-                    <PricingPerStory>soit ~2,50€ par conte</PricingPerStory>
+                    <PricingFreeLabel>Ce conte est gratuit</PricingFreeLabel>
+                    <PricingCardPrice $small>9,99€ / mois</PricingCardPrice>
+                    <PricingCardSub>sans engagement</PricingCardSub>
                     <PricingCardFeaturesList>
-                      <PricingCardFeatureItem $highlight>Ce conte est inclus</PricingCardFeatureItem>
+                      <PricingCardFeatureItem $highlight>Ce conte est inclus immediatement</PricingCardFeatureItem>
                       <PricingCardFeatureItem $highlight>1 conte par semaine</PricingCardFeatureItem>
                       <PricingCardFeatureItem>Bibliothèque illimitée</PricingCardFeatureItem>
                       <PricingCardFeatureItem>Annulable à tout moment</PricingCardFeatureItem>
@@ -1062,11 +1062,11 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                   <PricingCard $isSelected={selectedOffer === 'club_annual'} $mobileOrder={1} onClick={() => handlePreviewSelect('club', 'annual')}>
                     {selectedOffer === 'club_annual' && <PricingSelectedCheck>&#x2713;</PricingSelectedCheck>}
                     <PricingCardName>Club Annuel</PricingCardName>
-                    <PricingCardPrice>79,99€</PricingCardPrice>
-                    <PricingCardSub>/ an — soit 6,67€/mois</PricingCardSub>
+                    <PricingFreeLabel>Ce conte est gratuit</PricingFreeLabel>
+                    <PricingCardPrice $small>79,99€ / an — soit 6,67€/mois</PricingCardPrice>
                     <PricingPerStory>Economisez 40€+/an</PricingPerStory>
                     <PricingCardFeaturesList>
-                      <PricingCardFeatureItem $highlight>Ce conte est inclus</PricingCardFeatureItem>
+                      <PricingCardFeatureItem $highlight>Ce conte est inclus immediatement</PricingCardFeatureItem>
                       <PricingCardFeatureItem $highlight>1 conte par semaine</PricingCardFeatureItem>
                       <PricingCardFeatureItem>Bibliothèque illimitée</PricingCardFeatureItem>
                       <PricingCardFeatureItem>Annulable à tout moment</PricingCardFeatureItem>
