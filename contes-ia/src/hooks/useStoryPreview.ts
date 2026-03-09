@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { StoryFormData } from '../types/FormTypes';
 import { ApiService } from '../config/api';
 import { isPhase1Complete } from './useCoverPreview';
@@ -18,6 +18,29 @@ export function useStoryPreview(formData: Partial<StoryFormData>): UseStoryPrevi
   const [error, setError] = useState<string | null>(null);
 
   const abortControllerRef = useRef<AbortController | null>(null);
+  const generationStartRef = useRef<number | null>(null);
+
+  // Stale generation guard: if isGenerating is true for more than 90s, reset it
+  useEffect(() => {
+    if (isGenerating) {
+      generationStartRef.current = Date.now();
+    } else {
+      generationStartRef.current = null;
+    }
+  }, [isGenerating]);
+
+  useEffect(() => {
+    if (!isGenerating) return;
+    const check = setInterval(() => {
+      if (generationStartRef.current && Date.now() - generationStartRef.current > 90_000) {
+        console.warn('[useStoryPreview] Generation stale, resetting');
+        setIsGenerating(false);
+        setError('La génération a pris trop de temps. Réessayez.');
+        abortControllerRef.current?.abort();
+      }
+    }, 5000);
+    return () => clearInterval(check);
+  }, [isGenerating]);
 
   const generate = useCallback(async () => {
     if (!isPhase1Complete(formData)) return;

@@ -2938,3 +2938,119 @@ export const GenderCardLabel = styled.span<{ $isSelected: boolean }>`
     font-size: ${theme.fontSizes.lg};
   }
 `;
+
+/* ══════════════════════════════════════════════
+   BOOK PREVIEW — Hero banner for age step
+   ══════════════════════════════════════════════ */
+
+export const BookPreviewBanner = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${theme.spacing.md};
+  padding: ${theme.spacing.sm} ${theme.spacing.md};
+  background: linear-gradient(135deg, ${theme.colors.accent.creamyYellow}, ${theme.colors.accent.softPeach}30);
+  border-radius: 16px;
+  margin-bottom: ${theme.spacing.md};
+  width: 100%;
+  max-width: 400px;
+  animation: ${fadeIn} 0.5s ease both;
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    gap: ${theme.spacing.sm};
+    padding: ${theme.spacing.xs} ${theme.spacing.sm};
+    margin-bottom: ${theme.spacing.sm};
+    max-width: 100%;
+  }
+
+  @media (min-width: ${theme.breakpoints.lg}) {
+    max-width: 520px;
+    padding: ${theme.spacing.md} ${theme.spacing.lg};
+    gap: ${theme.spacing.lg};
+  }
+`;
+
+export const BookPreviewCover = styled.div<{ $src: string }>`
+  width: 64px;
+  height: 80px;
+  flex-shrink: 0;
+  border-radius: 4px 10px 10px 4px;
+  background-image: url(${p => p.$src});
+  background-size: cover;
+  background-position: center;
+  box-shadow:
+    -3px 0 0 0 ${theme.colors.accent.coral}40,
+    -6px 0 0 0 ${theme.colors.accent.coral}20,
+    2px 4px 12px rgba(0,0,0,0.15);
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, rgba(0,0,0,0.1), rgba(0,0,0,0.05), rgba(0,0,0,0.1));
+    border-radius: 2px 0 0 2px;
+  }
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    width: 52px;
+    height: 66px;
+  }
+
+  @media (min-width: ${theme.breakpoints.lg}) {
+    width: 76px;
+    height: 96px;
+  }
+`;
+
+export const BookPreviewText = styled.p`
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.sm};
+  font-weight: 700;
+  color: ${theme.colors.text.primary};
+  line-height: 1.4;
+  margin: 0;
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    font-size: ${theme.fontSizes.xs};
+  }
+
+  @media (min-width: ${theme.breakpoints.lg}) {
+    font-size: ${theme.fontSizes.base};
+  }
+`;
+
+export const StepMicroText = styled.p`
+  font-family: ${theme.fonts.body};
+  font-size: ${theme.fontSizes.xs};
+  color: ${theme.colors.text.light};
+  text-align: center;
+  margin: -4px 0 ${theme.spacing.md};
+  line-height: 1.4;
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    font-size: 11px;
+    margin: -2px 0 ${theme.spacing.sm};
+  }
+
+  @media (min-width: ${theme.breakpoints.lg}) {
+    font-size: ${theme.fontSizes.sm};
+    margin: -6px 0 ${theme.spacing.lg};
+  }
+`;
+
+export const ProgressHintText = styled.span`
+  font-family: ${theme.fonts.body};
+  font-size: 10px;
+  color: ${theme.colors.text.light};
+  text-align: center;
+  display: block;
+  margin-top: 4px;
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    font-size: 9px;
+    margin-top: 2px;
+  }
+`;

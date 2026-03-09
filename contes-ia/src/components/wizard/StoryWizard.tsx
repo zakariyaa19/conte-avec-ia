@@ -58,6 +58,8 @@ import {
   DetailChipGroup, DetailChip,
   AccordionHeader, AccordionChevron, AccordionBody,
   DraftBanner, DraftBannerText, DraftBannerButton, DraftBannerDismiss,
+  BookPreviewBanner, BookPreviewCover, BookPreviewText,
+  StepMicroText, ProgressHintText,
 } from './WizardSharedStyles';
 
 /* ══════════════════════════════════════════════
@@ -284,6 +286,27 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
     }
   }, [previewParagraphs, rawBase64, isIllustrationGenerating, illustrationUrl]); // eslint-disable-line
 
+  // Recovery: re-trigger generation when user returns to page (tab switch, phone lock, etc.)
+  useEffect(() => {
+    if (ALL_STEPS[currentStep] !== 'preview') return;
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState !== 'visible') return;
+      // Small delay to let browser restore network connections
+      setTimeout(() => {
+        if (!coverImageUrl && !isCoverGenerating) generateCover();
+        if (!previewParagraphs && !isStoryPreviewGenerating) generateStoryPreview();
+        // Reset illustration guard so it can re-trigger if needed
+        if (!illustrationBase64 && !isIllustrationGenerating) {
+          illustrationTriggeredRef.current = false;
+        }
+      }, 500);
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [currentStep, coverImageUrl, isCoverGenerating, previewParagraphs, isStoryPreviewGenerating, illustrationBase64, isIllustrationGenerating, generateCover, generateStoryPreview]); // eslint-disable-line
+
   // Countdown timer for preview step
   useEffect(() => {
     if (ALL_STEPS[currentStep] === 'preview') {
@@ -392,7 +415,12 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
       case 'age':
         return (
           <>
+            <BookPreviewBanner>
+              <BookPreviewCover $src="/image/themes/contes-de-fees.png" />
+              <BookPreviewText>Ton enfant devient le héros de son propre livre 📚</BookPreviewText>
+            </BookPreviewBanner>
             <StepTitle>Pour quel âge ?</StepTitle>
+            <StepMicroText>Choisis l'âge pour commencer à créer son histoire</StepMicroText>
             <CardGrid $columns={4}>
               {AGE_OPTIONS.map((o, i) => (
                 <ImageCard key={o.value} $isSelected={formData.ageRange === o.value} $delay={i}
@@ -830,6 +858,16 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
 
         // All content ready
         const allReady = !!(coverImageUrl && !isCoverGenerating && previewParagraphs && illustrationBase64);
+        const hasError = !!(coverError || storyPreviewError);
+        const isStuck = !allReady && !isCoverGenerating && !isStoryPreviewGenerating && !isIllustrationGenerating && !allReady;
+
+        const handleRetryGeneration = () => {
+          if (!coverImageUrl) generateCover();
+          if (!previewParagraphs) generateStoryPreview();
+          if (!illustrationBase64) {
+            illustrationTriggeredRef.current = false;
+          }
+        };
 
         // ── LOADING STATE: single immersive fullscreen canvas ──
         if (!allReady) {
@@ -932,6 +970,34 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                   <CanvasProgressStep $done={false} $active={stage === 2}>Illustrations</CanvasProgressStep>
                 </CanvasProgressSteps>
               </CanvasProgressContainer>
+
+              {/* Retry button when generation is stuck or errored */}
+              {(hasError || isStuck) && (
+                <div style={{
+                  position: 'absolute', bottom: '100px', left: '50%', transform: 'translateX(-50%)',
+                  zIndex: 10, textAlign: 'center',
+                }}>
+                  <button
+                    onClick={handleRetryGeneration}
+                    style={{
+                      background: theme.colors.accent.coral,
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '12px',
+                      padding: '12px 24px',
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
+                    }}
+                  >
+                    Relancer la création
+                  </button>
+                  <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '12px', marginTop: '8px' }}>
+                    La connexion a été interrompue
+                  </p>
+                </div>
+              )}
             </GenerationCanvas>
           );
         }
@@ -1236,6 +1302,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
               <ProgressSegment key={s} $status={getSegmentStatus(i)} />
             ))}
           </SegmentedProgressBar>
+          <ProgressHintText>Création du conte (~1 minute)</ProgressHintText>
         </WizardHeaderNew>
       )}
 
