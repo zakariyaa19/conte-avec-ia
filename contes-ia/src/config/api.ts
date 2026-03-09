@@ -472,6 +472,19 @@ export class ApiService {
     });
   }
 
+  // ========== Public Story Sharing ==========
+
+  static async generateShareToken(token: string, storyId: string): Promise<{ success: boolean; data: { shareToken: string } }> {
+    return this.request(`/api/client/stories/${storyId}/share`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+  }
+
+  static async getPublicStory(shareToken: string): Promise<{ success: boolean; data: any }> {
+    return this.request(`/api/public/stories/${shareToken}`);
+  }
+
   // Get base URL (used for PDF preview links)
   static getBaseUrl(): string {
     return this.baseUrl;

@@ -8,6 +8,7 @@ import { Button } from '../components/ui/Button';
 import { useAuth } from '../contexts/AuthContext';
 import { ApiService } from '../config/api';
 import { getImageUrl } from '../config/constants';
+import { ShareModal } from '../components/ui/ShareModal';
 
 /* ══════════════════════════════════════════════
    ANIMATIONS
@@ -591,6 +592,28 @@ const BookFavoriteBtn = styled.button<{ $active: boolean }>`
   &:hover { transform: scale(1.3); }
 `;
 
+const BookShareBtn = styled.button`
+  position: absolute;
+  bottom: ${theme.spacing.sm};
+  right: ${theme.spacing.sm};
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(4px);
+  border: none;
+  cursor: pointer;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  color: white;
+
+  &:hover { background: ${theme.colors.accent.coral}; transform: scale(1.1); }
+  &:active { transform: scale(0.95); }
+`;
+
 const BookPlaceholder = styled.div`
   position: absolute;
   top: 0; left: 0; width: 100%; height: 100%;
@@ -838,6 +861,7 @@ export const DashboardPage: React.FC = () => {
   const [clubCredit, setClubCredit] = useState<{ canSubmit: boolean; remaining: number; nextCreditDate?: string; totalEarned?: number } | null>(null);
   const [subscriptionActivating, setSubscriptionActivating] = useState(false);
   const [countdown, setCountdown] = useState<{ days: number; hours: number } | null>(null);
+  const [shareStory, setShareStory] = useState<{ id: string; name: string; title?: string } | null>(null);
 
   // Derive protagonist name (most used) for personalized messages
   const heroName = useMemo(() => {
@@ -1222,6 +1246,14 @@ export const DashboardPage: React.FC = () => {
                     <BookFavoriteBtn $active={story.isFavorite} onClick={(e) => handleToggleFavorite(e, story.id)}>
                       {story.isFavorite ? '\u2764\uFE0F' : '\u2661'}
                     </BookFavoriteBtn>
+                    {story.storyStatus === 'DISPONIBLE' && (
+                      <BookShareBtn onClick={(e) => { e.stopPropagation(); setShareStory({ id: story.id, name: story.protagonistName, title }); }}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+                          <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+                        </svg>
+                      </BookShareBtn>
+                    )}
                     <BookOverlay>
                       <BookTitle>{title}</BookTitle>
                       <BookDate>{new Date(story.createdAt).toLocaleDateString('fr-FR')}</BookDate>
@@ -1314,6 +1346,16 @@ export const DashboardPage: React.FC = () => {
 
       </MainContent>
       <Footer />
+
+      {shareStory && (
+        <ShareModal
+          isOpen={!!shareStory}
+          onClose={() => setShareStory(null)}
+          storyId={shareStory.id}
+          protagonistName={shareStory.name}
+          coverTitle={shareStory.title}
+        />
+      )}
     </PageContainer>
   );
 };

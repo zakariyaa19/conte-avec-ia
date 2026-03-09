@@ -147,6 +147,7 @@ model Order {
 
   // Favoris et profil enfant
   isFavorite          Boolean @default(false)
+  shareToken          String?  @unique
   childProfileId      String?
 
   createdAt DateTime @default(now())

@@ -1005,9 +1005,12 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
         // ── ALL READY: show the real preview ──
         return (
           <>
-            <StepTitle style={{ fontSize: theme.fontSizes.lg, marginBottom: theme.spacing.md }}>
+            <StepTitle style={{ fontSize: theme.fontSizes.lg, marginBottom: theme.spacing.sm }}>
               Le conte de {heroName} est prêt !
             </StepTitle>
+            <StepSubtitle style={{ marginBottom: theme.spacing.md }}>
+              Montrez l'histoire de {heroName} à votre famille ✨
+            </StepSubtitle>
 
             {/* ── Book preview: cover + story page + locked page ── */}
             <BookPreviewWrapper>

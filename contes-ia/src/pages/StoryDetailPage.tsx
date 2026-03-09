@@ -8,6 +8,7 @@ import { Button } from '../components/ui/Button';
 import { StoryPDFViewer } from '../components/ui/StoryPDFViewer';
 import { ApiService } from '../config/api';
 import { getImageUrl } from '../config/constants';
+import { ShareModal } from '../components/ui/ShareModal';
 import {
   GENERAL_THEMES,
   SPECIFIC_SUBJECTS,
@@ -388,6 +389,7 @@ export const StoryDetailPage: React.FC = () => {
   const [pdfLoading, setPdfLoading] = useState(false);
   const [pdfError, setPdfError] = useState<string | null>(null);
   const [coverError, setCoverError] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
 
   useEffect(() => {
     loadStory();
@@ -580,7 +582,17 @@ export const StoryDetailPage: React.FC = () => {
                   <polyline points="7 10 12 15 17 10" />
                   <line x1="12" y1="15" x2="12" y2="3" />
                 </svg>
-                Telecharger PDF
+                Télécharger PDF
+              </ActionButton>
+              <ActionButton
+                $variant="secondary"
+                onClick={() => setShareOpen(true)}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+                  <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+                </svg>
+                Partager
               </ActionButton>
             </ActionsRow>
           </ActionsCard>
@@ -640,6 +652,16 @@ export const StoryDetailPage: React.FC = () => {
         title={displayTitle}
         onDownload={handleDownloadPdf}
       />
+
+      {id && (
+        <ShareModal
+          isOpen={shareOpen}
+          onClose={() => setShareOpen(false)}
+          storyId={id}
+          protagonistName={story?.protagonistName || ''}
+          coverTitle={displayTitle}
+        />
+      )}
     </PageContainer>
   );
 };

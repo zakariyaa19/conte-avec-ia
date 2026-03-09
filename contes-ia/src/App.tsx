@@ -15,6 +15,7 @@ import { DashboardPage } from './pages/DashboardPage';
 import { StoryDetailPage } from './pages/StoryDetailPage';
 import { AccountPage } from './pages/AccountPage';
 import { ClubPage } from './pages/ClubPage';
+import { PublicStoryPage } from './pages/PublicStoryPage';
 import { ExemplesPage } from './pages/ExemplesPage';
 import { CGVPage } from './pages/CGVPage';
 import ThemesContesPage from './pages/ThemesContesPage';
@@ -75,6 +76,7 @@ function App() {
           <Route path="/dashboard/story/:id" element={<ProtectedRoute><StoryDetailPage /></ProtectedRoute>} />
           <Route path="/dashboard/account" element={<ProtectedRoute><AccountPage /></ProtectedRoute>} />
           <Route path="/club" element={<ClubPage />} />
+          <Route path="/story/:shareToken" element={<PublicStoryPage />} />
           <Route path="/admin" element={<AdminProtectedRoute><AdminPage /></AdminProtectedRoute>} />
           <Route path="/admin/orders" element={<AdminProtectedRoute><AdminPage /></AdminProtectedRoute>} />
           <Route path="/admin/order/:orderId" element={<AdminProtectedRoute><AdminPage /></AdminProtectedRoute>} />
