@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 import { theme } from '../styles/theme';
 import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
@@ -9,15 +9,48 @@ import { useAuth } from '../contexts/AuthContext';
 import { ApiService } from '../config/api';
 import { getImageUrl } from '../config/constants';
 
+/* ══════════════════════════════════════════════
+   ANIMATIONS
+   ══════════════════════════════════════════════ */
+
 const fadeInUp = keyframes`
   from { opacity: 0; transform: translateY(16px); }
   to { opacity: 1; transform: translateY(0); }
+`;
+
+const fadeIn = keyframes`
+  from { opacity: 0; }
+  to { opacity: 1; }
 `;
 
 const shimmer = keyframes`
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 `;
+
+const bookSlideIn = keyframes`
+  from { opacity: 0; transform: translateY(30px) scale(0.9); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+`;
+
+const pulseGlow = keyframes`
+  0%, 100% { box-shadow: 0 0 0 0 ${theme.colors.accent.coral}40; }
+  50% { box-shadow: 0 0 0 12px ${theme.colors.accent.coral}00; }
+`;
+
+const floatBooks = keyframes`
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  33% { transform: translateY(-8px) rotate(1deg); }
+  66% { transform: translateY(-3px) rotate(-1deg); }
+`;
+
+const progressFill = keyframes`
+  from { width: 0; }
+`;
+
+/* ══════════════════════════════════════════════
+   LAYOUT
+   ══════════════════════════════════════════════ */
 
 const PageContainer = styled.div`
   min-height: 100vh;
@@ -32,33 +65,48 @@ const MainContent = styled.main`
   margin: 0 auto;
   padding: ${theme.spacing['2xl']} ${theme.spacing.lg};
   width: 100%;
-  animation: ${fadeInUp} 0.6s ease-out;
 
   @media (max-width: ${theme.breakpoints.sm}) {
     padding: ${theme.spacing.lg} ${theme.spacing.md};
   }
 `;
 
-const DashboardHeader = styled.div`
+/* ══════════════════════════════════════════════
+   1. LIBRARY HEADER
+   ══════════════════════════════════════════════ */
+
+const LibraryHeader = styled.div`
+  margin-bottom: ${theme.spacing.xl};
+  animation: ${fadeInUp} 0.6s ease-out;
+`;
+
+const HeaderTopRow = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: ${theme.spacing.xl};
+  align-items: flex-start;
   flex-wrap: wrap;
   gap: ${theme.spacing.md};
+  margin-bottom: ${theme.spacing.sm};
 `;
 
-const UserInfo = styled.div`
+const HeaderTitleGroup = styled.div`
   display: flex;
-  align-items: center;
-  gap: ${theme.spacing.md};
+  flex-direction: column;
+  gap: 4px;
 `;
 
-const UserName = styled.h1`
+const LibraryTitle = styled.h1`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes['2xl']};
   color: ${theme.colors.text.primary};
   margin: 0;
+  display: flex;
+  align-items: center;
+  gap: ${theme.spacing.sm};
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    font-size: ${theme.fontSizes.xl};
+  }
 `;
 
 const Badge = styled.span<{ $variant: 'club' | 'basic' | 'activating' }>`
@@ -68,15 +116,56 @@ const Badge = styled.span<{ $variant: 'club' | 'basic' | 'activating' }>`
   border-radius: ${theme.borderRadius.full};
   font-size: ${theme.fontSizes.xs};
   font-weight: 700;
-  background: ${props => {
-    if (props.$variant === 'club') return `linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover})`;
-    if (props.$variant === 'activating') return `linear-gradient(135deg, ${theme.colors.accent.coral}80, ${theme.colors.button.primaryHover}80)`;
+  background: ${p => {
+    if (p.$variant === 'club') return `linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover})`;
+    if (p.$variant === 'activating') return `linear-gradient(135deg, ${theme.colors.accent.coral}80, ${theme.colors.button.primaryHover}80)`;
     return theme.colors.background.secondary;
   }};
-  color: ${props => props.$variant === 'basic' ? theme.colors.text.secondary : 'white'};
+  color: ${p => p.$variant === 'basic' ? theme.colors.text.secondary : 'white'};
 `;
 
-/* Club Welcome Banner - shown during subscription activation */
+const LibrarySubtitle = styled.p`
+  font-family: ${theme.fonts.body};
+  font-size: ${theme.fontSizes.base};
+  color: ${theme.colors.text.secondary};
+  margin: 0;
+  line-height: 1.5;
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    font-size: ${theme.fontSizes.sm};
+  }
+`;
+
+const StoryCounter = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: ${theme.fonts.body};
+  font-size: ${theme.fontSizes.sm};
+  color: ${theme.colors.accent.coral};
+  font-weight: 600;
+  margin-top: 4px;
+`;
+
+const ActionButtons = styled.div`
+  display: flex;
+  gap: ${theme.spacing.sm};
+  flex-shrink: 0;
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    width: 100%;
+    justify-content: stretch;
+
+    button {
+      flex: 1;
+    }
+  }
+`;
+
+/* ══════════════════════════════════════════════
+   CLUB WELCOME BANNER (subscription activation)
+   ══════════════════════════════════════════════ */
+
 const ClubWelcomeBanner = styled.div`
   background: linear-gradient(135deg, ${theme.colors.accent.coral}15, ${theme.colors.accent.softPink}25, ${theme.colors.accent.creamyYellow}30);
   border: 1px solid ${theme.colors.accent.coral}30;
@@ -109,13 +198,17 @@ const WelcomeShimmer = styled.div`
   animation: ${shimmer} 1.5s linear infinite;
 `;
 
-/* Club Section - for active Club members */
+/* ══════════════════════════════════════════════
+   2. CLUB SECTION — Premium Members
+   ══════════════════════════════════════════════ */
+
 const ClubSection = styled.div`
   background: linear-gradient(135deg, ${theme.colors.accent.creamyYellow}, ${theme.colors.accent.softPink}20);
   border: 1px solid ${theme.colors.accent.lightCoral}30;
   border-radius: ${theme.borderRadius.xl};
   padding: ${theme.spacing.lg};
   margin-bottom: ${theme.spacing.xl};
+  animation: ${fadeInUp} 0.6s ease-out 0.1s both;
 `;
 
 const ClubSectionHeader = styled.div`
@@ -132,9 +225,6 @@ const ClubSectionTitle = styled.h3`
   font-size: ${theme.fontSizes.lg};
   color: ${theme.colors.text.primary};
   margin: 0;
-  display: flex;
-  align-items: center;
-  gap: ${theme.spacing.sm};
 `;
 
 const ManageLink = styled.button`
@@ -145,25 +235,30 @@ const ManageLink = styled.button`
   cursor: pointer;
   text-decoration: underline;
   padding: 0;
+  &:hover { color: ${theme.colors.accent.coral}; }
+`;
 
-  &:hover {
-    color: ${theme.colors.accent.coral};
+const ClubGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: ${theme.spacing.md};
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    grid-template-columns: 1fr;
   }
 `;
 
 const CreditCard = styled.div<{ $available: boolean }>`
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: ${theme.spacing.md};
+  flex-direction: column;
+  gap: ${theme.spacing.sm};
   padding: ${theme.spacing.md} ${theme.spacing.lg};
-  background: ${props => props.$available
+  background: ${p => p.$available
     ? `linear-gradient(135deg, ${theme.colors.accent.lightGreen}30, #a8e6cf30)`
     : theme.colors.background.white
   };
-  border: 1px solid ${props => props.$available ? '#a8e6cf' : '#E5E7EB'};
+  border: 1px solid ${p => p.$available ? '#a8e6cf' : '#E5E7EB'};
   border-radius: ${theme.borderRadius.lg};
-  flex-wrap: wrap;
 `;
 
 const CreditInfo = styled.div`
@@ -194,36 +289,154 @@ const CountdownText = styled.span`
   font-size: ${theme.fontSizes.sm};
   color: ${theme.colors.accent.coral};
   font-weight: 600;
-  white-space: nowrap;
 `;
 
-/* Join Club Banner - for non-Club users */
-const JoinClubBanner = styled.div`
+const CollectionCard = styled.div`
+  padding: ${theme.spacing.md} ${theme.spacing.lg};
   background: ${theme.colors.background.white};
-  border: 1px solid ${theme.colors.accent.lightCoral}30;
-  border-radius: ${theme.borderRadius.xl};
-  padding: ${theme.spacing.lg};
-  margin-bottom: ${theme.spacing.xl};
+  border: 1px solid #E5E7EB;
+  border-radius: ${theme.borderRadius.lg};
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: ${theme.spacing.md};
+  flex-direction: column;
+  gap: ${theme.spacing.sm};
 `;
 
-const JoinClubText = styled.div`
-  h3 {
-    font-family: ${theme.fonts.heading};
-    font-size: ${theme.fontSizes.base};
-    color: ${theme.colors.text.primary};
-    margin: 0 0 ${theme.spacing.xs};
-  }
-  p {
-    color: ${theme.colors.text.secondary};
-    font-size: ${theme.fontSizes.sm};
-    margin: 0;
+const CollectionLabel = styled.span`
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.base};
+  color: ${theme.colors.text.primary};
+  font-weight: 700;
+`;
+
+const ProgressBarContainer = styled.div`
+  width: 100%;
+  height: 8px;
+  background: #E5E7EB;
+  border-radius: ${theme.borderRadius.full};
+  overflow: hidden;
+`;
+
+const ProgressBarFill = styled.div<{ $percent: number }>`
+  height: 100%;
+  width: ${p => p.$percent}%;
+  background: linear-gradient(90deg, ${theme.colors.accent.coral}, ${theme.colors.accent.softPink});
+  border-radius: ${theme.borderRadius.full};
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: ${progressFill} 1s ease-out;
+`;
+
+const ProgressText = styled.span`
+  font-size: ${theme.fontSizes.xs};
+  color: ${theme.colors.text.light};
+`;
+
+/* ══════════════════════════════════════════════
+   2B. JOIN CLUB BANNER — Basic Members
+   ══════════════════════════════════════════════ */
+
+const JoinClubCard = styled.div`
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  border-radius: ${theme.borderRadius.xl};
+  padding: ${theme.spacing.xl};
+  margin-bottom: ${theme.spacing.xl};
+  position: relative;
+  overflow: hidden;
+  animation: ${fadeInUp} 0.6s ease-out 0.1s both;
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    padding: ${theme.spacing.lg};
   }
 `;
+
+const JoinClubContent = styled.div`
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: ${theme.spacing.xl};
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    flex-direction: column;
+    text-align: center;
+  }
+`;
+
+const JoinClubTextBlock = styled.div`
+  flex: 1;
+`;
+
+const JoinClubTitle = styled.h3`
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.xl};
+  color: white;
+  margin: 0 0 ${theme.spacing.md};
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    font-size: ${theme.fontSizes.lg};
+  }
+`;
+
+const JoinClubFeatures = styled.ul`
+  list-style: none;
+  padding: 0;
+  margin: 0 0 ${theme.spacing.lg};
+  display: flex;
+  flex-direction: column;
+  gap: ${theme.spacing.sm};
+`;
+
+const JoinClubFeature = styled.li`
+  font-size: ${theme.fontSizes.sm};
+  color: rgba(255, 255, 255, 0.85);
+  display: flex;
+  align-items: center;
+  gap: ${theme.spacing.sm};
+
+  &::before {
+    content: '\u2728';
+    font-size: 14px;
+  }
+`;
+
+const JoinClubVisual = styled.div`
+  display: flex;
+  gap: -12px;
+  flex-shrink: 0;
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    justify-content: center;
+  }
+`;
+
+const FloatingBookPreview = styled.div<{ $delay: number; $rotate: number }>`
+  width: 60px;
+  height: 80px;
+  border-radius: 3px 8px 8px 3px;
+  background: linear-gradient(135deg, ${theme.colors.accent.softPink}, ${theme.colors.accent.creamyYellow});
+  box-shadow: -2px 0 4px rgba(0,0,0,0.2), 2px 2px 8px rgba(0,0,0,0.3);
+  animation: ${floatBooks} 4s ease-in-out ${p => p.$delay}s infinite;
+  transform: rotate(${p => p.$rotate}deg);
+  margin-left: -8px;
+
+  &:first-child { margin-left: 0; }
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    width: 48px;
+    height: 64px;
+  }
+`;
+
+const JoinClubBg = styled.div`
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 80% 50%, ${theme.colors.accent.coral}15, transparent 60%);
+  z-index: 1;
+`;
+
+/* ══════════════════════════════════════════════
+   3. FILTER BAR
+   ══════════════════════════════════════════════ */
 
 const FilterBar = styled.div`
   display: flex;
@@ -234,56 +447,70 @@ const FilterBar = styled.div`
 
 const FilterButton = styled.button<{ $active: boolean }>`
   padding: ${theme.spacing.xs} ${theme.spacing.md};
-  border: 2px solid ${props => props.$active ? theme.colors.accent.coral : '#E5E7EB'};
+  border: 2px solid ${p => p.$active ? theme.colors.accent.coral : '#E5E7EB'};
   border-radius: ${theme.borderRadius.full};
-  background: ${props => props.$active ? theme.colors.accent.coral : 'transparent'};
-  color: ${props => props.$active ? 'white' : theme.colors.text.secondary};
+  background: ${p => p.$active ? theme.colors.accent.coral : 'transparent'};
+  color: ${p => p.$active ? 'white' : theme.colors.text.secondary};
   font-size: ${theme.fontSizes.sm};
   font-weight: 600;
   cursor: pointer;
   transition: all ${theme.transitions.base};
-
-  &:hover {
-    border-color: ${theme.colors.accent.coral};
-  }
+  &:hover { border-color: ${theme.colors.accent.coral}; }
 `;
 
-const bookFloat = keyframes`
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-6px) rotate(0.5deg); }
+/* ══════════════════════════════════════════════
+   4. BOOKSHELF GRID + BOOK CARDS
+   ══════════════════════════════════════════════ */
+
+const SectionLabel = styled.h2`
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.lg};
+  color: ${theme.colors.text.primary};
+  margin: 0 0 ${theme.spacing.md};
 `;
 
 const BookshelfGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: ${theme.spacing.xl};
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: ${theme.spacing.lg};
 
   @media (max-width: ${theme.breakpoints.sm}) {
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: ${theme.spacing.md};
+  }
+
+  @media (min-width: ${theme.breakpoints.lg}) {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: ${theme.spacing.xl};
   }
 `;
 
-const BookCard = styled.div<{ $hasImage: boolean }>`
+const BookCard = styled.div<{ $hasImage: boolean; $delay?: number }>`
   position: relative;
   aspect-ratio: 2 / 3;
   border-radius: 4px 12px 12px 4px;
   overflow: hidden;
   cursor: pointer;
-  background: ${props => props.$hasImage ? '#1a1a2e' : `linear-gradient(135deg, ${theme.colors.accent.softPink}, ${theme.colors.accent.creamyYellow})`};
+  background: ${p => p.$hasImage ? '#1a1a2e' : `linear-gradient(135deg, ${theme.colors.accent.softPink}, ${theme.colors.accent.creamyYellow})`};
   box-shadow:
     -4px 0 8px rgba(0,0,0,0.15),
     4px 2px 12px rgba(0,0,0,0.2),
     inset -2px 0 4px rgba(255,255,255,0.1);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: left center;
+  animation: ${bookSlideIn} 0.5s ease-out ${p => (p.$delay || 0) * 0.08}s both;
+  perspective: 800px;
 
   &:hover {
-    transform: scale(1.04) translateY(-4px);
+    transform: scale(1.04) translateY(-4px) rotateY(-3deg);
     box-shadow:
       -6px 0 12px rgba(0,0,0,0.2),
       6px 4px 20px rgba(0,0,0,0.3),
       inset -2px 0 4px rgba(255,255,255,0.1);
-    animation: ${bookFloat} 3s ease-in-out infinite;
+  }
+
+  &:active {
+    transform: scale(0.98);
   }
 `;
 
@@ -302,9 +529,9 @@ const BookCoverImage = styled.img`
   top: 0;
   left: 0;
   width: 100%;
-  z-index: 1;
   height: 100%;
   object-fit: cover;
+  z-index: 1;
 `;
 
 const BookOverlay = styled.div`
@@ -344,7 +571,7 @@ const BookStatusBadge = styled.span<{ $color: string }>`
   font-size: 10px;
   font-weight: 700;
   color: white;
-  background: ${props => props.$color};
+  background: ${p => p.$color};
   z-index: 3;
   backdrop-filter: blur(4px);
 `;
@@ -359,18 +586,14 @@ const BookFavoriteBtn = styled.button<{ $active: boolean }>`
   cursor: pointer;
   z-index: 3;
   filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5));
-  color: ${props => props.$active ? theme.colors.accent.coral : 'rgba(255,255,255,0.8)'};
+  color: ${p => p.$active ? theme.colors.accent.coral : 'rgba(255,255,255,0.8)'};
   transition: transform 0.2s;
-
   &:hover { transform: scale(1.3); }
 `;
 
 const BookPlaceholder = styled.div`
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 0; left: 0; width: 100%; height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -391,6 +614,169 @@ const PlaceholderName = styled.div`
   color: ${theme.colors.text.secondary};
   font-weight: 600;
 `;
+
+/* ══════════════════════════════════════════════
+   5. COLLECTION SECTION
+   ══════════════════════════════════════════════ */
+
+const CollectionSection = styled.div`
+  margin-top: ${theme.spacing['2xl']};
+  animation: ${fadeIn} 0.6s ease-out 0.3s both;
+`;
+
+const CollectionTitle = styled.h2`
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.xl};
+  color: ${theme.colors.text.primary};
+  margin: 0 0 ${theme.spacing.sm};
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    font-size: ${theme.fontSizes.lg};
+  }
+`;
+
+const CollectionSubtitle = styled.p`
+  font-family: ${theme.fonts.body};
+  font-size: ${theme.fontSizes.sm};
+  color: ${theme.colors.text.secondary};
+  margin: 0 0 ${theme.spacing.lg};
+`;
+
+const EpisodeList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${theme.spacing.sm};
+  margin-bottom: ${theme.spacing.lg};
+`;
+
+const EpisodeItem = styled.div<{ $available: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: ${theme.spacing.md};
+  padding: ${theme.spacing.md} ${theme.spacing.lg};
+  background: ${p => p.$available ? theme.colors.background.white : 'transparent'};
+  border: 1px solid ${p => p.$available ? '#E5E7EB' : '#E5E7EB50'};
+  border-radius: ${theme.borderRadius.lg};
+  cursor: ${p => p.$available ? 'pointer' : 'default'};
+  transition: all 0.2s ease;
+  opacity: ${p => p.$available ? 1 : 0.5};
+
+  ${p => p.$available && css`
+    &:hover {
+      border-color: ${theme.colors.accent.coral};
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+  `}
+`;
+
+const EpisodeNumber = styled.span<{ $active: boolean }>`
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.sm};
+  font-weight: 700;
+  flex-shrink: 0;
+  background: ${p => p.$active
+    ? `linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.accent.softPink})`
+    : '#E5E7EB'};
+  color: ${p => p.$active ? 'white' : theme.colors.text.light};
+`;
+
+const EpisodeInfo = styled.div`
+  flex: 1;
+  min-width: 0;
+
+  h4 {
+    font-family: ${theme.fonts.heading};
+    font-size: ${theme.fontSizes.sm};
+    color: ${theme.colors.text.primary};
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  p {
+    font-size: ${theme.fontSizes.xs};
+    color: ${theme.colors.text.light};
+    margin: 2px 0 0;
+  }
+`;
+
+/* ══════════════════════════════════════════════
+   6. TEASER CARD (next story)
+   ══════════════════════════════════════════════ */
+
+const TeaserCard = styled.div`
+  position: relative;
+  aspect-ratio: 2 / 3;
+  border-radius: 4px 12px 12px 4px;
+  overflow: hidden;
+  cursor: pointer;
+  background: linear-gradient(135deg, ${theme.colors.accent.softPink}40, ${theme.colors.accent.creamyYellow}40);
+  border: 2px dashed ${theme.colors.accent.coral}40;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: ${theme.spacing.sm};
+  padding: ${theme.spacing.lg};
+  text-align: center;
+  transition: all 0.3s ease;
+  animation: ${pulseGlow} 3s ease-in-out infinite;
+
+  &:hover {
+    border-color: ${theme.colors.accent.coral};
+    background: linear-gradient(135deg, ${theme.colors.accent.softPink}60, ${theme.colors.accent.creamyYellow}60);
+    transform: translateY(-4px);
+  }
+`;
+
+const TeaserIcon = styled.div`
+  font-size: 2rem;
+  opacity: 0.7;
+`;
+
+const TeaserTitle = styled.span`
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.sm};
+  color: ${theme.colors.text.primary};
+  font-weight: 700;
+`;
+
+const TeaserSubtitle = styled.span`
+  font-size: ${theme.fontSizes.xs};
+  color: ${theme.colors.accent.coral};
+  font-weight: 600;
+`;
+
+/* ══════════════════════════════════════════════
+   7. CTA SECTION
+   ══════════════════════════════════════════════ */
+
+const CTASection = styled.div`
+  text-align: center;
+  margin-top: ${theme.spacing['2xl']};
+  padding: ${theme.spacing.xl};
+  background: linear-gradient(135deg, ${theme.colors.accent.creamyYellow}50, ${theme.colors.accent.softPink}20);
+  border-radius: ${theme.borderRadius.xl};
+  animation: ${fadeIn} 0.6s ease-out 0.4s both;
+`;
+
+const CTAText = styled.p`
+  font-family: ${theme.fonts.body};
+  font-size: ${theme.fontSizes.base};
+  color: ${theme.colors.text.secondary};
+  margin: 0 0 ${theme.spacing.md};
+  line-height: 1.5;
+`;
+
+/* ══════════════════════════════════════════════
+   EMPTY STATE
+   ══════════════════════════════════════════════ */
 
 const EmptyState = styled.div`
   text-align: center;
@@ -424,7 +810,10 @@ const EmptyText = styled.p`
   line-height: 1.6;
 `;
 
-// Countdown utility
+/* ══════════════════════════════════════════════
+   UTILS
+   ══════════════════════════════════════════════ */
+
 const getTimeUntilNextCredit = (nextCreditDate: string | undefined) => {
   if (!nextCreditDate) return null;
   const diff = new Date(nextCreditDate).getTime() - Date.now();
@@ -434,6 +823,10 @@ const getTimeUntilNextCredit = (nextCreditDate: string | undefined) => {
     hours: Math.floor((diff % 86400000) / 3600000)
   };
 };
+
+/* ══════════════════════════════════════════════
+   COMPONENT
+   ══════════════════════════════════════════════ */
 
 export const DashboardPage: React.FC = () => {
   const { user, isClub, isAuthenticated, refreshProfile } = useAuth();
@@ -446,25 +839,55 @@ export const DashboardPage: React.FC = () => {
   const [subscriptionActivating, setSubscriptionActivating] = useState(false);
   const [countdown, setCountdown] = useState<{ days: number; hours: number } | null>(null);
 
-  // Polling pour activer le Club apres checkout Stripe
+  // Derive protagonist name (most used) for personalized messages
+  const heroName = useMemo(() => {
+    if (!stories.length) return null;
+    const nameCount: Record<string, number> = {};
+    stories.forEach(s => {
+      if (s.protagonistName) {
+        nameCount[s.protagonistName] = (nameCount[s.protagonistName] || 0) + 1;
+      }
+    });
+    const sorted = Object.entries(nameCount).sort((a, b) => b[1] - a[1]);
+    return sorted[0]?.[0] || null;
+  }, [stories]);
+
+  // Group stories by protagonist for collection view
+  const collections = useMemo(() => {
+    const groups: Record<string, any[]> = {};
+    stories.forEach(s => {
+      const name = s.protagonistName || 'Inconnu';
+      if (!groups[name]) groups[name] = [];
+      groups[name].push(s);
+    });
+    // Sort each group by date
+    Object.values(groups).forEach(arr => arr.sort((a: any, b: any) =>
+      new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+    ));
+    return groups;
+  }, [stories]);
+
+  const mainCollection = useMemo(() => {
+    if (!heroName || !collections[heroName]) return null;
+    return { name: heroName, stories: collections[heroName] };
+  }, [heroName, collections]);
+
+  // ── Polling for Club activation after Stripe checkout ──
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
-    const subscriptionParam = searchParams.get('subscription');
-
-    if (subscriptionParam !== 'success') return;
+    if (searchParams.get('subscription') !== 'success') return;
 
     const token = localStorage.getItem('userToken');
     if (!token) return;
 
     setSubscriptionActivating(true);
     let attempts = 0;
-    const maxAttempts = 15; // 15 tentatives x 2s = 30s max
+    const maxAttempts = 15;
 
     const pollSubscription = async () => {
       try {
         const result = await ApiService.checkSubscriptionStatus(token);
         if (result.success && result.status === 'active') {
-          // Subscription activee : rafraichir une seule fois
           await refreshProfile();
           const [storiesRes, creditRes] = await Promise.all([
             ApiService.getClientStories(token).catch(() => null),
@@ -472,7 +895,6 @@ export const DashboardPage: React.FC = () => {
           ]);
           if (storiesRes?.success) setStories(storiesRes.data);
           if (creditRes?.success) setClubCredit(creditRes.data);
-
           setSubscriptionActivating(false);
           setLoading(false);
           navigate('/dashboard', { replace: true });
@@ -481,7 +903,6 @@ export const DashboardPage: React.FC = () => {
       } catch (e) {
         console.error('Erreur polling subscription:', e);
       }
-
       attempts++;
       if (attempts < maxAttempts) {
         setTimeout(pollSubscription, 2000);
@@ -489,17 +910,17 @@ export const DashboardPage: React.FC = () => {
         setSubscriptionActivating(false);
         await refreshProfile();
         try {
-          const storiesRes = await ApiService.getClientStories(token);
+          const storiesRes = await ApiService.getClientStories(token!);
           if (storiesRes.success) setStories(storiesRes.data);
         } catch {}
         setLoading(false);
         navigate('/dashboard', { replace: true });
       }
     };
-
     pollSubscription();
-  }, [location.search]);
+  }, [location.search]); // eslint-disable-line
 
+  // ── Load stories + club credit ──
   useEffect(() => {
     loadStories();
     if (isClub) {
@@ -510,18 +931,12 @@ export const DashboardPage: React.FC = () => {
           .catch(() => {});
       }
     }
-  }, [isClub]);
+  }, [isClub]); // eslint-disable-line
 
-  // Countdown timer pour le prochain credit
+  // ── Countdown timer ──
   useEffect(() => {
-    if (!clubCredit?.nextCreditDate) {
-      setCountdown(null);
-      return;
-    }
-
-    const update = () => {
-      setCountdown(getTimeUntilNextCredit(clubCredit.nextCreditDate));
-    };
+    if (!clubCredit?.nextCreditDate) { setCountdown(null); return; }
+    const update = () => setCountdown(getTimeUntilNextCredit(clubCredit.nextCreditDate));
     update();
     const interval = setInterval(update, 60000);
     return () => clearInterval(interval);
@@ -530,12 +945,9 @@ export const DashboardPage: React.FC = () => {
   const loadStories = async () => {
     const token = localStorage.getItem('userToken');
     if (!token) return;
-
     try {
       const response = await ApiService.getClientStories(token);
-      if (response.success) {
-        setStories(response.data);
-      }
+      if (response.success) setStories(response.data);
     } catch (error) {
       console.error('Erreur chargement contes:', error);
     } finally {
@@ -547,13 +959,10 @@ export const DashboardPage: React.FC = () => {
     e.stopPropagation();
     const token = localStorage.getItem('userToken');
     if (!token) return;
-
     try {
       const response = await ApiService.toggleFavorite(token, storyId);
       if (response.success) {
-        setStories(prev =>
-          prev.map(s => s.id === storyId ? { ...s, isFavorite: response.data.isFavorite } : s)
-        );
+        setStories(prev => prev.map(s => s.id === storyId ? { ...s, isFavorite: response.data.isFavorite } : s));
       }
     } catch (error) {
       console.error('Erreur toggle favori:', error);
@@ -565,29 +974,19 @@ export const DashboardPage: React.FC = () => {
     if (!token) return;
     try {
       const result = await ApiService.createCustomerPortal(token);
-      if (result.url) {
-        window.location.href = result.url;
-      }
+      if (result.url) window.location.href = result.url;
     } catch (error) {
       console.error('Erreur portail client:', error);
     }
   };
 
   const handleJoinClub = async () => {
-    if (!isAuthenticated) {
-      navigate('/login');
-      return;
-    }
+    if (!isAuthenticated) { navigate('/login'); return; }
     const token = localStorage.getItem('userToken');
-    if (!token) {
-      navigate('/login');
-      return;
-    }
+    if (!token) { navigate('/login'); return; }
     try {
       const result = await ApiService.createSubscriptionSession(token);
-      if (result.url) {
-        window.location.href = result.url;
-      }
+      if (result.url) window.location.href = result.url;
     } catch (error) {
       console.error('Erreur creation session abonnement:', error);
     }
@@ -609,120 +1008,157 @@ export const DashboardPage: React.FC = () => {
   };
 
   const getStatusLabel = (story: any) => {
+    if (story.isFavorite && story.storyStatus === 'DISPONIBLE') return 'Favori';
     if (story.storyStatus === 'DISPONIBLE') return 'Disponible';
     if (story.storyStatus === 'EN_COURS' && story.firstIllustrationUrl) return 'En preparation';
     if (story.storyStatus === 'EN_COURS') return 'En cours';
-    if (story.storyStatus === 'GENERATING_TEXT' || story.storyStatus === 'GENERATING_IMAGES' || story.storyStatus === 'ASSEMBLING_PDF') return 'Generation...';
+    if (['GENERATING_TEXT', 'GENERATING_IMAGES', 'ASSEMBLING_PDF'].includes(story.storyStatus)) return 'Generation...';
     return story.storyStatus;
   };
+
+  const collectionGoal = 12;
+  const collectionProgress = Math.min((stories.length / collectionGoal) * 100, 100);
 
   return (
     <PageContainer>
       <Header />
       <MainContent>
-        <DashboardHeader>
-          <UserInfo>
-            <UserName>Ma Bibliotheque</UserName>
-            <Badge $variant={isClub ? 'club' : subscriptionActivating ? 'activating' : 'basic'}>
-              {isClub ? 'Membre Club' : subscriptionActivating ? 'Activation...' : 'Basique'}
-            </Badge>
-          </UserInfo>
-          <div style={{ display: 'flex', gap: theme.spacing.sm }}>
-            <Button variant="outline" size="md" onClick={() => navigate('/dashboard/account')}>
-              Mon compte
-            </Button>
-            <Button variant="primary" size="md" onClick={() => navigate('/create-story')}>
-              Creer un conte
-            </Button>
-          </div>
-        </DashboardHeader>
 
-        {/* Welcome banner during subscription activation */}
+        {/* ══════ 1. LIBRARY HEADER ══════ */}
+        <LibraryHeader>
+          <HeaderTopRow>
+            <HeaderTitleGroup>
+              <LibraryTitle>
+                Ma Bibliothèque
+                <Badge $variant={isClub ? 'club' : subscriptionActivating ? 'activating' : 'basic'}>
+                  {isClub ? 'Membre Club' : subscriptionActivating ? 'Activation...' : 'Basique'}
+                </Badge>
+              </LibraryTitle>
+              {!loading && heroName && (
+                <LibrarySubtitle>
+                  La collection d'histoires de {heroName}
+                </LibrarySubtitle>
+              )}
+              {!loading && stories.length > 0 && (
+                <StoryCounter>
+                  {stories.length} {stories.length === 1 ? 'histoire créée' : 'histoires dans la collection'}
+                </StoryCounter>
+              )}
+            </HeaderTitleGroup>
+            <ActionButtons>
+              <Button variant="outline" size="md" onClick={() => navigate('/dashboard/account')}>
+                Mon compte
+              </Button>
+              <Button variant="primary" size="md" onClick={() => navigate('/create-story')}>
+                Créer un conte
+              </Button>
+            </ActionButtons>
+          </HeaderTopRow>
+        </LibraryHeader>
+
+        {/* ══════ WELCOME BANNER (activation) ══════ */}
         {subscriptionActivating && (
           <ClubWelcomeBanner>
-            <WelcomeTitle>Bienvenue dans le Club des Histoires Uniques</WelcomeTitle>
-            <WelcomeText>Votre espace premium se prepare...</WelcomeText>
+            <WelcomeTitle>Bienvenue dans le Club des Histoires</WelcomeTitle>
+            <WelcomeText>Votre espace premium se prépare...</WelcomeText>
             <WelcomeShimmer />
           </ClubWelcomeBanner>
         )}
 
-        {/* Club section for active members */}
+        {/* ══════ 2A. CLUB SECTION (Premium) ══════ */}
         {!loading && isClub && !subscriptionActivating && (
           <ClubSection>
             <ClubSectionHeader>
-              <ClubSectionTitle>
-                Club des Histoires
-              </ClubSectionTitle>
-              <ManageLink onClick={handleManageSubscription}>
-                Gerer mon abonnement
-              </ManageLink>
+              <ClubSectionTitle>Club des Histoires</ClubSectionTitle>
+              <ManageLink onClick={handleManageSubscription}>Gérer mon abonnement</ManageLink>
             </ClubSectionHeader>
 
             {user?.subscriptionStatus === 'canceling' && user?.subscriptionPeriodEnd && (
               <div style={{
-                background: '#FEF3C7',
-                border: '1px solid #F59E0B',
-                borderRadius: '8px',
-                padding: '12px 16px',
-                marginBottom: '16px',
-                fontSize: theme.fontSizes.sm,
-                color: '#92400E'
+                background: '#FEF3C7', border: '1px solid #F59E0B', borderRadius: '8px',
+                padding: '12px 16px', marginBottom: '16px', fontSize: theme.fontSizes.sm, color: '#92400E'
               }}>
-                Votre abonnement sera annule le {new Date(user.subscriptionPeriodEnd).toLocaleDateString('fr-FR')}. Vous conservez l'acces Club jusqu'a cette date.
+                Votre abonnement sera annulé le {new Date(user.subscriptionPeriodEnd).toLocaleDateString('fr-FR')}.
+                Vous conservez l'accès Club jusqu'à cette date.
               </div>
             )}
 
-            <CreditCard $available={!!clubCredit?.canSubmit}>
-              <CreditInfo>
-                <CreditIcon>{clubCredit?.canSubmit ? '\u2728' : '\u23F3'}</CreditIcon>
-                <CreditText>
-                  {clubCredit?.canSubmit ? (
-                    <>
-                      <h4>{clubCredit.remaining} eBook{clubCredit.remaining > 1 ? 's' : ''} gratuit{clubCredit.remaining > 1 ? 's' : ''} disponible{clubCredit.remaining > 1 ? 's' : ''}</h4>
-                      <p>Format eBook numerique uniquement</p>
-                    </>
-                  ) : (
-                    <>
-                      <h4>Aucun credit disponible</h4>
-                      <p>Format eBook numerique uniquement</p>
-                    </>
-                  )}
-                </CreditText>
-              </CreditInfo>
-
-              <div style={{ display: 'flex', alignItems: 'center', gap: theme.spacing.md, flexWrap: 'wrap' }}>
+            <ClubGrid>
+              {/* Credits */}
+              <CreditCard $available={!!clubCredit?.canSubmit}>
+                <CreditInfo>
+                  <CreditIcon>{clubCredit?.canSubmit ? '\u2728' : '\u23F3'}</CreditIcon>
+                  <CreditText>
+                    {clubCredit?.canSubmit ? (
+                      <>
+                        <h4>{clubCredit.remaining} crédit{clubCredit.remaining > 1 ? 's' : ''} disponible{clubCredit.remaining > 1 ? 's' : ''} ce mois-ci</h4>
+                        <p>Format eBook numérique</p>
+                      </>
+                    ) : (
+                      <>
+                        <h4>Aucun crédit disponible</h4>
+                        <p>Format eBook numérique</p>
+                      </>
+                    )}
+                  </CreditText>
+                </CreditInfo>
                 {countdown && (
                   <CountdownText>
-                    Prochain credit dans : {countdown.days}j {countdown.hours}h
+                    Prochain crédit dans {countdown.days}j {countdown.hours}h
                   </CountdownText>
                 )}
                 {clubCredit?.canSubmit ? (
                   <Button variant="primary" size="sm" onClick={() => navigate('/create-story')}>
-                    Creer mon eBook gratuit
+                    Créer mon eBook gratuit
                   </Button>
                 ) : (
                   <Button variant="outline" size="sm" onClick={() => navigate('/create-story')}>
-                    Commander un conte (payant)
+                    Commander un conte
                   </Button>
                 )}
-              </div>
-            </CreditCard>
+              </CreditCard>
+
+              {/* Collection progress */}
+              <CollectionCard>
+                <CollectionLabel>Collection : {stories.length} {stories.length === 1 ? 'histoire' : 'histoires'}</CollectionLabel>
+                <ProgressBarContainer>
+                  <ProgressBarFill $percent={collectionProgress} />
+                </ProgressBarContainer>
+                <ProgressText>
+                  {stories.length} / {collectionGoal} aventures complétées
+                </ProgressText>
+              </CollectionCard>
+            </ClubGrid>
           </ClubSection>
         )}
 
-        {/* Join Club CTA for non-members */}
+        {/* ══════ 2B. JOIN CLUB (Basic) ══════ */}
         {!loading && !isClub && !subscriptionActivating && (
-          <JoinClubBanner>
-            <JoinClubText>
-              <h3>Rejoindre le Club des Histoires Uniques</h3>
-              <p>1 conte par semaine - 9,99EUR/mois</p>
-            </JoinClubText>
-            <Button variant="primary" size="sm" onClick={() => navigate('/club')}>
-              Rejoindre le Club
-            </Button>
-          </JoinClubBanner>
+          <JoinClubCard>
+            <JoinClubBg />
+            <JoinClubContent>
+              <JoinClubTextBlock>
+                <JoinClubTitle>Rejoignez le Club des Histoires</JoinClubTitle>
+                <JoinClubFeatures>
+                  <JoinClubFeature>4 nouvelles aventures chaque mois</JoinClubFeature>
+                  <JoinClubFeature>Une collection d'histoires pour votre enfant</JoinClubFeature>
+                  <JoinClubFeature>Bibliothèque complète d'histoires personnalisées</JoinClubFeature>
+                </JoinClubFeatures>
+                <Button variant="primary" size="md" onClick={() => navigate('/club')}>
+                  Rejoindre le Club
+                </Button>
+              </JoinClubTextBlock>
+              <JoinClubVisual>
+                <FloatingBookPreview $delay={0} $rotate={-8} />
+                <FloatingBookPreview $delay={0.5} $rotate={-2} />
+                <FloatingBookPreview $delay={1} $rotate={4} />
+                <FloatingBookPreview $delay={1.5} $rotate={10} />
+              </JoinClubVisual>
+            </JoinClubContent>
+          </JoinClubCard>
         )}
 
+        {/* ══════ 3. FILTER BAR ══════ */}
         {!loading && stories.length > 0 && (
           <FilterBar>
             {[
@@ -731,17 +1167,14 @@ export const DashboardPage: React.FC = () => {
               { key: 'en_cours', label: 'En cours' },
               { key: 'disponible', label: 'Disponibles' }
             ].map(f => (
-              <FilterButton
-                key={f.key}
-                $active={filter === f.key}
-                onClick={() => setFilter(f.key)}
-              >
+              <FilterButton key={f.key} $active={filter === f.key} onClick={() => setFilter(f.key)}>
                 {f.label}
               </FilterButton>
             ))}
           </FilterBar>
         )}
 
+        {/* ══════ 4. BOOKSHELF GRID ══════ */}
         {loading ? (
           <EmptyState>
             <EmptyText>Chargement de vos contes...</EmptyText>
@@ -749,55 +1182,136 @@ export const DashboardPage: React.FC = () => {
         ) : stories.length === 0 ? (
           <EmptyState>
             <EmptyIcon>📖</EmptyIcon>
-            <EmptyTitle>Commencez a creer votre premier conte</EmptyTitle>
+            <EmptyTitle>Commencez votre première aventure</EmptyTitle>
             <EmptyText>
-              Votre bibliotheque est vide pour le moment.
-              Creez un conte personnalise unique pour votre enfant.
+              Votre bibliothèque est vide pour le moment.
+              Créez un conte personnalisé unique pour votre enfant.
             </EmptyText>
             <Button variant="primary" size="lg" onClick={() => navigate('/create-story')}>
-              Creer un conte
+              Créer un conte
             </Button>
           </EmptyState>
         ) : filteredStories.length === 0 ? (
           <EmptyState>
-            <EmptyTitle>Aucun conte dans cette categorie</EmptyTitle>
-            <EmptyText>
-              Essayez un autre filtre ou creez un nouveau conte.
-            </EmptyText>
+            <EmptyTitle>Aucun conte dans cette catégorie</EmptyTitle>
+            <EmptyText>Essayez un autre filtre ou créez un nouveau conte.</EmptyText>
             <Button variant="ghost" size="md" onClick={() => setFilter('all')}>
               Voir tous les contes
             </Button>
           </EmptyState>
         ) : (
-          <BookshelfGrid>
-            {filteredStories.map(story => {
-              const coverUrl = story.coverImageUrl ? getImageUrl(story.coverImageUrl) : null;
-              const title = story.coverTitle || `Conte de ${story.protagonistName}`;
-              return (
-                <BookCard key={story.id} $hasImage={false} onClick={() => navigate(`/dashboard/story/${story.id}`)}>
-                  <BookSpine />
-                  <BookPlaceholder>
-                    <PlaceholderIcon>📖</PlaceholderIcon>
-                    <PlaceholderName>{story.protagonistName}</PlaceholderName>
-                  </BookPlaceholder>
-                  {coverUrl && (
-                    <BookCoverImage src={coverUrl} alt={title} loading="lazy" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
-                  )}
-                  <BookStatusBadge $color={getStatusColor(story.storyStatus)}>
-                    {getStatusLabel(story)}
-                  </BookStatusBadge>
-                  <BookFavoriteBtn $active={story.isFavorite} onClick={(e) => handleToggleFavorite(e, story.id)}>
-                    {story.isFavorite ? '\u2764\uFE0F' : '\u2661'}
-                  </BookFavoriteBtn>
-                  <BookOverlay>
-                    <BookTitle>{title}</BookTitle>
-                    <BookDate>{new Date(story.createdAt).toLocaleDateString('fr-FR')}</BookDate>
-                  </BookOverlay>
-                </BookCard>
-              );
-            })}
-          </BookshelfGrid>
+          <>
+            <SectionLabel>Mes histoires</SectionLabel>
+            <BookshelfGrid>
+              {filteredStories.map((story, idx) => {
+                const coverUrl = story.coverImageUrl ? getImageUrl(story.coverImageUrl) : null;
+                const title = story.coverTitle || `Conte de ${story.protagonistName}`;
+                return (
+                  <BookCard key={story.id} $hasImage={!!coverUrl} $delay={idx} onClick={() => navigate(`/dashboard/story/${story.id}`)}>
+                    <BookSpine />
+                    <BookPlaceholder>
+                      <PlaceholderIcon>📖</PlaceholderIcon>
+                      <PlaceholderName>{story.protagonistName}</PlaceholderName>
+                    </BookPlaceholder>
+                    {coverUrl && (
+                      <BookCoverImage src={coverUrl} alt={title} loading="lazy" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                    )}
+                    <BookStatusBadge $color={getStatusColor(story.storyStatus)}>
+                      {getStatusLabel(story)}
+                    </BookStatusBadge>
+                    <BookFavoriteBtn $active={story.isFavorite} onClick={(e) => handleToggleFavorite(e, story.id)}>
+                      {story.isFavorite ? '\u2764\uFE0F' : '\u2661'}
+                    </BookFavoriteBtn>
+                    <BookOverlay>
+                      <BookTitle>{title}</BookTitle>
+                      <BookDate>{new Date(story.createdAt).toLocaleDateString('fr-FR')}</BookDate>
+                    </BookOverlay>
+                  </BookCard>
+                );
+              })}
+
+              {/* ══════ 5. TEASER CARD ══════ */}
+              <TeaserCard onClick={() => navigate('/create-story')}>
+                <TeaserIcon>+</TeaserIcon>
+                <TeaserTitle>
+                  {heroName ? `Prochaine aventure de ${heroName}` : 'Prochaine aventure'}
+                </TeaserTitle>
+                <TeaserSubtitle>
+                  {isClub && clubCredit?.canSubmit
+                    ? 'Disponible maintenant'
+                    : isClub && countdown
+                      ? `Disponible dans ${countdown.days}j ${countdown.hours}h`
+                      : 'Disponible maintenant'
+                  }
+                </TeaserSubtitle>
+              </TeaserCard>
+            </BookshelfGrid>
+          </>
         )}
+
+        {/* ══════ 6. COLLECTION SECTION ══════ */}
+        {!loading && mainCollection && mainCollection.stories.length > 1 && (
+          <CollectionSection>
+            <CollectionTitle>Les aventures de {mainCollection.name}</CollectionTitle>
+            <CollectionSubtitle>
+              {mainCollection.name} a déjà {mainCollection.stories.length} aventure{mainCollection.stories.length > 1 ? 's' : ''} dans sa collection.
+              Quelle sera sa prochaine histoire ?
+            </CollectionSubtitle>
+
+            <EpisodeList>
+              {mainCollection.stories.map((story: any, idx: number) => {
+                const title = story.coverTitle || `Conte de ${story.protagonistName}`;
+                return (
+                  <EpisodeItem key={story.id} $available onClick={() => navigate(`/dashboard/story/${story.id}`)}>
+                    <EpisodeNumber $active>{idx + 1}</EpisodeNumber>
+                    <EpisodeInfo>
+                      <h4>{title}</h4>
+                      <p>{new Date(story.createdAt).toLocaleDateString('fr-FR')}</p>
+                    </EpisodeInfo>
+                  </EpisodeItem>
+                );
+              })}
+
+              {/* Next episode placeholder */}
+              <EpisodeItem $available={false}>
+                <EpisodeNumber $active={false}>{mainCollection.stories.length + 1}</EpisodeNumber>
+                <EpisodeInfo>
+                  <h4>La prochaine aventure arrive bientôt...</h4>
+                  <p>
+                    {isClub && clubCredit?.canSubmit
+                      ? 'Crédit disponible maintenant'
+                      : isClub && countdown
+                        ? `Prochain crédit dans ${countdown.days}j ${countdown.hours}h`
+                        : ''
+                    }
+                  </p>
+                </EpisodeInfo>
+              </EpisodeItem>
+            </EpisodeList>
+
+            <div style={{ textAlign: 'center' }}>
+              <Button variant="primary" size="md" onClick={() => navigate('/create-story')}>
+                Créer la prochaine histoire
+              </Button>
+            </div>
+          </CollectionSection>
+        )}
+
+        {/* ══════ 7. EMOTIONAL CTA ══════ */}
+        {!loading && stories.length > 0 && (
+          <CTASection>
+            <CTAText>
+              {heroName
+                ? `${heroName} attend sa prochaine histoire ✨`
+                : 'Votre enfant attend sa prochaine histoire ✨'
+              }
+            </CTAText>
+            <Button variant="primary" size="lg" onClick={() => navigate('/create-story')}>
+              Créer une nouvelle aventure
+            </Button>
+          </CTASection>
+        )}
+
       </MainContent>
       <Footer />
     </PageContainer>
