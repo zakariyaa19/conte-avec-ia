@@ -28,7 +28,7 @@ export class PreviewController {
       }
 
       // Valider les champs obligatoires (couleurs requises seulement si pas de photo)
-      const required = ['protagonistName', 'protagonistAge', 'protagonistGender', 'illustrationStyle', 'generalTheme', 'specificSubject'];
+      const required = ['protagonistName', 'protagonistAge', 'protagonistGender', 'generalTheme'];
       if (!photoBase64) {
         required.push('eyeColor', 'hairColor', 'skinColor');
       }
@@ -55,10 +55,10 @@ export class PreviewController {
         eyeColor: formData.eyeColor,
         hairColor: formData.hairColor,
         skinColor: formData.skinColor,
-        illustrationStyle: formData.illustrationStyle,
+        illustrationStyle: formData.illustrationStyle || 'illustrated-book',
         generalTheme: formData.generalTheme,
         customTheme: formData.customTheme,
-        specificSubject: formData.specificSubject,
+        specificSubject: formData.specificSubject || '',
         customSubject: formData.customSubject,
         centralMessage: formData.centralMessage,
         customMessage: formData.customMessage,
@@ -139,7 +139,7 @@ export class PreviewController {
         });
       }
 
-      const required = ['protagonistName', 'protagonistGender', 'illustrationStyle', 'generalTheme', 'specificSubject'];
+      const required = ['protagonistName', 'protagonistGender', 'generalTheme'];
       const missing = required.filter(f => !formData[f]);
       if (missing.length > 0) {
         return res.status(400).json({
@@ -159,10 +159,10 @@ export class PreviewController {
         protagonistName: formData.protagonistName,
         protagonistAge: formData.protagonistAge || '',
         protagonistGender: formData.protagonistGender,
-        illustrationStyle: formData.illustrationStyle,
+        illustrationStyle: formData.illustrationStyle || 'illustrated-book',
         generalTheme: formData.generalTheme,
         customTheme: formData.customTheme,
-        specificSubject: formData.specificSubject,
+        specificSubject: formData.specificSubject || '',
         customSubject: formData.customSubject,
         centralMessage: formData.centralMessage,
         customMessage: formData.customMessage,
@@ -190,10 +190,10 @@ export class PreviewController {
         eyeColor: formData.eyeColor,
         hairColor: formData.hairColor,
         skinColor: formData.skinColor,
-        illustrationStyle: formData.illustrationStyle,
+        illustrationStyle: formData.illustrationStyle || 'illustrated-book',
         generalTheme: formData.generalTheme,
         customTheme: formData.customTheme,
-        specificSubject: formData.specificSubject,
+        specificSubject: formData.specificSubject || '',
         customSubject: formData.customSubject,
         centralMessage: formData.centralMessage,
         customMessage: formData.customMessage,
@@ -264,7 +264,7 @@ export class PreviewController {
         });
       }
 
-      const required = ['protagonistName', 'protagonistAge', 'protagonistGender', 'generalTheme', 'specificSubject'];
+      const required = ['protagonistName', 'protagonistAge', 'protagonistGender', 'generalTheme'];
       const missing = required.filter(f => !formData[f]);
       if (missing.length > 0) {
         return res.status(400).json({
@@ -288,7 +288,7 @@ export class PreviewController {
         illustrationStyle: formData.illustrationStyle || 'illustrated-book',
         generalTheme: formData.generalTheme,
         customTheme: formData.customTheme,
-        specificSubject: formData.specificSubject,
+        specificSubject: formData.specificSubject || '',
         customSubject: formData.customSubject,
         centralMessage: formData.centralMessage,
         customMessage: formData.customMessage,
@@ -319,7 +319,7 @@ export class PreviewController {
         ageRange: formData.ageRange || '6-9',
         generalTheme: formData.generalTheme,
         customTheme: formData.customTheme,
-        specificSubject: formData.specificSubject,
+        specificSubject: formData.specificSubject || '',
         customSubject: formData.customSubject,
         centralMessage: formData.centralMessage,
         customMessage: formData.customMessage,
