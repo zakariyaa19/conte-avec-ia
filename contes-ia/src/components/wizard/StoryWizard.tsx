@@ -1222,6 +1222,25 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                     Il vous reste {clubCredit.remaining} eBook(s) gratuit(s)
                   </p>
                 </ClubFreeCard>
+              ) : isClub ? (
+                /* ── CLUB MEMBER WITHOUT CREDIT: single purchase only ── */
+                <TripwireHeroCard $isSelected={selectedOffer === 'single'} onClick={() => handlePreviewSelect('single')}>
+                  <TripwireHeroBadge>Membre Club</TripwireHeroBadge>
+                  {selectedOffer === 'single' && <PricingSelectedCheck>&#x2713;</PricingSelectedCheck>}
+                  <PricingCardName>Conte supplementaire</PricingCardName>
+                  <TripwireHeroPrice>{singlePriceLabel}</TripwireHeroPrice>
+                  <PricingCardSub>
+                    {clubCredit?.nextCreditDate
+                      ? `Prochain credit gratuit le ${new Date(clubCredit.nextCreditDate).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}`
+                      : 'Votre credit hebdomadaire a ete utilise'}
+                  </PricingCardSub>
+                  <PricingCardFeaturesList>
+                    <PricingCardFeatureItem $highlight>1 conte personnalise pour {heroName}</PricingCardFeatureItem>
+                    <PricingCardFeatureItem>7 illustrations HD uniques</PricingCardFeatureItem>
+                    <PricingCardFeatureItem>PDF telechargeable et imprimable</PricingCardFeatureItem>
+                  </PricingCardFeaturesList>
+                  <TripwireHeroCTA>{selectedOffer === 'single' ? 'Selectionne !' : `Obtenir pour ${singlePriceLabel}`}</TripwireHeroCTA>
+                </TripwireHeroCard>
               ) : isFirstPurchase ? (
                 /* ── TRIPWIRE LAYOUT: 1.99€ hero + Club secondary ── */
                 <>
