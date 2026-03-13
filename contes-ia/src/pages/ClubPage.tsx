@@ -900,7 +900,7 @@ export const ClubPage: React.FC = () => {
               A partir de 9,99{'€'}<small> / mois</small>
             </HeroPrice>
             <HeroSubtitle>
-              Un nouveau conte personnalise chaque semaine pour votre enfant. Credits cumulables, bibliotheque illimitee, sans engagement.
+              Un nouveau conte personnalise chaque semaine pour votre enfant. Personnalisation avancee, credits cumulables, bibliotheque illimitee, sans engagement.
             </HeroSubtitle>
 
             <ClubCTA variant="hero" {...ctaProps} />
@@ -931,9 +931,13 @@ export const ClubPage: React.FC = () => {
                 <SectionLabel>Avantage principal</SectionLabel>
                 <SectionTitle>Un nouveau conte chaque semaine</SectionTitle>
                 <SectionText>
-                  Chaque semaine, recevez un credit pour creer un conte personnalise au format eBook. Choisissez le theme, les personnages, le style d'illustration et le message educatif.
+                  Chaque semaine, recevez un credit pour creer un conte personnalise au format eBook. En tant que membre Club, accedez a la personnalisation avancee : occasion, style d'illustration, personnages secondaires et bien plus.
                 </SectionText>
                 <FeatureList>
+                  <FeatureItem>
+                    <FeatureCheck>&#10003;</FeatureCheck>
+                    Personnalisation avancee : occasion, style d'illustration, personnages secondaires
+                  </FeatureItem>
                   <FeatureItem>
                     <FeatureCheck>&#10003;</FeatureCheck>
                     Credits cumulables — jamais perdus, utilisez-les quand vous voulez
@@ -1020,8 +1024,8 @@ export const ClubPage: React.FC = () => {
 
               <StepCard $visible={stepsReveal.isVisible} $delay={stepsReveal.getDelay(2)}>
                 <StepNumber $color={theme.colors.accent.paleYellow}>3</StepNumber>
-                <StepTitle>Personnalisez</StepTitle>
-                <StepText>Choisissez le theme, les personnages, la photo et le style. Chaque conte est unique.</StepText>
+                <StepTitle>Personnalisez en detail</StepTitle>
+                <StepText>Acces exclusif au formulaire complet : occasion, style d'illustration, personnages secondaires, extras. Chaque conte est unique.</StepText>
               </StepCard>
 
               <StepCard $visible={stepsReveal.isVisible} $delay={stepsReveal.getDelay(3)}>

@@ -1222,7 +1222,7 @@ const faqItems = [
   {
     id: '3',
     question: "Qu'est-ce que le Club des Histoires Uniques ?",
-    answer: "C'est un abonnement a 9,99\u20AC par mois qui vous donne droit a un nouveau conte personnalise chaque semaine. Les credits sont cumulables et vous accedez a votre bibliotheque personnelle avec visionneuse et telechargement. Sans engagement, annulable a tout moment. Une offre annuelle a 79,99\u20AC/an est egalement disponible."
+    answer: "C'est un abonnement a 9,99\u20AC par mois qui vous donne droit a un nouveau conte personnalise chaque semaine avec la personnalisation avancee : choix de l'occasion, du style d'illustration, des personnages secondaires et bien plus. Les credits sont cumulables et vous accedez a votre bibliotheque personnelle avec visionneuse et telechargement. Sans engagement, annulable a tout moment. Une offre annuelle a 79,99\u20AC/an est egalement disponible."
   },
   {
     id: '4',

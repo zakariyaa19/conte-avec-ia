@@ -2278,6 +2278,193 @@ export const PricingCardCTA = styled.button<{ $primary?: boolean }>`
   }
 `;
 
+/* ── Hero Tripwire Card (1.99€ dominant) ── */
+export const TripwireHeroCard = styled.div<{ $isSelected: boolean }>`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 440px;
+  padding: ${theme.spacing.xl} ${theme.spacing.lg};
+  border: 3px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'rgba(255, 153, 153, 0.4)'};
+  border-radius: 24px;
+  cursor: pointer;
+  background: linear-gradient(160deg, #FFF5EE, #FFFAF8, #FFF0EC);
+  box-shadow:
+    0 12px 40px rgba(255, 153, 153, 0.18),
+    0 4px 16px rgba(0, 0, 0, 0.04);
+  animation: ${cardSlideUp} 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  transition: all 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
+
+  ${p => p.$isSelected && css`
+    border-color: ${theme.colors.accent.coral};
+    box-shadow:
+      0 8px 32px ${theme.colors.accent.coral}30,
+      0 0 0 2px ${theme.colors.accent.coral}15,
+      0 12px 48px rgba(0, 0, 0, 0.08);
+  `}
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow:
+      0 16px 48px rgba(255, 153, 153, 0.22),
+      0 8px 24px rgba(0, 0, 0, 0.06);
+  }
+  &:active { transform: scale(0.98); }
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    padding: ${theme.spacing.lg} ${theme.spacing.md};
+    border-radius: 20px;
+    max-width: 100%;
+    &:hover { transform: none; }
+  }
+`;
+
+export const TripwireHeroBadge = styled.span`
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover});
+  color: white;
+  padding: 6px 20px;
+  border-radius: ${theme.borderRadius.full};
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  box-shadow: 0 4px 12px ${theme.colors.accent.coral}40;
+  animation: ${badgeBounce} 3s ease-in-out 2s infinite;
+`;
+
+export const TripwireHeroPrice = styled.div`
+  font-family: ${theme.fonts.heading};
+  font-size: 48px;
+  font-weight: 900;
+  background: linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover});
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+  margin: ${theme.spacing.sm} 0 4px;
+
+  @media (max-width: ${theme.breakpoints.sm}) { font-size: 40px; }
+  @media (min-width: ${theme.breakpoints.lg}) { font-size: 56px; }
+`;
+
+export const TripwireHeroOldPrice = styled.span`
+  font-size: ${theme.fontSizes.lg};
+  font-weight: 600;
+  color: #999;
+  text-decoration: line-through;
+  margin-bottom: 2px;
+`;
+
+export const TripwireHeroCTA = styled.button`
+  padding: 16px 32px;
+  border: none;
+  border-radius: ${theme.borderRadius.xl};
+  background: linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover});
+  color: white;
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.base};
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  width: 100%;
+  margin-top: ${theme.spacing.md};
+  box-shadow: 0 6px 24px ${theme.colors.accent.coral}35;
+  letter-spacing: 0.3px;
+
+  &:hover {
+    transform: scale(1.03);
+    box-shadow: 0 8px 32px ${theme.colors.accent.coral}45;
+  }
+  &:active { transform: scale(0.97); }
+
+  @media (min-width: ${theme.breakpoints.lg}) {
+    font-size: ${theme.fontSizes.lg};
+    padding: 18px 36px;
+  }
+`;
+
+export const ClubAlternativeSection = styled.div`
+  width: 100%;
+  max-width: 440px;
+  margin-top: ${theme.spacing.lg};
+  text-align: center;
+`;
+
+export const ClubAlternativeDivider = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${theme.spacing.md};
+  margin-bottom: ${theme.spacing.md};
+  color: ${theme.colors.text.light};
+  font-size: ${theme.fontSizes.xs};
+  font-weight: 500;
+
+  &::before, &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(0, 0, 0, 0.08);
+  }
+`;
+
+export const ClubMiniCard = styled.div<{ $isSelected: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: ${theme.spacing.md};
+  border: 1.5px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'rgba(0, 0, 0, 0.08)'};
+  border-radius: 14px;
+  cursor: pointer;
+  background: ${p => p.$isSelected ? 'linear-gradient(160deg, #FFF0EC, #FFFAF8)' : 'white'};
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+  margin-bottom: ${theme.spacing.sm};
+
+  ${p => p.$isSelected && css`
+    box-shadow: 0 4px 16px ${theme.colors.accent.coral}15;
+  `}
+
+  &:hover {
+    border-color: ${theme.colors.accent.coral}60;
+  }
+  &:active { transform: scale(0.98); }
+`;
+
+export const ClubMiniInfo = styled.div`
+  text-align: left;
+`;
+
+export const ClubMiniName = styled.p`
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.sm};
+  font-weight: 700;
+  color: ${theme.colors.text.primary};
+  margin: 0;
+`;
+
+export const ClubMiniDetail = styled.p`
+  font-size: 11px;
+  color: ${theme.colors.text.light};
+  margin: 2px 0 0;
+`;
+
+export const ClubMiniPrice = styled.p`
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.sm};
+  font-weight: 700;
+  color: ${theme.colors.accent.coral};
+  margin: 0;
+  white-space: nowrap;
+`;
+
 /* ══════════════════════════════════════════════
    SOCIAL PROOF
    ══════════════════════════════════════════════ */

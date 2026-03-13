@@ -40,6 +40,8 @@ import {
   ValueBlock, ValueBlockTitle, ValueBlockItem,
   PricingGrid, PricingCard, PricingCardBadge, PricingCardName, PricingCardPrice, PricingFreeLabel,
   PricingCardSub, PricingPerStory, PricingCardFeaturesList, PricingCardFeatureItem, PricingCardCTA,
+  TripwireHeroCard, TripwireHeroBadge, TripwireHeroPrice, TripwireHeroOldPrice, TripwireHeroCTA,
+  ClubAlternativeSection, ClubAlternativeDivider, ClubMiniCard, ClubMiniInfo, ClubMiniName, ClubMiniDetail, ClubMiniPrice,
   PreviewSectionTitle, SocialProofLine,
   MaterializeImage, MaterializeText,
   GenerationCanvas, CanvasLayer, CanvasGradientBg,
@@ -156,8 +158,8 @@ const AGE_RANGE_TO_PROTAGONIST_AGE: Record<string, string> = {
   '0-2': '1', '3-5': '4', '6-9': '7', '10+': '11',
 };
 
-// Étapes à skip en mode pub (occasion, style, choice, extras1, extras2)
-const AD_MODE_SKIP_STEPS = new Set([2, 3, 6, 7, 8]);
+// Étapes à skip en mode simplifié (non-Club) : occasion, style, choice, extras1, extras2
+const SIMPLIFIED_SKIP_STEPS = new Set([2, 3, 6, 7, 8]);
 
 interface StoryWizardProps {
   formData: Partial<StoryFormData>;
@@ -185,8 +187,11 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
   const singlePrice = isFirstPurchase ? 1.99 : 6.99;
   const singlePriceLabel = isFirstPurchase ? '1,99\u20AC' : '6,99\u20AC';
 
-  const isAdModeRef = useRef(isAdMode);
-  useEffect(() => { isAdModeRef.current = isAdMode; }, [isAdMode]);
+  // Mode simplifié = tout utilisateur NON-Club (qu'il vienne d'une pub ou pas)
+  // Les abonnés Club actifs voient le formulaire complet avec toutes les options
+  const isSimplifiedMode = !isClub;
+  const isSimplifiedRef = useRef(isSimplifiedMode);
+  useEffect(() => { isSimplifiedRef.current = isSimplifiedMode; }, [isSimplifiedMode]);
 
   const [currentStep, setCurrentStep] = useState(0);
   const [prevStep, setPrevStep] = useState<number | null>(null);
@@ -225,23 +230,14 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
 
   useEffect(() => { wantsExtrasRef.current = wantsExtras; }, [wantsExtras]);
 
-  // Mode pub : pré-remplir les champs des étapes skippées avec des valeurs par défaut
+  // Mode simplifié : dériver automatiquement l'âge du héros depuis la tranche d'âge
   useEffect(() => {
-    if (!isAdMode) return;
-    const defaults: Partial<StoryFormData> = {};
-    if (!formData.specificSubject) defaults.specificSubject = 'birthday';
-    if (!formData.illustrationStyle) defaults.illustrationStyle = 'watercolor';
-    if (Object.keys(defaults).length > 0) onUpdate(defaults);
-  }, [isAdMode]); // eslint-disable-line
-
-  // Mode pub : dériver automatiquement l'âge du héros depuis la tranche d'âge
-  useEffect(() => {
-    if (!isAdMode || !formData.ageRange) return;
+    if (!isSimplifiedMode || !formData.ageRange) return;
     const derivedAge = AGE_RANGE_TO_PROTAGONIST_AGE[formData.ageRange];
     if (derivedAge && formData.protagonistAge !== derivedAge) {
       onUpdate({ protagonistAge: derivedAge });
     }
-  }, [isAdMode, formData.ageRange]); // eslint-disable-line
+  }, [isSimplifiedMode, formData.ageRange]); // eslint-disable-line
 
   // Draft resume on mount
   useEffect(() => {
@@ -308,8 +304,8 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
   const goNext = useCallback(() => {
     let next = currentStep + 1;
     // Mode pub : sauter occasion(2)+style(3), choice(6)+extras(7,8)
-    if (isAdModeRef.current) {
-      while (next < ALL_STEPS.length && AD_MODE_SKIP_STEPS.has(next)) next++;
+    if (isSimplifiedRef.current) {
+      while (next < ALL_STEPS.length && SIMPLIFIED_SKIP_STEPS.has(next)) next++;
     } else {
       if (!wantsExtrasRef.current && next === 7) next = 9;
     }
@@ -319,8 +315,8 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
   const goBack = useCallback(() => {
     let prev = currentStep - 1;
     // Mode pub : revenir en arrière en sautant les étapes skippées
-    if (isAdModeRef.current) {
-      while (prev >= 0 && AD_MODE_SKIP_STEPS.has(prev)) prev--;
+    if (isSimplifiedRef.current) {
+      while (prev >= 0 && SIMPLIFIED_SKIP_STEPS.has(prev)) prev--;
     } else {
       if (!wantsExtrasRef.current && prev === 8) prev = 6;
     }
@@ -430,8 +426,8 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
 
   const handleFormSubmit = () => { setGlobalError(''); if (validatePaymentForm()) { clearDraft(); onSubmit(); } };
 
-  const isHeroComplete = isAdMode
-    ? !!(formData.protagonistName && formData.protagonistGender) // age auto-dérivé en mode pub
+  const isHeroComplete = isSimplifiedMode
+    ? !!(formData.protagonistName && formData.protagonistGender) // age auto-dérivé en mode simplifié
     : !!(formData.protagonistName && formData.protagonistAge && formData.protagonistGender);
   const isAppearanceComplete = formData.appearanceMode === 'photo'
     ? !!formData.photo
@@ -481,7 +477,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
       case 'age':
         return (
           <>
-            {isAdMode ? (
+            {isSimplifiedMode ? (
               <div style={{
                 width: '100%', maxWidth: 420, textAlign: 'center',
                 marginBottom: theme.spacing.md, animation: 'fadeIn 0.5s ease both',
@@ -519,7 +515,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
               </BookPreviewBanner>
             )}
             <StepTitle>Pour quel âge ?</StepTitle>
-            <StepMicroText>{isAdMode ? 'Un seul clic pour commencer' : 'Choisis l\'âge pour commencer à créer son histoire'}</StepMicroText>
+            <StepMicroText>{isSimplifiedMode ? 'Un seul clic pour commencer' : 'Choisis l\'âge pour commencer à créer son histoire'}</StepMicroText>
             <CardGrid $columns={4}>
               {AGE_OPTIONS.map((o, i) => (
                 <ImageCard key={o.value} $isSelected={formData.ageRange === o.value} $delay={i}
@@ -627,8 +623,8 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
       case 'hero':
         return (
           <>
-            <StepTitle>{isAdMode ? 'Comment s\'appelle votre enfant ?' : 'Votre héros'}</StepTitle>
-            {!isAdMode && <StepSubtitle>Qui sera le personnage principal ?</StepSubtitle>}
+            <StepTitle>{isSimplifiedMode ? 'Comment s\'appelle votre enfant ?' : 'Votre héros'}</StepTitle>
+            {!isSimplifiedMode && <StepSubtitle>Qui sera le personnage principal ?</StepSubtitle>}
             {showSummary && (
               <SummaryChipsRow>
                 {summaryChips.map((c, i) => (
@@ -641,7 +637,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 <ValidatedInput label="Prénom *" value={formData.protagonistName || ''}
                   onChange={(v) => handleInputChange('protagonistName', v)} placeholder="Ex : Emma, Lucas..." required error={errors.protagonistName} />
               </InputField>
-              {!isAdMode && (
+              {!isSimplifiedMode && (
                 <InputField>
                   <AgeSelector label="Âge *" value={formData.protagonistAge || ''}
                     onChange={(v) => handleInputChange('protagonistAge', v)} required error={errors.protagonistAge} />
@@ -691,11 +687,32 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
       case 'appearance':
         return (
           <>
-            <StepTitle>{isAdMode ? 'Ajoutez sa photo' : 'Son apparence'}</StepTitle>
-            <StepSubtitle>{isAdMode ? 'Le personnage lui ressemblera !' : 'Comment ressemble votre personnage ?'}</StepSubtitle>
+            <StepTitle>{isSimplifiedMode ? 'Ajoutez sa photo' : 'Son apparence'}</StepTitle>
+            <StepSubtitle>{isSimplifiedMode ? 'Le personnage lui ressemblera !' : 'Comment ressemble votre personnage ?'}</StepSubtitle>
 
-            {/* ---- Mode choice ---- */}
-            {!formData.appearanceMode && (
+            {/* ---- Mode simplifié : directement l'upload photo + passer ---- */}
+            {isSimplifiedMode && (
+              <>
+                <PhotoUploadZone $hasPhoto={!!formData.photo} onClick={() => fileInputRef.current?.click()}>
+                  <PhotoIcon>{formData.photo ? '✓' : '📷'}</PhotoIcon>
+                  <PhotoMainText>{formData.photo ? (formData.photo as File).name : 'Importer une photo'}</PhotoMainText>
+                  <PhotoSubText>{formData.photo ? 'Cliquez pour changer' : 'Le personnage ressemblera à votre enfant'}</PhotoSubText>
+                  <HiddenFileInput ref={fileInputRef} type="file" accept="image/*" onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) { onUpdate({ photo: file, appearanceMode: 'photo', eyeColor: '', hairColor: '', skinColor: '' }); }
+                  }} />
+                </PhotoUploadZone>
+                <SkipLink onClick={() => {
+                  onUpdate({ appearanceMode: 'manual', eyeColor: 'brown', hairColor: 'brown', skinColor: 'medium' });
+                  setTimeout(() => goNext(), 100);
+                }} style={{ marginTop: theme.spacing.md }}>
+                  Passer cette étape
+                </SkipLink>
+              </>
+            )}
+
+            {/* ---- Mode complet (Club) : choix photo ou description manuelle ---- */}
+            {!isSimplifiedMode && !formData.appearanceMode && (
               <NewChoiceCardGrid style={{ maxWidth: 400 }}>
                 <NewChoiceCard $isSelected={false} $delay={0}
                   onClick={() => onUpdate({ appearanceMode: 'photo', eyeColor: '', hairColor: '', skinColor: '' })}
@@ -710,36 +727,24 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                   <NewCardDescription style={{ color: 'rgba(255,255,255,0.85)' }}>Le personnage ressemblera à votre enfant</NewCardDescription>
                 </NewChoiceCard>
 
-                {!isAdMode && (
-                  <NewChoiceCard $isSelected={false} $delay={1}
-                    onClick={() => onUpdate({ appearanceMode: 'manual', photo: undefined })}>
-                    <svg viewBox="0 0 80 80" fill="none" width="56" height="56" aria-hidden="true">
-                      <circle cx="40" cy="40" r="36" fill={`${theme.colors.accent.coral}12`} />
-                      <circle cx="25" cy="35" r="7" fill="#4169E1" opacity="0.8" />
-                      <circle cx="50" cy="28" r="7" fill="#FFD700" />
-                      <circle cx="28" cy="54" r="6" fill="#FDDCB5" />
-                      <circle cx="44" cy="54" r="6" fill="#E8B88A" />
-                      <circle cx="60" cy="54" r="6" fill="#8D5524" />
-                    </svg>
-                    <NewCardLabel>Personnaliser</NewCardLabel>
-                    <NewCardDescription>Choisir yeux, cheveux et peau</NewCardDescription>
-                  </NewChoiceCard>
-                )}
+                <NewChoiceCard $isSelected={false} $delay={1}
+                  onClick={() => onUpdate({ appearanceMode: 'manual', photo: undefined })}>
+                  <svg viewBox="0 0 80 80" fill="none" width="56" height="56" aria-hidden="true">
+                    <circle cx="40" cy="40" r="36" fill={`${theme.colors.accent.coral}12`} />
+                    <circle cx="25" cy="35" r="7" fill="#4169E1" opacity="0.8" />
+                    <circle cx="50" cy="28" r="7" fill="#FFD700" />
+                    <circle cx="28" cy="54" r="6" fill="#FDDCB5" />
+                    <circle cx="44" cy="54" r="6" fill="#E8B88A" />
+                    <circle cx="60" cy="54" r="6" fill="#8D5524" />
+                  </svg>
+                  <NewCardLabel>Personnaliser</NewCardLabel>
+                  <NewCardDescription>Choisir yeux, cheveux et peau</NewCardDescription>
+                </NewChoiceCard>
               </NewChoiceCardGrid>
             )}
 
-            {/* Mode pub : option pour passer sans photo (on set des couleurs par défaut pour la génération) */}
-            {isAdMode && !formData.appearanceMode && (
-              <SkipLink onClick={() => {
-                onUpdate({ appearanceMode: 'manual', eyeColor: 'brown', hairColor: 'brown', skinColor: 'medium' });
-                setTimeout(() => goNext(), 100);
-              }} style={{ marginTop: theme.spacing.md }}>
-                Passer cette étape
-              </SkipLink>
-            )}
-
-            {/* ---- Photo mode ---- */}
-            {formData.appearanceMode === 'photo' && (
+            {/* ---- Photo mode (Club complet) ---- */}
+            {!isSimplifiedMode && formData.appearanceMode === 'photo' && (
               <>
                 <PhotoUploadZone $hasPhoto={!!formData.photo} onClick={() => fileInputRef.current?.click()}>
                   <PhotoIcon>{formData.photo ? '✓' : '📷'}</PhotoIcon>
@@ -1207,27 +1212,48 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                     Il vous reste {clubCredit.remaining} eBook(s) gratuit(s)
                   </p>
                 </ClubFreeCard>
-              ) : (
-                <PricingGrid>
-                  {/* Single — last on mobile (or first if tripwire) */}
-                  <PricingCard $isSelected={selectedOffer === 'single'} $featured={isFirstPurchase} $mobileOrder={isFirstPurchase ? 0 : 2} onClick={() => handlePreviewSelect('single')}>
-                    {isFirstPurchase && <PricingCardBadge>-71% Premier conte</PricingCardBadge>}
+              ) : isFirstPurchase ? (
+                /* ── TRIPWIRE LAYOUT: 1.99€ hero + Club secondary ── */
+                <>
+                  <TripwireHeroCard $isSelected={selectedOffer === 'single'} onClick={() => handlePreviewSelect('single')}>
+                    <TripwireHeroBadge>-71% Offre de bienvenue</TripwireHeroBadge>
                     {selectedOffer === 'single' && <PricingSelectedCheck>&#x2713;</PricingSelectedCheck>}
-                    <PricingCardName>{isFirstPurchase ? 'Premier Conte' : 'Offre Unique'}</PricingCardName>
-                    <PricingCardPrice>{singlePriceLabel}</PricingCardPrice>
-                    {isFirstPurchase && <PricingCardSub style={{ textDecoration: 'line-through', color: '#999' }}>6,99€</PricingCardSub>}
-                    <PricingCardSub>{isFirstPurchase ? 'Offre de bienvenue' : 'Paiement unique'}</PricingCardSub>
+                    <PricingCardName>Votre Premier Conte</PricingCardName>
+                    <TripwireHeroOldPrice>6,99€</TripwireHeroOldPrice>
+                    <TripwireHeroPrice>1,99€</TripwireHeroPrice>
+                    <PricingCardSub>Paiement unique — pas d'abonnement</PricingCardSub>
                     <PricingCardFeaturesList>
-                      <PricingCardFeatureItem $highlight={isFirstPurchase}>1 conte personnalisé</PricingCardFeatureItem>
-                      <PricingCardFeatureItem>7 illustrations HD</PricingCardFeatureItem>
-                      <PricingCardFeatureItem>PDF téléchargeable</PricingCardFeatureItem>
+                      <PricingCardFeatureItem $highlight>1 conte personnalisé pour {heroName}</PricingCardFeatureItem>
+                      <PricingCardFeatureItem>7 illustrations HD uniques</PricingCardFeatureItem>
+                      <PricingCardFeatureItem>PDF téléchargeable et imprimable</PricingCardFeatureItem>
+                      <PricingCardFeatureItem>Lecture illimitée à vie</PricingCardFeatureItem>
                     </PricingCardFeaturesList>
-                    <PricingCardCTA $primary={selectedOffer === 'single' || isFirstPurchase}>{selectedOffer === 'single' ? 'Sélectionné !' : isFirstPurchase ? 'Essayer pour 1,99\u20AC' : 'Choisir cette offre'}</PricingCardCTA>
-                  </PricingCard>
+                    <TripwireHeroCTA>{selectedOffer === 'single' ? 'Sélectionné !' : 'Obtenir pour 1,99€'}</TripwireHeroCTA>
+                  </TripwireHeroCard>
 
-                  {/* Club Mensuel */}
-                  <PricingCard $isSelected={selectedOffer === 'club_monthly'} $featured={!isFirstPurchase} $mobileOrder={isFirstPurchase ? 1 : 0} onClick={() => handlePreviewSelect('club', 'monthly')}>
-                    {!isFirstPurchase && <PricingCardBadge>Populaire</PricingCardBadge>}
+                  <ClubAlternativeSection>
+                    <ClubAlternativeDivider>ou rejoignez le Club</ClubAlternativeDivider>
+                    <ClubMiniCard $isSelected={selectedOffer === 'club_monthly'} onClick={() => handlePreviewSelect('club', 'monthly')}>
+                      <ClubMiniInfo>
+                        <ClubMiniName>Club Mensuel</ClubMiniName>
+                        <ClubMiniDetail>Ce conte + 1 conte/semaine inclus</ClubMiniDetail>
+                      </ClubMiniInfo>
+                      <ClubMiniPrice>9,99€/mois</ClubMiniPrice>
+                    </ClubMiniCard>
+                    <ClubMiniCard $isSelected={selectedOffer === 'club_annual'} onClick={() => handlePreviewSelect('club', 'annual')}>
+                      <ClubMiniInfo>
+                        <ClubMiniName>Club Annuel</ClubMiniName>
+                        <ClubMiniDetail>Ce conte + 1 conte/semaine — économisez 40€+</ClubMiniDetail>
+                      </ClubMiniInfo>
+                      <ClubMiniPrice>6,67€/mois</ClubMiniPrice>
+                    </ClubMiniCard>
+                  </ClubAlternativeSection>
+                </>
+              ) : (
+                /* ── RETURNING USER: Club featured grid ── */
+                <PricingGrid>
+                  <PricingCard $isSelected={selectedOffer === 'club_monthly'} $featured $mobileOrder={0} onClick={() => handlePreviewSelect('club', 'monthly')}>
+                    <PricingCardBadge>Populaire</PricingCardBadge>
                     {selectedOffer === 'club_monthly' && <PricingSelectedCheck>&#x2713;</PricingSelectedCheck>}
                     <PricingCardName>Club Mensuel</PricingCardName>
                     <PricingFreeLabel>Ce conte est gratuit</PricingFreeLabel>
@@ -1242,8 +1268,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                     <PricingCardCTA $primary>{selectedOffer === 'club_monthly' ? 'Sélectionné !' : 'Débloquer l\'histoire'}</PricingCardCTA>
                   </PricingCard>
 
-                  {/* Club Annuel */}
-                  <PricingCard $isSelected={selectedOffer === 'club_annual'} $mobileOrder={2} onClick={() => handlePreviewSelect('club', 'annual')}>
+                  <PricingCard $isSelected={selectedOffer === 'club_annual'} $mobileOrder={1} onClick={() => handlePreviewSelect('club', 'annual')}>
                     {selectedOffer === 'club_annual' && <PricingSelectedCheck>&#x2713;</PricingSelectedCheck>}
                     <PricingCardName>Club Annuel</PricingCardName>
                     <PricingFreeLabel>Ce conte est gratuit</PricingFreeLabel>
@@ -1256,6 +1281,19 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                       <PricingCardFeatureItem>Annulable à tout moment</PricingCardFeatureItem>
                     </PricingCardFeaturesList>
                     <PricingCardCTA $primary={selectedOffer === 'club_annual'}>{selectedOffer === 'club_annual' ? 'Sélectionné !' : 'Choisir cette offre'}</PricingCardCTA>
+                  </PricingCard>
+
+                  <PricingCard $isSelected={selectedOffer === 'single'} $mobileOrder={2} onClick={() => handlePreviewSelect('single')}>
+                    {selectedOffer === 'single' && <PricingSelectedCheck>&#x2713;</PricingSelectedCheck>}
+                    <PricingCardName>Offre Unique</PricingCardName>
+                    <PricingCardPrice>{singlePriceLabel}</PricingCardPrice>
+                    <PricingCardSub>Paiement unique</PricingCardSub>
+                    <PricingCardFeaturesList>
+                      <PricingCardFeatureItem>1 conte personnalisé</PricingCardFeatureItem>
+                      <PricingCardFeatureItem>7 illustrations HD</PricingCardFeatureItem>
+                      <PricingCardFeatureItem>PDF téléchargeable</PricingCardFeatureItem>
+                    </PricingCardFeaturesList>
+                    <PricingCardCTA $primary={selectedOffer === 'single'}>{selectedOffer === 'single' ? 'Sélectionné !' : 'Choisir cette offre'}</PricingCardCTA>
                   </PricingCard>
                 </PricingGrid>
               )}
@@ -1359,13 +1397,13 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
   const stepLabels = Object.entries(STEP_CONFIG);
 
   // Étapes visibles dans la barre de progression (exclure les skippées en mode pub)
-  const visibleStepIndices = isAdMode
-    ? ALL_STEPS.slice(0, 9).map((_, i) => i).filter(i => !AD_MODE_SKIP_STEPS.has(i))
+  const visibleStepIndices = isSimplifiedMode
+    ? ALL_STEPS.slice(0, 9).map((_, i) => i).filter(i => !SIMPLIFIED_SKIP_STEPS.has(i))
     : ALL_STEPS.slice(0, 9).map((_, i) => i);
 
   // Determine which steps to show and their status
   const getSegmentStatus = (idx: number): 'done' | 'current' | 'future' | 'skipped' => {
-    if (isAdMode && AD_MODE_SKIP_STEPS.has(idx)) return 'skipped';
+    if (isSimplifiedMode && SIMPLIFIED_SKIP_STEPS.has(idx)) return 'skipped';
     if (idx < currentStep) return 'done';
     if (idx === currentStep) return 'current';
     // If !wantsExtras, steps 7 & 8 are skipped

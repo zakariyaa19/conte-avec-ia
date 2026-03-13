@@ -303,6 +303,7 @@ export const PricingTiers: React.FC<PricingTiersProps> = ({ onSelectPlan, isFirs
           </PriceBlock>
           <Divider />
           <Features>
+            <Feature>Personnalisation avancee (occasion, style, personnages)</Feature>
             <Feature>1 conte par semaine</Feature>
             <Feature>Credits cumulables</Feature>
             <Feature>Bibliotheque avec visionneuse</Feature>
@@ -325,11 +326,11 @@ export const PricingTiers: React.FC<PricingTiersProps> = ({ onSelectPlan, isFirs
           </PriceBlock>
           <Divider />
           <Features>
+            <Feature>Personnalisation avancee (occasion, style, personnages)</Feature>
             <Feature>1 conte par semaine</Feature>
             <Feature>52 contes par an</Feature>
             <Feature>Tout le Club Mensuel inclus</Feature>
             <Feature>Economisez 40&euro;+ par an</Feature>
-            <Feature>Paiement unique annuel</Feature>
           </Features>
           <Button variant={showAnnual ? 'primary' : 'outline'} size="lg" onClick={() => onSelectPlan('annual')} fullWidth>
             Choisir l'annuel
