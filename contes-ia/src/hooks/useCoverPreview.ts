@@ -17,9 +17,7 @@ export function isPhase1Complete(formData: Partial<StoryFormData>): boolean {
     formData.protagonistName &&
     formData.protagonistAge &&
     formData.protagonistGender &&
-    formData.illustrationStyle &&
-    formData.generalTheme &&
-    formData.specificSubject
+    formData.generalTheme
   );
   if (!baseComplete) return false;
 

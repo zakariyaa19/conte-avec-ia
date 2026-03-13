@@ -215,6 +215,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
   const { previewTitle, previewParagraphs, isGenerating: isStoryPreviewGenerating, error: storyPreviewError, generate: generateStoryPreview } = useStoryPreview(formData);
   const { illustrationUrl, illustrationBase64, isGenerating: isIllustrationGenerating, generate: generateIllustration } = useFirstIllustration(formData);
   const illustrationTriggeredRef = useRef(false);
+  const previewStartRef = useRef<number | null>(null);
 
   // Countdown timer for preview step
   const [countdown, setCountdown] = useState(1200); // 20 minutes in seconds
@@ -332,8 +333,11 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
   // Cover + story preview generation (parallel) — triggered when entering preview step
   useEffect(() => {
     if (ALL_STEPS[currentStep] === 'preview') {
+      if (!previewStartRef.current) previewStartRef.current = Date.now();
       if (!coverImageUrl && !isCoverGenerating) generateCover();
       if (!previewParagraphs && !isStoryPreviewGenerating) generateStoryPreview();
+    } else {
+      previewStartRef.current = null;
     }
   }, [currentStep]); // eslint-disable-line
 
@@ -977,13 +981,19 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
         // All content ready
         const allReady = !!(coverImageUrl && !isCoverGenerating && previewParagraphs && illustrationBase64);
         const hasError = !!(coverError || storyPreviewError);
-        const isStuck = !allReady && !isCoverGenerating && !isStoryPreviewGenerating && !isIllustrationGenerating && !allReady;
+        // Only show "stuck" after 10s grace period to let generation hooks start
+        const previewElapsed = previewStartRef.current ? (Date.now() - previewStartRef.current) : 0;
+        const isStuck = !allReady && !hasError && !isCoverGenerating && !isStoryPreviewGenerating && !isIllustrationGenerating && previewElapsed > 10000;
 
         const handleRetryGeneration = () => {
           if (!coverImageUrl) generateCover();
           if (!previewParagraphs) generateStoryPreview();
           if (!illustrationBase64) {
             illustrationTriggeredRef.current = false;
+            // If we have the needed data, re-trigger illustration directly
+            if (previewParagraphs && previewParagraphs.length > 0 && rawBase64) {
+              generateIllustration(previewParagraphs[0], rawBase64);
+            }
           }
         };
 
