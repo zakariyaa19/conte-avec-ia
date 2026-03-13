@@ -42,7 +42,7 @@ export function useFirstIllustration(formData: Partial<StoryFormData>): UseFirst
   }, [isGenerating]);
 
   const generate = useCallback(async (paragraph0: string, coverBase64?: string) => {
-    if (!formData.protagonistName || !formData.illustrationStyle) return;
+    if (!formData.protagonistName) return;
 
     abortControllerRef.current?.abort();
     const controller = new AbortController();
@@ -56,10 +56,10 @@ export function useFirstIllustration(formData: Partial<StoryFormData>): UseFirst
         protagonistName: formData.protagonistName,
         protagonistAge: formData.protagonistAge,
         protagonistGender: formData.protagonistGender,
-        illustrationStyle: formData.illustrationStyle,
+        illustrationStyle: formData.illustrationStyle || 'illustrated-book',
         generalTheme: formData.generalTheme,
         customTheme: formData.customTheme,
-        specificSubject: formData.specificSubject,
+        specificSubject: formData.specificSubject || '',
         customSubject: formData.customSubject,
         centralMessage: formData.centralMessage,
         customMessage: formData.customMessage,

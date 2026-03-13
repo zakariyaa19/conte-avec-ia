@@ -57,7 +57,7 @@ export function useStoryPreview(formData: Partial<StoryFormData>): UseStoryPrevi
         protagonistName: formData.protagonistName,
         protagonistAge: formData.protagonistAge,
         protagonistGender: formData.protagonistGender,
-        illustrationStyle: formData.illustrationStyle,
+        illustrationStyle: formData.illustrationStyle || 'illustrated-book',
         generalTheme: formData.generalTheme,
         customTheme: formData.customTheme,
         specificSubject: formData.specificSubject,

@@ -103,7 +103,7 @@ export function useCoverPreview(formData: Partial<StoryFormData>): UseCoverPrevi
         eyeColor: isManualMode ? formData.eyeColor : undefined,
         hairColor: isManualMode ? formData.hairColor : undefined,
         skinColor: isManualMode ? formData.skinColor : undefined,
-        illustrationStyle: formData.illustrationStyle,
+        illustrationStyle: formData.illustrationStyle || 'illustrated-book',
         generalTheme: formData.generalTheme,
         customTheme: formData.customTheme,
         specificSubject: formData.specificSubject,
