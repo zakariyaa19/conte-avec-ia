@@ -405,6 +405,53 @@ ${order.secondaryCharacterAge ? `📝 Type/Âge: ${escapeHtml(order.secondaryCha
   }
 
   /**
+   * Envoyer une alerte de generation echouee via Telegram
+   * Ne lance JAMAIS d'exception
+   */
+  static async sendGenerationFailedAlert(data: {
+    orderId: string;
+    orderNumber: string;
+    customerName: string;
+    customerEmail: string;
+    protagonistName: string;
+    error: string;
+  }): Promise<void> {
+    try {
+      if (!this.BOT_TOKEN || !this.CHAT_ID) {
+        console.error('[TELEGRAM] ERREUR: Variables manquantes pour alerte generation');
+        return;
+      }
+
+      const message = `🚨 <b>ECHEC GENERATION AUTOMATIQUE</b>
+
+📋 <b>Commande #${escapeHtml(data.orderNumber)}</b>
+🆔 ID: <code>${escapeHtml(data.orderId)}</code>
+👤 <b>Client:</b> ${escapeHtml(data.customerName)}
+📧 <b>Email:</b> ${escapeHtml(data.customerEmail)}
+👦 <b>Protagoniste:</b> ${escapeHtml(data.protagonistName)}
+
+❌ <b>Erreur:</b>
+<code>${escapeHtml(data.error.slice(0, 500))}</code>
+
+⚠️ <b>Action requise:</b> Relancer manuellement depuis le panel admin ou investiguer l'erreur.`;
+
+      const response = await axios.post(`${this.API_URL}/sendMessage`, {
+        chat_id: this.CHAT_ID,
+        text: message,
+        parse_mode: 'HTML'
+      });
+
+      if (response.data.ok) {
+        console.log('[TELEGRAM] Alerte generation echouee envoyee');
+      } else {
+        console.error('[TELEGRAM] Erreur envoi alerte:', JSON.stringify(response.data));
+      }
+    } catch (error: any) {
+      console.error('[TELEGRAM] Erreur envoi alerte generation (non bloquant):', error.message);
+    }
+  }
+
+  /**
    * Envoyer un message de test
    */
   static async sendTestMessage(): Promise<void> {

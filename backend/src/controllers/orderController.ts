@@ -287,6 +287,16 @@ export class OrderController {
         } catch (notifError) {
           console.error('Erreur envoi notifications Club:', notifError);
         }
+
+        // Auto-generate story (fire-and-forget)
+        try {
+          const { autoGenerateAndDeliver } = await import('./storyGenerationController');
+          autoGenerateAndDeliver(order.id).catch(err =>
+            console.error('[ClubFree] autoGenerateAndDeliver error (non-blocking):', err)
+          );
+        } catch (genErr) {
+          console.error('[ClubFree] Failed to import autoGenerateAndDeliver:', genErr);
+        }
       }
 
       // Ajouter le contact à la liste Mailjet (fire-and-forget)

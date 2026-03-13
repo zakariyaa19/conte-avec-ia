@@ -167,6 +167,73 @@ export class MailjetService {
     }
   }
 
+  // Envoyer un email "conte en cours de creation" au client
+  static async sendStoryInProgressEmail(data: {
+    customerName: string;
+    customerEmail: string;
+    orderNumber: string;
+    protagonistName: string;
+  }): Promise<void> {
+    try {
+      const request = getMailjet()
+        .post('send', { version: 'v3.1' })
+        .request({
+          Messages: [
+            {
+              From: {
+                Email: process.env.MAILJET_FROM_EMAIL || 'contact@contedia.fr',
+                Name: 'Contes d\'IA'
+              },
+              To: [
+                {
+                  Email: data.customerEmail,
+                  Name: data.customerName
+                }
+              ],
+              Subject: `Le conte de ${data.protagonistName} est en cours de creation !`,
+              HTMLPart: `
+                <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 650px; margin: 0 auto; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); border-radius: 20px; overflow: hidden;">
+                  <div style="background: linear-gradient(135deg, #FF9999, #87CEEB); padding: 40px 30px; text-align: center; color: white;">
+                    <h1 style="margin: 0; font-size: 32px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">La magie est en cours...</h1>
+                    <p style="margin: 15px 0 0 0; font-size: 18px; opacity: 0.95;">Commande #${data.orderNumber}</p>
+                  </div>
+                  <div style="padding: 40px 30px;">
+                    <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 25px;">
+                      <h2 style="color: #333; margin: 0 0 20px 0; font-size: 24px;">Bonjour ${data.customerName} !</h2>
+                      <p style="color: #555; font-size: 16px; line-height: 1.6;">
+                        Notre IA est en train de creer le conte personnalise de <strong style="color: #FF9999;">${data.protagonistName}</strong>.
+                      </p>
+                      <p style="color: #555; font-size: 16px; line-height: 1.6;">
+                        La creation prend generalement entre <strong>5 et 10 minutes</strong>. Vous recevrez un email des que votre conte sera pret a lire !
+                      </p>
+                    </div>
+                    <div style="background: linear-gradient(135deg, #e3f2fd, #f3e5f5); padding: 30px; border-radius: 15px; margin-bottom: 25px; border-left: 5px solid #FF9999;">
+                      <h3 style="color: #333; margin: 0 0 15px 0; font-size: 20px;">Ce qui se passe en ce moment :</h3>
+                      <ul style="color: #555; font-size: 15px; line-height: 2; padding-left: 20px;">
+                        <li>Redaction de l'histoire personnalisee</li>
+                        <li>Creation des illustrations uniques</li>
+                        <li>Assemblage de votre livre numerique</li>
+                      </ul>
+                    </div>
+                    <div style="text-align: center; margin-top: 30px; padding: 25px; background: linear-gradient(135deg, #FF9999, #87CEEB); border-radius: 15px; color: white;">
+                      <p style="margin: 0; font-size: 14px;">Une question ? Repondez simplement a cet email<br>
+                      ${process.env.MAILJET_FROM_EMAIL || 'contact@contedia.fr'}</p>
+                    </div>
+                  </div>
+                </div>
+              `
+            }
+          ]
+        });
+
+      const result = await request;
+      console.log('Email "conte en cours" envoye via Mailjet:', result.body);
+    } catch (error) {
+      console.error('Erreur envoi email "conte en cours" Mailjet:', error);
+      // Ne pas throw — on ne veut pas bloquer la generation si l'email echoue
+    }
+  }
+
   // Ajouter un contact à la liste Mailjet pour les campagnes marketing
   static async addContactToList(data: {
     email: string;

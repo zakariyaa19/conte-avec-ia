@@ -222,6 +222,16 @@ async function finalizePendingClubOrders(userId: string) {
       } catch (notifError) {
         console.error('[POLLING] Erreur envoi notifications:', notifError);
       }
+
+      // Auto-generate story (fire-and-forget)
+      try {
+        const { autoGenerateAndDeliver } = await import('./storyGenerationController');
+        autoGenerateAndDeliver(order.id).catch(err =>
+          console.error('[POLLING] autoGenerateAndDeliver error (non-blocking):', err)
+        );
+      } catch (genErr) {
+        console.error('[POLLING] Failed to import autoGenerateAndDeliver:', genErr);
+      }
     }
   } catch (error) {
     console.error('[POLLING] Erreur finalisation commandes CLUB:', error);
@@ -401,6 +411,16 @@ export const checkPaymentStatus = async (req: Request, res: Response) => {
 
       console.log('[checkPaymentStatus] Commande confirmee:', orderId);
 
+      // Auto-generate story (fire-and-forget)
+      try {
+        const { autoGenerateAndDeliver } = await import('./storyGenerationController');
+        autoGenerateAndDeliver(orderId as string).catch(err =>
+          console.error('[checkPaymentStatus] autoGenerateAndDeliver error (non-blocking):', err)
+        );
+      } catch (genErr) {
+        console.error('[checkPaymentStatus] Failed to import autoGenerateAndDeliver:', genErr);
+      }
+
       res.json({
         success: true,
         status: 'paid',
@@ -516,6 +536,16 @@ export const handleStripeWebhook = async (req: Request, res: Response) => {
                   } catch (notifError) {
                     console.error('[WEBHOOK] Erreur envoi notifications commande Club:', notifError);
                   }
+
+                  // Auto-generate story (fire-and-forget)
+                  try {
+                    const { autoGenerateAndDeliver } = await import('./storyGenerationController');
+                    autoGenerateAndDeliver(orderId).catch(err =>
+                      console.error('[WEBHOOK] autoGenerateAndDeliver Club error (non-blocking):', err)
+                    );
+                  } catch (genErr) {
+                    console.error('[WEBHOOK] Failed to import autoGenerateAndDeliver:', genErr);
+                  }
                 }
               } catch (orderError) {
                 console.error('[WEBHOOK] Erreur finalisation commande:', orderError);
@@ -575,6 +605,16 @@ export const handleStripeWebhook = async (req: Request, res: Response) => {
                 console.log('[WEBHOOK] Notifications envoyees pour commande:', orderId);
               } catch (notifError) {
                 console.error('[WEBHOOK] Erreur envoi notifications paiement unique:', notifError);
+              }
+
+              // Auto-generate story (fire-and-forget)
+              try {
+                const { autoGenerateAndDeliver } = await import('./storyGenerationController');
+                autoGenerateAndDeliver(orderId).catch(err =>
+                  console.error('[WEBHOOK] autoGenerateAndDeliver error (non-blocking):', err)
+                );
+              } catch (genErr) {
+                console.error('[WEBHOOK] Failed to import autoGenerateAndDeliver:', genErr);
               }
             } else if (order) {
               console.log('[WEBHOOK] Commande deja traitee, skip:', orderId);

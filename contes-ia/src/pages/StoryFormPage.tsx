@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useLocation } from 'react-router-dom';
 import { StoryWizard } from '../components/wizard/StoryWizard';
 import { ApiService } from '../config/api';
 import { StoryFormData } from '../types/FormTypes';
@@ -9,6 +10,8 @@ import { useAuth } from '../contexts/AuthContext';
 export const StoryFormPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { user, isAuthenticated, isClub, setTokenAndUser } = useAuth();
+  const location = useLocation();
+  const isAdMode = useMemo(() => new URLSearchParams(location.search).get('from') === 'ad', [location.search]);
   const [clubCredit, setClubCredit] = useState<{ canSubmit: boolean; remaining: number; nextCreditDate?: string; totalEarned?: number } | null>(null);
 
   // Track ViewContent au chargement de la page
@@ -202,6 +205,7 @@ export const StoryFormPage: React.FC = () => {
       isClub={isClub}
       currentUser={user}
       clubCredit={clubCredit}
+      isAdMode={isAdMode}
     />
   );
 };

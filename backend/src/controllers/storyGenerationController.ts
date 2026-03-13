@@ -833,6 +833,169 @@ async function runGenerationPipeline(orderId: string, order: any, genLogId: stri
   }
 }
 
+/**
+ * Auto-generate and deliver a story after payment.
+ * Called from payment confirmation points (webhook, polling, club free).
+ * Idempotent: skips if order is already GENERATING/GENERATED/DELIVERED.
+ * Never throws — all errors are caught and sent to Telegram.
+ */
+export async function autoGenerateAndDeliver(orderId: string): Promise<void> {
+  // --- Idempotency guard ---
+  if (activeGenerations.has(orderId)) {
+    console.log(`[AutoGen] Skipped ${orderId} — already in activeGenerations`);
+    return;
+  }
+
+  const order = await prisma.order.findUnique({
+    where: { id: orderId },
+    omit: { coverImageData: true, pdfData: true },
+    include: { user: true },
+  });
+
+  if (!order) {
+    console.error(`[AutoGen] Order ${orderId} not found`);
+    return;
+  }
+
+  // Only launch from PAID status with EN_COURS story status
+  if (order.status !== 'PAID') {
+    console.log(`[AutoGen] Skipped ${orderId} — status is ${order.status}, not PAID`);
+    return;
+  }
+
+  if (order.storyStatus && order.storyStatus !== 'EN_COURS') {
+    console.log(`[AutoGen] Skipped ${orderId} — storyStatus is ${order.storyStatus}, not EN_COURS`);
+    return;
+  }
+
+  console.log(`[AutoGen] Starting auto-generation for order ${orderId}`);
+
+  // --- Atomically set order to GENERATING (only if still PAID) ---
+  // This prevents race conditions when webhook + polling both fire
+  const updated = await prisma.order.updateMany({
+    where: { id: orderId, status: 'PAID' },
+    data: {
+      status: 'GENERATING',
+      storyStatus: 'EN_COURS',
+    },
+  });
+
+  if (updated.count === 0) {
+    console.log(`[AutoGen] Skipped ${orderId} — status already changed (race condition avoided)`);
+    return;
+  }
+
+  // --- Send "in progress" email to customer ---
+  try {
+    const { MailjetService } = await import('../utils/mailjetService');
+    const customerEmail = order.user?.email;
+    const customerName = order.user?.firstName || order.creatorName || 'Client';
+
+    if (customerEmail) {
+      await MailjetService.sendStoryInProgressEmail({
+        customerName,
+        customerEmail,
+        orderNumber: order.id.slice(-8),
+        protagonistName: order.protagonistName,
+      });
+    }
+  } catch (emailError) {
+    console.error(`[AutoGen] Failed to send in-progress email for ${orderId}:`, emailError);
+    // Non-blocking — continue generation
+  }
+
+  // --- Create GenerationLog ---
+  const maxAttempt = await prisma.generationLog.aggregate({
+    where: { orderId },
+    _max: { attempt: true },
+  });
+  const attempt = (maxAttempt._max.attempt || 0) + 1;
+
+  const genLog = await prisma.generationLog.create({
+    data: {
+      orderId,
+      attempt,
+      status: 'started',
+      source: 'auto',
+    },
+  });
+
+  // --- Update storyStatus to GENERATING_TEXT ---
+  await prisma.order.update({
+    where: { id: orderId },
+    data: {
+      storyStatus: 'GENERATING_TEXT',
+      generationProgress: 0,
+      generationError: null,
+      generationStartedAt: new Date(),
+    },
+  });
+
+  // --- Run pipeline asynchronously ---
+  activeGenerations.add(orderId);
+
+  runGenerationPipeline(orderId, order, genLog.id)
+    .then(async () => {
+      // Pipeline succeeded — order is now GENERATED with storyStatus DISPONIBLE
+      // Auto-deliver: set to DELIVERED and send delivery email
+      try {
+        const freshOrder = await prisma.order.findUnique({
+          where: { id: orderId },
+          omit: { coverImageData: true, pdfData: true },
+          include: { user: true },
+        });
+
+        if (freshOrder && freshOrder.status === 'GENERATED' && freshOrder.storyStatus === 'DISPONIBLE') {
+          await prisma.order.update({
+            where: { id: orderId },
+            data: {
+              status: 'DELIVERED',
+              deliveredAt: new Date(),
+            },
+          });
+          console.log(`[AutoGen] Order ${orderId} auto-delivered`);
+
+          // Send delivery email
+          const { MailjetService } = await import('../utils/mailjetService');
+          const customerEmail = freshOrder.user?.email;
+          const customerName = freshOrder.user?.firstName || freshOrder.creatorName || 'Client';
+
+          if (customerEmail) {
+            await MailjetService.sendStoryDeliveryEmail({
+              customerName,
+              customerEmail,
+              orderNumber: orderId.slice(-8),
+              protagonistName: freshOrder.protagonistName,
+            });
+          }
+        }
+      } catch (deliveryError) {
+        console.error(`[AutoGen] Auto-delivery failed for ${orderId}:`, deliveryError);
+        // The generation succeeded, so the order is GENERATED — admin can deliver manually
+      }
+    })
+    .catch(async (pipelineError) => {
+      // Pipeline failed — send Telegram alert
+      console.error(`[AutoGen] Pipeline failed for ${orderId}:`, pipelineError);
+      try {
+        const { TelegramService } = await import('../utils/telegramService');
+        await TelegramService.sendGenerationFailedAlert({
+          orderId,
+          orderNumber: orderId.slice(-8),
+          customerName: order.user?.firstName || order.creatorName || 'Client',
+          customerEmail: order.user?.email || 'Email non fourni',
+          protagonistName: order.protagonistName,
+          error: pipelineError?.message || 'Erreur inconnue',
+        });
+      } catch (telegramError) {
+        console.error(`[AutoGen] Failed to send Telegram alert for ${orderId}:`, telegramError);
+      }
+    })
+    .finally(() => {
+      activeGenerations.delete(orderId);
+    });
+}
+
 async function updateProgress(orderId: string, status: string, progress: number) {
   try {
     await prisma.order.update({

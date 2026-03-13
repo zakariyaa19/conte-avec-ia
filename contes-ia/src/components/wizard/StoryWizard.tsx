@@ -151,6 +151,14 @@ const RELIGION_OPTIONS = [
 const ALL_STEPS = ['age','theme','occasion','style','hero','appearance','choice','extras1','extras2','preview'] as const;
 type StepId = (typeof ALL_STEPS)[number];
 
+// Mapping age range → protagonist age par défaut (milieu de tranche)
+const AGE_RANGE_TO_PROTAGONIST_AGE: Record<string, string> = {
+  '0-2': '1', '3-5': '4', '6-9': '7', '10+': '11',
+};
+
+// Étapes à skip en mode pub (occasion, style, choice, extras1, extras2)
+const AD_MODE_SKIP_STEPS = new Set([2, 3, 6, 7, 8]);
+
 interface StoryWizardProps {
   formData: Partial<StoryFormData>;
   onUpdate: (data: Partial<StoryFormData>) => void;
@@ -160,6 +168,7 @@ interface StoryWizardProps {
   isClub?: boolean;
   currentUser?: { id: string; email: string; firstName?: string; lastName?: string; role: string; isFirstPurchase?: boolean } | null;
   clubCredit?: { canSubmit: boolean; remaining: number; nextCreditDate?: string; totalEarned?: number } | null;
+  isAdMode?: boolean;
 }
 
 /* ══════════════════════════════════════════════
@@ -169,11 +178,15 @@ interface StoryWizardProps {
 export const StoryWizard: React.FC<StoryWizardProps> = ({
   formData, onUpdate, onSubmit, isSubmitting,
   isAuthenticated = false, isClub = false, currentUser = null, clubCredit = null,
+  isAdMode = false,
 }) => {
   // Tripwire: premier conte à 1,99€ pour les nouveaux utilisateurs
   const isFirstPurchase = !isAuthenticated || currentUser?.isFirstPurchase !== false;
   const singlePrice = isFirstPurchase ? 1.99 : 6.99;
   const singlePriceLabel = isFirstPurchase ? '1,99\u20AC' : '6,99\u20AC';
+
+  const isAdModeRef = useRef(isAdMode);
+  useEffect(() => { isAdModeRef.current = isAdMode; }, [isAdMode]);
 
   const [currentStep, setCurrentStep] = useState(0);
   const [prevStep, setPrevStep] = useState<number | null>(null);
@@ -212,6 +225,24 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
 
   useEffect(() => { wantsExtrasRef.current = wantsExtras; }, [wantsExtras]);
 
+  // Mode pub : pré-remplir les champs des étapes skippées avec des valeurs par défaut
+  useEffect(() => {
+    if (!isAdMode) return;
+    const defaults: Partial<StoryFormData> = {};
+    if (!formData.specificSubject) defaults.specificSubject = 'birthday';
+    if (!formData.illustrationStyle) defaults.illustrationStyle = 'watercolor';
+    if (Object.keys(defaults).length > 0) onUpdate(defaults);
+  }, [isAdMode]); // eslint-disable-line
+
+  // Mode pub : dériver automatiquement l'âge du héros depuis la tranche d'âge
+  useEffect(() => {
+    if (!isAdMode || !formData.ageRange) return;
+    const derivedAge = AGE_RANGE_TO_PROTAGONIST_AGE[formData.ageRange];
+    if (derivedAge && formData.protagonistAge !== derivedAge) {
+      onUpdate({ protagonistAge: derivedAge });
+    }
+  }, [isAdMode, formData.ageRange]); // eslint-disable-line
+
   // Draft resume on mount
   useEffect(() => {
     if (hasDraft()) setShowDraftBanner(true);
@@ -237,14 +268,32 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
   const visiblePos = (!wantsExtras && currentStep > 6) ? currentStep - 2 : currentStep;
   const progress = Math.min(((visiblePos + 1) / totalSteps) * 100, 100);
 
-  // Scroll reset
+  // Scroll reset + tracking micro-conversion à chaque changement d'étape
   useEffect(() => {
     requestAnimationFrame(() => {
       viewportRef.current?.querySelectorAll('[data-wizard-step]').forEach(el => {
         (el as HTMLElement).scrollTop = 0;
       });
     });
-  }, [currentStep]);
+
+    // Meta Pixel : tracker chaque étape comme micro-conversion
+    const stepName = ALL_STEPS[currentStep];
+    if (typeof window !== 'undefined' && window.fbq) {
+      window.fbq('trackCustom', 'WizardStep', {
+        step: currentStep,
+        step_name: stepName,
+        is_ad_mode: isAdMode,
+      });
+    }
+    // TikTok Pixel : même tracking
+    if (typeof window !== 'undefined' && (window as any).ttq) {
+      (window as any).ttq.track('ViewContent', {
+        content_id: `wizard_step_${stepName}`,
+        content_name: `Wizard - ${stepName}`,
+        content_category: isAdMode ? 'ad_funnel' : 'organic_funnel',
+      });
+    }
+  }, [currentStep]); // eslint-disable-line
 
   // Navigation
   const goToStep = useCallback((target: number) => {
@@ -258,13 +307,23 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
 
   const goNext = useCallback(() => {
     let next = currentStep + 1;
-    if (!wantsExtrasRef.current && next === 7) next = 9;
+    // Mode pub : sauter occasion(2)+style(3), choice(6)+extras(7,8)
+    if (isAdModeRef.current) {
+      while (next < ALL_STEPS.length && AD_MODE_SKIP_STEPS.has(next)) next++;
+    } else {
+      if (!wantsExtrasRef.current && next === 7) next = 9;
+    }
     goToStep(next);
   }, [currentStep, goToStep]);
 
   const goBack = useCallback(() => {
     let prev = currentStep - 1;
-    if (!wantsExtrasRef.current && prev === 8) prev = 6;
+    // Mode pub : revenir en arrière en sautant les étapes skippées
+    if (isAdModeRef.current) {
+      while (prev >= 0 && AD_MODE_SKIP_STEPS.has(prev)) prev--;
+    } else {
+      if (!wantsExtrasRef.current && prev === 8) prev = 6;
+    }
     goToStep(prev);
   }, [currentStep, goToStep]);
 
@@ -371,7 +430,9 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
 
   const handleFormSubmit = () => { setGlobalError(''); if (validatePaymentForm()) { clearDraft(); onSubmit(); } };
 
-  const isHeroComplete = !!(formData.protagonistName && formData.protagonistAge && formData.protagonistGender);
+  const isHeroComplete = isAdMode
+    ? !!(formData.protagonistName && formData.protagonistGender) // age auto-dérivé en mode pub
+    : !!(formData.protagonistName && formData.protagonistAge && formData.protagonistGender);
   const isAppearanceComplete = formData.appearanceMode === 'photo'
     ? !!formData.photo
     : !!(formData.eyeColor && formData.hairColor && formData.skinColor);
@@ -420,12 +481,45 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
       case 'age':
         return (
           <>
-            <BookPreviewBanner>
-              <BookPreviewCover $src="/image/themes/contes-de-fees.png" />
-              <BookPreviewText>Ton enfant devient le héros de son propre livre 📚</BookPreviewText>
-            </BookPreviewBanner>
+            {isAdMode ? (
+              <div style={{
+                width: '100%', maxWidth: 420, textAlign: 'center',
+                marginBottom: theme.spacing.md, animation: 'fadeIn 0.5s ease both',
+              }}>
+                <p style={{
+                  fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.lg, fontWeight: 800,
+                  color: theme.colors.text.primary, margin: `0 0 ${theme.spacing.xs}`, lineHeight: 1.3,
+                }}>
+                  Créez le conte de votre enfant — <span style={{ color: theme.colors.accent.coral }}>1,99€</span>
+                </p>
+                <div style={{
+                  display: 'flex', flexDirection: 'column', gap: '6px',
+                  alignItems: 'flex-start', margin: `${theme.spacing.sm} auto`,
+                  maxWidth: 280,
+                }}>
+                  {[
+                    'Personnalisé avec son prénom et sa photo',
+                    '7 illustrations HD uniques',
+                    'Prêt en 5 minutes',
+                  ].map((text) => (
+                    <span key={text} style={{
+                      fontFamily: theme.fonts.body, fontSize: theme.fontSizes.xs,
+                      color: theme.colors.text.secondary, display: 'flex', alignItems: 'center', gap: '6px',
+                    }}>
+                      <span style={{ color: theme.colors.accent.coral, fontWeight: 700, flexShrink: 0 }}>✓</span>
+                      {text}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <BookPreviewBanner>
+                <BookPreviewCover $src="/image/themes/contes-de-fees.png" />
+                <BookPreviewText>Ton enfant devient le héros de son propre livre</BookPreviewText>
+              </BookPreviewBanner>
+            )}
             <StepTitle>Pour quel âge ?</StepTitle>
-            <StepMicroText>Choisis l'âge pour commencer à créer son histoire</StepMicroText>
+            <StepMicroText>{isAdMode ? 'Un seul clic pour commencer' : 'Choisis l\'âge pour commencer à créer son histoire'}</StepMicroText>
             <CardGrid $columns={4}>
               {AGE_OPTIONS.map((o, i) => (
                 <ImageCard key={o.value} $isSelected={formData.ageRange === o.value} $delay={i}
@@ -533,8 +627,8 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
       case 'hero':
         return (
           <>
-            <StepTitle>Votre héros</StepTitle>
-            <StepSubtitle>Qui sera le personnage principal ?</StepSubtitle>
+            <StepTitle>{isAdMode ? 'Comment s\'appelle votre enfant ?' : 'Votre héros'}</StepTitle>
+            {!isAdMode && <StepSubtitle>Qui sera le personnage principal ?</StepSubtitle>}
             {showSummary && (
               <SummaryChipsRow>
                 {summaryChips.map((c, i) => (
@@ -547,10 +641,12 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 <ValidatedInput label="Prénom *" value={formData.protagonistName || ''}
                   onChange={(v) => handleInputChange('protagonistName', v)} placeholder="Ex : Emma, Lucas..." required error={errors.protagonistName} />
               </InputField>
-              <InputField>
-                <AgeSelector label="Âge *" value={formData.protagonistAge || ''}
-                  onChange={(v) => handleInputChange('protagonistAge', v)} required error={errors.protagonistAge} />
-              </InputField>
+              {!isAdMode && (
+                <InputField>
+                  <AgeSelector label="Âge *" value={formData.protagonistAge || ''}
+                    onChange={(v) => handleInputChange('protagonistAge', v)} required error={errors.protagonistAge} />
+                </InputField>
+              )}
             </InputRow>
             <CardGrid $columns={2} style={{ maxWidth: 320 }}>
               {GENDER_OPTIONS.map((o, i) => (
@@ -595,8 +691,8 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
       case 'appearance':
         return (
           <>
-            <StepTitle>Son apparence</StepTitle>
-            <StepSubtitle>Comment ressemble votre personnage ?</StepSubtitle>
+            <StepTitle>{isAdMode ? 'Ajoutez sa photo' : 'Son apparence'}</StepTitle>
+            <StepSubtitle>{isAdMode ? 'Le personnage lui ressemblera !' : 'Comment ressemble votre personnage ?'}</StepSubtitle>
 
             {/* ---- Mode choice ---- */}
             {!formData.appearanceMode && (
@@ -614,20 +710,32 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                   <NewCardDescription style={{ color: 'rgba(255,255,255,0.85)' }}>Le personnage ressemblera à votre enfant</NewCardDescription>
                 </NewChoiceCard>
 
-                <NewChoiceCard $isSelected={false} $delay={1}
-                  onClick={() => onUpdate({ appearanceMode: 'manual', photo: undefined })}>
-                  <svg viewBox="0 0 80 80" fill="none" width="56" height="56" aria-hidden="true">
-                    <circle cx="40" cy="40" r="36" fill={`${theme.colors.accent.coral}12`} />
-                    <circle cx="25" cy="35" r="7" fill="#4169E1" opacity="0.8" />
-                    <circle cx="50" cy="28" r="7" fill="#FFD700" />
-                    <circle cx="28" cy="54" r="6" fill="#FDDCB5" />
-                    <circle cx="44" cy="54" r="6" fill="#E8B88A" />
-                    <circle cx="60" cy="54" r="6" fill="#8D5524" />
-                  </svg>
-                  <NewCardLabel>Personnaliser</NewCardLabel>
-                  <NewCardDescription>Choisir yeux, cheveux et peau</NewCardDescription>
-                </NewChoiceCard>
+                {!isAdMode && (
+                  <NewChoiceCard $isSelected={false} $delay={1}
+                    onClick={() => onUpdate({ appearanceMode: 'manual', photo: undefined })}>
+                    <svg viewBox="0 0 80 80" fill="none" width="56" height="56" aria-hidden="true">
+                      <circle cx="40" cy="40" r="36" fill={`${theme.colors.accent.coral}12`} />
+                      <circle cx="25" cy="35" r="7" fill="#4169E1" opacity="0.8" />
+                      <circle cx="50" cy="28" r="7" fill="#FFD700" />
+                      <circle cx="28" cy="54" r="6" fill="#FDDCB5" />
+                      <circle cx="44" cy="54" r="6" fill="#E8B88A" />
+                      <circle cx="60" cy="54" r="6" fill="#8D5524" />
+                    </svg>
+                    <NewCardLabel>Personnaliser</NewCardLabel>
+                    <NewCardDescription>Choisir yeux, cheveux et peau</NewCardDescription>
+                  </NewChoiceCard>
+                )}
               </NewChoiceCardGrid>
+            )}
+
+            {/* Mode pub : option pour passer sans photo (on set des couleurs par défaut pour la génération) */}
+            {isAdMode && !formData.appearanceMode && (
+              <SkipLink onClick={() => {
+                onUpdate({ appearanceMode: 'manual', eyeColor: 'brown', hairColor: 'brown', skinColor: 'medium' });
+                setTimeout(() => goNext(), 100);
+              }} style={{ marginTop: theme.spacing.md }}>
+                Passer cette étape
+              </SkipLink>
             )}
 
             {/* ---- Photo mode ---- */}
@@ -1250,8 +1358,14 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
   const isPreviewStep = ALL_STEPS[currentStep] === 'preview';
   const stepLabels = Object.entries(STEP_CONFIG);
 
+  // Étapes visibles dans la barre de progression (exclure les skippées en mode pub)
+  const visibleStepIndices = isAdMode
+    ? ALL_STEPS.slice(0, 9).map((_, i) => i).filter(i => !AD_MODE_SKIP_STEPS.has(i))
+    : ALL_STEPS.slice(0, 9).map((_, i) => i);
+
   // Determine which steps to show and their status
   const getSegmentStatus = (idx: number): 'done' | 'current' | 'future' | 'skipped' => {
+    if (isAdMode && AD_MODE_SKIP_STEPS.has(idx)) return 'skipped';
     if (idx < currentStep) return 'done';
     if (idx === currentStep) return 'current';
     // If !wantsExtras, steps 7 & 8 are skipped
@@ -1307,9 +1421,9 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
           <HeaderStepLabel aria-current="step">
             {STEP_CONFIG[stepId]?.label || ''}
           </HeaderStepLabel>
-          <SegmentedProgressBar role="progressbar" aria-valuenow={currentStep + 1} aria-valuemin={1} aria-valuemax={9}>
-            {ALL_STEPS.slice(0, 9).map((s, i) => (
-              <ProgressSegment key={s} $status={getSegmentStatus(i)} />
+          <SegmentedProgressBar role="progressbar" aria-valuenow={currentStep + 1} aria-valuemin={1} aria-valuemax={visibleStepIndices.length}>
+            {visibleStepIndices.map((i) => (
+              <ProgressSegment key={ALL_STEPS[i]} $status={getSegmentStatus(i)} />
             ))}
           </SegmentedProgressBar>
           <ProgressHintText>Création du conte (~1 minute)</ProgressHintText>
