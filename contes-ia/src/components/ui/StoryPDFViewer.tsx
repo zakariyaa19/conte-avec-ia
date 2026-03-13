@@ -360,12 +360,15 @@ export const StoryPDFViewer: React.FC<StoryPDFViewerProps> = ({
   useEffect(() => {
     if (!isOpen || numPages === 0) return;
 
+    const currentPageRef = { value: currentPage };
+
     observerRef.current = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
           if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
             const pageNum = Number(entry.target.getAttribute('data-page'));
-            if (pageNum && pageNum !== currentPage) {
+            if (pageNum && pageNum !== currentPageRef.value) {
+              currentPageRef.value = pageNum;
               setCurrentPage(pageNum);
               setShowIndicator(true);
 
@@ -388,7 +391,7 @@ export const StoryPDFViewer: React.FC<StoryPDFViewerProps> = ({
     return () => {
       observerRef.current?.disconnect();
     };
-  }, [isOpen, numPages, currentPage]);
+  }, [isOpen, numPages]); // removed currentPage to prevent observer recreation loop
 
   const onDocumentLoadSuccess = useCallback(({ numPages: n }: { numPages: number }) => {
     setNumPages(n);

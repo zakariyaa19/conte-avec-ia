@@ -342,89 +342,55 @@ export const SuccessPage: React.FC = () => {
             <IconEmoji>✅</IconEmoji>
           </SuccessIconContainer>
 
-          <Title>{isClubFree ? 'Votre eBook Club est en cours de creation !' : 'Paiement reussi !'}</Title>
+          <Title>Votre conte est en cours de creation !</Title>
 
           {paymentConfirmed && (
             <ConfirmedBadge>
-              {isClubFree ? '\u2713 eBook Club gratuit — Commande confirmee' : '\u2713 Paiement confirme et emails envoyes'}
+              &#x2713; Commande confirmee
             </ConfirmedBadge>
           )}
 
           <Message>
-            {isClubFree
-              ? 'Votre eBook gratuit a ete cree avec succes. Vous pouvez suivre son avancement dans votre bibliotheque avec le statut "En cours de creation".'
-              : 'Votre commande a ete confirmee avec succes. Nous commencons immediatement la creation de votre conte personnalise.'
-            }
+            Notre IA genere votre livre personnalise en ce moment meme.<br />
+            Il sera pret dans environ <strong>5 minutes</strong>.
           </Message>
 
           <StepsContainer>
             <StepItem>
-              <StepNumber>1</StepNumber>
+              <StepNumber $highlighted>1</StepNumber>
               <StepText>
-                <strong>Email de confirmation</strong>
-                <span>Vous recevrez un email avec les details de votre commande</span>
+                <strong>Generation en cours</strong>
+                <span>Notre IA redige l'histoire et illustre chaque page de votre conte</span>
               </StepText>
             </StepItem>
             <StepItem>
-              <StepNumber $highlighted>2</StepNumber>
+              <StepNumber>2</StepNumber>
               <StepText>
-                <strong>Creation en cours</strong>
-                <span>Notre equipe cree votre histoire unique avec soin</span>
-              </StepText>
-            </StepItem>
-            <StepItem>
-              <StepNumber>3</StepNumber>
-              <StepText>
-                <strong>Livraison de votre conte</strong>
-                <span>Votre conte personnalise sera disponible dans votre bibliotheque et vous recevrez un email avec le eBook en piece jointe vous informant de sa disponibilite sur le site</span>
+                <strong>Disponible dans votre bibliotheque</strong>
+                <span>Retrouvez votre livre numerique dans votre espace personnel des qu'il est pret. Vous pouvez le lire en ligne ou le telecharger en PDF</span>
               </StepText>
             </StepItem>
           </StepsContainer>
 
           <ButtonContainer>
-            {isAuthenticated || isClubFree ? (
-              <>
-                <Button
-                  variant="primary"
-                  size="lg"
-                  onClick={() => navigate('/dashboard')}
-                  fullWidth
-                >
-                  {isClubFree ? 'Voir ma bibliotheque' : 'Acceder a ma bibliotheque'}
-                </Button>
-                <div style={{ marginTop: theme.spacing.sm }}>
-                  <Button
-                    variant="ghost"
-                    size="md"
-                    onClick={handleCreateAnother}
-                    fullWidth
-                  >
-                    Creer un autre conte
-                  </Button>
-                </div>
-              </>
-            ) : (
-              <>
-                <Button
-                  variant="primary"
-                  size="lg"
-                  onClick={handleReturnHome}
-                  fullWidth
-                >
-                  Retour a l'accueil
-                </Button>
-                <div style={{ marginTop: theme.spacing.sm }}>
-                  <Button
-                    variant="ghost"
-                    size="md"
-                    onClick={handleCreateAnother}
-                    fullWidth
-                  >
-                    Creer un autre conte
-                  </Button>
-                </div>
-              </>
-            )}
+            <Button
+              variant="primary"
+              size="lg"
+              onClick={() => navigate('/dashboard')}
+              fullWidth
+            >
+              Retrouver mon livre dans ma bibliotheque
+            </Button>
+            <div style={{ marginTop: theme.spacing.sm }}>
+              <Button
+                variant="ghost"
+                size="md"
+                onClick={handleCreateAnother}
+                fullWidth
+              >
+                Creer un autre conte
+              </Button>
+            </div>
           </ButtonContainer>
         </SuccessCard>
       </SuccessContainer>
