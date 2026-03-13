@@ -182,9 +182,9 @@ export async function trackInitiateCheckout(productType: string, userEmail?: str
           return;
         }
 
-        const contentId = 'ebook_699';
-        const contentName = 'Ebook conte personnalisé';
-        const value = 6.99;
+        const contentId = 'ebook_199';
+        const contentName = 'Ebook conte personnalisé - Premier conte';
+        const value = 1.99;
 
         // Générer un event_id unique
         const eventId = generateEventId();
@@ -261,9 +261,9 @@ export async function trackPurchase(productType: string, orderId: string, userEm
         return;
       }
 
-      const contentId = 'ebook_699';
+      const contentId = 'ebook_199';
       const contentName = 'Ebook conte personnalisé';
-      const value = 6.99;
+      const value = 1.99;
 
       // Générer un event_id unique
       const eventId = generateEventId();

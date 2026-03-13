@@ -11,6 +11,7 @@ interface User {
   subscriptionPeriodEnd?: string;
   weeklySubmissionCount?: number;
   weeklySubmissionReset?: string;
+  isFirstPurchase?: boolean;
 }
 
 interface AuthContextType {

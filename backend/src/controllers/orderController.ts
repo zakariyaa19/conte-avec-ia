@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import Stripe from 'stripe';
 import * as bcrypt from 'bcryptjs';
-import { calculatePrice, PRODUCT_PRICES } from '../utils/pricing';
+import { calculatePrice, PRODUCT_PRICES, isFirstPurchase } from '../utils/pricing';
 import { StoryFormData, ApiResponse } from '../types';
 import { prisma } from '../utils/database';
 import { stringifySecondaryCharacters } from '../utils/formatters';
@@ -40,7 +40,7 @@ export class OrderController {
         });
       }
 
-      // Calcul du prix
+      // Calcul du prix (sera ajusté après résolution du user pour le tripwire)
       let price = calculatePrice(formData.productType?.toUpperCase() as keyof typeof PRODUCT_PRICES) || 4.99;
 
       let user = null;
@@ -94,6 +94,16 @@ export class OrderController {
             createData.password = await bcrypt.hash(password, 10);
           }
           user = await prisma.user.create({ data: createData });
+        }
+      }
+
+      // --- Logique Tripwire : premier conte à 1,99€ ---
+      // Si achat SINGLE et que l'utilisateur n'a jamais acheté, appliquer le prix tripwire
+      if (purchaseType === 'SINGLE' && userEmail) {
+        const firstPurchase = await isFirstPurchase(userEmail, prisma);
+        if (firstPurchase) {
+          price = PRODUCT_PRICES.EBOOK_FIRST;
+          console.log('🎯 Tripwire appliqué: premier achat à', price, '€ pour', userEmail);
         }
       }
 
@@ -197,13 +207,14 @@ export class OrderController {
               const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
               const customerEmail = user?.email && emailRegex.test(user.email) ? user.email : undefined;
 
+              const isTrip = price === PRODUCT_PRICES.EBOOK_FIRST;
               const session = await stripe.checkout.sessions.create({
                 customer_email: customerEmail,
                 line_items: [{
                   price_data: {
                     currency: 'eur',
                     product_data: {
-                      name: 'Conte personnalise - eBook Numerique',
+                      name: isTrip ? 'Premier Conte - Offre de bienvenue' : 'Conte personnalise - eBook Numerique',
                       description: `Conte pour ${formData.protagonistName}`,
                     },
                     unit_amount: unitAmount,
@@ -276,6 +287,22 @@ export class OrderController {
         } catch (notifError) {
           console.error('Erreur envoi notifications Club:', notifError);
         }
+      }
+
+      // Ajouter le contact à la liste Mailjet (fire-and-forget)
+      if (userEmail) {
+        MailjetService.addContactToList({
+          email: userEmail,
+          name: `${formData.firstName || ''} ${formData.lastName || ''}`.trim() || undefined,
+          firstName: formData.firstName || undefined,
+          properties: {
+            firstname: formData.firstName || '',
+            lastname: formData.lastName || '',
+            purchase_type: purchaseType,
+            price: String(price),
+            protagonist_name: formData.protagonistName || '',
+          }
+        }).catch(err => console.error('Mailjet list add error (non-blocking):', err));
       }
 
       // Generer un token JWT si l'utilisateur a un mot de passe

@@ -167,6 +167,69 @@ export class MailjetService {
     }
   }
 
+  // Ajouter un contact à la liste Mailjet pour les campagnes marketing
+  static async addContactToList(data: {
+    email: string;
+    name?: string;
+    firstName?: string;
+    properties?: Record<string, any>;
+  }): Promise<void> {
+    const MAILJET_LIST_ID = process.env.MAILJET_LIST_ID || '10538315';
+
+    try {
+      const mailjet = getMailjet();
+
+      // 1. Créer ou mettre à jour le contact
+      try {
+        await mailjet
+          .post('contact', { version: 'v3' })
+          .request({
+            IsExcludedFromCampaigns: false,
+            Name: data.name || data.firstName || '',
+            Email: data.email
+          });
+      } catch (err: any) {
+        // Si le contact existe déjà (code 400 / duplicate), on continue
+        if (err?.statusCode !== 400) {
+          console.error('Mailjet: erreur création contact:', err?.message);
+        }
+      }
+
+      // 2. Mettre à jour les propriétés du contact (prénom, type d'achat, etc.)
+      if (data.properties) {
+        try {
+          await mailjet
+            .put('contactdata', { version: 'v3' })
+            .id(data.email)
+            .request({
+              Data: Object.entries(data.properties).map(([Name, Value]) => ({ Name, Value }))
+            });
+        } catch (propErr: any) {
+          console.error('Mailjet: erreur mise à jour propriétés:', propErr?.message);
+        }
+      }
+
+      // 3. Ajouter le contact à la liste
+      await mailjet
+        .post('listrecipient', { version: 'v3' })
+        .request({
+          ContactAlt: data.email,
+          ListID: Number(MAILJET_LIST_ID),
+          IsUnsubscribed: false
+        });
+
+      console.log('✅ Contact ajouté à la liste Mailjet:', data.email, '→ liste', MAILJET_LIST_ID);
+    } catch (error: any) {
+      // Si déjà dans la liste (duplicate), on ignore silencieusement
+      if (error?.statusCode === 400) {
+        console.log('ℹ️ Contact déjà dans la liste Mailjet:', data.email);
+        return;
+      }
+      console.error('❌ Erreur ajout contact Mailjet:', error?.message || error);
+      // Ne pas throw — on ne veut pas bloquer la commande si Mailjet échoue
+    }
+  }
+
   // Envoyer un email de notification a l'admin
   static async sendAdminNotification(orderData: {
     customerName: string;

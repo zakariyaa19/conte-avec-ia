@@ -7,6 +7,7 @@ export type PricingPlan = 'single' | 'monthly' | 'annual';
 
 interface PricingTiersProps {
   onSelectPlan: (plan: PricingPlan) => void;
+  isFirstPurchase?: boolean;
 }
 
 const Section = styled.div`
@@ -243,7 +244,7 @@ const Feature = styled.li`
   }
 `;
 
-export const PricingTiers: React.FC<PricingTiersProps> = ({ onSelectPlan }) => {
+export const PricingTiers: React.FC<PricingTiersProps> = ({ onSelectPlan, isFirstPurchase = true }) => {
   const [showAnnual, setShowAnnual] = useState(false);
 
   return (
@@ -261,11 +262,22 @@ export const PricingTiers: React.FC<PricingTiersProps> = ({ onSelectPlan }) => {
 
       <Grid>
         {/* Single purchase */}
-        <Card>
-          <CardTitle>Mon Histoire</CardTitle>
+        <Card $highlight={isFirstPurchase ? 'popular' : undefined}>
+          {isFirstPurchase && <Badge $variant="popular">-71% Premier conte</Badge>}
+          <CardTitle>{isFirstPurchase ? 'Premier Conte' : 'Mon Histoire'}</CardTitle>
           <PriceBlock>
-            <PriceValue>6,99&euro;</PriceValue>
-            <PriceNote>Paiement unique</PriceNote>
+            {isFirstPurchase ? (
+              <>
+                <PriceValue>1,99&euro;</PriceValue>
+                <PriceNote style={{ textDecoration: 'line-through', color: '#999' }}>6,99&euro;</PriceNote>
+                <Savings>Offre de bienvenue</Savings>
+              </>
+            ) : (
+              <>
+                <PriceValue>6,99&euro;</PriceValue>
+                <PriceNote>Paiement unique</PriceNote>
+              </>
+            )}
           </PriceBlock>
           <Divider />
           <Features>
@@ -275,8 +287,8 @@ export const PricingTiers: React.FC<PricingTiersProps> = ({ onSelectPlan }) => {
             <Feature>Telechargement illimite</Feature>
             <Feature>Compatible tous appareils</Feature>
           </Features>
-          <Button variant="outline" size="lg" onClick={() => onSelectPlan('single')} fullWidth>
-            Commencer
+          <Button variant={isFirstPurchase ? 'primary' : 'outline'} size="lg" onClick={() => onSelectPlan('single')} fullWidth>
+            {isFirstPurchase ? 'Essayer pour 1,99\u20AC' : 'Commencer'}
           </Button>
         </Card>
 

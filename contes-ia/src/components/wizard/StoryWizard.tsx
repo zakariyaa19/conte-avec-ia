@@ -158,7 +158,7 @@ interface StoryWizardProps {
   isSubmitting: boolean;
   isAuthenticated?: boolean;
   isClub?: boolean;
-  currentUser?: { id: string; email: string; firstName?: string; lastName?: string; role: string } | null;
+  currentUser?: { id: string; email: string; firstName?: string; lastName?: string; role: string; isFirstPurchase?: boolean } | null;
   clubCredit?: { canSubmit: boolean; remaining: number; nextCreditDate?: string; totalEarned?: number } | null;
 }
 
@@ -170,6 +170,11 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
   formData, onUpdate, onSubmit, isSubmitting,
   isAuthenticated = false, isClub = false, currentUser = null, clubCredit = null,
 }) => {
+  // Tripwire: premier conte à 1,99€ pour les nouveaux utilisateurs
+  const isFirstPurchase = !isAuthenticated || currentUser?.isFirstPurchase !== false;
+  const singlePrice = isFirstPurchase ? 1.99 : 6.99;
+  const singlePriceLabel = isFirstPurchase ? '1,99\u20AC' : '6,99\u20AC';
+
   const [currentStep, setCurrentStep] = useState(0);
   const [prevStep, setPrevStep] = useState<number | null>(null);
   const [direction, setDirection] = useState<'forward' | 'backward'>('forward');
@@ -1096,23 +1101,25 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 </ClubFreeCard>
               ) : (
                 <PricingGrid>
-                  {/* Single — last on mobile */}
-                  <PricingCard $isSelected={selectedOffer === 'single'} $mobileOrder={2} onClick={() => handlePreviewSelect('single')}>
+                  {/* Single — last on mobile (or first if tripwire) */}
+                  <PricingCard $isSelected={selectedOffer === 'single'} $featured={isFirstPurchase} $mobileOrder={isFirstPurchase ? 0 : 2} onClick={() => handlePreviewSelect('single')}>
+                    {isFirstPurchase && <PricingCardBadge>-71% Premier conte</PricingCardBadge>}
                     {selectedOffer === 'single' && <PricingSelectedCheck>&#x2713;</PricingSelectedCheck>}
-                    <PricingCardName>Offre Unique</PricingCardName>
-                    <PricingCardPrice>6,99€</PricingCardPrice>
-                    <PricingCardSub>Paiement unique</PricingCardSub>
+                    <PricingCardName>{isFirstPurchase ? 'Premier Conte' : 'Offre Unique'}</PricingCardName>
+                    <PricingCardPrice>{singlePriceLabel}</PricingCardPrice>
+                    {isFirstPurchase && <PricingCardSub style={{ textDecoration: 'line-through', color: '#999' }}>6,99€</PricingCardSub>}
+                    <PricingCardSub>{isFirstPurchase ? 'Offre de bienvenue' : 'Paiement unique'}</PricingCardSub>
                     <PricingCardFeaturesList>
-                      <PricingCardFeatureItem>1 conte personnalisé</PricingCardFeatureItem>
+                      <PricingCardFeatureItem $highlight={isFirstPurchase}>1 conte personnalisé</PricingCardFeatureItem>
                       <PricingCardFeatureItem>7 illustrations HD</PricingCardFeatureItem>
                       <PricingCardFeatureItem>PDF téléchargeable</PricingCardFeatureItem>
                     </PricingCardFeaturesList>
-                    <PricingCardCTA $primary={selectedOffer === 'single'}>{selectedOffer === 'single' ? 'Sélectionné !' : 'Choisir cette offre'}</PricingCardCTA>
+                    <PricingCardCTA $primary={selectedOffer === 'single' || isFirstPurchase}>{selectedOffer === 'single' ? 'Sélectionné !' : isFirstPurchase ? 'Essayer pour 1,99\u20AC' : 'Choisir cette offre'}</PricingCardCTA>
                   </PricingCard>
 
-                  {/* Club Mensuel — FIRST on mobile, center on desktop */}
-                  <PricingCard $isSelected={selectedOffer === 'club_monthly'} $featured $mobileOrder={0} onClick={() => handlePreviewSelect('club', 'monthly')}>
-                    <PricingCardBadge>Populaire</PricingCardBadge>
+                  {/* Club Mensuel */}
+                  <PricingCard $isSelected={selectedOffer === 'club_monthly'} $featured={!isFirstPurchase} $mobileOrder={isFirstPurchase ? 1 : 0} onClick={() => handlePreviewSelect('club', 'monthly')}>
+                    {!isFirstPurchase && <PricingCardBadge>Populaire</PricingCardBadge>}
                     {selectedOffer === 'club_monthly' && <PricingSelectedCheck>&#x2713;</PricingSelectedCheck>}
                     <PricingCardName>Club Mensuel</PricingCardName>
                     <PricingFreeLabel>Ce conte est gratuit</PricingFreeLabel>
@@ -1127,8 +1134,8 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                     <PricingCardCTA $primary>{selectedOffer === 'club_monthly' ? 'Sélectionné !' : 'Débloquer l\'histoire'}</PricingCardCTA>
                   </PricingCard>
 
-                  {/* Club Annuel — second on mobile */}
-                  <PricingCard $isSelected={selectedOffer === 'club_annual'} $mobileOrder={1} onClick={() => handlePreviewSelect('club', 'annual')}>
+                  {/* Club Annuel */}
+                  <PricingCard $isSelected={selectedOffer === 'club_annual'} $mobileOrder={2} onClick={() => handlePreviewSelect('club', 'annual')}>
                     {selectedOffer === 'club_annual' && <PricingSelectedCheck>&#x2713;</PricingSelectedCheck>}
                     <PricingCardName>Club Annuel</PricingCardName>
                     <PricingFreeLabel>Ce conte est gratuit</PricingFreeLabel>

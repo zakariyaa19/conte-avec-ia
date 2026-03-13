@@ -181,6 +181,11 @@ export class AuthController {
 
       console.log('[AUTH] getProfile:', user.id, 'role:', user.role, 'subStatus:', user.subscriptionStatus);
 
+      // Vérifier si l'utilisateur a déjà un achat payé (pour le tripwire 1,99€)
+      const hasPaidOrder = user.orders?.some((o: any) =>
+        ['PAID', 'GENERATING', 'GENERATED', 'DELIVERED'].includes(o.status)
+      ) || false;
+
       res.json({
         success: true,
         data: {
@@ -194,7 +199,8 @@ export class AuthController {
           weeklySubmissionCount: user.weeklySubmissionCount,
           weeklySubmissionReset: user.weeklySubmissionReset,
           orders: user.orders,
-          children: user.childProfiles
+          children: user.childProfiles,
+          isFirstPurchase: !hasPaidOrder
         }
       });
     } catch (error) {

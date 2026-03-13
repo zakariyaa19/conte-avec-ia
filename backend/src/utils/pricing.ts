@@ -1,7 +1,8 @@
 // Logique de calcul des prix
 
 export const PRODUCT_PRICES = {
-  EBOOK: 6.99
+  EBOOK: 6.99,
+  EBOOK_FIRST: 1.99
 } as const;
 
 export const CLUB_PRICES = {
@@ -12,6 +13,17 @@ export const CLUB_PRICES = {
 
 export function calculatePrice(productType: keyof typeof PRODUCT_PRICES): number {
   return PRODUCT_PRICES[productType];
+}
+
+// Vérifie si un utilisateur est éligible au prix tripwire (premier achat)
+export async function isFirstPurchase(userEmail: string, prisma: any): Promise<boolean> {
+  const paidOrderCount = await prisma.order.count({
+    where: {
+      user: { email: userEmail },
+      status: { in: ['PAID', 'GENERATING', 'GENERATED', 'DELIVERED'] }
+    }
+  });
+  return paidOrderCount === 0;
 }
 
 export function formatPrice(price: number): string {

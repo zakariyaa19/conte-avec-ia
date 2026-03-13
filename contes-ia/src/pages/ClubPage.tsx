@@ -808,7 +808,7 @@ const ClubCTA: React.FC<{
 // =============================================
 
 export const ClubPage: React.FC = () => {
-  const { isClub, isAuthenticated } = useAuth();
+  const { isClub, isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -1042,7 +1042,7 @@ export const ClubPage: React.FC = () => {
               <CenterSubtitle>Un conte unique pour chaque enfant. Choisissez la formule qui vous convient.</CenterSubtitle>
             </CenteredTitle>
 
-            <PricingTiers onSelectPlan={handleSelectPlan} />
+            <PricingTiers onSelectPlan={handleSelectPlan} isFirstPurchase={!isAuthenticated || user?.isFirstPurchase !== false} />
 
             <div style={{ marginTop: theme.spacing['3xl'] }}>
               <GuaranteesBlock $visible={priceReveal.isVisible}>
