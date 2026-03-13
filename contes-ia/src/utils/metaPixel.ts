@@ -64,7 +64,7 @@ export async function metaTrackViewContent(
 // Track InitiateCheckout - UNE SEULE FOIS par session
 export async function metaTrackInitiateCheckout(
   productType: string,
-  value: number = 1.99,
+  value: number = 6.99,
   currency: string = 'EUR'
 ): Promise<void> {
   const fbqReady = await waitForFbq();
@@ -82,12 +82,12 @@ export async function metaTrackInitiateCheckout(
     }
 
     const contentId = productType === 'club_annual' ? 'club_annual_7999'
-      : productType === 'club' ? 'club_999' : 'ebook_199';
+      : productType === 'club' ? 'club_999' : (value <= 1.99 ? 'ebook_199' : 'ebook_699');
     const contentName = productType === 'club_annual'
       ? 'Abonnement Club Annuel Contes d\'IA'
       : productType === 'club'
         ? 'Abonnement Club Contes d\'IA'
-        : 'Ebook conte personnalisé - Premier conte';
+        : 'Ebook conte personnalisé';
     const checkoutValue = productType === 'club_annual' ? 79.99
       : productType === 'club' ? 9.99 : value;
 
@@ -110,16 +110,17 @@ export async function metaTrackInitiateCheckout(
 // Track AddToCart - quand l'utilisateur sélectionne un produit (ebook ou club)
 export function metaTrackAddToCart(
   purchaseType: 'single' | 'club',
+  singlePrice: number = 6.99,
   currency: string = 'EUR'
 ): void {
   if (typeof window === 'undefined' || !window.fbq) return;
 
   try {
-    const contentId = purchaseType === 'club' ? 'club_999' : 'ebook_199';
+    const contentId = purchaseType === 'club' ? 'club_999' : (singlePrice <= 1.99 ? 'ebook_199' : 'ebook_699');
     const contentName = purchaseType === 'club'
       ? 'Abonnement Club Contes d\'IA'
       : 'Ebook conte personnalisé';
-    const value = purchaseType === 'club' ? 9.99 : 1.99;
+    const value = purchaseType === 'club' ? 9.99 : singlePrice;
 
     window.fbq('track', 'AddToCart', {
       content_ids: [contentId],
@@ -137,6 +138,7 @@ export function metaTrackAddToCart(
 
 // Track Lead - quand l'utilisateur fournit son email (signal fort pour Meta)
 export function metaTrackLead(
+  singlePrice: number = 6.99,
   currency: string = 'EUR'
 ): void {
   if (typeof window === 'undefined' || !window.fbq) return;
@@ -149,7 +151,7 @@ export function metaTrackLead(
       content_name: 'Conte personnalisé',
       content_category: 'Livre personnalisé enfant',
       currency: currency,
-      value: 1.99
+      value: singlePrice
     });
 
     sessionStorage.setItem(sessionKey, 'true');
@@ -206,7 +208,7 @@ export function metaTrackSubscribe(): void {
 export async function metaTrackPurchase(
   productType: string,
   orderId: string,
-  value: number = 1.99,
+  value: number = 6.99,
   currency: string = 'EUR'
 ): Promise<void> {
   const fbqReady = await waitForFbq();
@@ -224,7 +226,7 @@ export async function metaTrackPurchase(
     }
 
     const contentId = productType === 'club_annual' ? 'club_annual_7999'
-      : productType === 'club' ? 'club_999' : 'ebook_199';
+      : productType === 'club' ? 'club_999' : (value <= 1.99 ? 'ebook_199' : 'ebook_699');
     const contentName = productType === 'club_annual'
       ? 'Abonnement Club Annuel Contes d\'IA'
       : productType === 'club'

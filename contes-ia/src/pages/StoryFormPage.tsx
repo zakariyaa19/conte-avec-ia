@@ -14,21 +14,25 @@ export const StoryFormPage: React.FC = () => {
   const isAdMode = useMemo(() => new URLSearchParams(location.search).get('from') === 'ad', [location.search]);
   const [clubCredit, setClubCredit] = useState<{ canSubmit: boolean; remaining: number; nextCreditDate?: string; totalEarned?: number } | null>(null);
 
+  // Tripwire: premier conte à 1,99€, sinon 6,99€ (club members toujours 6,99€)
+  const isFirstPurchase = !isAuthenticated || user?.isFirstPurchase !== false;
+  const viewContentPrice = isClub ? 6.99 : (isFirstPurchase ? 1.99 : 6.99);
+
   // Track ViewContent au chargement de la page
   useEffect(() => {
     trackViewContent(
       'product_story_creation',
       'Création de conte personnalisé',
-      1.99,
+      viewContentPrice,
       'EUR'
     );
     metaTrackViewContent(
       'Création de conte personnalisé',
       'Livre personnalisé enfant',
-      1.99,
+      viewContentPrice,
       'EUR'
     );
-  }, []);
+  }, [viewContentPrice]);
 
   // Pre-remplir les donnees si l'utilisateur est connecte
   useEffect(() => {
@@ -125,8 +129,8 @@ export const StoryFormPage: React.FC = () => {
 
     try {
       // Fire-and-forget : le tracking ne doit pas bloquer le paiement
-      trackInitiateCheckout(formData.productType, formData.userEmail);
-      metaTrackInitiateCheckout(formData.productType);
+      trackInitiateCheckout(formData.productType, formData.userEmail, viewContentPrice);
+      metaTrackInitiateCheckout(formData.productType, viewContentPrice);
       identifyUser(formData.userEmail);
 
       const authToken = localStorage.getItem('userToken') || undefined;

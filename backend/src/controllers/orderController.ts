@@ -98,8 +98,10 @@ export class OrderController {
       }
 
       // --- Logique Tripwire : premier conte à 1,99€ ---
-      // Si achat SINGLE et que l'utilisateur n'a jamais acheté, appliquer le prix tripwire
-      if (purchaseType === 'SINGLE' && userEmail) {
+      // Si achat SINGLE, utilisateur non-Club et jamais acheté, appliquer le prix tripwire
+      // Les membres Club ne bénéficient JAMAIS du tripwire (ils ont déjà un abonnement)
+      const isExistingClubMember = user && user.role === 'CLUB' && user.subscriptionStatus === 'active';
+      if (purchaseType === 'SINGLE' && userEmail && !isExistingClubMember) {
         const firstPurchase = await isFirstPurchase(userEmail, prisma);
         if (firstPurchase) {
           price = PRODUCT_PRICES.EBOOK_FIRST;
@@ -113,8 +115,6 @@ export class OrderController {
       // purchaseType = 'CLUB' pour que le frontend redirige vers le checkout subscription.
       let isClubFreeOrder = false;
       let clubCreditExhausted = false;
-
-      const isExistingClubMember = user && user.role === 'CLUB' && user.subscriptionStatus === 'active';
 
       if (isExistingClubMember && purchaseType === 'CLUB') {
         const clubCheck = await ClubService.canSubmitFreeStory(user!.id);

@@ -402,7 +402,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
     if (!formData.userEmail) return;
     const ev = validateEmail(formData.userEmail);
     if (!ev.isValid) return;
-    metaTrackLead();
+    metaTrackLead(isClub ? 6.99 : singlePrice);
     try {
       const res = await ApiService.checkEmail(formData.userEmail);
       if (res.success) setEmailStatus({ exists: res.exists, hasPassword: !!res.hasPassword });
@@ -490,7 +490,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                   fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.lg, fontWeight: 800,
                   color: theme.colors.text.primary, margin: `0 0 ${theme.spacing.xs}`, lineHeight: 1.3,
                 }}>
-                  Créez le conte de votre enfant — <span style={{ color: theme.colors.accent.coral }}>1,99€</span>
+                  Créez le conte de votre enfant — <span style={{ color: theme.colors.accent.coral }}>{singlePriceLabel}</span>
                 </p>
                 <div style={{
                   display: 'flex', flexDirection: 'column', gap: '6px',
@@ -971,7 +971,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
             previewUpdate.storyPreviewTextJson = JSON.stringify(previewParagraphs);
           }
           onUpdate(previewUpdate);
-          metaTrackAddToCart(type);
+          metaTrackAddToCart(type, isClub ? 6.99 : singlePrice);
           // Scroll to order form
           setTimeout(() => {
             orderFormRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1223,12 +1223,12 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                   </p>
                 </ClubFreeCard>
               ) : isClub ? (
-                /* ── CLUB MEMBER WITHOUT CREDIT: single purchase only ── */
+                /* ── CLUB MEMBER WITHOUT CREDIT: single purchase at full price (6.99€) ── */
                 <TripwireHeroCard $isSelected={selectedOffer === 'single'} onClick={() => handlePreviewSelect('single')}>
                   <TripwireHeroBadge>Membre Club</TripwireHeroBadge>
                   {selectedOffer === 'single' && <PricingSelectedCheck>&#x2713;</PricingSelectedCheck>}
                   <PricingCardName>Conte supplementaire</PricingCardName>
-                  <TripwireHeroPrice>{singlePriceLabel}</TripwireHeroPrice>
+                  <TripwireHeroPrice>6,99€</TripwireHeroPrice>
                   <PricingCardSub>
                     {clubCredit?.nextCreditDate
                       ? `Prochain credit gratuit le ${new Date(clubCredit.nextCreditDate).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}`
@@ -1239,7 +1239,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                     <PricingCardFeatureItem>7 illustrations HD uniques</PricingCardFeatureItem>
                     <PricingCardFeatureItem>PDF telechargeable et imprimable</PricingCardFeatureItem>
                   </PricingCardFeaturesList>
-                  <TripwireHeroCTA>{selectedOffer === 'single' ? 'Selectionne !' : `Obtenir pour ${singlePriceLabel}`}</TripwireHeroCTA>
+                  <TripwireHeroCTA>{selectedOffer === 'single' ? 'Selectionne !' : 'Obtenir pour 6,99€'}</TripwireHeroCTA>
                 </TripwireHeroCard>
               ) : isFirstPurchase ? (
                 /* ── TRIPWIRE LAYOUT: 1.99€ hero + Club secondary ── */
