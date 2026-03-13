@@ -762,8 +762,8 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
               </>
             )}
 
-            {/* ---- Manual mode ---- */}
-            {formData.appearanceMode === 'manual' && (
+            {/* ---- Manual mode (Club only) ---- */}
+            {!isSimplifiedMode && formData.appearanceMode === 'manual' && (
               <>
                 <ColorSectionLabel>Couleur des yeux</ColorSectionLabel>
                 <ColorCardGrid>
