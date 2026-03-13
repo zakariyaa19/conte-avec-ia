@@ -80,6 +80,16 @@ export class ApiService {
     throw lastError ?? new Error('Request failed after retries');
   }
 
+  // Create a timeout signal with AbortController fallback for older browsers
+  private static createTimeoutSignal(ms: number): AbortSignal {
+    if (typeof AbortSignal.timeout === 'function') {
+      return AbortSignal.timeout(ms);
+    }
+    const controller = new AbortController();
+    setTimeout(() => controller.abort(), ms);
+    return controller.signal;
+  }
+
   // Méthode générique pour les requêtes avec timeout
   private static async request<T>(
     endpoint: string,
@@ -94,7 +104,7 @@ export class ApiService {
         ...(!isFormData && { 'Content-Type': 'application/json' }),
         ...(options.headers as Record<string, string>),
       },
-      signal: options.signal || AbortSignal.timeout(60000),
+      signal: options.signal || this.createTimeoutSignal(60000),
     };
 
     try {
@@ -148,17 +158,24 @@ export class ApiService {
       headers['Authorization'] = `Bearer ${orderData.authToken}`;
     }
 
+    // Clean formData: remove heavy binary fields that don't serialize well
+    const cleanFormData = { ...orderData.formData };
+    // photo File object will be sent separately in FormData
+    const photoFile = cleanFormData.photo instanceof File ? cleanFormData.photo : null;
+    delete cleanFormData.photo;
+
     // Photo file upload: use FormData (multipart)
-    if (orderData.formData.photo instanceof File) {
+    if (photoFile) {
       const formDataToSend = new FormData();
       formDataToSend.append('userEmail', orderData.userEmail);
-      formDataToSend.append('formData', JSON.stringify(orderData.formData));
-      formDataToSend.append('photo', orderData.formData.photo);
+      formDataToSend.append('formData', JSON.stringify(cleanFormData));
+      formDataToSend.append('photo', photoFile);
 
       return this.request(API_CONFIG.ENDPOINTS.ORDERS, {
         method: 'POST',
         body: formDataToSend,
-        headers
+        headers,
+        signal: this.createTimeoutSignal(120000), // 2min for mobile upload
       });
     }
 
@@ -167,9 +184,10 @@ export class ApiService {
       method: 'POST',
       body: JSON.stringify({
         userEmail: orderData.userEmail,
-        formData: orderData.formData
+        formData: cleanFormData
       }),
-      headers
+      headers,
+      signal: this.createTimeoutSignal(120000), // 2min for Stripe session creation
     });
   }
 
