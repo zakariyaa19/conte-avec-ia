@@ -249,53 +249,93 @@ const ActionsCard = styled.div`
   margin-bottom: ${theme.spacing.lg};
 `;
 
-const ActionsRow = styled.div`
-  display: flex;
-  gap: ${theme.spacing.sm};
-
-  @media (max-width: ${theme.breakpoints.sm}) {
-    gap: ${theme.spacing.xs};
-  }
+const ActionsGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: ${theme.spacing.md};
+  width: 100%;
 `;
 
-const ActionButton = styled.button<{ $variant: 'primary' | 'secondary' }>`
-  display: inline-flex;
+const ActionCard = styled.button<{ $variant: 'primary' | 'secondary' }>`
+  display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 12px 20px;
-  border-radius: ${theme.borderRadius.lg};
+  gap: ${theme.spacing.md};
+  padding: ${theme.spacing.lg};
+  border-radius: ${theme.borderRadius.xl};
   font-weight: 600;
-  font-size: ${theme.fontSizes.sm};
+  font-size: ${theme.fontSizes.base};
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
   border: none;
-  flex: 1;
+  width: 100%;
+  text-align: left;
 
   ${props => props.$variant === 'primary' && `
-    background: ${theme.colors.accent.coral};
+    background: linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover});
     color: white;
-    &:hover { background: ${theme.colors.accent.coralDark || '#e05a4a'}; }
+    box-shadow: 0 4px 16px ${theme.colors.accent.coral}30;
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px ${theme.colors.accent.coral}40;
+    }
   `}
 
   ${props => props.$variant === 'secondary' && `
-    background: ${theme.colors.accent.coral}12;
-    color: ${theme.colors.accent.coral};
-    &:hover { background: ${theme.colors.accent.coral}20; }
+    background: ${theme.colors.background.white};
+    color: ${theme.colors.text.primary};
+    border: 1.5px solid rgba(0, 0, 0, 0.08);
+    &:hover {
+      border-color: ${theme.colors.accent.coral}40;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    }
   `}
 
-  &:active { transform: scale(0.97); }
+  &:active { transform: scale(0.98); }
 
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
     transform: none;
   }
+`;
 
-  @media (max-width: ${theme.breakpoints.sm}) {
-    padding: 10px 14px;
-    font-size: ${theme.fontSizes.xs};
-  }
+const ActionIconCircle = styled.div<{ $variant: 'primary' | 'secondary' }>`
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  ${props => props.$variant === 'primary' && `
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+  `}
+
+  ${props => props.$variant === 'secondary' && `
+    background: ${theme.colors.accent.coral}12;
+    color: ${theme.colors.accent.coral};
+  `}
+`;
+
+const ActionTextBlock = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+`;
+
+const ActionLabel = styled.span`
+  font-weight: 700;
+  font-size: ${theme.fontSizes.base};
+`;
+
+const ActionDesc = styled.span<{ $variant: 'primary' | 'secondary' }>`
+  font-weight: 400;
+  font-size: ${theme.fontSizes.xs};
+  opacity: 0.75;
+  color: ${props => props.$variant === 'primary' ? 'rgba(255,255,255,0.85)' : theme.colors.text.light};
 `;
 
 const ButtonSpinner = styled.span`
@@ -559,42 +599,59 @@ export const StoryDetailPage: React.FC = () => {
         {isAvailable && story.pdfUrl ? (
           <ActionsCard>
             {pdfError && <ErrorBanner>{pdfError}</ErrorBanner>}
-            <ActionsRow>
-              <ActionButton
+            <ActionsGrid>
+              <ActionCard
                 $variant="primary"
                 onClick={handleViewPdf}
                 disabled={pdfLoading}
               >
-                {pdfLoading ? <ButtonSpinner /> : (
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
-                    <circle cx="12" cy="12" r="3" />
-                  </svg>
-                )}
-                Lire le conte
-              </ActionButton>
-              <ActionButton
+                <ActionIconCircle $variant="primary">
+                  {pdfLoading ? <ButtonSpinner /> : (
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                  )}
+                </ActionIconCircle>
+                <ActionTextBlock>
+                  <ActionLabel>Lire le conte</ActionLabel>
+                  <ActionDesc $variant="primary">Ouvrir la visionneuse en ligne</ActionDesc>
+                </ActionTextBlock>
+              </ActionCard>
+
+              <ActionCard
                 $variant="secondary"
                 onClick={handleDownloadPdf}
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                  <polyline points="7 10 12 15 17 10" />
-                  <line x1="12" y1="15" x2="12" y2="3" />
-                </svg>
-                Télécharger PDF
-              </ActionButton>
-              <ActionButton
+                <ActionIconCircle $variant="secondary">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                  </svg>
+                </ActionIconCircle>
+                <ActionTextBlock>
+                  <ActionLabel>Telecharger le PDF</ActionLabel>
+                  <ActionDesc $variant="secondary">Sauvegarder sur votre appareil</ActionDesc>
+                </ActionTextBlock>
+              </ActionCard>
+
+              <ActionCard
                 $variant="secondary"
                 onClick={() => setShareOpen(true)}
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
-                  <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
-                </svg>
-                Partager
-              </ActionButton>
-            </ActionsRow>
+                <ActionIconCircle $variant="secondary">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+                  </svg>
+                </ActionIconCircle>
+                <ActionTextBlock>
+                  <ActionLabel>Partager</ActionLabel>
+                  <ActionDesc $variant="secondary">Envoyer a vos proches</ActionDesc>
+                </ActionTextBlock>
+              </ActionCard>
+            </ActionsGrid>
           </ActionsCard>
         ) : (
           <WaitingMessage>
