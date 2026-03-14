@@ -432,7 +432,18 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
     return ok;
   };
 
-  const handleFormSubmit = () => { setGlobalError(''); if (validatePaymentForm()) { clearDraft(); onSubmit(); } };
+  const handleFormSubmit = () => {
+    setGlobalError('');
+    if (validatePaymentForm()) {
+      clearDraft();
+      onSubmit();
+    } else {
+      // Scroll to error so user sees what's missing
+      setTimeout(() => {
+        orderFormRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+  };
 
   const isHeroComplete = isSimplifiedMode
     ? !!(formData.protagonistName && formData.protagonistGender) // age auto-dérivé en mode simplifié

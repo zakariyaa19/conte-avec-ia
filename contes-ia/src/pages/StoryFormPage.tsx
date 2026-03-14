@@ -128,10 +128,12 @@ export const StoryFormPage: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      // Fire-and-forget : le tracking ne doit pas bloquer le paiement
-      trackInitiateCheckout(formData.productType, formData.userEmail, viewContentPrice);
-      metaTrackInitiateCheckout(formData.productType, viewContentPrice);
-      identifyUser(formData.userEmail);
+      // Fire-and-forget : le tracking ne doit JAMAIS bloquer le paiement
+      try {
+        trackInitiateCheckout(formData.productType, formData.userEmail, viewContentPrice);
+        metaTrackInitiateCheckout(formData.productType, viewContentPrice);
+        identifyUser(formData.userEmail);
+      } catch { /* tracking failure must never block payment */ }
 
       const authToken = localStorage.getItem('userToken') || undefined;
 
@@ -185,13 +187,16 @@ export const StoryFormPage: React.FC = () => {
     } catch (error: any) {
       console.error('Erreur soumission:', error);
       let errorMessage = 'Une erreur est survenue lors de la soumission.';
-      if (error.message.includes('timeout') || error.message.includes('AbortError')) {
-        errorMessage = 'La requête a pris trop de temps. Veuillez réessayer dans quelques instants.';
-      } else if (error.message.includes('fetch')) {
-        errorMessage = 'Problème de connexion. Vérifiez votre connexion internet et réessayez.';
-      } else if (error.message) {
-        errorMessage = error.message;
-      }
+      try {
+        const msg = error?.message || '';
+        if (msg.includes('timeout') || msg.includes('AbortError')) {
+          errorMessage = 'La requête a pris trop de temps. Veuillez réessayer dans quelques instants.';
+        } else if (msg.includes('fetch') || msg.includes('network') || msg.includes('Failed')) {
+          errorMessage = 'Problème de connexion. Vérifiez votre connexion internet et réessayez.';
+        } else if (msg) {
+          errorMessage = msg;
+        }
+      } catch { /* safety net */ }
       alert(errorMessage);
       setIsSubmitting(false);
     }
