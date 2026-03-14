@@ -1647,13 +1647,17 @@ export const BookTextHalf = styled.div`
     margin: 0;
     text-align: center;
     max-width: 86%;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 10;
+    -webkit-box-orient: vertical;
   }
 
   @media (max-width: ${theme.breakpoints.sm}) {
-    padding: 18px 12px 30px;
+    padding: 18px 12px 36px;
     &::before { inset: 10px; border-width: 1px; }
-    &::after { bottom: 28px; font-size: 14px; letter-spacing: 4px; }
-    p { font-size: 9px; line-height: 1.7; max-width: 94%; }
+    &::after { bottom: 32px; font-size: 14px; letter-spacing: 4px; }
+    p { font-size: 9px; line-height: 1.7; max-width: 94%; -webkit-line-clamp: 8; }
   }
   @media (min-width: ${theme.breakpoints.lg}) {
     padding: 40px 32px 48px;

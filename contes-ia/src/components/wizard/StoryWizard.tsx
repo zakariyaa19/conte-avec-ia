@@ -1277,15 +1277,6 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
               <PreviewTimerDigits>{timerDisplay}</PreviewTimerDigits>
             </PreviewTimerBar>
 
-            {/* ── Value proposition ── */}
-            <ValueBlock>
-              <ValueBlockTitle>Votre conte personnalisé comprend</ValueBlockTitle>
-              <ValueBlockItem>7 illustrations HD uniques</ValueBlockItem>
-              <ValueBlockItem>Une histoire avec le prénom de votre enfant</ValueBlockItem>
-              <ValueBlockItem>PDF téléchargeable et imprimable</ValueBlockItem>
-              <ValueBlockItem>Lecture illimitée à vie</ValueBlockItem>
-            </ValueBlock>
-
             {/* ── Pricing section ── */}
             <div ref={pricingRef} style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <PreviewSectionTitle>
