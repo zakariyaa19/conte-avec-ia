@@ -628,12 +628,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
         return (
           <>
             <StepTitle>{isSimplifiedMode ? 'Comment s\'appelle votre enfant ?' : 'Votre héros'}</StepTitle>
-            {isSimplifiedMode && (
-              <StepSubtitle style={{ color: theme.colors.accent.coral, fontWeight: 700 }}>
-                Votre conte personnalisé — à partir de {singlePriceLabel}
-              </StepSubtitle>
-            )}
-            {!isSimplifiedMode && <StepSubtitle>Qui sera le personnage principal ?</StepSubtitle>}
+            <StepSubtitle>{isSimplifiedMode ? 'Le héros de l\'histoire, c\'est lui !' : 'Qui sera le personnage principal ?'}</StepSubtitle>
             {showSummary && (
               <SummaryChipsRow>
                 {summaryChips.map((c, i) => (
