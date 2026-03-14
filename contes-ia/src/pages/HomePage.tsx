@@ -1135,7 +1135,7 @@ const slidesData = [
     label: 'Commander',
     stepLabel: 'Etape 2',
     title: 'Commandez en un clic',
-    subtitle: 'Paiement rapide et securise. eBook a 4,99\u20AC, ou rejoignez le Club pour 1 eBook gratuit par semaine.',
+    subtitle: 'Paiement rapide et securise. Premier conte a 1,99\u20AC, ou rejoignez le Club pour 1 conte par semaine.',
     bgColor: `${theme.colors.accent.softPink}25`,
     illustrationId: 'order' as const
   },

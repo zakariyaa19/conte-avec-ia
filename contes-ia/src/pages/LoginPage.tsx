@@ -156,25 +156,34 @@ const OrDivider = styled.div`
 
 /* ─── Plan Selector ─── */
 
+const shimmerLine = keyframes`
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+`;
+
+const planPulse = keyframes`
+  0%, 100% { box-shadow: 0 4px 16px rgba(255, 130, 100, 0.1); }
+  50% { box-shadow: 0 8px 28px rgba(255, 130, 100, 0.2); }
+`;
+
 const PlanSelectorLabel = styled.p`
-  font-weight: 600;
+  font-family: ${theme.fonts.heading};
+  font-weight: 700;
   color: ${theme.colors.text.primary};
-  font-size: ${theme.fontSizes.sm};
-  margin-bottom: ${theme.spacing.xs};
+  font-size: ${theme.fontSizes.base};
+  margin-bottom: ${theme.spacing.sm};
+  text-align: center;
 `;
 
 const PlanGrid = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: ${theme.spacing.md};
-
-  @media (max-width: 480px) {
-    grid-template-columns: 1fr;
-  }
+  display: flex;
+  flex-direction: column;
+  gap: ${theme.spacing.sm};
 `;
 
-const PlanCard = styled.button<{ $selected: boolean; $isPro?: boolean }>`
+const PlanCard = styled.button<{ $selected: boolean; $isPro?: boolean; $isAnnual?: boolean }>`
   position: relative;
+  width: 100%;
   background: ${({ $selected, $isPro }) =>
     $selected && $isPro
       ? 'linear-gradient(135deg, #FFF8F0 0%, #FFF0E0 100%)'
@@ -187,15 +196,41 @@ const PlanCard = styled.button<{ $selected: boolean; $isPro?: boolean }>`
       : $selected
         ? '#60A5FA'
         : '#E5E7EB'};
-  border-radius: ${theme.borderRadius.lg};
-  padding: ${theme.spacing.lg} ${theme.spacing.md};
+  border-radius: 16px;
+  padding: ${({ $isPro }) => $isPro ? '20px 16px' : '14px 16px'};
   cursor: pointer;
   text-align: left;
   transition: all 0.25s ease;
   outline: none;
+  overflow: hidden;
+  font-family: ${theme.fonts.body};
 
-  ${({ $selected, $isPro }) => $selected && $isPro && css`
-    box-shadow: 0 0 0 3px ${theme.colors.accent.coral}20;
+  ${({ $isPro, $selected }) => $isPro && !$selected && css`
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg,
+        ${theme.colors.accent.coral},
+        ${theme.colors.accent.softPink},
+        ${theme.colors.accent.pastelBlue},
+        ${theme.colors.accent.coral}
+      );
+      background-size: 200% auto;
+      animation: ${shimmerLine} 3s linear infinite;
+    }
+  `}
+
+  ${({ $isPro, $selected }) => $isPro && $selected && css`
+    animation: ${planPulse} 3s ease-in-out infinite;
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover});
+    }
   `}
 
   ${({ $selected, $isPro }) => $selected && !$isPro && css`
@@ -204,76 +239,105 @@ const PlanCard = styled.button<{ $selected: boolean; $isPro?: boolean }>`
 
   &:hover {
     border-color: ${({ $isPro }) => $isPro ? theme.colors.accent.coral : '#60A5FA'};
-    transform: translateY(-1px);
+    transform: translateY(-2px);
   }
 `;
 
 const PlanBadge = styled.span`
   display: inline-block;
-  background: linear-gradient(135deg, ${theme.colors.accent.coral}, #FF8A65);
+  background: linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover});
   color: white;
   font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  padding: 3px 8px;
+  padding: 3px 10px;
   border-radius: 20px;
   position: absolute;
   top: -10px;
   right: 12px;
 `;
 
+const PlanCardHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+`;
+
 const PlanName = styled.div<{ $isPro?: boolean }>`
+  font-family: ${theme.fonts.heading};
   font-weight: 700;
   font-size: ${theme.fontSizes.base};
   color: ${({ $isPro }) => $isPro ? theme.colors.accent.coral : theme.colors.text.primary};
-  margin-bottom: 4px;
   display: flex;
   align-items: center;
   gap: 6px;
 `;
 
 const PlanPrice = styled.div<{ $isPro?: boolean }>`
-  font-size: ${theme.fontSizes.sm};
+  font-family: ${theme.fonts.heading};
+  font-size: ${({ $isPro }) => $isPro ? theme.fontSizes.lg : theme.fontSizes.sm};
   color: ${({ $isPro }) => $isPro ? theme.colors.accent.coral : theme.colors.text.secondary};
-  font-weight: ${({ $isPro }) => $isPro ? 600 : 400};
-  margin-bottom: 8px;
+  font-weight: 700;
 `;
 
-const PlanFeature = styled.div`
-  font-size: ${theme.fontSizes.xs};
-  color: ${theme.colors.text.secondary};
+const PlanFeatures = styled.div<{ $columns?: boolean }>`
+  display: ${({ $columns }) => $columns ? 'grid' : 'flex'};
+  grid-template-columns: ${({ $columns }) => $columns ? '1fr 1fr' : 'unset'};
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 8px;
+`;
+
+const PlanFeature = styled.div<{ $premium?: boolean }>`
+  font-size: 11px;
+  color: ${({ $premium }) => $premium ? theme.colors.accent.coral : theme.colors.text.secondary};
+  font-weight: ${({ $premium }) => $premium ? 600 : 400};
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
   line-height: 1.4;
 
   &::before {
     content: '\u2713';
-    color: #22C55E;
+    color: ${({ $premium }) => $premium ? theme.colors.accent.coral : '#22C55E'};
     font-weight: 700;
-    font-size: 11px;
+    font-size: 10px;
+    flex-shrink: 0;
   }
 `;
 
+const PlanFreeTag = styled.span`
+  display: inline-block;
+  background: linear-gradient(135deg, #D1FAE520, #a8e6cf30);
+  border: 1px solid #a8e6cf;
+  border-radius: 20px;
+  padding: 2px 10px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #2d6a4f;
+`;
+
 const CheckMark = styled.div<{ $visible: boolean }>`
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background: ${({ $visible }) => $visible ? '#3B82F6' : '#E5E7EB'};
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s ease;
-  font-size: 11px;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  font-size: 12px;
   color: white;
+  flex-shrink: 0;
+  transform: scale(${({ $visible }) => $visible ? 1 : 0.8});
 `;
 
 const CheckMarkPro = styled(CheckMark)`
-  background: ${({ $visible }) => $visible ? theme.colors.accent.coral : '#E5E7EB'};
+  background: ${({ $visible }) => $visible
+    ? `linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover})`
+    : '#E5E7EB'};
 `;
 
 /* ─── Stripe redirect overlay ─── */
@@ -567,31 +631,49 @@ export const LoginPage: React.FC = () => {
                     $selected={selectedPlan === 'basic'}
                     onClick={() => setSelectedPlan('basic')}
                   >
-                    <CheckMark $visible={selectedPlan === 'basic'}>
-                      {selectedPlan === 'basic' ? '\u2713' : ''}
-                    </CheckMark>
-                    <PlanName>Basique</PlanName>
-                    <PlanPrice>Gratuit</PlanPrice>
-                    <PlanFeature>Achat de contes a l'unite</PlanFeature>
-                    <PlanFeature>Bibliotheque personnelle</PlanFeature>
+                    <PlanCardHeader>
+                      <PlanName>Basique</PlanName>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <PlanPrice>Gratuit</PlanPrice>
+                        <CheckMark $visible={selectedPlan === 'basic'}>
+                          {selectedPlan === 'basic' ? '\u2713' : ''}
+                        </CheckMark>
+                      </div>
+                    </PlanCardHeader>
+                    <PlanFeatures>
+                      <PlanFeature>Achat de contes a l'unite (1,99€ le premier)</PlanFeature>
+                      <PlanFeature>Bibliotheque personnelle</PlanFeature>
+                    </PlanFeatures>
                   </PlanCard>
 
-                  {/* Pro / Club Plan */}
+                  {/* Pro / Club Monthly Plan */}
                   <PlanCard
                     type="button"
                     $selected={selectedPlan === 'club'}
                     $isPro
                     onClick={() => setSelectedPlan('club')}
                   >
-                    <PlanBadge>PRO</PlanBadge>
-                    <CheckMarkPro $visible={selectedPlan === 'club'}>
-                      {selectedPlan === 'club' ? '\u2713' : ''}
-                    </CheckMarkPro>
-                    <PlanName $isPro>Club des Histoires</PlanName>
-                    <PlanPrice $isPro>9,99€ / mois</PlanPrice>
-                    <PlanFeature>1 conte par semaine</PlanFeature>
-                    <PlanFeature>Bibliotheque illimitee</PlanFeature>
-                    <PlanFeature>Annulation libre</PlanFeature>
+                    <PlanBadge>Populaire</PlanBadge>
+                    <PlanCardHeader>
+                      <PlanName $isPro>Club des Histoires</PlanName>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <PlanPrice $isPro>9,99€/mois</PlanPrice>
+                        <CheckMarkPro $visible={selectedPlan === 'club'}>
+                          {selectedPlan === 'club' ? '\u2713' : ''}
+                        </CheckMarkPro>
+                      </div>
+                    </PlanCardHeader>
+                    <PlanFreeTag>Premier conte inclus</PlanFreeTag>
+                    <PlanFeatures $columns>
+                      <PlanFeature $premium>1 conte par semaine</PlanFeature>
+                      <PlanFeature $premium>9 styles d'illustration</PlanFeature>
+                      <PlanFeature $premium>5 personnages secondaires</PlanFeature>
+                      <PlanFeature $premium>Themes et occasions</PlanFeature>
+                      <PlanFeature>Bibliotheque illimitee</PlanFeature>
+                      <PlanFeature>PDF telechargeables</PlanFeature>
+                      <PlanFeature>Credits cumulables</PlanFeature>
+                      <PlanFeature>Annulable a tout moment</PlanFeature>
+                    </PlanFeatures>
                   </PlanCard>
                 </PlanGrid>
               </div>
