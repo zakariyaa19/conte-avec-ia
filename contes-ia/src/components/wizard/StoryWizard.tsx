@@ -1355,14 +1355,6 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                         {selectedOffer === 'club_monthly' ? 'Sélectionné !' : 'Rejoindre le Club — 9,99€/mois'}
                       </ClubShowcaseCTA>
                     </ClubShowcaseCard>
-
-                    <ClubMiniCard $isSelected={selectedOffer === 'club_annual'} onClick={() => handlePreviewSelect('club', 'annual')}>
-                      <ClubMiniInfo>
-                        <ClubMiniName>Club Annuel — 6,67€/mois</ClubMiniName>
-                        <ClubMiniDetail>Tout le Club + économisez 40€+/an</ClubMiniDetail>
-                      </ClubMiniInfo>
-                      <ClubMiniPrice>79,99€/an</ClubMiniPrice>
-                    </ClubMiniCard>
                   </ClubAlternativeSection>
                 </>
               ) : (
