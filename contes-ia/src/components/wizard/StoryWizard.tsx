@@ -494,7 +494,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                   fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.lg, fontWeight: 800,
                   color: theme.colors.text.primary, margin: `0 0 ${theme.spacing.xs}`, lineHeight: 1.3,
                 }}>
-                  Créez le conte de votre enfant
+                  Créez le livre de votre enfant
                 </p>
                 <div style={{
                   display: 'flex', flexDirection: 'column', gap: '6px',
@@ -896,7 +896,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
               <ChoiceCard $variant="primary" onClick={() => {
                 setWantsExtras(false); wantsExtrasRef.current = false; goToStep(9);
               }}>
-                <ChoiceTitle $variant="primary">Découvrir mon conte</ChoiceTitle>
+                <ChoiceTitle $variant="primary">Découvrir mon livre</ChoiceTitle>
                 <ChoiceDesc $variant="primary">Générer la couverture maintenant</ChoiceDesc>
               </ChoiceCard>
               <ChoiceCard $variant="secondary" onClick={() => {
@@ -912,7 +912,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
       case 'extras1':
         return (
           <>
-            <StepTitle>Personnalisez votre conte</StepTitle>
+            <StepTitle>Personnalisez votre livre</StepTitle>
             <ExtrasSection>
               <SectionTitle>Quel message transmettre ?</SectionTitle>
               <CardGrid $columns={4} $compact>
@@ -932,7 +932,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
             </ExtrasSection>
 
             <ExtrasSection>
-              <SectionTitle>Langue du conte</SectionTitle>
+              <SectionTitle>Langue du livre</SectionTitle>
               <DetailChipGroup>
                 {LANG_TOP.map((o) => (
                   <DetailChip key={o.value} $isSelected={formData.language === o.value}
@@ -1021,7 +1021,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
         const timerDisplay = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
         const heroName = formData.protagonistName || 'votre enfant';
         const creatorName = formData.creatorName || '';
-        const storyTitle = coverTitle || previewTitle || `Le conte de ${heroName}`;
+        const storyTitle = coverTitle || previewTitle || `Le livre de ${heroName}`;
 
         const handlePreviewSelect = (type: 'single' | 'club', billing?: 'monthly' | 'annual') => {
           setSelectedOffer(billing === 'annual' ? 'club_annual' : type === 'club' ? 'club_monthly' : 'single');
@@ -1061,7 +1061,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
               `Création de la couverture de ${heroName}...`,
               'Notre IA imagine votre histoire...',
               'Les couleurs prennent forme...',
-              'Votre conte se dessine...',
+              'Votre livre se dessine...',
             ],
             [
               'Presque prêt...',
@@ -1181,7 +1181,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
         return (
           <>
             <StepTitle style={{ fontSize: theme.fontSizes.lg, marginBottom: theme.spacing.sm }}>
-              Le conte de {heroName} est prêt !
+              Le livre de {heroName} est prêt !
             </StepTitle>
             <StepSubtitle style={{ marginBottom: theme.spacing.md }}>
               Montrez l'histoire de {heroName} à votre famille
@@ -1220,7 +1220,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
 
             {/* ── Timer ── */}
             <PreviewTimerBar>
-              <span>Votre conte est réservé pendant encore</span>
+              <span>Votre livre est réservé pendant encore</span>
               <PreviewTimerDigits>{timerDisplay}</PreviewTimerDigits>
             </PreviewTimerBar>
 
@@ -1246,7 +1246,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 <TripwireHeroCard $isSelected={selectedOffer === 'single'} onClick={() => handlePreviewSelect('single')}>
                   <TripwireHeroBadge>Membre Club</TripwireHeroBadge>
                   {selectedOffer === 'single' && <PricingSelectedCheck>&#x2713;</PricingSelectedCheck>}
-                  <PricingCardName>Conte supplementaire</PricingCardName>
+                  <PricingCardName>Livre supplémentaire</PricingCardName>
                   <TripwireHeroPrice>6,99€</TripwireHeroPrice>
                   <PricingCardSub>
                     {clubCredit?.nextCreditDate
@@ -1254,7 +1254,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                       : 'Votre credit hebdomadaire a ete utilise'}
                   </PricingCardSub>
                   <PricingCardFeaturesList>
-                    <PricingCardFeatureItem $highlight>1 conte personnalise pour {heroName}</PricingCardFeatureItem>
+                    <PricingCardFeatureItem $highlight>1 livre personnalisé pour {heroName}</PricingCardFeatureItem>
                     <PricingCardFeatureItem>7 illustrations HD uniques</PricingCardFeatureItem>
                     <PricingCardFeatureItem>PDF telechargeable et imprimable</PricingCardFeatureItem>
                   </PricingCardFeaturesList>
@@ -1266,12 +1266,12 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                   <TripwireHeroCard $isSelected={selectedOffer === 'single'} onClick={() => handlePreviewSelect('single')}>
                     <TripwireHeroBadge>-71% Offre de bienvenue</TripwireHeroBadge>
                     {selectedOffer === 'single' && <PricingSelectedCheck>&#x2713;</PricingSelectedCheck>}
-                    <PricingCardName>Votre Premier Conte</PricingCardName>
+                    <PricingCardName>Votre Premier Livre</PricingCardName>
                     <TripwireHeroOldPrice>6,99€</TripwireHeroOldPrice>
                     <TripwireHeroPrice>1,99€</TripwireHeroPrice>
                     <PricingCardSub>Paiement unique — pas d'abonnement</PricingCardSub>
                     <PricingCardFeaturesList>
-                      <PricingCardFeatureItem $highlight>1 conte personnalisé pour {heroName}</PricingCardFeatureItem>
+                      <PricingCardFeatureItem $highlight>1 livre personnalisé pour {heroName}</PricingCardFeatureItem>
                       <PricingCardFeatureItem>7 illustrations HD uniques</PricingCardFeatureItem>
                       <PricingCardFeatureItem>PDF téléchargeable et imprimable</PricingCardFeatureItem>
                       <PricingCardFeatureItem>Lecture illimitée à vie</PricingCardFeatureItem>
@@ -1286,7 +1286,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                       <ClubShowcaseBadge>Populaire</ClubShowcaseBadge>
                       {selectedOffer === 'club_monthly' && <PricingSelectedCheck>&#x2713;</PricingSelectedCheck>}
                       <ClubShowcaseHeader>
-                        <ClubShowcaseFreeTag>Ce conte est inclus</ClubShowcaseFreeTag>
+                        <ClubShowcaseFreeTag>Ce livre est inclus</ClubShowcaseFreeTag>
                         <ClubShowcaseTitle>Club des Histoires</ClubShowcaseTitle>
                         <ClubShowcaseSubtitle>1 livre par semaine pour votre enfant</ClubShowcaseSubtitle>
                       </ClubShowcaseHeader>
@@ -1315,7 +1315,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                     <ClubShowcaseBadge>Recommandé</ClubShowcaseBadge>
                     {selectedOffer === 'club_monthly' && <PricingSelectedCheck>&#x2713;</PricingSelectedCheck>}
                     <ClubShowcaseHeader>
-                      <ClubShowcaseFreeTag>Ce conte est inclus gratuitement</ClubShowcaseFreeTag>
+                      <ClubShowcaseFreeTag>Ce livre est inclus gratuitement</ClubShowcaseFreeTag>
                       <ClubShowcaseTitle>Club des Histoires</ClubShowcaseTitle>
                       <ClubShowcaseSubtitle>Offrez-lui une nouvelle aventure chaque semaine</ClubShowcaseSubtitle>
                     </ClubShowcaseHeader>
@@ -1350,8 +1350,8 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
 
                   <SingleFallbackCard $isSelected={selectedOffer === 'single'} onClick={() => handlePreviewSelect('single')}>
                     <SingleFallbackInfo>
-                      <SingleFallbackName>Juste ce conte</SingleFallbackName>
-                      <SingleFallbackDetail>1 conte · PDF téléchargeable · paiement unique</SingleFallbackDetail>
+                      <SingleFallbackName>Juste ce livre</SingleFallbackName>
+                      <SingleFallbackDetail>1 livre · PDF téléchargeable · paiement unique</SingleFallbackDetail>
                     </SingleFallbackInfo>
                     <SingleFallbackPrice>{singlePriceLabel}</SingleFallbackPrice>
                   </SingleFallbackCard>
@@ -1379,7 +1379,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                         disabled={isAuthenticated}
                         onBlur={isAuthenticated ? undefined : () => { validateField('userEmail', formData.userEmail || '', 'email'); }} />
                       <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.text.light, marginTop: '4px' }}>
-                        Vous recevrez votre conte et un lien de connexion par email
+                        Vous recevrez votre livre et un lien de connexion par email
                       </p>
                     </FullWidthField>
                     <FullWidthField>
@@ -1398,7 +1398,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                     ? 'Traitement en cours...'
                     : formData.purchaseType === 'club' && isClub && clubCredit?.canSubmit
                       ? 'Recevoir mon eBook gratuit'
-                      : `Payer ${singlePriceLabel} — Recevoir mon conte`}
+                      : `Payer ${singlePriceLabel} — Recevoir mon livre`}
                 </PayButton>
 
                 <TrustBadgesRow>
@@ -1481,7 +1481,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
               <path d="M12 4L6 10L12 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </BackArrow>
-          <WizardTitle>Créez votre conte</WizardTitle>
+          <WizardTitle>Créez votre livre</WizardTitle>
           <ProgressTrack><ProgressFill $progress={progress} /></ProgressTrack>
         </WizardHeader>
       ) : (
@@ -1492,7 +1492,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 <path d="M12 4L6 10L12 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </BackArrow>
-            <HeaderTitle>Créer votre conte</HeaderTitle>
+            <HeaderTitle>Créer votre livre</HeaderTitle>
             <HeaderBadge style={{ background: 'linear-gradient(135deg, #FF6B6B, #FF8E53)', color: 'white', fontWeight: 700 }}>
               {singlePriceLabel}
             </HeaderBadge>
@@ -1505,7 +1505,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
               <ProgressSegment key={ALL_STEPS[i]} $status={getSegmentStatus(i)} />
             ))}
           </SegmentedProgressBar>
-          <ProgressHintText>Votre conte personnalisé — {singlePriceLabel} seulement</ProgressHintText>
+          <ProgressHintText>Votre livre personnalisé — {singlePriceLabel} seulement</ProgressHintText>
         </WizardHeaderNew>
       )}
 
@@ -1526,7 +1526,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
           </StickyBackButton>
           {showStickyContinue && (
             <StickyContinueButton $isReady={isStickyReady} disabled={!isStickyReady} onClick={handleStickyNext}>
-              {stepId === 'extras2' ? 'Découvrir mon conte' : 'Continuer'}
+              {stepId === 'extras2' ? 'Découvrir mon livre' : 'Continuer'}
             </StickyContinueButton>
           )}
         </StickyBottomBar>

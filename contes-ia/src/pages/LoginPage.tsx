@@ -531,10 +531,10 @@ export const LoginPage: React.FC = () => {
       <Header />
       <LoginContainer>
         <LoginCard $wide={isRegister}>
-          <Title>{isRegister ? 'Creer un compte' : 'Acceder a mes contes'}</Title>
+          <Title>{isRegister ? 'Créer un compte' : 'Accéder à mes livres'}</Title>
           <Subtitle>
             {isRegister
-              ? 'Inscrivez-vous pour retrouver vos contes'
+              ? 'Inscrivez-vous pour retrouver vos livres'
               : 'Entrez votre email pour recevoir un lien de connexion'}
           </Subtitle>
 
@@ -560,13 +560,13 @@ export const LoginPage: React.FC = () => {
                 <div style={{ textAlign: 'center', padding: '20px 0' }}>
                   <div style={{ fontSize: 48, marginBottom: 12 }}>&#x2709;&#xFE0F;</div>
                   <p style={{ fontWeight: 700, fontSize: theme.fontSizes.lg, color: theme.colors.text.primary, marginBottom: 8 }}>
-                    Lien envoye !
+                    Lien envoyé !
                   </p>
                   <p style={{ color: theme.colors.text.secondary, fontSize: theme.fontSizes.sm, lineHeight: 1.5 }}>
-                    Ouvrez votre boite mail <strong>{email}</strong> et cliquez sur le lien pour acceder a votre bibliotheque.
+                    Ouvrez votre boîte mail <strong>{email}</strong> et cliquez sur le lien pour accéder à votre bibliothèque.
                   </p>
                   <p style={{ color: theme.colors.text.light, fontSize: theme.fontSizes.xs, marginTop: 16 }}>
-                    Pas recu ? Verifiez vos spams ou{' '}
+                    Pas reçu ? Vérifiez vos spams ou{' '}
                     <span style={{ color: theme.colors.accent.coral, cursor: 'pointer', fontWeight: 600 }}
                       onClick={async () => {
                         setIsLoading(true);
@@ -755,9 +755,9 @@ export const LoginPage: React.FC = () => {
 
           <LinkText>
             {isRegister ? (
-              <>Deja un compte ?{' '}<span onClick={toggleMode}>Se connecter</span></>
+              <>Déjà un compte ?{' '}<span onClick={toggleMode}>Se connecter</span></>
             ) : (
-              <>Pas encore de compte ?{' '}<span onClick={toggleMode}>Creer un compte</span></>
+              <>Pas encore de compte ?{' '}<span onClick={toggleMode}>Créer un compte</span></>
             )}
           </LinkText>
         </LoginCard>
