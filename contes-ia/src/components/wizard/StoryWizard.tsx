@@ -494,7 +494,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                   fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.lg, fontWeight: 800,
                   color: theme.colors.text.primary, margin: `0 0 ${theme.spacing.xs}`, lineHeight: 1.3,
                 }}>
-                  Créez le conte de votre enfant — <span style={{ color: theme.colors.accent.coral }}>{singlePriceLabel}</span>
+                  Créez le conte de votre enfant
                 </p>
                 <div style={{
                   display: 'flex', flexDirection: 'column', gap: '6px',
