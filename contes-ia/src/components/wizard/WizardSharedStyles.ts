@@ -2466,6 +2466,226 @@ export const ClubMiniPrice = styled.p`
 `;
 
 /* ══════════════════════════════════════════════
+   CLUB SHOWCASE (enriched Club cards)
+   ══════════════════════════════════════════════ */
+
+const clubShine = keyframes`
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+`;
+
+const clubPulse = keyframes`
+  0%, 100% { box-shadow: 0 4px 20px rgba(255, 130, 100, 0.12); }
+  50% { box-shadow: 0 8px 32px rgba(255, 130, 100, 0.22); }
+`;
+
+const floatBadge = keyframes`
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-3px) rotate(1deg); }
+`;
+
+export const ClubShowcaseCard = styled.div<{ $isSelected: boolean; $hero?: boolean }>`
+  width: 100%;
+  max-width: 440px;
+  border-radius: 20px;
+  padding: ${p => p.$hero ? '28px 24px 24px' : '20px'};
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  -webkit-tap-highlight-color: transparent;
+
+  background: ${p => p.$isSelected
+    ? 'linear-gradient(160deg, #FFF0EC 0%, #FFFAF8 40%, #FFF5EE 100%)'
+    : 'linear-gradient(160deg, #FAFBFF 0%, #FFF9F6 40%, #FFFBF8 100%)'};
+  border: 2px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'rgba(0, 0, 0, 0.06)'};
+
+  ${p => p.$hero && css`
+    animation: ${clubPulse} 3s ease-in-out infinite;
+  `}
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg,
+      ${theme.colors.accent.coral},
+      ${theme.colors.accent.softPink},
+      ${theme.colors.accent.pastelBlue},
+      ${theme.colors.accent.coral}
+    );
+    background-size: 200% auto;
+    animation: ${clubShine} 3s linear infinite;
+  }
+
+  &:hover {
+    transform: translateY(-3px);
+    border-color: ${theme.colors.accent.coral}80;
+  }
+  &:active { transform: scale(0.98); }
+`;
+
+export const ClubShowcaseBadge = styled.div`
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover});
+  color: white;
+  padding: 4px 12px;
+  border-radius: ${theme.borderRadius.full};
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  animation: ${floatBadge} 3s ease-in-out infinite;
+`;
+
+export const ClubShowcaseHeader = styled.div`
+  text-align: center;
+  margin-bottom: 16px;
+`;
+
+export const ClubShowcaseTitle = styled.h3`
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.lg};
+  font-weight: 700;
+  color: ${theme.colors.text.primary};
+  margin: 0 0 4px;
+`;
+
+export const ClubShowcaseSubtitle = styled.p`
+  font-size: ${theme.fontSizes.xs};
+  color: ${theme.colors.text.light};
+  margin: 0;
+`;
+
+export const ClubShowcasePrice = styled.div`
+  text-align: center;
+  margin-bottom: 16px;
+`;
+
+export const ClubShowcasePriceValue = styled.span`
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes['2xl']};
+  font-weight: 700;
+  color: ${theme.colors.accent.coral};
+`;
+
+export const ClubShowcasePriceUnit = styled.span`
+  font-size: ${theme.fontSizes.sm};
+  color: ${theme.colors.text.light};
+  margin-left: 4px;
+`;
+
+export const ClubShowcaseFeatures = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 16px;
+
+  @media (max-width: 380px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+export const ClubShowcaseFeature = styled.div<{ $premium?: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: ${p => p.$premium ? theme.colors.accent.coral : theme.colors.text.secondary};
+  font-weight: ${p => p.$premium ? 600 : 400};
+  line-height: 1.3;
+`;
+
+export const ClubFeatureIcon = styled.span`
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  background: linear-gradient(135deg, ${theme.colors.accent.lightGreen}40, #a8e6cf40);
+`;
+
+export const ClubShowcaseCTA = styled.div<{ $selected?: boolean }>`
+  width: 100%;
+  padding: 12px;
+  border-radius: 14px;
+  text-align: center;
+  font-family: ${theme.fonts.body};
+  font-size: ${theme.fontSizes.sm};
+  font-weight: 700;
+  color: ${p => p.$selected ? 'white' : theme.colors.accent.coral};
+  background: ${p => p.$selected
+    ? `linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover})`
+    : `linear-gradient(135deg, ${theme.colors.accent.coral}10, ${theme.colors.accent.softPink}15)`};
+  border: 1.5px solid ${p => p.$selected ? 'transparent' : `${theme.colors.accent.coral}30`};
+  transition: all 0.2s ease;
+`;
+
+export const ClubShowcaseFreeTag = styled.div`
+  display: inline-block;
+  background: linear-gradient(135deg, ${theme.colors.accent.lightGreen}30, #a8e6cf30);
+  border: 1px solid #a8e6cf;
+  border-radius: ${theme.borderRadius.full};
+  padding: 3px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #2d6a4f;
+  margin-bottom: 8px;
+`;
+
+export const SingleFallbackCard = styled.div<{ $isSelected: boolean }>`
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border: 1.5px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'rgba(0, 0, 0, 0.06)'};
+  border-radius: 14px;
+  cursor: pointer;
+  background: ${p => p.$isSelected ? '#FFFAF8' : 'white'};
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+  margin-top: ${theme.spacing.sm};
+
+  &:hover { border-color: rgba(0, 0, 0, 0.15); }
+  &:active { transform: scale(0.98); }
+`;
+
+export const SingleFallbackInfo = styled.div`
+  text-align: left;
+`;
+
+export const SingleFallbackName = styled.p`
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.xs};
+  font-weight: 600;
+  color: ${theme.colors.text.secondary};
+  margin: 0;
+`;
+
+export const SingleFallbackDetail = styled.p`
+  font-size: 11px;
+  color: ${theme.colors.text.light};
+  margin: 2px 0 0;
+`;
+
+export const SingleFallbackPrice = styled.p`
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.sm};
+  font-weight: 700;
+  color: ${theme.colors.text.secondary};
+  margin: 0;
+`;
+
+/* ══════════════════════════════════════════════
    SOCIAL PROOF
    ══════════════════════════════════════════════ */
 

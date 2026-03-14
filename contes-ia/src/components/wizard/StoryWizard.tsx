@@ -42,6 +42,10 @@ import {
   PricingCardSub, PricingPerStory, PricingCardFeaturesList, PricingCardFeatureItem, PricingCardCTA,
   TripwireHeroCard, TripwireHeroBadge, TripwireHeroPrice, TripwireHeroOldPrice, TripwireHeroCTA,
   ClubAlternativeSection, ClubAlternativeDivider, ClubMiniCard, ClubMiniInfo, ClubMiniName, ClubMiniDetail, ClubMiniPrice,
+  ClubShowcaseCard, ClubShowcaseBadge, ClubShowcaseHeader, ClubShowcaseTitle, ClubShowcaseSubtitle,
+  ClubShowcasePrice, ClubShowcasePriceValue, ClubShowcasePriceUnit,
+  ClubShowcaseFeatures, ClubShowcaseFeature, ClubFeatureIcon, ClubShowcaseCTA, ClubShowcaseFreeTag,
+  SingleFallbackCard, SingleFallbackInfo, SingleFallbackName, SingleFallbackDetail, SingleFallbackPrice,
   PreviewSectionTitle, SocialProofLine,
   MaterializeImage, MaterializeText,
   GenerationCanvas, CanvasLayer, CanvasGradientBg,
@@ -1339,70 +1343,90 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                   </TripwireHeroCard>
 
                   <ClubAlternativeSection>
-                    <ClubAlternativeDivider>ou rejoignez le Club</ClubAlternativeDivider>
-                    <ClubMiniCard $isSelected={selectedOffer === 'club_monthly'} onClick={() => handlePreviewSelect('club', 'monthly')}>
-                      <ClubMiniInfo>
-                        <ClubMiniName>Club Mensuel</ClubMiniName>
-                        <ClubMiniDetail>Ce conte + 1 conte/semaine inclus</ClubMiniDetail>
-                      </ClubMiniInfo>
-                      <ClubMiniPrice>9,99€/mois</ClubMiniPrice>
-                    </ClubMiniCard>
+                    <ClubAlternativeDivider>ou rejoignez le Club des Histoires</ClubAlternativeDivider>
+
+                    <ClubShowcaseCard $isSelected={selectedOffer === 'club_monthly'} onClick={() => handlePreviewSelect('club', 'monthly')}>
+                      <ClubShowcaseBadge>Populaire</ClubShowcaseBadge>
+                      {selectedOffer === 'club_monthly' && <PricingSelectedCheck>&#x2713;</PricingSelectedCheck>}
+                      <ClubShowcaseHeader>
+                        <ClubShowcaseFreeTag>Ce conte est inclus</ClubShowcaseFreeTag>
+                        <ClubShowcaseTitle>Club des Histoires</ClubShowcaseTitle>
+                        <ClubShowcaseSubtitle>1 livre par semaine pour votre enfant</ClubShowcaseSubtitle>
+                      </ClubShowcaseHeader>
+                      <ClubShowcasePrice>
+                        <ClubShowcasePriceValue>9,99€</ClubShowcasePriceValue>
+                        <ClubShowcasePriceUnit>/mois · sans engagement</ClubShowcasePriceUnit>
+                      </ClubShowcasePrice>
+                      <ClubShowcaseFeatures>
+                        <ClubShowcaseFeature $premium><ClubFeatureIcon>&#x2728;</ClubFeatureIcon>Personnages secondaires</ClubShowcaseFeature>
+                        <ClubShowcaseFeature $premium><ClubFeatureIcon>&#x1F3A8;</ClubFeatureIcon>Styles d'illustration</ClubShowcaseFeature>
+                        <ClubShowcaseFeature><ClubFeatureIcon>&#x1F4DA;</ClubFeatureIcon>Bibliothèque en ligne</ClubShowcaseFeature>
+                        <ClubShowcaseFeature><ClubFeatureIcon>&#x1F381;</ClubFeatureIcon>Thèmes et occasions</ClubShowcaseFeature>
+                        <ClubShowcaseFeature><ClubFeatureIcon>&#x2705;</ClubFeatureIcon>PDF illimités</ClubShowcaseFeature>
+                        <ClubShowcaseFeature><ClubFeatureIcon>&#x274C;</ClubFeatureIcon>Annulable à tout moment</ClubShowcaseFeature>
+                      </ClubShowcaseFeatures>
+                      <ClubShowcaseCTA $selected={selectedOffer === 'club_monthly'}>
+                        {selectedOffer === 'club_monthly' ? 'Sélectionné !' : 'Rejoindre le Club — 9,99€/mois'}
+                      </ClubShowcaseCTA>
+                    </ClubShowcaseCard>
+
                     <ClubMiniCard $isSelected={selectedOffer === 'club_annual'} onClick={() => handlePreviewSelect('club', 'annual')}>
                       <ClubMiniInfo>
-                        <ClubMiniName>Club Annuel</ClubMiniName>
-                        <ClubMiniDetail>Ce conte + 1 conte/semaine — économisez 40€+</ClubMiniDetail>
+                        <ClubMiniName>Club Annuel — 6,67€/mois</ClubMiniName>
+                        <ClubMiniDetail>Tout le Club + économisez 40€+/an</ClubMiniDetail>
                       </ClubMiniInfo>
-                      <ClubMiniPrice>6,67€/mois</ClubMiniPrice>
+                      <ClubMiniPrice>79,99€/an</ClubMiniPrice>
                     </ClubMiniCard>
                   </ClubAlternativeSection>
                 </>
               ) : (
-                /* ── RETURNING USER: Club featured grid ── */
-                <PricingGrid>
-                  <PricingCard $isSelected={selectedOffer === 'club_monthly'} $featured $mobileOrder={0} onClick={() => handlePreviewSelect('club', 'monthly')}>
-                    <PricingCardBadge>Populaire</PricingCardBadge>
+                /* ── RETURNING USER: Club hero + single fallback ── */
+                <>
+                  <ClubShowcaseCard $isSelected={selectedOffer === 'club_monthly'} $hero onClick={() => handlePreviewSelect('club', 'monthly')}>
+                    <ClubShowcaseBadge>Recommandé</ClubShowcaseBadge>
                     {selectedOffer === 'club_monthly' && <PricingSelectedCheck>&#x2713;</PricingSelectedCheck>}
-                    <PricingCardName>Club Mensuel</PricingCardName>
-                    <PricingFreeLabel>Ce conte est gratuit</PricingFreeLabel>
-                    <PricingCardPrice $small>9,99€ / mois</PricingCardPrice>
-                    <PricingCardSub>sans engagement</PricingCardSub>
-                    <PricingCardFeaturesList>
-                      <PricingCardFeatureItem $highlight>Ce conte est inclus immediatement</PricingCardFeatureItem>
-                      <PricingCardFeatureItem $highlight>1 conte par semaine</PricingCardFeatureItem>
-                      <PricingCardFeatureItem>Bibliothèque illimitée</PricingCardFeatureItem>
-                      <PricingCardFeatureItem>Annulable à tout moment</PricingCardFeatureItem>
-                    </PricingCardFeaturesList>
-                    <PricingCardCTA $primary>{selectedOffer === 'club_monthly' ? 'Sélectionné !' : 'Débloquer l\'histoire'}</PricingCardCTA>
-                  </PricingCard>
+                    <ClubShowcaseHeader>
+                      <ClubShowcaseFreeTag>Ce conte est inclus gratuitement</ClubShowcaseFreeTag>
+                      <ClubShowcaseTitle>Club des Histoires</ClubShowcaseTitle>
+                      <ClubShowcaseSubtitle>Offrez-lui une nouvelle aventure chaque semaine</ClubShowcaseSubtitle>
+                    </ClubShowcaseHeader>
+                    <ClubShowcasePrice>
+                      <ClubShowcasePriceValue>9,99€</ClubShowcasePriceValue>
+                      <ClubShowcasePriceUnit>/mois · sans engagement</ClubShowcasePriceUnit>
+                    </ClubShowcasePrice>
+                    <ClubShowcaseFeatures>
+                      <ClubShowcaseFeature $premium><ClubFeatureIcon>&#x1F4D6;</ClubFeatureIcon>1 livre par semaine</ClubShowcaseFeature>
+                      <ClubShowcaseFeature $premium><ClubFeatureIcon>&#x1F464;</ClubFeatureIcon>Personnages secondaires</ClubShowcaseFeature>
+                      <ClubShowcaseFeature $premium><ClubFeatureIcon>&#x1F3A8;</ClubFeatureIcon>Styles d'illustration</ClubShowcaseFeature>
+                      <ClubShowcaseFeature $premium><ClubFeatureIcon>&#x1F381;</ClubFeatureIcon>Thèmes et occasions</ClubShowcaseFeature>
+                      <ClubShowcaseFeature><ClubFeatureIcon>&#x1F4DA;</ClubFeatureIcon>Bibliothèque en ligne</ClubShowcaseFeature>
+                      <ClubShowcaseFeature><ClubFeatureIcon>&#x2B07;</ClubFeatureIcon>PDF illimités</ClubShowcaseFeature>
+                      <ClubShowcaseFeature><ClubFeatureIcon>&#x1F4B3;</ClubFeatureIcon>Crédits cumulables</ClubShowcaseFeature>
+                      <ClubShowcaseFeature><ClubFeatureIcon>&#x274C;</ClubFeatureIcon>Annulable à tout moment</ClubShowcaseFeature>
+                    </ClubShowcaseFeatures>
+                    <ClubShowcaseCTA $selected={selectedOffer === 'club_monthly'}>
+                      {selectedOffer === 'club_monthly' ? 'Sélectionné !' : `Débloquer l'histoire de ${heroName}`}
+                    </ClubShowcaseCTA>
+                  </ClubShowcaseCard>
 
-                  <PricingCard $isSelected={selectedOffer === 'club_annual'} $mobileOrder={1} onClick={() => handlePreviewSelect('club', 'annual')}>
-                    {selectedOffer === 'club_annual' && <PricingSelectedCheck>&#x2713;</PricingSelectedCheck>}
-                    <PricingCardName>Club Annuel</PricingCardName>
-                    <PricingFreeLabel>Ce conte est gratuit</PricingFreeLabel>
-                    <PricingCardPrice $small>79,99€ / an — soit 6,67€/mois</PricingCardPrice>
-                    <PricingPerStory>Economisez 40€+/an</PricingPerStory>
-                    <PricingCardFeaturesList>
-                      <PricingCardFeatureItem $highlight>Ce conte est inclus immediatement</PricingCardFeatureItem>
-                      <PricingCardFeatureItem $highlight>1 conte par semaine</PricingCardFeatureItem>
-                      <PricingCardFeatureItem>Bibliothèque illimitée</PricingCardFeatureItem>
-                      <PricingCardFeatureItem>Annulable à tout moment</PricingCardFeatureItem>
-                    </PricingCardFeaturesList>
-                    <PricingCardCTA $primary={selectedOffer === 'club_annual'}>{selectedOffer === 'club_annual' ? 'Sélectionné !' : 'Choisir cette offre'}</PricingCardCTA>
-                  </PricingCard>
+                  <ClubMiniCard $isSelected={selectedOffer === 'club_annual'} onClick={() => handlePreviewSelect('club', 'annual')} style={{ maxWidth: 440, marginTop: '10px' }}>
+                    <ClubMiniInfo>
+                      <ClubMiniName>Club Annuel — 6,67€/mois</ClubMiniName>
+                      <ClubMiniDetail>Tout le Club + économisez 40€+/an</ClubMiniDetail>
+                    </ClubMiniInfo>
+                    <ClubMiniPrice>79,99€/an</ClubMiniPrice>
+                  </ClubMiniCard>
 
-                  <PricingCard $isSelected={selectedOffer === 'single'} $mobileOrder={2} onClick={() => handlePreviewSelect('single')}>
-                    {selectedOffer === 'single' && <PricingSelectedCheck>&#x2713;</PricingSelectedCheck>}
-                    <PricingCardName>Offre Unique</PricingCardName>
-                    <PricingCardPrice>{singlePriceLabel}</PricingCardPrice>
-                    <PricingCardSub>Paiement unique</PricingCardSub>
-                    <PricingCardFeaturesList>
-                      <PricingCardFeatureItem>1 conte personnalisé</PricingCardFeatureItem>
-                      <PricingCardFeatureItem>7 illustrations HD</PricingCardFeatureItem>
-                      <PricingCardFeatureItem>PDF téléchargeable</PricingCardFeatureItem>
-                    </PricingCardFeaturesList>
-                    <PricingCardCTA $primary={selectedOffer === 'single'}>{selectedOffer === 'single' ? 'Sélectionné !' : 'Choisir cette offre'}</PricingCardCTA>
-                  </PricingCard>
-                </PricingGrid>
+                  <ClubAlternativeDivider style={{ maxWidth: 440, marginTop: '16px', marginBottom: '0' }}>ou sans abonnement</ClubAlternativeDivider>
+
+                  <SingleFallbackCard $isSelected={selectedOffer === 'single'} onClick={() => handlePreviewSelect('single')}>
+                    <SingleFallbackInfo>
+                      <SingleFallbackName>Juste ce conte</SingleFallbackName>
+                      <SingleFallbackDetail>1 conte · PDF téléchargeable · paiement unique</SingleFallbackDetail>
+                    </SingleFallbackInfo>
+                    <SingleFallbackPrice>{singlePriceLabel}</SingleFallbackPrice>
+                  </SingleFallbackCard>
+                </>
               )}
 
               <SocialProofLine>
