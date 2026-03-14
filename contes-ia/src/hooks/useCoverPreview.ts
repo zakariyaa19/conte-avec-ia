@@ -23,7 +23,11 @@ export function isPhase1Complete(formData: Partial<StoryFormData>): boolean {
 
   // Photo mode: only need a photo
   if (formData.appearanceMode === 'photo') return !!formData.photo;
-  // Manual mode (or legacy orders with colors): need all 3 colors
+  // Manual mode: need all 3 colors
+  if (formData.appearanceMode === 'manual') return !!(formData.eyeColor && formData.hairColor && formData.skinColor);
+  // No appearance mode set (simplified wizard — appearance step skipped): OK, API will use defaults
+  if (!formData.appearanceMode && !formData.eyeColor && !formData.hairColor && !formData.skinColor) return true;
+  // Legacy orders with colors but no explicit mode
   return !!(formData.eyeColor && formData.hairColor && formData.skinColor);
 }
 
