@@ -103,12 +103,26 @@ export class MailjetService {
     }
   }
 
+  // Générer un magic link pour accéder à la bibliothèque sans mot de passe
+  static generateMagicDashboardLink(userId: string, email: string): string {
+    const jwt = require('jsonwebtoken');
+    const secret = process.env.JWT_CLIENT_SECRET || process.env.JWT_SECRET;
+    const token = jwt.sign(
+      { userId, email, type: 'magic_link' },
+      secret,
+      { expiresIn: '7d' }
+    );
+    const frontendUrl = process.env.FRONTEND_URL || 'https://contedia.fr';
+    return `${frontendUrl}/magic-login?token=${token}`;
+  }
+
   // Envoyer un email de livraison au client
   static async sendStoryDeliveryEmail(data: {
     customerName: string;
     customerEmail: string;
     orderNumber: string;
     protagonistName: string;
+    userId?: string;
   }): Promise<void> {
     try {
       const request = getMailjet()
@@ -140,10 +154,10 @@ export class MailjetService {
                         Votre conte personnalise est maintenant disponible dans votre espace <strong style="color: #FF9999;">Ma Bibliotheque</strong>.
                       </p>
                       <p style="color: #555; font-size: 16px; line-height: 1.6;">
-                        Connectez-vous a votre compte pour le consulter et le telecharger.
+                        Cliquez sur le bouton ci-dessous pour le consulter et le telecharger.
                       </p>
                       <div style="text-align: center; margin-top: 25px;">
-                        <a href="${process.env.FRONTEND_URL}/dashboard" style="background: linear-gradient(135deg, #FF9999, #FF7F7F); color: white; text-decoration: none; padding: 14px 32px; border-radius: 10px; font-weight: 600; font-size: 16px; display: inline-block;">
+                        <a href="${data.userId ? this.generateMagicDashboardLink(data.userId, data.customerEmail) : (process.env.FRONTEND_URL + '/dashboard')}" style="background: linear-gradient(135deg, #FF9999, #FF7F7F); color: white; text-decoration: none; padding: 14px 32px; border-radius: 10px; font-weight: 600; font-size: 16px; display: inline-block;">
                           Acceder a ma bibliotheque
                         </a>
                       </div>

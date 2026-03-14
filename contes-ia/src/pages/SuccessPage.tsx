@@ -242,7 +242,7 @@ export const SuccessPage: React.FC = () => {
   const navigate = useNavigate();
   const [isVerifying, setIsVerifying] = useState(true);
   const [paymentConfirmed, setPaymentConfirmed] = useState(false);
-  const { isAuthenticated, refreshProfile } = useAuth();
+  const { isAuthenticated, refreshProfile, setTokenAndUser } = useAuth();
 
   const searchParams = new URLSearchParams(location.search);
   const sessionId = searchParams.get('session_id');
@@ -284,6 +284,12 @@ export const SuccessPage: React.FC = () => {
 
           if (data.success && data.status === 'paid') {
             setPaymentConfirmed(true);
+
+            // Auto-login: use token from payment verification
+            // (token may have been lost during Stripe redirect)
+            if (data.token && data.user) {
+              setTokenAndUser(data.token, data.user);
+            }
 
             if (localStorage.getItem('userToken')) {
               await refreshProfile();

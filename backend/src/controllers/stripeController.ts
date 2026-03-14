@@ -5,6 +5,7 @@ import { MailjetService } from '../utils/mailjetService';
 import { ClientAuthRequest } from '../middleware/clientAuth';
 import { buildOrderDetailsString } from '../utils/orderFormatter';
 import { ClubService } from '../utils/clubService';
+import { generateClientToken } from './authController';
 
 // Ordre de progression des statuts — un statut ne peut JAMAIS reculer
 const STATUS_ORDER = ['PENDING', 'PAID', 'GENERATING', 'GENERATED', 'DELIVERED'] as const;
@@ -385,6 +386,21 @@ export const checkPaymentStatus = async (req: Request, res: Response) => {
         return res.status(404).json({ error: 'Commande non trouvee' });
       }
 
+      // Generate auth token so user is auto-logged in on success page
+      // (token may have been lost during Stripe redirect, especially in WebView)
+      let authToken: string | undefined;
+      let userData: any = undefined;
+      if (order.user) {
+        authToken = generateClientToken(order.user);
+        userData = {
+          id: order.user.id,
+          email: order.user.email,
+          firstName: order.user.firstName,
+          lastName: order.user.lastName,
+          role: order.user.role
+        };
+      }
+
       // Si la commande a deja ete traitee (PAID, GENERATING, GENERATED, DELIVERED),
       // ne JAMAIS ecraser le statut — juste confirmer au frontend
       if (order.paidAt || ['PAID', 'GENERATING', 'GENERATED', 'DELIVERED'].includes(order.status)) {
@@ -396,7 +412,9 @@ export const checkPaymentStatus = async (req: Request, res: Response) => {
             id: order.id,
             productType: order.productType,
             purchaseType: order.purchaseType
-          }
+          },
+          token: authToken,
+          user: userData
         });
       }
 
@@ -429,7 +447,9 @@ export const checkPaymentStatus = async (req: Request, res: Response) => {
           id: order.id,
           productType: order.productType,
           purchaseType: order.purchaseType
-        }
+        },
+        token: authToken,
+        user: userData
       });
     } else {
       res.json({

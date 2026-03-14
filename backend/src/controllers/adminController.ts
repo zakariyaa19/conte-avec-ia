@@ -488,7 +488,8 @@ export class AdminController {
             customerName: order.user.firstName || order.creatorName || 'Client',
             customerEmail: order.user.email,
             orderNumber: order.id.slice(-8),
-            protagonistName: order.protagonistName
+            protagonistName: order.protagonistName,
+            userId: order.user.id,
           });
         }
       } catch (notifError) {

@@ -966,6 +966,7 @@ export async function autoGenerateAndDeliver(orderId: string): Promise<void> {
               customerEmail,
               orderNumber: orderId.slice(-8),
               protagonistName: freshOrder.protagonistName,
+              userId: freshOrder.user?.id,
             });
           }
         }
