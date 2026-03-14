@@ -426,7 +426,6 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
     if (!formData.userEmail) { e.userEmail = "L'email est obligatoire"; ok = false; }
     else { const ev = validateEmail(formData.userEmail); if (!ev.isValid) { e.userEmail = ev.error || 'Email invalide'; ok = false; } }
     if (!formData.firstName) { e.firstName = 'Le prénom est obligatoire'; ok = false; }
-    if (!formData.lastName) { e.lastName = 'Le nom est obligatoire'; ok = false; }
     setErrors(e);
     if (!ok) setGlobalError('Veuillez remplir tous les champs obligatoires');
     return ok;
@@ -451,7 +450,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
   const isAppearanceComplete = formData.appearanceMode === 'photo'
     ? !!formData.photo
     : !!(formData.eyeColor && formData.hairColor && formData.skinColor);
-  const isPaymentInfoComplete = !!(formData.productType && formData.userEmail && formData.firstName && formData.lastName);
+  const isPaymentInfoComplete = !!(formData.productType && formData.userEmail && formData.firstName);
 
   // Summary chips data (shown from step 3+)
   const summaryChips: { label: string; value: string }[] = [];
@@ -1425,46 +1424,22 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                     <ConnectedBanner>Connecté en tant que <strong>{currentUser.email}</strong></ConnectedBanner>
                   )}
                   <OrderInfoGrid>
-                    {isAuthenticated ? (
-                      <FullWidthField>
-                        <ValidatedInput type="email" label="Email" value={formData.userEmail || ''} onChange={() => {}} placeholder="" required disabled />
-                      </FullWidthField>
-                    ) : (
-                      <>
-                        <FullWidthField>
-                          <ValidatedInput type="email" label="Email" value={formData.userEmail || ''}
-                            onChange={(v) => { setGlobalError(''); onUpdate({ userEmail: v }); if (errors.userEmail) setErrors(p => ({ ...p, userEmail: '' })); }}
-                            placeholder="votre@email.com" required error={errors.userEmail}
-                            onBlur={() => { validateField('userEmail', formData.userEmail || '', 'email'); handleEmailBlurCheck(); }} />
-                          {emailStatus?.exists && emailStatus?.hasPassword && (
-                            <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.accent.coral, marginTop: '4px' }}>
-                              Ce compte existe. <span style={{ cursor: 'pointer', fontWeight: 600, textDecoration: 'underline' }}
-                                onClick={() => window.location.href = '/login'}>Connectez-vous</span>
-                            </p>
-                          )}
-                        </FullWidthField>
-                        <FullWidthField>
-                          <ValidatedInput type="password" label="Mot de passe" value={formData.password || ''}
-                            onChange={(v) => { onUpdate({ password: v }); if (errors.password) setErrors(p => ({ ...p, password: '' })); }}
-                            placeholder="Min. 8 caractères" required={false} error={errors.password} />
-                          <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.text.light, marginTop: '4px' }}>
-                            Créez un compte pour retrouver vos contes
-                          </p>
-                        </FullWidthField>
-                      </>
-                    )}
-                    <InputField>
+                    <FullWidthField>
+                      <ValidatedInput type="email" label="Email" value={formData.userEmail || ''}
+                        onChange={isAuthenticated ? () => {} : (v) => { setGlobalError(''); onUpdate({ userEmail: v }); if (errors.userEmail) setErrors(p => ({ ...p, userEmail: '' })); }}
+                        placeholder="votre@email.com" required error={errors.userEmail}
+                        disabled={isAuthenticated}
+                        onBlur={isAuthenticated ? undefined : () => { validateField('userEmail', formData.userEmail || '', 'email'); }} />
+                      <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.text.light, marginTop: '4px' }}>
+                        Vous recevrez votre conte et un lien de connexion par email
+                      </p>
+                    </FullWidthField>
+                    <FullWidthField>
                       <ValidatedInput label="Prénom" value={formData.firstName || ''}
                         onChange={(v) => { setGlobalError(''); onUpdate({ firstName: v }); if (errors.firstName) setErrors(p => ({ ...p, firstName: '' })); }}
                         placeholder="Votre prénom" required error={errors.firstName}
                         onBlur={() => validateField('firstName', formData.firstName || '')} />
-                    </InputField>
-                    <InputField>
-                      <ValidatedInput label="Nom" value={formData.lastName || ''}
-                        onChange={(v) => { setGlobalError(''); onUpdate({ lastName: v }); if (errors.lastName) setErrors(p => ({ ...p, lastName: '' })); }}
-                        placeholder="Votre nom" required error={errors.lastName}
-                        onBlur={() => validateField('lastName', formData.lastName || '')} />
-                    </InputField>
+                    </FullWidthField>
                   </OrderInfoGrid>
                 </OrderInfoSection>
 
@@ -1475,20 +1450,23 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                     ? 'Traitement en cours...'
                     : formData.purchaseType === 'club' && isClub && clubCredit?.canSubmit
                       ? 'Recevoir mon eBook gratuit'
-                      : 'Débloquer l\'histoire complète'}
+                      : `Payer ${singlePriceLabel} — Recevoir mon conte`}
                 </PayButton>
 
-                {!(formData.purchaseType === 'club' && isClub && clubCredit?.canSubmit) && (
-                  <p style={{ marginTop: theme.spacing.sm, fontSize: '10px', color: theme.colors.text.light, textAlign: 'center' }}>
-                    Paiement 100% sécurisé par Stripe
-                  </p>
-                )}
-
                 <TrustBadgesRow>
-                  <TrustBadge>Paiement sécurisé</TrustBadge>
-                  <TrustBadge>Satisfait ou remboursé</TrustBadge>
-                  <TrustBadge>Livraison instantanée</TrustBadge>
+                  <TrustBadge>&#x1F512; Paiement sécurisé Stripe</TrustBadge>
+                  <TrustBadge>&#x2705; Satisfait ou remboursé</TrustBadge>
+                  <TrustBadge>&#x26A1; Prêt en 5 minutes</TrustBadge>
                 </TrustBadgesRow>
+
+                <div style={{ marginTop: '12px', padding: '12px 16px', background: '#FAFAFA', borderRadius: '12px', maxWidth: 440, width: '100%' }}>
+                  <p style={{ fontSize: '12px', color: theme.colors.text.secondary, textAlign: 'center', lineHeight: 1.5, margin: 0, fontStyle: 'italic' }}>
+                    "Ma fille a adoré voir son prénom dans l'histoire ! Elle me demande de lui relire tous les soirs."
+                  </p>
+                  <p style={{ fontSize: '11px', color: theme.colors.text.light, textAlign: 'center', marginTop: '4px', marginBottom: 0 }}>
+                    — Sarah, maman de Léa (4 ans)
+                  </p>
+                </div>
               </div>
             )}
           </>
@@ -1567,7 +1545,9 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
               </svg>
             </BackArrow>
             <HeaderTitle>Créer votre conte</HeaderTitle>
-            <HeaderBadge>~1 min</HeaderBadge>
+            <HeaderBadge style={{ background: 'linear-gradient(135deg, #FF6B6B, #FF8E53)', color: 'white', fontWeight: 700 }}>
+              {singlePriceLabel}
+            </HeaderBadge>
           </HeaderTopRow>
           <HeaderStepLabel aria-current="step">
             {STEP_CONFIG[stepId]?.label || ''}
@@ -1577,7 +1557,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
               <ProgressSegment key={ALL_STEPS[i]} $status={getSegmentStatus(i)} />
             ))}
           </SegmentedProgressBar>
-          <ProgressHintText>Création du conte (~1 minute)</ProgressHintText>
+          <ProgressHintText>Votre conte personnalisé — {singlePriceLabel} seulement</ProgressHintText>
         </WizardHeaderNew>
       )}
 
