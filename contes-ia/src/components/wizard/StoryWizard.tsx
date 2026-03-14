@@ -1599,16 +1599,6 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
         </WizardHeaderNew>
       )}
 
-      {/* ── Draft resume banner ── */}
-      {showDraftBanner && currentStep === 0 && (
-        <DraftBanner>
-          <DraftBannerText>Reprendre ma création ?</DraftBannerText>
-          <div style={{ display: 'flex', gap: 6 }}>
-            <DraftBannerButton onClick={handleResumeDraft}>Reprendre</DraftBannerButton>
-            <DraftBannerDismiss onClick={() => { setShowDraftBanner(false); clearDraft(); }} aria-label="Fermer">✕</DraftBannerDismiss>
-          </div>
-        </DraftBanner>
-      )}
 
       <WizardViewport ref={viewportRef}>
         {prevStep !== null && isAnimating && renderStepInContainer(prevStep, 'exiting')}
