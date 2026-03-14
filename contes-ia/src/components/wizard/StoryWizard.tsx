@@ -1034,9 +1034,8 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
           }
         };
 
-        // ── LOADING STATE: for Club users, keep immersive fullscreen canvas ──
-        // For simplified mode, show a compact loading + pricing immediately
-        if (!allReady && !isSimplifiedMode) {
+        // ── LOADING STATE: immersive fullscreen canvas for ALL users ──
+        if (!allReady) {
           // Progress stage for messages
           let stage = 0;
           if (coverImageUrl && !isCoverGenerating) stage = 1;
@@ -1168,59 +1167,17 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
           );
         }
 
-        // ── SIMPLIFIED MODE + NOT READY: show compact loading + pricing immediately ──
-        // ── ALL READY (both modes): show full preview + pricing ──
+        // ── ALL READY: show full preview + timer + pricing ──
         return (
           <>
             <StepTitle style={{ fontSize: theme.fontSizes.lg, marginBottom: theme.spacing.sm }}>
-              {allReady
-                ? `Le conte de ${heroName} est prêt !`
-                : `Nous créons le conte de ${heroName}...`}
+              Le conte de {heroName} est prêt !
             </StepTitle>
             <StepSubtitle style={{ marginBottom: theme.spacing.md }}>
-              {allReady
-                ? `Montrez l'histoire de ${heroName} à votre famille`
-                : 'Choisissez votre offre pendant que la magie opère'}
+              Montrez l'histoire de {heroName} à votre famille
             </StepSubtitle>
 
-            {/* ── Compact loading indicator for simplified mode ── */}
-            {!allReady && isSimplifiedMode && (
-              <div style={{
-                width: '100%', maxWidth: 420, margin: `0 auto ${theme.spacing.xl}`,
-                background: `linear-gradient(135deg, ${theme.colors.accent.paleYellow}20, ${theme.colors.accent.softPink}15)`,
-                borderRadius: theme.borderRadius.xl, padding: theme.spacing.lg,
-                textAlign: 'center', border: '1px solid rgba(0,0,0,0.04)',
-              }}>
-                <div style={{ fontSize: '2rem', marginBottom: theme.spacing.sm }}>&#x2728;</div>
-                <p style={{ fontSize: theme.fontSizes.sm, color: theme.colors.text.secondary, margin: 0, lineHeight: 1.6 }}>
-                  {coverImageUrl ? 'Finalisation de votre histoire...' : `Création du conte de ${heroName}...`}
-                </p>
-                <div style={{
-                  width: '100%', height: 4, borderRadius: 4, background: theme.colors.background.secondary,
-                  marginTop: theme.spacing.md, overflow: 'hidden',
-                }}>
-                  <div style={{
-                    height: '100%', borderRadius: 4,
-                    background: `linear-gradient(90deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover})`,
-                    width: coverImageUrl && previewParagraphs ? '80%' : coverImageUrl ? '50%' : '25%',
-                    transition: 'width 1s ease',
-                  }} />
-                </div>
-                {(hasError || isStuck) && (
-                  <button onClick={handleRetryGeneration} style={{
-                    marginTop: theme.spacing.md, background: theme.colors.accent.coral, color: 'white',
-                    border: 'none', borderRadius: '8px', padding: '8px 16px', fontSize: '13px',
-                    fontWeight: 600, cursor: 'pointer',
-                  }}>
-                    Relancer la création
-                  </button>
-                )}
-              </div>
-            )}
-
-            {/* ── Book preview: cover + story page + locked page (only when ready) ── */}
-            {allReady && (
-            <>
+            {/* ── Book preview: cover + story page + locked page ── */}
             <BookPreviewWrapper>
               <MagicParticle $delay={0} $left="8%" $size={3} />
               <MagicParticle $delay={1.5} $left="22%" $size={5} />
@@ -1284,8 +1241,6 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
               <ValueBlockItem>PDF téléchargeable et imprimable</ValueBlockItem>
               <ValueBlockItem>Lecture illimitée à vie</ValueBlockItem>
             </ValueBlock>
-            </>
-            )}
 
             {/* ── Pricing section ── */}
             <div ref={pricingRef} style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
