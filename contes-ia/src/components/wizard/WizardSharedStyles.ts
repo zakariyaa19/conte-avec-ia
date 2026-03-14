@@ -157,13 +157,13 @@ export const StepContainer = styled.div<{
 }>`
   position: absolute; inset: 0;
   display: flex; flex-direction: column; align-items: center;
-  padding: ${theme.spacing.xl} ${theme.spacing.lg} ${theme.spacing['2xl']};
+  padding: ${theme.spacing.xl} ${theme.spacing.lg} 100px;
   overflow-y: auto; overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   will-change: transform, opacity;
   ${stepAnimation}
   @media (max-width: ${theme.breakpoints.sm}) {
-    padding: ${theme.spacing.lg} ${theme.spacing.md} ${theme.spacing.xl};
+    padding: ${theme.spacing.lg} ${theme.spacing.md} 90px;
   }
 `;
 
@@ -404,12 +404,12 @@ export const CustomInput = styled.input`
   width: 100%; max-width: 420px;
   padding: ${theme.spacing.md};
   border: 2px solid #E5E7EB; border-radius: ${theme.borderRadius.md};
-  font-size: ${theme.fontSizes.base}; font-family: ${theme.fonts.body};
+  font-size: 16px; font-family: ${theme.fonts.body};
   margin-top: ${theme.spacing.md}; transition: border-color 0.2s ease; box-sizing: border-box;
   animation: ${fadeIn} 0.3s ease;
+  -webkit-appearance: none;
   &:focus { outline: none; border-color: ${theme.colors.accent.coral}; box-shadow: 0 0 0 3px ${theme.colors.accent.coral}15; }
   &::placeholder { color: ${theme.colors.text.light}; }
-  @media (max-width: 480px) { font-size: 16px; }
   @media (min-width: ${theme.breakpoints.lg}) { max-width: 540px; }
 `;
 
@@ -417,11 +417,11 @@ export const TextArea = styled.textarea`
   width: 100%; max-width: 420px;
   padding: ${theme.spacing.md};
   border: 2px solid #E5E7EB; border-radius: ${theme.borderRadius.md};
-  font-size: ${theme.fontSizes.base}; font-family: ${theme.fonts.body};
+  font-size: 16px; font-family: ${theme.fonts.body};
   resize: vertical; min-height: 70px; transition: border-color 0.2s ease; box-sizing: border-box;
+  -webkit-appearance: none;
   &:focus { outline: none; border-color: ${theme.colors.accent.coral}; box-shadow: 0 0 0 3px ${theme.colors.accent.coral}15; }
   &::placeholder { color: ${theme.colors.text.light}; }
-  @media (max-width: 480px) { font-size: 16px; }
   @media (min-width: ${theme.breakpoints.lg}) { max-width: 540px; }
 `;
 

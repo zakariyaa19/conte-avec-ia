@@ -588,7 +588,8 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
             {formData.generalTheme === 'custom' && (
               <>
                 <CustomInput type="text" placeholder="Ex : L'univers d'Harry Potter, Le monde des dinosaures..." value={formData.customTheme || ''}
-                  onChange={(e) => handleInputChange('customTheme', e.target.value)} autoFocus
+                  onChange={(e) => handleInputChange('customTheme', e.target.value)}
+                  ref={(el) => { if (el) setTimeout(() => { el.focus(); el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 100); }}
                   style={{ maxWidth: 480, marginTop: theme.spacing.sm }} />
                 <ContinueButton $isReady={!!(formData.customTheme?.trim())} disabled={!formData.customTheme?.trim()} onClick={goNext}>
                   Continuer
@@ -622,7 +623,8 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
             {formData.specificSubject === 'custom' && (
               <>
                 <CustomInput type="text" placeholder="Décrivez votre occasion..." value={formData.customSubject || ''}
-                  onChange={(e) => handleInputChange('customSubject', e.target.value)} autoFocus />
+                  onChange={(e) => handleInputChange('customSubject', e.target.value)}
+                  ref={(el) => { if (el) setTimeout(() => { el.focus(); el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 100); }} />
                 <ContinueButton $isReady={!!(formData.customSubject?.trim())} disabled={!formData.customSubject?.trim()} onClick={goNext}>
                   Continuer
                 </ContinueButton>
