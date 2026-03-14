@@ -1,0 +1,119 @@
+import React, { useEffect, useState } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import { theme } from '../styles/theme';
+import { ApiService } from '../config/api';
+import { useAuth } from '../contexts/AuthContext';
+
+const Container = styled.div`
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: ${theme.colors.background.primary};
+`;
+
+const Card = styled.div`
+  background: white;
+  border-radius: 20px;
+  padding: 40px 32px;
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+  box-shadow: ${theme.shadows.card};
+`;
+
+const Title = styled.h1`
+  font-family: ${theme.fonts.heading};
+  font-size: 22px;
+  color: ${theme.colors.text.primary};
+  margin-bottom: 12px;
+`;
+
+const Message = styled.p`
+  font-size: 15px;
+  color: ${theme.colors.text.secondary};
+  line-height: 1.5;
+`;
+
+const Spinner = styled.div`
+  width: 40px;
+  height: 40px;
+  margin: 20px auto;
+  border: 3px solid #E5E7EB;
+  border-top-color: ${theme.colors.accent.coral};
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  @keyframes spin { to { transform: rotate(360deg); } }
+`;
+
+export const MagicLoginPage: React.FC = () => {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const { setTokenAndUser } = useAuth();
+  const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
+  const [errorMsg, setErrorMsg] = useState('');
+
+  useEffect(() => {
+    const token = searchParams.get('token');
+    if (!token) {
+      setStatus('error');
+      setErrorMsg('Lien invalide.');
+      return;
+    }
+
+    (async () => {
+      try {
+        const response = await ApiService.verifyMagicLink(token);
+        if (response.success && response.data) {
+          setTokenAndUser(response.data.token, response.data.user);
+          setStatus('success');
+          setTimeout(() => navigate('/dashboard'), 1000);
+        } else {
+          setStatus('error');
+          setErrorMsg(response.message || 'Lien invalide ou expire.');
+        }
+      } catch (err: any) {
+        setStatus('error');
+        setErrorMsg(err?.message || 'Lien invalide ou expire.');
+      }
+    })();
+  }, [searchParams, navigate, setTokenAndUser]);
+
+  return (
+    <Container>
+      <Card>
+        {status === 'loading' && (
+          <>
+            <Spinner />
+            <Title>Connexion en cours...</Title>
+            <Message>Verification de votre lien...</Message>
+          </>
+        )}
+        {status === 'success' && (
+          <>
+            <div style={{ fontSize: 48, marginBottom: 12 }}>&#x2705;</div>
+            <Title>Connecte !</Title>
+            <Message>Redirection vers votre bibliotheque...</Message>
+          </>
+        )}
+        {status === 'error' && (
+          <>
+            <div style={{ fontSize: 48, marginBottom: 12 }}>&#x274C;</div>
+            <Title>Lien expire</Title>
+            <Message>{errorMsg}</Message>
+            <Message style={{ marginTop: 16 }}>
+              <span
+                style={{ color: theme.colors.accent.coral, cursor: 'pointer', fontWeight: 600 }}
+                onClick={() => navigate('/login')}
+              >
+                Retour a la connexion
+              </span>
+            </Message>
+          </>
+        )}
+      </Card>
+    </Container>
+  );
+};

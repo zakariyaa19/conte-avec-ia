@@ -315,10 +315,10 @@ export class OrderController {
         }).catch(err => console.error('Mailjet list add error (non-blocking):', err));
       }
 
-      // Generer un token JWT si l'utilisateur a un mot de passe
+      // Generer un token JWT pour TOUT utilisateur (avec ou sans mot de passe)
       let token: string | undefined;
       let userData: any = undefined;
-      if (user && user.password) {
+      if (user) {
         token = generateClientToken(user);
         userData = {
           id: user.id,

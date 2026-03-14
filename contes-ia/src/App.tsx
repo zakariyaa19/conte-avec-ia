@@ -57,6 +57,7 @@ import ScrollToTop from './components/utils/ScrollToTop';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { HelmetProvider } from 'react-helmet-async';
 import { WebViewBanner } from './components/ui/WebViewBanner';
+import { MagicLoginPage } from './pages/MagicLoginPage';
 
 function App() {
   return (
@@ -74,6 +75,7 @@ function App() {
           <Route path="/success" element={<SuccessPage />} />
           <Route path="/cancel" element={<CancelPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/magic-login" element={<MagicLoginPage />} />
           <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
           <Route path="/dashboard/story/:id" element={<ProtectedRoute><StoryDetailPage /></ProtectedRoute>} />
           <Route path="/dashboard/account" element={<ProtectedRoute><AccountPage /></ProtectedRoute>} />

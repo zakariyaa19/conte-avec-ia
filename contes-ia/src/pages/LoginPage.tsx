@@ -702,6 +702,23 @@ export const LoginPage: React.FC = () => {
             </Button>
           </Form>
 
+          {!isRegister && (
+            <LinkText>
+              <span onClick={async () => {
+                if (!email) { setError('Entrez votre email pour recevoir un lien de connexion'); return; }
+                setIsLoading(true);
+                try {
+                  await ApiService.requestMagicLink(email);
+                  setError('');
+                  alert('Un lien de connexion a ete envoye a ' + email);
+                } catch { setError('Erreur lors de l\'envoi du lien'); }
+                setIsLoading(false);
+              }}>
+                Recevoir un lien de connexion par email
+              </span>
+            </LinkText>
+          )}
+
           <LinkText>
             {isRegister ? (
               <>

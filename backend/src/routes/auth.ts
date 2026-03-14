@@ -27,6 +27,8 @@ router.post('/register', authLimiter, AuthController.register);
 router.post('/login', authLimiter, AuthController.login);
 router.post('/unified-login', authLimiter, AuthController.unifiedLogin);
 router.post('/google', authLimiter, AuthController.googleAuth);
+router.post('/magic-link', authLimiter, AuthController.requestMagicLink);
+router.post('/magic-link/verify', authLimiter, AuthController.verifyMagicLink);
 router.get('/check-email', checkEmailLimiter, AuthController.checkEmail);
 
 // Routes protegees

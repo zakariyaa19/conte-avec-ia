@@ -392,6 +392,120 @@ export class AuthController {
     }
   }
 
+  // Connexion par magic link (sans mot de passe)
+  // Étape 1: l'utilisateur entre son email → on envoie un lien par email
+  static async requestMagicLink(req: Request, res: Response) {
+    try {
+      const { email } = req.body;
+
+      if (!email) {
+        return res.status(400).json({ success: false, message: 'Email requis' });
+      }
+
+      const user = await prisma.user.findUnique({ where: { email } });
+      if (!user) {
+        // Ne pas révéler si le compte existe ou non
+        return res.json({ success: true, message: 'Si ce compte existe, un lien de connexion a ete envoye' });
+      }
+
+      // Générer un token magic link (courte durée : 30 min)
+      const magicToken = jwt.sign(
+        { userId: user.id, email: user.email, type: 'magic_link' },
+        getClientSecret(),
+        { expiresIn: '30m' }
+      );
+
+      const frontendUrl = process.env.FRONTEND_URL || 'https://contedia.fr';
+      const magicUrl = `${frontendUrl}/magic-login?token=${magicToken}`;
+
+      // Envoyer l'email
+      const Mailjet = require('node-mailjet');
+      const mailjet = new Mailjet({
+        apiKey: process.env.MJ_APIKEY_PUBLIC,
+        apiSecret: process.env.MJ_APIKEY_PRIVATE
+      });
+
+      await mailjet.post('send', { version: 'v3.1' }).request({
+        Messages: [{
+          From: {
+            Email: process.env.MAILJET_FROM_EMAIL || 'contact@contedia.fr',
+            Name: "Conte d'IA"
+          },
+          To: [{ Email: user.email, Name: user.firstName || '' }],
+          Subject: 'Votre lien de connexion — Conte d\'IA',
+          HTMLPart: `
+            <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 500px; margin: 0 auto; padding: 40px 20px;">
+              <h1 style="color: #2D3748; font-size: 24px; text-align: center;">Connexion a votre compte</h1>
+              <p style="color: #4A5568; font-size: 16px; text-align: center; line-height: 1.6;">
+                Cliquez sur le bouton ci-dessous pour acceder a votre bibliotheque de contes.
+              </p>
+              <div style="text-align: center; margin: 32px 0;">
+                <a href="${magicUrl}" style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); color: white; padding: 14px 40px; border-radius: 30px; text-decoration: none; font-weight: 700; font-size: 16px; display: inline-block;">
+                  Acceder a ma bibliotheque
+                </a>
+              </div>
+              <p style="color: #A0AEC0; font-size: 12px; text-align: center;">
+                Ce lien expire dans 30 minutes. Si vous n'avez pas demande ce lien, ignorez cet email.
+              </p>
+            </div>
+          `
+        }]
+      });
+
+      console.log(`[AUTH] Magic link sent to ${user.email}`);
+      res.json({ success: true, message: 'Si ce compte existe, un lien de connexion a ete envoye' });
+    } catch (error) {
+      console.error('Erreur magic link:', error);
+      res.status(500).json({ success: false, message: 'Erreur lors de l\'envoi du lien' });
+    }
+  }
+
+  // Étape 2: l'utilisateur clique sur le lien → on vérifie le token et le connecte
+  static async verifyMagicLink(req: Request, res: Response) {
+    try {
+      const { token } = req.body;
+
+      if (!token) {
+        return res.status(400).json({ success: false, message: 'Token requis' });
+      }
+
+      const decoded = jwt.verify(token, getClientSecret()) as any;
+
+      if (decoded.type !== 'magic_link') {
+        return res.status(401).json({ success: false, message: 'Token invalide' });
+      }
+
+      const user = await prisma.user.findUnique({ where: { id: decoded.userId } });
+      if (!user) {
+        return res.status(404).json({ success: false, message: 'Utilisateur non trouve' });
+      }
+
+      // Générer un vrai token de session (7 jours)
+      const sessionToken = generateClientToken(user);
+
+      res.json({
+        success: true,
+        data: {
+          token: sessionToken,
+          user: {
+            id: user.id,
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            role: user.role,
+            subscriptionStatus: user.subscriptionStatus
+          }
+        }
+      });
+    } catch (error: any) {
+      if (error.name === 'TokenExpiredError') {
+        return res.status(401).json({ success: false, message: 'Le lien a expire. Demandez un nouveau lien.' });
+      }
+      console.error('Erreur verify magic link:', error);
+      res.status(401).json({ success: false, message: 'Lien invalide ou expire' });
+    }
+  }
+
   // Connexion / Inscription via Google OAuth
   static async googleAuth(req: Request, res: Response) {
     try {

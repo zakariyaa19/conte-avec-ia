@@ -355,6 +355,20 @@ export class ApiService {
     return this.request(`/api/auth/check-email?email=${encodeURIComponent(email)}`);
   }
 
+  static async requestMagicLink(email: string): Promise<{ success: boolean; message: string }> {
+    return this.request('/api/auth/magic-link', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    });
+  }
+
+  static async verifyMagicLink(token: string): Promise<{ success: boolean; data?: any; message?: string }> {
+    return this.request('/api/auth/magic-link/verify', {
+      method: 'POST',
+      body: JSON.stringify({ token }),
+    });
+  }
+
   static async getClientProfile(token: string): Promise<{ success: boolean; data: any }> {
     return this.request('/api/auth/profile', {
       headers: { 'Authorization': `Bearer ${token}` }
