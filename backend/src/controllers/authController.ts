@@ -418,38 +418,12 @@ export class AuthController {
       const frontendUrl = process.env.FRONTEND_URL || 'https://contedia.fr';
       const magicUrl = `${frontendUrl}/magic-login?token=${magicToken}`;
 
-      // Envoyer l'email
-      const Mailjet = require('node-mailjet');
-      const mailjet = new Mailjet({
-        apiKey: process.env.MJ_APIKEY_PUBLIC,
-        apiSecret: process.env.MJ_APIKEY_PRIVATE
-      });
-
-      await mailjet.post('send', { version: 'v3.1' }).request({
-        Messages: [{
-          From: {
-            Email: process.env.MAILJET_FROM_EMAIL || 'contact@contedia.fr',
-            Name: "Conte d'IA"
-          },
-          To: [{ Email: user.email, Name: user.firstName || '' }],
-          Subject: 'Votre lien de connexion — Conte d\'IA',
-          HTMLPart: `
-            <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 500px; margin: 0 auto; padding: 40px 20px;">
-              <h1 style="color: #2D3748; font-size: 24px; text-align: center;">Connexion a votre compte</h1>
-              <p style="color: #4A5568; font-size: 16px; text-align: center; line-height: 1.6;">
-                Cliquez sur le bouton ci-dessous pour acceder a votre bibliotheque de contes.
-              </p>
-              <div style="text-align: center; margin: 32px 0;">
-                <a href="${magicUrl}" style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); color: white; padding: 14px 40px; border-radius: 30px; text-decoration: none; font-weight: 700; font-size: 16px; display: inline-block;">
-                  Acceder a ma bibliotheque
-                </a>
-              </div>
-              <p style="color: #A0AEC0; font-size: 12px; text-align: center;">
-                Ce lien expire dans 30 minutes. Si vous n'avez pas demande ce lien, ignorez cet email.
-              </p>
-            </div>
-          `
-        }]
+      // Envoyer l'email via MailjetService
+      const { MailjetService } = await import('../utils/mailjetService');
+      await MailjetService.sendMagicLinkEmail({
+        email: user.email,
+        firstName: user.firstName || '',
+        magicUrl,
       });
 
       console.log(`[AUTH] Magic link sent to ${user.email}`);

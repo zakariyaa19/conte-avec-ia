@@ -103,6 +103,48 @@ export class MailjetService {
     }
   }
 
+  // Envoyer un email de magic link pour connexion
+  static async sendMagicLinkEmail(data: {
+    email: string;
+    firstName: string;
+    magicUrl: string;
+  }): Promise<void> {
+    try {
+      await getMailjet()
+        .post('send', { version: 'v3.1' })
+        .request({
+          Messages: [{
+            From: {
+              Email: process.env.MAILJET_FROM_EMAIL || 'contact@contedia.fr',
+              Name: 'Contes d\'IA'
+            },
+            To: [{ Email: data.email, Name: data.firstName }],
+            Subject: 'Votre lien de connexion — Conte d\'IA',
+            HTMLPart: `
+              <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 500px; margin: 0 auto; padding: 40px 20px;">
+                <h1 style="color: #2D3748; font-size: 24px; text-align: center;">Connexion a votre compte</h1>
+                <p style="color: #4A5568; font-size: 16px; text-align: center; line-height: 1.6;">
+                  Cliquez sur le bouton ci-dessous pour acceder a votre bibliotheque de contes.
+                </p>
+                <div style="text-align: center; margin: 32px 0;">
+                  <a href="${data.magicUrl}" style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); color: white; padding: 14px 40px; border-radius: 30px; text-decoration: none; font-weight: 700; font-size: 16px; display: inline-block;">
+                    Acceder a ma bibliotheque
+                  </a>
+                </div>
+                <p style="color: #A0AEC0; font-size: 12px; text-align: center;">
+                  Ce lien expire dans 30 minutes. Si vous n'avez pas demande ce lien, ignorez cet email.
+                </p>
+              </div>
+            `
+          }]
+        });
+      console.log('Email magic link envoye a:', data.email);
+    } catch (error) {
+      console.error('Erreur envoi magic link email:', error);
+      throw new Error('Echec envoi email magic link');
+    }
+  }
+
   // Générer un magic link pour accéder à la bibliothèque sans mot de passe
   static generateMagicDashboardLink(userId: string, email: string): string {
     const jwt = require('jsonwebtoken');
