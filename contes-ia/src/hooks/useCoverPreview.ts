@@ -119,10 +119,13 @@ export function useCoverPreview(formData: Partial<StoryFormData>): UseCoverPrevi
         specialEvents: formData.specialEvents,
       };
 
+      // Explicit 60s timeout — don't rely on browser defaults
+      const timeoutId = setTimeout(() => controller.abort(), 60000);
       const result = await ApiService.generateCoverPreview(
         { formData: formFields, photoBase64 },
         controller.signal
       );
+      clearTimeout(timeoutId);
 
       // Vérifier que la requête n'a pas été annulée
       if (controller.signal.aborted) return;

@@ -328,9 +328,14 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
     goToStep(prev);
   }, [currentStep, goToStep]);
 
+  const lastAdvanceRef = useRef(0);
   const handleCardSelect = useCallback((field: keyof StoryFormData, value: string) => {
     onUpdate({ [field]: value });
     if (value === 'custom' || value === 'other') return;
+    // Debounce: prevent double-tap from skipping steps
+    const now = Date.now();
+    if (now - lastAdvanceRef.current < 800) return;
+    lastAdvanceRef.current = now;
     setTimeout(() => goNext(), 400);
   }, [onUpdate, goNext]);
 

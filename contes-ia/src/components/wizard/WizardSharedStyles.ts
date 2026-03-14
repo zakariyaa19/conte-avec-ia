@@ -157,13 +157,13 @@ export const StepContainer = styled.div<{
 }>`
   position: absolute; inset: 0;
   display: flex; flex-direction: column; align-items: center;
-  padding: ${theme.spacing.xl} ${theme.spacing.lg} 100px;
+  padding: ${theme.spacing.xl} ${theme.spacing.lg} 140px;
   overflow-y: auto; overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   will-change: transform, opacity;
   ${stepAnimation}
   @media (max-width: ${theme.breakpoints.sm}) {
-    padding: ${theme.spacing.lg} ${theme.spacing.md} 90px;
+    padding: ${theme.spacing.lg} ${theme.spacing.md} 140px;
   }
 `;
 
