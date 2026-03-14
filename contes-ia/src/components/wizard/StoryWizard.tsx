@@ -158,8 +158,8 @@ const AGE_RANGE_TO_PROTAGONIST_AGE: Record<string, string> = {
   '0-2': '1', '3-5': '4', '6-9': '7', '10+': '11',
 };
 
-// Étapes à skip en mode simplifié (non-Club) : occasion, style, choice, extras1, extras2
-const SIMPLIFIED_SKIP_STEPS = new Set([2, 3, 6, 7, 8]);
+// Étapes à skip en mode simplifié (non-Club) : occasion, style, appearance, choice, extras1, extras2
+const SIMPLIFIED_SKIP_STEPS = new Set([2, 3, 5, 6, 7, 8]);
 
 interface StoryWizardProps {
   formData: Partial<StoryFormData>;
@@ -628,6 +628,11 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
         return (
           <>
             <StepTitle>{isSimplifiedMode ? 'Comment s\'appelle votre enfant ?' : 'Votre héros'}</StepTitle>
+            {isSimplifiedMode && (
+              <StepSubtitle style={{ color: theme.colors.accent.coral, fontWeight: 700 }}>
+                Votre conte personnalisé — à partir de {singlePriceLabel}
+              </StepSubtitle>
+            )}
             {!isSimplifiedMode && <StepSubtitle>Qui sera le personnage principal ?</StepSubtitle>}
             {showSummary && (
               <SummaryChipsRow>
@@ -685,6 +690,39 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 </GenderCard>
               ))}
             </CardGrid>
+
+            {/* Photo optionnelle — compact, intégré dans l'étape héros en mode simplifié */}
+            {isSimplifiedMode && (
+              <div style={{ width: '100%', maxWidth: 400, marginTop: theme.spacing.lg }}>
+                <p style={{
+                  fontSize: theme.fontSizes.sm, fontWeight: 600, color: theme.colors.text.secondary,
+                  textAlign: 'center', marginBottom: theme.spacing.sm,
+                }}>
+                  Ajoutez sa photo <span style={{ fontWeight: 400, color: theme.colors.text.light }}>(optionnel)</span>
+                </p>
+                <PhotoUploadZone
+                  $hasPhoto={!!formData.photo}
+                  onClick={() => fileInputRef.current?.click()}
+                  style={{ padding: '16px', minHeight: 'auto' }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <PhotoIcon style={{ fontSize: '1.5rem', margin: 0 }}>{formData.photo ? '✓' : '📷'}</PhotoIcon>
+                    <div style={{ textAlign: 'left' }}>
+                      <PhotoMainText style={{ fontSize: theme.fontSizes.sm, marginBottom: '2px' }}>
+                        {formData.photo ? (formData.photo as File).name : 'Importer une photo'}
+                      </PhotoMainText>
+                      <PhotoSubText style={{ fontSize: theme.fontSizes.xs }}>
+                        {formData.photo ? 'Cliquez pour changer' : 'Le personnage ressemblera à votre enfant'}
+                      </PhotoSubText>
+                    </div>
+                  </div>
+                  <HiddenFileInput ref={fileInputRef} type="file" accept="image/*" onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) { onUpdate({ photo: file, appearanceMode: 'photo', eyeColor: '', hairColor: '', skinColor: '' }); }
+                  }} />
+                </PhotoUploadZone>
+              </div>
+            )}
           </>
         );
 
@@ -997,8 +1035,9 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
           }
         };
 
-        // ── LOADING STATE: single immersive fullscreen canvas ──
-        if (!allReady) {
+        // ── LOADING STATE: for Club users, keep immersive fullscreen canvas ──
+        // For simplified mode, show a compact loading + pricing immediately
+        if (!allReady && !isSimplifiedMode) {
           // Progress stage for messages
           let stage = 0;
           if (coverImageUrl && !isCoverGenerating) stage = 1;
@@ -1130,17 +1169,59 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
           );
         }
 
-        // ── ALL READY: show the real preview ──
+        // ── SIMPLIFIED MODE + NOT READY: show compact loading + pricing immediately ──
+        // ── ALL READY (both modes): show full preview + pricing ──
         return (
           <>
             <StepTitle style={{ fontSize: theme.fontSizes.lg, marginBottom: theme.spacing.sm }}>
-              Le conte de {heroName} est prêt !
+              {allReady
+                ? `Le conte de ${heroName} est prêt !`
+                : `Nous créons le conte de ${heroName}...`}
             </StepTitle>
             <StepSubtitle style={{ marginBottom: theme.spacing.md }}>
-              Montrez l'histoire de {heroName} à votre famille ✨
+              {allReady
+                ? `Montrez l'histoire de ${heroName} à votre famille`
+                : 'Choisissez votre offre pendant que la magie opère'}
             </StepSubtitle>
 
-            {/* ── Book preview: cover + story page + locked page ── */}
+            {/* ── Compact loading indicator for simplified mode ── */}
+            {!allReady && isSimplifiedMode && (
+              <div style={{
+                width: '100%', maxWidth: 420, margin: `0 auto ${theme.spacing.xl}`,
+                background: `linear-gradient(135deg, ${theme.colors.accent.paleYellow}20, ${theme.colors.accent.softPink}15)`,
+                borderRadius: theme.borderRadius.xl, padding: theme.spacing.lg,
+                textAlign: 'center', border: '1px solid rgba(0,0,0,0.04)',
+              }}>
+                <div style={{ fontSize: '2rem', marginBottom: theme.spacing.sm }}>&#x2728;</div>
+                <p style={{ fontSize: theme.fontSizes.sm, color: theme.colors.text.secondary, margin: 0, lineHeight: 1.6 }}>
+                  {coverImageUrl ? 'Finalisation de votre histoire...' : `Création du conte de ${heroName}...`}
+                </p>
+                <div style={{
+                  width: '100%', height: 4, borderRadius: 4, background: theme.colors.background.secondary,
+                  marginTop: theme.spacing.md, overflow: 'hidden',
+                }}>
+                  <div style={{
+                    height: '100%', borderRadius: 4,
+                    background: `linear-gradient(90deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover})`,
+                    width: coverImageUrl && previewParagraphs ? '80%' : coverImageUrl ? '50%' : '25%',
+                    transition: 'width 1s ease',
+                  }} />
+                </div>
+                {(hasError || isStuck) && (
+                  <button onClick={handleRetryGeneration} style={{
+                    marginTop: theme.spacing.md, background: theme.colors.accent.coral, color: 'white',
+                    border: 'none', borderRadius: '8px', padding: '8px 16px', fontSize: '13px',
+                    fontWeight: 600, cursor: 'pointer',
+                  }}>
+                    Relancer la création
+                  </button>
+                )}
+              </div>
+            )}
+
+            {/* ── Book preview: cover + story page + locked page (only when ready) ── */}
+            {allReady && (
+            <>
             <BookPreviewWrapper>
               <MagicParticle $delay={0} $left="8%" $size={3} />
               <MagicParticle $delay={1.5} $left="22%" $size={5} />
@@ -1204,6 +1285,8 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
               <ValueBlockItem>PDF téléchargeable et imprimable</ValueBlockItem>
               <ValueBlockItem>Lecture illimitée à vie</ValueBlockItem>
             </ValueBlock>
+            </>
+            )}
 
             {/* ── Pricing section ── */}
             <div ref={pricingRef} style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
