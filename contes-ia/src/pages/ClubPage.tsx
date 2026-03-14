@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styled, { keyframes } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 import { theme } from '../styles/theme';
 import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
@@ -38,6 +38,28 @@ const pulse = keyframes`
 const shimmer = keyframes`
   0% { background-position: -200% center; }
   100% { background-position: 200% center; }
+`;
+
+const scrollCards = keyframes`
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+`;
+
+const popIn = keyframes`
+  0% { transform: scale(0.5) rotate(-8deg); opacity: 0; }
+  60% { transform: scale(1.05) rotate(2deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+`;
+
+const wiggle = keyframes`
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-3deg); }
+  75% { transform: rotate(3deg); }
+`;
+
+const slideUp = keyframes`
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
 `;
 
 // =============================================
@@ -731,6 +753,202 @@ const WhiteButton = styled.button`
 `;
 
 // =============================================
+// ILLUSTRATION STYLES SHOWCASE
+// =============================================
+
+const StylesSection = styled.section`
+  padding: ${theme.spacing['4xl']} 0;
+  background: linear-gradient(180deg, ${theme.colors.background.white} 0%, ${theme.colors.background.primary} 100%);
+  overflow: hidden;
+`;
+
+const StylesCarouselTrack = styled.div`
+  display: flex;
+  gap: ${theme.spacing.lg};
+  animation: ${scrollCards} 30s linear infinite;
+  width: max-content;
+  padding: ${theme.spacing.md} 0;
+
+  &:hover {
+    animation-play-state: paused;
+  }
+`;
+
+const StyleCard = styled.div<{ $visible: boolean; $delay: number }>`
+  flex-shrink: 0;
+  width: 200px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-8px) scale(1.03);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
+  }
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    width: 160px;
+  }
+`;
+
+const StyleCardImage = styled.div`
+  width: 100%;
+  height: 160px;
+  overflow: hidden;
+  position: relative;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  ${StyleCard}:hover & img {
+    transform: scale(1.1);
+  }
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    height: 120px;
+  }
+`;
+
+const StyleCardLabel = styled.div`
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+const StyleCardIcon = styled.span`
+  font-size: 1.2rem;
+`;
+
+const StyleCardName = styled.span`
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.sm};
+  font-weight: 700;
+  color: ${theme.colors.text.primary};
+`;
+
+const StylesBadge = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, ${theme.colors.accent.pastelBlue}30, ${theme.colors.accent.softPink}30);
+  border: 1px solid ${theme.colors.accent.pastelBlue}50;
+  border-radius: ${theme.borderRadius.full};
+  padding: 6px 16px;
+  font-size: ${theme.fontSizes.xs};
+  font-weight: 600;
+  color: ${theme.colors.text.secondary};
+  margin-bottom: ${theme.spacing.lg};
+`;
+
+// =============================================
+// CHARACTERS SHOWCASE
+// =============================================
+
+const CharactersSection = styled.section`
+  padding: ${theme.spacing['4xl']} 0;
+  background: ${theme.colors.background.white};
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -60px;
+    right: -60px;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: ${theme.colors.accent.softPink}15;
+    pointer-events: none;
+  }
+`;
+
+const CharactersGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: ${theme.spacing['3xl']};
+  align-items: center;
+
+  @media (max-width: ${theme.breakpoints.lg}) {
+    grid-template-columns: 1fr;
+    gap: ${theme.spacing['2xl']};
+  }
+`;
+
+const CharactersVisual = styled.div<{ $visible: boolean }>`
+  position: relative;
+  min-height: 380px;
+  opacity: ${p => p.$visible ? 1 : 0};
+  transform: translateX(${p => p.$visible ? '0' : '-40px'});
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+
+  @media (max-width: ${theme.breakpoints.lg}) {
+    min-height: 280px;
+    order: -1;
+  }
+`;
+
+const CharacterBubble = styled.div<{ $top: string; $left: string; $size: number; $bg: string; $delay: number; $visible: boolean }>`
+  position: absolute;
+  top: ${p => p.$top};
+  left: ${p => p.$left};
+  width: ${p => p.$size}px;
+  height: ${p => p.$size}px;
+  border-radius: 50%;
+  background: ${p => p.$bg};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: ${p => Math.max(p.$size * 0.4, 20)}px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  animation: ${p => p.$visible ? css`${popIn} 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) ${p.$delay}s both` : 'none'};
+  cursor: pointer;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    animation: ${wiggle} 0.5s ease;
+    transform: scale(1.1);
+  }
+`;
+
+const CharacterLabel = styled.div<{ $top: string; $left: string; $delay: number; $visible: boolean }>`
+  position: absolute;
+  top: ${p => p.$top};
+  left: ${p => p.$left};
+  background: white;
+  border-radius: 12px;
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: ${theme.colors.text.primary};
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  white-space: nowrap;
+  animation: ${p => p.$visible ? css`${slideUp} 0.5s ease ${p.$delay}s both` : 'none'};
+`;
+
+const CharactersCountBadge = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover});
+  color: white;
+  padding: 10px 20px;
+  border-radius: ${theme.borderRadius.full};
+  font-size: ${theme.fontSizes.sm};
+  font-weight: 700;
+  margin-top: ${theme.spacing.md};
+  box-shadow: ${theme.shadows.glow};
+`;
+
+// =============================================
 // CTA HELPER — Intelligent buttons
 // =============================================
 
@@ -815,10 +1033,25 @@ export const ClubPage: React.FC = () => {
 
   // Scroll reveal hooks
   const ebookReveal = useScrollReveal();
+  const stylesReveal = useScrollReveal();
+  const charsReveal = useScrollReveal();
   const libraryReveal = useStaggerReveal(3);
   const stepsReveal = useStaggerReveal(4);
   const priceReveal = useScrollReveal();
   const ctaReveal = useScrollReveal();
+
+  // Illustration styles data for carousel
+  const illustrationStyles = [
+    { icon: '🎨', name: 'Aquarelle', img: '/images/illustration-styles/aquarelle.jpg' },
+    { icon: '🎬', name: 'Animation 3D', img: '/images/illustration-styles/animation-3d.jpg' },
+    { icon: '🧱', name: 'Monde des blocs', img: '/images/illustration-styles/monde-des-blocs.jpg' },
+    { icon: '✂️', name: 'Papier découpé', img: '/images/illustration-styles/papier-decoupe.jpg' },
+    { icon: '🏺', name: 'Clay-animation', img: '/images/illustration-styles/clay-animation.jpg' },
+    { icon: '🥰', name: 'Kawaii', img: '/images/illustration-styles/kawaii.jpg' },
+    { icon: '🔷', name: 'Géométrique', img: '/images/illustration-styles/geometrique.jpg' },
+    { icon: '📚', name: 'Livre illustré', img: '/images/illustration-styles/livre-illustre.jpg' },
+    { icon: '🎌', name: 'Manga', img: '/images/illustration-styles/dessin-japonais-manga.jpg' },
+  ];
 
   const handleJoinClub = async (plan: 'monthly' | 'annual' = 'monthly') => {
     if (!isAuthenticated) {
@@ -955,6 +1188,101 @@ export const ClubPage: React.FC = () => {
             </TwoColGrid>
           </Container>
         </EbookSection>
+
+        {/* ============ 2b. STYLES D'ILLUSTRATION ============ */}
+        <StylesSection ref={stylesReveal.ref}>
+          <Container>
+            <CenteredTitle $visible={stylesReveal.isVisible}>
+              <StylesBadge>Exclusif Club</StylesBadge>
+              <SectionTitle style={{ textAlign: 'center' }}>9 styles d'illustration au choix</SectionTitle>
+              <Divider />
+              <CenterSubtitle>
+                Aquarelle, 3D, manga, papier découpé... Chaque style donne une personnalité unique au conte de votre enfant.
+              </CenterSubtitle>
+            </CenteredTitle>
+          </Container>
+
+          <div style={{ overflow: 'hidden', padding: `${theme.spacing.lg} 0` }}>
+            <StylesCarouselTrack>
+              {/* Duplicate for infinite scroll */}
+              {[...illustrationStyles, ...illustrationStyles].map((style, i) => (
+                <StyleCard key={`${style.name}-${i}`} $visible={stylesReveal.isVisible} $delay={i * 0.05}>
+                  <StyleCardImage>
+                    <img src={style.img} alt={style.name} loading="lazy" />
+                  </StyleCardImage>
+                  <StyleCardLabel>
+                    <StyleCardIcon>{style.icon}</StyleCardIcon>
+                    <StyleCardName>{style.name}</StyleCardName>
+                  </StyleCardLabel>
+                </StyleCard>
+              ))}
+            </StylesCarouselTrack>
+          </div>
+        </StylesSection>
+
+        {/* ============ 2c. PERSONNAGES SECONDAIRES ============ */}
+        <CharactersSection ref={charsReveal.ref}>
+          <Container>
+            <CharactersGrid>
+              <CharactersVisual $visible={charsReveal.isVisible}>
+                {/* Protagonist center */}
+                <CharacterBubble $visible={charsReveal.isVisible} $top="30%" $left="35%" $size={100} $bg={`linear-gradient(135deg, ${theme.colors.accent.coral}30, ${theme.colors.accent.softPink}40)`} $delay={0}>
+                  👧
+                </CharacterBubble>
+                {/* Secondary characters */}
+                <CharacterBubble $visible={charsReveal.isVisible} $top="5%" $left="20%" $size={72} $bg={`linear-gradient(135deg, ${theme.colors.accent.pastelBlue}40, #B8D4F0)`} $delay={0.2}>
+                  👦
+                </CharacterBubble>
+                <CharacterBubble $visible={charsReveal.isVisible} $top="10%" $left="65%" $size={64} $bg={`linear-gradient(135deg, ${theme.colors.accent.paleYellow}50, ${theme.colors.accent.creamyYellow})`} $delay={0.35}>
+                  👴
+                </CharacterBubble>
+                <CharacterBubble $visible={charsReveal.isVisible} $top="55%" $left="12%" $size={68} $bg={`linear-gradient(135deg, ${theme.colors.accent.lightGreen}40, #B8E6C0)`} $delay={0.5}>
+                  👩
+                </CharacterBubble>
+                <CharacterBubble $visible={charsReveal.isVisible} $top="60%" $left="68%" $size={60} $bg={`linear-gradient(135deg, #FFE0EC, #FFC0CB60)`} $delay={0.65}>
+                  🐕
+                </CharacterBubble>
+                <CharacterBubble $visible={charsReveal.isVisible} $top="80%" $left="40%" $size={56} $bg={`linear-gradient(135deg, ${theme.colors.accent.softPink}40, #FFD0E0)`} $delay={0.8}>
+                  🐱
+                </CharacterBubble>
+
+                {/* Labels */}
+                <CharacterLabel $visible={charsReveal.isVisible} $top="2%" $left="50%" $delay={0.9}>Frère, soeur</CharacterLabel>
+                <CharacterLabel $visible={charsReveal.isVisible} $top="42%" $left="0%" $delay={1.0}>Maman, papa</CharacterLabel>
+                <CharacterLabel $visible={charsReveal.isVisible} $top="75%" $left="60%" $delay={1.1}>Animal de compagnie</CharacterLabel>
+              </CharactersVisual>
+
+              <TextBlock $visible={charsReveal.isVisible} $fromRight>
+                <SectionLabel>Personnalisation avancée</SectionLabel>
+                <SectionTitle>Jusqu'à 5 personnages secondaires</SectionTitle>
+                <SectionText>
+                  Ajoutez les frères et soeurs, les grands-parents, les meilleurs amis ou même l'animal de compagnie. Chaque personnage est intégré dans l'histoire avec son prénom et son rôle.
+                </SectionText>
+                <FeatureList>
+                  <FeatureItem>
+                    <FeatureCheck>&#10003;</FeatureCheck>
+                    Famille : maman, papa, frères, soeurs, grands-parents
+                  </FeatureItem>
+                  <FeatureItem>
+                    <FeatureCheck>&#10003;</FeatureCheck>
+                    Amis : meilleur(e) ami(e), copain de classe, voisin
+                  </FeatureItem>
+                  <FeatureItem>
+                    <FeatureCheck>&#10003;</FeatureCheck>
+                    Animaux : chien, chat, lapin, hamster — avec leur vrai nom
+                  </FeatureItem>
+                  <FeatureItem>
+                    <FeatureCheck>&#10003;</FeatureCheck>
+                    Choisissez une occasion : anniversaire, Noël, rentrée, Aïd...
+                  </FeatureItem>
+                </FeatureList>
+                <CharactersCountBadge>
+                  Jusqu'à 5 personnages + animaux de compagnie
+                </CharactersCountBadge>
+              </TextBlock>
+            </CharactersGrid>
+          </Container>
+        </CharactersSection>
 
         {/* ============ 3. BIBLIOTHEQUE ============ */}
         <LibrarySection ref={libraryReveal.ref}>

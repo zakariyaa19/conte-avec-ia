@@ -303,15 +303,16 @@ export const PricingTiers: React.FC<PricingTiersProps> = ({ onSelectPlan, isFirs
           </PriceBlock>
           <Divider />
           <Features>
-            <Feature>Personnalisation avancee (occasion, style, personnages)</Feature>
-            <Feature>1 conte par semaine</Feature>
-            <Feature>Credits cumulables</Feature>
-            <Feature>Bibliotheque avec visionneuse</Feature>
-            <Feature>Telechargement PDF illimite</Feature>
+            <Feature>1 conte par semaine (credits cumulables)</Feature>
+            <Feature>9 styles d'illustration au choix</Feature>
+            <Feature>Jusqu'a 5 personnages secondaires</Feature>
+            <Feature>Animal de compagnie dans l'histoire</Feature>
+            <Feature>Themes et occasions (Noel, anniversaire...)</Feature>
+            <Feature>Bibliotheque en ligne + PDF illimite</Feature>
             <Feature>Annulable a tout moment</Feature>
           </Features>
           <Button variant="primary" size="lg" onClick={() => onSelectPlan('monthly')} fullWidth>
-            S'abonner
+            S'abonner au Club
           </Button>
         </Card>
 
@@ -326,10 +327,11 @@ export const PricingTiers: React.FC<PricingTiersProps> = ({ onSelectPlan, isFirs
           </PriceBlock>
           <Divider />
           <Features>
-            <Feature>Personnalisation avancee (occasion, style, personnages)</Feature>
-            <Feature>1 conte par semaine</Feature>
-            <Feature>52 contes par an</Feature>
             <Feature>Tout le Club Mensuel inclus</Feature>
+            <Feature>52 contes par an</Feature>
+            <Feature>9 styles d'illustration au choix</Feature>
+            <Feature>Jusqu'a 5 personnages secondaires</Feature>
+            <Feature>Animal de compagnie dans l'histoire</Feature>
             <Feature>Economisez 40&euro;+ par an</Feature>
           </Features>
           <Button variant={showAnnual ? 'primary' : 'outline'} size="lg" onClick={() => onSelectPlan('annual')} fullWidth>
