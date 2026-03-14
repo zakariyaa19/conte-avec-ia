@@ -334,46 +334,31 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
     setTimeout(() => goNext(), 400);
   }, [onUpdate, goNext]);
 
-  // Cover + story preview generation (parallel) — triggered when entering preview step
+  // Cover generation ONLY — triggered when entering preview step
+  // Story text + illustrations are generated AFTER purchase (faster funnel)
   useEffect(() => {
     if (ALL_STEPS[currentStep] === 'preview') {
       if (!previewStartRef.current) previewStartRef.current = Date.now();
       if (!coverImageUrl && !isCoverGenerating) generateCover();
-      if (!previewParagraphs && !isStoryPreviewGenerating) generateStoryPreview();
     } else {
       previewStartRef.current = null;
     }
   }, [currentStep]); // eslint-disable-line
 
-  // Trigger first illustration when cover + text preview are both ready
-  useEffect(() => {
-    if (illustrationTriggeredRef.current) return;
-    if (previewParagraphs && previewParagraphs.length > 0 && rawBase64 && !isIllustrationGenerating && !illustrationUrl) {
-      illustrationTriggeredRef.current = true;
-      generateIllustration(previewParagraphs[0], rawBase64);
-    }
-  }, [previewParagraphs, rawBase64, isIllustrationGenerating, illustrationUrl]); // eslint-disable-line
-
-  // Recovery: re-trigger generation when user returns to page (tab switch, phone lock, etc.)
+  // Recovery: re-trigger cover generation when user returns to page
   useEffect(() => {
     if (ALL_STEPS[currentStep] !== 'preview') return;
 
     const handleVisibilityChange = () => {
       if (document.visibilityState !== 'visible') return;
-      // Small delay to let browser restore network connections
       setTimeout(() => {
         if (!coverImageUrl && !isCoverGenerating) generateCover();
-        if (!previewParagraphs && !isStoryPreviewGenerating) generateStoryPreview();
-        // Reset illustration guard so it can re-trigger if needed
-        if (!illustrationBase64 && !isIllustrationGenerating) {
-          illustrationTriggeredRef.current = false;
-        }
       }, 500);
     };
 
     document.addEventListener('visibilitychange', handleVisibilityChange);
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
-  }, [currentStep, coverImageUrl, isCoverGenerating, previewParagraphs, isStoryPreviewGenerating, illustrationBase64, isIllustrationGenerating, generateCover, generateStoryPreview]); // eslint-disable-line
+  }, [currentStep, coverImageUrl, isCoverGenerating, generateCover]); // eslint-disable-line
 
   // Countdown timer for preview step
   useEffect(() => {
@@ -1044,12 +1029,6 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
             previewUpdate.coverImageBase64 = rawBase64;
             previewUpdate.coverTitle = coverTitle || undefined;
           }
-          if (illustrationUrl) {
-            previewUpdate.firstIllustrationUrl = illustrationUrl;
-          }
-          if (previewParagraphs) {
-            previewUpdate.storyPreviewTextJson = JSON.stringify(previewParagraphs);
-          }
           onUpdate(previewUpdate);
           metaTrackAddToCart(type, isClub ? 6.99 : singlePrice);
           // Scroll to order form
@@ -1058,31 +1037,19 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
           }, 100);
         };
 
-        // All content ready
-        const allReady = !!(coverImageUrl && !isCoverGenerating && previewParagraphs && illustrationBase64);
-        const hasError = !!(coverError || storyPreviewError);
-        // Only show "stuck" after 10s grace period to let generation hooks start
+        // Only cover needed — story text + illustrations generated after purchase
+        const allReady = !!(coverImageUrl && !isCoverGenerating);
+        const hasError = !!coverError;
         const previewElapsed = previewStartRef.current ? (Date.now() - previewStartRef.current) : 0;
-        const isStuck = !allReady && !hasError && !isCoverGenerating && !isStoryPreviewGenerating && !isIllustrationGenerating && previewElapsed > 10000;
+        const isStuck = !allReady && !hasError && !isCoverGenerating && previewElapsed > 10000;
 
         const handleRetryGeneration = () => {
           if (!coverImageUrl) generateCover();
-          if (!previewParagraphs) generateStoryPreview();
-          if (!illustrationBase64) {
-            illustrationTriggeredRef.current = false;
-            // If we have the needed data, re-trigger illustration directly
-            if (previewParagraphs && previewParagraphs.length > 0 && rawBase64) {
-              generateIllustration(previewParagraphs[0], rawBase64);
-            }
-          }
         };
 
-        // ── LOADING STATE: immersive fullscreen canvas for ALL users ──
+        // ── LOADING STATE: immersive fullscreen canvas ──
         if (!allReady) {
-          // Progress stage for messages
-          let stage = 0;
-          if (coverImageUrl && !isCoverGenerating) stage = 1;
-          if (coverImageUrl && !isCoverGenerating && previewParagraphs) stage = 2;
+          const stage = 0;
 
           const stageMessages = [
             [
@@ -1092,10 +1059,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
               'Votre conte se dessine...',
             ],
             [
-              `Rédaction de l'histoire de ${heroName}...`,
-              'Les personnages prennent vie...',
-              'Votre conte se construit page par page...',
-              'Les mots s\'assemblent avec soin...',
+              'Presque prêt...',
             ],
             [
               'Les illustrations prennent vie...',
@@ -1173,9 +1137,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                   <CanvasProgressFill $stage={stage} />
                 </CanvasProgressTrack>
                 <CanvasProgressSteps>
-                  <CanvasProgressStep $done={stage > 0} $active={stage === 0}>Couverture</CanvasProgressStep>
-                  <CanvasProgressStep $done={stage > 1} $active={stage === 1}>Histoire</CanvasProgressStep>
-                  <CanvasProgressStep $done={false} $active={stage === 2}>Illustrations</CanvasProgressStep>
+                  <CanvasProgressStep $done={false} $active={true}>Création de la couverture...</CanvasProgressStep>
                 </CanvasProgressSteps>
               </CanvasProgressContainer>
 
@@ -1239,32 +1201,13 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 </BookCoverImage>
               </BookPageFrame>
 
-              {/* Story page */}
-              <BookPageFrame ref={storyPageRef} style={{ cursor: 'pointer' }}
-                onClick={() => lockedPageRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })}>
-                <BookStoryLayout>
-                  <BookTextHalf>
-                    {creatorName && <BookCreatorTag>{creatorName}</BookCreatorTag>}
-                    <MaterializeText $ready $delay={0.2}>
-                      <p>{previewParagraphs![0]}</p>
-                    </MaterializeText>
-                    <BookPageBadge>1</BookPageBadge>
-                  </BookTextHalf>
-                  <BookImageHalf>
-                    <MaterializeImage $ready>
-                      <img src={`data:image/png;base64,${illustrationBase64}`} alt="Illustration" />
-                    </MaterializeImage>
-                  </BookImageHalf>
-                </BookStoryLayout>
-              </BookPageFrame>
-
-              {/* Locked page */}
+              {/* Locked page — story + illustrations generated after purchase */}
               <BookPageFrame $compact ref={lockedPageRef}>
                 <BookLockedOverlay onClick={() => pricingRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })}>
                   <BookLockedContent>
                     <BookLockedIcon>&#x1F512;</BookLockedIcon>
                     <BookLockedTitle>L'aventure de {heroName} continue...</BookLockedTitle>
-                    <BookLockedSubtitle>La suite de l'histoire est prête...</BookLockedSubtitle>
+                    <BookLockedSubtitle>12 pages illustrées vous attendent</BookLockedSubtitle>
                   </BookLockedContent>
                 </BookLockedOverlay>
               </BookPageFrame>
