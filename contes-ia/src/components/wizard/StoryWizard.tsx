@@ -541,13 +541,13 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
         return (
           <>
             <StepTitle>Quel univers ?</StepTitle>
-            <CardGrid $columns={4} $compact>
-              {THEME_OPTIONS.map((o, i) => {
+            <CardGrid $columns={3} $compact>
+              {THEME_OPTIONS.filter(o => o.value !== 'custom').map((o, i) => {
                 const isRecommended = recommendedThemes.includes(o.value);
                 return (
                   <ImageCard key={o.value} $isSelected={formData.generalTheme === o.value} $delay={i}
                     aria-label={o.label} style={{ position: 'relative' }}
-                    onClick={() => o.value === 'custom' ? onUpdate({ generalTheme: 'custom' }) : handleCardSelect('generalTheme', o.value)}>
+                    onClick={() => handleCardSelect('generalTheme', o.value)}>
                     {isRecommended && <CardBadgePill $variant="recommended">Recommandé</CardBadgePill>}
                     <CardImg $src={o.imagePath} />
                     <CardImgLabel>{o.label}</CardImgLabel>
@@ -555,10 +555,41 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 );
               })}
             </CardGrid>
+
+            {/* Custom theme — full-width card */}
+            <div
+              onClick={() => onUpdate({ generalTheme: 'custom' })}
+              style={{
+                width: '100%', maxWidth: 480, marginTop: theme.spacing.md,
+                padding: '16px 20px',
+                borderRadius: theme.borderRadius.xl,
+                border: `2px solid ${formData.generalTheme === 'custom' ? theme.colors.accent.coral : 'rgba(0,0,0,0.06)'}`,
+                background: formData.generalTheme === 'custom'
+                  ? `linear-gradient(135deg, ${theme.colors.accent.coral}08, ${theme.colors.accent.softPink}10)`
+                  : 'white',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                textAlign: 'center',
+              }}
+            >
+              <div style={{
+                fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.base, fontWeight: 700,
+                color: theme.colors.text.primary, marginBottom: '4px',
+              }}>
+                Inventez votre propre univers
+              </div>
+              <div style={{
+                fontSize: theme.fontSizes.xs, color: theme.colors.text.light, lineHeight: 1.5,
+              }}>
+                Harry Potter, Star Wars, Pat'Patrouille, Monde des dinosaures, Pirates...
+              </div>
+            </div>
+
             {formData.generalTheme === 'custom' && (
               <>
-                <CustomInput type="text" placeholder="Décrivez votre thème..." value={formData.customTheme || ''}
-                  onChange={(e) => handleInputChange('customTheme', e.target.value)} autoFocus />
+                <CustomInput type="text" placeholder="Ex : L'univers d'Harry Potter, Le monde des dinosaures..." value={formData.customTheme || ''}
+                  onChange={(e) => handleInputChange('customTheme', e.target.value)} autoFocus
+                  style={{ maxWidth: 480, marginTop: theme.spacing.sm }} />
                 <ContinueButton $isReady={!!(formData.customTheme?.trim())} disabled={!formData.customTheme?.trim()} onClick={goNext}>
                   Continuer
                 </ContinueButton>
