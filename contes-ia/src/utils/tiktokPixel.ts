@@ -1,5 +1,7 @@
 // Utilitaire pour TikTok Pixel tracking
 
+import { safeSessionStorage } from './safeStorage';
+
 // Attendre que le pixel TikTok soit chargé (polling jusqu'à 5s max)
 function waitForTTQ(maxWaitMs: number = 5000): Promise<boolean> {
   return new Promise((resolve) => {
@@ -176,7 +178,7 @@ export async function trackInitiateCheckout(productType: string, userEmail?: str
       try {
         // Vérifier si déjà déclenché dans cette session
         const sessionKey = 'tiktok_initiate_checkout_fired';
-        if (sessionStorage.getItem(sessionKey)) {
+        if (safeSessionStorage.getItem(sessionKey)) {
           console.log('⚠️ TikTok Pixel: InitiateCheckout déjà déclenché dans cette session');
           resolve();
           return;
@@ -249,7 +251,7 @@ export async function trackInitiateCheckout(productType: string, userEmail?: str
         }).catch(err => console.error('❌ Server event error:', err));
         
         // Marquer comme déclenché
-        sessionStorage.setItem(sessionKey, 'true');
+        safeSessionStorage.setItem(sessionKey, 'true');
         console.log(`✅ TikTok Pixel: InitiateCheckout tracked - ${contentName} (${value} EUR)`);
       } catch (error) {
         console.error('❌ TikTok Pixel InitiateCheckout error:', error);
@@ -265,7 +267,7 @@ export async function trackPurchase(productType: string, orderId: string, userEm
     try {
       // Vérifier si déjà déclenché pour cette commande
       const sessionKey = `tiktok_purchase_fired_${orderId}`;
-      if (sessionStorage.getItem(sessionKey)) {
+      if (safeSessionStorage.getItem(sessionKey)) {
         console.log(`⚠️ TikTok Pixel: Purchase déjà déclenché pour la commande ${orderId}`);
         return;
       }
@@ -317,7 +319,7 @@ export async function trackPurchase(productType: string, orderId: string, userEm
       });
       
       // Marquer comme déclenché pour cette commande
-      sessionStorage.setItem(sessionKey, 'true');
+      safeSessionStorage.setItem(sessionKey, 'true');
       console.log(`✅ TikTok Pixel: Purchase tracked - Order ${orderId} - ${contentName} (${value} EUR)`);
     } catch (error) {
       console.error('❌ TikTok Pixel Purchase error:', error);

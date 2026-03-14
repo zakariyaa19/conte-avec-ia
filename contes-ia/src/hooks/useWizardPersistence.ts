@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react';
+import { safeLocalStorage } from '../utils/safeStorage';
 
 const STORAGE_KEY = 'wizard_draft_v2';
 const TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
@@ -33,16 +34,16 @@ export function useWizardPersistence() {
         currentStep,
         savedAt: Date.now(),
       };
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(draft));
+      safeLocalStorage.setItem(STORAGE_KEY, JSON.stringify(draft));
     } catch { /* quota exceeded — ignore */ }
   }, []);
 
   const load = useCallback((): WizardDraft | null => {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
+      const raw = safeLocalStorage.getItem(STORAGE_KEY);
       if (!raw) return null;
       const draft: WizardDraft = JSON.parse(raw);
-      if (isExpired(draft)) { localStorage.removeItem(STORAGE_KEY); return null; }
+      if (isExpired(draft)) { safeLocalStorage.removeItem(STORAGE_KEY); return null; }
       return draft;
     } catch {
       return null;
@@ -50,7 +51,7 @@ export function useWizardPersistence() {
   }, []);
 
   const clear = useCallback(() => {
-    localStorage.removeItem(STORAGE_KEY);
+    safeLocalStorage.removeItem(STORAGE_KEY);
   }, []);
 
   const hasDraft = useCallback((): boolean => {

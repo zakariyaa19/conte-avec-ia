@@ -56,6 +56,7 @@ import { PolitiqueConfidentialitePage } from './pages/PolitiqueConfidentialitePa
 import ScrollToTop from './components/utils/ScrollToTop';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { HelmetProvider } from 'react-helmet-async';
+import { WebViewBanner } from './components/ui/WebViewBanner';
 
 function App() {
   return (
@@ -64,6 +65,7 @@ function App() {
       <GlobalStyles />
       <Router>
         <AuthProvider>
+        <WebViewBanner />
         <ScrollToTop />
         <Routes>
           <Route path="/" element={<HomePage />} />

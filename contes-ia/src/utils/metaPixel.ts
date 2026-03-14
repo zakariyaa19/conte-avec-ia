@@ -1,5 +1,7 @@
 // Utilitaire pour Meta Pixel tracking (Facebook)
 
+import { safeSessionStorage } from './safeStorage';
+
 // Déclarer le type pour fbq
 declare global {
   interface Window {
@@ -76,7 +78,7 @@ export async function metaTrackInitiateCheckout(
 
   try {
     const sessionKey = 'meta_initiate_checkout_fired';
-    if (sessionStorage.getItem(sessionKey)) {
+    if (safeSessionStorage.getItem(sessionKey)) {
       console.log('Meta Pixel: InitiateCheckout déjà déclenché dans cette session');
       return;
     }
@@ -100,7 +102,7 @@ export async function metaTrackInitiateCheckout(
       num_items: 1
     });
 
-    sessionStorage.setItem(sessionKey, 'true');
+    safeSessionStorage.setItem(sessionKey, 'true');
     console.log(`Meta Pixel: InitiateCheckout tracked - ${contentName} (${checkoutValue} ${currency})`);
   } catch (error) {
     console.error('Meta Pixel InitiateCheckout error:', error);
@@ -145,7 +147,7 @@ export function metaTrackLead(
 
   try {
     const sessionKey = 'meta_lead_fired';
-    if (sessionStorage.getItem(sessionKey)) return;
+    if (safeSessionStorage.getItem(sessionKey)) return;
 
     window.fbq('track', 'Lead', {
       content_name: 'Conte personnalisé',
@@ -154,7 +156,7 @@ export function metaTrackLead(
       value: singlePrice
     });
 
-    sessionStorage.setItem(sessionKey, 'true');
+    safeSessionStorage.setItem(sessionKey, 'true');
     console.log('Meta Pixel: Lead tracked');
   } catch (error) {
     console.error('Meta Pixel Lead error:', error);
@@ -187,7 +189,7 @@ export function metaTrackSubscribe(): void {
 
   try {
     const sessionKey = 'meta_subscribe_fired';
-    if (sessionStorage.getItem(sessionKey)) return;
+    if (safeSessionStorage.getItem(sessionKey)) return;
 
     window.fbq('track', 'Subscribe', {
       content_name: 'Club des Histoires',
@@ -196,7 +198,7 @@ export function metaTrackSubscribe(): void {
       predicted_ltv: 59.94 // 6 mois de rétention estimée
     });
 
-    sessionStorage.setItem(sessionKey, 'true');
+    safeSessionStorage.setItem(sessionKey, 'true');
     console.log('Meta Pixel: Subscribe tracked');
   } catch (error) {
     console.error('Meta Pixel Subscribe error:', error);
@@ -220,7 +222,7 @@ export async function metaTrackPurchase(
 
   try {
     const sessionKey = `meta_purchase_fired_${orderId}`;
-    if (sessionStorage.getItem(sessionKey)) {
+    if (safeSessionStorage.getItem(sessionKey)) {
       console.log(`Meta Pixel: Purchase déjà déclenché pour la commande ${orderId}`);
       return;
     }
@@ -245,7 +247,7 @@ export async function metaTrackPurchase(
       order_id: orderId
     });
 
-    sessionStorage.setItem(sessionKey, 'true');
+    safeSessionStorage.setItem(sessionKey, 'true');
     console.log(`Meta Pixel: Purchase tracked - Order ${orderId} - ${contentName} (${purchaseValue} ${currency})`);
   } catch (error) {
     console.error('Meta Pixel Purchase error:', error);

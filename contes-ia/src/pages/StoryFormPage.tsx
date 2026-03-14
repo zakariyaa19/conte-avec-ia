@@ -159,7 +159,24 @@ export const StoryFormPage: React.FC = () => {
 
       // Stripe URL returned inline (single round trip — fast path)
       if (orderResponse.stripeUrl) {
+        // Attempt redirect — add a safety net for WebViews that may block it
         window.location.href = orderResponse.stripeUrl;
+        // If still here after 3s, the redirect may have failed (WebView issue)
+        setTimeout(() => {
+          if (document.hasFocus()) {
+            // User is still on this page — redirect didn't work
+            // Show the URL as a clickable fallback
+            const retry = window.confirm(
+              'La redirection vers le paiement n\'a pas fonctionné.\n\n' +
+              'Appuyez sur OK pour réessayer.'
+            );
+            if (retry) {
+              window.location.replace(orderResponse.stripeUrl!);
+            } else {
+              setIsSubmitting(false);
+            }
+          }
+        }, 3000);
         return;
       }
 
@@ -186,11 +203,11 @@ export const StoryFormPage: React.FC = () => {
 
     } catch (error: any) {
       console.error('Erreur soumission:', error);
-      let errorMessage = 'Une erreur est survenue lors de la soumission.';
+      let errorMessage = 'Une erreur est survenue. Veuillez réessayer.';
       try {
         const msg = error?.message || '';
         if (msg.includes('timeout') || msg.includes('AbortError')) {
-          errorMessage = 'La requête a pris trop de temps. Veuillez réessayer dans quelques instants.';
+          errorMessage = 'La requête a pris trop de temps. Vérifiez votre connexion internet et réessayez.';
         } else if (msg.includes('fetch') || msg.includes('network') || msg.includes('Failed')) {
           errorMessage = 'Problème de connexion. Vérifiez votre connexion internet et réessayez.';
         } else if (msg) {

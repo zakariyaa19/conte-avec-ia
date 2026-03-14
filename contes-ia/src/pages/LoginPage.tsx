@@ -9,6 +9,7 @@ import { Button } from '../components/ui/Button';
 import { useAuth } from '../contexts/AuthContext';
 import { ApiService } from '../config/api';
 import { metaTrackCompleteRegistration } from '../utils/metaPixel';
+import { isInAppBrowser } from '../utils/safeStorage';
 
 const fadeInUp = keyframes`
   from { opacity: 0; transform: translateY(20px); }
@@ -535,23 +536,27 @@ export const LoginPage: React.FC = () => {
               : 'Accedez a votre bibliotheque de contes'}
           </Subtitle>
 
-          {/* Google OAuth Button */}
-          <GoogleButtonWrapper>
-            <GoogleLogin
-              onSuccess={(credentialResponse: CredentialResponse) => {
-                if (credentialResponse.credential) {
-                  handleGoogleLogin(credentialResponse.credential);
-                }
-              }}
-              onError={() => setError('Erreur de connexion Google')}
-              text={isRegister ? 'signup_with' : 'signin_with'}
-              shape="rectangular"
-              size="large"
-              width="100%"
-              logo_alignment="left"
-            />
-          </GoogleButtonWrapper>
-          <OrDivider>ou</OrDivider>
+          {/* Google OAuth Button — hidden in Facebook/Instagram WebView (blocked by Google) */}
+          {!isInAppBrowser() && (
+            <>
+              <GoogleButtonWrapper>
+                <GoogleLogin
+                  onSuccess={(credentialResponse: CredentialResponse) => {
+                    if (credentialResponse.credential) {
+                      handleGoogleLogin(credentialResponse.credential);
+                    }
+                  }}
+                  onError={() => setError('Erreur de connexion Google')}
+                  text={isRegister ? 'signup_with' : 'signin_with'}
+                  shape="rectangular"
+                  size="large"
+                  width="100%"
+                  logo_alignment="left"
+                />
+              </GoogleButtonWrapper>
+              <OrDivider>ou</OrDivider>
+            </>
+          )}
 
           <Form onSubmit={handleSubmit}>
             {error && <ErrorMsg>{error}</ErrorMsg>}
