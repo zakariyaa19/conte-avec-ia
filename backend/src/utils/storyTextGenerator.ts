@@ -78,7 +78,8 @@ const MESSAGE_LABELS: Record<string, string> = {
 function buildStoryPrompt(params: StoryTextParams): string {
   const name = params.protagonistName || 'Enfant';
   const genderWord = params.protagonistGender === 'girl' ? 'fille' : 'garcon';
-  const age = params.protagonistAge || params.ageRange || '6-9';
+  const hasSpecificAge = !!params.protagonistAge;
+  const ageForVocab = params.protagonistAge || (params.ageRange === '0-2' ? '2' : params.ageRange === '3-5' ? '4' : params.ageRange === '10+' ? '11' : '7');
 
   const theme = params.customTheme || THEME_LABELS[params.generalTheme] || params.generalTheme;
   const occasion = params.customSubject || OCCASION_LABELS[params.specificSubject] || params.specificSubject || '';
@@ -109,7 +110,7 @@ function buildStoryPrompt(params: StoryTextParams): string {
 
 PROTAGONISTE :
 - Prenom : ${name}
-- Age : ${age}
+${hasSpecificAge ? `- Age : ${params.protagonistAge} ans` : `- Tranche d'age : ${params.ageRange || '6-9'} ans (NE PAS mentionner un age precis dans le recit)`}
 - Genre : ${genderWord}
 ${params.hobbies ? `- Passions/Hobbies : ${params.hobbies}` : ''}
 ${params.favoriteDish ? `- Plat favori : ${params.favoriteDish}` : ''}
@@ -124,7 +125,7 @@ ${params.specialEvents ? `EVENEMENT SPECIAL : ${params.specialEvents} — integr
 
 EXIGENCES :
 1. Arc narratif lineaire : debut (presentation), developpement (aventure/defi), climax, resolution, conclusion
-2. Vocabulaire adapte a un enfant de ${age} ans
+2. Vocabulaire adapte a un enfant de ${ageForVocab} ans
 3. Le prenom "${name}" doit apparaitre regulierement
 4. La morale doit etre organique, integree a l'histoire (pas de lecon explicite a la fin)
 5. Chaque paragraphe fait 3 a 5 phrases
@@ -132,6 +133,7 @@ ${params.hobbies ? `6. Les passions de ${name} (${params.hobbies}) doivent etre 
 ${params.favoriteDish ? `7. Mentionner le plat favori (${params.favoriteDish}) a un moment de l'histoire` : ''}
 8. ${secondaryChars ? `CRUCIAL : Chaque personnage secondaire doit apparaitre dans PLUSIEURS paragraphes, avec des actions concretes et des dialogues. Ils sont essentiels a l'histoire, pas de la figuration.` : 'L\'histoire doit etre captivante, magique et positive'}
 9. Ecris en ${language}
+${!hasSpecificAge ? `10. IMPORTANT : Ne mentionne JAMAIS un age precis pour ${name} dans le texte. Ne dis pas "avait X ans" ou "agee de X ans". Utilise des expressions comme "petit(e)", "jeune" si necessaire.` : ''}
 
 FORMAT DE REPONSE :
 Reponds UNIQUEMENT avec un JSON array de exactement 12 strings (chaque string = 1 paragraphe).
@@ -206,7 +208,8 @@ export interface StoryPreviewResult {
 function buildStoryPreviewPrompt(params: StoryTextParams): string {
   const name = params.protagonistName || 'Enfant';
   const genderWord = params.protagonistGender === 'girl' ? 'fille' : 'garcon';
-  const age = params.protagonistAge || params.ageRange || '6-9';
+  const hasSpecificAge = !!params.protagonistAge;
+  const ageForVocab = params.protagonistAge || (params.ageRange === '0-2' ? '2' : params.ageRange === '3-5' ? '4' : params.ageRange === '10+' ? '11' : '7');
 
   const theme = params.customTheme || THEME_LABELS[params.generalTheme] || params.generalTheme;
   const occasion = params.customSubject || OCCASION_LABELS[params.specificSubject] || params.specificSubject || '';
@@ -228,7 +231,7 @@ function buildStoryPreviewPrompt(params: StoryTextParams): string {
 
 PROTAGONISTE :
 - Prenom : ${name}
-- Age : ${age}
+${hasSpecificAge ? `- Age : ${params.protagonistAge} ans` : `- Tranche d'age : ${params.ageRange || '6-9'} ans (NE PAS mentionner un age precis)`}
 - Genre : ${genderWord}
 ${params.hobbies ? `- Passions : ${params.hobbies}` : ''}
 
@@ -241,10 +244,11 @@ EXIGENCES :
 1. Exactement 3 paragraphes captivants qui ouvrent l'histoire
 2. Le lecteur doit etre immerse et vouloir connaitre la suite
 3. Le prenom "${name}" doit apparaitre des le premier paragraphe
-4. Vocabulaire adapte a un enfant de ${age} ans
+4. Vocabulaire adapte a un enfant de ${ageForVocab} ans
 5. Chaque paragraphe fait 3 a 5 phrases
 6. Terminer sur un moment de suspense ou d'excitation qui donne envie de lire la suite
 7. Ecris en ${language}
+${!hasSpecificAge ? `8. IMPORTANT : Ne mentionne JAMAIS un age precis pour ${name}. Pas de "avait X ans".` : ''}
 
 FORMAT DE REPONSE :
 Reponds UNIQUEMENT avec un JSON array de exactement 3 strings.

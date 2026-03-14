@@ -27,11 +27,8 @@ export class PreviewController {
         });
       }
 
-      // Valider les champs obligatoires (couleurs requises seulement si pas de photo)
+      // Valider les champs obligatoires (couleurs optionnelles — mode simplifié peut ne pas les avoir)
       const required = ['protagonistName', 'protagonistAge', 'protagonistGender', 'generalTheme'];
-      if (!photoBase64) {
-        required.push('eyeColor', 'hairColor', 'skinColor');
-      }
       const missing = required.filter(f => !formData[f]);
       if (missing.length > 0) {
         return res.status(400).json({

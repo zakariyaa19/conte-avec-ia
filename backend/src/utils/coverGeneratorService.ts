@@ -303,24 +303,24 @@ Respond in English only.`
 function getAgeDescription(ageRange: string | undefined, protagonistAge: string): { ageLabel: string; bodyType: string } {
   if (ageRange === '0-2') {
     return {
-      ageLabel: protagonistAge || 'baby',
+      ageLabel: protagonistAge ? `${protagonistAge}-month-old` : 'baby',
       bodyType: 'a tiny baby/toddler with chubby round cheeks, small pudgy body, very short or no hair, big round innocent eyes, baby proportions (large head relative to body)'
     };
   }
   if (ageRange === '3-5') {
     return {
-      ageLabel: protagonistAge || '4-year-old',
+      ageLabel: protagonistAge ? `${protagonistAge}-year-old` : 'young child',
       bodyType: 'a small young child with round soft face, chubby cheeks, short stature, playful toddler proportions'
     };
   }
   if (ageRange === '10+') {
     return {
-      ageLabel: protagonistAge || '11-year-old',
+      ageLabel: protagonistAge ? `${protagonistAge}-year-old` : 'pre-teen',
       bodyType: 'a pre-teen/young adolescent with more mature proportions, taller build, defined facial features'
     };
   }
   return {
-    ageLabel: protagonistAge || '7-year-old',
+    ageLabel: protagonistAge ? `${protagonistAge}-year-old` : 'young child',
     bodyType: 'a young child with friendly round face and kid proportions'
   };
 }
@@ -339,7 +339,7 @@ function buildCharacterDescription(params: CoverGenerationParams, photoAnalysis:
     return `${bodyType} — a cheerful ${ageLabel} ${genderWord}. The character's appearance should be based on the provided reference photo. Cute and expressive face, friendly smile.`;
   }
 
-  // Manual mode — use selected colors
+  // Manual mode — use selected colors (or defaults if simplified mode with no appearance data)
   const eyeColorMap: Record<string, string> = {
     brown: 'warm brown', blue: 'bright blue', green: 'vivid green',
     hazel: 'hazel', gray: 'soft gray', amber: 'amber golden',
@@ -354,9 +354,15 @@ function buildCharacterDescription(params: CoverGenerationParams, photoAnalysis:
     light: 'light fair', medium: 'medium warm', olive: 'olive tan', dark: 'dark brown'
   };
 
-  const eyes = eyeColorMap[params.eyeColor || 'brown'] || params.eyeColor || 'warm brown';
-  const hair = hairColorMap[params.hairColor || 'brown'] || params.hairColor || 'chestnut brown';
-  const skin = skinColorMap[params.skinColor || 'medium'] || params.skinColor || 'medium warm';
+  // If no appearance data provided (simplified wizard), use generic description with light skin
+  const hasAppearanceData = !!(params.eyeColor || params.hairColor || params.skinColor);
+  if (!hasAppearanceData) {
+    return `${bodyType} — a cheerful ${ageLabel} ${genderWord} with light fair skin, cute and expressive face, friendly smile`;
+  }
+
+  const eyes = eyeColorMap[params.eyeColor || ''] || params.eyeColor || 'bright';
+  const hair = hairColorMap[params.hairColor || ''] || params.hairColor || 'brown';
+  const skin = skinColorMap[params.skinColor || 'light'] || params.skinColor || 'light fair';
 
   return `${bodyType} — a cheerful ${ageLabel} ${genderWord} with ${skin} skin, ${eyes} eyes and ${hair} hair, cute and expressive face, friendly smile`;
 }

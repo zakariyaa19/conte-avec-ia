@@ -102,15 +102,24 @@ The main character MUST look IDENTICAL to the reference image on EVERY page. Sam
       light: 'light fair', medium: 'medium warm', olive: 'olive tan', dark: 'rich dark brown'
     };
 
-    const eyes = eyeColorMap[params.eyeColor || ''] || params.eyeColor || 'bright';
-    const hair = hairColorMap[params.hairColor || ''] || params.hairColor || 'brown';
-    const skin = skinColorMap[params.skinColor || ''] || params.skinColor || 'medium';
+    // If no appearance data provided (simplified wizard), use generic description with light skin
+    const hasAppearanceData = !!(params.eyeColor || params.hairColor || params.skinColor);
+    if (!hasAppearanceData) {
+      characterBlock = `=== PRIORITY 1 — MAIN CHARACTER (MOST IMPORTANT) ===
+${params.protagonistName} is ${bodyType} — a cheerful ${ageLabel} ${genderWord}.
+Skin: light fair. Face: cute, round, friendly smile.
+The main character MUST look IDENTICAL on EVERY page. Same face, same skin tone, same body proportions, same clothing.`;
+    } else {
+      const eyes = eyeColorMap[params.eyeColor || ''] || params.eyeColor || 'bright';
+      const hair = hairColorMap[params.hairColor || ''] || params.hairColor || 'brown';
+      const skin = skinColorMap[params.skinColor || 'light'] || params.skinColor || 'light fair';
 
-    characterBlock = `=== PRIORITY 1 — MAIN CHARACTER (MOST IMPORTANT) ===
+      characterBlock = `=== PRIORITY 1 — MAIN CHARACTER (MOST IMPORTANT) ===
 ${params.protagonistName} is ${bodyType} — a cheerful ${ageLabel} ${genderWord}.
 Skin: ${skin}. Eyes: ${eyes}, large and expressive. Hair: ${hair}.
 Face: cute, round, friendly smile.
 The main character MUST look IDENTICAL on EVERY page. Same face, same hair color, same skin tone, same eyes, same body proportions, same clothing.`;
+    }
   }
 
   // --- Personnages secondaires ---
@@ -167,18 +176,18 @@ function getAgeDescription(ageRange: string | undefined, protagonistAge: string 
   }
   if (ageRange === '3-5') {
     return {
-      ageLabel: protagonistAge ? `${protagonistAge}-year-old` : '4-year-old',
+      ageLabel: protagonistAge ? `${protagonistAge}-year-old` : 'young child',
       bodyType: 'a small young child with round soft face, chubby cheeks, short stature, playful toddler proportions'
     };
   }
   if (ageRange === '10+') {
     return {
-      ageLabel: protagonistAge ? `${protagonistAge}-year-old` : '11-year-old',
+      ageLabel: protagonistAge ? `${protagonistAge}-year-old` : 'pre-teen',
       bodyType: 'a pre-teen/young adolescent with more mature proportions, taller build, defined facial features'
     };
   }
   return {
-    ageLabel: protagonistAge ? `${protagonistAge}-year-old` : '7-year-old',
+    ageLabel: protagonistAge ? `${protagonistAge}-year-old` : 'young child',
     bodyType: 'a young child with friendly round face and kid proportions'
   };
 }
