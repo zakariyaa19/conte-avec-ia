@@ -67,7 +67,7 @@ export function useCoverPreview(formData: Partial<StoryFormData>): UseCoverPrevi
   useEffect(() => {
     if (!isGenerating) return;
     const check = setInterval(() => {
-      if (generationStartRef.current && Date.now() - generationStartRef.current > 90_000) {
+      if (generationStartRef.current && Date.now() - generationStartRef.current > 30_000) {
         console.warn('[useCoverPreview] Generation stale, resetting');
         setIsGenerating(false);
         setError('La génération a pris trop de temps. Réessayez.');

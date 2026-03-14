@@ -1041,7 +1041,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
         const allReady = !!(coverImageUrl && !isCoverGenerating);
         const hasError = !!coverError;
         const previewElapsed = previewStartRef.current ? (Date.now() - previewStartRef.current) : 0;
-        const isStuck = !allReady && !hasError && !isCoverGenerating && previewElapsed > 10000;
+        const isStuck = !allReady && !hasError && !isCoverGenerating && previewElapsed > 5000;
 
         const handleRetryGeneration = () => {
           if (!coverImageUrl) generateCover();
