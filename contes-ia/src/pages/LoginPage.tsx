@@ -394,6 +394,8 @@ export const LoginPage: React.FC = () => {
   const initialStripePlan: 'monthly' | 'annual' = planParam === 'club_annual' ? 'annual' : 'monthly';
 
   const [mode, setMode] = useState<'login' | 'register'>(initialMode);
+  const [loginMethod, setLoginMethod] = useState<'magic' | 'password'>('magic');
+  const [magicLinkSent, setMagicLinkSent] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [firstName, setFirstName] = useState('');
@@ -529,207 +531,233 @@ export const LoginPage: React.FC = () => {
       <Header />
       <LoginContainer>
         <LoginCard $wide={isRegister}>
-          <Title>{isRegister ? 'Creer un compte' : 'Connexion'}</Title>
+          <Title>{isRegister ? 'Creer un compte' : 'Acceder a mes contes'}</Title>
           <Subtitle>
             {isRegister
               ? 'Inscrivez-vous pour retrouver vos contes'
-              : 'Accedez a votre bibliotheque de contes'}
+              : 'Entrez votre email pour recevoir un lien de connexion'}
           </Subtitle>
 
-          {/* Google OAuth Button — hidden in Facebook/Instagram WebView (blocked by Google) */}
-          {!isInAppBrowser() && (
+          {error && <ErrorMsg>{error}</ErrorMsg>}
+
+          {stripeError && (
+            <RedirectError>
+              {stripeError}
+              <br />
+              <span
+                style={{ color: theme.colors.accent.coral, cursor: 'pointer', fontWeight: 600, marginTop: 8, display: 'inline-block' }}
+                onClick={() => navigate('/dashboard')}
+              >
+                Aller a mon espace client &rarr;
+              </span>
+            </RedirectError>
+          )}
+
+          {/* ─── LOGIN MODE ─── */}
+          {!isRegister && loginMethod === 'magic' && (
             <>
-              <GoogleButtonWrapper>
-                <GoogleLogin
-                  onSuccess={(credentialResponse: CredentialResponse) => {
-                    if (credentialResponse.credential) {
-                      handleGoogleLogin(credentialResponse.credential);
-                    }
-                  }}
-                  onError={() => setError('Erreur de connexion Google')}
-                  text={isRegister ? 'signup_with' : 'signin_with'}
-                  shape="rectangular"
-                  size="large"
-                  width="100%"
-                  logo_alignment="left"
-                />
-              </GoogleButtonWrapper>
+              {magicLinkSent ? (
+                <div style={{ textAlign: 'center', padding: '20px 0' }}>
+                  <div style={{ fontSize: 48, marginBottom: 12 }}>&#x2709;&#xFE0F;</div>
+                  <p style={{ fontWeight: 700, fontSize: theme.fontSizes.lg, color: theme.colors.text.primary, marginBottom: 8 }}>
+                    Lien envoye !
+                  </p>
+                  <p style={{ color: theme.colors.text.secondary, fontSize: theme.fontSizes.sm, lineHeight: 1.5 }}>
+                    Ouvrez votre boite mail <strong>{email}</strong> et cliquez sur le lien pour acceder a votre bibliotheque.
+                  </p>
+                  <p style={{ color: theme.colors.text.light, fontSize: theme.fontSizes.xs, marginTop: 16 }}>
+                    Pas recu ? Verifiez vos spams ou{' '}
+                    <span style={{ color: theme.colors.accent.coral, cursor: 'pointer', fontWeight: 600 }}
+                      onClick={async () => {
+                        setIsLoading(true);
+                        try { await ApiService.requestMagicLink(email); } catch {}
+                        setIsLoading(false);
+                      }}>
+                      renvoyer le lien
+                    </span>
+                  </p>
+                </div>
+              ) : (
+                <Form onSubmit={async (e) => {
+                  e.preventDefault();
+                  if (!email) { setError('Entrez votre email'); return; }
+                  setError('');
+                  setIsLoading(true);
+                  try {
+                    await ApiService.requestMagicLink(email);
+                    setMagicLinkSent(true);
+                  } catch { setError('Erreur lors de l\'envoi. Verifiez votre email.'); }
+                  setIsLoading(false);
+                }}>
+                  <InputField>
+                    <InputLabel>Email</InputLabel>
+                    <Input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="votre@email.com"
+                      autoComplete="email"
+                      style={{ fontSize: 16 }}
+                    />
+                  </InputField>
+
+                  <Button variant="primary" size="lg" type="submit" disabled={isLoading} fullWidth>
+                    {isLoading ? 'Envoi en cours...' : 'Recevoir mon lien de connexion'}
+                  </Button>
+                </Form>
+              )}
+
               <OrDivider>ou</OrDivider>
+
+              {/* Google OAuth — hidden in WebView */}
+              {!isInAppBrowser() && (
+                <GoogleButtonWrapper>
+                  <GoogleLogin
+                    onSuccess={(credentialResponse: CredentialResponse) => {
+                      if (credentialResponse.credential) {
+                        handleGoogleLogin(credentialResponse.credential);
+                      }
+                    }}
+                    onError={() => setError('Erreur de connexion Google')}
+                    text="signin_with"
+                    shape="rectangular"
+                    size="large"
+                    width="100%"
+                    logo_alignment="left"
+                  />
+                </GoogleButtonWrapper>
+              )}
+
+              <LinkText>
+                <span onClick={() => setLoginMethod('password')}>
+                  Se connecter avec un mot de passe
+                </span>
+              </LinkText>
             </>
           )}
 
-          <Form onSubmit={handleSubmit}>
-            {error && <ErrorMsg>{error}</ErrorMsg>}
-
-            {stripeError && (
-              <RedirectError>
-                {stripeError}
-                <br />
-                <span
-                  style={{ color: theme.colors.accent.coral, cursor: 'pointer', fontWeight: 600, marginTop: 8, display: 'inline-block' }}
-                  onClick={() => navigate('/dashboard')}
-                >
-                  Aller a mon espace client &rarr;
+          {/* ─── PASSWORD LOGIN (secondary) ─── */}
+          {!isRegister && loginMethod === 'password' && (
+            <>
+              <Form onSubmit={handleSubmit}>
+                <InputField>
+                  <InputLabel>Email</InputLabel>
+                  <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
+                    placeholder="votre@email.com" autoComplete="email" style={{ fontSize: 16 }} />
+                </InputField>
+                <InputField>
+                  <InputLabel>Mot de passe</InputLabel>
+                  <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Votre mot de passe" autoComplete="current-password" style={{ fontSize: 16 }} />
+                </InputField>
+                <Button variant="primary" size="lg" type="submit" disabled={isLoading} fullWidth>
+                  {isLoading ? 'Connexion...' : 'Se connecter'}
+                </Button>
+              </Form>
+              <LinkText>
+                <span onClick={() => { setLoginMethod('magic'); setMagicLinkSent(false); }}>
+                  Connexion par email (sans mot de passe)
                 </span>
-              </RedirectError>
-            )}
+              </LinkText>
+            </>
+          )}
 
-            {isRegister && (
-              <>
+          {/* ─── REGISTER MODE ─── */}
+          {isRegister && (
+            <>
+              {/* Google OAuth — hidden in WebView */}
+              {!isInAppBrowser() && (
+                <>
+                  <GoogleButtonWrapper>
+                    <GoogleLogin
+                      onSuccess={(credentialResponse: CredentialResponse) => {
+                        if (credentialResponse.credential) {
+                          handleGoogleLogin(credentialResponse.credential);
+                        }
+                      }}
+                      onError={() => setError('Erreur de connexion Google')}
+                      text="signup_with"
+                      shape="rectangular"
+                      size="large"
+                      width="100%"
+                      logo_alignment="left"
+                    />
+                  </GoogleButtonWrapper>
+                  <OrDivider>ou</OrDivider>
+                </>
+              )}
+
+              <Form onSubmit={handleSubmit}>
                 <InputField>
                   <InputLabel>Prenom</InputLabel>
-                  <Input
-                    type="text"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    placeholder="Votre prenom"
-                    autoComplete="given-name"
-                  />
+                  <Input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)}
+                    placeholder="Votre prenom" autoComplete="given-name" style={{ fontSize: 16 }} />
                 </InputField>
-
                 <InputField>
-                  <InputLabel>Nom</InputLabel>
-                  <Input
-                    type="text"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    placeholder="Votre nom"
-                    autoComplete="family-name"
-                  />
+                  <InputLabel>Email</InputLabel>
+                  <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
+                    placeholder="votre@email.com" autoComplete="email" style={{ fontSize: 16 }} />
                 </InputField>
-              </>
-            )}
+                <InputField>
+                  <InputLabel>Mot de passe</InputLabel>
+                  <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Minimum 8 caracteres" autoComplete="new-password" style={{ fontSize: 16 }} />
+                  <PasswordHint>Minimum 8 caracteres</PasswordHint>
+                </InputField>
 
-            <InputField>
-              <InputLabel>Email</InputLabel>
-              <Input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="votre@email.com"
-                autoComplete="email"
-              />
-            </InputField>
+                {/* Plan Selector */}
+                <div>
+                  <PlanSelectorLabel>Choisissez votre formule</PlanSelectorLabel>
+                  <PlanGrid>
+                    <PlanCard type="button" $selected={selectedPlan === 'basic'} onClick={() => setSelectedPlan('basic')}>
+                      <PlanCardHeader>
+                        <PlanName>Basique</PlanName>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                          <PlanPrice>Gratuit</PlanPrice>
+                          <CheckMark $visible={selectedPlan === 'basic'}>{selectedPlan === 'basic' ? '\u2713' : ''}</CheckMark>
+                        </div>
+                      </PlanCardHeader>
+                      <PlanFeatures>
+                        <PlanFeature>Achat de contes a l'unite (1,99€ le premier)</PlanFeature>
+                        <PlanFeature>Bibliotheque personnelle</PlanFeature>
+                      </PlanFeatures>
+                    </PlanCard>
+                    <PlanCard type="button" $selected={selectedPlan === 'club'} $isPro onClick={() => setSelectedPlan('club')}>
+                      <PlanBadge>Populaire</PlanBadge>
+                      <PlanCardHeader>
+                        <PlanName $isPro>Club des Histoires</PlanName>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                          <PlanPrice $isPro>9,99€/mois</PlanPrice>
+                          <CheckMarkPro $visible={selectedPlan === 'club'}>{selectedPlan === 'club' ? '\u2713' : ''}</CheckMarkPro>
+                        </div>
+                      </PlanCardHeader>
+                      <PlanFreeTag>Premier conte inclus</PlanFreeTag>
+                      <PlanFeatures $columns>
+                        <PlanFeature $premium>1 conte par semaine</PlanFeature>
+                        <PlanFeature $premium>9 styles d'illustration</PlanFeature>
+                        <PlanFeature $premium>5 personnages secondaires</PlanFeature>
+                        <PlanFeature $premium>Themes et occasions</PlanFeature>
+                        <PlanFeature>Bibliotheque illimitee</PlanFeature>
+                        <PlanFeature>PDF telechargeables</PlanFeature>
+                        <PlanFeature>Credits cumulables</PlanFeature>
+                        <PlanFeature>Annulable a tout moment</PlanFeature>
+                      </PlanFeatures>
+                    </PlanCard>
+                  </PlanGrid>
+                </div>
 
-            <InputField>
-              <InputLabel>Mot de passe</InputLabel>
-              <Input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder={isRegister ? 'Minimum 8 caracteres' : 'Votre mot de passe'}
-                autoComplete={isRegister ? 'new-password' : 'current-password'}
-              />
-              {isRegister && (
-                <PasswordHint>Minimum 8 caracteres</PasswordHint>
-              )}
-            </InputField>
-
-            {/* ─── Plan Selector (register only) ─── */}
-            {isRegister && (
-              <div>
-                <PlanSelectorLabel>Choisissez votre formule</PlanSelectorLabel>
-                <PlanGrid>
-                  {/* Basic Plan */}
-                  <PlanCard
-                    type="button"
-                    $selected={selectedPlan === 'basic'}
-                    onClick={() => setSelectedPlan('basic')}
-                  >
-                    <PlanCardHeader>
-                      <PlanName>Basique</PlanName>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <PlanPrice>Gratuit</PlanPrice>
-                        <CheckMark $visible={selectedPlan === 'basic'}>
-                          {selectedPlan === 'basic' ? '\u2713' : ''}
-                        </CheckMark>
-                      </div>
-                    </PlanCardHeader>
-                    <PlanFeatures>
-                      <PlanFeature>Achat de contes a l'unite (1,99€ le premier)</PlanFeature>
-                      <PlanFeature>Bibliotheque personnelle</PlanFeature>
-                    </PlanFeatures>
-                  </PlanCard>
-
-                  {/* Pro / Club Monthly Plan */}
-                  <PlanCard
-                    type="button"
-                    $selected={selectedPlan === 'club'}
-                    $isPro
-                    onClick={() => setSelectedPlan('club')}
-                  >
-                    <PlanBadge>Populaire</PlanBadge>
-                    <PlanCardHeader>
-                      <PlanName $isPro>Club des Histoires</PlanName>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <PlanPrice $isPro>9,99€/mois</PlanPrice>
-                        <CheckMarkPro $visible={selectedPlan === 'club'}>
-                          {selectedPlan === 'club' ? '\u2713' : ''}
-                        </CheckMarkPro>
-                      </div>
-                    </PlanCardHeader>
-                    <PlanFreeTag>Premier conte inclus</PlanFreeTag>
-                    <PlanFeatures $columns>
-                      <PlanFeature $premium>1 conte par semaine</PlanFeature>
-                      <PlanFeature $premium>9 styles d'illustration</PlanFeature>
-                      <PlanFeature $premium>5 personnages secondaires</PlanFeature>
-                      <PlanFeature $premium>Themes et occasions</PlanFeature>
-                      <PlanFeature>Bibliotheque illimitee</PlanFeature>
-                      <PlanFeature>PDF telechargeables</PlanFeature>
-                      <PlanFeature>Credits cumulables</PlanFeature>
-                      <PlanFeature>Annulable a tout moment</PlanFeature>
-                    </PlanFeatures>
-                  </PlanCard>
-                </PlanGrid>
-              </div>
-            )}
-
-            <Button
-              variant="primary"
-              size="lg"
-              type="submit"
-              disabled={isLoading}
-              fullWidth
-            >
-              {isLoading
-                ? (isRegister ? 'Inscription...' : 'Connexion...')
-                : isRegister
-                  ? selectedPlan === 'club'
-                    ? 'Creer mon compte & rejoindre le Club'
-                    : 'Creer mon compte'
-                  : 'Se connecter'
-              }
-            </Button>
-          </Form>
-
-          {!isRegister && (
-            <LinkText>
-              <span onClick={async () => {
-                if (!email) { setError('Entrez votre email pour recevoir un lien de connexion'); return; }
-                setIsLoading(true);
-                try {
-                  await ApiService.requestMagicLink(email);
-                  setError('');
-                  alert('Un lien de connexion a ete envoye a ' + email);
-                } catch { setError('Erreur lors de l\'envoi du lien'); }
-                setIsLoading(false);
-              }}>
-                Recevoir un lien de connexion par email
-              </span>
-            </LinkText>
+                <Button variant="primary" size="lg" type="submit" disabled={isLoading} fullWidth>
+                  {isLoading ? 'Inscription...' : selectedPlan === 'club' ? 'Creer mon compte & rejoindre le Club' : 'Creer mon compte'}
+                </Button>
+              </Form>
+            </>
           )}
 
           <LinkText>
             {isRegister ? (
-              <>
-                Deja un compte ?{' '}
-                <span onClick={toggleMode}>Se connecter</span>
-              </>
+              <>Deja un compte ?{' '}<span onClick={toggleMode}>Se connecter</span></>
             ) : (
-              <>
-                Pas encore de compte ?{' '}
-                <span onClick={toggleMode}>Creer un compte</span>
-              </>
+              <>Pas encore de compte ?{' '}<span onClick={toggleMode}>Creer un compte</span></>
             )}
           </LinkText>
         </LoginCard>

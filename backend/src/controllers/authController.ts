@@ -17,7 +17,7 @@ function generateClientToken(user: { id: string; email: string; role: string }):
   return jwt.sign(
     { userId: user.id, email: user.email, role: user.role },
     getClientSecret(),
-    { expiresIn: '7d' }
+    { expiresIn: '30d' }
   );
 }
 
