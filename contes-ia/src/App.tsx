@@ -58,6 +58,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import { HelmetProvider } from 'react-helmet-async';
 import { WebViewBanner } from './components/ui/WebViewBanner';
 import { MagicLoginPage } from './pages/MagicLoginPage';
+import { UpgradePage } from './pages/UpgradePage';
 
 function App() {
   return (
@@ -80,6 +81,7 @@ function App() {
           <Route path="/dashboard/story/:id" element={<ProtectedRoute><StoryDetailPage /></ProtectedRoute>} />
           <Route path="/dashboard/account" element={<ProtectedRoute><AccountPage /></ProtectedRoute>} />
           <Route path="/club" element={<ClubPage />} />
+          <Route path="/upgrade" element={<UpgradePage />} />
           <Route path="/story/:shareToken" element={<PublicStoryPage />} />
           <Route path="/admin" element={<AdminProtectedRoute><AdminPage /></AdminProtectedRoute>} />
           <Route path="/admin/orders" element={<AdminProtectedRoute><AdminPage /></AdminProtectedRoute>} />

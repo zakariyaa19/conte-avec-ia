@@ -14,9 +14,9 @@ export const StoryFormPage: React.FC = () => {
   const isAdMode = useMemo(() => new URLSearchParams(location.search).get('from') === 'ad', [location.search]);
   const [clubCredit, setClubCredit] = useState<{ canSubmit: boolean; remaining: number; nextCreditDate?: string; totalEarned?: number } | null>(null);
 
-  // Tripwire: premier conte à 1,99€, sinon 6,99€ (club members toujours 6,99€)
+  // Premier livre gratuit, sinon 6,99€ (club members toujours 6,99€)
   const isFirstPurchase = !isAuthenticated || user?.isFirstPurchase !== false;
-  const viewContentPrice = isClub ? 6.99 : (isFirstPurchase ? 1.99 : 6.99);
+  const viewContentPrice = isClub ? 6.99 : (isFirstPurchase ? 0 : 6.99);
 
   // Track ViewContent au chargement de la page
   useEffect(() => {
@@ -144,6 +144,10 @@ export const StoryFormPage: React.FC = () => {
       });
 
       if (!orderResponse.success) {
+        if (orderResponse.limitReached) {
+          window.location.href = '/upgrade';
+          return;
+        }
         throw new Error(orderResponse.message || 'Erreur lors de la création de la commande');
       }
 
@@ -154,6 +158,12 @@ export const StoryFormPage: React.FC = () => {
       // Club gratuit : pas de Stripe, redirection directe
       if (orderResponse.isClubFreeOrder) {
         window.location.href = `/success?order_id=${orderResponse.data.id}&club_free=true`;
+        return;
+      }
+
+      // Premier livre gratuit : pas de Stripe, redirection directe
+      if (orderResponse.isFirstBookFree) {
+        window.location.href = `/success?order_id=${orderResponse.data.id}&free=true`;
         return;
       }
 

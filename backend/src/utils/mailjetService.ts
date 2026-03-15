@@ -353,6 +353,135 @@ export class MailjetService {
     }
   }
 
+  // Envoyer un email de relance Club (séquence post-livre gratuit)
+  static async sendClubRelanceEmail(data: {
+    customerName: string;
+    customerEmail: string;
+    protagonistName: string;
+    step: 'day1' | 'day3' | 'day7';
+    userId: string;
+  }): Promise<void> {
+    const magicLink = this.generateMagicDashboardLink(data.userId, data.customerEmail);
+    const frontendUrl = process.env.FRONTEND_URL || 'https://contedia.fr';
+    const upgradeLink = `${frontendUrl}/upgrade`;
+
+    const templates: Record<string, { subject: string; html: string }> = {
+      day1: {
+        subject: `${data.protagonistName} a adore son histoire ? Creez-en une nouvelle !`,
+        html: `
+          <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 550px; margin: 0 auto; padding: 40px 20px;">
+            <h1 style="color: #2D3748; font-size: 22px; text-align: center;">Une nouvelle aventure pour ${data.protagonistName} ?</h1>
+            <p style="color: #4A5568; font-size: 15px; text-align: center; line-height: 1.7;">
+              ${data.customerName}, le livre de ${data.protagonistName} est pret ! Avec le <strong>Club des Histoires</strong>, creez un nouveau livre chaque semaine.
+            </p>
+            <div style="background: #FFF8F0; border-radius: 16px; padding: 24px; margin: 24px 0; text-align: center;">
+              <p style="font-size: 18px; font-weight: 700; color: #FF6B6B; margin: 0 0 8px;">Club des Histoires</p>
+              <p style="font-size: 14px; color: #666; margin: 0 0 4px;">1 livre/semaine + personnalisation avancee</p>
+              <p style="font-size: 24px; font-weight: 700; color: #333; margin: 8px 0;">9,99€/mois</p>
+              <p style="font-size: 12px; color: #999; margin: 0;">Sans engagement · annulable a tout moment</p>
+            </div>
+            <div style="text-align: center; margin: 24px 0;">
+              <a href="${upgradeLink}" style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); color: white; padding: 14px 40px; border-radius: 30px; text-decoration: none; font-weight: 700; font-size: 15px; display: inline-block;">
+                Decouvrir le Club
+              </a>
+            </div>
+            <p style="color: #A0AEC0; font-size: 12px; text-align: center;">
+              <a href="${magicLink}" style="color: #A0AEC0;">Acceder a ma bibliotheque</a>
+            </p>
+          </div>
+        `
+      },
+      day3: {
+        subject: `Personnages secondaires, animaux, styles d'illustration... Decouvrez le Club`,
+        html: `
+          <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 550px; margin: 0 auto; padding: 40px 20px;">
+            <h1 style="color: #2D3748; font-size: 22px; text-align: center;">Le Club, c'est quoi de plus ?</h1>
+            <p style="color: #4A5568; font-size: 15px; text-align: center; line-height: 1.7;">
+              ${data.customerName}, voici ce que les membres du Club adorent :
+            </p>
+            <div style="background: #F7FAFC; border-radius: 16px; padding: 24px; margin: 24px 0;">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <span style="font-size: 24px;">&#x1F464;</span>
+                <div><strong>Personnages secondaires</strong><br><span style="color: #666; font-size: 13px;">Ajoutez freres, soeurs, amis dans l'histoire</span></div>
+              </div>
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <span style="font-size: 24px;">&#x1F3A8;</span>
+                <div><strong>Styles d'illustration</strong><br><span style="color: #666; font-size: 13px;">Aquarelle, manga, Disney, pixel art...</span></div>
+              </div>
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <span style="font-size: 24px;">&#x1F4DA;</span>
+                <div><strong>Bibliotheque illimitee</strong><br><span style="color: #666; font-size: 13px;">Tous vos livres accessibles en ligne + PDF</span></div>
+              </div>
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <span style="font-size: 24px;">&#x1F4D6;</span>
+                <div><strong>1 nouveau livre/semaine</strong><br><span style="color: #666; font-size: 13px;">Credits cumulables si vous n'utilisez pas</span></div>
+              </div>
+            </div>
+            <div style="text-align: center; margin: 24px 0;">
+              <a href="${upgradeLink}" style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); color: white; padding: 14px 40px; border-radius: 30px; text-decoration: none; font-weight: 700; font-size: 15px; display: inline-block;">
+                Rejoindre le Club — 9,99€/mois
+              </a>
+            </div>
+            <p style="color: #A0AEC0; font-size: 12px; text-align: center;">
+              <a href="${magicLink}" style="color: #A0AEC0;">Acceder a ma bibliotheque</a>
+            </p>
+          </div>
+        `
+      },
+      day7: {
+        subject: `Dernier rappel : rejoignez le Club des Histoires`,
+        html: `
+          <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 550px; margin: 0 auto; padding: 40px 20px;">
+            <h1 style="color: #2D3748; font-size: 22px; text-align: center;">Dernier rappel !</h1>
+            <p style="color: #4A5568; font-size: 15px; text-align: center; line-height: 1.7;">
+              ${data.customerName}, des centaines de parents creent deja de nouvelles histoires chaque semaine pour leurs enfants.
+            </p>
+            <div style="background: linear-gradient(135deg, #FFF0E6, #FFE4D6); border-radius: 16px; padding: 24px; margin: 24px 0; text-align: center; border: 2px solid #FF6B6B30;">
+              <p style="font-size: 14px; color: #FF6B6B; font-weight: 600; margin: 0 0 8px;">Offre Club des Histoires</p>
+              <p style="font-size: 28px; font-weight: 700; color: #333; margin: 0;">9,99€/mois</p>
+              <p style="font-size: 13px; color: #666; margin: 8px 0 0;">1 livre/semaine · personnalisation avancee · sans engagement</p>
+            </div>
+            <div style="background: #F0FFF4; border-radius: 12px; padding: 16px; margin: 16px 0;">
+              <p style="font-size: 13px; color: #333; margin: 0; font-style: italic; text-align: center;">
+                "Ma fille me demande une nouvelle histoire tous les soirs ! Le Club, c'est le cadeau parfait." — Marie, maman de Lola (5 ans)
+              </p>
+            </div>
+            <div style="text-align: center; margin: 24px 0;">
+              <a href="${upgradeLink}" style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); color: white; padding: 14px 40px; border-radius: 30px; text-decoration: none; font-weight: 700; font-size: 15px; display: inline-block;">
+                Rejoindre le Club maintenant
+              </a>
+            </div>
+            <p style="color: #A0AEC0; font-size: 12px; text-align: center;">
+              <a href="${magicLink}" style="color: #A0AEC0;">Acceder a ma bibliotheque</a>
+            </p>
+          </div>
+        `
+      }
+    };
+
+    const template = templates[data.step];
+    if (!template) return;
+
+    try {
+      await getMailjet()
+        .post('send', { version: 'v3.1' })
+        .request({
+          Messages: [{
+            From: {
+              Email: process.env.MAILJET_FROM_EMAIL || 'contact@contedia.fr',
+              Name: 'Contes d\'IA'
+            },
+            To: [{ Email: data.customerEmail, Name: data.customerName }],
+            Subject: template.subject,
+            HTMLPart: template.html
+          }]
+        });
+      console.log(`Email relance ${data.step} envoye a:`, data.customerEmail);
+    } catch (error) {
+      console.error(`Erreur envoi email relance ${data.step}:`, error);
+    }
+  }
+
   // Envoyer un email de notification a l'admin
   static async sendAdminNotification(orderData: {
     customerName: string;

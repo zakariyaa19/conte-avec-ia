@@ -186,10 +186,10 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
   isAuthenticated = false, isClub = false, currentUser = null, clubCredit = null,
   isAdMode = false,
 }) => {
-  // Tripwire: premier conte à 1,99€ pour les nouveaux utilisateurs
+  // Premier livre GRATUIT pour les nouveaux utilisateurs
   const isFirstPurchase = !isAuthenticated || currentUser?.isFirstPurchase !== false;
-  const singlePrice = isFirstPurchase ? 1.99 : 6.99;
-  const singlePriceLabel = isFirstPurchase ? '1,99\u20AC' : '6,99\u20AC';
+  const singlePrice = isFirstPurchase ? 0 : 6.99;
+  const singlePriceLabel = isFirstPurchase ? 'GRATUIT' : '6,99\u20AC';
 
   // Mode simplifié = tout utilisateur NON-Club (qu'il vienne d'une pub ou pas)
   // Les abonnés Club actifs voient le formulaire complet avec toutes les options
@@ -1261,34 +1261,34 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                   <TripwireHeroCTA>{selectedOffer === 'single' ? 'Selectionne !' : 'Obtenir pour 6,99€'}</TripwireHeroCTA>
                 </TripwireHeroCard>
               ) : isFirstPurchase ? (
-                /* ── TRIPWIRE LAYOUT: 1.99€ hero + Club secondary ── */
+                /* ── PREMIER LIVRE GRATUIT + Club secondary ── */
                 <>
                   <TripwireHeroCard $isSelected={selectedOffer === 'single'} onClick={() => handlePreviewSelect('single')}>
-                    <TripwireHeroBadge>-71% Offre de bienvenue</TripwireHeroBadge>
+                    <TripwireHeroBadge>100% GRATUIT</TripwireHeroBadge>
                     {selectedOffer === 'single' && <PricingSelectedCheck>&#x2713;</PricingSelectedCheck>}
                     <PricingCardName>Votre Premier Livre</PricingCardName>
                     <TripwireHeroOldPrice>6,99€</TripwireHeroOldPrice>
-                    <TripwireHeroPrice>1,99€</TripwireHeroPrice>
-                    <PricingCardSub>Paiement unique — pas d'abonnement</PricingCardSub>
+                    <TripwireHeroPrice>GRATUIT</TripwireHeroPrice>
+                    <PricingCardSub>Juste votre email — pas de carte bancaire</PricingCardSub>
                     <PricingCardFeaturesList>
-                      <PricingCardFeatureItem $highlight>1 livre personnalisé pour {heroName}</PricingCardFeatureItem>
+                      <PricingCardFeatureItem $highlight>1 livre personnalise pour {heroName}</PricingCardFeatureItem>
                       <PricingCardFeatureItem>7 illustrations HD uniques</PricingCardFeatureItem>
-                      <PricingCardFeatureItem>PDF téléchargeable et imprimable</PricingCardFeatureItem>
-                      <PricingCardFeatureItem>Lecture illimitée à vie</PricingCardFeatureItem>
+                      <PricingCardFeatureItem>PDF telechargeable et imprimable</PricingCardFeatureItem>
+                      <PricingCardFeatureItem>Pret en 5 minutes par email</PricingCardFeatureItem>
                     </PricingCardFeaturesList>
-                    <TripwireHeroCTA>{selectedOffer === 'single' ? 'Sélectionné !' : 'Obtenir pour 1,99€'}</TripwireHeroCTA>
+                    <TripwireHeroCTA>{selectedOffer === 'single' ? 'Selectionne !' : 'Recevoir mon livre GRATUIT'}</TripwireHeroCTA>
                   </TripwireHeroCard>
 
                   <ClubAlternativeSection>
-                    <ClubAlternativeDivider>ou rejoignez le Club des Histoires</ClubAlternativeDivider>
+                    <ClubAlternativeDivider>ou passez au Club pour encore plus</ClubAlternativeDivider>
 
                     <ClubShowcaseCard $isSelected={selectedOffer === 'club_monthly'} onClick={() => handlePreviewSelect('club', 'monthly')}>
                       <ClubShowcaseBadge>Populaire</ClubShowcaseBadge>
                       {selectedOffer === 'club_monthly' && <PricingSelectedCheck>&#x2713;</PricingSelectedCheck>}
                       <ClubShowcaseHeader>
-                        <ClubShowcaseFreeTag>Ce livre est inclus</ClubShowcaseFreeTag>
+                        <ClubShowcaseFreeTag>Bibliotheque illimitee</ClubShowcaseFreeTag>
                         <ClubShowcaseTitle>Club des Histoires</ClubShowcaseTitle>
-                        <ClubShowcaseSubtitle>1 livre par semaine pour votre enfant</ClubShowcaseSubtitle>
+                        <ClubShowcaseSubtitle>1 livre par semaine + personnalisation avancee</ClubShowcaseSubtitle>
                       </ClubShowcaseHeader>
                       <ClubShowcasePrice>
                         <ClubShowcasePriceValue>9,99€</ClubShowcasePriceValue>
@@ -1297,13 +1297,13 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                       <ClubShowcaseFeatures>
                         <ClubShowcaseFeature $premium><ClubFeatureIcon>&#x2728;</ClubFeatureIcon>Personnages secondaires</ClubShowcaseFeature>
                         <ClubShowcaseFeature $premium><ClubFeatureIcon>&#x1F3A8;</ClubFeatureIcon>Styles d'illustration</ClubShowcaseFeature>
-                        <ClubShowcaseFeature><ClubFeatureIcon>&#x1F4DA;</ClubFeatureIcon>Bibliothèque en ligne</ClubShowcaseFeature>
-                        <ClubShowcaseFeature><ClubFeatureIcon>&#x1F381;</ClubFeatureIcon>Thèmes et occasions</ClubShowcaseFeature>
-                        <ClubShowcaseFeature><ClubFeatureIcon>&#x2705;</ClubFeatureIcon>PDF illimités</ClubShowcaseFeature>
-                        <ClubShowcaseFeature><ClubFeatureIcon>&#x274C;</ClubFeatureIcon>Annulable à tout moment</ClubShowcaseFeature>
+                        <ClubShowcaseFeature><ClubFeatureIcon>&#x1F4DA;</ClubFeatureIcon>Bibliotheque illimitee</ClubShowcaseFeature>
+                        <ClubShowcaseFeature><ClubFeatureIcon>&#x1F381;</ClubFeatureIcon>Themes et occasions</ClubShowcaseFeature>
+                        <ClubShowcaseFeature><ClubFeatureIcon>&#x2705;</ClubFeatureIcon>PDF illimites</ClubShowcaseFeature>
+                        <ClubShowcaseFeature><ClubFeatureIcon>&#x274C;</ClubFeatureIcon>Annulable a tout moment</ClubShowcaseFeature>
                       </ClubShowcaseFeatures>
                       <ClubShowcaseCTA $selected={selectedOffer === 'club_monthly'}>
-                        {selectedOffer === 'club_monthly' ? 'Sélectionné !' : 'Rejoindre le Club — 9,99€/mois'}
+                        {selectedOffer === 'club_monthly' ? 'Selectionne !' : 'Rejoindre le Club — 9,99€/mois'}
                       </ClubShowcaseCTA>
                     </ClubShowcaseCard>
                   </ClubAlternativeSection>
@@ -1398,13 +1398,25 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                     ? 'Traitement en cours...'
                     : formData.purchaseType === 'club' && isClub && clubCredit?.canSubmit
                       ? 'Recevoir mon eBook gratuit'
-                      : `Payer ${singlePriceLabel} — Recevoir mon livre`}
+                      : isFirstPurchase && formData.purchaseType !== 'club'
+                        ? 'Recevoir mon livre GRATUIT'
+                        : `Payer ${singlePriceLabel} — Recevoir mon livre`}
                 </PayButton>
 
                 <TrustBadgesRow>
-                  <TrustBadge>&#x1F512; Paiement sécurisé Stripe</TrustBadge>
-                  <TrustBadge>&#x2705; Satisfait ou remboursé</TrustBadge>
-                  <TrustBadge>&#x26A1; Prêt en 5 minutes</TrustBadge>
+                  {isFirstPurchase && formData.purchaseType !== 'club' ? (
+                    <>
+                      <TrustBadge>&#x2705; 100% gratuit</TrustBadge>
+                      <TrustBadge>&#x1F4E7; Recu par email</TrustBadge>
+                      <TrustBadge>&#x26A1; Pret en 5 minutes</TrustBadge>
+                    </>
+                  ) : (
+                    <>
+                      <TrustBadge>&#x1F512; Paiement securise Stripe</TrustBadge>
+                      <TrustBadge>&#x2705; Satisfait ou rembourse</TrustBadge>
+                      <TrustBadge>&#x26A1; Pret en 5 minutes</TrustBadge>
+                    </>
+                  )}
                 </TrustBadgesRow>
 
                 <div style={{ marginTop: '12px', padding: '12px 16px', background: '#FAFAFA', borderRadius: '12px', maxWidth: 440, width: '100%' }}>
@@ -1493,7 +1505,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
               </svg>
             </BackArrow>
             <HeaderTitle>Créer votre livre</HeaderTitle>
-            <HeaderBadge style={{ background: 'linear-gradient(135deg, #FF6B6B, #FF8E53)', color: 'white', fontWeight: 700 }}>
+            <HeaderBadge style={{ background: isFirstPurchase ? 'linear-gradient(135deg, #4CAF50, #45a049)' : 'linear-gradient(135deg, #FF6B6B, #FF8E53)', color: 'white', fontWeight: 700 }}>
               {singlePriceLabel}
             </HeaderBadge>
           </HeaderTopRow>
@@ -1505,7 +1517,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
               <ProgressSegment key={ALL_STEPS[i]} $status={getSegmentStatus(i)} />
             ))}
           </SegmentedProgressBar>
-          <ProgressHintText>Votre livre personnalisé — {singlePriceLabel} seulement</ProgressHintText>
+          <ProgressHintText>{isFirstPurchase ? 'Votre premier livre personnalise — GRATUIT' : `Votre livre personnalise — ${singlePriceLabel} seulement`}</ProgressHintText>
         </WizardHeaderNew>
       )}
 

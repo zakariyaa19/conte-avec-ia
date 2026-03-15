@@ -152,7 +152,7 @@ export class ApiService {
     userEmail: string;
     formData: any;
     authToken?: string;
-  }): Promise<{ success: boolean; data: any; stripeUrl?: string; token?: string; user?: any; message: string; isClubFreeOrder?: boolean; clubCreditExhausted?: boolean }> {
+  }): Promise<{ success: boolean; data: any; stripeUrl?: string; token?: string; user?: any; message: string; isClubFreeOrder?: boolean; isFirstBookFree?: boolean; clubCreditExhausted?: boolean; limitReached?: boolean; bookCount?: number; bookLimit?: number }> {
     const headers: Record<string, string> = {};
     if (orderData.authToken) {
       headers['Authorization'] = `Bearer ${orderData.authToken}`;

@@ -2,8 +2,11 @@
 
 export const PRODUCT_PRICES = {
   EBOOK: 6.99,
-  EBOOK_FIRST: 1.99
+  EBOOK_FIRST: 1.99,
+  EBOOK_FREE: 0
 } as const;
+
+export const FREE_BOOK_LIMIT = 3;
 
 export const CLUB_PRICES = {
   CLUB_MONTHLY: 9.99,

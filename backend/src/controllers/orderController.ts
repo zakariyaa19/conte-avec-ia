@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import Stripe from 'stripe';
 import * as bcrypt from 'bcryptjs';
-import { calculatePrice, PRODUCT_PRICES, isFirstPurchase } from '../utils/pricing';
+import { calculatePrice, PRODUCT_PRICES, isFirstPurchase, FREE_BOOK_LIMIT } from '../utils/pricing';
 import { StoryFormData, ApiResponse } from '../types';
 import { prisma } from '../utils/database';
 import { stringifySecondaryCharacters } from '../utils/formatters';
@@ -97,15 +97,35 @@ export class OrderController {
         }
       }
 
-      // --- Logique Tripwire : premier conte à 1,99€ ---
-      // Si achat SINGLE, utilisateur non-Club et jamais acheté, appliquer le prix tripwire
-      // Les membres Club ne bénéficient JAMAIS du tripwire (ils ont déjà un abonnement)
+      // --- Logique Premier Livre Gratuit ---
+      // Si achat SINGLE, utilisateur non-Club et jamais acheté → GRATUIT (pas de Stripe)
+      // Les membres Club ne bénéficient JAMAIS du gratuit (ils ont déjà un abonnement)
       const isExistingClubMember = user && user.role === 'CLUB' && user.subscriptionStatus === 'active';
+      let isFirstBookFree = false;
+
       if (purchaseType === 'SINGLE' && userEmail && !isExistingClubMember) {
         const firstPurchase = await isFirstPurchase(userEmail, prisma);
         if (firstPurchase) {
-          price = PRODUCT_PRICES.EBOOK_FIRST;
-          console.log('🎯 Tripwire appliqué: premier achat à', price, '€ pour', userEmail);
+          price = PRODUCT_PRICES.EBOOK_FREE;
+          isFirstBookFree = true;
+          console.log('🎁 Premier livre GRATUIT pour', userEmail);
+        } else {
+          // Vérifier la limite de 3 livres gratuits pour les non-Club
+          const deliveredCount = await prisma.order.count({
+            where: {
+              user: { email: userEmail },
+              status: { in: ['PAID', 'GENERATING', 'GENERATED', 'DELIVERED'] }
+            }
+          });
+          if (deliveredCount >= FREE_BOOK_LIMIT) {
+            return res.status(403).json({
+              success: false,
+              message: `Vous avez atteint la limite de ${FREE_BOOK_LIMIT} livres. Passez au Club pour continuer !`,
+              limitReached: true,
+              bookCount: deliveredCount,
+              bookLimit: FREE_BOOK_LIMIT
+            });
+          }
         }
       }
 
@@ -171,7 +191,7 @@ export class OrderController {
       // --- Create Stripe session inline (single HTTP round trip) ---
       let stripeUrl: string | undefined;
 
-      if (!isClubFreeOrder) {
+      if (!isClubFreeOrder && !isFirstBookFree) {
         try {
           if (purchaseType === 'CLUB' && !clubCreditExhausted && user) {
             // Subscription checkout
@@ -207,14 +227,13 @@ export class OrderController {
               const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
               const customerEmail = user?.email && emailRegex.test(user.email) ? user.email : undefined;
 
-              const isTrip = price === PRODUCT_PRICES.EBOOK_FIRST;
               const session = await stripe.checkout.sessions.create({
                 customer_email: customerEmail,
                 line_items: [{
                   price_data: {
                     currency: 'eur',
                     product_data: {
-                      name: isTrip ? 'Premier Conte - Offre de bienvenue' : 'Conte personnalise - eBook Numerique',
+                      name: 'Conte personnalise - eBook Numerique',
                       description: `Conte pour ${formData.protagonistName}`,
                     },
                     unit_amount: unitAmount,
@@ -299,6 +318,63 @@ export class OrderController {
         }
       }
 
+      // --- Si premier livre gratuit : finaliser immédiatement (même logique que Club free) ---
+      if (isFirstBookFree && user) {
+        const updatedOrder = await prisma.order.update({
+          where: { id: order.id },
+          data: { status: 'PAID', paidAt: new Date() },
+          omit: { coverImageData: true, pdfData: true },
+          include: { user: true }
+        });
+
+        // Envoyer notifications (emails + Telegram)
+        try {
+          const orderDetails = buildOrderDetailsString(updatedOrder);
+          const customerEmail = user.email;
+          const customerName = user.firstName || formData.creatorName || 'Client';
+
+          if (customerEmail) {
+            await MailjetService.sendOrderConfirmation({
+              customerName,
+              customerEmail,
+              orderNumber: order.id.slice(-8),
+              orderDetails
+            });
+          }
+
+          await MailjetService.sendAdminNotification({
+            customerName,
+            customerEmail: customerEmail || 'Email non fourni',
+            orderNumber: order.id.slice(-8),
+            orderDetails
+          });
+
+          const { TelegramService } = await import('../utils/telegramService');
+          await TelegramService.sendOrderNotification({
+            customerName,
+            customerEmail: customerEmail || 'Email non fourni',
+            orderNumber: order.id.slice(-8),
+            amount: 0,
+            orderDate: new Date(),
+            productType: order.productType,
+            purchaseType: 'SINGLE',
+            orderDetails: updatedOrder
+          });
+        } catch (notifError) {
+          console.error('Erreur envoi notifications livre gratuit:', notifError);
+        }
+
+        // Auto-generate story (fire-and-forget)
+        try {
+          const { autoGenerateAndDeliver } = await import('./storyGenerationController');
+          autoGenerateAndDeliver(order.id).catch(err =>
+            console.error('[FreeBook] autoGenerateAndDeliver error (non-blocking):', err)
+          );
+        } catch (genErr) {
+          console.error('[FreeBook] Failed to import autoGenerateAndDeliver:', genErr);
+        }
+      }
+
       // Ajouter le contact à la liste Mailjet (fire-and-forget)
       if (userEmail) {
         MailjetService.addContactToList({
@@ -336,8 +412,9 @@ export class OrderController {
         token,
         user: userData,
         isClubFreeOrder,
+        isFirstBookFree,
         clubCreditExhausted,
-        message: isClubFreeOrder ? 'Conte Club gratuit cree avec succes' : 'Commande creee avec succes'
+        message: isFirstBookFree ? 'Premier livre gratuit cree avec succes' : isClubFreeOrder ? 'Conte Club gratuit cree avec succes' : 'Commande creee avec succes'
       });
 
     } catch (error) {

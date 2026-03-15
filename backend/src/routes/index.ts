@@ -7,6 +7,7 @@ import pdfRouter from './pdf';
 import tiktokRouter from './tiktok';
 import previewRouter from './preview';
 import publicRouter from './public';
+import jobsRouter from './jobs';
 
 const router = Router();
 
@@ -19,6 +20,7 @@ router.use('/pdfs', pdfRouter);
 router.use('/tiktok', tiktokRouter);
 router.use('/preview', previewRouter);
 router.use('/public', publicRouter);
+router.use('/jobs', jobsRouter);
 
 // Route de santé
 router.get('/health', (req, res) => {

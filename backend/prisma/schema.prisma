@@ -145,6 +145,9 @@ model Order {
   storyTextJson        String?
   isTestOrder          Boolean    @default(false)
 
+  // Séquence email relance (post-livre gratuit)
+  emailSequenceSent   String?
+
   // Favoris et profil enfant
   isFavorite          Boolean @default(false)
   shareToken          String?  @unique

@@ -6,7 +6,7 @@ import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
 import { Button } from '../components/ui/Button';
 import { trackPurchase } from '../utils/tiktokPixel';
-import { metaTrackPurchase } from '../utils/metaPixel';
+import { metaTrackPurchase, metaTrackLead } from '../utils/metaPixel';
 import { useAuth } from '../contexts/AuthContext';
 import { API_BASE_URL } from '../config/constants';
 
@@ -237,6 +237,49 @@ const ButtonContainer = styled.div`
   animation: ${fadeInUp} 0.5s ease-out 0.6s both;
 `;
 
+const UpsellCard = styled.div`
+  background: linear-gradient(135deg, #FFF8F0 0%, #FFF0E6 100%);
+  border: 2px solid ${theme.colors.accent.coral}30;
+  border-radius: ${theme.borderRadius.xl};
+  padding: ${theme.spacing.xl};
+  margin-top: ${theme.spacing.xl};
+  text-align: center;
+  animation: ${fadeInUp} 0.5s ease-out 0.7s both;
+  max-width: 620px;
+  width: 100%;
+`;
+
+const UpsellTitle = styled.h3`
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.xl};
+  color: ${theme.colors.text.primary};
+  margin: 0 0 ${theme.spacing.sm};
+`;
+
+const UpsellText = styled.p`
+  color: ${theme.colors.text.secondary};
+  font-size: ${theme.fontSizes.sm};
+  line-height: 1.6;
+  margin: 0 0 ${theme.spacing.md};
+`;
+
+const UpsellFeatures = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: ${theme.spacing.xs};
+  justify-content: center;
+  margin-bottom: ${theme.spacing.md};
+`;
+
+const UpsellFeature = styled.span`
+  background: white;
+  padding: 4px 12px;
+  border-radius: ${theme.borderRadius.full};
+  font-size: ${theme.fontSizes.xs};
+  color: ${theme.colors.text.secondary};
+  border: 1px solid ${theme.colors.accent.coral}20;
+`;
+
 export const SuccessPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -248,6 +291,7 @@ export const SuccessPage: React.FC = () => {
   const sessionId = searchParams.get('session_id');
   const orderId = searchParams.get('order_id');
   const isClubFree = searchParams.get('club_free') === 'true';
+  const isFirstBookFree = searchParams.get('free') === 'true';
 
   useEffect(() => {
     document.title = 'Commande Confirmee | Votre Livre Personnalise est en Preparation';
@@ -269,9 +313,22 @@ export const SuccessPage: React.FC = () => {
       if (localStorage.getItem('userToken')) {
         refreshProfile();
       }
-      // Tracker la conversion même pour les commandes Club gratuites
       if (orderId) {
         metaTrackPurchase('club', orderId, 0, 'EUR');
+      }
+      return;
+    }
+
+    // Premier livre gratuit : pas besoin de verifier Stripe
+    if (isFirstBookFree) {
+      setPaymentConfirmed(true);
+      setIsVerifying(false);
+      if (localStorage.getItem('userToken')) {
+        refreshProfile();
+      }
+      // Tracker Lead (pas Purchase) pour le livre gratuit
+      if (orderId) {
+        metaTrackLead(0, 'EUR');
       }
       return;
     }
@@ -308,7 +365,7 @@ export const SuccessPage: React.FC = () => {
     };
 
     verifyPayment();
-  }, [sessionId, orderId, isClubFree]);
+  }, [sessionId, orderId, isClubFree, isFirstBookFree]);
 
   const handleReturnHome = () => {
     navigate('/');
@@ -348,17 +405,20 @@ export const SuccessPage: React.FC = () => {
             <IconEmoji>✅</IconEmoji>
           </SuccessIconContainer>
 
-          <Title>Votre conte est en cours de creation !</Title>
+          <Title>{isFirstBookFree ? 'Votre livre gratuit est en cours de creation !' : 'Votre conte est en cours de creation !'}</Title>
 
           {paymentConfirmed && (
             <ConfirmedBadge>
-              &#x2713; Commande confirmee
+              &#x2713; {isFirstBookFree ? 'Livre gratuit confirme' : 'Commande confirmee'}
             </ConfirmedBadge>
           )}
 
           <Message>
-            Notre IA genere votre livre personnalise en ce moment meme.<br />
-            Il sera pret dans environ <strong>5 minutes</strong>.
+            {isFirstBookFree ? (
+              <>Votre livre est en cours de creation ! Vous le recevrez par email dans environ <strong>5 minutes</strong>.</>
+            ) : (
+              <>Notre IA genere votre livre personnalise en ce moment meme.<br />Il sera pret dans environ <strong>5 minutes</strong>.</>
+            )}
           </Message>
 
           <StepsContainer>
@@ -399,6 +459,30 @@ export const SuccessPage: React.FC = () => {
             </div>
           </ButtonContainer>
         </SuccessCard>
+
+        {/* Upsell Club pour les livres gratuits */}
+        {isFirstBookFree && (
+          <UpsellCard>
+            <UpsellTitle>Envie de plus ?</UpsellTitle>
+            <UpsellText>
+              Avec le Club des Histoires, recevez un nouveau livre chaque semaine avec encore plus de personnalisation.
+            </UpsellText>
+            <UpsellFeatures>
+              <UpsellFeature>1 livre/semaine</UpsellFeature>
+              <UpsellFeature>Personnages secondaires</UpsellFeature>
+              <UpsellFeature>Styles d'illustration</UpsellFeature>
+              <UpsellFeature>Bibliotheque illimitee</UpsellFeature>
+            </UpsellFeatures>
+            <Button
+              variant="primary"
+              size="md"
+              onClick={() => navigate('/upgrade')}
+              fullWidth
+            >
+              Decouvrir le Club — 9,99€/mois
+            </Button>
+          </UpsellCard>
+        )}
       </SuccessContainer>
       <Footer />
     </PageContainer>

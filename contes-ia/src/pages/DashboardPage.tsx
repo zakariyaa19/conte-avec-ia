@@ -1073,8 +1073,14 @@ export const DashboardPage: React.FC = () => {
               <Button variant="outline" size="md" onClick={() => navigate('/dashboard/account')}>
                 Mon compte
               </Button>
-              <Button variant="primary" size="md" onClick={() => navigate('/create-story')}>
-                Créer un conte
+              <Button variant="primary" size="md" onClick={() => {
+                if (!isClub && stories.length >= 3) {
+                  navigate('/upgrade');
+                } else {
+                  navigate('/create-story');
+                }
+              }}>
+                {!isClub && stories.length >= 3 ? 'Passer au Club' : 'Creer un conte'}
               </Button>
             </ActionButtons>
           </HeaderTopRow>
@@ -1156,30 +1162,45 @@ export const DashboardPage: React.FC = () => {
           </ClubSection>
         )}
 
-        {/* ══════ 2B. JOIN CLUB (Basic) ══════ */}
+        {/* ══════ 2B. JOIN CLUB (Basic) + Book Limit ══════ */}
         {!loading && !isClub && !subscriptionActivating && (
-          <JoinClubCard>
-            <JoinClubBg />
-            <JoinClubContent>
-              <JoinClubTextBlock>
-                <JoinClubTitle>Rejoignez le Club des Histoires</JoinClubTitle>
-                <JoinClubFeatures>
-                  <JoinClubFeature>4 nouvelles aventures chaque mois</JoinClubFeature>
-                  <JoinClubFeature>Une collection d'histoires pour votre enfant</JoinClubFeature>
-                  <JoinClubFeature>Bibliothèque complète d'histoires personnalisées</JoinClubFeature>
-                </JoinClubFeatures>
-                <Button variant="primary" size="md" onClick={() => navigate('/club')}>
-                  Rejoindre le Club
-                </Button>
-              </JoinClubTextBlock>
-              <JoinClubVisual>
-                <FloatingBookPreview $delay={0} $rotate={-8} />
-                <FloatingBookPreview $delay={0.5} $rotate={-2} />
-                <FloatingBookPreview $delay={1} $rotate={4} />
-                <FloatingBookPreview $delay={1.5} $rotate={10} />
-              </JoinClubVisual>
-            </JoinClubContent>
-          </JoinClubCard>
+          <>
+            {/* Bannière upsell Club */}
+            <JoinClubCard>
+              <JoinClubBg />
+              <JoinClubContent>
+                <JoinClubTextBlock>
+                  <JoinClubTitle>
+                    {stories.length >= 3 ? 'Bibliotheque pleine' : 'Passez au Club des Histoires'}
+                  </JoinClubTitle>
+                  <JoinClubFeatures>
+                    {stories.length >= 3 ? (
+                      <>
+                        <JoinClubFeature>Vous avez utilise vos {stories.length} livres gratuits</JoinClubFeature>
+                        <JoinClubFeature>Le Club offre 1 livre/semaine + personnalisation avancee</JoinClubFeature>
+                        <JoinClubFeature>Bibliotheque illimitee, styles, personnages secondaires</JoinClubFeature>
+                      </>
+                    ) : (
+                      <>
+                        <JoinClubFeature>{stories.length}/3 livres utilises</JoinClubFeature>
+                        <JoinClubFeature>1 livre/semaine + personnalisation avancee</JoinClubFeature>
+                        <JoinClubFeature>Bibliotheque illimitee d'histoires personnalisees</JoinClubFeature>
+                      </>
+                    )}
+                  </JoinClubFeatures>
+                  <Button variant="primary" size="md" onClick={() => navigate('/upgrade')}>
+                    {stories.length >= 3 ? 'Passer au Club pour continuer' : 'Decouvrir le Club — 9,99€/mois'}
+                  </Button>
+                </JoinClubTextBlock>
+                <JoinClubVisual>
+                  <FloatingBookPreview $delay={0} $rotate={-8} />
+                  <FloatingBookPreview $delay={0.5} $rotate={-2} />
+                  <FloatingBookPreview $delay={1} $rotate={4} />
+                  <FloatingBookPreview $delay={1.5} $rotate={10} />
+                </JoinClubVisual>
+              </JoinClubContent>
+            </JoinClubCard>
+          </>
         )}
 
         {/* ══════ 3. FILTER BAR ══════ */}

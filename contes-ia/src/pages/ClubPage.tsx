@@ -1365,6 +1365,45 @@ export const ClubPage: React.FC = () => {
           </Container>
         </StepsSection>
 
+        {/* ============ 4B. GRATUIT vs CLUB ============ */}
+        <div style={{ padding: `${theme.spacing['3xl']} ${theme.spacing.lg}`, background: theme.colors.background.secondary }}>
+          <Container>
+            <SectionTitle style={{ textAlign: 'center', marginBottom: theme.spacing.sm }}>Gratuit vs Club</SectionTitle>
+            <SectionText style={{ textAlign: 'center', marginBottom: theme.spacing.xl }}>
+              Votre premier livre est offert. Le Club vous donne acces a bien plus.
+            </SectionText>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: theme.spacing.lg, maxWidth: 700, margin: '0 auto' }}>
+              <div style={{ background: 'white', borderRadius: '16px', padding: '24px', border: '1px solid #eee' }}>
+                <h3 style={{ fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.lg, margin: '0 0 16px' }}>Gratuit</h3>
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0, lineHeight: 2, fontSize: theme.fontSizes.sm, color: theme.colors.text.secondary }}>
+                  <li>&#x2705; 3 livres gratuits</li>
+                  <li>&#x2705; 7 illustrations par livre</li>
+                  <li>&#x2705; PDF telechargeable</li>
+                  <li>&#x274C; Personnages secondaires</li>
+                  <li>&#x274C; Styles d'illustration</li>
+                  <li>&#x274C; Bibliotheque illimitee</li>
+                </ul>
+              </div>
+              <div style={{ background: 'linear-gradient(135deg, #FFF8F0, #FFF0E6)', borderRadius: '16px', padding: '24px', border: `2px solid ${theme.colors.accent.coral}` }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                  <h3 style={{ fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.lg, margin: 0 }}>Club</h3>
+                  <span style={{ background: `linear-gradient(135deg, ${theme.colors.accent.coral}, #FF8E53)`, color: 'white', fontSize: '11px', fontWeight: 700, padding: '3px 10px', borderRadius: '20px' }}>Recommande</span>
+                </div>
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0, lineHeight: 2, fontSize: theme.fontSizes.sm, color: theme.colors.text.secondary }}>
+                  <li>&#x2705; <strong>1 livre par semaine</strong></li>
+                  <li>&#x2705; 7 illustrations par livre</li>
+                  <li>&#x2705; PDF telechargeable</li>
+                  <li>&#x2728; <strong>Personnages secondaires</strong></li>
+                  <li>&#x2728; <strong>Styles d'illustration</strong></li>
+                  <li>&#x2728; <strong>Bibliotheque illimitee</strong></li>
+                </ul>
+                <p style={{ fontSize: theme.fontSizes.lg, fontWeight: 800, color: theme.colors.text.primary, margin: '16px 0 4px' }}>9,99€/mois</p>
+                <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.text.light, margin: 0 }}>ou 79,99€/an (economisez 40€)</p>
+              </div>
+            </div>
+          </Container>
+        </div>
+
         {/* ============ 5. PRIX + GARANTIES ============ */}
         <PriceSection ref={priceReveal.ref}>
           <Container>
