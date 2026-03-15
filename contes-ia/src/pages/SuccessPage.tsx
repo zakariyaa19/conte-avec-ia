@@ -415,7 +415,7 @@ export const SuccessPage: React.FC = () => {
 
           <Message>
             {isFirstBookFree ? (
-              <>Votre livre est en cours de creation ! Vous le recevrez par email dans environ <strong>5 minutes</strong>.</>
+              <>Notre IA cree votre livre en ce moment ! Il sera disponible dans votre <strong>bibliotheque en ligne</strong> dans environ <strong>5 minutes</strong>.</>
             ) : (
               <>Notre IA genere votre livre personnalise en ce moment meme.<br />Il sera pret dans environ <strong>5 minutes</strong>.</>
             )}
@@ -432,8 +432,8 @@ export const SuccessPage: React.FC = () => {
             <StepItem>
               <StepNumber>2</StepNumber>
               <StepText>
-                <strong>Disponible dans votre bibliotheque</strong>
-                <span>Retrouvez votre livre numerique dans votre espace personnel des qu'il est pret. Vous pouvez le lire en ligne ou le telecharger en PDF</span>
+                <strong>Consultez-le dans votre bibliotheque</strong>
+                <span>Lisez votre livre directement sur le site dans votre espace personnel. Vous recevrez aussi un email quand il sera pret</span>
               </StepText>
             </StepItem>
           </StepsContainer>

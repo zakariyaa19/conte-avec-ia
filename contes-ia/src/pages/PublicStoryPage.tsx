@@ -348,45 +348,54 @@ export const PublicStoryPage: React.FC = () => {
           )}
         </CoverWrapper>
 
-        {/* Story preview */}
-        {(story.firstParagraph || illustrationUrl) && (
+        {/* Full story text */}
+        {story.storyParagraphs && story.storyParagraphs.length > 0 ? (
+          <>
+            {illustrationUrl && (
+              <StoryPreviewCard>
+                <IllustrationWrapper>
+                  <img src={illustrationUrl} alt="Illustration" loading="lazy" />
+                </IllustrationWrapper>
+              </StoryPreviewCard>
+            )}
+            <StoryPreviewCard>
+              <StoryPreviewContent>
+                <StoryPreviewTitle>L'histoire de {story.protagonistName}</StoryPreviewTitle>
+                {story.storyParagraphs.map((p: string, i: number) => (
+                  <StoryParagraph key={i} style={{ marginBottom: i < story.storyParagraphs.length - 1 ? '16px' : 0 }}>
+                    {p}
+                  </StoryParagraph>
+                ))}
+              </StoryPreviewContent>
+            </StoryPreviewCard>
+          </>
+        ) : story.firstParagraph ? (
           <StoryPreviewCard>
             {illustrationUrl && (
               <IllustrationWrapper>
                 <img src={illustrationUrl} alt="Illustration" loading="lazy" />
               </IllustrationWrapper>
             )}
-            {story.firstParagraph && (
-              <StoryPreviewContent>
-                <StoryPreviewTitle>Première page</StoryPreviewTitle>
-                <StoryParagraph>{story.firstParagraph}</StoryParagraph>
-              </StoryPreviewContent>
-            )}
+            <StoryPreviewContent>
+              <StoryPreviewTitle>Premiere page</StoryPreviewTitle>
+              <StoryParagraph>{story.firstParagraph}</StoryParagraph>
+            </StoryPreviewContent>
           </StoryPreviewCard>
-        )}
+        ) : null}
 
-        {/* Locked section */}
-        <LockedSection>
-          <LockedBg />
-          <LockedContent>
-            <LockedIcon>🔒</LockedIcon>
-            <LockedTitle>La suite est réservée au parent</LockedTitle>
-            <LockedText>
-              L'histoire complète de {story.protagonistName} est disponible uniquement pour le parent qui l'a créée.
-            </LockedText>
-          </LockedContent>
-        </LockedSection>
-
-        {/* CTA */}
+        {/* CTA — gros appel a l'action */}
         <CTASection>
-          <CTATitle>Créez une histoire pour votre enfant</CTATitle>
+          <CTATitle>Creez le livre de votre enfant gratuitement</CTATitle>
           <CTAText>
-            Votre enfant aussi peut devenir le héros de sa propre aventure.
-            Créez un livre personnalisé unique en quelques minutes.
+            Votre enfant aussi peut devenir le heros de sa propre aventure personnalisee.
+            Le premier livre est <strong>100% gratuit</strong> — pret en 5 minutes !
           </CTAText>
           <Button variant="primary" size="lg" onClick={() => navigate('/create-story')}>
-            Créer une histoire pour votre enfant
+            Creer mon livre gratuit maintenant
           </Button>
+          <p style={{ fontSize: '13px', color: theme.colors.text.light, marginTop: '12px' }}>
+            Pas de carte bancaire requise
+          </p>
         </CTASection>
       </MainContent>
       <Footer />

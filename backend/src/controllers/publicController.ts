@@ -17,6 +17,7 @@ export class PublicController {
           coverImageUrl: true,
           firstIllustrationUrl: true,
           storyPreviewTextJson: true,
+          storyTextJson: true,
           illustrationStyle: true,
           generalTheme: true,
           ageRange: true,
@@ -32,12 +33,19 @@ export class PublicController {
         });
       }
 
-      // Parse first paragraph from story preview
-      let firstParagraph: string | null = null;
-      if (order.storyPreviewTextJson) {
+      // Parse full story text (all paragraphs)
+      let storyParagraphs: string[] = [];
+      if (order.storyTextJson) {
         try {
-          const paragraphs = JSON.parse(order.storyPreviewTextJson);
-          firstParagraph = Array.isArray(paragraphs) ? paragraphs[0] : null;
+          const parsed = JSON.parse(order.storyTextJson);
+          storyParagraphs = Array.isArray(parsed) ? parsed : [];
+        } catch {}
+      }
+      // Fallback to preview text if full story not available
+      if (storyParagraphs.length === 0 && order.storyPreviewTextJson) {
+        try {
+          const parsed = JSON.parse(order.storyPreviewTextJson);
+          storyParagraphs = Array.isArray(parsed) ? parsed : [];
         } catch {}
       }
 
@@ -48,7 +56,8 @@ export class PublicController {
           coverTitle: order.coverTitle,
           coverImageUrl: order.coverImageUrl,
           firstIllustrationUrl: order.firstIllustrationUrl,
-          firstParagraph,
+          storyParagraphs,
+          firstParagraph: storyParagraphs[0] || null,
           illustrationStyle: order.illustrationStyle,
           generalTheme: order.generalTheme,
           ageRange: order.ageRange,

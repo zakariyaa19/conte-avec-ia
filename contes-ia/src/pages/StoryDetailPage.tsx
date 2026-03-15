@@ -608,31 +608,14 @@ export const StoryDetailPage: React.FC = () => {
                 <ActionIconCircle $variant="primary">
                   {pdfLoading ? <ButtonSpinner /> : (
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
-                      <circle cx="12" cy="12" r="3" />
+                      <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                      <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
                     </svg>
                   )}
                 </ActionIconCircle>
                 <ActionTextBlock>
-                  <ActionLabel>Lire le conte</ActionLabel>
-                  <ActionDesc $variant="primary">Ouvrir la visionneuse en ligne</ActionDesc>
-                </ActionTextBlock>
-              </ActionCard>
-
-              <ActionCard
-                $variant="secondary"
-                onClick={handleDownloadPdf}
-              >
-                <ActionIconCircle $variant="secondary">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                    <polyline points="7 10 12 15 17 10" />
-                    <line x1="12" y1="15" x2="12" y2="3" />
-                  </svg>
-                </ActionIconCircle>
-                <ActionTextBlock>
-                  <ActionLabel>Telecharger le PDF</ActionLabel>
-                  <ActionDesc $variant="secondary">Sauvegarder sur votre appareil</ActionDesc>
+                  <ActionLabel>Lire le livre</ActionLabel>
+                  <ActionDesc $variant="primary">Ouvrir et feuilleter votre conte</ActionDesc>
                 </ActionTextBlock>
               </ActionCard>
 
@@ -642,13 +625,14 @@ export const StoryDetailPage: React.FC = () => {
               >
                 <ActionIconCircle $variant="secondary">
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
-                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+                    <polyline points="16 6 12 2 8 6" />
+                    <line x1="12" y1="2" x2="12" y2="15" />
                   </svg>
                 </ActionIconCircle>
                 <ActionTextBlock>
-                  <ActionLabel>Partager</ActionLabel>
-                  <ActionDesc $variant="secondary">Envoyer a vos proches</ActionDesc>
+                  <ActionLabel>Envoyer a un proche</ActionLabel>
+                  <ActionDesc $variant="secondary">Partagez cette histoire avec votre famille</ActionDesc>
                 </ActionTextBlock>
               </ActionCard>
             </ActionsGrid>
