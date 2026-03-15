@@ -103,13 +103,41 @@ const ProgressFill = styled.div<{ $progress: number }>`
   border-radius: 0 2px 2px 0;
 `;
 
-/* ═══════════ CLOSE BUTTON ═══════════ */
+/* ═══════════ TOP CONTROLS ═══════════ */
 
-const CloseButton = styled.button`
+const TopControls = styled.div`
   position: fixed;
   top: 12px;
+  left: 12px;
   right: 12px;
   z-index: 10003;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: none;
+
+  > * { pointer-events: auto; }
+`;
+
+const NightModeButton = styled.button<{ $active: boolean }>`
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: ${props => props.$active ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.4)'};
+  backdrop-filter: blur(8px);
+  color: ${props => props.$active ? '#FFD700' : 'white'};
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s;
+
+  &:active { transform: scale(0.9); }
+`;
+
+const CloseButton = styled.button`
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -231,7 +259,7 @@ const ScrollHint = styled.div`
 
 /* ═══════════ TEXT SLIDE ═══════════ */
 
-const SLIDE_COLORS = [
+const SLIDE_COLORS_DAY = [
   { bg: '#FDF6E3', accent: '#FF9999' },  // Crème + Coral
   { bg: '#F0F7FF', accent: '#7CB9D0' },  // Bleu clair
   { bg: '#FFF5F5', accent: '#FF9999' },  // Rose
@@ -240,8 +268,20 @@ const SLIDE_COLORS = [
   { bg: '#F8F0FF', accent: '#9B7ED8' },  // Violet
 ];
 
-const TextSlide = styled(Slide)<{ $colorIndex: number }>`
-  background: ${props => SLIDE_COLORS[props.$colorIndex % SLIDE_COLORS.length].bg};
+const SLIDE_COLORS_NIGHT = [
+  { bg: '#1a1a2e', accent: '#FF9999' },
+  { bg: '#16213e', accent: '#7CB9D0' },
+  { bg: '#1e1525', accent: '#FF9999' },
+  { bg: '#152015', accent: '#6BB77B' },
+  { bg: '#1e1810', accent: '#FFB366' },
+  { bg: '#1a1525', accent: '#9B7ED8' },
+];
+
+const TextSlide = styled(Slide)<{ $colorIndex: number; $night?: boolean }>`
+  background: ${props => {
+    const colors = props.$night ? SLIDE_COLORS_NIGHT : SLIDE_COLORS_DAY;
+    return colors[props.$colorIndex % colors.length].bg;
+  }};
   padding: 60px 28px 40px;
 `;
 
@@ -253,40 +293,50 @@ const TextContent = styled.div<{ $visible: boolean }>`
   transition: opacity 0.6s ease-out, transform 0.6s ease-out;
 `;
 
-const PageNumber = styled.div<{ $colorIndex: number }>`
+const PageNumber = styled.div<{ $colorIndex: number; $night?: boolean }>`
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: ${props => SLIDE_COLORS[props.$colorIndex % SLIDE_COLORS.length].accent}20;
-  color: ${props => SLIDE_COLORS[props.$colorIndex % SLIDE_COLORS.length].accent};
+  background: ${props => {
+    const colors = props.$night ? SLIDE_COLORS_NIGHT : SLIDE_COLORS_DAY;
+    return colors[props.$colorIndex % colors.length].accent + '20';
+  }};
+  color: ${props => {
+    const colors = props.$night ? SLIDE_COLORS_NIGHT : SLIDE_COLORS_DAY;
+    return colors[props.$colorIndex % colors.length].accent;
+  }};
   font-family: ${theme.fonts.heading};
   font-size: 14px;
   font-weight: 700;
   margin-bottom: 20px;
 `;
 
-const StoryText = styled.p`
+const StoryText = styled.p<{ $night?: boolean }>`
   font-family: ${theme.fonts.body};
-  font-size: 18px;
-  line-height: 1.8;
-  color: ${theme.colors.text.primary};
+  font-size: ${props => props.$night ? '20px' : '18px'};
+  line-height: ${props => props.$night ? '2' : '1.8'};
+  color: ${props => props.$night ? 'rgba(255,255,255,0.9)' : theme.colors.text.primary};
   margin: 0;
   font-weight: 400;
   letter-spacing: 0.01em;
+  transition: color 0.3s, font-size 0.3s;
 
   @media (min-width: 768px) {
-    font-size: 20px;
+    font-size: ${props => props.$night ? '22px' : '20px'};
   }
 `;
 
-const TextDivider = styled.div<{ $colorIndex: number }>`
+const TextDivider = styled.div<{ $colorIndex: number; $night?: boolean }>`
   width: 40px;
   height: 3px;
   border-radius: 2px;
-  background: ${props => SLIDE_COLORS[props.$colorIndex % SLIDE_COLORS.length].accent}40;
+  background: ${props => {
+    const colors = props.$night ? SLIDE_COLORS_NIGHT : SLIDE_COLORS_DAY;
+    return colors[props.$colorIndex % colors.length].accent + '40';
+  }};
   margin: 24px auto 0;
 `;
 
@@ -394,6 +444,7 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
   const [currentSlide, setCurrentSlide] = useState(0);
   const [visibleSlides, setVisibleSlides] = useState<Set<number>>(new Set([0]));
   const [showIndicator, setShowIndicator] = useState(true);
+  const [nightMode, setNightMode] = useState(false);
   const indicatorTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Build slides array
@@ -470,11 +521,16 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
         <ProgressFill $progress={progress} />
       </ProgressBar>
 
-      <CloseButton onClick={onClose} aria-label="Fermer">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-          <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
-        </svg>
-      </CloseButton>
+      <TopControls>
+        <NightModeButton $active={nightMode} onClick={() => setNightMode(!nightMode)} aria-label="Mode nuit">
+          {nightMode ? '\u2600\uFE0F' : '\uD83C\uDF19'}
+        </NightModeButton>
+        <CloseButton onClick={onClose} aria-label="Fermer">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+            <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </CloseButton>
+      </TopControls>
 
       <PageIndicator $visible={showIndicator}>
         {currentSlide + 1} / {totalSlides}
@@ -501,13 +557,13 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
           }
 
           if (slide.type === 'text' && slide.index !== undefined) {
-            const colorIdx = slide.index % SLIDE_COLORS.length;
+            const colorIdx = slide.index % SLIDE_COLORS_DAY.length;
             return (
-              <TextSlide key={`text-${slide.index}`} data-slide-index={idx} $colorIndex={colorIdx}>
+              <TextSlide key={`text-${slide.index}`} data-slide-index={idx} $colorIndex={colorIdx} $night={nightMode}>
                 <TextContent $visible={isVisible}>
-                  <PageNumber $colorIndex={colorIdx}>{slide.index + 1}</PageNumber>
-                  <StoryText>{paragraphs[slide.index]}</StoryText>
-                  <TextDivider $colorIndex={colorIdx} />
+                  <PageNumber $colorIndex={colorIdx} $night={nightMode}>{slide.index + 1}</PageNumber>
+                  <StoryText $night={nightMode}>{paragraphs[slide.index]}</StoryText>
+                  <TextDivider $colorIndex={colorIdx} $night={nightMode} />
                 </TextContent>
               </TextSlide>
             );
@@ -535,19 +591,28 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
                 <Sparkle $left="25%" $top="70%" $delay={1} $size={5} />
                 <Sparkle $left="75%" $top="75%" $delay={1.5} $size={3} />
                 <Sparkle $left="50%" $top="10%" $delay={0.8} $size={4} />
+                <Sparkle $left="40%" $top="85%" $delay={2} $size={3} />
+                <Sparkle $left="90%" $top="45%" $delay={0.3} $size={4} />
                 <EndContent>
                   <EndEmoji>&#x2728;</EndEmoji>
-                  <EndTitle>Fin</EndTitle>
+                  <EndTitle>Fin de l'histoire</EndTitle>
                   <EndSubtitle>
-                    L'histoire de {protagonistName} est terminee.<br />
-                    Merci d'avoir lu !
+                    {protagonistName} a vecu une belle aventure !
                   </EndSubtitle>
-                  <EndButtons>
-                    {onShare && (
+
+                  {/* CTA viral principal */}
+                  {onShare && (
+                    <div style={{ marginBottom: 24 }}>
+                      <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12, margin: '0 0 10px', textTransform: 'uppercase', letterSpacing: 1, fontWeight: 600 }}>
+                        Faites decouvrir cette histoire
+                      </p>
                       <EndButton $primary onClick={onShare}>
-                        Partager cette histoire
+                        Envoyer a un proche
                       </EndButton>
-                    )}
+                    </div>
+                  )}
+
+                  <EndButtons>
                     {onCreateAnother && (
                       <EndButton onClick={onCreateAnother}>
                         Creer une nouvelle histoire
@@ -557,6 +622,10 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
                       Retour a la bibliotheque
                     </EndButton>
                   </EndButtons>
+
+                  <p style={{ color: 'rgba(255,255,255,0.25)', fontSize: 11, marginTop: 24 }}>
+                    Cree avec Contes d'IA
+                  </p>
                 </EndContent>
               </EndSlide>
             );
