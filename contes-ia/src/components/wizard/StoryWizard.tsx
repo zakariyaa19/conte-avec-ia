@@ -10,6 +10,8 @@ import { useFirstIllustration } from '../../hooks/useFirstIllustration';
 import { useWizardPersistence } from '../../hooks/useWizardPersistence';
 import { validateEmail, validateRequired } from '../../utils/validation';
 import { metaTrackAddToCart, metaTrackLead } from '../../utils/metaPixel';
+import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
+import { isInAppBrowser } from '../../utils/safeStorage';
 import { ApiService } from '../../config/api';
 import { ILLUSTRATION_STYLES, LANGUAGES, StoryFormData } from '../../types/FormTypes';
 import { STEP_CONFIG, AGE_THEME_RECOMMENDATIONS, POPULAR_STYLES } from './choice-visuals';
@@ -1215,9 +1217,9 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
               <MagicParticle $delay={2.2} $left="80%" $size={3} />
               <MagicParticle $delay={4} $left="92%" $size={4} />
 
-              {/* Cover */}
+              {/* Cover — clic = autoscroll vers la section pricing/commande */}
               <BookPageFrame $portrait style={{ cursor: 'pointer' }}
-                onClick={() => storyPageRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })}>
+                onClick={() => pricingRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>
                 <BookCoverImage>
                   <MaterializeImage $ready>
                     <img src={coverImageUrl} alt="Couverture" />
@@ -1376,6 +1378,54 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                         placeholder="Votre prénom" required error={errors.firstName}
                         onBlur={() => validateField('firstName', formData.firstName || '')} />
                     </FullWidthField>
+                    {/* Mot de passe + Google (pour les non-connectés uniquement) */}
+                    {!isAuthenticated && (
+                      <FullWidthField>
+                        <div style={{ borderTop: '1px solid #f0f0f0', paddingTop: '14px', marginTop: '6px' }}>
+                          <p style={{ fontSize: '12px', fontWeight: 600, color: theme.colors.text.secondary, margin: '0 0 10px', textAlign: 'center' }}>
+                            Securisez votre compte (optionnel)
+                          </p>
+
+                          {/* Google */}
+                          {!isInAppBrowser() && (
+                            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '10px' }}>
+                              <GoogleLogin
+                                onSuccess={(credentialResponse: CredentialResponse) => {
+                                  if (credentialResponse.credential) {
+                                    ApiService.googleAuth(credentialResponse.credential).then(res => {
+                                      if (res.success && res.data) {
+                                        if (res.data.token) localStorage.setItem('userToken', res.data.token);
+                                        if (res.data.user?.email) onUpdate({ userEmail: res.data.user.email });
+                                        if (res.data.user?.firstName) onUpdate({ firstName: res.data.user.firstName });
+                                      }
+                                    }).catch(() => {});
+                                  }
+                                }}
+                                onError={() => {}}
+                                text="continue_with"
+                                shape="rectangular"
+                                size="medium"
+                              />
+                            </div>
+                          )}
+
+                          <div style={{ textAlign: 'center', fontSize: '11px', color: theme.colors.text.light, margin: '6px 0' }}>ou</div>
+
+                          {/* Mot de passe */}
+                          <ValidatedInput
+                            type="password"
+                            label="Mot de passe"
+                            value={formData.password || ''}
+                            onChange={(v) => onUpdate({ password: v })}
+                            placeholder="Creez un mot de passe (optionnel)"
+                            required={false}
+                          />
+                          <p style={{ fontSize: '11px', color: theme.colors.text.light, marginTop: '2px' }}>
+                            Pour vous reconnecter facilement
+                          </p>
+                        </div>
+                      </FullWidthField>
+                    )}
                   </OrderInfoGrid>
                 </OrderInfoSection>
 
