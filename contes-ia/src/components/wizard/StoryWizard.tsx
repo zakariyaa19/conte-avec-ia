@@ -490,11 +490,25 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 width: '100%', maxWidth: 420, textAlign: 'center',
                 marginBottom: theme.spacing.md, animation: 'fadeIn 0.5s ease both',
               }}>
+                {isFirstPurchase && (
+                  <div style={{
+                    background: 'linear-gradient(135deg, #4CAF50, #45a049)',
+                    color: 'white', borderRadius: '16px', padding: '14px 20px',
+                    marginBottom: theme.spacing.md, textAlign: 'center',
+                  }}>
+                    <p style={{ fontSize: theme.fontSizes.xl, fontWeight: 800, margin: '0 0 2px', letterSpacing: '-0.02em' }}>
+                      Votre 1er livre est 100% GRATUIT
+                    </p>
+                    <p style={{ fontSize: theme.fontSizes.xs, margin: 0, opacity: 0.9 }}>
+                      Pas de carte bancaire requise
+                    </p>
+                  </div>
+                )}
                 <p style={{
                   fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.lg, fontWeight: 800,
                   color: theme.colors.text.primary, margin: `0 0 ${theme.spacing.xs}`, lineHeight: 1.3,
                 }}>
-                  Créez le livre de votre enfant
+                  Creez le livre de votre enfant
                 </p>
                 <div style={{
                   display: 'flex', flexDirection: 'column', gap: '6px',
@@ -502,15 +516,15 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                   maxWidth: 280,
                 }}>
                   {[
-                    'Personnalisé avec son prénom et sa photo',
+                    'Personnalise avec son prenom et sa photo',
                     '7 illustrations HD uniques',
-                    'Prêt en 5 minutes',
+                    'Pret en 5 minutes par email',
                   ].map((text) => (
                     <span key={text} style={{
                       fontFamily: theme.fonts.body, fontSize: theme.fontSizes.xs,
                       color: theme.colors.text.secondary, display: 'flex', alignItems: 'center', gap: '6px',
                     }}>
-                      <span style={{ color: theme.colors.accent.coral, fontWeight: 700, flexShrink: 0 }}>✓</span>
+                      <span style={{ color: theme.colors.accent.coral, fontWeight: 700, flexShrink: 0 }}>&#x2713;</span>
                       {text}
                     </span>
                   ))}

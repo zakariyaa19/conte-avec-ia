@@ -190,7 +190,34 @@ export const StoryFormPage: React.FC = () => {
         return;
       }
 
-      // Fallback: separate API call (should not happen normally)
+      // Si pas de stripeUrl et pas de redirection gratuite,
+      // c'est que le backend a créé la commande avec un prix > 0
+      // mais la session Stripe inline a échoué → fallback
+      if (!orderResponse.stripeUrl && !orderResponse.isFirstBookFree && !orderResponse.isClubFreeOrder) {
+        // Commande payante sans Stripe URL : essayer le fallback
+        if (formData.purchaseType === 'club' && !orderResponse.clubCreditExhausted) {
+          const token = localStorage.getItem('userToken');
+          if (!token) {
+            throw new Error('Token d\'authentification manquant pour l\'abonnement Club');
+          }
+          const subResponse = await ApiService.createSubscriptionSession(token, orderResponse.data.id);
+          if (subResponse.url) {
+            window.location.href = subResponse.url;
+          } else {
+            throw new Error('URL abonnement non recue');
+          }
+        } else {
+          const paymentResponse = await ApiService.createPaymentSession(orderResponse.data.id);
+          if (paymentResponse.url) {
+            window.location.href = paymentResponse.url;
+          } else {
+            throw new Error('URL de paiement non recue');
+          }
+        }
+        return;
+      }
+
+      // Fallback: separate API call (legacy path)
       if (formData.purchaseType === 'club' && !orderResponse.clubCreditExhausted) {
         const token = localStorage.getItem('userToken');
         if (!token) {
