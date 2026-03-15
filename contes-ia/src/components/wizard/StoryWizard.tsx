@@ -345,6 +345,11 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
     if (ALL_STEPS[currentStep] === 'preview') {
       if (!previewStartRef.current) previewStartRef.current = Date.now();
       if (!coverImageUrl && !isCoverGenerating) generateCover();
+      // Auto-select free offer for first-time users (no Club option shown)
+      if (isFirstPurchase && !isClub && !selectedOffer) {
+        setSelectedOffer('single');
+        onUpdate({ productType: 'ebook', purchaseType: 'single' });
+      }
     } else {
       previewStartRef.current = null;
     }
@@ -1275,53 +1280,22 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                   <TripwireHeroCTA>{selectedOffer === 'single' ? 'Selectionne !' : 'Obtenir pour 6,99€'}</TripwireHeroCTA>
                 </TripwireHeroCard>
               ) : isFirstPurchase ? (
-                /* ── PREMIER LIVRE GRATUIT + Club secondary ── */
-                <>
-                  <TripwireHeroCard $isSelected={selectedOffer === 'single'} onClick={() => handlePreviewSelect('single')}>
-                    <TripwireHeroBadge>100% GRATUIT</TripwireHeroBadge>
-                    {selectedOffer === 'single' && <PricingSelectedCheck>&#x2713;</PricingSelectedCheck>}
-                    <PricingCardName>Votre Premier Livre</PricingCardName>
-                    <TripwireHeroOldPrice>6,99€</TripwireHeroOldPrice>
-                    <TripwireHeroPrice>GRATUIT</TripwireHeroPrice>
-                    <PricingCardSub>Juste votre email — pas de carte bancaire</PricingCardSub>
-                    <PricingCardFeaturesList>
-                      <PricingCardFeatureItem $highlight>1 livre personnalise pour {heroName}</PricingCardFeatureItem>
-                      <PricingCardFeatureItem>7 illustrations HD uniques</PricingCardFeatureItem>
-                      <PricingCardFeatureItem>Bibliotheque en ligne pour lire et telecharger</PricingCardFeatureItem>
-                      <PricingCardFeatureItem>Pret en 5 minutes par email</PricingCardFeatureItem>
-                    </PricingCardFeaturesList>
-                    <TripwireHeroCTA>{selectedOffer === 'single' ? 'Selectionne !' : 'Recevoir mon livre GRATUIT'}</TripwireHeroCTA>
-                  </TripwireHeroCard>
-
-                  <ClubAlternativeSection>
-                    <ClubAlternativeDivider>ou passez au Club pour encore plus</ClubAlternativeDivider>
-
-                    <ClubShowcaseCard $isSelected={selectedOffer === 'club_monthly'} onClick={() => handlePreviewSelect('club', 'monthly')}>
-                      <ClubShowcaseBadge>Populaire</ClubShowcaseBadge>
-                      {selectedOffer === 'club_monthly' && <PricingSelectedCheck>&#x2713;</PricingSelectedCheck>}
-                      <ClubShowcaseHeader>
-                        <ClubShowcaseFreeTag>Bibliotheque illimitee</ClubShowcaseFreeTag>
-                        <ClubShowcaseTitle>Club des Histoires</ClubShowcaseTitle>
-                        <ClubShowcaseSubtitle>1 livre par semaine + personnalisation avancee</ClubShowcaseSubtitle>
-                      </ClubShowcaseHeader>
-                      <ClubShowcasePrice>
-                        <ClubShowcasePriceValue>9,99€</ClubShowcasePriceValue>
-                        <ClubShowcasePriceUnit>/mois · sans engagement</ClubShowcasePriceUnit>
-                      </ClubShowcasePrice>
-                      <ClubShowcaseFeatures>
-                        <ClubShowcaseFeature $premium><ClubFeatureIcon>&#x2728;</ClubFeatureIcon>Personnages secondaires</ClubShowcaseFeature>
-                        <ClubShowcaseFeature $premium><ClubFeatureIcon>&#x1F3A8;</ClubFeatureIcon>Styles d'illustration</ClubShowcaseFeature>
-                        <ClubShowcaseFeature><ClubFeatureIcon>&#x1F4DA;</ClubFeatureIcon>Bibliotheque illimitee</ClubShowcaseFeature>
-                        <ClubShowcaseFeature><ClubFeatureIcon>&#x1F381;</ClubFeatureIcon>Themes et occasions</ClubShowcaseFeature>
-                        <ClubShowcaseFeature><ClubFeatureIcon>&#x2705;</ClubFeatureIcon>PDF illimites</ClubShowcaseFeature>
-                        <ClubShowcaseFeature><ClubFeatureIcon>&#x274C;</ClubFeatureIcon>Annulable a tout moment</ClubShowcaseFeature>
-                      </ClubShowcaseFeatures>
-                      <ClubShowcaseCTA $selected={selectedOffer === 'club_monthly'}>
-                        {selectedOffer === 'club_monthly' ? 'Selectionne !' : 'Rejoindre le Club — 9,99€/mois'}
-                      </ClubShowcaseCTA>
-                    </ClubShowcaseCard>
-                  </ClubAlternativeSection>
-                </>
+                /* ── PREMIER LIVRE GRATUIT — pas de Club, juste le gratuit ── */
+                <TripwireHeroCard $isSelected={selectedOffer === 'single'} onClick={() => handlePreviewSelect('single')}>
+                  <TripwireHeroBadge>100% GRATUIT</TripwireHeroBadge>
+                  {selectedOffer === 'single' && <PricingSelectedCheck>&#x2713;</PricingSelectedCheck>}
+                  <PricingCardName>Votre Premier Livre</PricingCardName>
+                  <TripwireHeroOldPrice>6,99€</TripwireHeroOldPrice>
+                  <TripwireHeroPrice>GRATUIT</TripwireHeroPrice>
+                  <PricingCardSub>Juste votre email — pas de carte bancaire</PricingCardSub>
+                  <PricingCardFeaturesList>
+                    <PricingCardFeatureItem $highlight>1 livre personnalise pour {heroName}</PricingCardFeatureItem>
+                    <PricingCardFeatureItem>7 illustrations HD uniques</PricingCardFeatureItem>
+                    <PricingCardFeatureItem>Bibliotheque en ligne pour lire et telecharger</PricingCardFeatureItem>
+                    <PricingCardFeatureItem>Pret en 5 minutes par email</PricingCardFeatureItem>
+                  </PricingCardFeaturesList>
+                  <TripwireHeroCTA>{selectedOffer === 'single' ? 'Selectionne !' : 'Recevoir mon livre GRATUIT'}</TripwireHeroCTA>
+                </TripwireHeroCard>
               ) : (
                 /* ── RETURNING USER: Club hero + single fallback ── */
                 <>
