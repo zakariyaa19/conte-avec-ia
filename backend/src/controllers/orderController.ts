@@ -318,61 +318,61 @@ export class OrderController {
         }
       }
 
-      // --- Si premier livre gratuit : finaliser immédiatement (même logique que Club free) ---
+      // --- Si premier livre gratuit : finaliser immédiatement ---
+      // Seul le update DB est await — tout le reste est fire-and-forget pour répondre VITE
       if (isFirstBookFree && user) {
-        const updatedOrder = await prisma.order.update({
+        await prisma.order.update({
           where: { id: order.id },
-          data: { status: 'PAID', paidAt: new Date() },
-          omit: { coverImageData: true, pdfData: true },
-          include: { user: true }
+          data: { status: 'PAID', paidAt: new Date() }
         });
 
-        // Envoyer notifications (emails + Telegram)
-        try {
-          const orderDetails = buildOrderDetailsString(updatedOrder);
-          const customerEmail = user.email;
-          const customerName = user.firstName || formData.creatorName || 'Client';
+        // Notifications + génération en arrière-plan (ne bloque PAS la réponse)
+        const orderId = order.id;
+        const customerEmail = user.email;
+        const customerName = user.firstName || formData.creatorName || 'Client';
 
-          if (customerEmail) {
-            await MailjetService.sendOrderConfirmation({
-              customerName,
-              customerEmail,
-              orderNumber: order.id.slice(-8),
-              orderDetails
+        setImmediate(async () => {
+          try {
+            const fullOrder = await prisma.order.findUnique({
+              where: { id: orderId },
+              omit: { coverImageData: true, pdfData: true },
+              include: { user: true }
             });
+            const orderDetails = buildOrderDetailsString(fullOrder!);
+
+            // Emails + Telegram en parallèle
+            await Promise.allSettled([
+              customerEmail ? MailjetService.sendOrderConfirmation({
+                customerName, customerEmail,
+                orderNumber: orderId.slice(-8), orderDetails
+              }) : Promise.resolve(),
+              MailjetService.sendAdminNotification({
+                customerName, customerEmail: customerEmail || 'Email non fourni',
+                orderNumber: orderId.slice(-8), orderDetails
+              }),
+              import('../utils/telegramService').then(({ TelegramService }) =>
+                TelegramService.sendOrderNotification({
+                  customerName, customerEmail: customerEmail || 'Email non fourni',
+                  orderNumber: orderId.slice(-8), amount: 0, orderDate: new Date(),
+                  productType: order.productType, purchaseType: 'SINGLE',
+                  orderDetails: fullOrder
+                })
+              )
+            ]);
+          } catch (err) {
+            console.error('[FreeBook] Notification error (non-blocking):', err);
           }
 
-          await MailjetService.sendAdminNotification({
-            customerName,
-            customerEmail: customerEmail || 'Email non fourni',
-            orderNumber: order.id.slice(-8),
-            orderDetails
-          });
-
-          const { TelegramService } = await import('../utils/telegramService');
-          await TelegramService.sendOrderNotification({
-            customerName,
-            customerEmail: customerEmail || 'Email non fourni',
-            orderNumber: order.id.slice(-8),
-            amount: 0,
-            orderDate: new Date(),
-            productType: order.productType,
-            purchaseType: 'SINGLE',
-            orderDetails: updatedOrder
-          });
-        } catch (notifError) {
-          console.error('Erreur envoi notifications livre gratuit:', notifError);
-        }
-
-        // Auto-generate story (fire-and-forget)
-        try {
-          const { autoGenerateAndDeliver } = await import('./storyGenerationController');
-          autoGenerateAndDeliver(order.id).catch(err =>
-            console.error('[FreeBook] autoGenerateAndDeliver error (non-blocking):', err)
-          );
-        } catch (genErr) {
-          console.error('[FreeBook] Failed to import autoGenerateAndDeliver:', genErr);
-        }
+          // Auto-generate story
+          try {
+            const { autoGenerateAndDeliver } = await import('./storyGenerationController');
+            autoGenerateAndDeliver(orderId).catch(err =>
+              console.error('[FreeBook] autoGenerateAndDeliver error:', err)
+            );
+          } catch (err) {
+            console.error('[FreeBook] Import error:', err);
+          }
+        });
       }
 
       // Ajouter le contact à la liste Mailjet (fire-and-forget)
