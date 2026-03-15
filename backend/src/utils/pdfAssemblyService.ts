@@ -17,7 +17,7 @@ interface AccentColors {
 export interface PdfAssemblyParams {
   title: string;
   creatorName: string;
-  paragraphs: string[]; // 12 paragraphs
+  paragraphs: string[]; // 6 paragraphs (or more for legacy)
   coverImage: Buffer;   // Cover image (portrait, from order's coverImageData)
   images: Buffer[];     // 6 interior images (mapped to IMAGE_PARAGRAPH_INDICES)
 }
@@ -647,7 +647,7 @@ async function buildPdfDocument(
   // Pages 2-13: text+image or text-only
   let imageCounter = 0;
 
-  for (let p = 0; p < 12; p++) {
+  for (let p = 0; p < paragraphs.length; p++) {
     const page = pdfDoc.addPage([PAGE_WIDTH, PAGE_HEIGHT]);
 
     if (illustratedSet.has(p)) {
@@ -670,7 +670,7 @@ async function buildPdfDocument(
   }
 
   const pdfBytes = await pdfDoc.save();
-  console.log(`[PdfAssembly] PDF assembled: ${pdfBytes.length} bytes, 13 pages`);
+  console.log(`[PdfAssembly] PDF assembled: ${pdfBytes.length} bytes, ${paragraphs.length + 1} pages`);
   return Buffer.from(pdfBytes as Uint8Array);
 }
 
@@ -679,14 +679,14 @@ async function buildPdfDocument(
 export async function assemblePdf(params: PdfAssemblyParams): Promise<Buffer> {
   const expectedImages = IMAGE_PARAGRAPH_INDICES.length; // 6
 
-  if (params.paragraphs.length !== 12) {
-    throw new Error(`Attendu 12 paragraphes, recu ${params.paragraphs.length}`);
+  if (params.paragraphs.length < 4 || params.paragraphs.length > 12) {
+    throw new Error(`Attendu 4-12 paragraphes, recu ${params.paragraphs.length}`);
   }
-  if (params.images.length !== expectedImages) {
-    throw new Error(`Attendu ${expectedImages} images, recu ${params.images.length}`);
+  if (params.images.length < 1) {
+    throw new Error(`Attendu au moins 1 image, recu ${params.images.length}`);
   }
 
-  console.log(`[PdfAssembly] Starting PDF assembly: 13 pages (${expectedImages} illustrated, ${12 - expectedImages} text-only)`);
+  console.log(`[PdfAssembly] Starting PDF assembly: ${params.paragraphs.length + 1} pages (${params.images.length} illustrated, ${params.paragraphs.length - params.images.length} text-only)`);
 
   // Pass 1: try with custom fonts (ComicNeue, Nunito)
   try {

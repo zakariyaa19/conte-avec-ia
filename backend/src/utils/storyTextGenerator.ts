@@ -106,7 +106,7 @@ function buildStoryPrompt(params: StoryTextParams): string {
 
   const religionNote = params.customReligion || params.religion || '';
 
-  return `Tu es un auteur de livres pour enfants reconnu. Ecris un conte en ${language} de 12 paragraphes.
+  return `Tu es un auteur de livres pour enfants reconnu. Ecris un conte en ${language} de 6 paragraphes.
 
 PROTAGONISTE :
 - Prenom : ${name}
@@ -128,7 +128,7 @@ EXIGENCES :
 2. Vocabulaire adapte a un enfant de ${ageForVocab} ans
 3. Le prenom "${name}" doit apparaitre regulierement
 4. La morale doit etre organique, integree a l'histoire (pas de lecon explicite a la fin)
-5. Chaque paragraphe fait 3 a 5 phrases
+5. Chaque paragraphe fait 5 a 8 phrases (paragraphes riches et immersifs)
 ${params.hobbies ? `6. Les passions de ${name} (${params.hobbies}) doivent etre integrees naturellement dans l'histoire` : '6. Integrer des details personnels pour rendre l\'histoire unique'}
 ${params.favoriteDish ? `7. Mentionner le plat favori (${params.favoriteDish}) a un moment de l'histoire` : ''}
 8. ${secondaryChars ? `CRUCIAL : Chaque personnage secondaire doit apparaitre dans PLUSIEURS paragraphes, avec des actions concretes et des dialogues. Ils sont essentiels a l'histoire, pas de la figuration.` : 'L\'histoire doit etre captivante, magique et positive'}
@@ -136,7 +136,7 @@ ${params.favoriteDish ? `7. Mentionner le plat favori (${params.favoriteDish}) a
 ${!hasSpecificAge ? `10. IMPORTANT : Ne mentionne JAMAIS un age precis pour ${name} dans le texte. Ne dis pas "avait X ans" ou "agee de X ans". Utilise des expressions comme "petit(e)", "jeune" si necessaire.` : ''}
 
 FORMAT DE REPONSE :
-Reponds UNIQUEMENT avec un JSON array de exactement 12 strings (chaque string = 1 paragraphe).
+Reponds UNIQUEMENT avec un JSON array de exactement 6 strings (chaque string = 1 paragraphe).
 Pas de titre, pas de commentaire, JUSTE le JSON array.
 Exemple : ["Premier paragraphe...", "Deuxieme paragraphe...", ...]`;
 }
@@ -147,7 +147,7 @@ export async function generateStoryText(params: StoryTextParams, title: string):
   const openai = getOpenAI();
   const prompt = buildStoryPrompt(params);
 
-  console.log('[StoryTextGenerator] Generating 12 paragraphs for:', params.protagonistName);
+  console.log('[StoryTextGenerator] Generating 6 paragraphs for:', params.protagonistName);
 
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
@@ -172,21 +172,21 @@ export async function generateStoryText(params: StoryTextParams, title: string):
 
       const paragraphs = JSON.parse(jsonStr);
 
-      if (!Array.isArray(paragraphs) || paragraphs.length !== 12) {
-        console.warn(`[StoryTextGenerator] Attempt ${attempt + 1}: Got ${Array.isArray(paragraphs) ? paragraphs.length : 'non-array'} paragraphs, expected 12`);
+      if (!Array.isArray(paragraphs) || paragraphs.length !== 6) {
+        console.warn(`[StoryTextGenerator] Attempt ${attempt + 1}: Got ${Array.isArray(paragraphs) ? paragraphs.length : 'non-array'} paragraphs, expected 6`);
         if (attempt === 0) continue;
-        // On second attempt, accept close to 12 or pad/trim
-        if (Array.isArray(paragraphs) && paragraphs.length >= 10) {
-          while (paragraphs.length < 12) paragraphs.push(paragraphs[paragraphs.length - 1]);
-          return { title, paragraphs: paragraphs.slice(0, 12) };
+        // On second attempt, accept close to 6 or pad/trim
+        if (Array.isArray(paragraphs) && paragraphs.length >= 4) {
+          while (paragraphs.length < 6) paragraphs.push(paragraphs[paragraphs.length - 1]);
+          return { title, paragraphs: paragraphs.slice(0, 6) };
         }
-        throw new Error(`GPT a retourne ${Array.isArray(paragraphs) ? paragraphs.length : 0} paragraphes au lieu de 12`);
+        throw new Error(`GPT a retourne ${Array.isArray(paragraphs) ? paragraphs.length : 0} paragraphes au lieu de 6`);
       }
 
       // Validate all entries are strings
       const validParagraphs = paragraphs.map((p: any) => String(p));
 
-      console.log('[StoryTextGenerator] Successfully generated 12 paragraphs');
+      console.log('[StoryTextGenerator] Successfully generated 6 paragraphs');
       return { title, paragraphs: validParagraphs };
 
     } catch (error) {

@@ -47,8 +47,8 @@ export interface ImageGenerationResult {
   images: Buffer[]; // 6 interior images (cost-optimized: every other page)
 }
 
-// Indices des paragraphes qui recoivent une illustration (0-indexed, 6 sur 12)
-export const IMAGE_PARAGRAPH_INDICES = [0, 2, 4, 6, 8, 10];
+// Indices des paragraphes qui recoivent une illustration (chaque paragraphe = 1 image)
+export const IMAGE_PARAGRAPH_INDICES = [0, 1, 2, 3, 4, 5];
 
 type ProgressCallback = (imageIndex: number, total: number) => void;
 

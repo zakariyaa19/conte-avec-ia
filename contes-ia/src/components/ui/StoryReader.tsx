@@ -447,26 +447,20 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
   const [nightMode, setNightMode] = useState(false);
   const indicatorTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Build slides array — group 2 paragraphs per text slide, alternate with images
-  // Result: cover → [text(2p) → image] × 6 → end = 14 slides perfectly balanced
+  // Build slides array — 1 paragraph per text slide, alternate text → image
+  // Result: cover → [text → image] × N → end = 14 slides perfectly balanced
   const slides: { type: 'cover' | 'text' | 'image' | 'end'; index?: number; paragraphIndices?: number[] }[] = [];
   slides.push({ type: 'cover' });
 
-  const IMAGE_INDICES = [0, 2, 4, 6, 8, 10]; // which paragraphs have illustrations
-  let imgCounter = 0;
+  paragraphs.forEach((_, i) => {
+    // Text slide (1 paragraph)
+    slides.push({ type: 'text', index: i, paragraphIndices: [i] });
 
-  for (let i = 0; i < paragraphs.length; i += 2) {
-    // Text slide with 1 or 2 paragraphs
-    const pIndices = [i];
-    if (i + 1 < paragraphs.length) pIndices.push(i + 1);
-    slides.push({ type: 'text', index: Math.floor(i / 2), paragraphIndices: pIndices });
-
-    // Image slide if available
-    if (imgCounter < illustrationUrls.length && illustrationUrls[imgCounter]) {
-      slides.push({ type: 'image', index: imgCounter });
-      imgCounter++;
+    // Image slide right after (if available)
+    if (i < illustrationUrls.length && illustrationUrls[i]) {
+      slides.push({ type: 'image', index: i });
     }
-  }
+  });
 
   slides.push({ type: 'end' });
 
