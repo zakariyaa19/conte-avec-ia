@@ -1287,7 +1287,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                     <PricingCardFeaturesList>
                       <PricingCardFeatureItem $highlight>1 livre personnalise pour {heroName}</PricingCardFeatureItem>
                       <PricingCardFeatureItem>7 illustrations HD uniques</PricingCardFeatureItem>
-                      <PricingCardFeatureItem>PDF telechargeable et imprimable</PricingCardFeatureItem>
+                      <PricingCardFeatureItem>Bibliotheque en ligne pour lire et telecharger</PricingCardFeatureItem>
                       <PricingCardFeatureItem>Pret en 5 minutes par email</PricingCardFeatureItem>
                     </PricingCardFeaturesList>
                     <TripwireHeroCTA>{selectedOffer === 'single' ? 'Selectionne !' : 'Recevoir mon livre GRATUIT'}</TripwireHeroCTA>

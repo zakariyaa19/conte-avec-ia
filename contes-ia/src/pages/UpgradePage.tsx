@@ -281,7 +281,7 @@ export const UpgradePage: React.FC = () => {
             <FeatureList>
               <Feature $available>3 livres gratuits</Feature>
               <Feature $available>7 illustrations par livre</Feature>
-              <Feature $available>PDF telechargeable</Feature>
+              <Feature $available>Bibliotheque en ligne pour lire et telecharger</Feature>
               <Feature $available={false}>Personnages secondaires</Feature>
               <Feature $available={false}>Styles d'illustration au choix</Feature>
               <Feature $available={false}>Bibliotheque illimitee</Feature>

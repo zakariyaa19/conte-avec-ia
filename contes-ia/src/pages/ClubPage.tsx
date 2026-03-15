@@ -1378,7 +1378,7 @@ export const ClubPage: React.FC = () => {
                 <ul style={{ listStyle: 'none', padding: 0, margin: 0, lineHeight: 2, fontSize: theme.fontSizes.sm, color: theme.colors.text.secondary }}>
                   <li>&#x2705; 3 livres gratuits</li>
                   <li>&#x2705; 7 illustrations par livre</li>
-                  <li>&#x2705; PDF telechargeable</li>
+                  <li>&#x2705; Bibliotheque en ligne + PDF</li>
                   <li>&#x274C; Personnages secondaires</li>
                   <li>&#x274C; Styles d'illustration</li>
                   <li>&#x274C; Bibliotheque illimitee</li>
