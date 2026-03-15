@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import dotenv from 'dotenv';
 import { prisma } from './utils/database';
 import { KeepAliveService } from './utils/keepAlive';
+import { processEmailSequence } from './jobs/emailSequence';
 
 // Import des routes
 import apiRouter from './routes';
@@ -139,6 +140,14 @@ async function startServer() {
       // Démarrer le service keep-alive en production
       if (process.env.NODE_ENV === 'production') {
         KeepAliveService.start();
+
+        // Cron interne : séquence emails relance Club toutes les heures
+        setInterval(() => {
+          processEmailSequence().catch(err =>
+            console.error('[Cron] Email sequence error:', err)
+          );
+        }, 60 * 60 * 1000); // 1h
+        console.log('📧 Cron email sequence démarré (toutes les heures)');
       }
     });
   } catch (error) {
