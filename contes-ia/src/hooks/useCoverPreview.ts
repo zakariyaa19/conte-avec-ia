@@ -55,7 +55,7 @@ export function useCoverPreview(formData: Partial<StoryFormData>): UseCoverPrevi
   const abortControllerRef = useRef<AbortController | null>(null);
   const generationStartRef = useRef<number | null>(null);
 
-  // Stale generation guard: if isGenerating is true for more than 90s, reset it
+  // Stale generation guard: if isGenerating is true for more than 90s, reset it (gpt-image-1 can take 30-60s)
   useEffect(() => {
     if (isGenerating) {
       generationStartRef.current = Date.now();
@@ -67,7 +67,7 @@ export function useCoverPreview(formData: Partial<StoryFormData>): UseCoverPrevi
   useEffect(() => {
     if (!isGenerating) return;
     const check = setInterval(() => {
-      if (generationStartRef.current && Date.now() - generationStartRef.current > 30_000) {
+      if (generationStartRef.current && Date.now() - generationStartRef.current > 90_000) {
         console.warn('[useCoverPreview] Generation stale, resetting');
         setIsGenerating(false);
         setError('La génération a pris trop de temps. Réessayez.');
@@ -120,7 +120,7 @@ export function useCoverPreview(formData: Partial<StoryFormData>): UseCoverPrevi
       };
 
       // Explicit 60s timeout — don't rely on browser defaults
-      const timeoutId = setTimeout(() => controller.abort(), 60000);
+      const timeoutId = setTimeout(() => controller.abort(), 90000);
       const result = await ApiService.generateCoverPreview(
         { formData: formFields, photoBase64 },
         controller.signal
