@@ -1164,43 +1164,85 @@ export const DashboardPage: React.FC = () => {
 
         {/* ══════ 2B. JOIN CLUB (Basic) + Book Limit ══════ */}
         {!loading && !isClub && !subscriptionActivating && (
-          <>
-            {/* Bannière upsell Club */}
-            <JoinClubCard>
-              <JoinClubBg />
-              <JoinClubContent>
-                <JoinClubTextBlock>
-                  <JoinClubTitle>
-                    {stories.length >= 3 ? 'Bibliotheque pleine' : 'Passez au Club des Histoires'}
-                  </JoinClubTitle>
-                  <JoinClubFeatures>
-                    {stories.length >= 3 ? (
-                      <>
-                        <JoinClubFeature>Vous avez utilise vos {stories.length} livres gratuits</JoinClubFeature>
-                        <JoinClubFeature>Le Club offre 1 livre/semaine + personnalisation avancee</JoinClubFeature>
-                        <JoinClubFeature>Bibliotheque illimitee, styles, personnages secondaires</JoinClubFeature>
-                      </>
-                    ) : (
-                      <>
-                        <JoinClubFeature>{stories.length}/3 livres utilises</JoinClubFeature>
-                        <JoinClubFeature>1 livre/semaine + personnalisation avancee</JoinClubFeature>
-                        <JoinClubFeature>Bibliotheque illimitee d'histoires personnalisees</JoinClubFeature>
-                      </>
-                    )}
-                  </JoinClubFeatures>
-                  <Button variant="primary" size="md" onClick={() => navigate('/upgrade')}>
-                    {stories.length >= 3 ? 'Passer au Club pour continuer' : 'Decouvrir le Club — 9,99€/mois'}
-                  </Button>
-                </JoinClubTextBlock>
-                <JoinClubVisual>
-                  <FloatingBookPreview $delay={0} $rotate={-8} />
-                  <FloatingBookPreview $delay={0.5} $rotate={-2} />
-                  <FloatingBookPreview $delay={1} $rotate={4} />
-                  <FloatingBookPreview $delay={1.5} $rotate={10} />
-                </JoinClubVisual>
-              </JoinClubContent>
-            </JoinClubCard>
-          </>
+          <div style={{
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            borderRadius: '20px', padding: '28px 24px', marginBottom: '24px',
+            position: 'relative', overflow: 'hidden',
+            animation: 'fadeInUp 0.6s ease-out',
+          }}>
+            {/* Animated background circles */}
+            <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
+              <div style={{ position: 'absolute', width: 120, height: 120, borderRadius: '50%', background: 'rgba(255,255,255,0.08)', top: -20, right: -20 }} />
+              <div style={{ position: 'absolute', width: 80, height: 80, borderRadius: '50%', background: 'rgba(255,255,255,0.06)', bottom: 10, left: 20 }} />
+              <div style={{ position: 'absolute', width: 50, height: 50, borderRadius: '50%', background: 'rgba(255,255,255,0.05)', top: '40%', right: '30%' }} />
+            </div>
+
+            <div style={{ position: 'relative', zIndex: 2 }}>
+              {/* Book counter */}
+              <div style={{
+                display: 'inline-flex', alignItems: 'center', gap: 8,
+                background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(8px)',
+                borderRadius: 30, padding: '6px 16px', marginBottom: 16,
+                fontSize: '13px', color: 'white', fontWeight: 600,
+              }}>
+                <span>{stories.length}/3</span>
+                <div style={{ width: 60, height: 4, background: 'rgba(255,255,255,0.3)', borderRadius: 2 }}>
+                  <div style={{ width: `${Math.min((stories.length / 3) * 100, 100)}%`, height: '100%', background: 'white', borderRadius: 2, transition: 'width 0.5s ease' }} />
+                </div>
+                <span>livres</span>
+              </div>
+
+              <h3 style={{
+                fontFamily: theme.fonts.heading, fontSize: '22px', fontWeight: 800,
+                color: 'white', margin: '0 0 8px', lineHeight: 1.2,
+              }}>
+                {stories.length >= 3 ? 'Debloquez des histoires illimitees' : 'Passez au niveau superieur'}
+              </h3>
+
+              <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.8)', margin: '0 0 20px', lineHeight: 1.5 }}>
+                {stories.length >= 3
+                  ? 'Vous avez utilise vos 3 livres. Le Club vous ouvre un monde de possibilites.'
+                  : 'Le Club des Histoires, c\'est un nouveau livre chaque semaine.'}
+              </p>
+
+              {/* Feature pills */}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 20 }}>
+                {[
+                  { icon: '\uD83D\uDCD6', text: '1 livre/semaine' },
+                  { icon: '\uD83C\uDFA8', text: 'Styles uniques' },
+                  { icon: '\uD83D\uDC64', text: 'Personnages' },
+                  { icon: '\u221E', text: 'Illimite' },
+                ].map(f => (
+                  <span key={f.text} style={{
+                    display: 'inline-flex', alignItems: 'center', gap: 5,
+                    background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(8px)',
+                    borderRadius: 20, padding: '5px 12px',
+                    fontSize: '12px', color: 'white', fontWeight: 500,
+                  }}>
+                    {f.icon} {f.text}
+                  </span>
+                ))}
+              </div>
+
+              <button
+                onClick={() => navigate('/upgrade')}
+                style={{
+                  width: '100%', padding: '14px', border: 'none', borderRadius: 14,
+                  background: 'white', color: '#764ba2',
+                  fontSize: '15px', fontWeight: 700, cursor: 'pointer',
+                  boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
+                  transition: 'transform 0.2s',
+                }}
+                onMouseDown={e => (e.currentTarget.style.transform = 'scale(0.97)')}
+                onMouseUp={e => (e.currentTarget.style.transform = 'scale(1)')}
+              >
+                {stories.length >= 3 ? 'Decouvrir le Club' : 'Decouvrir le Club'}
+              </button>
+              <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.5)', textAlign: 'center', marginTop: 8, marginBottom: 0 }}>
+                A partir de 9,99€/mois · Sans engagement
+              </p>
+            </div>
+          </div>
         )}
 
         {/* ══════ 3. FILTER BAR ══════ */}
