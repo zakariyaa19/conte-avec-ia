@@ -316,16 +316,16 @@ const PageNumber = styled.div<{ $colorIndex: number; $night?: boolean }>`
 
 const StoryText = styled.p<{ $night?: boolean }>`
   font-family: ${theme.fonts.body};
-  font-size: ${props => props.$night ? '20px' : '18px'};
-  line-height: ${props => props.$night ? '2' : '1.8'};
+  font-size: 18px;
+  line-height: 1.8;
   color: ${props => props.$night ? 'rgba(255,255,255,0.9)' : theme.colors.text.primary};
   margin: 0;
   font-weight: 400;
   letter-spacing: 0.01em;
-  transition: color 0.3s, font-size 0.3s;
+  transition: color 0.3s;
 
   @media (min-width: 768px) {
-    font-size: ${props => props.$night ? '22px' : '20px'};
+    font-size: 20px;
   }
 `;
 
@@ -444,7 +444,7 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
   const [currentSlide, setCurrentSlide] = useState(0);
   const [visibleSlides, setVisibleSlides] = useState<Set<number>>(new Set([0]));
   const [showIndicator, setShowIndicator] = useState(true);
-  const [nightMode, setNightMode] = useState(false);
+  const [nightMode, setNightMode] = useState(true);
   const indicatorTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Build slides array — 1 paragraph per text slide, alternate text → image
