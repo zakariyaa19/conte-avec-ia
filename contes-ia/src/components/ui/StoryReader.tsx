@@ -447,17 +447,27 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
   const [nightMode, setNightMode] = useState(false);
   const indicatorTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Build slides array
-  const slides: { type: 'cover' | 'text' | 'image' | 'end'; index?: number }[] = [];
+  // Build slides array — group 2 paragraphs per text slide, alternate with images
+  // Result: cover → [text(2p) → image] × 6 → end = 14 slides perfectly balanced
+  const slides: { type: 'cover' | 'text' | 'image' | 'end'; index?: number; paragraphIndices?: number[] }[] = [];
   slides.push({ type: 'cover' });
-  paragraphs.forEach((_, i) => {
-    slides.push({ type: 'text', index: i });
-    // Add image after text if one exists for this paragraph
-    const imgIndex = [0, 2, 4, 6, 8, 10].indexOf(i);
-    if (imgIndex !== -1 && illustrationUrls[imgIndex]) {
-      slides.push({ type: 'image', index: imgIndex });
+
+  const IMAGE_INDICES = [0, 2, 4, 6, 8, 10]; // which paragraphs have illustrations
+  let imgCounter = 0;
+
+  for (let i = 0; i < paragraphs.length; i += 2) {
+    // Text slide with 1 or 2 paragraphs
+    const pIndices = [i];
+    if (i + 1 < paragraphs.length) pIndices.push(i + 1);
+    slides.push({ type: 'text', index: Math.floor(i / 2), paragraphIndices: pIndices });
+
+    // Image slide if available
+    if (imgCounter < illustrationUrls.length && illustrationUrls[imgCounter]) {
+      slides.push({ type: 'image', index: imgCounter });
+      imgCounter++;
     }
-  });
+  }
+
   slides.push({ type: 'end' });
 
   const totalSlides = slides.length;
@@ -556,13 +566,17 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
             );
           }
 
-          if (slide.type === 'text' && slide.index !== undefined) {
+          if (slide.type === 'text' && slide.index !== undefined && slide.paragraphIndices) {
             const colorIdx = slide.index % SLIDE_COLORS_DAY.length;
             return (
               <TextSlide key={`text-${slide.index}`} data-slide-index={idx} $colorIndex={colorIdx} $night={nightMode}>
                 <TextContent $visible={isVisible}>
                   <PageNumber $colorIndex={colorIdx} $night={nightMode}>{slide.index + 1}</PageNumber>
-                  <StoryText $night={nightMode}>{paragraphs[slide.index]}</StoryText>
+                  {slide.paragraphIndices.map((pIdx, pI) => (
+                    <StoryText key={pIdx} $night={nightMode} style={pI > 0 ? { marginTop: '16px' } : undefined}>
+                      {paragraphs[pIdx]}
+                    </StoryText>
+                  ))}
                   <TextDivider $colorIndex={colorIdx} $night={nightMode} />
                 </TextContent>
               </TextSlide>
