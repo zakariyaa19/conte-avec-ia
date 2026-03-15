@@ -395,7 +395,7 @@ export const LoginPage: React.FC = () => {
   const initialStripePlan: 'monthly' | 'annual' = planParam === 'club_annual' ? 'annual' : 'monthly';
 
   const [mode, setMode] = useState<'login' | 'register'>(initialMode);
-  const [loginMethod, setLoginMethod] = useState<'magic' | 'password'>('magic');
+  const [loginMethod, setLoginMethod] = useState<'magic' | 'password'>('password');
   const [magicLinkSent, setMagicLinkSent] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -637,13 +637,13 @@ export const LoginPage: React.FC = () => {
                   </Form>
 
                   <LinkText>
-                    {loginMethod === 'magic' ? (
-                      <span onClick={() => setLoginMethod('password')}>
-                        Se connecter avec un mot de passe
+                    {loginMethod === 'password' ? (
+                      <span onClick={() => { setLoginMethod('magic'); setMagicLinkSent(false); }}>
+                        Mot de passe oublie ?
                       </span>
                     ) : (
-                      <span onClick={() => { setLoginMethod('magic'); setMagicLinkSent(false); }}>
-                        Connexion sans mot de passe (lien par email)
+                      <span onClick={() => setLoginMethod('password')}>
+                        Se connecter avec un mot de passe
                       </span>
                     )}
                   </LinkText>
