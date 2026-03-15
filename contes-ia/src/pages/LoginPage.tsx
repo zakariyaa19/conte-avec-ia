@@ -532,14 +532,11 @@ export const LoginPage: React.FC = () => {
       <Header />
       <LoginContainer>
         <LoginCard $wide={isRegister}>
-          <div style={{ textAlign: 'center', marginBottom: '8px' }}>
-            <span style={{ fontSize: '40px', lineHeight: 1 }}>{isRegister ? '\uD83D\uDCDA' : '\uD83D\uDCD6'}</span>
-          </div>
-          <Title>{isRegister ? 'Creer mon compte' : 'Ma bibliotheque'}</Title>
+          <Title>{isRegister ? 'Creer mon compte' : 'Connexion'}</Title>
           <Subtitle>
             {isRegister
-              ? 'Inscrivez-vous pour creer et retrouver vos livres'
-              : 'Entrez votre email — on vous envoie un lien magique'}
+              ? 'Creez votre compte pour retrouver vos livres'
+              : 'Accedez a votre bibliotheque de livres'}
           </Subtitle>
 
           {error && <ErrorMsg>{error}</ErrorMsg>}
@@ -558,19 +555,19 @@ export const LoginPage: React.FC = () => {
           )}
 
           {/* ─── LOGIN MODE ─── */}
-          {!isRegister && loginMethod === 'magic' && (
+          {!isRegister && (
             <>
               {magicLinkSent ? (
                 <div style={{ textAlign: 'center', padding: '20px 0' }}>
                   <div style={{ fontSize: 48, marginBottom: 12 }}>&#x2709;&#xFE0F;</div>
                   <p style={{ fontWeight: 700, fontSize: theme.fontSizes.lg, color: theme.colors.text.primary, marginBottom: 8 }}>
-                    Lien envoyé !
+                    Lien envoye !
                   </p>
                   <p style={{ color: theme.colors.text.secondary, fontSize: theme.fontSizes.sm, lineHeight: 1.5 }}>
-                    Ouvrez votre boîte mail <strong>{email}</strong> et cliquez sur le lien pour accéder à votre bibliothèque.
+                    Ouvrez votre boite mail <strong>{email}</strong> et cliquez sur le lien pour acceder a votre bibliotheque.
                   </p>
                   <p style={{ color: theme.colors.text.light, fontSize: theme.fontSizes.xs, marginTop: 16 }}>
-                    Pas reçu ? Vérifiez vos spams ou{' '}
+                    Pas recu ? Verifiez vos spams ou{' '}
                     <span style={{ color: theme.colors.accent.coral, cursor: 'pointer', fontWeight: 600 }}
                       onClick={async () => {
                         setIsLoading(true);
@@ -582,87 +579,76 @@ export const LoginPage: React.FC = () => {
                   </p>
                 </div>
               ) : (
-                <Form onSubmit={async (e) => {
-                  e.preventDefault();
-                  if (!email) { setError('Entrez votre email'); return; }
-                  setError('');
-                  setIsLoading(true);
-                  try {
-                    await ApiService.requestMagicLink(email);
-                    setMagicLinkSent(true);
-                  } catch { setError('Erreur lors de l\'envoi. Verifiez votre email.'); }
-                  setIsLoading(false);
-                }}>
-                  <InputField>
-                    <InputLabel>Email</InputLabel>
-                    <Input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="votre@email.com"
-                      autoComplete="email"
-                      style={{ fontSize: 16 }}
-                    />
-                  </InputField>
+                <>
+                  {/* Google en premier — methode principale */}
+                  {!isInAppBrowser() && (
+                    <GoogleButtonWrapper>
+                      <GoogleLogin
+                        onSuccess={(credentialResponse: CredentialResponse) => {
+                          if (credentialResponse.credential) {
+                            handleGoogleLogin(credentialResponse.credential);
+                          }
+                        }}
+                        onError={() => setError('Erreur de connexion Google')}
+                        text="signin_with"
+                        shape="rectangular"
+                        size="large"
+                        width="100%"
+                        logo_alignment="left"
+                      />
+                    </GoogleButtonWrapper>
+                  )}
 
-                  <Button variant="primary" size="lg" type="submit" disabled={isLoading} fullWidth>
-                    {isLoading ? 'Envoi en cours...' : 'Recevoir mon lien de connexion'}
-                  </Button>
-                </Form>
+                  <OrDivider>ou</OrDivider>
+
+                  {/* Email + mot de passe classique */}
+                  <Form onSubmit={loginMethod === 'magic' ? async (e) => {
+                    e.preventDefault();
+                    if (!email) { setError('Entrez votre email'); return; }
+                    setError('');
+                    setIsLoading(true);
+                    try {
+                      await ApiService.requestMagicLink(email);
+                      setMagicLinkSent(true);
+                    } catch { setError('Erreur lors de l\'envoi. Verifiez votre email.'); }
+                    setIsLoading(false);
+                  } : handleSubmit}>
+                    <InputField>
+                      <InputLabel>Email</InputLabel>
+                      <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
+                        placeholder="votre@email.com" autoComplete="email" style={{ fontSize: 16 }} />
+                    </InputField>
+
+                    {loginMethod === 'password' && (
+                      <InputField>
+                        <InputLabel>Mot de passe</InputLabel>
+                        <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)}
+                          placeholder="Votre mot de passe" autoComplete="current-password" style={{ fontSize: 16 }} />
+                      </InputField>
+                    )}
+
+                    <Button variant="primary" size="lg" type="submit" disabled={isLoading} fullWidth>
+                      {isLoading
+                        ? 'Connexion...'
+                        : loginMethod === 'magic'
+                          ? 'Recevoir un lien de connexion'
+                          : 'Se connecter'}
+                    </Button>
+                  </Form>
+
+                  <LinkText>
+                    {loginMethod === 'magic' ? (
+                      <span onClick={() => setLoginMethod('password')}>
+                        Se connecter avec un mot de passe
+                      </span>
+                    ) : (
+                      <span onClick={() => { setLoginMethod('magic'); setMagicLinkSent(false); }}>
+                        Connexion sans mot de passe (lien par email)
+                      </span>
+                    )}
+                  </LinkText>
+                </>
               )}
-
-              <OrDivider>ou</OrDivider>
-
-              {/* Google OAuth — hidden in WebView */}
-              {!isInAppBrowser() && (
-                <GoogleButtonWrapper>
-                  <GoogleLogin
-                    onSuccess={(credentialResponse: CredentialResponse) => {
-                      if (credentialResponse.credential) {
-                        handleGoogleLogin(credentialResponse.credential);
-                      }
-                    }}
-                    onError={() => setError('Erreur de connexion Google')}
-                    text="signin_with"
-                    shape="rectangular"
-                    size="large"
-                    width="100%"
-                    logo_alignment="left"
-                  />
-                </GoogleButtonWrapper>
-              )}
-
-              <LinkText>
-                <span onClick={() => setLoginMethod('password')}>
-                  Se connecter avec un mot de passe
-                </span>
-              </LinkText>
-            </>
-          )}
-
-          {/* ─── PASSWORD LOGIN (secondary) ─── */}
-          {!isRegister && loginMethod === 'password' && (
-            <>
-              <Form onSubmit={handleSubmit}>
-                <InputField>
-                  <InputLabel>Email</InputLabel>
-                  <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
-                    placeholder="votre@email.com" autoComplete="email" style={{ fontSize: 16 }} />
-                </InputField>
-                <InputField>
-                  <InputLabel>Mot de passe</InputLabel>
-                  <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Votre mot de passe" autoComplete="current-password" style={{ fontSize: 16 }} />
-                </InputField>
-                <Button variant="primary" size="lg" type="submit" disabled={isLoading} fullWidth>
-                  {isLoading ? 'Connexion...' : 'Se connecter'}
-                </Button>
-              </Form>
-              <LinkText>
-                <span onClick={() => { setLoginMethod('magic'); setMagicLinkSent(false); }}>
-                  Connexion par email (sans mot de passe)
-                </span>
-              </LinkText>
             </>
           )}
 
