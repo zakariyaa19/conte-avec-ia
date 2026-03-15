@@ -331,7 +331,7 @@ export const UpgradePage: React.FC = () => {
 
           <CheckRow>
             <CheckIcon $type="club">&#x2713;</CheckIcon>
-            <CheckLabel><strong>Livres illimites</strong> au lieu de 3</CheckLabel>
+            <CheckLabel><strong>Livres illimites</strong> — plus de limite a 3</CheckLabel>
             <CheckBadge>Club</CheckBadge>
           </CheckRow>
           <CheckRow>

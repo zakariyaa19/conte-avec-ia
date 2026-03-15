@@ -1387,7 +1387,7 @@ export const ClubPage: React.FC = () => {
               </div>
               {/* Rows */}
               {[
-                { e: '\uD83D\uDCD6', l: 'Livres', f: '3 max', c: 'Illimite' },
+                { e: '\uD83D\uDCD6', l: 'Livres', f: '1er gratuit (3 max)', c: 'Illimite' },
                 { e: '\uD83D\uDDBC\uFE0F', l: 'Illustrations', f: '7 / livre', c: '7 / livre' },
                 { e: '\uD83D\uDCDA', l: 'Bibliotheque', f: '\u2713', c: '\u2713' },
                 { e: '\uD83D\uDC64', l: 'Personnages', f: '\u2014', c: '\u2713' },

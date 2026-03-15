@@ -200,7 +200,8 @@ export const PricingTiers: React.FC<PricingTiersProps> = ({ onSelectPlan }) => {
           </PriceBlock>
           <Divider />
           <Features>
-            <Feature><FeatureIcon>&#x2705;</FeatureIcon>3 livres offerts</Feature>
+            <Feature><FeatureIcon>&#x2705;</FeatureIcon>1er livre offert</Feature>
+            <Feature><FeatureIcon>&#x2705;</FeatureIcon>Bibliotheque limitee a 3 livres</Feature>
             <Feature><FeatureIcon>&#x2705;</FeatureIcon>7 illustrations par livre</Feature>
             <Feature><FeatureIcon>&#x2705;</FeatureIcon>Bibliotheque en ligne</Feature>
             <Feature><FeatureIcon>&#x2705;</FeatureIcon>Lecture + telechargement</Feature>

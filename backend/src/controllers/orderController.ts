@@ -110,7 +110,7 @@ export class OrderController {
           isFirstBookFree = true;
           console.log('🎁 Premier livre GRATUIT pour', userEmail);
         } else {
-          // Vérifier la limite de 3 livres gratuits pour les non-Club
+          // Vérifier la limite de bibliothèque (3 livres max pour les non-Club)
           const deliveredCount = await prisma.order.count({
             where: {
               user: { email: userEmail },
@@ -120,7 +120,7 @@ export class OrderController {
           if (deliveredCount >= FREE_BOOK_LIMIT) {
             return res.status(403).json({
               success: false,
-              message: `Vous avez atteint la limite de ${FREE_BOOK_LIMIT} livres. Passez au Club pour continuer !`,
+              message: `Votre bibliotheque est limitee a ${FREE_BOOK_LIMIT} livres. Passez au Club pour continuer !`,
               limitReached: true,
               bookCount: deliveredCount,
               bookLimit: FREE_BOOK_LIMIT

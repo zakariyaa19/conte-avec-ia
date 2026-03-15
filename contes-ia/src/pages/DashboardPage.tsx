@@ -1201,7 +1201,7 @@ export const DashboardPage: React.FC = () => {
 
               <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.8)', margin: '0 0 20px', lineHeight: 1.5 }}>
                 {stories.length >= 3
-                  ? 'Vous avez utilise vos 3 livres. Le Club vous ouvre un monde de possibilites.'
+                  ? 'Votre bibliotheque est pleine (3 livres max). Le Club vous ouvre un monde de possibilites.'
                   : 'Le Club des Histoires, c\'est un nouveau livre chaque semaine.'}
               </p>
 
