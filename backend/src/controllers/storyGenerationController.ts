@@ -736,6 +736,18 @@ async function runGenerationPipeline(orderId: string, order: any, genLogId: stri
     console.log(`[Generation] Images generated: ${imageResult.images.length} images, sizes: [${imageResult.images.map(b => b.length).join(', ')}]`);
     logStep('images', 'completed');
 
+    // --- Upload illustrations to Cloudinary (for public sharing) ---
+    let illustrationUrls: string[] = [];
+    try {
+      const uploadPromises = imageResult.images.map((buf, i) =>
+        uploadCoverToCloudinary(buf, `illust-${orderId}-${i}-${Date.now()}`)
+      );
+      illustrationUrls = await Promise.all(uploadPromises);
+      console.log(`[Generation] ${illustrationUrls.length} illustrations uploaded to Cloudinary`);
+    } catch (err: any) {
+      console.warn('[Generation] Failed to upload illustrations (non-blocking):', err.message);
+    }
+
     // --- Step 3: Assemble PDF (93-100%) ---
     logStep('pdf', 'started');
     await updateProgress(orderId, 'ASSEMBLING_PDF', 93);
@@ -786,6 +798,7 @@ async function runGenerationPipeline(orderId: string, order: any, genLogId: stri
         storyStatus: 'DISPONIBLE',
         generationProgress: 100,
         generatedAt: new Date(),
+        ...(illustrationUrls.length > 0 && { illustrationUrlsJson: JSON.stringify(illustrationUrls) }),
       }
     });
     logStep('pdf', 'completed');

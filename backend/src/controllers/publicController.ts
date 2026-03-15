@@ -18,6 +18,7 @@ export class PublicController {
           firstIllustrationUrl: true,
           storyPreviewTextJson: true,
           storyTextJson: true,
+          illustrationUrlsJson: true,
           illustrationStyle: true,
           generalTheme: true,
           ageRange: true,
@@ -49,6 +50,14 @@ export class PublicController {
         } catch {}
       }
 
+      // Parse illustration URLs
+      let illustrationUrls: string[] = [];
+      if (order.illustrationUrlsJson) {
+        try {
+          illustrationUrls = JSON.parse(order.illustrationUrlsJson);
+        } catch {}
+      }
+
       res.json({
         success: true,
         data: {
@@ -58,6 +67,7 @@ export class PublicController {
           firstIllustrationUrl: order.firstIllustrationUrl,
           storyParagraphs,
           firstParagraph: storyParagraphs[0] || null,
+          illustrationUrls,
           illustrationStyle: order.illustrationStyle,
           generalTheme: order.generalTheme,
           ageRange: order.ageRange,

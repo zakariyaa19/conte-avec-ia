@@ -145,6 +145,9 @@ model Order {
   storyTextJson        String?
   isTestOrder          Boolean    @default(false)
 
+  // URLs des illustrations individuelles (JSON array pour partage public)
+  illustrationUrlsJson String?
+
   // Séquence email relance (post-livre gratuit)
   emailSequenceSent   String?
 

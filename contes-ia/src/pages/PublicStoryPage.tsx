@@ -348,26 +348,31 @@ export const PublicStoryPage: React.FC = () => {
           )}
         </CoverWrapper>
 
-        {/* Full story text */}
+        {/* Full story with illustrations */}
         {story.storyParagraphs && story.storyParagraphs.length > 0 ? (
           <>
-            {illustrationUrl && (
-              <StoryPreviewCard>
-                <IllustrationWrapper>
-                  <img src={illustrationUrl} alt="Illustration" loading="lazy" />
-                </IllustrationWrapper>
-              </StoryPreviewCard>
-            )}
             <StoryPreviewCard>
               <StoryPreviewContent>
                 <StoryPreviewTitle>L'histoire de {story.protagonistName}</StoryPreviewTitle>
-                {story.storyParagraphs.map((p: string, i: number) => (
-                  <StoryParagraph key={i} style={{ marginBottom: i < story.storyParagraphs.length - 1 ? '16px' : 0 }}>
-                    {p}
-                  </StoryParagraph>
-                ))}
               </StoryPreviewContent>
             </StoryPreviewCard>
+
+            {story.storyParagraphs.map((p: string, i: number) => {
+              const illustrations: string[] = story.illustrationUrls || [];
+              const img = illustrations[i] || (i === 0 ? illustrationUrl : null);
+              return (
+                <StoryPreviewCard key={i}>
+                  {img && (
+                    <IllustrationWrapper>
+                      <img src={img.startsWith('http') ? img : getImageUrl(img)} alt={`Illustration ${i + 1}`} loading="lazy" />
+                    </IllustrationWrapper>
+                  )}
+                  <StoryPreviewContent>
+                    <StoryParagraph>{p}</StoryParagraph>
+                  </StoryPreviewContent>
+                </StoryPreviewCard>
+              );
+            })}
           </>
         ) : story.firstParagraph ? (
           <StoryPreviewCard>
