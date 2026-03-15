@@ -8,6 +8,7 @@ import { Footer } from '../components/layout/Footer';
 import { Button } from '../components/ui/Button';
 import { ApiService } from '../config/api';
 import { getImageUrl } from '../config/constants';
+import { StoryReader } from '../components/ui/StoryReader';
 
 const fadeInUp = keyframes`
   from { opacity: 0; transform: translateY(16px); }
@@ -259,6 +260,7 @@ export const PublicStoryPage: React.FC = () => {
   const [story, setStory] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [coverError, setCoverError] = useState(false);
+  const [readerOpen, setReaderOpen] = useState(false);
 
   useEffect(() => {
     if (shareToken) loadStory();
@@ -348,6 +350,15 @@ export const PublicStoryPage: React.FC = () => {
           )}
         </CoverWrapper>
 
+        {/* Bouton lecture plein écran */}
+        {story.storyParagraphs && story.storyParagraphs.length > 0 && (
+          <div style={{ textAlign: 'center', marginBottom: theme.spacing.lg }}>
+            <Button variant="primary" size="lg" onClick={() => setReaderOpen(true)}>
+              Lire en plein ecran
+            </Button>
+          </div>
+        )}
+
         {/* Full story with illustrations */}
         {story.storyParagraphs && story.storyParagraphs.length > 0 ? (
           <>
@@ -404,6 +415,18 @@ export const PublicStoryPage: React.FC = () => {
         </CTASection>
       </MainContent>
       <Footer />
+
+      {readerOpen && story.storyParagraphs && (
+        <StoryReader
+          coverImageUrl={story.coverImageUrl}
+          coverTitle={displayTitle}
+          paragraphs={story.storyParagraphs}
+          illustrationUrls={story.illustrationUrls || []}
+          protagonistName={story.protagonistName}
+          onClose={() => setReaderOpen(false)}
+          onCreateAnother={() => navigate('/create-story')}
+        />
+      )}
     </PageContainer>
   );
 };
