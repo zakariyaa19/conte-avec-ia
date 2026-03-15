@@ -216,7 +216,7 @@ Scene (page ${pageIndex} of 6):
 
 Show ${params.protagonistName} as the central visible character in this scene. Rich details, warm atmosphere.
 
-Square format (1:1), full illustration, no borders.
+Portrait format (2:3 vertical), full illustration, no borders.
 
 CRITICAL: Absolutely NO text, NO letters, NO words, NO numbers anywhere. No signs, no books with visible text, no inscriptions on walls or objects. Pure illustration only.`;
 }
@@ -263,7 +263,7 @@ export async function generateFirstIllustration(
           image: refFile,
           prompt,
           n: 1,
-          size: '1024x1024',
+          size: '1024x1536' as any,
           quality: 'medium',
         });
         imageData = response.data?.[0]?.b64_json;
@@ -276,7 +276,7 @@ export async function generateFirstIllustration(
           model: 'gpt-image-1',
           prompt,
           n: 1,
-          size: '1024x1024',
+          size: '1024x1536' as any,
           quality: 'medium',
         });
         imageData = response.data?.[0]?.b64_json;
@@ -314,10 +314,10 @@ function generatePlaceholderImage(index: number, total: number): Buffer {
   const color = colors[index % colors.length];
   const label = `PAGE ${index} (${index}/${total})`;
 
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
-    <rect width="1024" height="1024" fill="${color}" rx="20"/>
-    <text x="512" y="480" font-family="Arial, sans-serif" font-size="72" fill="white" text-anchor="middle" font-weight="bold">${label}</text>
-    <text x="512" y="560" font-family="Arial, sans-serif" font-size="36" fill="white" text-anchor="middle" opacity="0.8">DRY RUN - 1024x1024</text>
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1536" viewBox="0 0 1024 1536">
+    <rect width="1024" height="1536" fill="${color}" rx="20"/>
+    <text x="512" y="720" font-family="Arial, sans-serif" font-size="72" fill="white" text-anchor="middle" font-weight="bold">${label}</text>
+    <text x="512" y="800" font-family="Arial, sans-serif" font-size="36" fill="white" text-anchor="middle" opacity="0.8">DRY RUN - 1024x1536</text>
   </svg>`;
 
   return Buffer.from(svg, 'utf-8');
@@ -406,7 +406,7 @@ export async function generateStoryImages(
               image: referenceFile,
               prompt,
               n: 1,
-              size: '1024x1024',
+              size: '1024x1536' as any,
               quality: 'medium',
             }),
             IMAGE_TIMEOUT,
@@ -429,7 +429,7 @@ export async function generateStoryImages(
               model: 'gpt-image-1',
               prompt,
               n: 1,
-              size: '1024x1024',
+              size: '1024x1536' as any,
               quality: 'medium',
             }),
             IMAGE_TIMEOUT,

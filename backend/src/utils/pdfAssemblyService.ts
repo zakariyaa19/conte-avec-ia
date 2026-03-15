@@ -133,7 +133,7 @@ async function compressForPdf(imageBuffer: Buffer): Promise<Buffer> {
   try {
     // Force PNG → JPEG conversion via sharp (handles all input formats)
     return await sharp(imageBuffer)
-      .resize(1024, 1024, { fit: 'inside', withoutEnlargement: true })
+      .resize(1024, 1536, { fit: 'inside', withoutEnlargement: true })
       .jpeg({ quality: 82 })
       .toBuffer();
   } catch (err) {
