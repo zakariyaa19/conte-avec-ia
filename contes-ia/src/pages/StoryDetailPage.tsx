@@ -685,6 +685,63 @@ export const StoryDetailPage: React.FC = () => {
   const coverUrl = story.coverImageUrl ? getImageUrl(story.coverImageUrl) : null;
   const displayTitle = story.coverTitle || `Conte de ${story.protagonistName}`;
 
+  // ─── PAGE DÉDIÉE GÉNÉRATION EN COURS ───
+  if (!isAvailable) {
+    return (
+      <PageContainer>
+        <Header />
+        <MainContent>
+          <BackLink onClick={() => navigate('/dashboard')}>
+            &larr; Ma bibliotheque
+          </BackLink>
+
+          <GeneratingCard>
+            <GenSparkle $left="10%" $top="15%" $delay={0} $size={4} />
+            <GenSparkle $left="85%" $top="20%" $delay={0.7} $size={3} />
+            <GenSparkle $left="20%" $top="75%" $delay={1.2} $size={5} />
+            <GenSparkle $left="78%" $top="70%" $delay={0.3} $size={3} />
+            <GenSparkle $left="45%" $top="8%" $delay={1.5} $size={4} />
+            <GenInner>
+              <GenBook>&#x1F4D6;</GenBook>
+              <GenTitle>{displayTitle}</GenTitle>
+              <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 14, margin: '0 0 24px' }}>
+                L'histoire de {story.protagonistName} est en cours de creation.<br/>
+                Elle sera prete dans quelques minutes !
+              </p>
+              <GenProgressTrack>
+                <GenProgressBar $progress={story.generationProgress || 15} />
+              </GenProgressTrack>
+              <GenStep>
+                {story.generationProgress
+                  ? story.generationProgress < 10 ? 'Redaction de l\'histoire...'
+                    : story.generationProgress < 90 ? 'Creation des illustrations...'
+                    : 'Assemblage du livre...'
+                  : 'Demarrage...'}
+              </GenStep>
+            </GenInner>
+          </GeneratingCard>
+
+          <div style={{ textAlign: 'center', marginTop: theme.spacing.lg }}>
+            <p style={{ fontSize: 13, color: theme.colors.text.light }}>
+              Cette page se met a jour automatiquement
+            </p>
+          </div>
+        </MainContent>
+        <Footer />
+
+        {id && (
+          <ShareModal
+            isOpen={shareOpen}
+            onClose={() => setShareOpen(false)}
+            storyId={id}
+            protagonistName={story?.protagonistName || ''}
+            coverTitle={displayTitle}
+          />
+        )}
+      </PageContainer>
+    );
+  }
+
   return (
     <PageContainer>
       <Header />
@@ -719,7 +776,7 @@ export const StoryDetailPage: React.FC = () => {
 
             <TagsRow>
               <Tag $color={statusColor}>
-                {isAvailable ? 'Disponible' : 'En cours de creation'}
+                Disponible
               </Tag>
               <Tag>{translateTheme(story.generalTheme)}</Tag>
               <Tag>{translateStyle(story.illustrationStyle)}</Tag>
@@ -798,32 +855,7 @@ export const StoryDetailPage: React.FC = () => {
               </ActionCard>
             </ActionsGrid>
           </ActionsCard>
-        ) : (
-          <GeneratingCard>
-            <GenSparkle $left="10%" $top="15%" $delay={0} $size={4} />
-            <GenSparkle $left="85%" $top="20%" $delay={0.7} $size={3} />
-            <GenSparkle $left="20%" $top="75%" $delay={1.2} $size={5} />
-            <GenSparkle $left="78%" $top="70%" $delay={0.3} $size={3} />
-            <GenInner>
-              <GenBook>&#x1F4D6;</GenBook>
-              <GenTitle>Votre livre se cree...</GenTitle>
-              <GenText>
-                Notre IA redige l'histoire et illustre chaque page.<br />
-                Pret dans quelques minutes !
-              </GenText>
-              <GenProgressTrack>
-                <GenProgressBar $progress={story.generationProgress || 15} />
-              </GenProgressTrack>
-              <GenStep>
-                {story.generationProgress
-                  ? story.generationProgress < 10 ? 'Redaction de l\'histoire...'
-                    : story.generationProgress < 90 ? 'Creation des illustrations...'
-                    : 'Assemblage du livre...'
-                  : 'Demarrage...'}
-              </GenStep>
-            </GenInner>
-          </GeneratingCard>
-        )}
+        ) : null}
 
         {/* ─── Details du conte ─── */}
         <DetailsCard style={{ marginTop: theme.spacing.lg }}>
