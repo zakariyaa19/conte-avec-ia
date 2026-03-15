@@ -10,6 +10,8 @@ import { StoryReader } from '../components/ui/StoryReader';
 import { ApiService } from '../config/api';
 import { getImageUrl } from '../config/constants';
 import { ShareModal } from '../components/ui/ShareModal';
+import { useAuth } from '../contexts/AuthContext';
+import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
 import {
   GENERAL_THEMES,
   SPECIFIC_SUBJECTS,
@@ -518,6 +520,7 @@ const LoadingText = styled.div`
 export const StoryDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { user, refreshProfile } = useAuth();
   const [story, setStory] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
@@ -526,6 +529,49 @@ export const StoryDetailPage: React.FC = () => {
   const [pdfLoading, setPdfLoading] = useState(false);
   const [pdfError, setPdfError] = useState<string | null>(null);
   const [coverError, setCoverError] = useState(false);
+
+  // Secure account state
+  const [newPassword, setNewPassword] = useState('');
+  const [passwordSaving, setPasswordSaving] = useState(false);
+  const [passwordSaved, setPasswordSaved] = useState(false);
+  const [passwordError, setPasswordError] = useState('');
+  const needsSecureAccount = user && !user.hasPassword && !user.hasGoogle;
+
+  const handleSetPassword = async () => {
+    if (newPassword.length < 8) {
+      setPasswordError('Minimum 8 caracteres');
+      return;
+    }
+    setPasswordSaving(true);
+    setPasswordError('');
+    try {
+      const token = localStorage.getItem('userToken');
+      if (!token) return;
+      const res = await ApiService.changePassword(token, '', newPassword);
+      if (res.success) {
+        setPasswordSaved(true);
+        refreshProfile();
+      } else {
+        setPasswordError(res.message || 'Erreur');
+      }
+    } catch {
+      setPasswordError('Erreur lors de la sauvegarde');
+    }
+    setPasswordSaving(false);
+  };
+
+  const handleGoogleSecure = async (credential: string) => {
+    try {
+      const res = await ApiService.googleAuth(credential);
+      if (res.success) {
+        if (res.data?.token) localStorage.setItem('userToken', res.data.token);
+        setPasswordSaved(true);
+        refreshProfile();
+      }
+    } catch {
+      setPasswordError('Erreur Google');
+    }
+  };
   const [shareOpen, setShareOpen] = useState(false);
 
   useEffect(() => {
@@ -777,6 +823,79 @@ export const StoryDetailPage: React.FC = () => {
               </GenStep>
             </GenInner>
           </GeneratingCard>
+        )}
+
+        {/* ─── Secure Account Banner ─── */}
+        {needsSecureAccount && !passwordSaved && (
+          <div style={{
+            background: 'white', borderRadius: 20, padding: '24px 20px',
+            boxShadow: '0 2px 16px rgba(0,0,0,0.06)', border: '1px solid rgba(0,0,0,0.04)',
+            marginTop: theme.spacing.lg, marginBottom: theme.spacing.sm,
+          }}>
+            <div style={{ textAlign: 'center', marginBottom: 16 }}>
+              <span style={{ fontSize: 28 }}>&#x1F512;</span>
+              <h3 style={{ fontFamily: theme.fonts.heading, fontSize: 18, fontWeight: 700, margin: '8px 0 4px', color: theme.colors.text.primary }}>
+                Securisez votre compte
+              </h3>
+              <p style={{ fontSize: 13, color: theme.colors.text.secondary, margin: 0 }}>
+                Pour retrouver vos livres facilement
+              </p>
+            </div>
+
+            {/* Google button */}
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
+              <GoogleLogin
+                onSuccess={(credentialResponse: CredentialResponse) => {
+                  if (credentialResponse.credential) handleGoogleSecure(credentialResponse.credential);
+                }}
+                onError={() => setPasswordError('Erreur Google')}
+                text="continue_with"
+                shape="rectangular"
+                size="large"
+                width="100%"
+              />
+            </div>
+
+            <div style={{ textAlign: 'center', fontSize: 12, color: theme.colors.text.light, margin: '10px 0' }}>ou creez un mot de passe</div>
+
+            {/* Password form */}
+            <div style={{ display: 'flex', gap: 8 }}>
+              <input
+                type="password"
+                value={newPassword}
+                onChange={e => { setNewPassword(e.target.value); setPasswordError(''); }}
+                placeholder="Mot de passe (8 car. min)"
+                style={{
+                  flex: 1, padding: '12px 14px', borderRadius: 12,
+                  border: `1px solid ${passwordError ? theme.colors.status.error : '#e0e0e0'}`,
+                  fontSize: 14, outline: 'none',
+                }}
+              />
+              <button
+                onClick={handleSetPassword}
+                disabled={passwordSaving}
+                style={{
+                  padding: '12px 18px', borderRadius: 12, border: 'none',
+                  background: theme.colors.accent.coral, color: 'white',
+                  fontSize: 14, fontWeight: 600, cursor: 'pointer',
+                  opacity: passwordSaving ? 0.6 : 1,
+                }}
+              >
+                {passwordSaving ? '...' : 'OK'}
+              </button>
+            </div>
+            {passwordError && <p style={{ fontSize: 12, color: theme.colors.status.error, margin: '6px 0 0', textAlign: 'center' }}>{passwordError}</p>}
+          </div>
+        )}
+
+        {passwordSaved && (
+          <div style={{
+            background: '#E8F5E9', borderRadius: 16, padding: '16px 20px',
+            textAlign: 'center', marginTop: theme.spacing.lg, marginBottom: theme.spacing.sm,
+            fontSize: 14, color: '#2E7D32', fontWeight: 600,
+          }}>
+            &#x2705; Compte securise ! Vous pouvez maintenant vous connecter.
+          </div>
         )}
 
         {/* ─── Details du conte ─── */}

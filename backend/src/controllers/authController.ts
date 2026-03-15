@@ -200,7 +200,9 @@ export class AuthController {
           weeklySubmissionReset: user.weeklySubmissionReset,
           orders: user.orders,
           children: user.childProfiles,
-          isFirstPurchase: !hasPaidOrder
+          isFirstPurchase: !hasPaidOrder,
+          hasPassword: !!user.password,
+          hasGoogle: !!user.googleId
         }
       });
     } catch (error) {

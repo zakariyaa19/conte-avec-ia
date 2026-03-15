@@ -12,6 +12,8 @@ interface User {
   weeklySubmissionCount?: number;
   weeklySubmissionReset?: string;
   isFirstPurchase?: boolean;
+  hasPassword?: boolean;
+  hasGoogle?: boolean;
 }
 
 interface AuthContextType {
