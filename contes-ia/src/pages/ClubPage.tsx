@@ -165,13 +165,13 @@ const HeroTitle = styled.h1`
 
 const HeroPrice = styled.div`
   font-family: ${theme.fonts.heading};
-  font-size: ${theme.fontSizes['3xl']};
+  font-size: ${theme.fontSizes.xl};
   font-weight: 700;
   color: ${theme.colors.accent.coral};
   margin-bottom: ${theme.spacing.md};
 
   small {
-    font-size: ${theme.fontSizes.lg};
+    font-size: ${theme.fontSizes.base};
     font-weight: 500;
     color: ${theme.colors.text.secondary};
   }
@@ -978,7 +978,7 @@ const ClubCTA: React.FC<{
     if (isAuthenticated) {
       return (
         <WhiteButton onClick={onJoin} disabled={loading}>
-          {loading ? 'Redirection...' : 'Passer au Club — 9,99€/mois'}
+          {loading ? 'Redirection...' : 'Decouvrir le Club'}
         </WhiteButton>
       );
     }
@@ -1008,7 +1008,7 @@ const ClubCTA: React.FC<{
       <>
         {error && <ErrorMsg>{error}</ErrorMsg>}
         <Button variant="primary" size="lg" onClick={onJoin} disabled={loading}>
-          {loading ? 'Redirection vers Stripe...' : 'Passer au Club — 9,99€/mois'}
+          {loading ? 'Redirection vers Stripe...' : 'Decouvrir le Club'}
         </Button>
       </>
     );
@@ -1132,7 +1132,7 @@ export const ClubPage: React.FC = () => {
               Le Club des <span>Histoires Uniques</span>
             </HeroTitle>
             <HeroPrice>
-              A partir de 9,99{'€'}<small> / mois</small>
+              9,99{'€'}<small>/mois</small>
             </HeroPrice>
             <HeroSubtitle>
               Un nouveau conte personnalise chaque semaine pour votre enfant. Personnalisation avancee, credits cumulables, bibliotheque illimitee, sans engagement.
