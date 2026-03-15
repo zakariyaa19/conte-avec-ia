@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { exampleStories } from '../data/exampleStories';
 import { useScrollReveal, useStaggerReveal } from '../hooks/useScrollReveal';
 import { StoryPDFViewer } from '../components/ui/StoryPDFViewer';
+import { useAuth } from '../contexts/AuthContext';
 
 // =============================================
 // ANIMATIONS
@@ -1252,6 +1253,7 @@ const faqItems = [
 
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   const [activeStep, setActiveStep] = useState(0);
   const [stepKey, setStepKey] = useState(0);
   const [activeBook, setActiveBook] = useState(0);
@@ -1261,6 +1263,9 @@ export const HomePage: React.FC = () => {
   const handleSelectPlan = (plan: PricingPlan) => {
     if (plan === 'single') {
       navigate('/create-story');
+    } else if (isAuthenticated) {
+      // Connecté → direct vers la page d'upgrade/paiement
+      navigate('/upgrade');
     } else if (plan === 'annual') {
       navigate('/login?mode=register&plan=club_annual');
     } else {
@@ -1344,27 +1349,25 @@ const faqReveal = useScrollReveal();
                 Votre enfant, <span>heros</span> de son propre conte personnalise
               </HeroTitle>
               <HeroSubtitle>
-                Creez un livre personnalise unique grace a l'IA : prenom, photo, theme et message educatif sur mesure. En eBook ou via le Club.
+                Creez un livre personnalise unique grace a l'IA : prenom, photo, theme et message educatif sur mesure. Le premier est gratuit !
               </HeroSubtitle>
               <CTAButtons>
                 <Button variant="primary" size="lg" onClick={() => navigate('/create-story')}>
-                  Creer l'histoire de mon enfant
+                  Creer mon 1er livre GRATUIT
                 </Button>
-                <Button variant="outline" size="lg" onClick={() => {
-                  document.getElementById('contes-exemples')?.scrollIntoView({ behavior: 'smooth' });
-                }}>
-                  Voir les exemples
+                <Button variant="outline" size="lg" onClick={() => navigate('/club')}>
+                  Decouvrir le Club des Histoires
                 </Button>
               </CTAButtons>
               <TrustRow>
                 <TrustItem>
-                  <span>&#10003;</span> Paiement securise
+                  <span>&#10003;</span> 1er livre gratuit
                 </TrustItem>
                 <TrustItem>
-                  <span>&#10003;</span> Satisfait ou rembourse
+                  <span>&#10003;</span> Pret en 5 minutes
                 </TrustItem>
                 <TrustItem>
-                  <span>&#10003;</span> Sans engagement
+                  <span>&#10003;</span> Sans carte bancaire
                 </TrustItem>
               </TrustRow>
             </HeroTextBlock>

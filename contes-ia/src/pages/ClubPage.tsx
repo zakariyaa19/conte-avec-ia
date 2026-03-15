@@ -1086,6 +1086,8 @@ export const ClubPage: React.FC = () => {
   const handleSelectPlan = (plan: PricingPlan) => {
     if (plan === 'single') {
       navigate('/create-story');
+    } else if (isAuthenticated && !isClub) {
+      navigate('/upgrade');
     } else {
       handleJoinClub(plan);
     }

@@ -532,11 +532,14 @@ export const LoginPage: React.FC = () => {
       <Header />
       <LoginContainer>
         <LoginCard $wide={isRegister}>
-          <Title>{isRegister ? 'Créer un compte' : 'Accéder à mes livres'}</Title>
+          <div style={{ textAlign: 'center', marginBottom: '8px' }}>
+            <span style={{ fontSize: '40px', lineHeight: 1 }}>{isRegister ? '\uD83D\uDCDA' : '\uD83D\uDCD6'}</span>
+          </div>
+          <Title>{isRegister ? 'Creer mon compte' : 'Ma bibliotheque'}</Title>
           <Subtitle>
             {isRegister
-              ? 'Inscrivez-vous pour retrouver vos livres'
-              : 'Entrez votre email pour recevoir un lien de connexion'}
+              ? 'Inscrivez-vous pour creer et retrouver vos livres'
+              : 'Entrez votre email — on vous envoie un lien magique'}
           </Subtitle>
 
           {error && <ErrorMsg>{error}</ErrorMsg>}
