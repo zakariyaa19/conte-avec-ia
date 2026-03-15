@@ -349,14 +349,109 @@ const ButtonSpinner = styled.span`
   animation: ${spin} 0.6s linear infinite;
 `;
 
-const WaitingMessage = styled.div`
+const GeneratingCard = styled.div`
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border-radius: 24px;
+  padding: 40px 24px;
   text-align: center;
-  padding: ${theme.spacing.md};
-  color: ${theme.colors.text.secondary};
-  font-size: ${theme.fontSizes.sm};
-  background: ${theme.colors.status.warning}12;
-  border: 1px solid ${theme.colors.status.warning}30;
-  border-radius: ${theme.borderRadius.lg};
+  position: relative;
+  overflow: hidden;
+  margin-bottom: ${theme.spacing.lg};
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 30% 70%, rgba(255,255,255,0.1), transparent 50%),
+                radial-gradient(circle at 70% 30%, rgba(255,255,255,0.08), transparent 50%);
+  }
+`;
+
+const GenInner = styled.div`
+  position: relative;
+  z-index: 2;
+`;
+
+const GenBookAnim = keyframes`
+  0%, 100% { transform: rotateY(0deg) scale(1); }
+  25% { transform: rotateY(-8deg) scale(1.02); }
+  50% { transform: rotateY(0deg) scale(1.05); }
+  75% { transform: rotateY(8deg) scale(1.02); }
+`;
+
+const GenBook = styled.div`
+  font-size: 56px;
+  margin-bottom: 16px;
+  animation: ${GenBookAnim} 3s ease-in-out infinite;
+  display: inline-block;
+`;
+
+const GenTitle = styled.h3`
+  font-family: ${theme.fonts.heading};
+  font-size: 22px;
+  color: white;
+  margin: 0 0 8px;
+  font-weight: 800;
+`;
+
+const GenText = styled.p`
+  color: rgba(255,255,255,0.7);
+  font-size: 14px;
+  margin: 0 0 24px;
+  line-height: 1.5;
+`;
+
+const GenProgressTrack = styled.div`
+  width: 100%;
+  max-width: 280px;
+  height: 6px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 3px;
+  margin: 0 auto 12px;
+  overflow: hidden;
+`;
+
+const GenProgressShimmer = keyframes`
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+`;
+
+const GenProgressBar = styled.div<{ $progress: number }>`
+  height: 100%;
+  width: ${props => props.$progress}%;
+  background: linear-gradient(90deg, rgba(255,255,255,0.6), white, rgba(255,255,255,0.6));
+  border-radius: 3px;
+  transition: width 0.5s ease;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    animation: ${GenProgressShimmer} 1.5s ease-in-out infinite;
+  }
+`;
+
+const GenStep = styled.p`
+  color: rgba(255,255,255,0.5);
+  font-size: 12px;
+  margin: 0;
+`;
+
+const GenSparkle = styled.div<{ $left: string; $top: string; $delay: number; $size: number }>`
+  position: absolute;
+  left: ${props => props.$left};
+  top: ${props => props.$top};
+  width: ${props => props.$size}px;
+  height: ${props => props.$size}px;
+  border-radius: 50%;
+  background: white;
+  opacity: 0;
+  animation: ${keyframes`
+    0%, 100% { opacity: 0; transform: scale(0.5); }
+    50% { opacity: 0.6; transform: scale(1); }
+  `} ${props => 2 + props.$delay}s ease-in-out ${props => props.$delay}s infinite;
 `;
 
 /* ─── Details ─── */
@@ -436,6 +531,15 @@ export const StoryDetailPage: React.FC = () => {
   useEffect(() => {
     loadStory();
   }, [id]);
+
+  // Auto-refresh every 10s while story is generating
+  useEffect(() => {
+    if (!story || story.storyStatus === 'DISPONIBLE') return;
+    const interval = setInterval(() => {
+      loadStory();
+    }, 10000);
+    return () => clearInterval(interval);
+  }, [story?.storyStatus, id]);
 
   const loadStory = async () => {
     const token = localStorage.getItem('userToken');
@@ -649,9 +753,30 @@ export const StoryDetailPage: React.FC = () => {
             </ActionsGrid>
           </ActionsCard>
         ) : (
-          <WaitingMessage>
-            Votre conte est en cours de creation. Vous serez notifie par email des qu'il sera disponible.
-          </WaitingMessage>
+          <GeneratingCard>
+            <GenSparkle $left="10%" $top="15%" $delay={0} $size={4} />
+            <GenSparkle $left="85%" $top="20%" $delay={0.7} $size={3} />
+            <GenSparkle $left="20%" $top="75%" $delay={1.2} $size={5} />
+            <GenSparkle $left="78%" $top="70%" $delay={0.3} $size={3} />
+            <GenInner>
+              <GenBook>&#x1F4D6;</GenBook>
+              <GenTitle>Votre livre se cree...</GenTitle>
+              <GenText>
+                Notre IA redige l'histoire et illustre chaque page.<br />
+                Pret dans quelques minutes !
+              </GenText>
+              <GenProgressTrack>
+                <GenProgressBar $progress={story.generationProgress || 15} />
+              </GenProgressTrack>
+              <GenStep>
+                {story.generationProgress
+                  ? story.generationProgress < 10 ? 'Redaction de l\'histoire...'
+                    : story.generationProgress < 90 ? 'Creation des illustrations...'
+                    : 'Assemblage du livre...'
+                  : 'Demarrage...'}
+              </GenStep>
+            </GenInner>
+          </GeneratingCard>
         )}
 
         {/* ─── Details du conte ─── */}

@@ -343,7 +343,6 @@ export const SuccessPage: React.FC = () => {
             setPaymentConfirmed(true);
 
             // Auto-login: use token from payment verification
-            // (token may have been lost during Stripe redirect)
             if (data.token && data.user) {
               setTokenAndUser(data.token, data.user);
             }
@@ -356,6 +355,12 @@ export const SuccessPage: React.FC = () => {
             const userEmail = data.order?.userEmail;
             await trackPurchase(productType, orderId || 'unknown', userEmail);
             await metaTrackPurchase(productType, orderId || 'unknown');
+
+            // Redirect directly to the book page
+            if (orderId) {
+              navigate(`/dashboard/story/${orderId}`, { replace: true });
+              return;
+            }
           }
         } catch (error) {
           console.error('Erreur lors de la verification du paiement:', error);

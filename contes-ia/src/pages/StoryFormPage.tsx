@@ -155,15 +155,9 @@ export const StoryFormPage: React.FC = () => {
         setTokenAndUser(orderResponse.token, orderResponse.user);
       }
 
-      // Club gratuit : pas de Stripe, redirection directe
-      if (orderResponse.isClubFreeOrder) {
-        window.location.href = `/success?order_id=${orderResponse.data.id}&club_free=true`;
-        return;
-      }
-
-      // Premier livre gratuit : pas de Stripe, redirection directe
-      if (orderResponse.isFirstBookFree) {
-        window.location.href = `/success?order_id=${orderResponse.data.id}&free=true`;
+      // Club gratuit ou premier livre gratuit : redirection directe vers le livre
+      if (orderResponse.isClubFreeOrder || orderResponse.isFirstBookFree) {
+        window.location.href = `/dashboard/story/${orderResponse.data.id}`;
         return;
       }
 
