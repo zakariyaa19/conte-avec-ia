@@ -255,8 +255,9 @@ const PlanBadge = styled.span`
   padding: 3px 10px;
   border-radius: 20px;
   position: absolute;
-  top: -10px;
+  top: 8px;
   right: 12px;
+  z-index: 2;
 `;
 
 const PlanCardHeader = styled.div`
