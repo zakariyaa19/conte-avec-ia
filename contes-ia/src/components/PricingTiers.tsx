@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { theme } from '../styles/theme';
 import { Button } from './ui/Button';
 
@@ -10,169 +10,90 @@ interface PricingTiersProps {
   isFirstPurchase?: boolean;
 }
 
+const fadeInUp = keyframes`
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+`;
+
 const Section = styled.div`
   width: 100%;
 `;
 
-const ToggleRow = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-bottom: ${theme.spacing['2xl']};
-`;
-
-const ToggleContainer = styled.div`
-  display: inline-flex;
-  background: ${theme.colors.background.secondary};
-  border-radius: ${theme.borderRadius.full};
-  padding: 4px;
-  gap: 2px;
-`;
-
-const ToggleButton = styled.button<{ $active: boolean }>`
-  padding: 0.5rem 1.5rem;
-  border-radius: ${theme.borderRadius.full};
-  border: none;
-  font-family: ${theme.fonts.body};
-  font-size: ${theme.fontSizes.sm};
-  font-weight: 600;
-  cursor: pointer;
-  transition: all ${theme.transitions.fast};
-  background: ${props => props.$active ? theme.colors.background.white : 'transparent'};
-  color: ${props => props.$active ? theme.colors.text.primary : theme.colors.text.light};
-  box-shadow: ${props => props.$active ? theme.shadows.sm : 'none'};
-`;
-
 const Grid = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr 1fr;
   gap: ${theme.spacing.lg};
-  align-items: stretch;
+  align-items: start;
 
-  @media (max-width: ${theme.breakpoints.lg}) {
+  @media (max-width: ${theme.breakpoints.sm}) {
     grid-template-columns: 1fr;
     max-width: 420px;
     margin: 0 auto;
   }
 `;
 
-const Card = styled.div<{ $highlight?: 'popular' | 'best' }>`
-  background: ${props => props.$highlight
-    ? 'linear-gradient(160deg, #FFFFFF 0%, #FFF8F0 40%, #FFF0E0 100%)'
+const Card = styled.div<{ $highlighted?: boolean }>`
+  background: ${props => props.$highlighted
+    ? 'linear-gradient(160deg, #FFFFFF 0%, #F0ECFF 40%, #EBE5FF 100%)'
     : theme.colors.background.white};
-  border-radius: ${theme.borderRadius['2xl']};
-  padding: ${theme.spacing['2xl']};
-  box-shadow: ${props => props.$highlight
-    ? '0 8px 32px rgba(255, 153, 153, 0.15), 0 0 0 1px rgba(255, 153, 153, 0.1)'
-    : theme.shadows.card};
+  border: ${props => props.$highlighted
+    ? '2px solid #764ba2'
+    : `1px solid ${theme.colors.background.secondary}`};
+  border-radius: 20px;
+  padding: ${theme.spacing.xl};
   position: relative;
-  transition: all ${theme.transitions.smooth};
-  border: ${props => props.$highlight
-    ? `2px solid ${theme.colors.accent.coral}`
-    : '2px solid rgba(0, 0, 0, 0.04)'};
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
+  transition: transform 0.25s, box-shadow 0.25s;
+  animation: ${fadeInUp} 0.5s ease-out both;
 
-  ${props => props.$highlight === 'popular' && `
-    transform: scale(1.03);
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 5px;
-      background: linear-gradient(90deg, ${theme.colors.accent.coral}, ${theme.colors.accent.softPink}, ${theme.colors.accent.pastelBlue});
-    }
-  `}
-
-  ${props => props.$highlight === 'best' && `
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 5px;
-      background: linear-gradient(90deg, ${theme.colors.accent.pastelBlue}, ${theme.colors.accent.lightGreen});
-    }
+  ${props => props.$highlighted && `
+    transform: scale(1.02);
+    box-shadow: 0 8px 40px rgba(118, 75, 162, 0.15);
   `}
 
   &:hover {
-    transform: ${props => props.$highlight === 'popular' ? 'scale(1.03) translateY(-6px)' : 'translateY(-6px)'};
-    box-shadow: ${theme.shadows.cardHover};
-  }
-
-  button {
-    white-space: normal;
-    line-height: 1.3;
-  }
-
-  @media (max-width: ${theme.breakpoints.lg}) {
-    transform: scale(1);
-    &:hover {
-      transform: translateY(-6px);
-    }
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.1);
   }
 
   @media (max-width: ${theme.breakpoints.sm}) {
-    padding: ${theme.spacing.xl};
-    border-radius: ${theme.borderRadius.xl};
+    padding: ${theme.spacing.lg};
   }
 `;
 
-const Badge = styled.div<{ $variant?: 'popular' | 'best' }>`
+const Badge = styled.div`
   position: absolute;
-  top: 16px;
+  top: -1px;
   right: 16px;
-  background: ${props => props.$variant === 'best'
-    ? 'linear-gradient(135deg, #4CAF50, #81C784)'
-    : `linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover})`};
-  color: ${theme.colors.text.white};
-  padding: 0.375rem 1rem;
-  border-radius: ${theme.borderRadius.full};
-  font-size: ${theme.fontSizes.xs};
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  padding: 5px 14px;
+  border-radius: 0 0 10px 10px;
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.02em;
-  box-shadow: ${props => props.$variant === 'best'
-    ? '0 0 20px rgba(76, 175, 80, 0.3)'
-    : theme.shadows.glow};
-
-  @media (max-width: ${theme.breakpoints.sm}) {
-    font-size: 0.625rem;
-    padding: 0.25rem 0.75rem;
-  }
+  letter-spacing: 0.3px;
 `;
 
 const CardTitle = styled.h3`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.xl};
   color: ${theme.colors.text.primary};
-  margin-bottom: ${theme.spacing.md};
-  text-align: center;
+  margin: 0 0 ${theme.spacing.sm};
   font-weight: 700;
 
   @media (max-width: ${theme.breakpoints.sm}) {
     font-size: ${theme.fontSizes.lg};
-    margin-bottom: ${theme.spacing.sm};
   }
 `;
 
 const PriceBlock = styled.div`
-  text-align: center;
-  margin-bottom: ${theme.spacing.xl};
-  padding: ${theme.spacing.md} 0;
-
-  @media (max-width: ${theme.breakpoints.sm}) {
-    margin-bottom: ${theme.spacing.lg};
-  }
+  margin-bottom: ${theme.spacing.lg};
 `;
 
 const PriceValue = styled.div`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes['3xl']};
-  font-weight: 700;
-  color: ${theme.colors.accent.coral};
+  font-weight: 800;
+  color: ${theme.colors.text.primary};
   line-height: 1;
 
   @media (max-width: ${theme.breakpoints.sm}) {
@@ -183,68 +104,77 @@ const PriceValue = styled.div`
 const PriceNote = styled.p`
   font-size: ${theme.fontSizes.sm};
   color: ${theme.colors.text.light};
-  margin: ${theme.spacing.xs} 0 0;
-`;
-
-const Savings = styled.div`
-  display: inline-block;
-  background: linear-gradient(135deg, ${theme.colors.accent.lightGreen}30, #a8e6cf30);
-  border: 1px solid #a8e6cf;
-  border-radius: ${theme.borderRadius.full};
-  padding: 4px ${theme.spacing.md};
-  font-size: ${theme.fontSizes.xs};
-  font-weight: 600;
-  color: #2d6a4f;
-  margin-top: ${theme.spacing.sm};
+  margin: 4px 0 0;
 `;
 
 const Divider = styled.div`
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(0,0,0,0.06), transparent);
-  margin-bottom: ${theme.spacing.xl};
+  margin-bottom: ${theme.spacing.md};
 `;
 
 const Features = styled.ul`
   list-style: none;
-  margin-bottom: ${theme.spacing.xl};
+  margin: 0 0 ${theme.spacing.lg};
   padding: 0;
-  flex: 1;
-
-  @media (max-width: ${theme.breakpoints.sm}) {
-    margin-bottom: ${theme.spacing.lg};
-  }
 `;
 
-const Feature = styled.li`
+const Feature = styled.li<{ $disabled?: boolean; $premium?: boolean }>`
   display: flex;
-  align-items: flex-start;
-  gap: ${theme.spacing.md};
-  margin-bottom: 1rem;
-  font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.text.secondary};
-  line-height: 1.5;
-
-  &::before {
-    content: '';
-    flex-shrink: 0;
-    width: 22px;
-    height: 22px;
-    border-radius: ${theme.borderRadius.full};
-    background: linear-gradient(135deg, ${theme.colors.accent.lightGreen}, #8FE6A0);
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white' width='13' height='13'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 13px;
-    margin-top: 1px;
-  }
-
-  @media (max-width: ${theme.breakpoints.sm}) {
-    margin-bottom: 0.625rem;
-    font-size: ${theme.fontSizes.xs};
-  }
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: ${props => props.$disabled ? '#ccc' : theme.colors.text.secondary};
+  text-decoration: ${props => props.$disabled ? 'line-through' : 'none'};
+  font-weight: ${props => props.$premium ? 600 : 400};
+  line-height: 1.4;
 `;
 
-export const PricingTiers: React.FC<PricingTiersProps> = ({ onSelectPlan, isFirstPurchase = true }) => {
+const FeatureIcon = styled.span`
+  font-size: 15px;
+  flex-shrink: 0;
+  width: 20px;
+  text-align: center;
+`;
+
+const ToggleRow = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-bottom: ${theme.spacing.xl};
+`;
+
+const ToggleContainer = styled.div`
+  display: inline-flex;
+  background: ${theme.colors.background.secondary};
+  border-radius: ${theme.borderRadius.full};
+  padding: 3px;
+`;
+
+const ToggleButton = styled.button<{ $active: boolean }>`
+  padding: 8px 20px;
+  border-radius: ${theme.borderRadius.full};
+  border: none;
+  font-size: ${theme.fontSizes.sm};
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: ${props => props.$active ? 'white' : 'transparent'};
+  color: ${props => props.$active ? theme.colors.text.primary : theme.colors.text.light};
+  box-shadow: ${props => props.$active ? '0 1px 4px rgba(0,0,0,0.1)' : 'none'};
+`;
+
+const SaveBadge = styled.span`
+  background: #4CAF50;
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 8px;
+  margin-left: 4px;
+`;
+
+export const PricingTiers: React.FC<PricingTiersProps> = ({ onSelectPlan }) => {
   const [showAnnual, setShowAnnual] = useState(false);
 
   return (
@@ -255,87 +185,56 @@ export const PricingTiers: React.FC<PricingTiersProps> = ({ onSelectPlan, isFirs
             Mensuel
           </ToggleButton>
           <ToggleButton $active={showAnnual} onClick={() => setShowAnnual(true)}>
-            Annuel (-33%)
+            Annuel <SaveBadge>-33%</SaveBadge>
           </ToggleButton>
         </ToggleContainer>
       </ToggleRow>
 
       <Grid>
-        {/* Single purchase */}
-        <Card $highlight={isFirstPurchase ? 'popular' : undefined}>
-          {isFirstPurchase && <Badge $variant="popular">-71% Premier conte</Badge>}
-          <CardTitle>{isFirstPurchase ? 'Premier Conte' : 'Mon Histoire'}</CardTitle>
+        {/* Gratuit */}
+        <Card>
+          <CardTitle>Gratuit</CardTitle>
           <PriceBlock>
-            {isFirstPurchase ? (
-              <>
-                <PriceValue>1,99&euro;</PriceValue>
-                <PriceNote style={{ textDecoration: 'line-through', color: '#999' }}>6,99&euro;</PriceNote>
-                <Savings>Offre de bienvenue</Savings>
-              </>
-            ) : (
-              <>
-                <PriceValue>6,99&euro;</PriceValue>
-                <PriceNote>Paiement unique</PriceNote>
-              </>
-            )}
+            <PriceValue>0€</PriceValue>
+            <PriceNote>Pas de carte bancaire</PriceNote>
           </PriceBlock>
           <Divider />
           <Features>
-            <Feature>1 conte personnalise</Feature>
-            <Feature>PDF haute qualite</Feature>
-            <Feature>6 illustrations sur mesure</Feature>
-            <Feature>Telechargement illimite</Feature>
-            <Feature>Compatible tous appareils</Feature>
+            <Feature><FeatureIcon>&#x2705;</FeatureIcon>3 livres offerts</Feature>
+            <Feature><FeatureIcon>&#x2705;</FeatureIcon>7 illustrations par livre</Feature>
+            <Feature><FeatureIcon>&#x2705;</FeatureIcon>Bibliotheque en ligne</Feature>
+            <Feature><FeatureIcon>&#x2705;</FeatureIcon>Lecture + telechargement</Feature>
+            <Feature $disabled><FeatureIcon>&#x2014;</FeatureIcon>Personnages secondaires</Feature>
+            <Feature $disabled><FeatureIcon>&#x2014;</FeatureIcon>Animaux de compagnie</Feature>
+            <Feature $disabled><FeatureIcon>&#x2014;</FeatureIcon>Styles d'illustration</Feature>
+            <Feature $disabled><FeatureIcon>&#x2014;</FeatureIcon>Occasions speciales</Feature>
           </Features>
-          <Button variant={isFirstPurchase ? 'primary' : 'outline'} size="lg" onClick={() => onSelectPlan('single')} fullWidth>
-            {isFirstPurchase ? 'Essayer pour 1,99\u20AC' : 'Commencer'}
+          <Button variant="outline" size="lg" onClick={() => onSelectPlan('single')} fullWidth>
+            Commencer gratuitement
           </Button>
         </Card>
 
-        {/* Monthly subscription */}
-        <Card $highlight="popular">
-          <Badge $variant="popular">Populaire</Badge>
-          <CardTitle>Club Mensuel</CardTitle>
+        {/* Club */}
+        <Card $highlighted>
+          <Badge>Recommande</Badge>
+          <CardTitle>Club des Histoires</CardTitle>
           <PriceBlock>
-            <PriceValue>9,99&euro;/mois</PriceValue>
-            <PriceNote>Sans engagement</PriceNote>
-            <Savings>~2,50&euro; par conte (-64%)</Savings>
+            <PriceValue>{showAnnual ? '6,67€' : '9,99€'}<span style={{ fontSize: '16px', fontWeight: 400, color: theme.colors.text.light }}>/mois</span></PriceValue>
+            <PriceNote>{showAnnual ? '79,99€/an — economisez 40€' : 'Sans engagement'}</PriceNote>
           </PriceBlock>
           <Divider />
           <Features>
-            <Feature>1 conte par semaine (credits cumulables)</Feature>
-            <Feature>9 styles d'illustration au choix</Feature>
-            <Feature>Jusqu'a 5 personnages secondaires</Feature>
-            <Feature>Animal de compagnie dans l'histoire</Feature>
-            <Feature>Themes et occasions (Noel, anniversaire...)</Feature>
-            <Feature>Bibliotheque en ligne + PDF illimite</Feature>
-            <Feature>Annulable a tout moment</Feature>
+            <Feature $premium><FeatureIcon>&#x1F4D6;</FeatureIcon>1 livre par semaine</Feature>
+            <Feature $premium><FeatureIcon>&#x1F3A8;</FeatureIcon>9 styles d'illustration</Feature>
+            <Feature $premium><FeatureIcon>&#x1F464;</FeatureIcon>5 personnages secondaires</Feature>
+            <Feature $premium><FeatureIcon>&#x1F436;</FeatureIcon>Animal de compagnie</Feature>
+            <Feature $premium><FeatureIcon>&#x1F381;</FeatureIcon>Noel, anniversaire, fetes...</Feature>
+            <Feature><FeatureIcon>&#x1F4DA;</FeatureIcon>Bibliotheque illimitee + PDF</Feature>
+            <Feature><FeatureIcon>&#x267B;&#xFE0F;</FeatureIcon>Credits cumulables</Feature>
+            <Feature><FeatureIcon>&#x274C;</FeatureIcon>Annulable en 1 clic</Feature>
           </Features>
-          <Button variant="primary" size="lg" onClick={() => onSelectPlan('monthly')} fullWidth>
-            S'abonner au Club
-          </Button>
-        </Card>
-
-        {/* Annual subscription */}
-        <Card $highlight={showAnnual ? 'best' : undefined}>
-          {showAnnual && <Badge $variant="best">Meilleure offre</Badge>}
-          <CardTitle>Club Annuel</CardTitle>
-          <PriceBlock>
-            <PriceValue>79,99&euro;/an</PriceValue>
-            <PriceNote>Soit 6,67&euro;/mois</PriceNote>
-            <Savings>~1,54&euro; par conte (-78%)</Savings>
-          </PriceBlock>
-          <Divider />
-          <Features>
-            <Feature>Tout le Club Mensuel inclus</Feature>
-            <Feature>52 contes par an</Feature>
-            <Feature>9 styles d'illustration au choix</Feature>
-            <Feature>Jusqu'a 5 personnages secondaires</Feature>
-            <Feature>Animal de compagnie dans l'histoire</Feature>
-            <Feature>Economisez 40&euro;+ par an</Feature>
-          </Features>
-          <Button variant={showAnnual ? 'primary' : 'outline'} size="lg" onClick={() => onSelectPlan('annual')} fullWidth>
-            Choisir l'annuel
+          <Button variant="primary" size="lg" onClick={() => onSelectPlan(showAnnual ? 'annual' : 'monthly')} fullWidth>
+            Rejoindre le Club
           </Button>
         </Card>
       </Grid>

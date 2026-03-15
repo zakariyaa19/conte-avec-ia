@@ -718,7 +718,7 @@ export const LoginPage: React.FC = () => {
                         </div>
                       </PlanCardHeader>
                       <PlanFeatures>
-                        <PlanFeature>Achat de contes a l'unite (1,99€ le premier)</PlanFeature>
+                        <PlanFeature>Premier livre 100% gratuit</PlanFeature>
                         <PlanFeature>Bibliotheque personnelle</PlanFeature>
                       </PlanFeatures>
                     </PlanCard>

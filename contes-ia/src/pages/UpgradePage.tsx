@@ -16,24 +16,20 @@ const fadeInUp = keyframes`
   to { opacity: 1; transform: translateY(0); }
 `;
 
-const float = keyframes`
-  0%, 100% { transform: translateY(0) rotate(-2deg); }
-  50% { transform: translateY(-10px) rotate(2deg); }
-`;
-
 const shimmer = keyframes`
   0% { background-position: -200% center; }
   100% { background-position: 200% center; }
 `;
 
 const pulse = keyframes`
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.03); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(118, 75, 162, 0.3); }
+  50% { box-shadow: 0 0 0 10px rgba(118, 75, 162, 0); }
 `;
 
-const gradientMove = keyframes`
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
+const checkPop = keyframes`
+  0% { transform: scale(0); }
+  60% { transform: scale(1.2); }
+  100% { transform: scale(1); }
 `;
 
 /* ═══════════ LAYOUT ═══════════ */
@@ -47,9 +43,9 @@ const PageContainer = styled.div`
 
 const Content = styled.main`
   flex: 1;
-  max-width: 520px;
+  max-width: 540px;
   margin: 0 auto;
-  padding: ${theme.spacing.xl} ${theme.spacing.lg};
+  padding: ${theme.spacing.xl} ${theme.spacing.md};
   width: 100%;
 `;
 
@@ -57,7 +53,7 @@ const Content = styled.main`
 
 const HeroSection = styled.div`
   text-align: center;
-  margin-bottom: ${theme.spacing.xl};
+  margin-bottom: ${theme.spacing.lg};
   animation: ${fadeInUp} 0.5s ease-out;
 `;
 
@@ -67,95 +63,138 @@ const HeroBadge = styled.div`
   gap: 6px;
   background: linear-gradient(135deg, #667eea20, #764ba220);
   color: #764ba2;
-  font-size: ${theme.fontSizes.xs};
+  font-size: 11px;
   font-weight: 700;
-  padding: 6px 16px;
-  border-radius: ${theme.borderRadius.full};
-  margin-bottom: ${theme.spacing.md};
+  padding: 5px 14px;
+  border-radius: 20px;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 `;
 
 const HeroTitle = styled.h1`
   font-family: ${theme.fonts.heading};
-  font-size: 28px;
+  font-size: 26px;
   color: ${theme.colors.text.primary};
-  margin: 0 0 ${theme.spacing.sm};
+  margin: 0 0 8px;
   line-height: 1.2;
   letter-spacing: -0.02em;
 `;
 
-const HeroSubtitle = styled.p`
+const HeroSub = styled.p`
   color: ${theme.colors.text.secondary};
-  font-size: ${theme.fontSizes.base};
+  font-size: 14px;
   margin: 0;
-  line-height: 1.6;
+  line-height: 1.5;
 `;
 
-/* ═══════════ FEATURES SHOWCASE ═══════════ */
+/* ═══════════ COMPARISON TABLE ═══════════ */
 
-const FeaturesGrid = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: ${theme.spacing.xl};
-  animation: ${fadeInUp} 0.5s ease-out 0.15s both;
-`;
-
-const FeatureCard = styled.div<{ $delay: number }>`
+const TableCard = styled.div`
   background: white;
-  border-radius: 16px;
-  padding: 20px 16px;
-  text-align: center;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.06);
   border: 1px solid rgba(0,0,0,0.04);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  animation: ${fadeInUp} 0.4s ease-out ${props => 0.2 + props.$delay * 0.08}s both;
-  transition: transform 0.2s, box-shadow 0.2s;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-  }
+  margin-bottom: ${theme.spacing.lg};
+  animation: ${fadeInUp} 0.5s ease-out 0.1s both;
 `;
 
-const FeatureIcon = styled.div`
-  font-size: 28px;
-  margin-bottom: 8px;
-  line-height: 1;
+const TableHeader = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  border-bottom: 1px solid #f0f0f0;
 `;
 
-const FeatureTitle = styled.div`
+const TableHeaderCell = styled.div<{ $highlighted?: boolean }>`
+  padding: 16px 8px;
+  text-align: center;
+  font-size: 13px;
   font-weight: 700;
+  color: ${props => props.$highlighted ? '#764ba2' : theme.colors.text.secondary};
+  background: ${props => props.$highlighted ? 'linear-gradient(135deg, #667eea08, #764ba210)' : 'transparent'};
+  position: relative;
+
+  ${props => props.$highlighted && css`
+    &::after {
+      content: 'Recommande';
+      position: absolute;
+      top: 4px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+  `}
+`;
+
+const HeaderLabel = styled.div<{ $highlighted?: boolean }>`
+  margin-top: ${props => props.$highlighted ? '14px' : '0'};
+`;
+
+const TableRow = styled.div<{ $even?: boolean }>`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  border-bottom: 1px solid #f8f8f8;
+  align-items: center;
+
+  &:last-child { border-bottom: none; }
+`;
+
+const FeatureCell = styled.div`
+  padding: 12px 12px;
   font-size: 13px;
   color: ${theme.colors.text.primary};
-  margin-bottom: 2px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 `;
 
-const FeatureDesc = styled.div`
-  font-size: 11px;
-  color: ${theme.colors.text.light};
-  line-height: 1.4;
+const FeatureEmoji = styled.span`
+  font-size: 16px;
+  flex-shrink: 0;
+`;
+
+const CheckCell = styled.div<{ $highlighted?: boolean; $value?: 'yes' | 'no' | 'limited' | string }>`
+  padding: 12px 8px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  background: ${props => props.$highlighted ? 'rgba(102, 126, 234, 0.03)' : 'transparent'};
+  color: ${props => {
+    if (props.$value === 'no') return '#ccc';
+    if (props.$value === 'yes') return '#4CAF50';
+    return theme.colors.text.secondary;
+  }};
 `;
 
 /* ═══════════ PRICING CARD ═══════════ */
 
 const PricingSection = styled.div`
-  animation: ${fadeInUp} 0.5s ease-out 0.25s both;
-  margin-bottom: ${theme.spacing.xl};
+  animation: ${fadeInUp} 0.5s ease-out 0.2s both;
+  margin-bottom: ${theme.spacing.lg};
 `;
 
 const PricingCard = styled.div`
   background: linear-gradient(135deg, #667eea, #764ba2);
   border-radius: 24px;
-  padding: 32px 24px;
+  padding: 28px 24px;
   position: relative;
   overflow: hidden;
-  animation: ${pulse} 4s ease-in-out infinite;
 
   &::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at 20% 80%, rgba(255,255,255,0.15), transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1), transparent 50%);
+    background: radial-gradient(circle at 20% 80%, rgba(255,255,255,0.12), transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.08), transparent 50%);
   }
 `;
 
@@ -171,11 +210,11 @@ const PricingToggle = styled.div`
   backdrop-filter: blur(8px);
   border-radius: 30px;
   padding: 3px;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 `;
 
 const ToggleBtn = styled.button<{ $active: boolean }>`
-  padding: 8px 20px;
+  padding: 7px 18px;
   border: none;
   border-radius: 28px;
   font-size: 13px;
@@ -196,13 +235,13 @@ const SaveTag = styled.span`
   margin-left: 4px;
 `;
 
-const PriceDisplay = styled.div`
+const PriceRow = styled.div`
   color: white;
   margin-bottom: 4px;
 `;
 
 const PriceAmount = styled.span`
-  font-size: 48px;
+  font-size: 44px;
   font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 1;
@@ -214,44 +253,40 @@ const PriceUnit = styled.span`
   opacity: 0.8;
 `;
 
-const PriceSubtext = styled.p`
-  color: rgba(255,255,255,0.6);
-  font-size: 13px;
-  margin: 4px 0 24px;
+const PriceSub = styled.p`
+  color: rgba(255,255,255,0.55);
+  font-size: 12px;
+  margin: 4px 0 20px;
 `;
 
 const CTAButton = styled.button<{ $loading?: boolean }>`
   width: 100%;
-  padding: 16px;
+  padding: 15px;
   border: none;
-  border-radius: 16px;
+  border-radius: 14px;
   background: white;
   color: #764ba2;
   font-size: 16px;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
   position: relative;
   overflow: hidden;
+  transition: transform 0.15s;
 
-  ${props => !props.$loading && css`
-    &:active {
-      transform: scale(0.97);
-    }
-  `}
+  &:active { transform: scale(0.97); }
 
   &::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
     background-size: 200% 100%;
     animation: ${shimmer} 3s ease-in-out infinite;
   }
 `;
 
-const CTAButtonText = styled.span`
+const CTAText = styled.span`
   position: relative;
   z-index: 2;
 `;
@@ -261,17 +296,17 @@ const CTAButtonText = styled.span`
 const GuaranteesRow = styled.div`
   display: flex;
   justify-content: center;
-  gap: 16px;
+  gap: 14px;
   flex-wrap: wrap;
-  animation: ${fadeInUp} 0.5s ease-out 0.35s both;
-  margin-bottom: ${theme.spacing.xl};
+  animation: ${fadeInUp} 0.5s ease-out 0.3s both;
+  margin-bottom: ${theme.spacing.lg};
 `;
 
 const Guarantee = styled.div`
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 12px;
+  gap: 5px;
+  font-size: 11px;
   color: ${theme.colors.text.light};
   font-weight: 500;
 `;
@@ -280,35 +315,13 @@ const Guarantee = styled.div`
 
 const TestimonialCard = styled.div`
   background: white;
-  border-radius: 20px;
-  padding: 24px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.04);
   border: 1px solid rgba(0,0,0,0.04);
   text-align: center;
-  animation: ${fadeInUp} 0.5s ease-out 0.4s both;
+  animation: ${fadeInUp} 0.5s ease-out 0.35s both;
   margin-bottom: ${theme.spacing.lg};
-`;
-
-const Stars = styled.div`
-  color: #FFD700;
-  font-size: 18px;
-  margin-bottom: 12px;
-  letter-spacing: 2px;
-`;
-
-const TestimonialText = styled.p`
-  font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.text.secondary};
-  font-style: italic;
-  line-height: 1.7;
-  margin: 0 0 8px;
-`;
-
-const TestimonialAuthor = styled.p`
-  font-size: ${theme.fontSizes.xs};
-  color: ${theme.colors.text.light};
-  margin: 0;
-  font-weight: 600;
 `;
 
 /* ═══════════ COMPONENT ═══════════ */
@@ -320,10 +333,7 @@ export const UpgradePage: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   const handleSubscribe = async () => {
-    if (!isAuthenticated) {
-      navigate('/login');
-      return;
-    }
+    if (!isAuthenticated) { navigate('/login'); return; }
     setLoading(true);
     try {
       metaTrackSubscribe();
@@ -344,11 +354,9 @@ export const UpgradePage: React.FC = () => {
         <Content>
           <HeroSection>
             <HeroTitle>Vous etes deja membre !</HeroTitle>
-            <HeroSubtitle>Profitez de tous les avantages depuis votre bibliotheque.</HeroSubtitle>
-            <div style={{ marginTop: theme.spacing.lg }}>
-              <Button variant="primary" size="lg" onClick={() => navigate('/dashboard')}>
-                Ma bibliotheque
-              </Button>
+            <HeroSub>Profitez de vos avantages depuis votre bibliotheque.</HeroSub>
+            <div style={{ marginTop: 16 }}>
+              <Button variant="primary" size="lg" onClick={() => navigate('/dashboard')}>Ma bibliotheque</Button>
             </div>
           </HeroSection>
         </Content>
@@ -357,13 +365,17 @@ export const UpgradePage: React.FC = () => {
     );
   }
 
-  const features = [
-    { icon: '\uD83D\uDCD6', title: '1 livre par semaine', desc: 'Credits cumulables' },
-    { icon: '\uD83D\uDC64', title: 'Personnages', desc: 'Freres, soeurs, amis...' },
-    { icon: '\uD83C\uDFA8', title: 'Styles uniques', desc: 'Aquarelle, manga...' },
-    { icon: '\uD83D\uDCDA', title: 'Illimite', desc: 'Bibliotheque sans limite' },
-    { icon: '\uD83C\uDF81', title: 'Occasions', desc: 'Noel, anniversaire...' },
-    { icon: '\u274C', title: 'Sans engagement', desc: 'Annulable en 1 clic' },
+  const rows: { emoji: string; label: string; free: string; freeVal: 'yes' | 'no' | 'limited'; club: string; clubVal: 'yes' }[] = [
+    { emoji: '\uD83D\uDCD6', label: 'Livres par mois', free: '3 max', freeVal: 'limited', club: 'Illimite', clubVal: 'yes' },
+    { emoji: '\uD83D\uDDBC\uFE0F', label: 'Illustrations', free: '7 / livre', freeVal: 'yes', club: '7 / livre', clubVal: 'yes' },
+    { emoji: '\uD83D\uDCDA', label: 'Bibliotheque en ligne', free: '\u2713', freeVal: 'yes', club: '\u2713', clubVal: 'yes' },
+    { emoji: '\uD83D\uDC64', label: 'Personnages secondaires', free: '\u2014', freeVal: 'no', club: '\u2713', clubVal: 'yes' },
+    { emoji: '\uD83D\uDC36', label: 'Animaux de compagnie', free: '\u2014', freeVal: 'no', club: '\u2713', clubVal: 'yes' },
+    { emoji: '\uD83C\uDFA8', label: 'Styles d\'illustration', free: 'Standard', freeVal: 'limited', club: 'Aquarelle, manga, Disney...', clubVal: 'yes' },
+    { emoji: '\uD83C\uDF81', label: 'Occasions speciales', free: '\u2014', freeVal: 'no', club: 'Noel, anniversaire...', clubVal: 'yes' },
+    { emoji: '\uD83C\uDF10', label: 'Langues', free: 'Francais', freeVal: 'limited', club: '15+ langues', clubVal: 'yes' },
+    { emoji: '\u2199\uFE0F', label: 'Telechargement PDF', free: '\u2014', freeVal: 'no', club: '\u2713', clubVal: 'yes' },
+    { emoji: '\u267B\uFE0F', label: 'Credits cumulables', free: '\u2014', freeVal: 'no', club: '\u2713', clubVal: 'yes' },
   ];
 
   return (
@@ -373,24 +385,41 @@ export const UpgradePage: React.FC = () => {
         {/* Hero */}
         <HeroSection>
           <HeroBadge>Club des Histoires</HeroBadge>
-          <HeroTitle>Des histoires sans limites pour votre enfant</HeroTitle>
-          <HeroSubtitle>
-            Un nouveau livre personnalise chaque semaine, avec une personnalisation avancee.
-          </HeroSubtitle>
+          <HeroTitle>Comparez les offres</HeroTitle>
+          <HeroSub>Tout ce qui est inclus dans le Club, face a l'offre gratuite.</HeroSub>
         </HeroSection>
 
-        {/* Features grid */}
-        <FeaturesGrid>
-          {features.map((f, i) => (
-            <FeatureCard key={f.title} $delay={i}>
-              <FeatureIcon>{f.icon}</FeatureIcon>
-              <FeatureTitle>{f.title}</FeatureTitle>
-              <FeatureDesc>{f.desc}</FeatureDesc>
-            </FeatureCard>
-          ))}
-        </FeaturesGrid>
+        {/* Comparison table */}
+        <TableCard>
+          <TableHeader>
+            <TableHeaderCell>
+              <HeaderLabel>Fonctionnalite</HeaderLabel>
+            </TableHeaderCell>
+            <TableHeaderCell>
+              <HeaderLabel>Gratuit</HeaderLabel>
+            </TableHeaderCell>
+            <TableHeaderCell $highlighted>
+              <HeaderLabel $highlighted>Club</HeaderLabel>
+            </TableHeaderCell>
+          </TableHeader>
 
-        {/* Pricing card */}
+          {rows.map((row, i) => (
+            <TableRow key={row.label} $even={i % 2 === 0}>
+              <FeatureCell>
+                <FeatureEmoji>{row.emoji}</FeatureEmoji>
+                {row.label}
+              </FeatureCell>
+              <CheckCell $value={row.freeVal}>
+                {row.free}
+              </CheckCell>
+              <CheckCell $highlighted $value={row.clubVal}>
+                {row.club}
+              </CheckCell>
+            </TableRow>
+          ))}
+        </TableCard>
+
+        {/* Pricing */}
         <PricingSection>
           <PricingCard>
             <PricingInner>
@@ -403,20 +432,18 @@ export const UpgradePage: React.FC = () => {
                 </ToggleBtn>
               </PricingToggle>
 
-              <PriceDisplay>
+              <PriceRow>
                 <PriceAmount>{billing === 'monthly' ? '9,99' : '6,67'}</PriceAmount>
                 <PriceUnit>€/mois</PriceUnit>
-              </PriceDisplay>
-              <PriceSubtext>
+              </PriceRow>
+              <PriceSub>
                 {billing === 'monthly'
                   ? 'Facture mensuellement'
-                  : '79,99€ facture annuellement — economisez 40€'}
-              </PriceSubtext>
+                  : '79,99€/an — economisez 40€'}
+              </PriceSub>
 
               <CTAButton onClick={handleSubscribe} $loading={loading} disabled={loading}>
-                <CTAButtonText>
-                  {loading ? 'Redirection...' : 'Commencer maintenant'}
-                </CTAButtonText>
+                <CTAText>{loading ? 'Redirection...' : 'Commencer maintenant'}</CTAText>
               </CTAButton>
             </PricingInner>
           </PricingCard>
@@ -431,11 +458,13 @@ export const UpgradePage: React.FC = () => {
 
         {/* Testimonial */}
         <TestimonialCard>
-          <Stars>&#x2B50;&#x2B50;&#x2B50;&#x2B50;&#x2B50;</Stars>
-          <TestimonialText>
-            "Ma fille me demande une nouvelle histoire tous les soirs ! Le Club c'est le cadeau parfait pour les enfants curieux."
-          </TestimonialText>
-          <TestimonialAuthor>Marie, maman de Lola (5 ans)</TestimonialAuthor>
+          <div style={{ color: '#FFD700', fontSize: 16, marginBottom: 10, letterSpacing: 2 }}>&#x2B50;&#x2B50;&#x2B50;&#x2B50;&#x2B50;</div>
+          <p style={{ fontSize: 14, color: theme.colors.text.secondary, fontStyle: 'italic', lineHeight: 1.7, margin: '0 0 8px' }}>
+            "Ma fille me demande une nouvelle histoire tous les soirs ! Le Club c'est le cadeau parfait."
+          </p>
+          <p style={{ fontSize: 12, color: theme.colors.text.light, margin: 0, fontWeight: 600 }}>
+            Marie, maman de Lola (5 ans)
+          </p>
         </TestimonialCard>
       </Content>
       <Footer />

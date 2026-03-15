@@ -1132,18 +1132,18 @@ const slidesData = [
     illustrationId: 'customize' as const
   },
   {
-    label: 'Commander',
+    label: 'Recevoir',
     stepLabel: 'Etape 2',
-    title: 'Commandez en un clic',
-    subtitle: 'Paiement rapide et securise. Premier conte a 1,99\u20AC, ou rejoignez le Club pour 1 conte par semaine.',
+    title: 'C\'est 100% gratuit',
+    subtitle: 'Pas de carte bancaire. Entrez juste votre email et recevez votre livre personnalise en 5 minutes.',
     bgColor: `${theme.colors.accent.softPink}25`,
     illustrationId: 'order' as const
   },
   {
-    label: 'Recevoir',
+    label: 'Lire',
     stepLabel: 'Etape 3',
-    title: 'Recevez votre eBook',
-    subtitle: 'Votre conte personnalise arrive dans la journee, directement dans votre bibliotheque et par email.',
+    title: 'Lisez-le dans votre bibliotheque',
+    subtitle: 'Retrouvez votre livre dans votre espace personnel. Lisez-le en ligne, partagez-le avec vos proches.',
     bgColor: `${theme.colors.accent.pastelBlue}25`,
     illustrationId: 'receive' as const
   }
@@ -1222,7 +1222,7 @@ const faqItems = [
   {
     id: '3',
     question: "Qu'est-ce que le Club des Histoires Uniques ?",
-    answer: "C'est un abonnement a 9,99\u20AC par mois qui vous donne droit a un nouveau conte personnalise chaque semaine avec la personnalisation avancee : choix de l'occasion, du style d'illustration, des personnages secondaires et bien plus. Les credits sont cumulables et vous accedez a votre bibliotheque personnelle avec visionneuse et telechargement. Sans engagement, annulable a tout moment. Une offre annuelle a 79,99\u20AC/an est egalement disponible."
+    answer: "Votre premier livre est 100% gratuit ! Le Club des Histoires a 9,99\u20AC/mois vous donne 1 nouveau livre par semaine avec personnalisation avancee : styles d'illustration, personnages secondaires, animaux de compagnie, occasions speciales et bien plus. Credits cumulables, bibliotheque illimitee, sans engagement. Offre annuelle a 79,99\u20AC/an (-33%)."
   },
   {
     id: '4',
@@ -1545,10 +1545,10 @@ const faqReveal = useScrollReveal();
         <PricingSection id="tarifs" ref={pricingReveal.ref}>
           <Container>
             <SectionWrapper $visible={pricingReveal.isVisible}>
-              <SectionTitle>Nos tarifs</SectionTitle>
+              <SectionTitle>Gratuit ou Club ?</SectionTitle>
               <Divider />
               <SectionSubtitle>
-                Un conte unique pour chaque enfant. Choisissez la formule qui vous convient.
+                Votre premier livre est gratuit. Le Club deverrouille tout le potentiel.
               </SectionSubtitle>
             </SectionWrapper>
 
@@ -1700,7 +1700,7 @@ const faqReveal = useScrollReveal();
             <SectionWrapper $visible={ctaReveal.isVisible}>
               <FinalCTATitle>Creez la premiere histoire de votre enfant</FinalCTATitle>
               <FinalCTAText>
-                A partir de 6,99{'\u20AC'} — Pret en 5 minutes
+                1er livre GRATUIT — Pret en 5 minutes
               </FinalCTAText>
               <FinalCTAButtons>
                 <WhiteButton onClick={() => navigate('/create-story')}>
