@@ -6,6 +6,7 @@ import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
 import { Button } from '../components/ui/Button';
 import { StoryPDFViewer } from '../components/ui/StoryPDFViewer';
+import { StoryReader } from '../components/ui/StoryReader';
 import { ApiService } from '../config/api';
 import { getImageUrl } from '../config/constants';
 import { ShareModal } from '../components/ui/ShareModal';
@@ -426,6 +427,7 @@ export const StoryDetailPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [viewerOpen, setViewerOpen] = useState(false);
+  const [readerOpen, setReaderOpen] = useState(false);
   const [pdfLoading, setPdfLoading] = useState(false);
   const [pdfError, setPdfError] = useState<string | null>(null);
   const [coverError, setCoverError] = useState(false);
@@ -602,7 +604,16 @@ export const StoryDetailPage: React.FC = () => {
             <ActionsGrid>
               <ActionCard
                 $variant="primary"
-                onClick={handleViewPdf}
+                onClick={() => {
+                  // Use StoryReader if we have text+illustrations, fallback to PDF
+                  const paragraphs = story.storyTextJson ? (() => { try { return JSON.parse(story.storyTextJson); } catch { return []; } })() : [];
+                  const illustrations = story.illustrationUrlsJson ? (() => { try { return JSON.parse(story.illustrationUrlsJson); } catch { return []; } })() : [];
+                  if (paragraphs.length > 0) {
+                    setReaderOpen(true);
+                  } else {
+                    handleViewPdf();
+                  }
+                }}
                 disabled={pdfLoading}
               >
                 <ActionIconCircle $variant="primary">
@@ -693,6 +704,24 @@ export const StoryDetailPage: React.FC = () => {
         title={displayTitle}
         onDownload={handleDownloadPdf}
       />
+
+      {readerOpen && story && (() => {
+        const paragraphs = story.storyTextJson ? (() => { try { return JSON.parse(story.storyTextJson); } catch { return []; } })() : [];
+        const illustrations = story.illustrationUrlsJson ? (() => { try { return JSON.parse(story.illustrationUrlsJson); } catch { return []; } })() : [];
+        return (
+          <StoryReader
+            coverImageUrl={story.coverImageUrl}
+            coverTitle={displayTitle}
+            paragraphs={paragraphs}
+            illustrationUrls={illustrations}
+            creatorName={story.creatorName}
+            protagonistName={story.protagonistName || ''}
+            onClose={() => setReaderOpen(false)}
+            onShare={() => { setReaderOpen(false); setShareOpen(true); }}
+            onCreateAnother={() => navigate('/create-story')}
+          />
+        );
+      })()}
 
       {id && (
         <ShareModal
