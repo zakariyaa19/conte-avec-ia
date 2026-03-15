@@ -1146,46 +1146,38 @@ export const ClubPage: React.FC = () => {
           </HeroContent>
         </HeroSection>
 
-        {/* ============ 2. EBOOK GRATUIT ============ */}
+        {/* ============ 2. AVANTAGES CLUB — compact + animé ============ */}
         <EbookSection ref={ebookReveal.ref}>
           <Container>
-            <TwoColGrid>
-              <VisualBlock $visible={ebookReveal.isVisible}>
-                <BookVisual>
-                  <BookVisualInner>
-                    <BookEmoji>📚</BookEmoji>
-                    <BookLabel>1 eBook / semaine</BookLabel>
-                    <BookSub>Personnalise pour votre enfant</BookSub>
-                  </BookVisualInner>
-                </BookVisual>
-              </VisualBlock>
-
-              <TextBlock $visible={ebookReveal.isVisible} $fromRight>
-                <SectionLabel>Avantage principal</SectionLabel>
-                <SectionTitle>Un nouveau conte chaque semaine</SectionTitle>
-                <SectionText>
-                  Chaque semaine, recevez un credit pour creer un conte personnalise au format eBook. En tant que membre Club, accedez a la personnalisation avancee : occasion, style d'illustration, personnages secondaires et bien plus.
-                </SectionText>
-                <FeatureList>
-                  <FeatureItem>
-                    <FeatureCheck>&#10003;</FeatureCheck>
-                    Personnalisation avancee : occasion, style d'illustration, personnages secondaires
-                  </FeatureItem>
-                  <FeatureItem>
-                    <FeatureCheck>&#10003;</FeatureCheck>
-                    Credits cumulables — jamais perdus, utilisez-les quand vous voulez
-                  </FeatureItem>
-                  <FeatureItem>
-                    <FeatureCheck>&#10003;</FeatureCheck>
-                    1 conte par semaine, soit ~2,50{'€'} par conte
-                  </FeatureItem>
-                  <FeatureItem>
-                    <FeatureCheck>&#10003;</FeatureCheck>
-                    Contes 100% personnalises avec la photo de votre enfant
-                  </FeatureItem>
-                </FeatureList>
-              </TextBlock>
-            </TwoColGrid>
+            <CenteredTitle $visible={ebookReveal.isVisible}>
+              <SectionTitle style={{ textAlign: 'center' }}>Tout ce que le Club deverrouille</SectionTitle>
+              <Divider />
+            </CenteredTitle>
+            <div style={{
+              display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+              gap: '12px', maxWidth: 520, margin: '0 auto',
+            }}>
+              {[
+                { icon: '\uD83D\uDCD6', title: '1 livre/semaine', sub: 'Credits cumulables' },
+                { icon: '\uD83C\uDFA8', title: '9 styles', sub: 'Aquarelle, manga...' },
+                { icon: '\uD83D\uDC64', title: 'Personnages', sub: 'Freres, amis, famille' },
+                { icon: '\uD83D\uDC36', title: 'Animaux', sub: 'Chien, chat, lapin...' },
+                { icon: '\uD83C\uDF81', title: 'Occasions', sub: 'Noel, anniversaire' },
+                { icon: '\uD83C\uDF10', title: '15+ langues', sub: 'Francais, anglais...' },
+              ].map((f, i) => (
+                <div key={f.title} style={{
+                  background: 'white', borderRadius: '16px', padding: '18px 14px',
+                  textAlign: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                  border: '1px solid rgba(0,0,0,0.04)',
+                  animation: `fadeInUp 0.4s ease-out ${0.1 + i * 0.06}s both`,
+                  transition: 'transform 0.2s',
+                }}>
+                  <div style={{ fontSize: '28px', marginBottom: '6px' }}>{f.icon}</div>
+                  <div style={{ fontWeight: 700, fontSize: '13px', color: theme.colors.text.primary, marginBottom: '2px' }}>{f.title}</div>
+                  <div style={{ fontSize: '11px', color: theme.colors.text.light }}>{f.sub}</div>
+                </div>
+              ))}
+            </div>
           </Container>
         </EbookSection>
 
@@ -1365,41 +1357,56 @@ export const ClubPage: React.FC = () => {
           </Container>
         </StepsSection>
 
-        {/* ============ 4B. GRATUIT vs CLUB ============ */}
+        {/* ============ 4B. TABLEAU COMPARATIF GRATUIT vs CLUB ============ */}
         <div style={{ padding: `${theme.spacing['3xl']} ${theme.spacing.lg}`, background: theme.colors.background.secondary }}>
           <Container>
-            <SectionTitle style={{ textAlign: 'center', marginBottom: theme.spacing.sm }}>Gratuit vs Club</SectionTitle>
-            <SectionText style={{ textAlign: 'center', marginBottom: theme.spacing.xl }}>
-              Votre premier livre est offert. Le Club vous donne acces a bien plus.
-            </SectionText>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: theme.spacing.lg, maxWidth: 700, margin: '0 auto' }}>
-              <div style={{ background: 'white', borderRadius: '16px', padding: '24px', border: '1px solid #eee' }}>
-                <h3 style={{ fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.lg, margin: '0 0 16px' }}>Gratuit</h3>
-                <ul style={{ listStyle: 'none', padding: 0, margin: 0, lineHeight: 2, fontSize: theme.fontSizes.sm, color: theme.colors.text.secondary }}>
-                  <li>&#x2705; 3 livres gratuits</li>
-                  <li>&#x2705; 7 illustrations par livre</li>
-                  <li>&#x2705; Bibliotheque en ligne + PDF</li>
-                  <li>&#x274C; Personnages secondaires</li>
-                  <li>&#x274C; Styles d'illustration</li>
-                  <li>&#x274C; Bibliotheque illimitee</li>
-                </ul>
-              </div>
-              <div style={{ background: 'linear-gradient(135deg, #FFF8F0, #FFF0E6)', borderRadius: '16px', padding: '24px', border: `2px solid ${theme.colors.accent.coral}` }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                  <h3 style={{ fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.lg, margin: 0 }}>Club</h3>
-                  <span style={{ background: `linear-gradient(135deg, ${theme.colors.accent.coral}, #FF8E53)`, color: 'white', fontSize: '11px', fontWeight: 700, padding: '3px 10px', borderRadius: '20px' }}>Recommande</span>
+            <CenteredTitle $visible>
+              <SectionTitle style={{ textAlign: 'center' }}>Gratuit vs Club</SectionTitle>
+              <Divider />
+              <CenterSubtitle>Tout ce qui est inclus, en un coup d'oeil.</CenterSubtitle>
+            </CenteredTitle>
+            <div style={{
+              background: 'white', borderRadius: '20px', overflow: 'hidden',
+              boxShadow: '0 2px 16px rgba(0,0,0,0.06)', border: '1px solid rgba(0,0,0,0.04)',
+              maxWidth: 540, margin: '0 auto',
+            }}>
+              {/* Header */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', borderBottom: '1px solid #f0f0f0' }}>
+                <div style={{ padding: '14px 8px', textAlign: 'center', fontSize: '13px', fontWeight: 700, color: theme.colors.text.secondary }}>
+                  Fonctionnalite
                 </div>
-                <ul style={{ listStyle: 'none', padding: 0, margin: 0, lineHeight: 2, fontSize: theme.fontSizes.sm, color: theme.colors.text.secondary }}>
-                  <li>&#x2705; <strong>1 livre par semaine</strong></li>
-                  <li>&#x2705; 7 illustrations par livre</li>
-                  <li>&#x2705; PDF telechargeable</li>
-                  <li>&#x2728; <strong>Personnages secondaires</strong></li>
-                  <li>&#x2728; <strong>Styles d'illustration</strong></li>
-                  <li>&#x2728; <strong>Bibliotheque illimitee</strong></li>
-                </ul>
-                <p style={{ fontSize: theme.fontSizes.lg, fontWeight: 800, color: theme.colors.text.primary, margin: '16px 0 4px' }}>9,99€/mois</p>
-                <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.text.light, margin: 0 }}>ou 79,99€/an (economisez 40€)</p>
+                <div style={{ padding: '14px 8px', textAlign: 'center', fontSize: '13px', fontWeight: 700, color: theme.colors.text.secondary }}>
+                  Gratuit
+                </div>
+                <div style={{ padding: '14px 8px', textAlign: 'center', fontSize: '13px', fontWeight: 700, color: '#764ba2', background: 'rgba(102,126,234,0.05)', position: 'relative' }}>
+                  <span style={{ position: 'absolute', top: 3, left: '50%', transform: 'translateX(-50%)', background: 'linear-gradient(135deg, #667eea, #764ba2)', color: 'white', fontSize: '9px', fontWeight: 700, padding: '2px 8px', borderRadius: '0 0 8px 8px' }}>Recommande</span>
+                  <span style={{ marginTop: 12, display: 'block' }}>Club</span>
+                </div>
               </div>
+              {/* Rows */}
+              {[
+                { e: '\uD83D\uDCD6', l: 'Livres', f: '3 max', c: 'Illimite' },
+                { e: '\uD83D\uDDBC\uFE0F', l: 'Illustrations', f: '7 / livre', c: '7 / livre' },
+                { e: '\uD83D\uDCDA', l: 'Bibliotheque', f: '\u2713', c: '\u2713' },
+                { e: '\uD83D\uDC64', l: 'Personnages', f: '\u2014', c: '\u2713' },
+                { e: '\uD83D\uDC36', l: 'Animaux', f: '\u2014', c: '\u2713' },
+                { e: '\uD83C\uDFA8', l: 'Styles', f: 'Standard', c: '9 styles' },
+                { e: '\uD83C\uDF81', l: 'Occasions', f: '\u2014', c: '\u2713' },
+                { e: '\uD83C\uDF10', l: 'Langues', f: 'FR', c: '15+' },
+                { e: '\u2B07\uFE0F', l: 'PDF', f: '\u2014', c: '\u2713' },
+              ].map((row, i) => (
+                <div key={row.l} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', borderBottom: i < 8 ? '1px solid #f8f8f8' : 'none', alignItems: 'center' }}>
+                  <div style={{ padding: '10px 12px', fontSize: '13px', fontWeight: 500, color: theme.colors.text.primary, display: 'flex', alignItems: 'center', gap: 7 }}>
+                    <span style={{ fontSize: 15 }}>{row.e}</span>{row.l}
+                  </div>
+                  <div style={{ padding: '10px 8px', textAlign: 'center', fontSize: '13px', fontWeight: 600, color: row.f === '\u2014' ? '#ccc' : theme.colors.text.secondary }}>
+                    {row.f}
+                  </div>
+                  <div style={{ padding: '10px 8px', textAlign: 'center', fontSize: '13px', fontWeight: 600, color: '#4CAF50', background: 'rgba(102,126,234,0.03)' }}>
+                    {row.c}
+                  </div>
+                </div>
+              ))}
             </div>
           </Container>
         </div>
@@ -1408,9 +1415,9 @@ export const ClubPage: React.FC = () => {
         <PriceSection ref={priceReveal.ref}>
           <Container>
             <CenteredTitle $visible={priceReveal.isVisible}>
-              <SectionTitle style={{ textAlign: 'center' }}>Choisissez votre formule</SectionTitle>
+              <SectionTitle style={{ textAlign: 'center' }}>Gratuit ou Club ?</SectionTitle>
               <Divider />
-              <CenterSubtitle>Un conte unique pour chaque enfant. Choisissez la formule qui vous convient.</CenterSubtitle>
+              <CenterSubtitle>Votre premier livre est gratuit. Le Club deverrouille tout le potentiel.</CenterSubtitle>
             </CenteredTitle>
 
             <PricingTiers onSelectPlan={handleSelectPlan} isFirstPurchase={!isAuthenticated || user?.isFirstPurchase !== false} />
