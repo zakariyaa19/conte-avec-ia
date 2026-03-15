@@ -736,16 +736,27 @@ async function runGenerationPipeline(orderId: string, order: any, genLogId: stri
     console.log(`[Generation] Images generated: ${imageResult.images.length} images, sizes: [${imageResult.images.map(b => b.length).join(', ')}]`);
     logStep('images', 'completed');
 
-    // --- Upload illustrations to Cloudinary (for public sharing) ---
+    // --- Upload illustrations to Cloudinary (for StoryReader + public sharing) ---
     let illustrationUrls: string[] = [];
     try {
-      const uploadPromises = imageResult.images.map((buf, i) =>
-        uploadCoverToCloudinary(buf, `illust-${orderId}-${i}-${Date.now()}`)
+      console.log(`[Generation] Uploading ${imageResult.images.length} illustrations to Cloudinary...`);
+      const results = await Promise.allSettled(
+        imageResult.images.map((buf, i) =>
+          uploadCoverToCloudinary(buf, `illust-${orderId}-${i}-${Date.now()}`)
+        )
       );
-      illustrationUrls = await Promise.all(uploadPromises);
-      console.log(`[Generation] ${illustrationUrls.length} illustrations uploaded to Cloudinary`);
+      illustrationUrls = results
+        .filter((r): r is PromiseFulfilledResult<string> => r.status === 'fulfilled')
+        .map(r => r.value);
+      const failed = results.filter(r => r.status === 'rejected').length;
+      console.log(`[Generation] Illustrations uploaded: ${illustrationUrls.length} OK, ${failed} failed`);
+      if (failed > 0) {
+        results.forEach((r, i) => {
+          if (r.status === 'rejected') console.warn(`[Generation] Illustration ${i} upload failed:`, (r as any).reason?.message);
+        });
+      }
     } catch (err: any) {
-      console.warn('[Generation] Failed to upload illustrations (non-blocking):', err.message);
+      console.error('[Generation] Critical error uploading illustrations:', err.message);
     }
 
     // --- Step 3: Assemble PDF (93-100%) ---

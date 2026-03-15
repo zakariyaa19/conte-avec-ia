@@ -260,7 +260,7 @@ export const PublicStoryPage: React.FC = () => {
   const [story, setStory] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [coverError, setCoverError] = useState(false);
-  const [readerOpen, setReaderOpen] = useState(false);
+  const [readerOpen, setReaderOpen] = useState(true); // Ouvrir le reader par défaut
 
   useEffect(() => {
     if (shareToken) loadStory();
