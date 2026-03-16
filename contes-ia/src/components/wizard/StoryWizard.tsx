@@ -1380,51 +1380,30 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                         placeholder="Votre prénom" required error={errors.firstName}
                         onBlur={() => validateField('firstName', formData.firstName || '')} />
                     </FullWidthField>
-                    {/* Mot de passe + Google (pour les non-connectés uniquement) */}
-                    {!isAuthenticated && (
+                    {/* Google connect (pour les non-connectés uniquement) */}
+                    {!isAuthenticated && !isInAppBrowser() && (
                       <FullWidthField>
-                        <div style={{ borderTop: '1px solid #f0f0f0', paddingTop: '14px', marginTop: '6px' }}>
-                          <p style={{ fontSize: '12px', fontWeight: 600, color: theme.colors.text.secondary, margin: '0 0 10px', textAlign: 'center' }}>
-                            Securisez votre compte (optionnel)
-                          </p>
-
-                          {/* Google */}
-                          {!isInAppBrowser() && (
-                            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '10px' }}>
-                              <GoogleLogin
-                                onSuccess={(credentialResponse: CredentialResponse) => {
-                                  if (credentialResponse.credential) {
-                                    ApiService.googleAuth(credentialResponse.credential).then(res => {
-                                      if (res.success && res.data) {
-                                        if (res.data.token) localStorage.setItem('userToken', res.data.token);
-                                        if (res.data.user?.email) onUpdate({ userEmail: res.data.user.email });
-                                        if (res.data.user?.firstName) onUpdate({ firstName: res.data.user.firstName });
-                                      }
-                                    }).catch(() => {});
-                                  }
-                                }}
-                                onError={() => {}}
-                                text="continue_with"
-                                shape="rectangular"
-                                size="medium"
-                              />
-                            </div>
-                          )}
-
-                          <div style={{ textAlign: 'center', fontSize: '11px', color: theme.colors.text.light, margin: '6px 0' }}>ou</div>
-
-                          {/* Mot de passe */}
-                          <ValidatedInput
-                            type="password"
-                            label="Mot de passe"
-                            value={formData.password || ''}
-                            onChange={(v) => onUpdate({ password: v })}
-                            placeholder="Creez un mot de passe (optionnel)"
-                            required={false}
-                          />
-                          <p style={{ fontSize: '11px', color: theme.colors.text.light, marginTop: '2px' }}>
-                            Pour vous reconnecter facilement
-                          </p>
+                        <div style={{ borderTop: '1px solid #f0f0f0', paddingTop: '14px', marginTop: '6px', textAlign: 'center' }}>
+                          <p style={{ fontSize: '11px', color: theme.colors.text.light, margin: '0 0 8px' }}>ou connectez-vous pour retrouver vos livres</p>
+                          <div style={{ display: 'flex', justifyContent: 'center' }}>
+                            <GoogleLogin
+                              onSuccess={(credentialResponse: CredentialResponse) => {
+                                if (credentialResponse.credential) {
+                                  ApiService.googleAuth(credentialResponse.credential).then(res => {
+                                    if (res.success && res.data) {
+                                      if (res.data.token) localStorage.setItem('userToken', res.data.token);
+                                      if (res.data.user?.email) onUpdate({ userEmail: res.data.user.email });
+                                      if (res.data.user?.firstName) onUpdate({ firstName: res.data.user.firstName });
+                                    }
+                                  }).catch(() => {});
+                                }
+                              }}
+                              onError={() => {}}
+                              text="continue_with"
+                              shape="rectangular"
+                              size="large"
+                            />
+                          </div>
                         </div>
                       </FullWidthField>
                     )}

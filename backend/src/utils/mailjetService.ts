@@ -482,6 +482,42 @@ export class MailjetService {
     }
   }
 
+  // Envoyer un code OTP par email
+  static async sendOTPEmail(data: { email: string; code: string }): Promise<void> {
+    try {
+      await getMailjet()
+        .post('send', { version: 'v3.1' })
+        .request({
+          Messages: [{
+            From: {
+              Email: process.env.MAILJET_FROM_EMAIL || 'contact@contedia.fr',
+              Name: 'Contes d\'IA'
+            },
+            To: [{ Email: data.email }],
+            Subject: `${data.code} — Votre code de connexion`,
+            HTMLPart: `
+              <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 440px; margin: 0 auto; padding: 40px 20px;">
+                <h1 style="color: #2D3748; font-size: 22px; text-align: center; margin-bottom: 8px;">Votre code de connexion</h1>
+                <p style="color: #718096; font-size: 14px; text-align: center; margin-bottom: 32px;">
+                  Entrez ce code sur le site pour acceder a votre compte.
+                </p>
+                <div style="background: #F7FAFC; border: 2px solid #E2E8F0; border-radius: 12px; padding: 24px; text-align: center; margin-bottom: 24px;">
+                  <span style="font-family: monospace; font-size: 36px; font-weight: 700; letter-spacing: 8px; color: #2D3748;">${data.code}</span>
+                </div>
+                <p style="color: #A0AEC0; font-size: 12px; text-align: center;">
+                  Ce code expire dans 5 minutes. Si vous n'avez pas demande ce code, ignorez cet email.
+                </p>
+              </div>
+            `
+          }]
+        });
+      console.log('OTP email envoye a:', data.email);
+    } catch (error) {
+      console.error('Erreur envoi OTP email:', error);
+      throw error;
+    }
+  }
+
   // Envoyer un email de notification a l'admin
   static async sendAdminNotification(orderData: {
     customerName: string;

@@ -362,6 +362,20 @@ export class ApiService {
     });
   }
 
+  static async sendOTP(email: string): Promise<{ success: boolean; message: string }> {
+    return this.request('/api/auth/send-code', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    });
+  }
+
+  static async verifyOTP(email: string, code: string): Promise<{ success: boolean; data?: any; message?: string }> {
+    return this.request('/api/auth/verify-code', {
+      method: 'POST',
+      body: JSON.stringify({ email, code }),
+    });
+  }
+
   static async verifyMagicLink(token: string): Promise<{ success: boolean; data?: any; message?: string }> {
     return this.request('/api/auth/magic-link/verify', {
       method: 'POST',

@@ -21,7 +21,91 @@ function generateClientToken(user: { id: string; email: string; role: string }):
   );
 }
 
+// OTP code store (in-memory, expires after 5 min)
+const otpStore = new Map<string, { code: string; expiresAt: number }>();
+
+function generateOTP(): string {
+  return String(Math.floor(100000 + Math.random() * 900000));
+}
+
+function cleanExpiredOTPs() {
+  const now = Date.now();
+  for (const [key, val] of otpStore) {
+    if (val.expiresAt < now) otpStore.delete(key);
+  }
+}
+
 export class AuthController {
+  // Envoyer un code OTP par email
+  static async sendOTP(req: Request, res: Response) {
+    try {
+      const { email } = req.body;
+      if (!email) return res.status(400).json({ success: false, message: 'Email requis' });
+
+      cleanExpiredOTPs();
+
+      const code = generateOTP();
+      otpStore.set(email.toLowerCase(), { code, expiresAt: Date.now() + 5 * 60 * 1000 });
+
+      // Send via Mailjet
+      const { MailjetService } = await import('../utils/mailjetService');
+      await MailjetService.sendOTPEmail({ email, code });
+
+      console.log(`[Auth] OTP sent to ${email}`);
+      res.json({ success: true, message: 'Code envoye par email' });
+    } catch (error) {
+      console.error('Erreur envoi OTP:', error);
+      res.status(500).json({ success: false, message: 'Erreur envoi du code' });
+    }
+  }
+
+  // Vérifier le code OTP et connecter
+  static async verifyOTP(req: Request, res: Response) {
+    try {
+      const { email, code } = req.body;
+      if (!email || !code) return res.status(400).json({ success: false, message: 'Email et code requis' });
+
+      const stored = otpStore.get(email.toLowerCase());
+      if (!stored) {
+        return res.status(400).json({ success: false, message: 'Aucun code en attente. Demandez un nouveau code.' });
+      }
+      if (stored.expiresAt < Date.now()) {
+        otpStore.delete(email.toLowerCase());
+        return res.status(400).json({ success: false, message: 'Code expire. Demandez un nouveau code.' });
+      }
+      if (stored.code !== code) {
+        return res.status(400).json({ success: false, message: 'Code incorrect' });
+      }
+
+      // Code OK — delete it
+      otpStore.delete(email.toLowerCase());
+
+      // Find or create user
+      let user = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
+      if (!user) {
+        user = await prisma.user.create({ data: { email: email.toLowerCase() } });
+      }
+
+      const token = generateClientToken(user);
+      res.json({
+        success: true,
+        data: {
+          token,
+          user: {
+            id: user.id,
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            role: user.role,
+          }
+        }
+      });
+    } catch (error) {
+      console.error('Erreur verification OTP:', error);
+      res.status(500).json({ success: false, message: 'Erreur verification' });
+    }
+  }
+
   // Inscription client
   static async register(req: Request, res: Response) {
     try {

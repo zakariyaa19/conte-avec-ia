@@ -390,12 +390,13 @@ const RedirectError = styled.div`
 export const LoginPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const initialMode = searchParams.get('mode') === 'register' ? 'register' : 'login';
+  const redirectTo = searchParams.get('redirect') || null;
   const planParam = searchParams.get('plan');
   const initialPlan = (planParam === 'club' || planParam === 'club_annual') ? 'club' : 'basic';
   const initialStripePlan: 'monthly' | 'annual' = planParam === 'club_annual' ? 'annual' : 'monthly';
 
   const [mode, setMode] = useState<'login' | 'register'>(initialMode);
-  const [loginMethod, setLoginMethod] = useState<'magic' | 'password'>('password');
+  const [loginMethod, setLoginMethod] = useState<'magic' | 'password' | 'otp_verify'>('password');
   const [magicLinkSent, setMagicLinkSent] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -407,7 +408,7 @@ export const LoginPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [stripeRedirect, setStripeRedirect] = useState(false);
   const [stripeError, setStripeError] = useState('');
-  const { login, register, googleLogin } = useAuth();
+  const { login, register, googleLogin, setTokenAndUser } = useAuth();
   const navigate = useNavigate();
 
   // Shared Stripe redirect logic for Club plan
@@ -554,99 +555,108 @@ export const LoginPage: React.FC = () => {
             </RedirectError>
           )}
 
-          {/* ─── LOGIN MODE ─── */}
+          {/* ─── LOGIN MODE — Google + Email OTP ─── */}
           {!isRegister && (
             <>
-              {magicLinkSent ? (
-                <div style={{ textAlign: 'center', padding: '20px 0' }}>
-                  <div style={{ fontSize: 48, marginBottom: 12 }}>&#x2709;&#xFE0F;</div>
-                  <p style={{ fontWeight: 700, fontSize: theme.fontSizes.lg, color: theme.colors.text.primary, marginBottom: 8 }}>
-                    Lien envoye !
+              {loginMethod === 'otp_verify' ? (
+                /* Code OTP envoyé — saisie du code */
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ fontSize: 40, marginBottom: 12 }}>&#x1F4E7;</div>
+                  <p style={{ fontWeight: 700, fontSize: theme.fontSizes.lg, color: theme.colors.text.primary, marginBottom: 4 }}>
+                    Code envoye !
                   </p>
-                  <p style={{ color: theme.colors.text.secondary, fontSize: theme.fontSizes.sm, lineHeight: 1.5 }}>
-                    Ouvrez votre boite mail <strong>{email}</strong> et cliquez sur le lien pour acceder a votre bibliotheque.
+                  <p style={{ color: theme.colors.text.secondary, fontSize: theme.fontSizes.sm, marginBottom: 20 }}>
+                    Entrez le code a 6 chiffres envoye a <strong>{email}</strong>
                   </p>
+                  <Form onSubmit={async (e) => {
+                    e.preventDefault();
+                    if (!password || password.length !== 6) { setError('Entrez le code a 6 chiffres'); return; }
+                    setError('');
+                    setIsLoading(true);
+                    try {
+                      const res = await ApiService.verifyOTP(email, password);
+                      if (res.success && res.data) {
+                        setTokenAndUser(res.data.token, res.data.user);
+                        navigate(redirectTo || '/dashboard');
+                      } else {
+                        setError(res.message || 'Code incorrect');
+                      }
+                    } catch { setError('Erreur de verification'); }
+                    setIsLoading(false);
+                  }}>
+                    <Input
+                      type="text"
+                      inputMode="numeric"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                      placeholder="000000"
+                      autoComplete="one-time-code"
+                      style={{
+                        fontSize: 32, fontWeight: 700, textAlign: 'center',
+                        letterSpacing: 12, fontFamily: 'monospace',
+                        padding: '16px',
+                      }}
+                    />
+                    <Button variant="primary" size="lg" type="submit" disabled={isLoading} fullWidth>
+                      {isLoading ? 'Verification...' : 'Se connecter'}
+                    </Button>
+                  </Form>
                   <p style={{ color: theme.colors.text.light, fontSize: theme.fontSizes.xs, marginTop: 16 }}>
-                    Pas recu ? Verifiez vos spams ou{' '}
+                    Pas recu ?{' '}
                     <span style={{ color: theme.colors.accent.coral, cursor: 'pointer', fontWeight: 600 }}
                       onClick={async () => {
                         setIsLoading(true);
-                        try { await ApiService.requestMagicLink(email); } catch {}
+                        try { await ApiService.sendOTP(email); } catch {}
                         setIsLoading(false);
-                      }}>
-                      renvoyer le lien
+                      }}>Renvoyer le code</span>
+                    {' · '}
+                    <span style={{ color: theme.colors.accent.coral, cursor: 'pointer', fontWeight: 600 }}
+                      onClick={() => { setLoginMethod('password'); setPassword(''); setError(''); }}>
+                      Changer d'email
                     </span>
                   </p>
                 </div>
               ) : (
+                /* Email + Google */
                 <>
-                  {/* Google en premier — methode principale */}
                   {!isInAppBrowser() && (
                     <GoogleButtonWrapper>
                       <GoogleLogin
                         onSuccess={(credentialResponse: CredentialResponse) => {
-                          if (credentialResponse.credential) {
-                            handleGoogleLogin(credentialResponse.credential);
-                          }
+                          if (credentialResponse.credential) handleGoogleLogin(credentialResponse.credential);
                         }}
                         onError={() => setError('Erreur de connexion Google')}
-                        text="signin_with"
+                        text="continue_with"
                         shape="rectangular"
                         size="large"
                         width="100%"
-                        logo_alignment="left"
+                        logo_alignment="center"
                       />
                     </GoogleButtonWrapper>
                   )}
 
                   <OrDivider>ou</OrDivider>
 
-                  {/* Email + mot de passe classique */}
-                  <Form onSubmit={loginMethod === 'magic' ? async (e) => {
+                  <Form onSubmit={async (e) => {
                     e.preventDefault();
                     if (!email) { setError('Entrez votre email'); return; }
                     setError('');
                     setIsLoading(true);
                     try {
-                      await ApiService.requestMagicLink(email);
-                      setMagicLinkSent(true);
-                    } catch { setError('Erreur lors de l\'envoi. Verifiez votre email.'); }
+                      await ApiService.sendOTP(email);
+                      setLoginMethod('otp_verify');
+                      setPassword('');
+                    } catch { setError('Erreur lors de l\'envoi du code'); }
                     setIsLoading(false);
-                  } : handleSubmit}>
+                  }}>
                     <InputField>
-                      <InputLabel>Email</InputLabel>
                       <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
                         placeholder="votre@email.com" autoComplete="email" style={{ fontSize: 16 }} />
                     </InputField>
-
-                    {loginMethod === 'password' && (
-                      <InputField>
-                        <InputLabel>Mot de passe</InputLabel>
-                        <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)}
-                          placeholder="Votre mot de passe" autoComplete="current-password" style={{ fontSize: 16 }} />
-                      </InputField>
-                    )}
-
                     <Button variant="primary" size="lg" type="submit" disabled={isLoading} fullWidth>
-                      {isLoading
-                        ? 'Connexion...'
-                        : loginMethod === 'magic'
-                          ? 'Recevoir un lien de connexion'
-                          : 'Se connecter'}
+                      {isLoading ? 'Envoi...' : 'Continuer avec l\'email'}
                     </Button>
                   </Form>
-
-                  <LinkText>
-                    {loginMethod === 'password' ? (
-                      <span onClick={() => { setLoginMethod('magic'); setMagicLinkSent(false); }}>
-                        Mot de passe oublie ?
-                      </span>
-                    ) : (
-                      <span onClick={() => setLoginMethod('password')}>
-                        Se connecter avec un mot de passe
-                      </span>
-                    )}
-                  </LinkText>
                 </>
               )}
             </>
