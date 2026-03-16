@@ -2428,10 +2428,10 @@ export const ClubMiniCard = styled.div<{ $isSelected: boolean }>`
   align-items: center;
   justify-content: space-between;
   padding: ${theme.spacing.md};
-  border: 1.5px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'rgba(0, 0, 0, 0.08)'};
+  border: 1.5px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'var(--border-color)'};
   border-radius: 14px;
   cursor: pointer;
-  background: ${p => p.$isSelected ? 'linear-gradient(160deg, #FFF0EC, #FFFAF8)' : 'white'};
+  background: ${p => p.$isSelected ? 'linear-gradient(160deg, #FFF0EC, #FFFAF8)' : 'var(--bg-card)'};
   transition: all 0.2s ease;
   -webkit-tap-highlight-color: transparent;
   margin-bottom: ${theme.spacing.sm};
@@ -2506,7 +2506,7 @@ export const ClubShowcaseCard = styled.div<{ $isSelected: boolean; $hero?: boole
   background: ${p => p.$isSelected
     ? 'linear-gradient(160deg, #FFF0EC 0%, #FFFAF8 40%, #FFF5EE 100%)'
     : 'linear-gradient(160deg, #FAFBFF 0%, #FFF9F6 40%, #FFFBF8 100%)'};
-  border: 2px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'rgba(0, 0, 0, 0.06)'};
+  border: 2px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'var(--border-color)'};
 
   ${p => p.$hero && css`
     animation: ${clubPulse} 3s ease-in-out infinite;
@@ -2655,10 +2655,10 @@ export const SingleFallbackCard = styled.div<{ $isSelected: boolean }>`
   align-items: center;
   justify-content: space-between;
   padding: 14px 18px;
-  border: 1.5px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'rgba(0, 0, 0, 0.06)'};
+  border: 1.5px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'var(--border-color)'};
   border-radius: 14px;
   cursor: pointer;
-  background: ${p => p.$isSelected ? '#FFFAF8' : 'white'};
+  background: ${p => p.$isSelected ? '#FFFAF8' : 'var(--bg-card)'};
   transition: all 0.2s ease;
   -webkit-tap-highlight-color: transparent;
   margin-top: ${theme.spacing.sm};
@@ -2751,7 +2751,7 @@ export const WizardHeaderNew = styled.header`
   background: rgba(255,255,255,0.92);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(0,0,0,0.04);
+  border-bottom: 1px solid var(--border-color);
   padding: ${theme.spacing.sm} ${theme.spacing.lg} ${theme.spacing.md};
   flex-shrink: 0;
 
@@ -2788,7 +2788,7 @@ export const HeaderBadge = styled.span`
   font-size: 10px;
   font-weight: 600;
   color: var(--text-light);
-  background: ${theme.colors.background.secondary};
+  background: var(--bg-secondary);
   padding: 2px 8px;
   border-radius: ${theme.borderRadius.full};
 `;
@@ -2833,7 +2833,7 @@ export const ProgressSegment = styled.div<{
       case 'done': return `linear-gradient(90deg, ${theme.colors.accent.coral}, ${theme.colors.accent.softPink})`;
       case 'current': return theme.colors.accent.coral;
       case 'skipped': return `${theme.colors.accent.coral}30`;
-      default: return '#E5E7EB';
+      default: return 'var(--border-input)';
     }
   }};
 
@@ -2880,7 +2880,7 @@ export const StickyBottomBar = styled.div`
   background: rgba(255,255,255,0.97);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border-top: 1px solid rgba(0,0,0,0.06);
+  border-top: 1px solid var(--border-color);
   padding: ${theme.spacing.sm} ${theme.spacing.lg};
   padding-bottom: max(${theme.spacing.sm}, env(safe-area-inset-bottom));
   display: flex;
@@ -2900,7 +2900,7 @@ export const StickyBackButton = styled.button`
   gap: 4px;
   padding: 10px 16px;
   background: none;
-  border: 1.5px solid #E5E7EB;
+  border: 1.5px solid var(--border-input);
   border-radius: ${theme.borderRadius.lg};
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.sm};
@@ -2970,11 +2970,11 @@ export const NewChoiceCard = styled.button<{ $isSelected: boolean; $delay?: numb
   align-items: center;
   gap: 6px;
   padding: ${theme.spacing.md} ${theme.spacing.sm};
-  border: 2px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'rgba(0,0,0,0.06)'};
+  border: 2px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'var(--border-color)'};
   border-radius: 16px;
   background: ${p => p.$isSelected
     ? `linear-gradient(160deg, #FFF8F5, #FFF)`
-    : 'white'};
+    : 'var(--bg-card)'};
   cursor: pointer;
   transition: all 0.25s ease;
   -webkit-tap-highlight-color: transparent;
@@ -3070,8 +3070,8 @@ export const SummaryChip = styled.span<{ $delay?: number }>`
   align-items: center;
   gap: 4px;
   padding: 4px 10px;
-  background: ${theme.colors.background.secondary};
-  border: 1px solid rgba(0,0,0,0.04);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
   border-radius: ${theme.borderRadius.full};
   font-family: ${theme.fonts.body};
   font-size: 10px;
@@ -3094,7 +3094,7 @@ export const SummaryChip = styled.span<{ $delay?: number }>`
 
 export const SegmentedGender = styled.div`
   display: flex;
-  background: ${theme.colors.background.secondary};
+  background: var(--bg-secondary);
   border-radius: ${theme.borderRadius.full};
   padding: 3px;
   gap: 0;
@@ -3179,9 +3179,9 @@ export const DetailChip = styled.button<{ $isSelected: boolean }>`
   display: inline-flex;
   align-items: center;
   padding: 6px 14px;
-  border: 1.5px solid ${p => p.$isSelected ? theme.colors.accent.coral : '#E5E7EB'};
+  border: 1.5px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'var(--border-input)'};
   border-radius: ${theme.borderRadius.full};
-  background: ${p => p.$isSelected ? theme.colors.accent.creamyYellow : 'white'};
+  background: ${p => p.$isSelected ? theme.colors.accent.creamyYellow : 'var(--bg-card)'};
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.xs};
   font-weight: 600;
@@ -3203,9 +3203,9 @@ export const AccordionHeader = styled.button<{ $isOpen: boolean }>`
   justify-content: space-between;
   width: 100%;
   padding: ${theme.spacing.sm} ${theme.spacing.md};
-  border: 1.5px solid ${p => p.$isOpen ? theme.colors.accent.coral : '#E5E7EB'};
+  border: 1.5px solid ${p => p.$isOpen ? theme.colors.accent.coral : 'var(--border-input)'};
   border-radius: ${p => p.$isOpen ? '12px 12px 0 0' : '12px'};
-  background: ${p => p.$isOpen ? theme.colors.accent.creamyYellow : 'white'};
+  background: ${p => p.$isOpen ? theme.colors.accent.creamyYellow : 'var(--bg-card)'};
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.sm};
   font-weight: 600;
@@ -3232,7 +3232,7 @@ export const AccordionBody = styled.div<{ $isOpen: boolean }>`
   border: ${p => p.$isOpen ? `1.5px solid ${theme.colors.accent.coral}` : '1.5px solid transparent'};
   border-top: none;
   border-radius: 0 0 12px 12px;
-  background: white;
+  background: var(--bg-card);
   padding: ${p => p.$isOpen ? `${theme.spacing.md}` : '0'};
   width: 100%;
 `;
@@ -3287,7 +3287,7 @@ export const DraftBannerDismiss = styled.button`
   color: var(--text-light);
   font-size: 14px;
   line-height: 1;
-  &:hover { color: ${theme.colors.text.secondary}; }
+  &:hover { color: var(--text-secondary); }
 `;
 
 /* ── Gender Selection Cards ── */
@@ -3298,11 +3298,11 @@ export const GenderCard = styled.button<{ $isSelected: boolean; $delay?: number 
   align-items: center;
   gap: 8px;
   padding: ${theme.spacing.lg} ${theme.spacing.md};
-  border: 2.5px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'rgba(0,0,0,0.06)'};
+  border: 2.5px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'var(--border-color)'};
   border-radius: 20px;
   background: ${p => p.$isSelected
     ? `linear-gradient(160deg, #FFF8F5, #FFF)`
-    : 'white'};
+    : 'var(--bg-card)'};
   cursor: pointer;
   transition: all 0.3s ease;
   -webkit-tap-highlight-color: transparent;

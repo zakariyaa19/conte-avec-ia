@@ -1166,9 +1166,9 @@ export const ClubPage: React.FC = () => {
                 { icon: '\uD83C\uDF10', title: '15+ langues', sub: 'Francais, anglais...' },
               ].map((f, i) => (
                 <div key={f.title} style={{
-                  background: 'white', borderRadius: '16px', padding: '18px 14px',
-                  textAlign: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-                  border: '1px solid rgba(0,0,0,0.04)',
+                  background: 'var(--bg-card)', borderRadius: '16px', padding: '18px 14px',
+                  textAlign: 'center', boxShadow: 'var(--shadow-card)',
+                  border: '1px solid var(--border-color)',
                   animation: `fadeInUp 0.4s ease-out ${0.1 + i * 0.06}s both`,
                   transition: 'transform 0.2s',
                 }}>
@@ -1366,8 +1366,8 @@ export const ClubPage: React.FC = () => {
               <CenterSubtitle>Tout ce qui est inclus, en un coup d'oeil.</CenterSubtitle>
             </CenteredTitle>
             <div style={{
-              background: 'white', borderRadius: '20px', overflow: 'hidden',
-              boxShadow: '0 2px 16px rgba(0,0,0,0.06)', border: '1px solid rgba(0,0,0,0.04)',
+              background: 'var(--bg-card)', borderRadius: '20px', overflow: 'hidden',
+              boxShadow: 'var(--shadow-card)', border: '1px solid var(--border-color)',
               maxWidth: 540, margin: '0 auto',
             }}>
               {/* Header */}
