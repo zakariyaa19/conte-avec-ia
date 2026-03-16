@@ -128,7 +128,7 @@ EXIGENCES :
 2. Vocabulaire adapte a un enfant de ${ageForVocab} ans
 3. Le prenom "${name}" doit apparaitre regulierement
 4. La morale doit etre organique, integree a l'histoire (pas de lecon explicite a la fin)
-5. Chaque paragraphe fait 5 a 8 phrases (paragraphes riches et immersifs)
+5. Chaque paragraphe fait 2 a 3 phrases MAXIMUM (tres court, aere, optimise pour lecture mobile plein ecran)
 ${params.hobbies ? `6. Les passions de ${name} (${params.hobbies}) doivent etre integrees naturellement dans l'histoire` : '6. Integrer des details personnels pour rendre l\'histoire unique'}
 ${params.favoriteDish ? `7. Mentionner le plat favori (${params.favoriteDish}) a un moment de l'histoire` : ''}
 8. ${secondaryChars ? `CRUCIAL : Chaque personnage secondaire doit apparaitre dans PLUSIEURS paragraphes, avec des actions concretes et des dialogues. Ils sont essentiels a l'histoire, pas de la figuration.` : 'L\'histoire doit etre captivante, magique et positive'}

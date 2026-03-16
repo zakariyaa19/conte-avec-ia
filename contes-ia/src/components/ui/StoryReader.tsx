@@ -187,13 +187,14 @@ const CoverImage = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center 40%;
   animation: ${slowZoom} 20s ease-out forwards;
 `;
 
 const CoverOverlay = styled.div`
   position: absolute;
   inset: 0;
-  background: linear-gradient(transparent 40%, rgba(0,0,0,0.7) 100%);
+  background: linear-gradient(rgba(0,0,0,0.3) 0%, transparent 30%, transparent 50%, rgba(0,0,0,0.85) 100%);
   z-index: 2;
 `;
 
@@ -201,24 +202,26 @@ const CoverContent = styled.div`
   position: relative;
   z-index: 3;
   text-align: center;
-  padding: 0 24px;
+  padding: 0 20px;
   margin-top: auto;
-  margin-bottom: 80px;
+  margin-bottom: 60px;
   animation: ${slideUp} 0.8s ease-out 0.3s both;
 `;
 
 const CoverTitle = styled.h1`
   font-family: ${theme.fonts.heading};
-  font-size: 32px;
+  font-size: 22px;
   font-weight: 800;
   color: white;
-  margin: 0 0 8px;
-  line-height: 1.2;
-  text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+  margin: 0 auto 8px;
+  line-height: 1.3;
+  text-shadow: 0 2px 16px rgba(0,0,0,0.8), 0 0 40px rgba(0,0,0,0.4);
   letter-spacing: -0.01em;
+  max-width: 300px;
 
   @media (min-width: 768px) {
-    font-size: 42px;
+    font-size: 28px;
+    max-width: 400px;
   }
 `;
 
@@ -316,16 +319,16 @@ const PageNumber = styled.div<{ $colorIndex: number; $night?: boolean }>`
 
 const StoryText = styled.p<{ $night?: boolean }>`
   font-family: ${theme.fonts.body};
-  font-size: 18px;
-  line-height: 1.8;
-  color: ${props => props.$night ? 'rgba(255,255,255,0.9)' : theme.colors.text.primary};
+  font-size: 16px;
+  line-height: 1.9;
+  color: ${props => props.$night ? 'rgba(255,255,255,0.85)' : theme.colors.text.primary};
   margin: 0;
   font-weight: 400;
   letter-spacing: 0.01em;
   transition: color 0.3s;
 
   @media (min-width: 768px) {
-    font-size: 20px;
+    font-size: 18px;
   }
 `;
 

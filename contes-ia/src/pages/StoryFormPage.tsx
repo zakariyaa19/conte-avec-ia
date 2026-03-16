@@ -15,7 +15,7 @@ export const StoryFormPage: React.FC = () => {
   const [clubCredit, setClubCredit] = useState<{ canSubmit: boolean; remaining: number; nextCreditDate?: string; totalEarned?: number } | null>(null);
 
   // Premier livre gratuit, sinon 6,99€ (club members toujours 6,99€)
-  const isFirstPurchase = !isAuthenticated || user?.isFirstPurchase !== false;
+  const isFirstPurchase = isAuthenticated ? user?.isFirstPurchase === true : true;
   const viewContentPrice = isClub ? 6.99 : (isFirstPurchase ? 0 : 6.99);
 
   // Track ViewContent au chargement de la page

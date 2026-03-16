@@ -188,8 +188,10 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
   isAuthenticated = false, isClub = false, currentUser = null, clubCredit = null,
   isAdMode = false,
 }) => {
-  // Premier livre GRATUIT pour les nouveaux utilisateurs
-  const isFirstPurchase = !isAuthenticated || currentUser?.isFirstPurchase !== false;
+  // Premier livre GRATUIT uniquement si le backend confirme isFirstPurchase === true
+  // Si non authentifié (nouveau visiteur), on suppose que c'est le premier achat
+  // Le backend vérifiera de toute façon par email au moment de la commande
+  const isFirstPurchase = isAuthenticated ? currentUser?.isFirstPurchase === true : true;
   const singlePrice = isFirstPurchase ? 0 : 6.99;
   const singlePriceLabel = isFirstPurchase ? 'GRATUIT' : '6,99\u20AC';
 
