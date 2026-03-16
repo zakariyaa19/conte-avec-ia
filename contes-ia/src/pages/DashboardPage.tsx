@@ -441,21 +441,21 @@ const JoinClubBg = styled.div`
 
 const FilterBar = styled.div`
   display: flex;
-  gap: ${theme.spacing.sm};
-  margin-bottom: ${theme.spacing.lg};
+  gap: 6px;
+  margin-bottom: 12px;
   flex-wrap: wrap;
 `;
 
 const FilterButton = styled.button<{ $active: boolean }>`
-  padding: ${theme.spacing.xs} ${theme.spacing.md};
-  border: 2px solid ${p => p.$active ? theme.colors.accent.coral : '#E5E7EB'};
-  border-radius: ${theme.borderRadius.full};
+  padding: 5px 14px;
+  border: 1.5px solid ${p => p.$active ? theme.colors.accent.coral : '#E5E7EB'};
+  border-radius: 20px;
   background: ${p => p.$active ? theme.colors.accent.coral : 'transparent'};
   color: ${p => p.$active ? 'white' : theme.colors.text.secondary};
-  font-size: ${theme.fontSizes.sm};
+  font-size: 12px;
   font-weight: 600;
   cursor: pointer;
-  transition: all ${theme.transitions.base};
+  transition: all 0.2s;
   &:hover { border-color: ${theme.colors.accent.coral}; }
 `;
 
@@ -1048,43 +1048,54 @@ export const DashboardPage: React.FC = () => {
       <Header />
       <MainContent>
 
-        {/* ══════ 1. LIBRARY HEADER ══════ */}
-        <LibraryHeader>
-          <HeaderTopRow>
-            <HeaderTitleGroup>
-              <LibraryTitle>
-                Ma Bibliothèque
-                <Badge $variant={isClub ? 'club' : subscriptionActivating ? 'activating' : 'basic'}>
-                  {isClub ? 'Membre Club' : subscriptionActivating ? 'Activation...' : 'Basique'}
-                </Badge>
-              </LibraryTitle>
-              {!loading && heroName && (
-                <LibrarySubtitle>
-                  La collection d'histoires de {heroName}
-                </LibrarySubtitle>
-              )}
-              {!loading && stories.length > 0 && (
-                <StoryCounter>
-                  {stories.length} {stories.length === 1 ? 'histoire créée' : 'histoires dans la collection'}
-                </StoryCounter>
-              )}
-            </HeaderTitleGroup>
-            <ActionButtons>
-              <Button variant="outline" size="md" onClick={() => navigate('/dashboard/account')}>
-                Mon compte
-              </Button>
-              <Button variant="primary" size="md" onClick={() => {
-                if (!isClub && stories.length >= 3) {
-                  navigate('/upgrade');
-                } else {
-                  navigate('/create-story');
-                }
+        {/* ══════ 1. COMPACT HEADER ══════ */}
+        <div style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          marginBottom: 16,
+        }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 2 }}>
+              <h1 style={{ fontFamily: theme.fonts.heading, fontSize: 20, fontWeight: 700, margin: 0, color: theme.colors.text.primary }}>
+                Ma Bibliotheque
+              </h1>
+              <span style={{
+                fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 10,
+                background: isClub ? 'linear-gradient(135deg, #667eea, #764ba2)' : '#f0f0f0',
+                color: isClub ? 'white' : theme.colors.text.light,
               }}>
-                {!isClub && stories.length >= 3 ? 'Passer au Club' : 'Creer un conte'}
-              </Button>
-            </ActionButtons>
-          </HeaderTopRow>
-        </LibraryHeader>
+                {isClub ? 'Club' : 'Gratuit'}
+              </span>
+            </div>
+            {!loading && stories.length > 0 && (
+              <p style={{ fontSize: 12, color: theme.colors.text.light, margin: 0 }}>
+                {stories.length} {stories.length === 1 ? 'histoire' : 'histoires'}
+                {heroName ? ` de ${heroName}` : ''}
+              </p>
+            )}
+          </div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button onClick={() => navigate('/dashboard/account')} style={{
+              width: 36, height: 36, borderRadius: '50%', border: '1px solid #e0e0e0',
+              background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: 16, color: theme.colors.text.secondary,
+            }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+              </svg>
+            </button>
+            <button onClick={() => {
+              if (!isClub && stories.length >= 3) navigate('/upgrade');
+              else navigate('/create-story');
+            }} style={{
+              height: 36, padding: '0 16px', borderRadius: 18, border: 'none',
+              background: theme.colors.accent.coral, color: 'white',
+              fontSize: 13, fontWeight: 600, cursor: 'pointer',
+              display: 'flex', alignItems: 'center', gap: 6,
+            }}>
+              <span style={{ fontSize: 16 }}>+</span> Creer
+            </button>
+          </div>
+        </div>
 
         {/* ══════ WELCOME BANNER (activation) ══════ */}
         {subscriptionActivating && (
@@ -1162,85 +1173,35 @@ export const DashboardPage: React.FC = () => {
           </ClubSection>
         )}
 
-        {/* ══════ 2B. JOIN CLUB (Basic) + Book Limit ══════ */}
+        {/* ══════ 2B. JOIN CLUB (Basic) — compact banner ══════ */}
         {!loading && !isClub && !subscriptionActivating && (
-          <div style={{
+          <div onClick={() => navigate('/upgrade')} style={{
             background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            borderRadius: '20px', padding: '28px 24px', marginBottom: '24px',
-            position: 'relative', overflow: 'hidden',
-            animation: 'fadeInUp 0.6s ease-out',
+            borderRadius: '16px', padding: '16px 18px', marginBottom: '16px',
+            position: 'relative', overflow: 'hidden', cursor: 'pointer',
+            display: 'flex', alignItems: 'center', gap: 14,
           }}>
-            {/* Animated background circles */}
             <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
-              <div style={{ position: 'absolute', width: 120, height: 120, borderRadius: '50%', background: 'rgba(255,255,255,0.08)', top: -20, right: -20 }} />
-              <div style={{ position: 'absolute', width: 80, height: 80, borderRadius: '50%', background: 'rgba(255,255,255,0.06)', bottom: 10, left: 20 }} />
-              <div style={{ position: 'absolute', width: 50, height: 50, borderRadius: '50%', background: 'rgba(255,255,255,0.05)', top: '40%', right: '30%' }} />
+              <div style={{ position: 'absolute', width: 80, height: 80, borderRadius: '50%', background: 'rgba(255,255,255,0.08)', top: -20, right: -10 }} />
             </div>
-
-            <div style={{ position: 'relative', zIndex: 2 }}>
-              {/* Book counter */}
-              <div style={{
-                display: 'inline-flex', alignItems: 'center', gap: 8,
-                background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(8px)',
-                borderRadius: 30, padding: '6px 16px', marginBottom: 16,
-                fontSize: '13px', color: 'white', fontWeight: 600,
-              }}>
-                <span>{stories.length}/3</span>
-                <div style={{ width: 60, height: 4, background: 'rgba(255,255,255,0.3)', borderRadius: 2 }}>
-                  <div style={{ width: `${Math.min((stories.length / 3) * 100, 100)}%`, height: '100%', background: 'white', borderRadius: 2, transition: 'width 0.5s ease' }} />
-                </div>
-                <span>livres</span>
+            <div style={{ position: 'relative', zIndex: 2, flex: 1 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+                <span style={{ fontSize: 11, background: 'rgba(255,255,255,0.2)', color: 'white', padding: '2px 8px', borderRadius: 8, fontWeight: 600 }}>
+                  {stories.length}/3
+                </span>
+                <span style={{ fontSize: 13, fontWeight: 700, color: 'white' }}>
+                  {stories.length >= 3 ? 'Bibliotheque pleine' : 'Passer au Club'}
+                </span>
               </div>
-
-              <h3 style={{
-                fontFamily: theme.fonts.heading, fontSize: '22px', fontWeight: 800,
-                color: 'white', margin: '0 0 8px', lineHeight: 1.2,
-              }}>
-                {stories.length >= 3 ? 'Debloquez des histoires illimitees' : 'Passez au niveau superieur'}
-              </h3>
-
-              <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.8)', margin: '0 0 20px', lineHeight: 1.5 }}>
-                {stories.length >= 3
-                  ? 'Votre bibliotheque est pleine (3 livres max). Le Club vous ouvre un monde de possibilites.'
-                  : 'Le Club des Histoires, c\'est un nouveau livre chaque semaine.'}
+              <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.7)', margin: 0 }}>
+                Livres illimites, styles, personnages...
               </p>
-
-              {/* Feature pills */}
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 20 }}>
-                {[
-                  { icon: '\uD83D\uDCD6', text: '1 livre/semaine' },
-                  { icon: '\uD83C\uDFA8', text: 'Styles uniques' },
-                  { icon: '\uD83D\uDC64', text: 'Personnages' },
-                  { icon: '\u221E', text: 'Illimite' },
-                ].map(f => (
-                  <span key={f.text} style={{
-                    display: 'inline-flex', alignItems: 'center', gap: 5,
-                    background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(8px)',
-                    borderRadius: 20, padding: '5px 12px',
-                    fontSize: '12px', color: 'white', fontWeight: 500,
-                  }}>
-                    {f.icon} {f.text}
-                  </span>
-                ))}
-              </div>
-
-              <button
-                onClick={() => navigate('/upgrade')}
-                style={{
-                  width: '100%', padding: '14px', border: 'none', borderRadius: 14,
-                  background: 'white', color: '#764ba2',
-                  fontSize: '15px', fontWeight: 700, cursor: 'pointer',
-                  boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
-                  transition: 'transform 0.2s',
-                }}
-                onMouseDown={e => (e.currentTarget.style.transform = 'scale(0.97)')}
-                onMouseUp={e => (e.currentTarget.style.transform = 'scale(1)')}
-              >
-                {stories.length >= 3 ? 'Decouvrir le Club' : 'Decouvrir le Club'}
-              </button>
-              <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.5)', textAlign: 'center', marginTop: 8, marginBottom: 0 }}>
-                A partir de 9,99€/mois · Sans engagement
-              </p>
+            </div>
+            <div style={{
+              background: 'white', color: '#764ba2', borderRadius: 12,
+              padding: '8px 14px', fontSize: 12, fontWeight: 700, flexShrink: 0,
+            }}>
+              Voir &rarr;
             </div>
           </div>
         )}
@@ -1288,7 +1249,6 @@ export const DashboardPage: React.FC = () => {
           </EmptyState>
         ) : (
           <>
-            <SectionLabel>Mes histoires</SectionLabel>
             <BookshelfGrid>
               {filteredStories.map((story, idx) => {
                 const coverUrl = story.coverImageUrl ? getImageUrl(story.coverImageUrl) : null;
