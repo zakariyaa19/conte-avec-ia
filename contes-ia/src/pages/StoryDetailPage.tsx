@@ -107,11 +107,15 @@ const CoverWrapper = styled.div`
   border-radius: 4px 14px 14px 4px;
   overflow: hidden;
   position: relative;
+  cursor: pointer;
   box-shadow:
     -4px 0 10px rgba(0,0,0,0.15),
     6px 4px 20px rgba(0,0,0,0.25),
     inset -2px 0 4px rgba(255,255,255,0.1);
   animation: ${gentleFloat} 4s ease-in-out infinite;
+  transition: transform 0.2s ease;
+
+  &:active { transform: scale(0.97); }
 
   @media (max-width: ${theme.breakpoints.sm}) {
     width: 180px;
@@ -752,7 +756,7 @@ export const StoryDetailPage: React.FC = () => {
 
         {/* ─── Hero : couverture + infos ─── */}
         <HeroSection>
-          <CoverWrapper>
+          <CoverWrapper onClick={() => setReaderOpen(true)}>
             <CoverSpine />
             {coverUrl && !coverError ? (
               <CoverImage
