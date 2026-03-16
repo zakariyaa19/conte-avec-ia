@@ -187,8 +187,7 @@ const CoverImage = styled.img`
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: center 40%;
+  object-fit: contain;
   animation: ${slowZoom} 12s ease-in-out infinite;
 `;
 
