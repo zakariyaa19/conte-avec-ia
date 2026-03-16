@@ -217,7 +217,7 @@ const SelectionGrid = styled.div<{ $columns?: number }>`
 const CustomInput = styled.input`
   width: 100%;
   padding: ${theme.spacing.md};
-  border: 2px solid #E5E7EB;
+  border: 2px solid var(--border-input);
   border-radius: ${theme.borderRadius.md};
   font-size: ${theme.fontSizes.base};
   margin-top: ${theme.spacing.md};
@@ -592,7 +592,7 @@ const PaymentDividerLabel = styled.span`
 const TextArea = styled.textarea`
   width: 100%;
   padding: ${theme.spacing.md};
-  border: 2px solid #E5E7EB;
+  border: 2px solid var(--border-input);
   border-radius: ${theme.borderRadius.md};
   font-size: ${theme.fontSizes.base};
   font-family: ${theme.fonts.body};
@@ -741,7 +741,7 @@ const OrderCostSummary = styled.div<{ $variant: 'free' | 'paid' | 'info' }>`
     switch (props.$variant) {
       case 'free': return '#a8e6cf';
       case 'paid': return `${theme.colors.accent.lightCoral}30`;
-      case 'info': return '#E5E7EB';
+      case 'info': return 'var(--border-input)';
     }
   }};
 `;

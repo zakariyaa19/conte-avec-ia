@@ -481,7 +481,7 @@ export const ChoiceCard = styled.button<{ $variant: 'primary' | 'secondary' }>`
   width: 100%; max-width: 340px;
   padding: ${theme.spacing.xl} ${theme.spacing.lg};
   @media (min-width: ${theme.breakpoints.lg}) { max-width: 440px; padding: ${theme.spacing['2xl']} ${theme.spacing.xl}; }
-  border: 2px solid ${p => p.$variant === 'primary' ? theme.colors.accent.coral : 'rgba(0,0,0,0.08)'};
+  border: 2px solid ${p => p.$variant === 'primary' ? theme.colors.accent.coral : 'var(--border-color)'};
   border-radius: ${theme.borderRadius.xl};
   cursor: pointer; transition: all 0.3s ease;
   -webkit-tap-highlight-color: transparent;
@@ -2243,7 +2243,7 @@ export const PricingCardFeatureItem = styled.li<{ $highlight?: boolean }>`
     border-radius: 50%;
     background: ${p => p.$highlight
       ? 'linear-gradient(135deg, rgba(255,153,153,0.15), rgba(255,180,120,0.15))'
-      : 'rgba(0,0,0,0.04)'};
+      : 'var(--border-color)'};
     color: ${p => p.$highlight ? theme.colors.accent.coral : 'var(--text-light)'};
     font-size: 9px;
     font-weight: 700;
@@ -2419,7 +2419,7 @@ export const ClubAlternativeDivider = styled.div`
     content: '';
     flex: 1;
     height: 1px;
-    background: rgba(0, 0, 0, 0.08);
+    background: var(--border-color);
   }
 `;
 
@@ -2748,7 +2748,7 @@ export const WizardHeaderNew = styled.header`
   position: sticky;
   top: 0;
   z-index: 20;
-  background: rgba(255,255,255,0.92);
+  background: var(--header-glass);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border-color);
@@ -2762,7 +2762,7 @@ export const WizardHeaderNew = styled.header`
   @media (prefers-reduced-motion: reduce) {
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
-    background: rgba(255,255,255,0.98);
+    background: var(--header-glass);
   }
 `;
 
@@ -2877,7 +2877,7 @@ export const StickyBottomBar = styled.div`
   left: 0;
   right: 0;
   z-index: 110;
-  background: rgba(255,255,255,0.97);
+  background: var(--header-glass);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-top: 1px solid var(--border-color);
@@ -3113,7 +3113,7 @@ export const GenderPill = styled.button<{ $isSelected: boolean }>`
   transition: all 0.25s ease;
   -webkit-tap-highlight-color: transparent;
   background: ${p => p.$isSelected
-    ? 'white'
+    ? 'var(--bg-card)'
     : 'transparent'};
   color: ${p => p.$isSelected
     ? theme.colors.accent.coral
