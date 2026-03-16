@@ -34,7 +34,8 @@ const slideUp = keyframes`
 
 const slowZoom = keyframes`
   0% { transform: scale(1); }
-  100% { transform: scale(1.08); }
+  50% { transform: scale(1.03); }
+  100% { transform: scale(1); }
 `;
 
 const sparkle = keyframes`
@@ -188,7 +189,7 @@ const CoverImage = styled.img`
   height: 100%;
   object-fit: cover;
   object-position: center 40%;
-  animation: ${slowZoom} 20s ease-out forwards;
+  animation: ${slowZoom} 12s ease-in-out infinite;
 `;
 
 const CoverOverlay = styled.div`
