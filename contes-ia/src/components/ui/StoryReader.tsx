@@ -182,12 +182,23 @@ const CoverSlide = styled(Slide)`
   background: #000;
 `;
 
+const CoverBlurBg = styled.img`
+  position: absolute;
+  inset: -20px;
+  width: calc(100% + 40px);
+  height: calc(100% + 40px);
+  object-fit: cover;
+  filter: blur(40px) saturate(1.3) brightness(0.7);
+  transform: scale(1.1);
+`;
+
 const CoverImage = styled.img`
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: contain;
+  z-index: 1;
   animation: ${slowZoom} 12s ease-in-out infinite;
 `;
 
@@ -551,13 +562,12 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
             return (
               <CoverSlide key="cover" data-slide-index={0}>
                 {coverImageUrl && (
-                  <CoverImage src={resolveUrl(coverImageUrl)} alt={coverTitle} />
+                  <>
+                    <CoverBlurBg src={resolveUrl(coverImageUrl)} alt="" aria-hidden="true" />
+                    <CoverImage src={resolveUrl(coverImageUrl)} alt={coverTitle} />
+                  </>
                 )}
                 <CoverOverlay />
-                <CoverContent>
-                  <CoverTitle>{coverTitle}</CoverTitle>
-                  {creatorName && <CoverCreator>{creatorName}</CoverCreator>}
-                </CoverContent>
                 <ScrollHint>Glissez pour lire</ScrollHint>
               </CoverSlide>
             );
