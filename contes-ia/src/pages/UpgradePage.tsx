@@ -27,7 +27,7 @@ const PageContainer = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: ${theme.colors.background.primary};
+  background: var(--bg-primary);
 `;
 
 const Content = styled.main`
@@ -49,13 +49,13 @@ const Hero = styled.div`
 const HeroTitle = styled.h1`
   font-family: ${theme.fonts.heading};
   font-size: 24px;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin: 0 0 6px;
   line-height: 1.2;
 `;
 
 const HeroSub = styled.p`
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   font-size: 14px;
   margin: 0;
 `;
@@ -63,11 +63,11 @@ const HeroSub = styled.p`
 /* ═══════════ CHECKLIST CARD ═══════════ */
 
 const ChecklistCard = styled.div`
-  background: white;
+  background: var(--bg-card);
   border-radius: 20px;
   padding: 24px 20px;
-  box-shadow: 0 2px 16px rgba(0,0,0,0.06);
-  border: 1px solid rgba(0,0,0,0.04);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-color);
   margin-bottom: 20px;
   animation: ${fadeInUp} 0.4s ease-out 0.05s both;
 `;
@@ -76,7 +76,7 @@ const ChecklistTitle = styled.div`
   font-family: ${theme.fonts.heading};
   font-size: 16px;
   font-weight: 700;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin-bottom: 16px;
   display: flex;
   align-items: center;
@@ -88,9 +88,9 @@ const CheckRow = styled.div<{ $locked?: boolean }>`
   align-items: center;
   gap: 12px;
   padding: 10px 0;
-  border-bottom: 1px solid #f5f5f5;
+  border-bottom: 1px solid var(--border-color);
   font-size: 14px;
-  color: ${props => props.$locked ? theme.colors.text.light : theme.colors.text.primary};
+  color: ${props => props.$locked ? 'var(--text-light)' : 'var(--text-primary)'};
 
   &:last-child { border-bottom: none; }
 `;
@@ -256,7 +256,7 @@ const GuaranteesRow = styled.div`
 
 const Guarantee = styled.span`
   font-size: 11px;
-  color: ${theme.colors.text.light};
+  color: var(--text-light);
   font-weight: 500;
   display: flex;
   align-items: center;
@@ -264,10 +264,10 @@ const Guarantee = styled.span`
 `;
 
 const TestimonialCard = styled.div`
-  background: white;
+  background: var(--bg-card);
   border-radius: 16px;
   padding: 20px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+  box-shadow: var(--shadow-card);
   text-align: center;
   animation: ${fadeInUp} 0.4s ease-out 0.2s both;
 `;
@@ -360,7 +360,7 @@ export const UpgradePage: React.FC = () => {
             <CheckBadge>Club</CheckBadge>
           </CheckRow>
 
-          <div style={{ marginTop: 12, padding: '10px 12px', background: '#F9FAFB', borderRadius: 12, fontSize: 12, color: theme.colors.text.light, textAlign: 'center' }}>
+          <div style={{ marginTop: 12, padding: '10px 12px', background: 'var(--bg-secondary)', borderRadius: 12, fontSize: 12, color: 'var(--text-light)', textAlign: 'center' }}>
             + PDF telechargeables · Credits cumulables · Annulable en 1 clic
           </div>
         </ChecklistCard>
@@ -401,10 +401,10 @@ export const UpgradePage: React.FC = () => {
         {/* Testimonial */}
         <TestimonialCard>
           <div style={{ color: '#FFD700', fontSize: 16, marginBottom: 8, letterSpacing: 2 }}>&#x2B50;&#x2B50;&#x2B50;&#x2B50;&#x2B50;</div>
-          <p style={{ fontSize: 14, color: theme.colors.text.secondary, fontStyle: 'italic', lineHeight: 1.7, margin: '0 0 6px' }}>
+          <p style={{ fontSize: 14, color: 'var(--text-secondary)', fontStyle: 'italic', lineHeight: 1.7, margin: '0 0 6px' }}>
             "Ma fille me demande une nouvelle histoire tous les soirs !"
           </p>
-          <p style={{ fontSize: 12, color: theme.colors.text.light, margin: 0, fontWeight: 600 }}>
+          <p style={{ fontSize: 12, color: 'var(--text-light)', margin: 0, fontWeight: 600 }}>
             Marie, maman de Lola (5 ans)
           </p>
         </TestimonialCard>

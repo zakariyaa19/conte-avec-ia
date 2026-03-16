@@ -11,29 +11,29 @@ const Container = styled.div`
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background: ${theme.colors.background.primary};
+  background: var(--bg-primary);
 `;
 
 const Card = styled.div`
-  background: white;
+  background: var(--bg-card);
   border-radius: 20px;
   padding: 40px 32px;
   max-width: 420px;
   width: 100%;
   text-align: center;
-  box-shadow: ${theme.shadows.card};
+  box-shadow: var(--shadow-card);
 `;
 
 const Title = styled.h1`
   font-family: ${theme.fonts.heading};
   font-size: 22px;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin-bottom: 12px;
 `;
 
 const Message = styled.p`
   font-size: 15px;
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   line-height: 1.5;
 `;
 

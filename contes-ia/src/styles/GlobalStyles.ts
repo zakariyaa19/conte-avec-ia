@@ -3,6 +3,42 @@ import { theme } from './theme';
 
 export const GlobalStyles = createGlobalStyle`
 
+  :root {
+    --bg-primary: #FEFCF8;
+    --bg-secondary: #F9F7F4;
+    --bg-card: #FFFFFF;
+    --bg-elevated: #FFFFFF;
+    --bg-input: #FFFFFF;
+    --text-primary: #2C2C2C;
+    --text-secondary: #5A4A42;
+    --text-light: #8B8B8B;
+    --border-color: rgba(0,0,0,0.06);
+    --border-input: #E8E5E1;
+    --shadow-card: 0 2px 8px rgba(0,0,0,0.06);
+    --shadow-card-hover: 0 8px 32px rgba(0,0,0,0.1);
+    --header-glass: rgba(255,255,255,0.72);
+    --hover-bg: rgba(255,153,153,0.06);
+    --gradient-hero: linear-gradient(135deg, #FEFCF8 0%, #FFE5B4 100%);
+  }
+
+  [data-theme="dark"] {
+    --bg-primary: #1a1a2e;
+    --bg-secondary: #16213e;
+    --bg-card: #1e2744;
+    --bg-elevated: #243050;
+    --bg-input: #1e2744;
+    --text-primary: #E8E4DF;
+    --text-secondary: #A8A4A0;
+    --text-light: #7A7672;
+    --border-color: rgba(255,255,255,0.08);
+    --border-input: rgba(255,255,255,0.12);
+    --shadow-card: 0 2px 8px rgba(0,0,0,0.3);
+    --shadow-card-hover: 0 8px 32px rgba(0,0,0,0.4);
+    --header-glass: rgba(26,26,46,0.85);
+    --hover-bg: rgba(255,153,153,0.1);
+    --gradient-hero: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  }
+
   * {
     margin: 0;
     padding: 0;
@@ -18,12 +54,13 @@ export const GlobalStyles = createGlobalStyle`
 
   body {
     font-family: ${theme.fonts.body};
-    background-color: ${theme.colors.background.primary};
-    color: ${theme.colors.text.primary};
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
     line-height: 1.7;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -36,7 +73,7 @@ export const GlobalStyles = createGlobalStyle`
 
   h1 {
     font-size: ${theme.fontSizes['5xl']};
-    color: ${theme.colors.text.primary};
+    color: var(--text-primary);
 
     @media (max-width: ${theme.breakpoints.md}) {
       font-size: ${theme.fontSizes['4xl']};
@@ -49,7 +86,7 @@ export const GlobalStyles = createGlobalStyle`
 
   h2 {
     font-size: ${theme.fontSizes['3xl']};
-    color: ${theme.colors.text.primary};
+    color: var(--text-primary);
 
     @media (max-width: ${theme.breakpoints.md}) {
       font-size: ${theme.fontSizes['2xl']};
@@ -58,7 +95,7 @@ export const GlobalStyles = createGlobalStyle`
 
   h3 {
     font-size: ${theme.fontSizes['2xl']};
-    color: ${theme.colors.text.secondary};
+    color: var(--text-secondary);
   }
 
   p {
@@ -88,11 +125,11 @@ export const GlobalStyles = createGlobalStyle`
   input, textarea, select {
     font-family: ${theme.fonts.body};
     font-size: ${theme.fontSizes.base};
-    border: 2px solid #E8E5E1;
+    border: 2px solid var(--border-input);
     border-radius: ${theme.borderRadius.md};
     padding: 0.75rem ${theme.spacing.md};
     transition: all ${theme.transitions.base};
-    background-color: ${theme.colors.background.white};
+    background-color: var(--bg-input);
     box-sizing: border-box;
     max-width: 100%;
 
@@ -202,7 +239,7 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   ::-webkit-scrollbar-track {
-    background: ${theme.colors.background.secondary};
+    background: var(--bg-secondary);
   }
 
   ::-webkit-scrollbar-thumb {
@@ -217,6 +254,6 @@ export const GlobalStyles = createGlobalStyle`
   // Sélection de texte
   ::selection {
     background: rgba(255, 153, 153, 0.25);
-    color: ${theme.colors.text.primary};
+    color: var(--text-primary);
   }
 `;

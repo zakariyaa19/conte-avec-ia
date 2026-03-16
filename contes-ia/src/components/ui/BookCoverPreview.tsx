@@ -202,7 +202,7 @@ const RatioContainer = styled.div`
   width: 100%;
   padding-bottom: 150%; /* 2:3 portrait ratio */
   position: relative;
-  background: ${theme.colors.background.secondary};
+  background: var(--bg-secondary);
 `;
 
 /* --- Magical Loading Animation --- */
@@ -351,7 +351,7 @@ const LoadingTitle = styled.h3`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.lg};
   font-weight: 700;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin: 0 0 4px;
   z-index: 2;
 
@@ -363,7 +363,7 @@ const LoadingTitle = styled.h3`
 const LoadingSubtitle = styled.p`
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.xs};
-  color: ${theme.colors.text.light};
+  color: var(--text-light);
   margin: 0 0 ${theme.spacing.md};
   z-index: 2;
 `;
@@ -383,7 +383,7 @@ const RotatingMessages = styled.div`
 const MessageText = styled.p<{ $index: number; $total: number }>`
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   font-weight: 600;
   position: absolute;
   opacity: 0;
@@ -403,7 +403,7 @@ const MessageText = styled.p<{ $index: number; $total: number }>`
 const ProgressBarContainer = styled.div`
   width: 65%;
   height: 6px;
-  background: rgba(0,0,0,0.06);
+  background: var(--border-color);
   border-radius: ${theme.borderRadius.full};
   margin-top: ${theme.spacing.lg};
   overflow: hidden;
@@ -447,7 +447,7 @@ const PlaceholderIcon = styled.span`
 const PlaceholderText = styled.p`
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.xs};
-  color: ${theme.colors.text.light};
+  color: var(--text-light);
   text-align: center;
   padding: 0 ${theme.spacing.lg};
   max-width: 240px;

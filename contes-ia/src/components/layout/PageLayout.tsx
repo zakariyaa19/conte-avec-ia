@@ -8,12 +8,12 @@ const PageContainer = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: ${theme.colors.background.white};
+  background-color: var(--bg-primary);
 `;
 
 const MainContent = styled.main`
   flex: 1;
-  background: linear-gradient(135deg, ${theme.colors.background.primary} 0%, ${theme.colors.accent.paleYellow} 100%);
+  background: var(--gradient-hero);
 `;
 
 interface PageLayoutProps {

@@ -58,7 +58,7 @@ export const WizardOverlay = styled.div`
   position: fixed;
   inset: 0;
   z-index: 100;
-  background: ${theme.colors.background.primary};
+  background: var(--bg-primary);
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -68,10 +68,10 @@ export const WizardOverlay = styled.div`
 export const WizardHeader = styled.header`
   position: relative;
   z-index: 10;
-  background: rgba(255,255,255,0.95);
+  background: var(--header-glass);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(0,0,0,0.04);
+  border-bottom: 1px solid var(--border-color);
   padding: ${theme.spacing.md} ${theme.spacing.lg};
   display: flex;
   align-items: center;
@@ -96,11 +96,11 @@ export const BackArrow = styled.button<{ $visible: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   transition: all 0.2s ease;
   opacity: ${p => p.$visible ? 1 : 0};
   pointer-events: ${p => p.$visible ? 'auto' : 'none'};
-  &:hover { background: ${theme.colors.background.secondary}; color: ${theme.colors.text.primary}; }
+  &:hover { background: var(--bg-secondary); color: var(--text-primary); }
   @media (max-width: ${theme.breakpoints.sm}) { left: ${theme.spacing.sm}; }
 `;
 
@@ -118,7 +118,7 @@ export const WizardTitle = styled.h1`
 
 export const ProgressTrack = styled.div`
   position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
-  background: ${theme.colors.background.secondary};
+  background: var(--bg-secondary);
 `;
 
 export const ProgressFill = styled.div<{ $progress: number }>`
@@ -188,7 +188,7 @@ export const StepTitle = styled.h2`
   font-weight: 700;
   text-align: center;
   margin: 0 0 ${theme.spacing.md};
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   @media (max-width: ${theme.breakpoints.sm}) {
     font-size: ${theme.fontSizes.xl};
     margin-bottom: ${theme.spacing.sm};
@@ -202,7 +202,7 @@ export const StepTitle = styled.h2`
 export const StepSubtitle = styled.p`
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   text-align: center;
   margin: 0 0 ${theme.spacing.lg};
   max-width: 400px; line-height: 1.5;
@@ -246,12 +246,12 @@ export const CardGrid = styled.div<{ $columns?: number; $compact?: boolean }>`
 export const ImageCard = styled.button<{ $isSelected: boolean; $delay?: number }>`
   position: relative;
   display: flex; flex-direction: column;
-  border: 2.5px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'rgba(0,0,0,0.04)'};
+  border: 2.5px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'var(--border-color)'};
   border-radius: 12px;
   overflow: hidden; cursor: pointer;
   transition: all 0.3s ease;
-  background: white;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  background: var(--bg-card);
+  box-shadow: var(--shadow-card);
   -webkit-tap-highlight-color: transparent;
   animation: ${cardReveal} 0.4s cubic-bezier(0.34,1.56,0.64,1) ${p => (p.$delay || 0) * 0.06}s both;
   ${p => p.$isSelected && css`
@@ -298,7 +298,7 @@ export const CardImgLabel = styled.span`
   font-size: 11px;
   font-weight: 600;
   text-align: center;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   line-height: 1.2;
   @media (max-width: ${theme.breakpoints.sm}) { font-size: 10px; padding: 4px 2px; }
   @media (min-width: ${theme.breakpoints.lg}) { font-size: 14px; padding: 10px 6px; }
@@ -311,14 +311,14 @@ export const CardImgLabel = styled.span`
 export const TextCard = styled.button<{ $isSelected: boolean; $bg?: string; $delay?: number }>`
   display: flex; align-items: center; justify-content: center;
   padding: 14px 12px;
-  border: 2px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'rgba(0,0,0,0.06)'};
+  border: 2px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'var(--border-color)'};
   border-radius: 12px;
-  background: ${p => p.$isSelected ? theme.colors.accent.creamyYellow : (p.$bg || 'white')};
+  background: ${p => p.$isSelected ? theme.colors.accent.creamyYellow : (p.$bg || 'var(--bg-card)')};
   cursor: pointer; transition: all 0.2s ease;
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.sm};
   font-weight: 600;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   min-height: 48px;
   -webkit-tap-highlight-color: transparent;
   animation: ${cardReveal} 0.35s ease ${p => (p.$delay || 0) * 0.06}s both;
@@ -349,9 +349,9 @@ export const ColorCardGrid = styled.div`
 export const ColorCard = styled.button<{ $isSelected: boolean; $color: string }>`
   display: flex; flex-direction: column; align-items: center; gap: 6px;
   padding: ${theme.spacing.sm};
-  border: 2px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'rgba(0,0,0,0.06)'};
+  border: 2px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'var(--border-color)'};
   border-radius: 10px;
-  background: ${p => p.$isSelected ? theme.colors.accent.creamyYellow : 'white'};
+  background: ${p => p.$isSelected ? theme.colors.accent.creamyYellow : 'var(--bg-card)'};
   cursor: pointer; transition: all 0.2s ease;
   -webkit-tap-highlight-color: transparent;
   ${p => p.$isSelected && css`box-shadow: 0 0 0 3px ${theme.colors.accent.coral}20;`}
@@ -372,7 +372,7 @@ export const ColorBubble = styled.div<{ $color: string; $isSelected: boolean }>`
 `;
 
 export const ColorLabel = styled.span`
-  font-size: ${theme.fontSizes.xs}; color: ${theme.colors.text.primary}; font-weight: 500; text-align: center;
+  font-size: ${theme.fontSizes.xs}; color: var(--text-primary); font-weight: 500; text-align: center;
   @media (max-width: ${theme.breakpoints.sm}) { font-size: 10px; }
   @media (min-width: ${theme.breakpoints.lg}) { font-size: ${theme.fontSizes.sm}; }
 `;
@@ -380,7 +380,7 @@ export const ColorLabel = styled.span`
 export const ColorSectionLabel = styled.h4`
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.sm}; font-weight: 600;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin: 0 0 ${theme.spacing.sm}; text-align: center;
   @media (max-width: ${theme.breakpoints.sm}) { font-size: ${theme.fontSizes.xs}; margin-bottom: 6px; }
   @media (min-width: ${theme.breakpoints.lg}) { font-size: ${theme.fontSizes.base}; margin-bottom: ${theme.spacing.md}; }
@@ -403,25 +403,29 @@ export const InputField = styled.div`display: flex; flex-direction: column; min-
 export const CustomInput = styled.input`
   width: 100%; max-width: 420px;
   padding: ${theme.spacing.md};
-  border: 2px solid #E5E7EB; border-radius: ${theme.borderRadius.md};
+  border: 2px solid var(--border-input); border-radius: ${theme.borderRadius.md};
   font-size: 16px; font-family: ${theme.fonts.body};
   margin-top: ${theme.spacing.md}; transition: border-color 0.2s ease; box-sizing: border-box;
   animation: ${fadeIn} 0.3s ease;
   -webkit-appearance: none;
+  background: var(--bg-input);
+  color: var(--text-primary);
   &:focus { outline: none; border-color: ${theme.colors.accent.coral}; box-shadow: 0 0 0 3px ${theme.colors.accent.coral}15; }
-  &::placeholder { color: ${theme.colors.text.light}; }
+  &::placeholder { color: var(--text-light); }
   @media (min-width: ${theme.breakpoints.lg}) { max-width: 540px; }
 `;
 
 export const TextArea = styled.textarea`
   width: 100%; max-width: 420px;
   padding: ${theme.spacing.md};
-  border: 2px solid #E5E7EB; border-radius: ${theme.borderRadius.md};
+  border: 2px solid var(--border-input); border-radius: ${theme.borderRadius.md};
   font-size: 16px; font-family: ${theme.fonts.body};
   resize: vertical; min-height: 70px; transition: border-color 0.2s ease; box-sizing: border-box;
   -webkit-appearance: none;
+  background: var(--bg-input);
+  color: var(--text-primary);
   &:focus { outline: none; border-color: ${theme.colors.accent.coral}; box-shadow: 0 0 0 3px ${theme.colors.accent.coral}15; }
-  &::placeholder { color: ${theme.colors.text.light}; }
+  &::placeholder { color: var(--text-light); }
   @media (min-width: ${theme.breakpoints.lg}) { max-width: 540px; }
 `;
 
@@ -437,12 +441,12 @@ export const PhotoUploadZone = styled.div<{ $hasPhoto: boolean }>`
   cursor: pointer; transition: all 0.2s ease;
   background: ${p => p.$hasPhoto
     ? `linear-gradient(135deg, ${theme.colors.accent.creamyYellow}40, ${theme.colors.accent.lightCoral}15)`
-    : theme.colors.background.secondary};
+    : 'var(--bg-secondary)'};
   &:hover { border-color: ${theme.colors.accent.coral}; box-shadow: ${theme.shadows.md}; }
 `;
 export const PhotoIcon = styled.div`font-size: 2.5rem; margin-bottom: ${theme.spacing.sm};`;
-export const PhotoMainText = styled.p`font-size: ${theme.fontSizes.sm}; font-weight: 600; color: ${theme.colors.text.primary}; margin: 0 0 4px;`;
-export const PhotoSubText = styled.p`font-size: ${theme.fontSizes.xs}; color: ${theme.colors.text.secondary}; margin: 0; line-height: 1.4;`;
+export const PhotoMainText = styled.p`font-size: ${theme.fontSizes.sm}; font-weight: 600; color: var(--text-primary); margin: 0 0 4px;`;
+export const PhotoSubText = styled.p`font-size: ${theme.fontSizes.xs}; color: var(--text-secondary); margin: 0; line-height: 1.4;`;
 export const HiddenFileInput = styled.input`display: none;`;
 
 /* ══════════════════════════════════════════════
@@ -468,7 +472,7 @@ export const SkipLink = styled.button`
   display: block; margin: ${theme.spacing.md} auto 0; padding: ${theme.spacing.sm};
   background: none; border: none; cursor: pointer;
   font-family: ${theme.fonts.body}; font-size: ${theme.fontSizes.xs};
-  color: ${theme.colors.text.light}; font-weight: 500; transition: color 0.2s ease;
+  color: var(--text-light); font-weight: 500; transition: color 0.2s ease;
   &:hover { color: ${theme.colors.accent.coral}; }
 `;
 
@@ -483,10 +487,10 @@ export const ChoiceCard = styled.button<{ $variant: 'primary' | 'secondary' }>`
   -webkit-tap-highlight-color: transparent;
   background: ${p => p.$variant === 'primary'
     ? `linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover})`
-    : 'white'};
+    : 'var(--bg-card)'};
   ${p => p.$variant === 'primary' && css`animation: ${ctaPulse} 2.5s ease-in-out infinite; color: white;`}
   ${p => p.$variant === 'secondary' && css`
-    color: ${theme.colors.text.primary}; box-shadow: ${theme.shadows.sm};
+    color: var(--text-primary); box-shadow: ${theme.shadows.sm};
     &:hover { border-color: ${theme.colors.accent.lightCoral}; box-shadow: ${theme.shadows.md}; }
   `}
   &:active { transform: scale(0.97); }
@@ -494,14 +498,14 @@ export const ChoiceCard = styled.button<{ $variant: 'primary' | 'secondary' }>`
 
 export const ChoiceTitle = styled.span<{ $variant: 'primary' | 'secondary' }>`
   font-family: ${theme.fonts.heading}; font-size: ${theme.fontSizes.lg}; font-weight: 700;
-  color: ${p => p.$variant === 'primary' ? 'white' : theme.colors.text.primary}; text-align: center;
+  color: ${p => p.$variant === 'primary' ? 'white' : 'var(--text-primary)'}; text-align: center;
   @media (max-width: ${theme.breakpoints.sm}) { font-size: ${theme.fontSizes.base}; }
   @media (min-width: ${theme.breakpoints.lg}) { font-size: ${theme.fontSizes.xl}; }
 `;
 
 export const ChoiceDesc = styled.span<{ $variant: 'primary' | 'secondary' }>`
   font-size: ${theme.fontSizes.xs};
-  color: ${p => p.$variant === 'primary' ? 'rgba(255,255,255,0.85)' : theme.colors.text.secondary};
+  color: ${p => p.$variant === 'primary' ? 'rgba(255,255,255,0.85)' : 'var(--text-secondary)'};
   text-align: center;
 `;
 
@@ -531,16 +535,16 @@ export const ExtrasSection = styled.div`
 
 export const SectionTitle = styled.h4`
   font-family: ${theme.fonts.body}; font-size: ${theme.fontSizes.sm}; font-weight: 600;
-  color: ${theme.colors.text.primary}; margin: 0 0 ${theme.spacing.sm};
+  color: var(--text-primary); margin: 0 0 ${theme.spacing.sm};
 `;
 
 export const CollapsiblePill = styled.button<{ $isOpen: boolean }>`
   display: inline-flex; align-items: center; gap: 6px;
   padding: 6px ${theme.spacing.md};
-  border: 1.5px solid ${p => p.$isOpen ? theme.colors.accent.coral : '#E5E7EB'};
+  border: 1.5px solid ${p => p.$isOpen ? theme.colors.accent.coral : 'var(--border-input)'};
   border-radius: ${theme.borderRadius.full};
   background: ${p => p.$isOpen ? theme.colors.accent.creamyYellow : 'transparent'};
-  color: ${p => p.$isOpen ? theme.colors.accent.coral : theme.colors.text.secondary};
+  color: ${p => p.$isOpen ? theme.colors.accent.coral : 'var(--text-secondary)'};
   font-family: ${theme.fonts.body}; font-size: ${theme.fontSizes.xs}; font-weight: 600;
   cursor: pointer; transition: all 0.2s ease;
   margin-bottom: ${theme.spacing.xs}; -webkit-tap-highlight-color: transparent;
@@ -573,10 +577,10 @@ export const PricingRow = styled.div`
 export const PricingOption = styled.div<{ $isSelected: boolean }>`
   position: relative;
   display: flex; flex-direction: column;
-  border: 2px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'rgba(0,0,0,0.06)'};
+  border: 2px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'var(--border-color)'};
   border-radius: 16px; padding: ${theme.spacing.md} ${theme.spacing.sm};
   cursor: pointer; transition: all 0.3s ease;
-  background: ${p => p.$isSelected ? 'linear-gradient(160deg, #FFF8F5, #FFF)' : 'white'};
+  background: ${p => p.$isSelected ? 'linear-gradient(160deg, #FFF8F5, var(--bg-card))' : 'var(--bg-card)'};
   overflow: hidden; -webkit-tap-highlight-color: transparent;
   ${p => p.$isSelected && css`box-shadow: 0 4px 20px ${theme.colors.accent.coral}18;`}
   &:hover { border-color: ${theme.colors.accent.coral}80; }
@@ -604,7 +608,7 @@ export const PricingLabel = styled.span`
 
 export const PricingName = styled.h4`
   font-family: ${theme.fonts.heading}; font-size: ${theme.fontSizes.sm}; font-weight: 700;
-  color: ${theme.colors.text.primary}; margin: 0 0 2px;
+  color: var(--text-primary); margin: 0 0 2px;
   @media (min-width: ${theme.breakpoints.lg}) { font-size: ${theme.fontSizes.base}; margin-bottom: 4px; }
 `;
 
@@ -618,19 +622,19 @@ export const PricingPrice = styled.p`
 `;
 
 export const PricingSubtext = styled.p`
-  font-size: 10px; color: ${theme.colors.text.light}; margin: 2px 0 0; font-weight: 500;
+  font-size: 10px; color: var(--text-light); margin: 2px 0 0; font-weight: 500;
 `;
 
 export const PricingDivider = styled.div`
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(0,0,0,0.06), transparent);
+  background: linear-gradient(90deg, transparent, var(--border-color), transparent);
   margin: ${theme.spacing.sm} 0;
 `;
 
 export const PricingFeatures = styled.ul`list-style: none; padding: 0; margin: 0;`;
 
 export const PricingFeature = styled.li`
-  font-size: 9px; color: ${theme.colors.text.secondary};
+  font-size: 9px; color: var(--text-secondary);
   padding: 1.5px 0; display: flex; align-items: center; gap: 4px; line-height: 1.3;
   &::before {
     content: ''; flex-shrink: 0; width: 4px; height: 4px;
@@ -670,7 +674,7 @@ export const ClubFreeTitle = styled.p`
 
 export const ClubSmallPrice = styled.p`
   font-size: 9px;
-  color: ${theme.colors.text.light};
+  color: var(--text-light);
   margin: 0 0 4px;
   font-weight: 500;
   @media (min-width: ${theme.breakpoints.lg}) { font-size: 10px; }
@@ -681,7 +685,7 @@ export const ClubSmallPrice = styled.p`
    ══════════════════════════════════════════════ */
 
 export const OrderInfoSection = styled.div`
-  background: ${theme.colors.background.secondary};
+  background: var(--bg-secondary);
   padding: ${theme.spacing.md}; border-radius: ${theme.borderRadius.lg};
   margin-top: ${theme.spacing.xl}; margin-bottom: ${theme.spacing.md}; width: 100%; max-width: 560px;
   @media (max-width: ${theme.breakpoints.sm}) { margin-top: ${theme.spacing.lg}; }
@@ -702,9 +706,9 @@ export const OrderCostSummary = styled.div<{ $variant: 'free' | 'paid' | 'info' 
   font-size: ${theme.fontSizes.xs}; font-weight: 600;
   margin-bottom: ${theme.spacing.md}; width: 100%; max-width: 560px; text-align: center;
   @media (min-width: ${theme.breakpoints.lg}) { max-width: 680px; font-size: ${theme.fontSizes.sm}; }
-  background: ${p => p.$variant === 'free' ? '#ecfdf5' : p.$variant === 'paid' ? theme.colors.accent.creamyYellow : theme.colors.background.secondary};
-  color: ${p => p.$variant === 'free' ? '#065f46' : theme.colors.text.primary};
-  border: 1px solid ${p => p.$variant === 'free' ? '#a7f3d0' : p.$variant === 'paid' ? `${theme.colors.accent.lightCoral}30` : '#E5E7EB'};
+  background: ${p => p.$variant === 'free' ? '#ecfdf5' : p.$variant === 'paid' ? theme.colors.accent.creamyYellow : 'var(--bg-secondary)'};
+  color: ${p => p.$variant === 'free' ? '#065f46' : 'var(--text-primary)'};
+  border: 1px solid ${p => p.$variant === 'free' ? '#a7f3d0' : p.$variant === 'paid' ? `${theme.colors.accent.lightCoral}30` : 'var(--border-input)'};
 `;
 
 export const PayButton = styled.button<{ $isReady: boolean }>`
@@ -729,7 +733,7 @@ export const TrustBadgesRow = styled.div`
 `;
 
 export const TrustBadge = styled.div`
-  font-size: 10px; color: ${theme.colors.text.light}; font-weight: 500;
+  font-size: 10px; color: var(--text-light); font-weight: 500;
 `;
 
 export const ErrorMessage = styled.div`
@@ -743,13 +747,13 @@ export const ConnectedBanner = styled.div`
   background: ${theme.colors.accent.creamyYellow};
   border: 1px solid ${theme.colors.accent.lightCoral}30;
   border-radius: ${theme.borderRadius.md}; margin-bottom: ${theme.spacing.sm};
-  font-size: ${theme.fontSizes.xs}; color: ${theme.colors.text.primary};
+  font-size: ${theme.fontSizes.xs}; color: var(--text-primary);
   font-weight: 500; overflow-wrap: anywhere;
 `;
 
 export const ClubFreeCard = styled.div<{ $isSelected: boolean }>`
-  background: ${p => p.$isSelected ? theme.colors.accent.creamyYellow : 'white'};
-  border: 2px solid ${p => p.$isSelected ? theme.colors.accent.coral : '#E5E7EB'};
+  background: ${p => p.$isSelected ? theme.colors.accent.creamyYellow : 'var(--bg-card)'};
+  border: 2px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'var(--border-input)'};
   border-radius: ${theme.borderRadius.xl}; padding: ${theme.spacing.md};
   text-align: center; cursor: pointer; transition: all 0.2s ease;
   position: relative; margin-bottom: ${theme.spacing.md};
@@ -766,10 +770,10 @@ export const ClubBadge = styled.span`
 `;
 
 export const ClubExhaustedMsg = styled.div`
-  padding: ${theme.spacing.sm}; background: ${theme.colors.background.secondary};
-  border: 1px solid #E5E7EB; border-radius: ${theme.borderRadius.md};
+  padding: ${theme.spacing.sm}; background: var(--bg-secondary);
+  border: 1px solid var(--border-input); border-radius: ${theme.borderRadius.md};
   margin-bottom: ${theme.spacing.md}; font-size: ${theme.fontSizes.xs};
-  color: ${theme.colors.text.secondary}; text-align: center; max-width: 560px; width: 100%;
+  color: var(--text-secondary); text-align: center; max-width: 560px; width: 100%;
 `;
 
 /* ══════════════════════════════════════════════
@@ -783,10 +787,10 @@ const skeletonShimmer = keyframes`
 
 export const StoryExcerptCard = styled.div`
   position: relative;
-  background: white;
+  background: var(--bg-card);
   border-radius: ${theme.borderRadius.xl};
   padding: ${theme.spacing.lg} ${theme.spacing.lg} 48px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  box-shadow: var(--shadow-card);
   width: 100%; max-width: 460px;
   overflow: hidden;
   @media (max-width: ${theme.breakpoints.sm}) {
@@ -801,7 +805,7 @@ export const StoryExcerptCard = styled.div`
 export const StoryParagraph = styled.p`
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   line-height: 1.7;
   margin: 0 0 ${theme.spacing.md};
   &:last-child { margin-bottom: 0; }
@@ -813,16 +817,16 @@ export const FadeOverlay = styled.div`
   position: absolute;
   bottom: 0; left: 0; right: 0;
   height: 80px;
-  background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1));
+  background: linear-gradient(to bottom, transparent, var(--bg-card));
   pointer-events: none;
 `;
 
 export const StoryPreviewSkeleton = styled.div`
   width: 100%; max-width: 460px;
-  background: white;
+  background: var(--bg-card);
   border-radius: ${theme.borderRadius.xl};
   padding: ${theme.spacing.lg};
-  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  box-shadow: var(--shadow-card);
 
   & > div {
     height: 14px;
@@ -866,7 +870,7 @@ export const PaywallTitle = styled.p`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.lg};
   font-weight: 700;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   text-align: center;
   margin: 0 0 ${theme.spacing.md};
   @media (max-width: ${theme.breakpoints.sm}) { font-size: ${theme.fontSizes.base}; }
@@ -876,7 +880,7 @@ export const UnlockCard = styled.div`
   display: flex; flex-direction: column; align-items: center;
   width: 100%; max-width: 460px;
   padding: ${theme.spacing.lg};
-  background: ${theme.colors.background.secondary};
+  background: var(--bg-secondary);
   border-radius: ${theme.borderRadius.xl};
   @media (max-width: ${theme.breakpoints.sm}) { padding: ${theme.spacing.md}; }
   @media (min-width: ${theme.breakpoints.lg}) { max-width: 540px; }
@@ -891,7 +895,7 @@ export const UnlockTitle = styled.p`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.sm};
   font-weight: 700;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin: 0 0 ${theme.spacing.sm};
   @media (min-width: ${theme.breakpoints.lg}) { font-size: ${theme.fontSizes.base}; }
 `;
@@ -903,7 +907,7 @@ export const UnlockFeatures = styled.ul`
 
 export const UnlockFeature = styled.li`
   font-size: ${theme.fontSizes.xs};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   display: flex; align-items: center; gap: 6px;
   &::before {
     content: ''; width: 4px; height: 4px; border-radius: 50%;
@@ -916,14 +920,14 @@ export const TimerContainer = styled.div`
   display: flex; align-items: center; gap: 6px;
   margin-top: ${theme.spacing.sm};
   font-size: ${theme.fontSizes.xs};
-  color: ${theme.colors.text.light};
+  color: var(--text-light);
 `;
 
 export const TimerDigits = styled.span`
   font-family: ${theme.fonts.heading};
   font-weight: 700;
   font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   font-variant-numeric: tabular-nums;
 `;
 
@@ -1823,7 +1827,7 @@ export const BookLockedTitle = styled.p`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.lg};
   font-weight: 700;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin: 0;
   line-height: 1.3;
 
@@ -1835,7 +1839,7 @@ export const BookLockedTitle = styled.p`
 export const BookLockedSubtitle = styled.p`
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   margin: 0;
   font-style: italic;
   opacity: 0.8;
@@ -1848,7 +1852,7 @@ export const BookLockedSubtitle = styled.p`
 export const BookLockedFeatures = styled.p`
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.xs};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   margin: 0;
   line-height: 1.5;
   max-width: 280px;
@@ -1886,7 +1890,7 @@ export const PreviewTimerBar = styled.div`
   span {
     font-family: ${theme.fonts.body};
     font-size: ${theme.fontSizes.sm};
-    color: ${theme.colors.text.secondary};
+    color: var(--text-secondary);
     font-weight: 500;
   }
 
@@ -1944,7 +1948,7 @@ export const ValueBlockTitle = styled.p`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.sm};
   font-weight: 700;
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   text-align: center;
   margin: 0 0 4px;
   letter-spacing: 0.3px;
@@ -1960,7 +1964,7 @@ export const ValueBlockItem = styled.div`
   gap: 10px;
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   font-weight: 500;
   line-height: 1.4;
 
@@ -1991,7 +1995,7 @@ export const PreviewSectionTitle = styled.p`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.lg};
   font-weight: 700;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   text-align: center;
   margin: ${theme.spacing.xl} 0 ${theme.spacing.lg};
   max-width: 420px;
@@ -2051,7 +2055,7 @@ export const PricingCard = styled.div<{ $isSelected: boolean; $featured?: boolea
     ? theme.colors.accent.coral
     : p.$featured
       ? 'rgba(255, 153, 153, 0.35)'
-      : 'rgba(0, 0, 0, 0.06)'};
+      : 'var(--border-color)'};
   border-radius: 20px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -2059,7 +2063,7 @@ export const PricingCard = styled.div<{ $isSelected: boolean; $featured?: boolea
     ? 'linear-gradient(160deg, #FFF0EC, #FFFAF8)'
     : p.$featured
       ? 'linear-gradient(160deg, #FFFBF8, #FFF5EE)'
-      : 'white'};
+      : 'var(--bg-card)'};
   -webkit-tap-highlight-color: transparent;
   animation: ${cardSlideUp} 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
   animation-delay: ${p => p.$featured ? '0s' : '0.1s'};
@@ -2146,7 +2150,7 @@ export const PricingCardName = styled.h4`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.base};
   font-weight: 700;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin: 0 0 6px;
   text-align: center;
   @media (min-width: ${theme.breakpoints.lg}) { font-size: ${theme.fontSizes.lg}; }
@@ -2183,7 +2187,7 @@ export const PricingFreeLabel = styled.div`
 
 export const PricingCardSub = styled.p`
   font-size: 11px;
-  color: ${theme.colors.text.light};
+  color: var(--text-light);
   margin: 4px 0 0;
   font-weight: 500;
   text-align: center;
@@ -2223,7 +2227,7 @@ export const PricingCardFeaturesList = styled.ul`
 
 export const PricingCardFeatureItem = styled.li<{ $highlight?: boolean }>`
   font-size: 12px;
-  color: ${p => p.$highlight ? theme.colors.accent.coral : theme.colors.text.secondary};
+  color: ${p => p.$highlight ? theme.colors.accent.coral : 'var(--text-secondary)'};
   font-weight: ${p => p.$highlight ? 600 : 400};
   padding: 0;
   display: flex;
@@ -2240,7 +2244,7 @@ export const PricingCardFeatureItem = styled.li<{ $highlight?: boolean }>`
     background: ${p => p.$highlight
       ? 'linear-gradient(135deg, rgba(255,153,153,0.15), rgba(255,180,120,0.15))'
       : 'rgba(0,0,0,0.04)'};
-    color: ${p => p.$highlight ? theme.colors.accent.coral : theme.colors.text.light};
+    color: ${p => p.$highlight ? theme.colors.accent.coral : 'var(--text-light)'};
     font-size: 9px;
     font-weight: 700;
     display: flex;
@@ -2407,7 +2411,7 @@ export const ClubAlternativeDivider = styled.div`
   align-items: center;
   gap: ${theme.spacing.md};
   margin-bottom: ${theme.spacing.md};
-  color: ${theme.colors.text.light};
+  color: var(--text-light);
   font-size: ${theme.fontSizes.xs};
   font-weight: 500;
 
@@ -2450,13 +2454,13 @@ export const ClubMiniName = styled.p`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.sm};
   font-weight: 700;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin: 0;
 `;
 
 export const ClubMiniDetail = styled.p`
   font-size: 11px;
-  color: ${theme.colors.text.light};
+  color: var(--text-light);
   margin: 2px 0 0;
 `;
 
@@ -2555,13 +2559,13 @@ export const ClubShowcaseTitle = styled.h3`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.lg};
   font-weight: 700;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin: 0 0 4px;
 `;
 
 export const ClubShowcaseSubtitle = styled.p`
   font-size: ${theme.fontSizes.xs};
-  color: ${theme.colors.text.light};
+  color: var(--text-light);
   margin: 0;
 `;
 
@@ -2579,7 +2583,7 @@ export const ClubShowcasePriceValue = styled.span`
 
 export const ClubShowcasePriceUnit = styled.span`
   font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.text.light};
+  color: var(--text-light);
   margin-left: 4px;
 `;
 
@@ -2599,7 +2603,7 @@ export const ClubShowcaseFeature = styled.div<{ $premium?: boolean }>`
   align-items: center;
   gap: 8px;
   font-size: 12px;
-  color: ${p => p.$premium ? theme.colors.accent.coral : theme.colors.text.secondary};
+  color: ${p => p.$premium ? theme.colors.accent.coral : 'var(--text-secondary)'};
   font-weight: ${p => p.$premium ? 600 : 400};
   line-height: 1.3;
 `;
@@ -2671,13 +2675,13 @@ export const SingleFallbackName = styled.p`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.xs};
   font-weight: 600;
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   margin: 0;
 `;
 
 export const SingleFallbackDetail = styled.p`
   font-size: 11px;
-  color: ${theme.colors.text.light};
+  color: var(--text-light);
   margin: 2px 0 0;
 `;
 
@@ -2685,7 +2689,7 @@ export const SingleFallbackPrice = styled.p`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.sm};
   font-weight: 700;
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   margin: 0;
 `;
 
@@ -2696,7 +2700,7 @@ export const SingleFallbackPrice = styled.p`
 export const SocialProofLine = styled.p`
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.xs};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   text-align: center;
   margin: ${theme.spacing.lg} 0 0;
   display: flex;
@@ -2783,7 +2787,7 @@ export const HeaderBadge = styled.span`
   font-family: ${theme.fonts.body};
   font-size: 10px;
   font-weight: 600;
-  color: ${theme.colors.text.light};
+  color: var(--text-light);
   background: ${theme.colors.background.secondary};
   padding: 2px 8px;
   border-radius: ${theme.borderRadius.full};
@@ -2792,7 +2796,7 @@ export const HeaderBadge = styled.span`
 export const HeaderStepLabel = styled.p`
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.xs};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   margin: 0 0 ${theme.spacing.sm};
   text-align: center;
   font-weight: 500;
@@ -2901,7 +2905,7 @@ export const StickyBackButton = styled.button`
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.sm};
   font-weight: 600;
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.2s ease;
   -webkit-tap-highlight-color: transparent;
@@ -3002,7 +3006,7 @@ export const NewCardLabel = styled.span`
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.xs};
   font-weight: 600;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   text-align: center;
   line-height: 1.25;
 
@@ -3014,7 +3018,7 @@ export const NewCardLabel = styled.span`
 export const NewCardDescription = styled.span`
   font-family: ${theme.fonts.body};
   font-size: 10px;
-  color: ${theme.colors.text.light};
+  color: var(--text-light);
   text-align: center;
   line-height: 1.3;
 
@@ -3072,7 +3076,7 @@ export const SummaryChip = styled.span<{ $delay?: number }>`
   font-family: ${theme.fonts.body};
   font-size: 10px;
   font-weight: 500;
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   animation: ${chipSlideIn} 0.3s ease ${p => (p.$delay || 0) * 0.08}s both;
 
   @media (min-width: ${theme.breakpoints.lg}) {
@@ -3113,7 +3117,7 @@ export const GenderPill = styled.button<{ $isSelected: boolean }>`
     : 'transparent'};
   color: ${p => p.$isSelected
     ? theme.colors.accent.coral
-    : theme.colors.text.secondary};
+    : 'var(--text-secondary)'};
   box-shadow: ${p => p.$isSelected
     ? '0 2px 8px rgba(0,0,0,0.08)'
     : 'none'};
@@ -3154,7 +3158,7 @@ export const RewardTitle = styled.h2`
   font-size: ${theme.fontSizes['2xl']};
   font-weight: 700;
   text-align: center;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin: 0;
 
   @media (max-width: ${theme.breakpoints.sm}) {
@@ -3181,7 +3185,7 @@ export const DetailChip = styled.button<{ $isSelected: boolean }>`
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.xs};
   font-weight: 600;
-  color: ${p => p.$isSelected ? theme.colors.accent.coral : theme.colors.text.secondary};
+  color: ${p => p.$isSelected ? theme.colors.accent.coral : 'var(--text-secondary)'};
   cursor: pointer;
   transition: all 0.2s ease;
   -webkit-tap-highlight-color: transparent;
@@ -3205,7 +3209,7 @@ export const AccordionHeader = styled.button<{ $isOpen: boolean }>`
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.sm};
   font-weight: 600;
-  color: ${p => p.$isOpen ? theme.colors.accent.coral : theme.colors.text.primary};
+  color: ${p => p.$isOpen ? theme.colors.accent.coral : 'var(--text-primary)'};
   cursor: pointer;
   transition: all 0.2s ease;
   -webkit-tap-highlight-color: transparent;
@@ -3218,7 +3222,7 @@ export const AccordionChevron = styled.span<{ $isOpen: boolean }>`
   font-size: 0.7rem;
   transition: transform 0.3s ease;
   transform: ${p => p.$isOpen ? 'rotate(180deg)' : 'rotate(0)'};
-  color: ${p => p.$isOpen ? theme.colors.accent.coral : theme.colors.text.light};
+  color: ${p => p.$isOpen ? theme.colors.accent.coral : 'var(--text-light)'};
 `;
 
 export const AccordionBody = styled.div<{ $isOpen: boolean }>`
@@ -3256,7 +3260,7 @@ export const DraftBannerText = styled.span`
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.xs};
   font-weight: 600;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
 `;
 
 export const DraftBannerButton = styled.button`
@@ -3280,7 +3284,7 @@ export const DraftBannerDismiss = styled.button`
   border: none;
   padding: 4px;
   cursor: pointer;
-  color: ${theme.colors.text.light};
+  color: var(--text-light);
   font-size: 14px;
   line-height: 1;
   &:hover { color: ${theme.colors.text.secondary}; }
@@ -3345,7 +3349,7 @@ export const GenderCardLabel = styled.span<{ $isSelected: boolean }>`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.base};
   font-weight: 700;
-  color: ${p => p.$isSelected ? theme.colors.accent.coral : theme.colors.text.primary};
+  color: ${p => p.$isSelected ? theme.colors.accent.coral : 'var(--text-primary)'};
   transition: color 0.2s ease;
 
   @media (min-width: ${theme.breakpoints.lg}) {
@@ -3423,7 +3427,7 @@ export const BookPreviewText = styled.p`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.sm};
   font-weight: 700;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   line-height: 1.4;
   margin: 0;
 
@@ -3439,7 +3443,7 @@ export const BookPreviewText = styled.p`
 export const StepMicroText = styled.p`
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.xs};
-  color: ${theme.colors.text.light};
+  color: var(--text-light);
   text-align: center;
   margin: -4px 0 ${theme.spacing.md};
   line-height: 1.4;
@@ -3458,7 +3462,7 @@ export const StepMicroText = styled.p`
 export const ProgressHintText = styled.span`
   font-family: ${theme.fonts.body};
   font-size: 10px;
-  color: ${theme.colors.text.light};
+  color: var(--text-light);
   text-align: center;
   display: block;
   margin-top: 4px;

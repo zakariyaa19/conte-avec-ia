@@ -57,7 +57,7 @@ const PageContainer = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: ${theme.colors.background.primary};
+  background-color: var(--bg-primary);
 `;
 
 const MainContent = styled.main`
@@ -99,7 +99,7 @@ const HeaderTitleGroup = styled.div`
 const LibraryTitle = styled.h1`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes['2xl']};
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin: 0;
   display: flex;
   align-items: center;
@@ -120,15 +120,15 @@ const Badge = styled.span<{ $variant: 'club' | 'basic' | 'activating' }>`
   background: ${p => {
     if (p.$variant === 'club') return `linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover})`;
     if (p.$variant === 'activating') return `linear-gradient(135deg, ${theme.colors.accent.coral}80, ${theme.colors.button.primaryHover}80)`;
-    return theme.colors.background.secondary;
+    return 'var(--bg-secondary)';
   }};
-  color: ${p => p.$variant === 'basic' ? theme.colors.text.secondary : 'white'};
+  color: ${p => p.$variant === 'basic' ? 'var(--text-secondary)' : 'white'};
 `;
 
 const LibrarySubtitle = styled.p`
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.base};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   margin: 0;
   line-height: 1.5;
 
@@ -180,12 +180,12 @@ const ClubWelcomeBanner = styled.div`
 const WelcomeTitle = styled.h3`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.xl};
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin: 0 0 ${theme.spacing.sm};
 `;
 
 const WelcomeText = styled.p`
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   font-size: ${theme.fontSizes.sm};
   margin: 0;
 `;
@@ -224,14 +224,14 @@ const ClubSectionHeader = styled.div`
 const ClubSectionTitle = styled.h3`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.lg};
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin: 0;
 `;
 
 const ManageLink = styled.button`
   background: none;
   border: none;
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   font-size: ${theme.fontSizes.xs};
   cursor: pointer;
   text-decoration: underline;
@@ -256,9 +256,9 @@ const CreditCard = styled.div<{ $available: boolean }>`
   padding: ${theme.spacing.md} ${theme.spacing.lg};
   background: ${p => p.$available
     ? `linear-gradient(135deg, ${theme.colors.accent.lightGreen}30, #a8e6cf30)`
-    : theme.colors.background.white
+    : 'var(--bg-card)'
   };
-  border: 1px solid ${p => p.$available ? '#a8e6cf' : '#E5E7EB'};
+  border: 1px solid ${p => p.$available ? '#a8e6cf' : 'var(--border-input)'};
   border-radius: ${theme.borderRadius.lg};
 `;
 
@@ -276,12 +276,12 @@ const CreditText = styled.div`
   h4 {
     font-family: ${theme.fonts.heading};
     font-size: ${theme.fontSizes.base};
-    color: ${theme.colors.text.primary};
+    color: var(--text-primary);
     margin: 0;
   }
   p {
     font-size: ${theme.fontSizes.xs};
-    color: ${theme.colors.text.secondary};
+    color: var(--text-secondary);
     margin: ${theme.spacing.xs} 0 0;
   }
 `;
@@ -294,8 +294,8 @@ const CountdownText = styled.span`
 
 const CollectionCard = styled.div`
   padding: ${theme.spacing.md} ${theme.spacing.lg};
-  background: ${theme.colors.background.white};
-  border: 1px solid #E5E7EB;
+  background: var(--bg-card);
+  border: 1px solid var(--border-input);
   border-radius: ${theme.borderRadius.lg};
   display: flex;
   flex-direction: column;
@@ -305,7 +305,7 @@ const CollectionCard = styled.div`
 const CollectionLabel = styled.span`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.base};
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   font-weight: 700;
 `;
 
@@ -328,7 +328,7 @@ const ProgressBarFill = styled.div<{ $percent: number }>`
 
 const ProgressText = styled.span`
   font-size: ${theme.fontSizes.xs};
-  color: ${theme.colors.text.light};
+  color: var(--text-light);
 `;
 
 /* ══════════════════════════════════════════════
@@ -451,7 +451,7 @@ const FilterButton = styled.button<{ $active: boolean }>`
   border: 1.5px solid ${p => p.$active ? theme.colors.accent.coral : '#E5E7EB'};
   border-radius: 20px;
   background: ${p => p.$active ? theme.colors.accent.coral : 'transparent'};
-  color: ${p => p.$active ? 'white' : theme.colors.text.secondary};
+  color: ${p => p.$active ? 'white' : 'var(--text-secondary)'};
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
@@ -466,7 +466,7 @@ const FilterButton = styled.button<{ $active: boolean }>`
 const SectionLabel = styled.h2`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.lg};
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin: 0 0 ${theme.spacing.md};
 `;
 
@@ -634,7 +634,7 @@ const PlaceholderIcon = styled.div`
 const PlaceholderName = styled.div`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.base};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   font-weight: 600;
 `;
 
@@ -650,7 +650,7 @@ const CollectionSection = styled.div`
 const CollectionTitle = styled.h2`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.xl};
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin: 0 0 ${theme.spacing.sm};
 
   @media (max-width: ${theme.breakpoints.sm}) {
@@ -661,7 +661,7 @@ const CollectionTitle = styled.h2`
 const CollectionSubtitle = styled.p`
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   margin: 0 0 ${theme.spacing.lg};
 `;
 
@@ -677,8 +677,8 @@ const EpisodeItem = styled.div<{ $available: boolean }>`
   align-items: center;
   gap: ${theme.spacing.md};
   padding: ${theme.spacing.md} ${theme.spacing.lg};
-  background: ${p => p.$available ? theme.colors.background.white : 'transparent'};
-  border: 1px solid ${p => p.$available ? '#E5E7EB' : '#E5E7EB50'};
+  background: ${p => p.$available ? 'var(--bg-card)' : 'transparent'};
+  border: 1px solid ${p => p.$available ? 'var(--border-input)' : 'var(--border-color)'};
   border-radius: ${theme.borderRadius.lg};
   cursor: ${p => p.$available ? 'pointer' : 'default'};
   transition: all 0.2s ease;
@@ -687,7 +687,7 @@ const EpisodeItem = styled.div<{ $available: boolean }>`
   ${p => p.$available && css`
     &:hover {
       border-color: ${theme.colors.accent.coral};
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      box-shadow: var(--shadow-card);
     }
   `}
 `;
@@ -706,7 +706,7 @@ const EpisodeNumber = styled.span<{ $active: boolean }>`
   background: ${p => p.$active
     ? `linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.accent.softPink})`
     : '#E5E7EB'};
-  color: ${p => p.$active ? 'white' : theme.colors.text.light};
+  color: ${p => p.$active ? 'white' : 'var(--text-light)'};
 `;
 
 const EpisodeInfo = styled.div`
@@ -716,7 +716,7 @@ const EpisodeInfo = styled.div`
   h4 {
     font-family: ${theme.fonts.heading};
     font-size: ${theme.fontSizes.sm};
-    color: ${theme.colors.text.primary};
+    color: var(--text-primary);
     margin: 0;
     white-space: nowrap;
     overflow: hidden;
@@ -724,7 +724,7 @@ const EpisodeInfo = styled.div`
   }
   p {
     font-size: ${theme.fontSizes.xs};
-    color: ${theme.colors.text.light};
+    color: var(--text-light);
     margin: 2px 0 0;
   }
 `;
@@ -766,7 +766,7 @@ const TeaserIcon = styled.div`
 const TeaserTitle = styled.span`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   font-weight: 700;
 `;
 
@@ -792,7 +792,7 @@ const CTASection = styled.div`
 const CTAText = styled.p`
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.base};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   margin: 0 0 ${theme.spacing.md};
   line-height: 1.5;
 `;
@@ -804,11 +804,11 @@ const CTAText = styled.p`
 const EmptyState = styled.div`
   text-align: center;
   padding: ${theme.spacing['3xl']} ${theme.spacing.xl};
-  color: ${theme.colors.text.secondary};
-  background: ${theme.colors.background.white};
+  color: var(--text-secondary);
+  background: var(--bg-card);
   border-radius: ${theme.borderRadius['2xl']};
-  box-shadow: ${theme.shadows.card};
-  border: 1px solid rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-color);
   max-width: 500px;
   margin: ${theme.spacing['2xl']} auto;
 `;
@@ -822,13 +822,13 @@ const EmptyIcon = styled.div`
 const EmptyTitle = styled.h3`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.xl};
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin: 0 0 ${theme.spacing.sm};
 `;
 
 const EmptyText = styled.p`
   font-size: ${theme.fontSizes.base};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   margin: 0 0 ${theme.spacing.xl};
   line-height: 1.6;
 `;
@@ -1027,7 +1027,7 @@ export const DashboardPage: React.FC = () => {
     switch (status) {
       case 'DISPONIBLE': return theme.colors.status.success;
       case 'EN_COURS': return theme.colors.status.warning;
-      default: return theme.colors.text.light;
+      default: return 'var(--text-light)';
     }
   };
 
@@ -1055,19 +1055,19 @@ export const DashboardPage: React.FC = () => {
         }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 2 }}>
-              <h1 style={{ fontFamily: theme.fonts.heading, fontSize: 20, fontWeight: 700, margin: 0, color: theme.colors.text.primary }}>
+              <h1 style={{ fontFamily: theme.fonts.heading, fontSize: 20, fontWeight: 700, margin: 0, color: 'var(--text-primary)' }}>
                 Ma Bibliotheque
               </h1>
               <span style={{
                 fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 10,
                 background: isClub ? 'linear-gradient(135deg, #667eea, #764ba2)' : '#f0f0f0',
-                color: isClub ? 'white' : theme.colors.text.light,
+                color: isClub ? 'white' : 'var(--text-light)',
               }}>
                 {isClub ? 'Club' : 'Gratuit'}
               </span>
             </div>
             {!loading && stories.length > 0 && (
-              <p style={{ fontSize: 12, color: theme.colors.text.light, margin: 0 }}>
+              <p style={{ fontSize: 12, color: 'var(--text-light)', margin: 0 }}>
                 {stories.length} {stories.length === 1 ? 'histoire' : 'histoires'}
                 {heroName ? ` de ${heroName}` : ''}
               </p>
@@ -1077,7 +1077,7 @@ export const DashboardPage: React.FC = () => {
             <button onClick={() => navigate('/dashboard/account')} style={{
               width: 36, height: 36, borderRadius: '50%', border: '1px solid #e0e0e0',
               background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 16, color: theme.colors.text.secondary,
+              fontSize: 16, color: 'var(--text-secondary)',
             }}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
@@ -1117,12 +1117,12 @@ export const DashboardPage: React.FC = () => {
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               <span style={{ fontSize: 20 }}>{clubCredit?.canSubmit ? '\u2728' : '\u23F3'}</span>
               <div>
-                <p style={{ fontSize: 13, fontWeight: 700, color: theme.colors.text.primary, margin: 0 }}>
+                <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
                   {clubCredit?.canSubmit
                     ? `${clubCredit.remaining} credit${clubCredit.remaining > 1 ? 's' : ''} disponible${clubCredit.remaining > 1 ? 's' : ''}`
                     : 'Aucun credit'}
                 </p>
-                <p style={{ fontSize: 11, color: theme.colors.text.light, margin: 0 }}>
+                <p style={{ fontSize: 11, color: 'var(--text-light)', margin: 0 }}>
                   {countdown ? `Prochain dans ${countdown.days}j ${countdown.hours}h` : 'Club des Histoires'}
                 </p>
               </div>
@@ -1136,7 +1136,7 @@ export const DashboardPage: React.FC = () => {
             ) : (
               <button onClick={() => navigate('/create-story')} style={{
                 padding: '7px 14px', borderRadius: 10, border: '1px solid #ddd',
-                background: 'white', color: theme.colors.text.secondary,
+                background: 'var(--bg-card)', color: 'var(--text-secondary)',
                 fontSize: 12, fontWeight: 600, cursor: 'pointer',
               }}>Commander</button>
             )}

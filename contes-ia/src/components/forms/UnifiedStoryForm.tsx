@@ -117,16 +117,16 @@ const Phase = styled.div<{ $isVisible: boolean }>`
 `;
 
 const PhaseCard = styled.div`
-  background: ${theme.colors.background.white};
+  background: var(--bg-card);
   border-radius: ${theme.borderRadius['2xl']};
-  box-shadow: ${theme.shadows.card};
-  border: 1px solid rgba(0,0,0,0.04);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-color);
   padding: ${theme.spacing.xl};
 
   @media (max-width: ${theme.breakpoints.sm}) {
     padding: ${theme.spacing.md};
     border-radius: ${theme.borderRadius.xl};
-    background: ${theme.colors.background.secondary};
+    background: var(--bg-secondary);
     border: none;
     box-shadow: ${theme.shadows.sm};
   }
@@ -150,7 +150,7 @@ const PhaseTitle = styled.h2`
 const PhaseSubtitle = styled.p`
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   text-align: center;
   margin: 0 0 ${theme.spacing.xl};
 
@@ -174,7 +174,7 @@ const FormSection = styled.div`
 
 const OptionTitle = styled.h4`
   margin-bottom: ${theme.spacing.lg};
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   font-size: ${theme.fontSizes.base};
   font-weight: 600;
   display: flex;
@@ -231,7 +231,7 @@ const CustomInput = styled.input`
     box-shadow: 0 0 0 3px ${theme.colors.accent.coral}15;
   }
 
-  &::placeholder { color: ${theme.colors.text.light}; }
+  &::placeholder { color: var(--text-light); }
 
   @media (max-width: 480px) { font-size: 16px; }
 `;
@@ -270,11 +270,11 @@ const ColorOption = styled.div<{ color: string; $isSelected: boolean }>`
   display: flex;
   align-items: center;
   padding: ${theme.spacing.sm};
-  border: 2px solid ${props => props.$isSelected ? theme.colors.accent.coral : '#E5E5E5'};
+  border: 2px solid ${props => props.$isSelected ? theme.colors.accent.coral : 'var(--border-input)'};
   border-radius: ${theme.borderRadius.md};
   cursor: pointer;
   transition: all ${theme.transitions.smooth};
-  background-color: ${props => props.$isSelected ? theme.colors.accent.creamyYellow : theme.colors.background.white};
+  background-color: ${props => props.$isSelected ? theme.colors.accent.creamyYellow : 'var(--bg-card)'};
 
   &:hover {
     border-color: ${theme.colors.accent.coral};
@@ -299,7 +299,7 @@ const ColorCircle = styled.div<{ color: string }>`
 
 const ColorLabel = styled.span`
   font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   @media (max-width: ${theme.breakpoints.sm}) { font-size: ${theme.fontSizes.xs}; }
 `;
 
@@ -316,7 +316,7 @@ const ProminentPhotoUpload = styled.div<{ $hasPhoto: boolean }>`
   transition: all ${theme.transitions.smooth};
   background: ${props => props.$hasPhoto
     ? `linear-gradient(135deg, ${theme.colors.accent.creamyYellow}40, ${theme.colors.accent.lightCoral}15)`
-    : `linear-gradient(135deg, ${theme.colors.background.secondary}, ${theme.colors.accent.creamyYellow}20)`
+    : `linear-gradient(135deg, var(--bg-secondary), ${theme.colors.accent.creamyYellow}20)`
   };
   cursor: pointer;
   position: relative;
@@ -337,14 +337,14 @@ const PhotoMainText = styled.p`
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.base};
   font-weight: 600;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin: 0 0 ${theme.spacing.xs};
 `;
 
 const PhotoSubText = styled.p`
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.xs};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   margin: 0;
   line-height: 1.5;
 `;
@@ -381,14 +381,14 @@ const OptionalDividerTitle = styled.p`
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.base};
   font-weight: 600;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin: 0;
 `;
 
 const OptionalDividerSub = styled.p`
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.xs};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   margin: 0;
 `;
 
@@ -402,14 +402,14 @@ const ShowMoreCard = styled.div<{ $isOpen: boolean }>`
   justify-content: center;
   gap: ${theme.spacing.xs};
   padding: ${theme.spacing.md};
-  border: 2px dashed #E5E5E5;
+  border: 2px dashed var(--border-input);
   border-radius: ${theme.borderRadius.md};
   cursor: pointer;
   transition: all ${theme.transitions.smooth};
   background: transparent;
   font-size: ${theme.fontSizes.sm};
   font-weight: 600;
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
 
   &:hover {
     border-color: ${theme.colors.accent.coral};
@@ -459,7 +459,7 @@ const CollapsiblePill = styled.button<{ $isOpen: boolean }>`
     ? `linear-gradient(135deg, ${theme.colors.accent.creamyYellow}50, ${theme.colors.accent.lightCoral}15)`
     : 'transparent'
   };
-  color: ${props => props.$isOpen ? theme.colors.accent.coral : theme.colors.text.secondary};
+  color: ${props => props.$isOpen ? theme.colors.accent.coral : 'var(--text-secondary)'};
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.sm};
   font-weight: 600;
@@ -552,7 +552,7 @@ const GenerateCTA = styled.button<{ $isReady: boolean }>`
 const CTASubtext = styled.p`
   text-align: center;
   font-size: ${theme.fontSizes.xs};
-  color: ${theme.colors.text.light};
+  color: var(--text-light);
   margin-top: ${theme.spacing.sm};
 `;
 
@@ -582,7 +582,7 @@ const PaymentDivider = styled.div`
 const PaymentDividerLabel = styled.span`
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.xs};
-  color: ${theme.colors.text.light};
+  color: var(--text-light);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -608,7 +608,7 @@ const TextArea = styled.textarea`
     box-shadow: 0 0 0 3px ${theme.colors.accent.coral}15;
   }
 
-  &::placeholder { color: ${theme.colors.text.light}; }
+  &::placeholder { color: var(--text-light); }
 
   @media (max-width: 480px) { font-size: 16px; }
 `;
@@ -616,7 +616,7 @@ const TextArea = styled.textarea`
 const Label = styled.label`
   font-family: ${theme.fonts.body};
   font-weight: 600;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin-bottom: ${theme.spacing.sm};
   font-size: ${theme.fontSizes.sm};
 
@@ -636,7 +636,7 @@ const ConnectedBanner = styled.div`
   border-radius: ${theme.borderRadius.lg};
   margin-bottom: ${theme.spacing.lg};
   font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   font-weight: 500;
   min-width: 0;
   overflow-wrap: anywhere;
@@ -656,9 +656,9 @@ const ConnectedBanner = styled.div`
 const ClubFreeCard = styled.div<{ $isSelected: boolean }>`
   background: ${props => props.$isSelected
     ? `linear-gradient(135deg, ${theme.colors.accent.creamyYellow}, ${theme.colors.accent.lightCoral}20)`
-    : theme.colors.background.white
+    : 'var(--bg-card)'
   };
-  border: 2px solid ${props => props.$isSelected ? theme.colors.accent.coral : '#E5E7EB'};
+  border: 2px solid ${props => props.$isSelected ? theme.colors.accent.coral : 'var(--border-input)'};
   border-radius: ${theme.borderRadius.xl};
   padding: ${theme.spacing.xl};
   text-align: center;
@@ -688,12 +688,12 @@ const ClubBadge = styled.span`
 
 const ClubExhaustedMsg = styled.div`
   padding: ${theme.spacing.md} ${theme.spacing.lg};
-  background: ${theme.colors.background.secondary};
-  border: 1px solid #E5E7EB;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-input);
   border-radius: ${theme.borderRadius.lg};
   margin-bottom: ${theme.spacing.lg};
   font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   text-align: center;
 `;
 
@@ -727,14 +727,14 @@ const OrderCostSummary = styled.div<{ $variant: 'free' | 'paid' | 'info' }>`
     switch (props.$variant) {
       case 'free': return `linear-gradient(135deg, ${theme.colors.accent.lightGreen}30, #a8e6cf30)`;
       case 'paid': return `${theme.colors.accent.creamyYellow}`;
-      case 'info': return `${theme.colors.background.secondary}`;
+      case 'info': return `var(--bg-secondary)`;
     }
   }};
   color: ${props => {
     switch (props.$variant) {
       case 'free': return '#2d6a4f';
-      case 'paid': return theme.colors.text.primary;
-      case 'info': return theme.colors.text.secondary;
+      case 'paid': return 'var(--text-primary)';
+      case 'info': return 'var(--text-secondary)';
     }
   }};
   border: 1px solid ${props => {
@@ -747,7 +747,7 @@ const OrderCostSummary = styled.div<{ $variant: 'free' | 'paid' | 'info' }>`
 `;
 
 const OrderInfoSection = styled.div`
-  background-color: ${theme.colors.background.secondary};
+  background-color: var(--bg-secondary);
   padding: ${theme.spacing.xl};
   border-radius: ${theme.borderRadius.lg};
   margin-bottom: ${theme.spacing.xl};
@@ -846,7 +846,7 @@ const TrustBadge = styled.div`
   align-items: center;
   gap: ${theme.spacing.xs};
   font-size: ${theme.fontSizes.xs};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   font-weight: 500;
 
   span.trust-icon {
@@ -1612,7 +1612,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
                       <p style={{ fontSize: theme.fontSizes.base, color: theme.colors.accent.coral, fontWeight: 700, margin: `0 0 ${theme.spacing.sm}` }}>
                         0,00 € — Inclus dans votre abonnement Club
                       </p>
-                      <p style={{ fontSize: theme.fontSizes.sm, color: theme.colors.text.secondary, margin: 0 }}>
+                      <p style={{ fontSize: theme.fontSizes.sm, color: 'var(--text-secondary)', margin: 0 }}>
                         {clubCredit.remaining} conte{clubCredit.remaining > 1 ? 's' : ''} gratuit{clubCredit.remaining > 1 ? 's' : ''} disponible{clubCredit.remaining > 1 ? 's' : ''}
                       </p>
                     </ClubFreeCard>
@@ -1736,7 +1736,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
                           required={false}
                           error={errors.password}
                         />
-                        <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.text.light, marginTop: theme.spacing.xs }}>
+                        <p style={{ fontSize: theme.fontSizes.xs, color: 'var(--text-light)', marginTop: theme.spacing.xs }}>
                           Créez un compte pour retrouver vos contes dans votre bibliothèque personnelle
                         </p>
                       </FullWidthField>
@@ -1794,7 +1794,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
                 </PayButton>
 
                 {!(formData.purchaseType === 'club' && isClub && clubCredit?.canSubmit) && (
-                  <p style={{ marginTop: theme.spacing.md, fontSize: theme.fontSizes.xs, color: theme.colors.text.light }}>
+                  <p style={{ marginTop: theme.spacing.md, fontSize: theme.fontSizes.xs, color: 'var(--text-light)' }}>
                     Paiement sécurisé par Stripe
                   </p>
                 )}

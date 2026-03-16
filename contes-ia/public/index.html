@@ -80,6 +80,14 @@
     <title>Créez un conte personnalisé avec l'IA | Contes d'IA</title>
   </head>
   <body>
+    <script>
+      (function(){
+        var t = localStorage.getItem('theme-preference');
+        if (!t) t = 'dark';
+        if (window.location.pathname.indexOf('/admin') === 0) t = 'light';
+        document.documentElement.setAttribute('data-theme', t);
+      })();
+    </script>
     <noscript>Vous devez activer JavaScript pour utiliser cette application.</noscript>
     <div id="root"></div>
   </body>

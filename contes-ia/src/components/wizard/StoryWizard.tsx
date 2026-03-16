@@ -515,7 +515,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 )}
                 <p style={{
                   fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.lg, fontWeight: 800,
-                  color: theme.colors.text.primary, margin: `0 0 ${theme.spacing.xs}`, lineHeight: 1.3,
+                  color: 'var(--text-primary)', margin: `0 0 ${theme.spacing.xs}`, lineHeight: 1.3,
                 }}>
                   Creez le livre de votre enfant
                 </p>
@@ -531,7 +531,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                   ].map((text) => (
                     <span key={text} style={{
                       fontFamily: theme.fonts.body, fontSize: theme.fontSizes.xs,
-                      color: theme.colors.text.secondary, display: 'flex', alignItems: 'center', gap: '6px',
+                      color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '6px',
                     }}>
                       <span style={{ color: theme.colors.accent.coral, fontWeight: 700, flexShrink: 0 }}>&#x2713;</span>
                       {text}
@@ -586,10 +586,10 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 width: '100%', maxWidth: 480, marginTop: theme.spacing.md,
                 padding: '16px 20px',
                 borderRadius: theme.borderRadius.xl,
-                border: `2px solid ${formData.generalTheme === 'custom' ? theme.colors.accent.coral : 'rgba(0,0,0,0.06)'}`,
+                border: `2px solid ${formData.generalTheme === 'custom' ? theme.colors.accent.coral : 'var(--border-color)'}`,
                 background: formData.generalTheme === 'custom'
                   ? `linear-gradient(135deg, ${theme.colors.accent.coral}08, ${theme.colors.accent.softPink}10)`
-                  : 'white',
+                  : 'var(--bg-card)',
                 cursor: 'pointer',
                 transition: 'all 0.2s ease',
                 textAlign: 'center',
@@ -597,12 +597,12 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
             >
               <div style={{
                 fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.base, fontWeight: 700,
-                color: theme.colors.text.primary, marginBottom: '4px',
+                color: 'var(--text-primary)', marginBottom: '4px',
               }}>
                 Inventez votre propre univers
               </div>
               <div style={{
-                fontSize: theme.fontSizes.xs, color: theme.colors.text.light, lineHeight: 1.5,
+                fontSize: theme.fontSizes.xs, color: 'var(--text-light)', lineHeight: 1.5,
               }}>
                 Harry Potter, Star Wars, Pat'Patrouille, Monde des dinosaures, Pirates...
               </div>
@@ -717,9 +717,9 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                     {o.value === 'girl' ? (
                       <svg viewBox="0 0 80 80" fill="none" width="52" height="52">
                         <circle cx="40" cy="32" r="18" fill="#FFE0EC" stroke={theme.colors.accent.coral} strokeWidth="2.5" />
-                        <circle cx="34" cy="29" r="2.5" fill={theme.colors.text.primary} />
-                        <circle cx="46" cy="29" r="2.5" fill={theme.colors.text.primary} />
-                        <path d="M35 36 Q40 41 45 36" fill="none" stroke={theme.colors.text.primary} strokeWidth="2" strokeLinecap="round" />
+                        <circle cx="34" cy="29" r="2.5" fill="var(--text-primary)" />
+                        <circle cx="46" cy="29" r="2.5" fill="var(--text-primary)" />
+                        <path d="M35 36 Q40 41 45 36" fill="none" stroke="var(--text-primary)" strokeWidth="2" strokeLinecap="round" />
                         <path d="M24 22 Q28 10 40 12 Q52 10 56 22" fill="none" stroke="#D4A574" strokeWidth="3" strokeLinecap="round" />
                         <path d="M22 24 Q20 34 24 38" fill="none" stroke="#D4A574" strokeWidth="2.5" strokeLinecap="round" />
                         <path d="M58 24 Q60 34 56 38" fill="none" stroke="#D4A574" strokeWidth="2.5" strokeLinecap="round" />
@@ -730,9 +730,9 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                     ) : (
                       <svg viewBox="0 0 80 80" fill="none" width="52" height="52">
                         <circle cx="40" cy="34" r="18" fill="#E0F0FF" stroke="#7CB9D0" strokeWidth="2.5" />
-                        <circle cx="34" cy="31" r="2.5" fill={theme.colors.text.primary} />
-                        <circle cx="46" cy="31" r="2.5" fill={theme.colors.text.primary} />
-                        <path d="M35 38 Q40 43 45 38" fill="none" stroke={theme.colors.text.primary} strokeWidth="2" strokeLinecap="round" />
+                        <circle cx="34" cy="31" r="2.5" fill="var(--text-primary)" />
+                        <circle cx="46" cy="31" r="2.5" fill="var(--text-primary)" />
+                        <path d="M35 38 Q40 43 45 38" fill="none" stroke="var(--text-primary)" strokeWidth="2" strokeLinecap="round" />
                         <path d="M24 26 Q30 14 40 16 Q50 14 56 26" fill="none" stroke="#8B6914" strokeWidth="3" strokeLinecap="round" />
                         <path d="M26 26 L24 20" stroke="#8B6914" strokeWidth="2.5" strokeLinecap="round" />
                         <path d="M54 26 L56 20" stroke="#8B6914" strokeWidth="2.5" strokeLinecap="round" />
@@ -750,10 +750,10 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
             {isSimplifiedMode && (
               <div style={{ width: '100%', maxWidth: 400, marginTop: theme.spacing.lg }}>
                 <p style={{
-                  fontSize: theme.fontSizes.sm, fontWeight: 600, color: theme.colors.text.secondary,
+                  fontSize: theme.fontSizes.sm, fontWeight: 600, color: 'var(--text-secondary)',
                   textAlign: 'center', marginBottom: theme.spacing.sm,
                 }}>
-                  Ajoutez sa photo <span style={{ fontWeight: 400, color: theme.colors.text.light }}>(optionnel)</span>
+                  Ajoutez sa photo <span style={{ fontWeight: 400, color: 'var(--text-light)' }}>(optionnel)</span>
                 </p>
                 <PhotoUploadZone
                   $hasPhoto={!!formData.photo}
@@ -1260,7 +1260,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                     Utiliser mon eBook gratuit
                   </h3>
                   <p style={{ fontSize: theme.fontSizes.sm, color: theme.colors.accent.coral, fontWeight: 700, margin: '0 0 4px' }}>0,00 EUR</p>
-                  <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.text.secondary, margin: 0 }}>
+                  <p style={{ fontSize: theme.fontSizes.xs, color: 'var(--text-secondary)', margin: 0 }}>
                     Il vous reste {clubCredit.remaining} eBook(s) gratuit(s)
                   </p>
                 </ClubFreeCard>
@@ -1370,7 +1370,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                         placeholder="votre@email.com" required error={errors.userEmail}
                         disabled={isAuthenticated}
                         onBlur={isAuthenticated ? undefined : () => { validateField('userEmail', formData.userEmail || '', 'email'); }} />
-                      <p style={{ fontSize: theme.fontSizes.xs, color: theme.colors.text.light, marginTop: '4px' }}>
+                      <p style={{ fontSize: theme.fontSizes.xs, color: 'var(--text-light)', marginTop: '4px' }}>
                         Vous recevrez votre livre et un lien de connexion par email
                       </p>
                     </FullWidthField>
@@ -1384,7 +1384,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                     {!isAuthenticated && !isInAppBrowser() && (
                       <FullWidthField>
                         <div style={{ borderTop: '1px solid #f0f0f0', paddingTop: '14px', marginTop: '6px', textAlign: 'center' }}>
-                          <p style={{ fontSize: '11px', color: theme.colors.text.light, margin: '0 0 8px' }}>ou connectez-vous pour retrouver vos livres</p>
+                          <p style={{ fontSize: '11px', color: 'var(--text-light)', margin: '0 0 8px' }}>ou connectez-vous pour retrouver vos livres</p>
                           <div style={{ display: 'flex', justifyContent: 'center' }}>
                             <GoogleLogin
                               onSuccess={(credentialResponse: CredentialResponse) => {
@@ -1439,10 +1439,10 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 </TrustBadgesRow>
 
                 <div style={{ marginTop: '12px', padding: '12px 16px', background: '#FAFAFA', borderRadius: '12px', maxWidth: 440, width: '100%' }}>
-                  <p style={{ fontSize: '12px', color: theme.colors.text.secondary, textAlign: 'center', lineHeight: 1.5, margin: 0, fontStyle: 'italic' }}>
+                  <p style={{ fontSize: '12px', color: 'var(--text-secondary)', textAlign: 'center', lineHeight: 1.5, margin: 0, fontStyle: 'italic' }}>
                     "Ma fille a adoré voir son prénom dans l'histoire ! Elle me demande de lui relire tous les soirs."
                   </p>
-                  <p style={{ fontSize: '11px', color: theme.colors.text.light, textAlign: 'center', marginTop: '4px', marginBottom: 0 }}>
+                  <p style={{ fontSize: '11px', color: 'var(--text-light)', textAlign: 'center', marginTop: '4px', marginBottom: 0 }}>
                     — Sarah, maman de Léa (4 ans)
                   </p>
                 </div>

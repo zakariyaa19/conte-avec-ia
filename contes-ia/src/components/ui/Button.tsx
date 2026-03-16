@@ -71,7 +71,7 @@ const StyledButton = styled.button<{ $variant: string; $size: string; $fullWidth
       case 'secondary':
         return css`
           background: linear-gradient(135deg, ${theme.colors.accent.pastelBlue} 0%, #9DD0E4 100%);
-          color: ${theme.colors.text.primary};
+          color: var(--text-primary);
           box-shadow: ${theme.shadows.sm};
 
           &:hover:not(:disabled) {
@@ -105,10 +105,10 @@ const StyledButton = styled.button<{ $variant: string; $size: string; $fullWidth
       case 'ghost':
         return css`
           background-color: transparent;
-          color: ${theme.colors.text.secondary};
+          color: var(--text-secondary);
 
           &:hover:not(:disabled) {
-            background-color: rgba(255, 153, 153, 0.08);
+            background-color: var(--hover-bg);
             color: ${theme.colors.accent.coral};
           }
         `;

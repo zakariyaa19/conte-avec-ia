@@ -34,7 +34,7 @@ export const HeroSection = styled.section<{ $accentColor?: string }>`
   overflow: hidden;
   background: linear-gradient(
     135deg,
-    ${theme.colors.background.primary} 0%,
+    var(--bg-primary) 0%,
     ${theme.colors.accent.paleYellow} 50%,
     ${theme.colors.accent.creamyYellow} 100%
   );
@@ -78,7 +78,7 @@ export const HeroBadge = styled.span`
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(255, 255, 255, 0.8);
+  background: var(--header-glass);
   backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 153, 153, 0.25);
   padding: 6px 18px;
@@ -93,7 +93,7 @@ export const HeroTitle = styled.h1`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes['5xl']};
   font-weight: 700;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin-bottom: ${theme.spacing.lg};
   line-height: 1.1;
 
@@ -119,7 +119,7 @@ export const HeroDivider = styled.div`
 
 export const HeroSubtitle = styled.p`
   font-size: ${theme.fontSizes.lg};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   max-width: 600px;
   margin: 0 auto;
   line-height: 1.7;
@@ -133,7 +133,7 @@ export const HeroSubtitle = styled.p`
 
 export const ContentSection = styled.section<{ $alt?: boolean }>`
   padding: ${theme.spacing['3xl']} ${theme.spacing.lg};
-  background: ${p => p.$alt ? theme.colors.background.primary : theme.colors.background.white};
+  background: ${p => p.$alt ? 'var(--bg-primary)' : 'var(--bg-card)'};
   position: relative;
   overflow: hidden;
 
@@ -184,7 +184,7 @@ export const SectionTitle = styled.h2`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes['3xl']};
   font-weight: 700;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   text-align: center;
   margin-bottom: ${theme.spacing.sm};
 
@@ -199,7 +199,7 @@ export const SectionTitle = styled.h2`
 
 export const SectionSubtitle = styled.p`
   font-size: ${theme.fontSizes.base};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   text-align: center;
   max-width: 700px;
   margin: 0 auto ${theme.spacing['2xl']};
@@ -237,11 +237,11 @@ export const FeatureCard = styled.div<{
   $delay?: string;
   $accentColor?: string;
 }>`
-  background: ${theme.colors.background.white};
+  background: var(--bg-card);
   border-radius: ${theme.borderRadius['2xl']};
   padding: ${theme.spacing['2xl']};
-  box-shadow: ${theme.shadows.card};
-  border: 1px solid rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-color);
   transition: all ${theme.transitions.smooth};
   opacity: ${p => p.$visible !== undefined ? (p.$visible ? 1 : 0) : 1};
   transform: translateY(${p => p.$visible !== undefined ? (p.$visible ? '0' : '30px') : '0'});
@@ -252,7 +252,7 @@ export const FeatureCard = styled.div<{
 
   &:hover {
     transform: translateY(-6px);
-    box-shadow: ${theme.shadows.cardHover};
+    box-shadow: var(--shadow-card-hover);
     border-color: ${p => p.$accentColor || theme.colors.accent.lightCoral};
   }
 
@@ -270,7 +270,7 @@ export const CardTitle = styled.h3`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.xl};
   font-weight: 700;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin-bottom: ${theme.spacing.sm};
 
   @media (max-width: ${theme.breakpoints.sm}) {
@@ -280,7 +280,7 @@ export const CardTitle = styled.h3`
 
 export const CardDescription = styled.p`
   font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   line-height: 1.7;
   margin-bottom: ${theme.spacing.md};
 `;

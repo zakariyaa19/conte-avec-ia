@@ -26,7 +26,7 @@ const SectionHeader = styled.div`
 `;
 
 const SectionTitle = styled.h4`
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin-bottom: ${theme.spacing.xs};
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.base};
@@ -40,14 +40,14 @@ const SectionTitle = styled.h4`
 `;
 
 const SectionDescription = styled.p`
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   font-size: ${theme.fontSizes.xs};
   margin: 0;
 `;
 
 const CharacterCard = styled.div`
-  background: ${theme.colors.background.white};
-  border: 1px solid rgba(0,0,0,0.06);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: ${theme.borderRadius.xl};
   padding: ${theme.spacing.xl};
   margin-bottom: ${theme.spacing.lg};
@@ -81,7 +81,7 @@ const CharacterNumberBadge = styled.div`
   align-items: center;
   gap: ${theme.spacing.sm};
   font-weight: 700;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   font-size: ${theme.fontSizes.sm};
 `;
 
@@ -132,15 +132,15 @@ const TypeButton = styled.button<{ $isSelected: boolean }>`
   align-items: center;
   gap: ${theme.spacing.sm};
   padding: ${theme.spacing.md} ${theme.spacing.lg};
-  border: 2px solid ${props => props.$isSelected ? theme.colors.accent.coral : '#E5E7EB'};
+  border: 2px solid ${props => props.$isSelected ? theme.colors.accent.coral : 'var(--border-input)'};
   border-radius: ${theme.borderRadius.lg};
-  background: ${props => props.$isSelected ? theme.colors.accent.creamyYellow : theme.colors.background.white};
+  background: ${props => props.$isSelected ? theme.colors.accent.creamyYellow : 'var(--bg-card)'};
   cursor: pointer;
   transition: all 0.2s ease;
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.base};
   font-weight: 600;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   min-height: 48px;
 
   &:hover {
@@ -195,7 +195,7 @@ const FullWidthField = styled.div`
 const TextArea = styled.textarea`
   width: 100%;
   padding: ${theme.spacing.md};
-  border: 2px solid #E5E7EB;
+  border: 2px solid var(--border-input);
   border-radius: ${theme.borderRadius.md};
   font-size: ${theme.fontSizes.base};
   font-family: ${theme.fonts.body};
@@ -211,7 +211,7 @@ const TextArea = styled.textarea`
   }
 
   &::placeholder {
-    color: ${theme.colors.text.light};
+    color: var(--text-light);
   }
 
   @media (max-width: 480px) { font-size: 16px; }
@@ -220,7 +220,7 @@ const TextArea = styled.textarea`
 const Label = styled.label`
   display: block;
   font-weight: 600;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin-bottom: ${theme.spacing.sm};
   font-size: ${theme.fontSizes.sm};
 `;
@@ -232,7 +232,7 @@ const AddButton = styled(Button)`
 
 const LimitMessage = styled.p`
   text-align: center;
-  color: ${theme.colors.text.light};
+  color: var(--text-light);
   font-size: ${theme.fontSizes.xs};
   font-style: italic;
   margin-top: ${theme.spacing.md};
@@ -241,7 +241,7 @@ const LimitMessage = styled.p`
 const EmptyState = styled.div`
   text-align: center;
   padding: ${theme.spacing.lg};
-  color: ${theme.colors.text.light};
+  color: var(--text-light);
   font-size: ${theme.fontSizes.sm};
 `;
 

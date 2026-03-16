@@ -87,7 +87,7 @@
 }
 
 .occasion-header h3 {
-  color: #2d3748;
+  color: var(--text-primary);
   font-size: 1.5rem;
   font-weight: 600;
   margin: 0;
@@ -95,18 +95,18 @@
 
 .occasion-content {
   padding: 2rem;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--bg-card);
 }
 
 .occasion-description {
-  color: #4a5568;
+  color: var(--text-secondary);
   line-height: 1.6;
   margin-bottom: 1.5rem;
 }
 
 .occasion-ages h4,
 .occasion-personalizations h4 {
-  color: #2d3748;
+  color: var(--text-primary);
   font-size: 0.9rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
@@ -135,7 +135,7 @@
 }
 
 .occasion-personalizations li {
-  color: #4a5568;
+  color: var(--text-secondary);
   padding: 0.3rem 0;
   position: relative;
   padding-left: 1.5rem;
@@ -172,7 +172,7 @@
 }
 
 .format-card {
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--bg-card);
   border-radius: 20px;
   padding: 2.5rem;
   text-align: center;
@@ -194,7 +194,7 @@
 }
 
 .format-header h3 {
-  color: #2d3748;
+  color: var(--text-primary);
   font-size: 1.5rem;
   font-weight: 600;
   margin-bottom: 1rem;
@@ -211,14 +211,14 @@
 }
 
 .format-description {
-  color: #4a5568;
+  color: var(--text-secondary);
   line-height: 1.6;
   margin-bottom: 1.5rem;
 }
 
 .format-advantages h4,
 .format-best-for h4 {
-  color: #2d3748;
+  color: var(--text-primary);
   font-size: 1rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
@@ -233,7 +233,7 @@
 }
 
 .format-advantages li {
-  color: #4a5568;
+  color: var(--text-secondary);
   padding: 0.3rem 0;
   position: relative;
   padding-left: 1.5rem;
@@ -284,7 +284,7 @@
 }
 
 .personalization-ideas {
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--bg-card);
   border-radius: 20px;
   padding: 3rem;
   margin-bottom: 4rem;
@@ -292,14 +292,14 @@
 }
 
 .personalization-ideas h2 {
-  color: #2d3748;
+  color: var(--text-primary);
   font-size: 2.5rem;
   text-align: center;
   margin-bottom: 1rem;
 }
 
 .personalization-ideas > p {
-  color: #4a5568;
+  color: var(--text-secondary);
   text-align: center;
   font-size: 1.1rem;
   margin-bottom: 2.5rem;
@@ -315,7 +315,7 @@
 }
 
 .idea-category {
-  background: linear-gradient(135deg, #f7fafc, #edf2f7);
+  background: var(--bg-secondary);
   border-radius: 15px;
   padding: 2rem;
   text-align: center;
@@ -331,7 +331,7 @@
 }
 
 .category-header h3 {
-  color: #2d3748;
+  color: var(--text-primary);
   font-size: 1.3rem;
   font-weight: 600;
   margin: 0;
@@ -473,7 +473,7 @@
 }
 
 .gift-process {
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--bg-card);
   border-radius: 20px;
   padding: 3rem;
   margin-bottom: 4rem;
@@ -481,7 +481,7 @@
 }
 
 .gift-process h2 {
-  color: #2d3748;
+  color: var(--text-primary);
   font-size: 2.5rem;
   text-align: center;
   margin-bottom: 2.5rem;
@@ -497,7 +497,7 @@
   text-align: center;
   padding: 1.5rem;
   border-radius: 15px;
-  background: linear-gradient(135deg, #f7fafc, #edf2f7);
+  background: var(--bg-secondary);
 }
 
 .step-number {
@@ -515,14 +515,14 @@
 }
 
 .process-step h3 {
-  color: #2d3748;
+  color: var(--text-primary);
   font-size: 1.2rem;
   margin-bottom: 1rem;
   font-weight: 600;
 }
 
 .process-step p {
-  color: #4a5568;
+  color: var(--text-secondary);
   line-height: 1.6;
 }
 
@@ -578,7 +578,7 @@
 }
 
 .gift-tips {
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--bg-card);
   border-radius: 20px;
   padding: 3rem;
   margin-bottom: 4rem;
@@ -586,7 +586,7 @@
 }
 
 .gift-tips h2 {
-  color: #2d3748;
+  color: var(--text-primary);
   font-size: 2.5rem;
   text-align: center;
   margin-bottom: 2.5rem;
@@ -599,21 +599,21 @@
 }
 
 .tip-card {
-  background: linear-gradient(135deg, #f7fafc, #edf2f7);
+  background: var(--bg-secondary);
   padding: 2rem;
   border-radius: 15px;
   text-align: center;
 }
 
 .tip-card h3 {
-  color: #2d3748;
+  color: var(--text-primary);
   font-size: 1.2rem;
   margin-bottom: 1rem;
   font-weight: 600;
 }
 
 .tip-card p {
-  color: #4a5568;
+  color: var(--text-secondary);
   line-height: 1.6;
 }
 

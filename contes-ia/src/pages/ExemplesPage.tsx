@@ -28,7 +28,7 @@ const PageContainer = styled.div`
 const ShowcaseSection = styled.section`
   flex: 1;
   padding: ${theme.spacing['3xl']} 0 ${theme.spacing['4xl']};
-  background: ${theme.colors.background.primary};
+  background: var(--bg-primary);
 `;
 
 const Container = styled.div`
@@ -46,7 +46,7 @@ const SectionTitle = styled.h1`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes['4xl']};
   font-weight: 700;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin-bottom: ${theme.spacing.md};
   letter-spacing: -0.01em;
   line-height: 1.2;
@@ -71,7 +71,7 @@ const Divider = styled.div`
 const SectionSubtitle = styled.p`
   text-align: center;
   font-size: ${theme.fontSizes.lg};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   max-width: 640px;
   margin: 0 auto ${theme.spacing['3xl']};
   line-height: 1.7;
@@ -100,8 +100,8 @@ const ShowcaseGrid = styled.div`
 `;
 
 const ShowcaseCard = styled.div<{ $visible: boolean; $delay: string }>`
-  background: ${theme.colors.background.white};
-  border: 1px solid rgba(0,0,0,0.06);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: ${theme.borderRadius['2xl']};
   overflow: hidden;
   box-shadow: ${theme.shadows.card};
@@ -189,7 +189,7 @@ const ShowcardTitle = styled.h3`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.lg};
   font-weight: 700;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin-bottom: 6px;
   line-height: 1.3;
 `;
@@ -203,15 +203,15 @@ const ShowcardMeta = styled.div`
 
 const ShowcardTag = styled.span`
   font-size: ${theme.fontSizes.xs};
-  color: ${theme.colors.text.secondary};
-  background: ${theme.colors.background.secondary};
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
   padding: 3px 10px;
   border-radius: ${theme.borderRadius.full};
 `;
 
 const ShowcardDescription = styled.p`
   font-size: ${theme.fontSizes.xs};
-  color: ${theme.colors.text.light};
+  color: var(--text-light);
   line-height: 1.6;
   margin: 0;
 `;

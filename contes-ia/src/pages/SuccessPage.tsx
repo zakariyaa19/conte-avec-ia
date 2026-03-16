@@ -34,7 +34,7 @@ const PageContainer = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: ${theme.colors.background.primary};
+  background-color: var(--bg-primary);
 `;
 
 const SuccessContainer = styled.main`
@@ -77,14 +77,14 @@ const SuccessContainer = styled.main`
 `;
 
 const SuccessCard = styled.div`
-  background: ${theme.colors.background.white};
+  background: var(--bg-card);
   border-radius: ${theme.borderRadius['2xl']};
   padding: ${theme.spacing['3xl']};
   text-align: center;
   max-width: 620px;
   width: 100%;
-  box-shadow: ${theme.shadows.card};
-  border: 1px solid rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-color);
   animation: ${fadeInUp} 0.6s ease-out;
   position: relative;
   z-index: 1;
@@ -138,7 +138,7 @@ const SpinningEmoji = styled(IconEmoji)`
 const Title = styled.h1`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes['3xl']};
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin-bottom: ${theme.spacing.md};
   letter-spacing: -0.01em;
   animation: ${fadeInUp} 0.5s ease-out 0.3s both;
@@ -149,7 +149,7 @@ const Title = styled.h1`
 `;
 
 const Message = styled.p`
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   font-size: ${theme.fontSizes.base};
   line-height: 1.7;
   margin-bottom: ${theme.spacing.lg};
@@ -167,7 +167,7 @@ const StepsContainer = styled.div`
   text-align: left;
   margin: ${theme.spacing.xl} 0;
   padding: ${theme.spacing.lg};
-  background: ${theme.colors.background.secondary};
+  background: var(--bg-secondary);
   border-radius: ${theme.borderRadius.xl};
   animation: ${fadeInUp} 0.5s ease-out 0.5s both;
 
@@ -205,14 +205,14 @@ const StepText = styled.div`
 
   strong {
     display: block;
-    color: ${theme.colors.text.primary};
+    color: var(--text-primary);
     font-size: ${theme.fontSizes.sm};
     font-weight: 600;
     margin-bottom: 2px;
   }
 
   span {
-    color: ${theme.colors.text.light};
+    color: var(--text-light);
     font-size: ${theme.fontSizes.xs};
     line-height: 1.5;
   }
@@ -252,12 +252,12 @@ const UpsellCard = styled.div`
 const UpsellTitle = styled.h3`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.xl};
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin: 0 0 ${theme.spacing.sm};
 `;
 
 const UpsellText = styled.p`
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   font-size: ${theme.fontSizes.sm};
   line-height: 1.6;
   margin: 0 0 ${theme.spacing.md};
@@ -272,11 +272,11 @@ const UpsellFeatures = styled.div`
 `;
 
 const UpsellFeature = styled.span`
-  background: white;
+  background: var(--bg-card);
   padding: 4px 12px;
   border-radius: ${theme.borderRadius.full};
   font-size: ${theme.fontSizes.xs};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   border: 1px solid ${theme.colors.accent.coral}20;
 `;
 

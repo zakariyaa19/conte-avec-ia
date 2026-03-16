@@ -18,7 +18,7 @@ const SelectorContainer = styled.div`
 const Label = styled.label`
   font-family: ${theme.fonts.body};
   font-weight: 600;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin-bottom: ${theme.spacing.sm};
   font-size: ${theme.fontSizes.sm};
 `;
@@ -30,11 +30,11 @@ const SelectorWrapper = styled.div`
 const Select = styled.select<{ $hasError: boolean }>`
   width: 100%;
   padding: ${theme.spacing.md};
-  border: 2px solid ${props => props.$hasError ? '#e74c3c' : '#E5E5E5'};
+  border: 2px solid ${props => props.$hasError ? '#e74c3c' : 'var(--border-input)'};
   border-radius: ${theme.borderRadius.md};
   font-family: ${theme.fonts.body};
   font-size: 16px;
-  background-color: ${theme.colors.background.white};
+  background-color: var(--bg-input);
   transition: border-color 0.2s ease;
   cursor: pointer;
   -webkit-appearance: none;

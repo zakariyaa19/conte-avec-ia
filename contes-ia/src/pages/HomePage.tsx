@@ -108,7 +108,7 @@ const SectionTitle = styled.h2`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes['4xl']};
   font-weight: 700;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin-bottom: ${theme.spacing.md};
   letter-spacing: -0.01em;
   line-height: 1.2;
@@ -125,7 +125,7 @@ const SectionTitle = styled.h2`
 const SectionSubtitle = styled.p`
   text-align: center;
   font-size: ${theme.fontSizes.lg};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   max-width: 640px;
   margin: 0 auto ${theme.spacing['3xl']};
   line-height: 1.7;
@@ -149,7 +149,7 @@ const Divider = styled.div`
 // =============================================
 
 const HeroSection = styled.section`
-  background: linear-gradient(135deg, ${theme.colors.background.primary} 0%, ${theme.colors.accent.paleYellow} 50%, ${theme.colors.accent.creamyYellow} 100%);
+  background: linear-gradient(135deg, var(--bg-primary) 0%, ${theme.colors.accent.paleYellow} 50%, ${theme.colors.accent.creamyYellow} 100%);
   background-size: 400% 400%;
   animation: ${gradientShift} 14s ease-in-out infinite;
   padding: ${theme.spacing['4xl']} 0 ${theme.spacing['2xl']};
@@ -216,7 +216,7 @@ const HeroTitle = styled.h1`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes['6xl']};
   font-weight: 700;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin-bottom: ${theme.spacing.lg};
   text-align: left;
   letter-spacing: -0.025em;
@@ -245,7 +245,7 @@ const HeroTitle = styled.h1`
 
 const HeroSubtitle = styled.p`
   font-size: ${theme.fontSizes.xl};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   margin-bottom: ${theme.spacing['2xl']};
   line-height: 1.7;
   text-align: left;
@@ -301,7 +301,7 @@ const TrustItem = styled.div`
   align-items: center;
   gap: 6px;
   font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   font-weight: 500;
 `;
 
@@ -434,7 +434,7 @@ const BookDot = styled.button<{ $active: boolean }>`
 
 const ShowcaseSection = styled.section`
   padding: ${theme.spacing['3xl']} 0 ${theme.spacing['4xl']};
-  background: ${theme.colors.background.white};
+  background: var(--bg-card);
   position: relative;
   overflow: hidden;
 
@@ -468,11 +468,11 @@ const ShowcaseGrid = styled.div`
 `;
 
 const ShowcaseCard = styled.div<{ $visible: boolean; $delay: string }>`
-  background: ${theme.colors.background.white};
-  border: 1px solid rgba(0,0,0,0.06);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: ${theme.borderRadius['2xl']};
   overflow: hidden;
-  box-shadow: ${theme.shadows.card};
+  box-shadow: var(--shadow-card);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   ${revealUp}
@@ -480,7 +480,7 @@ const ShowcaseCard = styled.div<{ $visible: boolean; $delay: string }>`
 
   &:hover {
     transform: translateY(-8px);
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12), 0 8px 20px rgba(0, 0, 0, 0.06);
+    box-shadow: var(--shadow-card-hover);
     border-color: ${theme.colors.accent.lightCoral};
   }
 `;
@@ -556,7 +556,7 @@ const ShowcardTitle = styled.h3`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.lg};
   font-weight: 700;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin-bottom: 6px;
   line-height: 1.3;
 `;
@@ -570,15 +570,15 @@ const ShowcardMeta = styled.div`
 
 const ShowcardTag = styled.span`
   font-size: ${theme.fontSizes.xs};
-  color: ${theme.colors.text.secondary};
-  background: ${theme.colors.background.secondary};
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
   padding: 3px 10px;
   border-radius: ${theme.borderRadius.full};
 `;
 
 const ShowcardDescription = styled.p`
   font-size: ${theme.fontSizes.xs};
-  color: ${theme.colors.text.light};
+  color: var(--text-light);
   line-height: 1.6;
   margin: 0;
 `;
@@ -594,7 +594,7 @@ const ShowcaseFooter = styled.div`
 
 const StepsSection = styled.section`
   padding: ${theme.spacing['4xl']} 0;
-  background: ${theme.colors.background.primary};
+  background: var(--bg-primary);
   position: relative;
   overflow: hidden;
 
@@ -759,7 +759,7 @@ const SlideTitle = styled.h3`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes['2xl']};
   font-weight: 700;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   line-height: 1.3;
   margin-bottom: 8px;
 
@@ -770,7 +770,7 @@ const SlideTitle = styled.h3`
 
 const SlideSubtitle = styled.p`
   font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   line-height: 1.6;
 
   @media (max-width: ${theme.breakpoints.sm}) {
@@ -804,7 +804,7 @@ const IndicatorBar = styled.div<{ $active: boolean; $completed: boolean; $durati
   width: 100%;
   height: 4px;
   border-radius: 4px;
-  background: ${theme.colors.background.secondary};
+  background: var(--bg-secondary);
   overflow: hidden;
   position: relative;
 
@@ -825,7 +825,7 @@ const IndicatorLabel = styled.span<{ $active: boolean }>`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.xs};
   font-weight: ${p => p.$active ? 700 : 600};
-  color: ${p => p.$active ? theme.colors.text.primary : theme.colors.text.light};
+  color: ${p => p.$active ? 'var(--text-primary)' : 'var(--text-light)'};
   transition: color 0.3s ease;
   white-space: nowrap;
 
@@ -840,7 +840,7 @@ const IndicatorLabel = styled.span<{ $active: boolean }>`
 
 const LibrarySection = styled.section`
   padding: ${theme.spacing['4xl']} 0;
-  background: ${theme.colors.background.white};
+  background: var(--bg-card);
 `;
 
 const LibraryGrid = styled.div`
@@ -856,19 +856,19 @@ const LibraryGrid = styled.div`
 `;
 
 const LibraryCard = styled.div<{ $visible: boolean; $delay: string }>`
-  background: ${theme.colors.background.white};
-  border: 1px solid rgba(0,0,0,0.06);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: ${theme.borderRadius['2xl']};
   padding: ${theme.spacing['2xl']};
   text-align: center;
-  box-shadow: ${theme.shadows.card};
+  box-shadow: var(--shadow-card);
   transition: all ${theme.transitions.smooth};
   ${revealUp}
   transition-delay: ${p => p.$delay};
 
   &:hover {
     transform: translateY(-6px);
-    box-shadow: ${theme.shadows.cardHover};
+    box-shadow: var(--shadow-card-hover);
     border-color: ${theme.colors.accent.lightCoral};
   }
 `;
@@ -888,13 +888,13 @@ const LibraryCardTitle = styled.h3`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.xl};
   font-weight: 700;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin-bottom: ${theme.spacing.sm};
 `;
 
 const LibraryCardText = styled.p`
   font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   line-height: 1.7;
 `;
 
@@ -904,7 +904,7 @@ const LibraryCardText = styled.p`
 
 const PricingSection = styled.section`
   padding: ${theme.spacing['4xl']} 0;
-  background: linear-gradient(180deg, ${theme.colors.background.primary} 0%, ${theme.colors.background.white} 100%);
+  background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-card) 100%);
 
   &#tarifs {
     scroll-margin-top: 80px;
@@ -917,7 +917,7 @@ const PricingSection = styled.section`
 
 const FeaturesSection = styled.section`
   padding: ${theme.spacing['4xl']} 0;
-  background: ${theme.colors.background.white};
+  background: var(--bg-card);
 `;
 
 const FeaturesGrid = styled.div`
@@ -937,19 +937,19 @@ const FeaturesGrid = styled.div`
 `;
 
 const FeatureCard = styled.div<{ $visible: boolean; $delay: string }>`
-  background: ${theme.colors.background.white};
-  border: 1px solid rgba(0,0,0,0.04);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: ${theme.borderRadius['2xl']};
   padding: ${theme.spacing['2xl']};
   text-align: center;
-  box-shadow: ${theme.shadows.card};
+  box-shadow: var(--shadow-card);
   transition: all ${theme.transitions.smooth};
   ${revealUp}
   transition-delay: ${p => p.$delay};
 
   &:hover {
     transform: translateY(-6px);
-    box-shadow: ${theme.shadows.cardHover};
+    box-shadow: var(--shadow-card-hover);
   }
 `;
 
@@ -995,12 +995,12 @@ const FeatureTitle = styled.h3`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.lg};
   font-weight: 700;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin-bottom: ${theme.spacing.sm};
 `;
 
 const FeatureDescription = styled.p`
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   font-size: ${theme.fontSizes.sm};
   line-height: 1.7;
 `;
@@ -1015,7 +1015,7 @@ const FeatureDescription = styled.p`
 
 const FAQSection = styled.section`
   padding: ${theme.spacing['4xl']} 0;
-  background: ${theme.colors.background.white};
+  background: var(--bg-card);
 `;
 
 // =============================================

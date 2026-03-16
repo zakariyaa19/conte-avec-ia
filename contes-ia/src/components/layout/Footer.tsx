@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { theme } from '../../styles/theme';
 const FooterContainer = styled.footer`
-  background-color: ${theme.colors.background.secondary};
+  background-color: var(--bg-secondary);
   margin-top: auto;
   position: relative;
   overflow: hidden;
@@ -50,14 +50,14 @@ const FooterSection = styled.div`
   h4 {
     font-family: ${theme.fonts.heading};
     font-size: ${theme.fontSizes.lg};
-    color: ${theme.colors.text.primary};
+    color: var(--text-primary);
     margin-bottom: ${theme.spacing.lg};
     font-weight: 600;
   }
 `;
 
 const FooterDescription = styled.p`
-  color: ${theme.colors.text.light};
+  color: var(--text-light);
   font-size: ${theme.fontSizes.sm};
   line-height: 1.7;
   margin-bottom: ${theme.spacing.md};
@@ -70,7 +70,7 @@ const FooterLinks = styled.div`
 `;
 
 const FooterLink = styled.a`
-  color: ${theme.colors.text.light};
+  color: var(--text-light);
   font-size: ${theme.fontSizes.sm};
   text-decoration: none;
   transition: all ${theme.transitions.fast};
@@ -83,7 +83,7 @@ const FooterLink = styled.a`
 `;
 
 const FooterBottom = styled.div`
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  border-top: 1px solid var(--border-color);
   padding-top: ${theme.spacing.lg};
   display: flex;
   justify-content: space-between;
@@ -98,13 +98,13 @@ const FooterBottom = styled.div`
 `;
 
 const Copyright = styled.p`
-  color: ${theme.colors.text.light};
+  color: var(--text-light);
   font-size: ${theme.fontSizes.sm};
   margin: 0;
 `;
 
 const LegalInfo = styled.p`
-  color: ${theme.colors.text.light};
+  color: var(--text-light);
   font-size: ${theme.fontSizes.xs};
   margin: 0;
   opacity: 0.7;

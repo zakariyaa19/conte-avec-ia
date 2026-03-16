@@ -29,7 +29,7 @@ const PageContainer = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: ${theme.colors.background.primary};
+  background: var(--bg-primary);
 `;
 
 const MainContent = styled.main`
@@ -53,7 +53,7 @@ const HeroSection = styled.div`
 const HeroTitle = styled.h1`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes['2xl']};
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin: 0 0 ${theme.spacing.xs};
 
   @media (max-width: ${theme.breakpoints.sm}) {
@@ -63,7 +63,7 @@ const HeroTitle = styled.h1`
 
 const HeroSubtitle = styled.p`
   font-size: ${theme.fontSizes.base};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   margin: 0 0 ${theme.spacing.xl};
 `;
 
@@ -114,9 +114,9 @@ const CoverSpine = styled.div`
 `;
 
 const StoryPreviewCard = styled.div`
-  background: white;
+  background: var(--bg-card);
   border-radius: ${theme.borderRadius.xl};
-  box-shadow: ${theme.shadows.card};
+  box-shadow: var(--shadow-card);
   overflow: hidden;
   margin-bottom: ${theme.spacing.xl};
 `;
@@ -132,13 +132,13 @@ const StoryPreviewContent = styled.div`
 const StoryPreviewTitle = styled.h2`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.lg};
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin: 0 0 ${theme.spacing.md};
 `;
 
 const StoryParagraph = styled.p`
   font-size: ${theme.fontSizes.base};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   line-height: 1.8;
   margin: 0;
 `;
@@ -208,13 +208,13 @@ const CTASection = styled.div`
 const CTATitle = styled.h3`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.xl};
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin: 0 0 ${theme.spacing.sm};
 `;
 
 const CTAText = styled.p`
   font-size: ${theme.fontSizes.base};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   margin: 0 0 ${theme.spacing.lg};
   line-height: 1.6;
 `;
@@ -224,19 +224,19 @@ const BrandBadge = styled.div`
   align-items: center;
   gap: 6px;
   padding: 6px 14px;
-  background: ${theme.colors.background.white};
+  background: var(--bg-card);
   border-radius: ${theme.borderRadius.full};
   font-size: ${theme.fontSizes.xs};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   font-weight: 600;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  box-shadow: var(--shadow-card);
   margin-bottom: ${theme.spacing.lg};
 `;
 
 const LoadingContainer = styled.div`
   text-align: center;
   padding: ${theme.spacing['3xl']};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
 `;
 
 const LoadingBar = styled.div`
@@ -297,7 +297,7 @@ export const PublicStoryPage: React.FC = () => {
         <MainContent>
           <NotFoundContainer>
             <h2>Histoire introuvable</h2>
-            <p style={{ color: theme.colors.text.secondary, margin: `${theme.spacing.md} 0 ${theme.spacing.xl}` }}>
+            <p style={{ color: 'var(--text-secondary)', margin: `${theme.spacing.md} 0 ${theme.spacing.xl}` }}>
               Ce lien de partage n'est plus disponible.
             </p>
             <Button variant="primary" size="lg" onClick={() => navigate('/create-story')}>
@@ -409,7 +409,7 @@ export const PublicStoryPage: React.FC = () => {
           <Button variant="primary" size="lg" onClick={() => navigate('/create-story')}>
             Creer mon livre gratuit maintenant
           </Button>
-          <p style={{ fontSize: '13px', color: theme.colors.text.light, marginTop: '12px' }}>
+          <p style={{ fontSize: '13px', color: 'var(--text-light)', marginTop: '12px' }}>
             Pas de carte bancaire requise
           </p>
         </CTASection>

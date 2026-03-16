@@ -11,7 +11,7 @@ import styled from 'styled-components';
 import { theme } from '../styles/theme';
 
 const PrivacyContent = styled.div`
-  background: ${theme.colors.background.white};
+  background: var(--bg-card);
   border-radius: ${theme.borderRadius.xl};
   padding: ${theme.spacing['2xl']};
   box-shadow: ${theme.shadows.md};
@@ -19,7 +19,7 @@ const PrivacyContent = styled.div`
   line-height: 1.8;
 
   h3 {
-    color: ${theme.colors.text.primary};
+    color: var(--text-primary);
     font-family: ${theme.fonts.heading};
     font-size: ${theme.fontSizes.lg};
     margin: ${theme.spacing.xl} 0 ${theme.spacing.md} 0;
@@ -27,7 +27,7 @@ const PrivacyContent = styled.div`
   }
 
   h4 {
-    color: ${theme.colors.text.primary};
+    color: var(--text-primary);
     font-size: ${theme.fontSizes.base};
     margin: ${theme.spacing.md} 0 ${theme.spacing.sm} 0;
     font-weight: 600;
@@ -35,7 +35,7 @@ const PrivacyContent = styled.div`
 
   p {
     margin-bottom: ${theme.spacing.md};
-    color: ${theme.colors.text.secondary};
+    color: var(--text-secondary);
   }
 
   ul {
@@ -44,12 +44,12 @@ const PrivacyContent = styled.div`
 
     li {
       margin-bottom: ${theme.spacing.xs};
-      color: ${theme.colors.text.secondary};
+      color: var(--text-secondary);
     }
   }
 
   strong {
-    color: ${theme.colors.text.primary};
+    color: var(--text-primary);
     font-weight: 600;
   }
 
@@ -232,7 +232,7 @@ const PolitiqueConfidentialitePage: React.FC = () => {
               <strong>Telephone :</strong> +33 7 80 77 71 10
             </p>
 
-            <p style={{ marginTop: '2rem', fontSize: '0.9rem', color: '#666' }}>
+            <p style={{ marginTop: '2rem', fontSize: '0.9rem', color: 'var(--text-light)' }}>
               <em>Derniere mise a jour : mars 2026</em>
             </p>
           </PrivacyContent>

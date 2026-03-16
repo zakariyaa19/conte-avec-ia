@@ -54,7 +54,7 @@ const PageContainer = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: ${theme.colors.background.primary};
+  background-color: var(--bg-primary);
 `;
 
 const MainContent = styled.main`
@@ -147,7 +147,7 @@ const PlaceholderIcon = styled.div`
 const PlaceholderName = styled.div`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.base};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   font-weight: 600;
   text-align: center;
   padding: 0 ${theme.spacing.sm};
@@ -180,7 +180,7 @@ const HeroInfo = styled.div`
 const StoryTitle = styled.h1`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes['2xl']};
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin: 0;
   line-height: 1.3;
 
@@ -191,7 +191,7 @@ const StoryTitle = styled.h1`
 
 const StorySubtitle = styled.p`
   font-size: ${theme.fontSizes.base};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   margin: 0;
   line-height: 1.5;
 `;
@@ -212,8 +212,8 @@ const Tag = styled.span<{ $color?: string }>`
   border-radius: ${theme.borderRadius.full};
   font-size: ${theme.fontSizes.xs};
   font-weight: 600;
-  background: ${props => props.$color ? `${props.$color}18` : theme.colors.background.secondary};
-  color: ${props => props.$color || theme.colors.text.secondary};
+  background: ${props => props.$color ? `${props.$color}18` : `var(--bg-secondary)`};
+  color: ${props => props.$color || `var(--text-secondary)`};
 `;
 
 const FavoriteRow = styled.div`
@@ -237,21 +237,21 @@ const FavoriteButton = styled.button<{ $active: boolean }>`
 
 const FavoriteLabel = styled.span`
   font-size: ${theme.fontSizes.xs};
-  color: ${theme.colors.text.light};
+  color: var(--text-light);
 `;
 
 const DateText = styled.span`
   font-size: ${theme.fontSizes.xs};
-  color: ${theme.colors.text.light};
+  color: var(--text-light);
 `;
 
 /* ─── Actions ─── */
 
 const ActionsCard = styled.div`
-  background: ${theme.colors.background.white};
+  background: var(--bg-card);
   border-radius: ${theme.borderRadius.xl};
-  box-shadow: ${theme.shadows.card};
-  border: 1px solid rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-color);
   padding: ${theme.spacing.lg};
   margin-bottom: ${theme.spacing.lg};
 `;
@@ -288,13 +288,13 @@ const ActionCard = styled.button<{ $variant: 'primary' | 'secondary' }>`
   `}
 
   ${props => props.$variant === 'secondary' && `
-    background: ${theme.colors.background.white};
-    color: ${theme.colors.text.primary};
-    border: 1.5px solid rgba(0, 0, 0, 0.08);
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border: 1.5px solid var(--border-color);
     &:hover {
       border-color: ${theme.colors.accent.coral}40;
       transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+      box-shadow: var(--shadow-card);
     }
   `}
 
@@ -342,7 +342,7 @@ const ActionDesc = styled.span<{ $variant: 'primary' | 'secondary' }>`
   font-weight: 400;
   font-size: ${theme.fontSizes.xs};
   opacity: 0.75;
-  color: ${props => props.$variant === 'primary' ? 'rgba(255,255,255,0.85)' : theme.colors.text.light};
+  color: ${props => props.$variant === 'primary' ? 'rgba(255,255,255,0.85)' : `var(--text-light)`};
 `;
 
 const ButtonSpinner = styled.span`
@@ -463,17 +463,17 @@ const GenSparkle = styled.div<{ $left: string; $top: string; $delay: number; $si
 /* ─── Details ─── */
 
 const DetailsCard = styled.div`
-  background: ${theme.colors.background.white};
+  background: var(--bg-card);
   border-radius: ${theme.borderRadius.xl};
-  box-shadow: ${theme.shadows.card};
-  border: 1px solid rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-color);
   padding: ${theme.spacing.lg};
 `;
 
 const DetailsTitle = styled.h2`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.lg};
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin: 0 0 ${theme.spacing.md};
 `;
 
@@ -491,7 +491,7 @@ const InfoItem = styled.div`
   label {
     display: block;
     font-size: 10px;
-    color: ${theme.colors.text.light};
+    color: var(--text-light);
     font-weight: 600;
     margin-bottom: 2px;
     text-transform: uppercase;
@@ -499,7 +499,7 @@ const InfoItem = styled.div`
   }
   span {
     font-size: ${theme.fontSizes.sm};
-    color: ${theme.colors.text.primary};
+    color: var(--text-primary);
   }
 `;
 
@@ -516,7 +516,7 @@ const ErrorBanner = styled.div`
 const LoadingText = styled.div`
   text-align: center;
   padding: ${theme.spacing['3xl']};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
 `;
 
 /* ─── Composant ─── */
@@ -726,7 +726,7 @@ export const StoryDetailPage: React.FC = () => {
           </GeneratingCard>
 
           <div style={{ textAlign: 'center', marginTop: theme.spacing.lg }}>
-            <p style={{ fontSize: 13, color: theme.colors.text.light }}>
+            <p style={{ fontSize: 13, color: 'var(--text-light)' }}>
               Cette page se met a jour automatiquement
             </p>
           </div>

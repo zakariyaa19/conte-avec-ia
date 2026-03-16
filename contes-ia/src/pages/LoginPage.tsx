@@ -20,7 +20,7 @@ const PageContainer = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: ${theme.colors.background.primary};
+  background-color: var(--bg-primary);
 `;
 
 const LoginContainer = styled.main`
@@ -32,13 +32,13 @@ const LoginContainer = styled.main`
 `;
 
 const LoginCard = styled.div<{ $wide?: boolean }>`
-  background: ${theme.colors.background.white};
+  background: var(--bg-card);
   border-radius: ${theme.borderRadius['2xl']};
   padding: ${theme.spacing['3xl']};
   max-width: ${({ $wide }) => $wide ? '560px' : '440px'};
   width: 100%;
-  box-shadow: ${theme.shadows.card};
-  border: 1px solid rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-color);
   animation: ${fadeInUp} 0.6s ease-out;
   transition: max-width 0.3s ease;
 
@@ -50,13 +50,13 @@ const LoginCard = styled.div<{ $wide?: boolean }>`
 const Title = styled.h1`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes['3xl']};
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   text-align: center;
   margin-bottom: ${theme.spacing.sm};
 `;
 
 const Subtitle = styled.p`
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   text-align: center;
   margin-bottom: ${theme.spacing.xl};
   font-size: ${theme.fontSizes.sm};
@@ -70,7 +70,7 @@ const Form = styled.form`
 
 const InputLabel = styled.label`
   font-weight: 600;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   font-size: ${theme.fontSizes.sm};
   margin-bottom: ${theme.spacing.xs};
 `;
@@ -82,7 +82,7 @@ const InputField = styled.div`
 
 const Input = styled.input`
   padding: ${theme.spacing.md};
-  border: 2px solid #E5E7EB;
+  border: 2px solid var(--border-input);
   border-radius: ${theme.borderRadius.md};
   font-size: ${theme.fontSizes.base};
   transition: border-color ${theme.transitions.smooth};
@@ -108,7 +108,7 @@ const LinkText = styled.p`
   text-align: center;
   margin-top: ${theme.spacing.lg};
   font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
 
   a, span {
     color: ${theme.colors.accent.coral};
@@ -123,7 +123,7 @@ const LinkText = styled.p`
 
 const PasswordHint = styled.p`
   font-size: ${theme.fontSizes.xs};
-  color: ${theme.colors.text.light};
+  color: var(--text-light);
   margin-top: -${theme.spacing.xs};
 `;
 
@@ -144,14 +144,14 @@ const OrDivider = styled.div`
   align-items: center;
   gap: ${theme.spacing.md};
   margin-bottom: ${theme.spacing.md};
-  color: ${theme.colors.text.light};
+  color: var(--text-light);
   font-size: ${theme.fontSizes.sm};
 
   &::before, &::after {
     content: '';
     flex: 1;
     height: 1px;
-    background: #E5E7EB;
+    background: var(--border-input);
   }
 `;
 
@@ -170,7 +170,7 @@ const planPulse = keyframes`
 const PlanSelectorLabel = styled.p`
   font-family: ${theme.fonts.heading};
   font-weight: 700;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   font-size: ${theme.fontSizes.base};
   margin-bottom: ${theme.spacing.sm};
   text-align: center;
@@ -190,7 +190,7 @@ const PlanCard = styled.button<{ $selected: boolean; $isPro?: boolean; $isAnnual
       ? 'linear-gradient(135deg, #FFF8F0 0%, #FFF0E0 100%)'
       : $selected
         ? '#F0F9FF'
-        : theme.colors.background.white};
+        : 'var(--bg-card)'};
   border: 2px solid ${({ $selected, $isPro }) =>
     $selected && $isPro
       ? theme.colors.accent.coral
@@ -271,7 +271,7 @@ const PlanName = styled.div<{ $isPro?: boolean }>`
   font-family: ${theme.fonts.heading};
   font-weight: 700;
   font-size: ${theme.fontSizes.base};
-  color: ${({ $isPro }) => $isPro ? theme.colors.accent.coral : theme.colors.text.primary};
+  color: ${({ $isPro }) => $isPro ? theme.colors.accent.coral : 'var(--text-primary)'};
   display: flex;
   align-items: center;
   gap: 6px;
@@ -280,7 +280,7 @@ const PlanName = styled.div<{ $isPro?: boolean }>`
 const PlanPrice = styled.div<{ $isPro?: boolean }>`
   font-family: ${theme.fonts.heading};
   font-size: ${({ $isPro }) => $isPro ? theme.fontSizes.lg : theme.fontSizes.sm};
-  color: ${({ $isPro }) => $isPro ? theme.colors.accent.coral : theme.colors.text.secondary};
+  color: ${({ $isPro }) => $isPro ? theme.colors.accent.coral : 'var(--text-secondary)'};
   font-weight: 700;
 `;
 
@@ -294,7 +294,7 @@ const PlanFeatures = styled.div<{ $columns?: boolean }>`
 
 const PlanFeature = styled.div<{ $premium?: boolean }>`
   font-size: 11px;
-  color: ${({ $premium }) => $premium ? theme.colors.accent.coral : theme.colors.text.secondary};
+  color: ${({ $premium }) => $premium ? theme.colors.accent.coral : 'var(--text-secondary)'};
   font-weight: ${({ $premium }) => $premium ? 600 : 400};
   display: flex;
   align-items: center;
@@ -352,12 +352,12 @@ const RedirectOverlay = styled.div`
 const RedirectTitle = styled.p`
   font-weight: 700;
   font-size: ${theme.fontSizes.lg};
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin-bottom: ${theme.spacing.sm};
 `;
 
 const RedirectText = styled.p`
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   font-size: ${theme.fontSizes.sm};
   margin-bottom: ${theme.spacing.lg};
 `;
@@ -366,7 +366,7 @@ const Spinner = styled.div`
   width: 40px;
   height: 40px;
   margin: 0 auto ${theme.spacing.lg};
-  border: 3px solid #E5E7EB;
+  border: 3px solid var(--border-input);
   border-top-color: ${theme.colors.accent.coral};
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
@@ -562,10 +562,10 @@ export const LoginPage: React.FC = () => {
                 /* Code OTP envoyé — saisie du code */
                 <div style={{ textAlign: 'center' }}>
                   <div style={{ fontSize: 40, marginBottom: 12 }}>&#x1F4E7;</div>
-                  <p style={{ fontWeight: 700, fontSize: theme.fontSizes.lg, color: theme.colors.text.primary, marginBottom: 4 }}>
+                  <p style={{ fontWeight: 700, fontSize: theme.fontSizes.lg, color: 'var(--text-primary)', marginBottom: 4 }}>
                     Code envoye !
                   </p>
-                  <p style={{ color: theme.colors.text.secondary, fontSize: theme.fontSizes.sm, marginBottom: 20 }}>
+                  <p style={{ color: 'var(--text-secondary)', fontSize: theme.fontSizes.sm, marginBottom: 20 }}>
                     Entrez le code a 6 chiffres envoye a <strong>{email}</strong>
                   </p>
                   <Form onSubmit={async (e) => {
@@ -601,7 +601,7 @@ export const LoginPage: React.FC = () => {
                       {isLoading ? 'Verification...' : 'Se connecter'}
                     </Button>
                   </Form>
-                  <p style={{ color: theme.colors.text.light, fontSize: theme.fontSizes.xs, marginTop: 16 }}>
+                  <p style={{ color: 'var(--text-light)', fontSize: theme.fontSizes.xs, marginTop: 16 }}>
                     Pas recu ?{' '}
                     <span style={{ color: theme.colors.accent.coral, cursor: 'pointer', fontWeight: 600 }}
                       onClick={async () => {

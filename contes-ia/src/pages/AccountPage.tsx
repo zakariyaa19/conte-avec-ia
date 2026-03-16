@@ -14,7 +14,7 @@ const PageContainer = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: ${theme.colors.background.primary};
+  background-color: var(--bg-primary);
 `;
 
 const MainContent = styled.main`
@@ -28,12 +28,12 @@ const MainContent = styled.main`
 const PageTitle = styled.h1`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes['2xl']};
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin: 0 0 ${theme.spacing.xl};
 `;
 
 const Card = styled.div`
-  background: white;
+  background: var(--bg-card);
   border-radius: ${theme.borderRadius.lg};
   border: 1px solid ${theme.colors.admin.cardBorder};
   margin-bottom: ${theme.spacing.lg};
@@ -45,7 +45,7 @@ const CardHeader = styled.div`
   border-bottom: 1px solid ${theme.colors.admin.cardBorder};
   font-weight: 600;
   font-size: ${theme.fontSizes.base};
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
 `;
 
 const CardBody = styled.div`
@@ -64,11 +64,11 @@ const InfoRow = styled.div`
 `;
 
 const InfoLabel = styled.span`
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
 `;
 
 const InfoValue = styled.span`
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   font-weight: 500;
 `;
 
@@ -79,7 +79,7 @@ const FormGroup = styled.div`
 const FormLabel = styled.label`
   display: block;
   font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   margin-bottom: ${theme.spacing.xs};
 `;
 

@@ -16,7 +16,7 @@ const PageContainer = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: ${theme.colors.background.primary};
+  background-color: var(--bg-primary);
 `;
 
 const CancelContainer = styled.main`
@@ -32,14 +32,14 @@ const CancelContainer = styled.main`
 `;
 
 const CancelCard = styled.div`
-  background: ${theme.colors.background.white};
+  background: var(--bg-card);
   border-radius: ${theme.borderRadius['2xl']};
   padding: ${theme.spacing['3xl']};
   text-align: center;
   max-width: 620px;
   width: 100%;
-  box-shadow: ${theme.shadows.card};
-  border: 1px solid rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-color);
   animation: ${fadeInUp} 0.6s ease-out;
 
   @media (max-width: ${theme.breakpoints.sm}) {
@@ -70,7 +70,7 @@ const CancelIcon = styled.div`
 const CancelTitle = styled.h1`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes['3xl']};
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin-bottom: ${theme.spacing.md};
   letter-spacing: -0.01em;
 
@@ -80,7 +80,7 @@ const CancelTitle = styled.h1`
 `;
 
 const CancelMessage = styled.p`
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   font-size: ${theme.fontSizes.base};
   line-height: 1.7;
   margin-bottom: ${theme.spacing.lg};
@@ -91,7 +91,7 @@ const CancelMessage = styled.p`
 `;
 
 const InfoBox = styled.div`
-  background: ${theme.colors.background.secondary};
+  background: var(--bg-secondary);
   padding: ${theme.spacing.lg};
   border-radius: ${theme.borderRadius.xl};
   margin-bottom: ${theme.spacing.md};
@@ -99,12 +99,12 @@ const InfoBox = styled.div`
 `;
 
 const InfoText = styled.p`
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   font-size: ${theme.fontSizes.sm};
   line-height: 1.7;
 
   strong {
-    color: ${theme.colors.text.primary};
+    color: var(--text-primary);
     font-weight: 600;
   }
 `;

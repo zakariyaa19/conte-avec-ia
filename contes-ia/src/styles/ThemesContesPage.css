@@ -62,7 +62,7 @@
 }
 
 .theme-card {
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--bg-card);
   border-radius: 20px;
   padding: 2rem;
   text-align: center;
@@ -82,14 +82,14 @@
 }
 
 .theme-card h3 {
-  color: #2d3748;
+  color: var(--text-primary);
   font-size: 1.5rem;
   margin-bottom: 1rem;
   font-weight: 600;
 }
 
 .theme-card p {
-  color: #4a5568;
+  color: var(--text-secondary);
   line-height: 1.6;
   margin-bottom: 1.5rem;
 }
@@ -149,7 +149,7 @@
 }
 
 .personalization-section {
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--bg-card);
   border-radius: 20px;
   padding: 3rem;
   margin-bottom: 4rem;
@@ -157,14 +157,14 @@
 }
 
 .personalization-section h2 {
-  color: #2d3748;
+  color: var(--text-primary);
   font-size: 2.5rem;
   text-align: center;
   margin-bottom: 1.5rem;
 }
 
 .personalization-section > p {
-  color: #4a5568;
+  color: var(--text-secondary);
   text-align: center;
   font-size: 1.1rem;
   line-height: 1.6;
@@ -184,18 +184,18 @@
   text-align: center;
   padding: 1.5rem;
   border-radius: 15px;
-  background: linear-gradient(135deg, #f7fafc, #edf2f7);
+  background: var(--bg-secondary);
 }
 
 .feature h4 {
-  color: #2d3748;
+  color: var(--text-primary);
   font-size: 1.2rem;
   margin-bottom: 1rem;
   font-weight: 600;
 }
 
 .feature p {
-  color: #4a5568;
+  color: var(--text-secondary);
   line-height: 1.6;
 }
 

@@ -15,10 +15,10 @@ export const PageHeader = styled.header`
   text-align: center;
   padding: ${theme.spacing['4xl']} ${theme.spacing['3xl']};
   margin: ${theme.spacing['2xl']} ${theme.spacing.lg} ${theme.spacing.xl};
-  background: ${theme.colors.background.white};
+  background: var(--bg-card);
   border-radius: ${theme.borderRadius.xl};
-  color: ${theme.colors.text.primary};
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-card);
   
   @media (max-width: ${theme.breakpoints.md}) {
     margin: ${theme.spacing.xl} ${theme.spacing.md};
@@ -30,9 +30,9 @@ export const PageTitle = styled.h1`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes['4xl']};
   font-weight: bold;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin-bottom: ${theme.spacing.lg};
-  
+
   @media (max-width: ${theme.breakpoints.md}) {
     font-size: ${theme.fontSizes['3xl']};
   }
@@ -40,7 +40,7 @@ export const PageTitle = styled.h1`
 
 export const PageIntro = styled.p`
   font-size: ${theme.fontSizes.xl};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   line-height: 1.6;
   max-width: 800px;
   margin: 0 auto;
@@ -55,11 +55,11 @@ export const Section = styled.section`
   margin: ${theme.spacing.xl} 0;
   
   &:nth-child(even) {
-    background-color: ${theme.colors.background.white};
+    background-color: var(--bg-card);
     border-radius: ${theme.borderRadius.xl};
     padding: ${theme.spacing['4xl']} ${theme.spacing['3xl']};
     margin: ${theme.spacing['2xl']} ${theme.spacing.lg};
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--shadow-card);
     
     @media (max-width: ${theme.breakpoints.md}) {
       margin: ${theme.spacing.xl} ${theme.spacing.md};
@@ -68,11 +68,11 @@ export const Section = styled.section`
   }
   
   &:nth-child(odd) {
-    background-color: ${theme.colors.background.white};
+    background-color: var(--bg-card);
     border-radius: ${theme.borderRadius.xl};
     padding: ${theme.spacing['4xl']} ${theme.spacing['3xl']};
     margin: ${theme.spacing['2xl']} ${theme.spacing.lg};
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--shadow-card);
     
     @media (max-width: ${theme.breakpoints.md}) {
       margin: ${theme.spacing.xl} ${theme.spacing.md};
@@ -84,17 +84,17 @@ export const Section = styled.section`
 export const SectionTitle = styled.h2`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes['3xl']};
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   text-align: center;
   margin-bottom: ${theme.spacing.xl};
-  
+
   @media (max-width: ${theme.breakpoints.md}) {
     font-size: ${theme.fontSizes['2xl']};
   }
 `;
 
 export const SectionIntro = styled.p`
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   text-align: center;
   font-size: ${theme.fontSizes.lg};
   margin-bottom: ${theme.spacing['2xl']};
@@ -122,7 +122,7 @@ export const Grid = styled.div<{ columns?: number }>`
 `;
 
 export const Card = styled.div`
-  background: ${theme.colors.background.white};
+  background: var(--bg-card);
   border-radius: ${theme.borderRadius.xl};
   padding: ${theme.spacing.xl};
   box-shadow: ${theme.shadows.md};
@@ -164,20 +164,20 @@ export const CardIcon = styled.div`
 export const CardTitle = styled.h3`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.xl};
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin-bottom: ${theme.spacing.sm};
-  
+
   @media (max-width: ${theme.breakpoints.md}) {
     font-size: ${theme.fontSizes.lg};
   }
-  
+
   @media (max-width: ${theme.breakpoints.sm}) {
     font-size: ${theme.fontSizes.base};
   }
 `;
 
 export const CardDescription = styled.p`
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   line-height: 1.6;
   margin-bottom: ${theme.spacing.lg};
   
@@ -209,12 +209,12 @@ export const Tag = styled.span`
 `;
 
 export const CTASection = styled.section`
-  background: ${theme.colors.background.white};
+  background: var(--bg-card);
   border-radius: ${theme.borderRadius.xl};
   padding: ${theme.spacing['4xl']} ${theme.spacing['3xl']};
   margin: ${theme.spacing['2xl']} ${theme.spacing.lg};
   text-align: center;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-card);
   
   @media (max-width: ${theme.breakpoints.md}) {
     margin: ${theme.spacing.xl} ${theme.spacing.md};
@@ -225,12 +225,12 @@ export const CTASection = styled.section`
 export const CTATitle = styled.h2`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes['3xl']};
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin-bottom: ${theme.spacing.lg};
 `;
 
 export const CTADescription = styled.p`
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   font-size: ${theme.fontSizes.lg};
   line-height: 1.6;
   margin-bottom: ${theme.spacing.xl};
@@ -274,7 +274,7 @@ export const CTALinks = styled.div`
   }
   
   a {
-    color: ${theme.colors.text.secondary};
+    color: var(--text-secondary);
     text-decoration: none;
     font-weight: 500;
     padding: ${theme.spacing.sm} ${theme.spacing.md};

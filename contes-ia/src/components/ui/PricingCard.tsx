@@ -17,8 +17,8 @@ interface PricingCardProps {
 
 const CardContainer = styled.div<{ $isPopular?: boolean }>`
   background: ${props => props.$isPopular
-    ? 'linear-gradient(160deg, #FFFFFF 0%, #FFF8F0 40%, #FFF0E0 100%)'
-    : theme.colors.background.white
+    ? 'linear-gradient(160deg, var(--bg-card) 0%, #FFF8F0 40%, #FFF0E0 100%)'
+    : 'var(--bg-card)'
   };
   border-radius: ${theme.borderRadius['2xl']};
   padding: ${theme.spacing['2xl']};
@@ -29,7 +29,7 @@ const CardContainer = styled.div<{ $isPopular?: boolean }>`
   transition: all ${theme.transitions.smooth};
   border: ${props => props.$isPopular
     ? `2px solid ${theme.colors.accent.coral}`
-    : '2px solid rgba(0, 0, 0, 0.04)'
+    : '2px solid var(--border-color)'
   };
   overflow: hidden;
   transform: ${props => props.$isPopular ? 'scale(1.03)' : 'scale(1)'};
@@ -89,7 +89,7 @@ const PopularBadge = styled.div`
 const CardTitle = styled.h3`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.xl};
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin-bottom: ${theme.spacing.md};
   text-align: center;
   font-weight: 700;
@@ -125,7 +125,7 @@ const Price = styled.div<{ $isPopular?: boolean }>`
 
 const OriginalPrice = styled.span`
   font-size: ${theme.fontSizes.lg};
-  color: ${theme.colors.text.light};
+  color: var(--text-light);
   text-decoration: line-through;
   margin-left: ${theme.spacing.sm};
   font-weight: 400;
@@ -133,7 +133,7 @@ const OriginalPrice = styled.span`
 
 const PriceSubtext = styled.p`
   font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.text.light};
+  color: var(--text-light);
   margin: ${theme.spacing.xs} 0 0;
 `;
 
@@ -151,7 +151,7 @@ const ValueHighlight = styled.div`
 
 const Divider = styled.div`
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(0,0,0,0.06), transparent);
+  background: linear-gradient(90deg, transparent, var(--border-color), transparent);
   margin-bottom: ${theme.spacing.xl};
 `;
 
@@ -171,7 +171,7 @@ const FeatureItem = styled.li`
   gap: ${theme.spacing.md};
   margin-bottom: 1rem;
   font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   line-height: 1.5;
 
   &::before {

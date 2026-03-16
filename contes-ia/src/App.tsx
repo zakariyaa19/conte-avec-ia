@@ -59,6 +59,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import { WebViewBanner } from './components/ui/WebViewBanner';
 import { MagicLoginPage } from './pages/MagicLoginPage';
 import { UpgradePage } from './pages/UpgradePage';
+import { ThemeContextProvider } from './contexts/ThemeContext';
 
 function App() {
   return (
@@ -67,6 +68,7 @@ function App() {
       <GlobalStyles />
       <Router>
         <AuthProvider>
+        <ThemeContextProvider>
         <WebViewBanner />
         <ScrollToTop />
         <Routes>
@@ -133,6 +135,7 @@ function App() {
           <Route path="/politique-confidentialite" element={<PolitiqueConfidentialitePage />} />
           <Route path="/conditions-generales-de-vente" element={<CGVPage />} />
         </Routes>
+        </ThemeContextProvider>
         </AuthProvider>
       </Router>
       <Analytics />

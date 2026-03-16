@@ -31,7 +31,7 @@ const Overlay = styled.div`
 `;
 
 const Modal = styled.div`
-  background: white;
+  background: var(--bg-elevated);
   border-radius: 20px 20px 0 0;
   padding: ${theme.spacing.xl} ${theme.spacing.lg} ${theme.spacing['2xl']};
   width: 100%;
@@ -58,14 +58,14 @@ const ModalHandle = styled.div`
 const ModalTitle = styled.h3`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.lg};
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   text-align: center;
   margin: 0 0 4px;
 `;
 
 const ModalSubtitle = styled.p`
   font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   text-align: center;
   margin: 0 0 ${theme.spacing.xl};
 `;
@@ -90,7 +90,7 @@ const ShareButton = styled.button<{ $bg: string }>`
   transition: all 0.2s ease;
 
   &:hover {
-    background: ${theme.colors.background.secondary};
+    background: var(--bg-secondary);
   }
   &:active { transform: scale(0.95); }
 `;
@@ -109,7 +109,7 @@ const ShareIcon = styled.div<{ $bg: string }>`
 
 const ShareLabel = styled.span`
   font-size: ${theme.fontSizes.xs};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   font-weight: 500;
 `;
 
@@ -118,7 +118,7 @@ const CopyLinkRow = styled.div`
   gap: ${theme.spacing.sm};
   align-items: center;
   padding: ${theme.spacing.sm} ${theme.spacing.md};
-  background: ${theme.colors.background.secondary};
+  background: var(--bg-secondary);
   border-radius: ${theme.borderRadius.lg};
   margin-bottom: ${theme.spacing.md};
 `;
@@ -126,7 +126,7 @@ const CopyLinkRow = styled.div`
 const LinkText = styled.span`
   flex: 1;
   font-size: ${theme.fontSizes.xs};
-  color: ${theme.colors.text.light};
+  color: var(--text-light);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -151,12 +151,12 @@ const CloseButton = styled.button`
   padding: ${theme.spacing.sm};
   border: none;
   background: none;
-  color: ${theme.colors.text.light};
+  color: var(--text-light);
   font-size: ${theme.fontSizes.sm};
   cursor: pointer;
   text-align: center;
 
-  &:hover { color: ${theme.colors.text.primary}; }
+  &:hover { color: var(--text-primary); }
 `;
 
 interface ShareModalProps {

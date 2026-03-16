@@ -61,7 +61,7 @@
 }
 
 .capability-card {
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--bg-card);
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(0,0,0,0.2);
@@ -97,34 +97,34 @@
 }
 
 .capability-description {
-  color: #4a5568;
+  color: var(--text-secondary);
   line-height: 1.6;
   margin-bottom: 1.5rem;
 }
 
 .technical-detail {
-  background: linear-gradient(135deg, #f7fafc, #edf2f7);
+  background: var(--bg-secondary);
   padding: 1rem;
   border-radius: 10px;
   margin-bottom: 1.5rem;
 }
 
 .technical-detail h4 {
-  color: #2d3748;
+  color: var(--text-primary);
   font-size: 0.9rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
 }
 
 .technical-detail p {
-  color: #4a5568;
+  color: var(--text-secondary);
   font-size: 0.9rem;
   margin: 0;
   font-style: italic;
 }
 
 .capability-benefits h4 {
-  color: #2d3748;
+  color: var(--text-primary);
   font-size: 0.9rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
@@ -137,7 +137,7 @@
 }
 
 .capability-benefits li {
-  color: #4a5568;
+  color: var(--text-secondary);
   padding: 0.3rem 0;
   position: relative;
   padding-left: 1.5rem;
@@ -280,7 +280,7 @@
 }
 
 .technical-innovations {
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--bg-card);
   border-radius: 20px;
   padding: 3rem;
   margin-bottom: 4rem;
@@ -288,14 +288,14 @@
 }
 
 .technical-innovations h2 {
-  color: #2d3748;
+  color: var(--text-primary);
   font-size: 2.5rem;
   text-align: center;
   margin-bottom: 1rem;
 }
 
 .technical-innovations > p {
-  color: #4a5568;
+  color: var(--text-secondary);
   text-align: center;
   font-size: 1.1rem;
   margin-bottom: 2.5rem;
@@ -311,21 +311,21 @@
 }
 
 .innovation-card {
-  background: linear-gradient(135deg, #f7fafc, #edf2f7);
+  background: var(--bg-secondary);
   padding: 2rem;
   border-radius: 15px;
   border-left: 4px solid #667eea;
 }
 
 .innovation-card h3 {
-  color: #2d3748;
+  color: var(--text-primary);
   font-size: 1.2rem;
   font-weight: 600;
   margin-bottom: 1rem;
 }
 
 .innovation-description {
-  color: #4a5568;
+  color: var(--text-secondary);
   line-height: 1.6;
   margin-bottom: 1rem;
 }
@@ -410,7 +410,7 @@
 }
 
 .human-ai-collaboration {
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--bg-card);
   border-radius: 20px;
   padding: 3rem;
   margin-bottom: 4rem;
@@ -418,7 +418,7 @@
 }
 
 .human-ai-collaboration h2 {
-  color: #2d3748;
+  color: var(--text-primary);
   font-size: 2.5rem;
   text-align: center;
   margin-bottom: 2.5rem;
@@ -432,14 +432,14 @@
 }
 
 .collaboration-text h3 {
-  color: #2d3748;
+  color: var(--text-primary);
   font-size: 1.5rem;
   margin-bottom: 1rem;
   font-weight: 600;
 }
 
 .collaboration-text > p {
-  color: #4a5568;
+  color: var(--text-secondary);
   line-height: 1.6;
   margin-bottom: 2rem;
 }
@@ -451,13 +451,13 @@
 }
 
 .aspect {
-  background: linear-gradient(135deg, #f7fafc, #edf2f7);
+  background: var(--bg-secondary);
   padding: 1.5rem;
   border-radius: 15px;
 }
 
 .aspect h4 {
-  color: #2d3748;
+  color: var(--text-primary);
   font-size: 1.1rem;
   margin-bottom: 1rem;
   font-weight: 600;
@@ -470,7 +470,7 @@
 }
 
 .aspect li {
-  color: #4a5568;
+  color: var(--text-secondary);
   padding: 0.3rem 0;
   position: relative;
   padding-left: 1.5rem;
@@ -505,7 +505,7 @@
 }
 
 .side-title {
-  color: #2d3748;
+  color: var(--text-primary);
   font-weight: 600;
   margin-bottom: 0.5rem;
   font-size: 0.9rem;
@@ -599,7 +599,7 @@
 }
 
 .faq-technical {
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--bg-card);
   border-radius: 20px;
   padding: 3rem;
   margin-bottom: 4rem;
@@ -607,7 +607,7 @@
 }
 
 .faq-technical h2 {
-  color: #2d3748;
+  color: var(--text-primary);
   font-size: 2.5rem;
   text-align: center;
   margin-bottom: 2.5rem;
@@ -621,20 +621,20 @@
 }
 
 .faq-item {
-  background: linear-gradient(135deg, #f7fafc, #edf2f7);
+  background: var(--bg-secondary);
   padding: 2rem;
   border-radius: 15px;
 }
 
 .faq-item h3 {
-  color: #2d3748;
+  color: var(--text-primary);
   font-size: 1.1rem;
   margin-bottom: 1rem;
   font-weight: 600;
 }
 
 .faq-item p {
-  color: #4a5568;
+  color: var(--text-secondary);
   line-height: 1.6;
   margin: 0;
 }
@@ -647,7 +647,7 @@
 }
 
 .faq-link p {
-  color: #4a5568;
+  color: var(--text-secondary);
   margin: 0;
 }
 

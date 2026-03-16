@@ -142,7 +142,7 @@ const HeroTitle = styled.h1`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes['6xl']};
   font-weight: 700;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin-bottom: ${theme.spacing.lg};
   line-height: 1.1;
   letter-spacing: -0.02em;
@@ -173,13 +173,13 @@ const HeroPrice = styled.div`
   small {
     font-size: ${theme.fontSizes.base};
     font-weight: 500;
-    color: ${theme.colors.text.secondary};
+    color: var(--text-secondary);
   }
 `;
 
 const HeroSubtitle = styled.p`
   font-size: ${theme.fontSizes.xl};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   max-width: 560px;
   margin: 0 auto ${theme.spacing['2xl']};
   line-height: 1.7;
@@ -207,7 +207,7 @@ const TrustItem = styled.div`
   align-items: center;
   gap: 6px;
   font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   font-weight: 500;
 `;
 
@@ -227,7 +227,7 @@ const ErrorMsg = styled.div`
 
 const EbookSection = styled.section`
   padding: ${theme.spacing['4xl']} 0;
-  background: ${theme.colors.background.white};
+  background: var(--bg-card);
   position: relative;
   overflow: hidden;
 `;
@@ -302,13 +302,13 @@ const BookLabel = styled.div`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.xl};
   font-weight: 700;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin-bottom: ${theme.spacing.xs};
 `;
 
 const BookSub = styled.div`
   font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
 `;
 
 const SectionLabel = styled.span`
@@ -326,7 +326,7 @@ const SectionTitle = styled.h2`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes['3xl']};
   font-weight: 700;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin-bottom: ${theme.spacing.md};
   line-height: 1.2;
 
@@ -337,7 +337,7 @@ const SectionTitle = styled.h2`
 
 const SectionText = styled.p`
   font-size: ${theme.fontSizes.base};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   line-height: 1.8;
   margin-bottom: ${theme.spacing.xl};
 `;
@@ -353,7 +353,7 @@ const FeatureItem = styled.div`
   align-items: flex-start;
   gap: ${theme.spacing.md};
   font-size: ${theme.fontSizes.base};
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   line-height: 1.5;
 `;
 
@@ -377,7 +377,7 @@ const FeatureCheck = styled.div`
 
 const LibrarySection = styled.section`
   padding: ${theme.spacing['4xl']} 0;
-  background: ${theme.colors.background.primary};
+  background: var(--bg-primary);
 `;
 
 const CenteredTitle = styled.div<{ $visible: boolean }>`
@@ -398,7 +398,7 @@ const Divider = styled.div`
 
 const CenterSubtitle = styled.p`
   font-size: ${theme.fontSizes.lg};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   max-width: 560px;
   margin: 0 auto;
   line-height: 1.7;
@@ -421,12 +421,12 @@ const CardsGrid = styled.div`
 `;
 
 const LibCard = styled.div<{ $visible: boolean; $delay: string }>`
-  background: ${theme.colors.background.white};
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: ${theme.borderRadius['2xl']};
   padding: ${theme.spacing['2xl']};
   text-align: center;
-  box-shadow: ${theme.shadows.card};
+  box-shadow: var(--shadow-card);
   transition: all ${theme.transitions.smooth};
   opacity: ${p => p.$visible ? 1 : 0};
   transform: translateY(${p => p.$visible ? '0' : '36px'});
@@ -455,13 +455,13 @@ const LibCardTitle = styled.h3`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.xl};
   font-weight: 700;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin-bottom: ${theme.spacing.sm};
 `;
 
 const LibCardText = styled.p`
   font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   line-height: 1.7;
 `;
 
@@ -471,7 +471,7 @@ const LibCardText = styled.p`
 
 const StepsSection = styled.section`
   padding: ${theme.spacing['4xl']} 0;
-  background: ${theme.colors.background.white};
+  background: var(--bg-card);
   position: relative;
 `;
 
@@ -520,13 +520,13 @@ const StepTitle = styled.h3`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.lg};
   font-weight: 700;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin-bottom: ${theme.spacing.sm};
 `;
 
 const StepText = styled.p`
   font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   line-height: 1.7;
 `;
 
@@ -536,7 +536,7 @@ const StepText = styled.p`
 
 const PriceSection = styled.section`
   padding: ${theme.spacing['4xl']} 0;
-  background: linear-gradient(135deg, ${theme.colors.background.primary} 0%, ${theme.colors.accent.paleYellow}40 100%);
+  background: linear-gradient(135deg, var(--bg-primary) 0%, ${theme.colors.accent.paleYellow}40 100%);
 `;
 
 const PriceGrid = styled.div`
@@ -552,7 +552,7 @@ const PriceGrid = styled.div`
 `;
 
 const PriceCard = styled.div<{ $visible: boolean }>`
-  background: ${theme.colors.background.white};
+  background: var(--bg-card);
   border-radius: ${theme.borderRadius['2xl']};
   padding: ${theme.spacing['2xl']};
   box-shadow: ${theme.shadows.lg};
@@ -589,13 +589,13 @@ const PriceAmount = styled.div`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes['4xl']};
   font-weight: 700;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin-bottom: ${theme.spacing.xs};
 
   small {
     font-size: ${theme.fontSizes.lg};
     font-weight: 500;
-    color: ${theme.colors.text.secondary};
+    color: var(--text-secondary);
   }
 `;
 
@@ -618,7 +618,7 @@ const PriceFeatureItem = styled.div`
   align-items: center;
   gap: ${theme.spacing.sm};
   font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
 
   &::before {
     content: '';
@@ -655,10 +655,10 @@ const GuaranteeCard = styled.div`
   align-items: flex-start;
   gap: ${theme.spacing.md};
   padding: ${theme.spacing.lg};
-  background: ${theme.colors.background.white};
+  background: var(--bg-card);
   border-radius: ${theme.borderRadius.lg};
-  border: 1px solid rgba(0, 0, 0, 0.04);
-  box-shadow: ${theme.shadows.card};
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-card);
 `;
 
 const GuaranteeIcon = styled.div`
@@ -671,13 +671,13 @@ const GuaranteeTitle = styled.div`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.base};
   font-weight: 700;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin-bottom: ${theme.spacing.xs};
 `;
 
 const GuaranteeText = styled.div`
   font-size: ${theme.fontSizes.xs};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   line-height: 1.6;
 `;
 
@@ -758,7 +758,7 @@ const WhiteButton = styled.button`
 
 const StylesSection = styled.section`
   padding: ${theme.spacing['4xl']} 0;
-  background: linear-gradient(180deg, ${theme.colors.background.white} 0%, ${theme.colors.background.primary} 100%);
+  background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-primary) 100%);
   overflow: hidden;
 `;
 
@@ -779,7 +779,7 @@ const StyleCard = styled.div<{ $visible: boolean; $delay: number }>`
   width: 200px;
   border-radius: 20px;
   overflow: hidden;
-  background: white;
+  background: var(--bg-card);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
   transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   cursor: pointer;
@@ -831,7 +831,7 @@ const StyleCardName = styled.span`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.sm};
   font-weight: 700;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
 `;
 
 const StylesBadge = styled.div`
@@ -844,7 +844,7 @@ const StylesBadge = styled.div`
   padding: 6px 16px;
   font-size: ${theme.fontSizes.xs};
   font-weight: 600;
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   margin-bottom: ${theme.spacing.lg};
 `;
 
@@ -854,7 +854,7 @@ const StylesBadge = styled.div`
 
 const CharactersSection = styled.section`
   padding: ${theme.spacing['4xl']} 0;
-  background: ${theme.colors.background.white};
+  background: var(--bg-card);
   position: relative;
   overflow: hidden;
 
@@ -923,12 +923,12 @@ const CharacterLabel = styled.div<{ $top: string; $left: string; $delay: number;
   position: absolute;
   top: ${p => p.$top};
   left: ${p => p.$left};
-  background: white;
+  background: var(--bg-elevated);
   border-radius: 12px;
   padding: 8px 14px;
   font-size: 12px;
   font-weight: 600;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
   white-space: nowrap;
   animation: ${p => p.$visible ? css`${slideUp} 0.5s ease ${p.$delay}s both` : 'none'};
@@ -1173,8 +1173,8 @@ export const ClubPage: React.FC = () => {
                   transition: 'transform 0.2s',
                 }}>
                   <div style={{ fontSize: '28px', marginBottom: '6px' }}>{f.icon}</div>
-                  <div style={{ fontWeight: 700, fontSize: '13px', color: theme.colors.text.primary, marginBottom: '2px' }}>{f.title}</div>
-                  <div style={{ fontSize: '11px', color: theme.colors.text.light }}>{f.sub}</div>
+                  <div style={{ fontWeight: 700, fontSize: '13px', color: 'var(--text-primary)', marginBottom: '2px' }}>{f.title}</div>
+                  <div style={{ fontSize: '11px', color: 'var(--text-light)' }}>{f.sub}</div>
                 </div>
               ))}
             </div>
@@ -1358,7 +1358,7 @@ export const ClubPage: React.FC = () => {
         </StepsSection>
 
         {/* ============ 4B. TABLEAU COMPARATIF GRATUIT vs CLUB ============ */}
-        <div style={{ padding: `${theme.spacing['3xl']} ${theme.spacing.lg}`, background: theme.colors.background.secondary }}>
+        <div style={{ padding: `${theme.spacing['3xl']} ${theme.spacing.lg}`, background: 'var(--bg-secondary)' }}>
           <Container>
             <CenteredTitle $visible>
               <SectionTitle style={{ textAlign: 'center' }}>Gratuit vs Club</SectionTitle>
@@ -1372,10 +1372,10 @@ export const ClubPage: React.FC = () => {
             }}>
               {/* Header */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', borderBottom: '1px solid #f0f0f0' }}>
-                <div style={{ padding: '14px 8px', textAlign: 'center', fontSize: '13px', fontWeight: 700, color: theme.colors.text.secondary }}>
+                <div style={{ padding: '14px 8px', textAlign: 'center', fontSize: '13px', fontWeight: 700, color: 'var(--text-secondary)' }}>
                   Fonctionnalite
                 </div>
-                <div style={{ padding: '14px 8px', textAlign: 'center', fontSize: '13px', fontWeight: 700, color: theme.colors.text.secondary }}>
+                <div style={{ padding: '14px 8px', textAlign: 'center', fontSize: '13px', fontWeight: 700, color: 'var(--text-secondary)' }}>
                   Gratuit
                 </div>
                 <div style={{ padding: '14px 8px', textAlign: 'center', fontSize: '13px', fontWeight: 700, color: '#764ba2', background: 'rgba(102,126,234,0.05)', position: 'relative' }}>
@@ -1396,10 +1396,10 @@ export const ClubPage: React.FC = () => {
                 { e: '\u2B07\uFE0F', l: 'PDF', f: '\u2014', c: '\u2713' },
               ].map((row, i) => (
                 <div key={row.l} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', borderBottom: i < 8 ? '1px solid #f8f8f8' : 'none', alignItems: 'center' }}>
-                  <div style={{ padding: '10px 12px', fontSize: '13px', fontWeight: 500, color: theme.colors.text.primary, display: 'flex', alignItems: 'center', gap: 7 }}>
+                  <div style={{ padding: '10px 12px', fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: 7 }}>
                     <span style={{ fontSize: 15 }}>{row.e}</span>{row.l}
                   </div>
-                  <div style={{ padding: '10px 8px', textAlign: 'center', fontSize: '13px', fontWeight: 600, color: row.f === '\u2014' ? '#ccc' : theme.colors.text.secondary }}>
+                  <div style={{ padding: '10px 8px', textAlign: 'center', fontSize: '13px', fontWeight: 600, color: row.f === '\u2014' ? '#ccc' : 'var(--text-secondary)' }}>
                     {row.f}
                   </div>
                   <div style={{ padding: '10px 8px', textAlign: 'center', fontSize: '13px', fontWeight: 600, color: '#4CAF50', background: 'rgba(102,126,234,0.03)' }}>

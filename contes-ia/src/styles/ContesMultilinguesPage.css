@@ -61,7 +61,7 @@
 }
 
 .language-card {
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--bg-card);
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(0,0,0,0.2);
@@ -106,13 +106,13 @@
 }
 
 .language-description {
-  color: #4a5568;
+  color: var(--text-secondary);
   line-height: 1.6;
   margin-bottom: 1.5rem;
 }
 
 .language-benefits h4 {
-  color: #2d3748;
+  color: var(--text-primary);
   font-size: 1rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
@@ -125,7 +125,7 @@
 }
 
 .language-benefits li {
-  color: #4a5568;
+  color: var(--text-secondary);
   padding: 0.3rem 0;
   position: relative;
   padding-left: 1.5rem;
@@ -198,7 +198,7 @@
 }
 
 .age-adaptations-section {
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--bg-card);
   border-radius: 20px;
   padding: 3rem;
   margin-bottom: 4rem;
@@ -206,7 +206,7 @@
 }
 
 .age-adaptations-section h2 {
-  color: #2d3748;
+  color: var(--text-primary);
   font-size: 2.5rem;
   text-align: center;
   margin-bottom: 1rem;
@@ -219,14 +219,14 @@
 }
 
 .adaptation-card {
-  background: linear-gradient(135deg, #f7fafc, #edf2f7);
+  background: var(--bg-secondary);
   border-radius: 15px;
   padding: 2rem;
   border-left: 4px solid #667eea;
 }
 
 .adaptation-header h3 {
-  color: #2d3748;
+  color: var(--text-primary);
   font-size: 1.3rem;
   font-weight: 600;
   margin-bottom: 0.3rem;
@@ -240,13 +240,13 @@
 }
 
 .adaptation-description {
-  color: #4a5568;
+  color: var(--text-secondary);
   line-height: 1.6;
   margin-bottom: 1.5rem;
 }
 
 .adaptation-features h5 {
-  color: #2d3748;
+  color: var(--text-primary);
   font-size: 0.9rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
@@ -362,7 +362,7 @@
 }
 
 .learning-methodology {
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--bg-card);
   border-radius: 20px;
   padding: 3rem;
   margin-bottom: 4rem;
@@ -370,7 +370,7 @@
 }
 
 .learning-methodology h2 {
-  color: #2d3748;
+  color: var(--text-primary);
   font-size: 2.5rem;
   text-align: center;
   margin-bottom: 2.5rem;
@@ -386,7 +386,7 @@
   text-align: center;
   padding: 1.5rem;
   border-radius: 15px;
-  background: linear-gradient(135deg, #f7fafc, #edf2f7);
+  background: var(--bg-secondary);
 }
 
 .step-number {
@@ -404,14 +404,14 @@
 }
 
 .method-step h3 {
-  color: #2d3748;
+  color: var(--text-primary);
   font-size: 1.2rem;
   margin-bottom: 1rem;
   font-weight: 600;
 }
 
 .method-step p {
-  color: #4a5568;
+  color: var(--text-secondary);
   line-height: 1.6;
 }
 
@@ -469,7 +469,7 @@
 }
 
 .success-stories {
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--bg-card);
   border-radius: 20px;
   padding: 3rem;
   margin-bottom: 4rem;
@@ -477,7 +477,7 @@
 }
 
 .success-stories h2 {
-  color: #2d3748;
+  color: var(--text-primary);
   font-size: 2.5rem;
   text-align: center;
   margin-bottom: 2.5rem;
@@ -490,21 +490,21 @@
 }
 
 .testimonial {
-  background: linear-gradient(135deg, #f7fafc, #edf2f7);
+  background: var(--bg-secondary);
   padding: 2rem;
   border-radius: 15px;
   border-left: 4px solid #667eea;
 }
 
 .testimonial p {
-  color: #4a5568;
+  color: var(--text-secondary);
   line-height: 1.6;
   margin-bottom: 1rem;
   font-style: italic;
 }
 
 .testimonial-author {
-  color: #2d3748;
+  color: var(--text-primary);
   font-weight: 600;
   font-size: 0.9rem;
 }

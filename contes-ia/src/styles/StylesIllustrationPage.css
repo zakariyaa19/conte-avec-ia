@@ -87,7 +87,7 @@
 }
 
 .style-header h3 {
-  color: #2d3748;
+  color: var(--text-primary);
   font-size: 1.5rem;
   font-weight: 600;
   margin: 0;
@@ -95,11 +95,11 @@
 
 .style-content {
   padding: 2rem;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--bg-card);
 }
 
 .style-description {
-  color: #4a5568;
+  color: var(--text-secondary);
   line-height: 1.6;
   margin-bottom: 1.5rem;
 }
@@ -109,17 +109,17 @@
 }
 
 .info-item {
-  color: #2d3748;
+  color: var(--text-primary);
   margin-bottom: 0.5rem;
   font-size: 0.9rem;
 }
 
 .info-item strong {
-  color: #1a202c;
+  color: var(--text-primary);
 }
 
 .style-characteristics h4 {
-  color: #2d3748;
+  color: var(--text-primary);
   font-size: 1rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
@@ -132,7 +132,7 @@
 }
 
 .style-characteristics li {
-  color: #4a5568;
+  color: var(--text-secondary);
   padding: 0.2rem 0;
   position: relative;
   padding-left: 1.5rem;
@@ -207,7 +207,7 @@
 }
 
 .technical-process {
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--bg-card);
   border-radius: 20px;
   padding: 3rem;
   margin-bottom: 4rem;
@@ -215,7 +215,7 @@
 }
 
 .technical-process h2 {
-  color: #2d3748;
+  color: var(--text-primary);
   font-size: 2.5rem;
   text-align: center;
   margin-bottom: 2.5rem;
@@ -231,7 +231,7 @@
   text-align: center;
   padding: 1.5rem;
   border-radius: 15px;
-  background: linear-gradient(135deg, #f7fafc, #edf2f7);
+  background: var(--bg-secondary);
 }
 
 .step-number {
@@ -249,14 +249,14 @@
 }
 
 .process-step h3 {
-  color: #2d3748;
+  color: var(--text-primary);
   font-size: 1.2rem;
   margin-bottom: 1rem;
   font-weight: 600;
 }
 
 .process-step p {
-  color: #4a5568;
+  color: var(--text-secondary);
   line-height: 1.6;
 }
 
@@ -314,7 +314,7 @@
 }
 
 .age-style-guide {
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--bg-card);
   border-radius: 20px;
   padding: 3rem;
   margin-bottom: 4rem;
@@ -322,7 +322,7 @@
 }
 
 .age-style-guide h2 {
-  color: #2d3748;
+  color: var(--text-primary);
   font-size: 2.5rem;
   text-align: center;
   margin-bottom: 2.5rem;
@@ -338,26 +338,26 @@
 .age-guide-item {
   padding: 1.5rem;
   border-radius: 15px;
-  background: linear-gradient(135deg, #f7fafc, #edf2f7);
+  background: var(--bg-secondary);
   border-left: 4px solid #667eea;
 }
 
 .age-guide-item h3 {
-  color: #2d3748;
+  color: var(--text-primary);
   font-size: 1.3rem;
   margin-bottom: 1rem;
   font-weight: 600;
 }
 
 .age-guide-item p {
-  color: #4a5568;
+  color: var(--text-secondary);
   line-height: 1.6;
   margin-bottom: 0.5rem;
 }
 
 .age-guide-note {
   text-align: center;
-  color: #4a5568;
+  color: var(--text-secondary);
   font-style: italic;
   padding: 1rem;
   background: rgba(102, 126, 234, 0.1);
