@@ -1079,8 +1079,8 @@ export const DashboardPage: React.FC = () => {
               background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
               fontSize: 16, color: theme.colors.text.secondary,
             }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
               </svg>
             </button>
             <button onClick={() => {
@@ -1106,72 +1106,44 @@ export const DashboardPage: React.FC = () => {
           </ClubWelcomeBanner>
         )}
 
-        {/* ══════ 2A. CLUB SECTION (Premium) ══════ */}
+        {/* ══════ 2A. CLUB SECTION (Premium) — compact ══════ */}
         {!loading && isClub && !subscriptionActivating && (
-          <ClubSection>
-            <ClubSectionHeader>
-              <ClubSectionTitle>Club des Histoires</ClubSectionTitle>
-              <ManageLink onClick={handleManageSubscription}>Gérer mon abonnement</ManageLink>
-            </ClubSectionHeader>
-
-            {user?.subscriptionStatus === 'canceling' && user?.subscriptionPeriodEnd && (
-              <div style={{
-                background: '#FEF3C7', border: '1px solid #F59E0B', borderRadius: '8px',
-                padding: '12px 16px', marginBottom: '16px', fontSize: theme.fontSizes.sm, color: '#92400E'
-              }}>
-                Votre abonnement sera annulé le {new Date(user.subscriptionPeriodEnd).toLocaleDateString('fr-FR')}.
-                Vous conservez l'accès Club jusqu'à cette date.
+          <div style={{
+            background: 'linear-gradient(135deg, #667eea10, #764ba210)',
+            border: '1px solid #667eea20', borderRadius: 14,
+            padding: '14px 16px', marginBottom: 16,
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12,
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <span style={{ fontSize: 20 }}>{clubCredit?.canSubmit ? '\u2728' : '\u23F3'}</span>
+              <div>
+                <p style={{ fontSize: 13, fontWeight: 700, color: theme.colors.text.primary, margin: 0 }}>
+                  {clubCredit?.canSubmit
+                    ? `${clubCredit.remaining} credit${clubCredit.remaining > 1 ? 's' : ''} disponible${clubCredit.remaining > 1 ? 's' : ''}`
+                    : 'Aucun credit'}
+                </p>
+                <p style={{ fontSize: 11, color: theme.colors.text.light, margin: 0 }}>
+                  {countdown ? `Prochain dans ${countdown.days}j ${countdown.hours}h` : 'Club des Histoires'}
+                </p>
               </div>
+            </div>
+            {clubCredit?.canSubmit ? (
+              <button onClick={() => navigate('/create-story')} style={{
+                padding: '7px 14px', borderRadius: 10, border: 'none',
+                background: 'linear-gradient(135deg, #667eea, #764ba2)', color: 'white',
+                fontSize: 12, fontWeight: 600, cursor: 'pointer',
+              }}>Creer</button>
+            ) : (
+              <button onClick={() => navigate('/create-story')} style={{
+                padding: '7px 14px', borderRadius: 10, border: '1px solid #ddd',
+                background: 'white', color: theme.colors.text.secondary,
+                fontSize: 12, fontWeight: 600, cursor: 'pointer',
+              }}>Commander</button>
             )}
-
-            <ClubGrid>
-              {/* Credits */}
-              <CreditCard $available={!!clubCredit?.canSubmit}>
-                <CreditInfo>
-                  <CreditIcon>{clubCredit?.canSubmit ? '\u2728' : '\u23F3'}</CreditIcon>
-                  <CreditText>
-                    {clubCredit?.canSubmit ? (
-                      <>
-                        <h4>{clubCredit.remaining} crédit{clubCredit.remaining > 1 ? 's' : ''} disponible{clubCredit.remaining > 1 ? 's' : ''} ce mois-ci</h4>
-                        <p>Format eBook numérique</p>
-                      </>
-                    ) : (
-                      <>
-                        <h4>Aucun crédit disponible</h4>
-                        <p>Format eBook numérique</p>
-                      </>
-                    )}
-                  </CreditText>
-                </CreditInfo>
-                {countdown && (
-                  <CountdownText>
-                    Prochain crédit dans {countdown.days}j {countdown.hours}h
-                  </CountdownText>
-                )}
-                {clubCredit?.canSubmit ? (
-                  <Button variant="primary" size="sm" onClick={() => navigate('/create-story')}>
-                    Créer mon eBook gratuit
-                  </Button>
-                ) : (
-                  <Button variant="outline" size="sm" onClick={() => navigate('/create-story')}>
-                    Commander un conte
-                  </Button>
-                )}
-              </CreditCard>
-
-              {/* Collection progress */}
-              <CollectionCard>
-                <CollectionLabel>Collection : {stories.length} {stories.length === 1 ? 'histoire' : 'histoires'}</CollectionLabel>
-                <ProgressBarContainer>
-                  <ProgressBarFill $percent={collectionProgress} />
-                </ProgressBarContainer>
-                <ProgressText>
-                  {stories.length} / {collectionGoal} aventures complétées
-                </ProgressText>
-              </CollectionCard>
-            </ClubGrid>
-          </ClubSection>
+          </div>
         )}
+
+        {/* old Club section removed — replaced by compact banner above */}
 
         {/* ══════ 2B. JOIN CLUB (Basic) — compact banner ══════ */}
         {!loading && !isClub && !subscriptionActivating && (
