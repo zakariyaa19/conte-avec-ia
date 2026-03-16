@@ -68,7 +68,7 @@ export const StoryFormPage: React.FC = () => {
     customSubject: '',
     centralMessage: '',
     customMessage: '',
-    illustrationStyle: '',
+    illustrationStyle: '3d-animation',
     protagonistName: '',
     protagonistAge: '',
     protagonistGender: undefined,

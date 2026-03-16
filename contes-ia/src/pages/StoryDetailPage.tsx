@@ -520,7 +520,7 @@ const LoadingText = styled.div`
 export const StoryDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { user, refreshProfile } = useAuth();
+  const { user, refreshProfile, isClub } = useAuth();
   const [story, setStory] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
@@ -922,6 +922,7 @@ export const StoryDetailPage: React.FC = () => {
             onClose={() => setReaderOpen(false)}
             onShare={() => { setReaderOpen(false); setShareOpen(true); }}
             onCreateAnother={() => navigate('/create-story')}
+            isClub={isClub}
           />
         );
       })()}

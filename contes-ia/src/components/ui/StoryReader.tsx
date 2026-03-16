@@ -18,6 +18,8 @@ interface StoryReaderProps {
   onClose: () => void;
   onShare?: () => void;
   onCreateAnother?: () => void;
+  isShared?: boolean;
+  isClub?: boolean;
 }
 
 /* ═══════════ ANIMATIONS ═══════════ */
@@ -429,6 +431,62 @@ const EndButton = styled.button<{ $primary?: boolean }>`
   &:active { transform: scale(0.97); }
 `;
 
+const ClubUpsellCard = styled.div`
+  background: linear-gradient(135deg, rgba(255,153,153,0.12), rgba(155,126,216,0.12));
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 16px 18px;
+  margin-top: 20px;
+  width: 100%;
+  max-width: 300px;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.15s, border-color 0.2s;
+
+  &:active { transform: scale(0.97); }
+  &:hover { border-color: rgba(255,153,153,0.3); }
+`;
+
+const ClubUpsellLabel = styled.div`
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: #FF9999;
+  font-weight: 700;
+  margin-bottom: 8px;
+`;
+
+const ClubUpsellText = styled.p`
+  font-size: 13px;
+  color: rgba(255,255,255,0.7);
+  margin: 0;
+  line-height: 1.5;
+`;
+
+const ClubUpsellArrow = styled.span`
+  display: inline-block;
+  color: #FF9999;
+  margin-left: 4px;
+  font-size: 13px;
+`;
+
+const SharedCTA = styled.button`
+  width: 100%;
+  max-width: 300px;
+  padding: 16px;
+  border-radius: 14px;
+  border: none;
+  background: linear-gradient(135deg, #FF9999, #FF7F7F);
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s;
+  margin-top: 8px;
+
+  &:active { transform: scale(0.97); }
+`;
+
 const Sparkle = styled.div<{ $left: string; $top: string; $delay: number; $size: number }>`
   position: absolute;
   left: ${props => props.$left};
@@ -453,6 +511,8 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
   onClose,
   onShare,
   onCreateAnother,
+  isShared = false,
+  isClub = false,
 }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -621,28 +681,59 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
                     {protagonistName} a vecu une belle aventure !
                   </EndSubtitle>
 
-                  {/* CTA viral principal */}
-                  {onShare && (
-                    <div style={{ marginBottom: 24 }}>
-                      <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12, margin: '0 0 10px', textTransform: 'uppercase', letterSpacing: 1, fontWeight: 600 }}>
-                        Faites decouvrir cette histoire
-                      </p>
-                      <EndButton $primary onClick={onShare}>
-                        Envoyer a un proche
-                      </EndButton>
-                    </div>
-                  )}
+                  {isShared ? (
+                    <>
+                      {/* Lien partagé : CTA principal pour créer son livre */}
+                      <SharedCTA onClick={() => window.location.href = '/create-story'}>
+                        Vous aussi, creez votre livre gratuitement
+                      </SharedCTA>
 
-                  <EndButtons>
-                    {onCreateAnother && (
-                      <EndButton onClick={onCreateAnother}>
-                        Creer une nouvelle histoire
-                      </EndButton>
-                    )}
-                    <EndButton onClick={onClose}>
-                      Retour a la bibliotheque
-                    </EndButton>
-                  </EndButtons>
+                      {/* Upsell club subtil */}
+                      <ClubUpsellCard onClick={() => window.location.href = '/club'}>
+                        <ClubUpsellLabel>Club des Histoires</ClubUpsellLabel>
+                        <ClubUpsellText>
+                          Personnages secondaires, animal de compagnie, styles d'illustration... Personnalisez encore plus vos livres
+                          <ClubUpsellArrow>&rarr;</ClubUpsellArrow>
+                        </ClubUpsellText>
+                      </ClubUpsellCard>
+                    </>
+                  ) : (
+                    <>
+                      {/* Propriétaire : partage + navigation */}
+                      {onShare && (
+                        <div style={{ marginBottom: 24 }}>
+                          <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12, margin: '0 0 10px', textTransform: 'uppercase', letterSpacing: 1, fontWeight: 600 }}>
+                            Faites decouvrir cette histoire
+                          </p>
+                          <EndButton $primary onClick={onShare}>
+                            Envoyer a un proche
+                          </EndButton>
+                        </div>
+                      )}
+
+                      <EndButtons>
+                        {onCreateAnother && (
+                          <EndButton onClick={onCreateAnother}>
+                            Creer une nouvelle histoire
+                          </EndButton>
+                        )}
+                        <EndButton onClick={onClose}>
+                          Retour a la bibliotheque
+                        </EndButton>
+                      </EndButtons>
+
+                      {/* Upsell club pour non-abonnés */}
+                      {!isClub && (
+                        <ClubUpsellCard onClick={() => window.location.href = '/club'}>
+                          <ClubUpsellLabel>Club des Histoires</ClubUpsellLabel>
+                          <ClubUpsellText>
+                            Personnages secondaires, animal de compagnie, choix du style d'illustration... Personnalisez encore plus !
+                            <ClubUpsellArrow>&rarr;</ClubUpsellArrow>
+                          </ClubUpsellText>
+                        </ClubUpsellCard>
+                      )}
+                    </>
+                  )}
 
                   <p style={{ color: 'rgba(255,255,255,0.25)', fontSize: 11, marginTop: 24 }}>
                     Cree avec Contes d'IA

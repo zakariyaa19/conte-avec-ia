@@ -424,7 +424,7 @@ export const PublicStoryPage: React.FC = () => {
           illustrationUrls={story.illustrationUrls || []}
           protagonistName={story.protagonistName}
           onClose={() => setReaderOpen(false)}
-          onCreateAnother={() => navigate('/create-story')}
+          isShared
         />
       )}
     </PageContainer>
