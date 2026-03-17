@@ -162,7 +162,7 @@ export const StepContainer = styled.div<{
 }>`
   position: absolute; inset: 0;
   display: flex; flex-direction: column; align-items: center;
-  padding: ${theme.spacing['2xl']} ${theme.spacing.lg} 140px;
+  padding: ${theme.spacing['3xl']} ${theme.spacing.lg} 140px;
   overflow-y: auto; overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   will-change: transform, opacity;
@@ -211,15 +211,11 @@ export const StepContainer = styled.div<{
   }
 
   @media (max-width: ${theme.breakpoints.sm}) {
-    padding: ${theme.spacing.xl} ${theme.spacing.md} 140px;
+    padding: ${theme.spacing['2xl']} ${theme.spacing.md} 140px;
   }
 `;
 
-export const StepContainerCentered = styled(StepContainer)`
-  @media (min-width: ${theme.breakpoints.lg}) {
-    justify-content: center;
-  }
-`;
+export const StepContainerCentered = styled(StepContainer)``;
 
 export const StepContainerTop = styled(StepContainer)`
   justify-content: flex-start;
