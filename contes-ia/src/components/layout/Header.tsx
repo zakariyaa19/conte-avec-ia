@@ -14,8 +14,10 @@ const fadeIn = keyframes`
 
 /* ─── Glass Bar ─── */
 const HeaderContainer = styled.header<{ $scrolled: boolean }>`
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 1000;
   height: 52px;
   backdrop-filter: blur(20px) saturate(180%);
@@ -27,6 +29,14 @@ const HeaderContainer = styled.header<{ $scrolled: boolean }>`
     ? '0 0.5px 0 var(--border-color), 0 4px 24px rgba(0,0,0,0.08)'
     : '0 0.5px 0 var(--border-color)'};
 
+  @media (max-width: ${theme.breakpoints.md}) {
+    height: 48px;
+  }
+`;
+
+/* Spacer to offset fixed header height */
+const HeaderSpacer = styled.div`
+  height: 52px;
   @media (max-width: ${theme.breakpoints.md}) {
     height: 48px;
   }
@@ -482,6 +492,7 @@ export const Header: React.FC = () => {
 
   return (
     <>
+      <HeaderSpacer />
       <HeaderContainer $scrolled={scrolled} ref={headerRef}>
         <HeaderContent>
           {/* Logo */}
