@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled, { keyframes, css } from 'styled-components';
 import { theme } from '../styles/theme';
@@ -432,6 +432,7 @@ const SSub = styled.p`
 export const ClubPage: React.FC = () => {
   const { isClub, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const detailsRef = useRef<HTMLDivElement>(null);
 
   const goToCheckout = () => {
     if (isClub) { navigate('/dashboard'); return; }
@@ -511,8 +512,52 @@ export const ClubPage: React.FC = () => {
           </HeroContent>
         </HeroSection>
 
-        {/* ═══ BENEFITS ═══ */}
-        <Section $bg="var(--bg-secondary)">
+        {/* ═══ HIGHLIGHTS STRIP — compact, visible immediately ═══ */}
+        <Section style={{ padding: '32px 16px 16px' }}>
+          <Inner>
+            <div style={{
+              display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '8px',
+              scrollSnapType: 'x mandatory', WebkitOverflowScrolling: 'touch',
+              msOverflowStyle: 'none', scrollbarWidth: 'none',
+            }}>
+              {[
+                { icon: '📚', text: '1 livre/semaine' },
+                { icon: '🎨', text: '9 styles' },
+                { icon: '👨‍👩‍👧', text: 'Personnages' },
+                { icon: '🌍', text: 'Multi-langues' },
+                { icon: '⬇️', text: 'PDF illimités' },
+              ].map(h => (
+                <div key={h.text} style={{
+                  display: 'flex', alignItems: 'center', gap: '6px',
+                  background: 'var(--bg-card)', border: '1px solid var(--border-color)',
+                  borderRadius: '12px', padding: '10px 14px',
+                  flexShrink: 0, scrollSnapAlign: 'start',
+                  fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)',
+                  whiteSpace: 'nowrap',
+                }}>
+                  <span style={{ fontSize: '18px' }}>{h.icon}</span>
+                  {h.text}
+                </div>
+              ))}
+            </div>
+            <div style={{ textAlign: 'center', marginTop: '12px' }}>
+              <button
+                onClick={() => detailsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                style={{
+                  all: 'unset', cursor: 'pointer',
+                  fontSize: '13px', fontWeight: 600,
+                  color: theme.colors.accent.coral,
+                  display: 'inline-flex', alignItems: 'center', gap: '4px',
+                }}
+              >
+                Voir tous les avantages ↓
+              </button>
+            </div>
+          </Inner>
+        </Section>
+
+        {/* ═══ BENEFITS (detailed) ═══ */}
+        <Section $bg="var(--bg-secondary)" ref={detailsRef}>
           <Inner>
             <STitle>Ce que vous obtenez</STitle>
             <SSub>Tout ce qu'il faut pour créer des souvenirs magiques</SSub>
