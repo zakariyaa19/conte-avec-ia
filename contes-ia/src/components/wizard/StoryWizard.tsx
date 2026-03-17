@@ -497,49 +497,25 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
             {isSimplifiedMode ? (
               <div style={{
                 width: '100%', maxWidth: 440, textAlign: 'center',
-                marginBottom: theme.spacing.sm, animation: 'fadeIn 0.5s ease both',
+                marginBottom: theme.spacing.xs, animation: 'fadeIn 0.5s ease both',
               }}>
                 {isFirstPurchase && (
                   <div style={{
                     background: 'linear-gradient(135deg, #4CAF50, #45a049)',
-                    color: 'white', borderRadius: '16px', padding: '14px 20px',
-                    marginBottom: theme.spacing.md, textAlign: 'center',
+                    color: 'white', borderRadius: '14px', padding: '10px 18px',
+                    marginBottom: theme.spacing.sm, textAlign: 'center',
                   }}>
-                    <p style={{ fontSize: theme.fontSizes.xl, fontWeight: 800, margin: '0 0 2px', letterSpacing: '-0.02em' }}>
+                    <p style={{ fontSize: theme.fontSizes.lg, fontWeight: 800, margin: '0 0 1px', letterSpacing: '-0.02em' }}>
                       Votre 1er livre est 100% GRATUIT
                     </p>
-                    <p style={{ fontSize: theme.fontSizes.xs, margin: 0, opacity: 0.9 }}>
+                    <p style={{ fontSize: '11px', margin: 0, opacity: 0.9 }}>
                       Aucune carte bancaire requise
                     </p>
                   </div>
                 )}
                 <p style={{
-                  fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.lg, fontWeight: 800,
-                  color: 'var(--text-primary)', margin: `0 0 ${theme.spacing.xs}`, lineHeight: 1.3,
-                }}>
-                  Créez le livre de votre enfant
-                </p>
-                <div style={{
-                  display: 'flex', justifyContent: 'center', gap: '12px', flexWrap: 'wrap',
-                  margin: `${theme.spacing.xs} auto ${theme.spacing.sm}`,
-                }}>
-                  {[
-                    'Prénom personnalisé',
-                    'Illustrations uniques',
-                    'Prêt en 5 minutes',
-                  ].map((text) => (
-                    <span key={text} style={{
-                      fontFamily: theme.fonts.body, fontSize: '11px',
-                      color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '4px',
-                    }}>
-                      <span style={{ color: theme.colors.accent.coral, fontWeight: 700 }}>&#x2713;</span>
-                      {text}
-                    </span>
-                  ))}
-                </div>
-                <p style={{
                   fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.sm,
-                  color: theme.colors.accent.coral, margin: 0, fontWeight: 600,
+                  color: theme.colors.accent.coral, margin: `0 0 ${theme.spacing.xs}`, fontWeight: 600,
                   fontStyle: 'italic', lineHeight: 1.3,
                 }}>
                   Votre enfant devient le héros de son histoire &#x2728;
@@ -551,8 +527,8 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 <BookPreviewText>Ton enfant devient le héros de son propre livre</BookPreviewText>
               </BookPreviewBanner>
             )}
-            <StepTitle style={{ marginBottom: '4px' }}>Pour quel âge ?</StepTitle>
-            <StepMicroText style={{ marginBottom: theme.spacing.md }}>{isSimplifiedMode ? 'Un seul clic pour commencer' : 'Choisis l\'âge pour commencer à créer son histoire'}</StepMicroText>
+            <StepTitle style={{ marginBottom: '2px' }}>Pour quel âge ?</StepTitle>
+            <StepMicroText style={{ marginBottom: theme.spacing.sm }}>{isSimplifiedMode ? 'Un clic pour commencer' : 'Choisis l\'âge pour commencer à créer son histoire'}</StepMicroText>
             <CardGrid $columns={4}>
               {AGE_OPTIONS.map((o, i) => (
                 <ImageCard key={o.value} $isSelected={formData.ageRange === o.value} $delay={i}
@@ -564,7 +540,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 </ImageCard>
               ))}
             </CardGrid>
-            {isSimplifiedMode && (
+            {false && isSimplifiedMode && (
               <p style={{
                 fontFamily: theme.fonts.body, fontSize: '11px',
                 color: 'var(--text-light)', marginTop: theme.spacing.md,
