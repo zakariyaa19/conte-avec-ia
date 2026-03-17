@@ -592,61 +592,90 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
               })}
             </CardGrid>
 
-            {/* Custom theme — full-width hero card */}
-            <div
-              onClick={() => onUpdate({ generalTheme: 'custom' })}
-              style={{
-                width: '100%', maxWidth: isSimplifiedMode ? 560 : 480,
-                marginTop: isSimplifiedMode ? theme.spacing.sm : theme.spacing.md,
-                padding: isSimplifiedMode ? '12px 18px' : '16px 20px',
-                borderRadius: isSimplifiedMode ? '16px' : theme.borderRadius.xl,
-                border: `${isSimplifiedMode ? '3px' : '2px'} solid ${formData.generalTheme === 'custom'
-                  ? theme.colors.accent.coral
-                  : isSimplifiedMode ? 'rgba(255,153,153,0.25)' : 'var(--border-color)'}`,
-                background: formData.generalTheme === 'custom'
-                  ? `linear-gradient(135deg, ${theme.colors.accent.coral}10, ${theme.colors.accent.softPink}15)`
-                  : isSimplifiedMode
-                    ? 'var(--bg-elevated)'
-                    : 'var(--bg-card)',
-                cursor: 'pointer',
-                transition: 'all 0.3s cubic-bezier(0.34,1.56,0.64,1)',
-                textAlign: 'center',
-                boxShadow: isSimplifiedMode
-                  ? formData.generalTheme === 'custom'
-                    ? `0 0 0 4px ${theme.colors.accent.coral}35, 0 8px 32px ${theme.colors.accent.coral}25`
-                    : '0 4px 20px rgba(255,153,153,0.12), 0 8px 32px rgba(0,0,0,0.08)'
-                  : 'var(--shadow-card)',
-                transform: formData.generalTheme === 'custom' ? 'scale(1.02)' : 'scale(1)',
-              }}
-            >
-              <div style={{
-                fontFamily: theme.fonts.heading,
-                fontSize: isSimplifiedMode ? theme.fontSizes.base : theme.fontSizes.base,
-                fontWeight: 700,
-                color: 'var(--text-primary)', marginBottom: '2px',
-              }}>
-                {isSimplifiedMode ? 'Créer un univers personnalisé' : 'Inventez votre propre univers'}
-              </div>
-              <div style={{
-                fontSize: '11px', color: 'var(--text-light)', lineHeight: 1.4,
-              }}>
-                {isSimplifiedMode
-                  ? 'Ex : pirates, dinosaures, magie, espace...'
-                  : 'Harry Potter, Star Wars, Pat\'Patrouille, Monde des dinosaures, Pirates...'}
-              </div>
-            </div>
-
-            {formData.generalTheme === 'custom' && (
-              <>
-                <CustomInput type="text" placeholder="Ex : L'univers d'Harry Potter, Le monde des dinosaures..." value={formData.customTheme || ''}
-                  onChange={(e) => handleInputChange('customTheme', e.target.value)}
-                  ref={(el) => { if (el) setTimeout(() => { el.focus(); el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 100); }}
-                  style={{ maxWidth: 480, marginTop: theme.spacing.sm }} />
-                <ContinueButton $isReady={!!(formData.customTheme?.trim())} disabled={!formData.customTheme?.trim()} onClick={goNext}>
-                  Continuer
-                </ContinueButton>
-              </>
-            )}
+            {/* Custom theme — full-width hero card with image */}
+            {(() => {
+              const isCustomSelected = formData.generalTheme === 'custom';
+              return (
+                <div
+                  onClick={() => { if (!isCustomSelected) onUpdate({ generalTheme: 'custom' }); }}
+                  style={{
+                    width: '100%', maxWidth: isSimplifiedMode ? 560 : 480,
+                    marginTop: isSimplifiedMode ? theme.spacing.sm : theme.spacing.md,
+                    borderRadius: isSimplifiedMode ? '16px' : theme.borderRadius.xl,
+                    border: `${isSimplifiedMode ? '3px' : '2px'} solid ${isCustomSelected
+                      ? theme.colors.accent.coral
+                      : isSimplifiedMode ? 'rgba(255,153,153,0.25)' : 'var(--border-color)'}`,
+                    background: isCustomSelected
+                      ? `linear-gradient(135deg, ${theme.colors.accent.coral}10, ${theme.colors.accent.softPink}15)`
+                      : isSimplifiedMode
+                        ? 'var(--bg-elevated)'
+                        : 'var(--bg-card)',
+                    cursor: isCustomSelected ? 'default' : 'pointer',
+                    transition: 'all 0.3s cubic-bezier(0.34,1.56,0.64,1)',
+                    boxShadow: isSimplifiedMode
+                      ? isCustomSelected
+                        ? `0 0 0 4px ${theme.colors.accent.coral}35, 0 8px 32px ${theme.colors.accent.coral}25`
+                        : '0 4px 20px rgba(255,153,153,0.12), 0 8px 32px rgba(0,0,0,0.08)'
+                      : 'var(--shadow-card)',
+                    transform: isCustomSelected ? 'scale(1.02)' : 'scale(1)',
+                    overflow: 'hidden',
+                  }}
+                >
+                  {/* Image + text row — collapses when selected */}
+                  <div style={{
+                    display: 'flex', alignItems: 'center', gap: '14px',
+                    padding: isCustomSelected ? '10px 16px' : '12px 16px',
+                    transition: 'padding 0.3s ease',
+                  }}>
+                    <div style={{
+                      width: isCustomSelected ? '40px' : '56px',
+                      height: isCustomSelected ? '40px' : '56px',
+                      borderRadius: '12px',
+                      backgroundImage: 'url(/image/themes/personnalise.png)',
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                      flexShrink: 0,
+                      transition: 'all 0.3s ease',
+                    }} />
+                    <div style={{ flex: 1, textAlign: 'left' }}>
+                      <div style={{
+                        fontFamily: theme.fonts.heading,
+                        fontSize: isCustomSelected ? theme.fontSizes.sm : theme.fontSizes.base,
+                        fontWeight: 700,
+                        color: 'var(--text-primary)',
+                        transition: 'font-size 0.3s ease',
+                      }}>
+                        {isSimplifiedMode ? 'Créer un univers personnalisé' : 'Inventez votre propre univers'}
+                      </div>
+                      {!isCustomSelected && (
+                        <div style={{
+                          fontSize: '11px', color: 'var(--text-light)', lineHeight: 1.4, marginTop: '2px',
+                        }}>
+                          {isSimplifiedMode
+                            ? 'Ex : pirates, dinosaures, magie, espace...'
+                            : 'Harry Potter, Star Wars, Pat\'Patrouille, Monde des dinosaures, Pirates...'}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  {/* Input field — appears inside the card when selected */}
+                  {isCustomSelected && (
+                    <div style={{ padding: '0 16px 12px' }}>
+                      <CustomInput type="text" placeholder="Ex : Harry Potter, dinosaures, espace..." value={formData.customTheme || ''}
+                        onChange={(e) => handleInputChange('customTheme', e.target.value)}
+                        onClick={(e) => e.stopPropagation()}
+                        ref={(el) => { if (el) setTimeout(() => { el.focus(); }, 100); }}
+                        style={{ maxWidth: '100%', marginTop: 0, width: '100%' }} />
+                      <ContinueButton $isReady={!!(formData.customTheme?.trim())} disabled={!formData.customTheme?.trim()}
+                        onClick={(e) => { e.stopPropagation(); goNext(); }}
+                        style={{ marginTop: theme.spacing.sm, width: '100%' }}>
+                        Continuer
+                      </ContinueButton>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
           </>
         );
       }
