@@ -496,8 +496,8 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
           <>
             {isSimplifiedMode ? (
               <div style={{
-                width: '100%', maxWidth: 420, textAlign: 'center',
-                marginBottom: theme.spacing.md, animation: 'fadeIn 0.5s ease both',
+                width: '100%', maxWidth: 440, textAlign: 'center',
+                marginBottom: theme.spacing.sm, animation: 'fadeIn 0.5s ease both',
               }}>
                 {isFirstPurchase && (
                   <div style={{
@@ -509,7 +509,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                       Votre 1er livre est 100% GRATUIT
                     </p>
                     <p style={{ fontSize: theme.fontSizes.xs, margin: 0, opacity: 0.9 }}>
-                      Pas de carte bancaire requise
+                      Aucune carte bancaire requise
                     </p>
                   </div>
                 )}
@@ -517,27 +517,33 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                   fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.lg, fontWeight: 800,
                   color: 'var(--text-primary)', margin: `0 0 ${theme.spacing.xs}`, lineHeight: 1.3,
                 }}>
-                  Creez le livre de votre enfant
+                  Créez le livre de votre enfant
                 </p>
                 <div style={{
-                  display: 'flex', flexDirection: 'column', gap: '6px',
-                  alignItems: 'flex-start', margin: `${theme.spacing.sm} auto`,
-                  maxWidth: 280,
+                  display: 'flex', justifyContent: 'center', gap: '12px', flexWrap: 'wrap',
+                  margin: `${theme.spacing.xs} auto ${theme.spacing.sm}`,
                 }}>
                   {[
-                    'Personnalise avec son prenom et sa photo',
-                    '7 illustrations HD uniques',
-                    'Pret en 5 minutes par email',
+                    'Prénom personnalisé',
+                    'Illustrations uniques',
+                    'Prêt en 5 minutes',
                   ].map((text) => (
                     <span key={text} style={{
-                      fontFamily: theme.fonts.body, fontSize: theme.fontSizes.xs,
-                      color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '6px',
+                      fontFamily: theme.fonts.body, fontSize: '11px',
+                      color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '4px',
                     }}>
-                      <span style={{ color: theme.colors.accent.coral, fontWeight: 700, flexShrink: 0 }}>&#x2713;</span>
+                      <span style={{ color: theme.colors.accent.coral, fontWeight: 700 }}>&#x2713;</span>
                       {text}
                     </span>
                   ))}
                 </div>
+                <p style={{
+                  fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.sm,
+                  color: theme.colors.accent.coral, margin: 0, fontWeight: 600,
+                  fontStyle: 'italic', lineHeight: 1.3,
+                }}>
+                  Votre enfant devient le héros de son histoire &#x2728;
+                </p>
               </div>
             ) : (
               <BookPreviewBanner>
@@ -545,18 +551,28 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 <BookPreviewText>Ton enfant devient le héros de son propre livre</BookPreviewText>
               </BookPreviewBanner>
             )}
-            <StepTitle>Pour quel âge ?</StepTitle>
-            <StepMicroText>{isSimplifiedMode ? 'Un seul clic pour commencer' : 'Choisis l\'âge pour commencer à créer son histoire'}</StepMicroText>
+            <StepTitle style={{ marginBottom: '4px' }}>Pour quel âge ?</StepTitle>
+            <StepMicroText style={{ marginBottom: theme.spacing.md }}>{isSimplifiedMode ? 'Un seul clic pour commencer' : 'Choisis l\'âge pour commencer à créer son histoire'}</StepMicroText>
             <CardGrid $columns={4}>
               {AGE_OPTIONS.map((o, i) => (
                 <ImageCard key={o.value} $isSelected={formData.ageRange === o.value} $delay={i}
+                  $hero={isSimplifiedMode}
                   aria-label={o.label}
                   onClick={() => handleCardSelect('ageRange', o.value)}>
                   <CardImg $src={o.imagePath} />
-                  <CardImgLabel>{o.label}</CardImgLabel>
+                  <CardImgLabel $hero={isSimplifiedMode}>{o.label}</CardImgLabel>
                 </ImageCard>
               ))}
             </CardGrid>
+            {isSimplifiedMode && (
+              <p style={{
+                fontFamily: theme.fonts.body, fontSize: '11px',
+                color: 'var(--text-light)', marginTop: theme.spacing.md,
+                textAlign: 'center', letterSpacing: '0.02em',
+              }}>
+                Gratuit &middot; Sans engagement &middot; Envoi par email
+              </p>
+            )}
           </>
         );
 
@@ -1221,7 +1237,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
 
               {/* Cover — clic = autoscroll vers la section pricing/commande */}
               <BookPageFrame $portrait style={{ cursor: 'pointer' }}
-                onClick={() => pricingRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>
+                onClick={() => (isFirstPurchase ? orderFormRef : pricingRef).current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>
                 <BookCoverImage>
                   <MaterializeImage $ready>
                     <img src={coverImageUrl} alt="Couverture" />
@@ -1229,25 +1245,30 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 </BookCoverImage>
               </BookPageFrame>
 
-              {/* Locked page — story + illustrations generated after purchase */}
-              <BookPageFrame $compact ref={lockedPageRef}>
-                <BookLockedOverlay onClick={() => pricingRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })}>
-                  <BookLockedContent>
-                    <BookLockedIcon>&#x1F512;</BookLockedIcon>
-                    <BookLockedTitle>L'aventure de {heroName} continue...</BookLockedTitle>
-                    <BookLockedSubtitle>12 pages illustrées vous attendent</BookLockedSubtitle>
-                  </BookLockedContent>
-                </BookLockedOverlay>
-              </BookPageFrame>
+              {/* Locked page — story + illustrations generated after purchase (payant uniquement) */}
+              {!isFirstPurchase && (
+                <BookPageFrame $compact ref={lockedPageRef}>
+                  <BookLockedOverlay onClick={() => pricingRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })}>
+                    <BookLockedContent>
+                      <BookLockedIcon>&#x1F512;</BookLockedIcon>
+                      <BookLockedTitle>L'aventure de {heroName} continue...</BookLockedTitle>
+                      <BookLockedSubtitle>12 pages illustrées vous attendent</BookLockedSubtitle>
+                    </BookLockedContent>
+                  </BookLockedOverlay>
+                </BookPageFrame>
+              )}
             </BookPreviewWrapper>
 
-            {/* ── Timer ── */}
-            <PreviewTimerBar>
-              <span>Votre livre est réservé pendant encore</span>
-              <PreviewTimerDigits>{timerDisplay}</PreviewTimerDigits>
-            </PreviewTimerBar>
+            {/* ── Timer — payant uniquement ── */}
+            {!isFirstPurchase && (
+              <PreviewTimerBar>
+                <span>Votre livre est réservé pendant encore</span>
+                <PreviewTimerDigits>{timerDisplay}</PreviewTimerDigits>
+              </PreviewTimerBar>
+            )}
 
-            {/* ── Pricing section ── */}
+            {/* ── Pricing section — masquée pour premier livre gratuit ── */}
+            {!isFirstPurchase && (
             <div ref={pricingRef} style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <PreviewSectionTitle>
                 {heroName} est prêt pour la suite de son aventure
@@ -1354,12 +1375,20 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 <span>&#x2B50;</span> Déjà +500 parents ont créé une histoire pour leur enfant
               </SocialProofLine>
             </div>
+            )}
+
+            {/* ── Social proof — toujours visible (flow gratuit: après cover) ── */}
+            {isFirstPurchase && (
+              <SocialProofLine>
+                <span>&#x2B50;</span> Déjà +500 parents ont créé une histoire pour leur enfant
+              </SocialProofLine>
+            )}
 
             {/* ── Order form (appears when offer selected) ── */}
             {formData.productType && (
               <div ref={orderFormRef} style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <OrderInfoSection>
-                  <SectionTitle>Finalisez votre commande</SectionTitle>
+                  <SectionTitle>{isFirstPurchase ? 'Entrez votre email pour le recevoir' : 'Finalisez votre commande'}</SectionTitle>
                   {isAuthenticated && currentUser && (
                     <ConnectedBanner>Connecté en tant que <strong>{currentUser.email}</strong></ConnectedBanner>
                   )}

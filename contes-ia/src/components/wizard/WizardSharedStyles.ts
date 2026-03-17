@@ -286,13 +286,13 @@ export const CardGrid = styled.div<{ $columns?: number; $compact?: boolean }>`
   }
 `;
 
-export const ImageCard = styled.button<{ $isSelected: boolean; $delay?: number }>`
+export const ImageCard = styled.button<{ $isSelected: boolean; $delay?: number; $hero?: boolean }>`
   position: relative;
   display: flex; flex-direction: column;
   border: 2.5px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'var(--border-color)'};
   border-radius: 14px;
   overflow: hidden; cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
   background: var(--bg-elevated);
   box-shadow: var(--shadow-card);
   -webkit-tap-highlight-color: transparent;
@@ -302,10 +302,34 @@ export const ImageCard = styled.button<{ $isSelected: boolean; $delay?: number }
     box-shadow: 0 0 0 3px ${theme.colors.accent.coral}30, 0 4px 24px ${theme.colors.accent.coral}20, 0 8px 32px rgba(0,0,0,0.3);
     background: var(--bg-elevated);
   `}
+  /* Hero mode: age cards on first step — more prominent */
+  ${p => p.$hero && css`
+    border-width: 3px;
+    border-color: ${p.$isSelected ? theme.colors.accent.coral : 'rgba(255,153,153,0.25)'};
+    border-radius: 18px;
+    box-shadow: 0 4px 20px rgba(255,153,153,0.12), 0 8px 32px rgba(0,0,0,0.08);
+    [data-theme="dark"] & {
+      border-color: ${p.$isSelected ? theme.colors.accent.coral : 'rgba(255,180,200,0.22)'};
+      box-shadow: 0 4px 24px rgba(255,153,153,0.15), 0 8px 32px rgba(0,0,0,0.4);
+    }
+    ${p.$isSelected && css`
+      border-color: ${theme.colors.accent.coral};
+      box-shadow: 0 0 0 4px ${theme.colors.accent.coral}35, 0 8px 32px ${theme.colors.accent.coral}25, 0 12px 40px rgba(0,0,0,0.15);
+      transform: scale(1.03);
+      [data-theme="dark"] & {
+        box-shadow: 0 0 0 4px ${theme.colors.accent.coral}40, 0 8px 32px ${theme.colors.accent.coral}30, 0 0 48px rgba(255,153,153,0.12);
+      }
+    `}
+  `}
   &:active { transform: scale(0.96); }
   @media (min-width: ${theme.breakpoints.lg}) {
-    border-radius: 16px;
-    &:hover { transform: scale(1.04); box-shadow: var(--shadow-card-hover); }
+    border-radius: ${p => p.$hero ? '20px' : '16px'};
+    &:hover {
+      transform: scale(1.05);
+      box-shadow: ${p => p.$hero
+        ? `0 0 0 3px ${theme.colors.accent.coral}20, 0 12px 40px rgba(255,153,153,0.18), 0 8px 32px rgba(0,0,0,0.12)`
+        : 'var(--shadow-card-hover)'};
+    }
   }
 `;
 
@@ -337,16 +361,16 @@ export const CardImg = styled.div<{ $src: string }>`
   }
 `;
 
-export const CardImgLabel = styled.span`
-  padding: 6px 4px;
-  font-family: ${theme.fonts.body};
-  font-size: 11px;
-  font-weight: 600;
+export const CardImgLabel = styled.span<{ $hero?: boolean }>`
+  padding: ${p => p.$hero ? '8px 4px' : '6px 4px'};
+  font-family: ${p => p.$hero ? theme.fonts.heading : theme.fonts.body};
+  font-size: ${p => p.$hero ? '13px' : '11px'};
+  font-weight: ${p => p.$hero ? 700 : 600};
   text-align: center;
   color: var(--text-primary);
   line-height: 1.2;
-  @media (max-width: ${theme.breakpoints.sm}) { font-size: 10px; padding: 4px 2px; }
-  @media (min-width: ${theme.breakpoints.lg}) { font-size: 14px; padding: 10px 6px; }
+  @media (max-width: ${theme.breakpoints.sm}) { font-size: ${p => p.$hero ? '12px' : '10px'}; padding: ${p => p.$hero ? '6px 2px' : '4px 2px'}; }
+  @media (min-width: ${theme.breakpoints.lg}) { font-size: ${p => p.$hero ? '16px' : '14px'}; padding: ${p => p.$hero ? '12px 6px' : '10px 6px'}; }
 `;
 
 /* ══════════════════════════════════════════════
