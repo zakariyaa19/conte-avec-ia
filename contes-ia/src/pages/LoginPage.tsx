@@ -396,7 +396,7 @@ export const LoginPage: React.FC = () => {
   const initialStripePlan: 'monthly' | 'annual' = planParam === 'club_annual' ? 'annual' : 'monthly';
 
   const [mode, setMode] = useState<'login' | 'register'>(initialMode);
-  const [loginMethod, setLoginMethod] = useState<'magic' | 'password' | 'otp_verify'>('password');
+  const [loginMethod, setLoginMethod] = useState<'magic' | 'password' | 'otp_verify' | 'admin_password'>('password');
   const [magicLinkSent, setMagicLinkSent] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -616,6 +616,31 @@ export const LoginPage: React.FC = () => {
                     </span>
                   </p>
                 </div>
+              ) : loginMethod === 'admin_password' ? (
+                /* Admin password login */
+                <>
+                  <Form onSubmit={handleSubmit}>
+                    <InputField>
+                      <InputLabel>Email</InputLabel>
+                      <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
+                        placeholder="admin@contedia.fr" autoComplete="email" style={{ fontSize: 16 }} />
+                    </InputField>
+                    <InputField>
+                      <InputLabel>Mot de passe</InputLabel>
+                      <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Mot de passe" autoComplete="current-password" style={{ fontSize: 16 }} />
+                    </InputField>
+                    <Button variant="primary" size="lg" type="submit" disabled={isLoading} fullWidth>
+                      {isLoading ? 'Connexion...' : 'Se connecter'}
+                    </Button>
+                  </Form>
+                  <p style={{ textAlign: 'center', marginTop: 12, fontSize: theme.fontSizes.xs, color: 'var(--text-light)' }}>
+                    <span style={{ cursor: 'pointer', color: theme.colors.accent.coral }}
+                      onClick={() => { setLoginMethod('password'); setPassword(''); setError(''); }}>
+                      Retour
+                    </span>
+                  </p>
+                </>
               ) : (
                 /* Email + Google */
                 <>
@@ -760,6 +785,14 @@ export const LoginPage: React.FC = () => {
               <>Pas encore de compte ?{' '}<span onClick={toggleMode}>Créer un compte</span></>
             )}
           </LinkText>
+          {!isRegister && loginMethod !== 'admin_password' && (
+            <p style={{ textAlign: 'center', marginTop: 8, fontSize: '10px', color: 'var(--text-light)', opacity: 0.5 }}>
+              <span style={{ cursor: 'pointer' }}
+                onClick={() => { setLoginMethod('admin_password'); setPassword(''); setError(''); }}>
+                Administration
+              </span>
+            </p>
+          )}
         </LoginCard>
       </LoginContainer>
       <Footer />
