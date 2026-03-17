@@ -351,7 +351,7 @@ export class ApiService {
     });
   }
 
-  static async checkEmail(email: string): Promise<{ success: boolean; exists: boolean; hasPassword?: boolean }> {
+  static async checkEmail(email: string): Promise<{ success: boolean; exists: boolean; hasPassword?: boolean; isFirstPurchase?: boolean }> {
     return this.request(`/api/auth/check-email?email=${encodeURIComponent(email)}`);
   }
 

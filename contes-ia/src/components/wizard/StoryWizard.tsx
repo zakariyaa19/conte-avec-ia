@@ -209,11 +209,19 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [globalError, setGlobalError] = useState('');
-  const [emailStatus, setEmailStatus] = useState<{ exists: boolean; hasPassword: boolean } | null>(null);
+  const [emailStatus, setEmailStatus] = useState<{ exists: boolean; hasPassword: boolean; isFirstPurchase?: boolean } | null>(null);
 
-  // Premier livre GRATUIT sauf si email déjà connu (compte existant = déjà eu le gratuit)
-  const emailAlreadyExists = !isAuthenticated && emailStatus?.exists === true;
-  const isFirstPurchase = emailAlreadyExists ? false : (isAuthenticated ? currentUser?.isFirstPurchase !== false : true);
+  // Premier livre GRATUIT — logique complète :
+  // 1. Non connecté + email inconnu → gratuit (nouveau visiteur)
+  // 2. Non connecté + email connu + backend dit isFirstPurchase=true → gratuit
+  // 3. Non connecté + email connu + backend dit isFirstPurchase=false/undefined → payant
+  // 4. Connecté → selon user.isFirstPurchase du backend
+  const isFirstPurchase = (() => {
+    if (isAuthenticated) return currentUser?.isFirstPurchase !== false;
+    if (!emailStatus?.exists) return true; // email inconnu = nouveau = gratuit
+    // email connu : utiliser isFirstPurchase du backend (false si déjà utilisé)
+    return emailStatus.isFirstPurchase === true;
+  })();
   const singlePrice = isFirstPurchase ? 0 : 6.99;
   const singlePriceLabel = isFirstPurchase ? 'GRATUIT' : '6,99€';
 
@@ -409,7 +417,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
     metaTrackLead(isClub ? 6.99 : singlePrice);
     try {
       const res = await ApiService.checkEmail(formData.userEmail);
-      if (res.success) setEmailStatus({ exists: res.exists, hasPassword: !!res.hasPassword });
+      if (res.success) setEmailStatus({ exists: res.exists, hasPassword: !!res.hasPassword, isFirstPurchase: res.isFirstPurchase });
     } catch { /* silent */ }
   };
 

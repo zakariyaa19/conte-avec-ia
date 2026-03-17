@@ -311,7 +311,8 @@ export class AuthController {
       }
 
       const user = await prisma.user.findUnique({
-        where: { email: email as string }
+        where: { email: email as string },
+        include: { orders: { select: { status: true } } }
       });
 
       if (!user) {
@@ -321,10 +322,16 @@ export class AuthController {
         });
       }
 
+      // Vérifier si l'utilisateur a déjà eu un livre (gratuit ou payé)
+      const hasPaidOrder = user.orders?.some((o: any) =>
+        ['PAID', 'GENERATING', 'GENERATED', 'DELIVERED'].includes(o.status)
+      ) || false;
+
       res.json({
         success: true,
         exists: true,
-        hasPassword: !!user.password
+        hasPassword: !!user.password,
+        isFirstPurchase: !hasPaidOrder
       });
     } catch (error) {
       console.error('Erreur check email:', error);
