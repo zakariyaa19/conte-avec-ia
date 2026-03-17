@@ -26,7 +26,7 @@ const StepContainer = styled.div`
 const SectionTitle = styled.h3`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.xl};
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin-bottom: ${theme.spacing.lg};
   text-align: center;
   
@@ -37,7 +37,7 @@ const SectionTitle = styled.h3`
 `;
 
 const SectionDescription = styled.p`
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   text-align: center;
   margin-bottom: ${theme.spacing.xl};
   line-height: 1.6;
@@ -49,11 +49,11 @@ const SectionDescription = styled.p`
 `;
 
 const SummarySection = styled.div`
-  background-color: ${theme.colors.background.secondary};
+  background-color: var(--bg-secondary);
   padding: ${theme.spacing.xl};
   border-radius: ${theme.borderRadius.lg};
   margin-bottom: ${theme.spacing['2xl']};
-  
+
   @media (max-width: ${theme.breakpoints.sm}) {
     padding: ${theme.spacing.lg};
     margin-bottom: ${theme.spacing.xl};
@@ -61,7 +61,7 @@ const SummarySection = styled.div`
 `;
 
 const SummaryTitle = styled.h4`
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin-bottom: ${theme.spacing.lg};
   font-family: ${theme.fonts.heading};
   
@@ -83,7 +83,7 @@ const SummaryGrid = styled.div`
 `;
 
 const SummaryItem = styled.div`
-  background-color: ${theme.colors.background.white};
+  background-color: var(--bg-card);
   padding: ${theme.spacing.md};
   border-radius: ${theme.borderRadius.md};
   
@@ -94,14 +94,14 @@ const SummaryItem = styled.div`
 
 const SummaryLabel = styled.div`
   font-size: ${theme.fontSizes.xs};
-  color: ${theme.colors.text.light};
+  color: var(--text-light);
   text-transform: uppercase;
   font-weight: 600;
   margin-bottom: 4px;
 `;
 
 const SummaryValue = styled.div`
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   font-weight: 500;
 `;
 
@@ -128,11 +128,11 @@ const PricingGrid = styled.div`
 
 const ShippingSection = styled.div<{ $show: boolean }>`
   display: ${props => props.$show ? 'block' : 'none'};
-  background-color: ${theme.colors.background.secondary};
+  background-color: var(--bg-secondary);
   padding: ${theme.spacing.xl};
   border-radius: ${theme.borderRadius.lg};
   margin-bottom: ${theme.spacing.xl};
-  
+
   @media (max-width: ${theme.breakpoints.sm}) {
     padding: ${theme.spacing.lg};
     margin-bottom: ${theme.spacing.lg};
@@ -161,7 +161,7 @@ const InputField = styled.div`
 const Label = styled.label`
   font-family: ${theme.fonts.body};
   font-weight: 600;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin-bottom: ${theme.spacing.sm};
   font-size: ${theme.fontSizes.sm};
 `;
@@ -180,7 +180,7 @@ const Input = styled.input`
   }
   
   &::placeholder {
-    color: ${theme.colors.text.light};
+    color: var(--text-light);
   }
 `;
 
@@ -406,7 +406,7 @@ export const StoryFormStep3: React.FC<StoryFormStep3Props> = ({ formData, onUpda
       </SummarySection>
 
       <PricingSection>
-        <h4 style={{ marginBottom: theme.spacing.lg, color: theme.colors.text.primary, textAlign: 'center' }}>
+        <h4 style={{ marginBottom: theme.spacing.lg, color: 'var(--text-primary)', textAlign: 'center' }}>
           Choisissez votre format
         </h4>
         <PricingGrid>
@@ -429,7 +429,7 @@ export const StoryFormStep3: React.FC<StoryFormStep3Props> = ({ formData, onUpda
 
       {/* Section informations obligatoires pour tous */}
       <ShippingSection $show={true}>
-        <h4 style={{ marginBottom: theme.spacing.lg, color: theme.colors.text.primary }}>
+        <h4 style={{ marginBottom: theme.spacing.lg, color: 'var(--text-primary)' }}>
           Informations de commande
         </h4>
         <ShippingGrid>
@@ -489,7 +489,7 @@ export const StoryFormStep3: React.FC<StoryFormStep3Props> = ({ formData, onUpda
         <p style={{ 
           marginTop: theme.spacing.md, 
           fontSize: theme.fontSizes.xs, 
-          color: theme.colors.text.light 
+          color: 'var(--text-light)' 
         }}>
           🔒 Paiement sécurisé par Stripe
         </p>

@@ -22,7 +22,7 @@ const InputContainer = styled.div`
 const Label = styled.label`
   font-family: ${theme.fonts.body};
   font-weight: 600;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin-bottom: ${theme.spacing.sm};
   font-size: ${theme.fontSizes.sm};
 `;
@@ -45,12 +45,12 @@ const Input = styled.input<{ $hasError: boolean }>`
   }
 
   &::placeholder {
-    color: ${theme.colors.text.light};
+    color: var(--text-light);
   }
 
   &:disabled {
-    background-color: ${theme.colors.background.secondary};
-    color: ${theme.colors.text.secondary};
+    background-color: var(--bg-secondary);
+    color: var(--text-secondary);
     cursor: not-allowed;
   }
 `;

@@ -334,7 +334,7 @@ const StoryText = styled.p<{ $night?: boolean }>`
   font-family: ${theme.fonts.body};
   font-size: 16px;
   line-height: 1.9;
-  color: ${props => props.$night ? 'rgba(255,255,255,0.85)' : theme.colors.text.primary};
+  color: ${props => props.$night ? 'rgba(255,255,255,0.85)' : 'var(--text-primary)'};
   margin: 0;
   font-weight: 400;
   letter-spacing: 0.01em;

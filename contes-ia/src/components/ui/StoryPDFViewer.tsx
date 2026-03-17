@@ -46,7 +46,7 @@ const Overlay = styled.div<{ $isOpen: boolean }>`
   z-index: 9999;
   display: ${props => props.$isOpen ? 'flex' : 'none'};
   flex-direction: column;
-  background: ${theme.colors.background.primary};
+  background: var(--bg-primary);
   animation: ${fadeIn} 0.25s ease-out;
   overflow: hidden;
 
@@ -59,7 +59,7 @@ const TopBar = styled.header`
   align-items: center;
   justify-content: space-between;
   padding: 12px 16px;
-  background: ${theme.colors.background.white};
+  background: var(--bg-card);
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
   z-index: 10;
@@ -75,7 +75,7 @@ const TopBar = styled.header`
 const TopBarTitle = styled.h2`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.base};
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -111,7 +111,7 @@ const IconButton = styled.button<{ $variant?: 'default' | 'close' }>`
     : `${theme.colors.accent.coral}12`
   };
   color: ${props => props.$variant === 'close'
-    ? theme.colors.text.secondary
+    ? 'var(--text-secondary)'
     : theme.colors.accent.coral
   };
 
@@ -139,7 +139,7 @@ const ScrollContainer = styled.div`
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
-  background: ${theme.colors.background.secondary};
+  background: var(--bg-secondary);
   touch-action: pan-y pinch-zoom;
 `;
 
@@ -196,9 +196,9 @@ const PageSkeleton = styled.div`
   border-radius: ${theme.borderRadius.lg};
   background: linear-gradient(
     90deg,
-    ${theme.colors.background.secondary} 25%,
-    ${theme.colors.background.white} 50%,
-    ${theme.colors.background.secondary} 75%
+    var(--bg-secondary) 25%,
+    var(--bg-card) 50%,
+    var(--bg-secondary) 75%
   );
   background-size: 200% 100%;
   animation: ${shimmer} 1.5s ease-in-out infinite;
@@ -242,14 +242,14 @@ const LoadingOverlay = styled.div`
   align-items: center;
   justify-content: center;
   gap: 16px;
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   padding: 40px;
 `;
 
 const Spinner = styled.div`
   width: 40px;
   height: 40px;
-  border: 3px solid ${theme.colors.background.secondary};
+  border: 3px solid var(--bg-secondary);
   border-top-color: ${theme.colors.accent.coral};
   border-radius: 50%;
   animation: ${spin} 0.8s linear infinite;
@@ -272,7 +272,7 @@ const ErrorIcon = styled.div`
 `;
 
 const ErrorText = styled.p`
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   font-size: ${theme.fontSizes.base};
   max-width: 320px;
   line-height: 1.6;

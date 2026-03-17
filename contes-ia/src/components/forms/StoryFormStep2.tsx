@@ -26,7 +26,7 @@ const StepContainer = styled.div`
 const SectionTitle = styled.h3`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.xl};
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin-bottom: ${theme.spacing.lg};
   text-align: center;
   
@@ -37,7 +37,7 @@ const SectionTitle = styled.h3`
 `;
 
 const SectionDescription = styled.p`
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   text-align: center;
   margin-bottom: ${theme.spacing.xl};
   line-height: 1.6;
@@ -80,10 +80,10 @@ const InputField = styled.div`
 const Label = styled.label`
   font-family: ${theme.fonts.body};
   font-weight: 600;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin-bottom: ${theme.spacing.sm};
   font-size: ${theme.fontSizes.sm};
-  
+
   @media (max-width: ${theme.breakpoints.sm}) {
     margin-bottom: ${theme.spacing.xs};
     font-size: ${theme.fontSizes.xs};
@@ -104,9 +104,9 @@ const Input = styled.input`
   }
   
   &::placeholder {
-    color: ${theme.colors.text.light};
+    color: var(--text-light);
   }
-  
+
   @media (max-width: ${theme.breakpoints.sm}) {
     padding: ${theme.spacing.sm};
     font-size: ${theme.fontSizes.sm};
@@ -134,7 +134,7 @@ const ColorOption = styled.div<{ color: string; $isSelected: boolean }>`
   border-radius: ${theme.borderRadius.md};
   cursor: pointer;
   transition: all 0.2s ease;
-  background-color: ${props => props.$isSelected ? theme.colors.accent.creamyYellow : theme.colors.background.white};
+  background-color: ${props => props.$isSelected ? theme.colors.accent.creamyYellow : 'var(--bg-card)'};
   
   &:hover {
     border-color: ${theme.colors.accent.coral};
@@ -162,8 +162,8 @@ const ColorCircle = styled.div<{ color: string }>`
 
 const ColorLabel = styled.span`
   font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.text.primary};
-  
+  color: var(--text-primary);
+
   @media (max-width: ${theme.breakpoints.sm}) {
     font-size: ${theme.fontSizes.xs};
   }
@@ -183,7 +183,7 @@ const PhotoUploadSection = styled.div`
 `;
 
 const PhotoUploadText = styled.p`
-  color: ${theme.colors.text.light};
+  color: var(--text-light);
   margin-bottom: ${theme.spacing.md};
   font-size: ${theme.fontSizes.sm};
 `;
@@ -193,7 +193,7 @@ const HiddenFileInput = styled.input`
 `;
 
 const SecondaryCharacterSection = styled.div`
-  background-color: ${theme.colors.background.secondary};
+  background-color: var(--bg-secondary);
   padding: ${theme.spacing.xl};
   border-radius: ${theme.borderRadius.lg};
   margin-top: ${theme.spacing.xl};
@@ -227,7 +227,7 @@ const CustomInput = styled.input`
   }
   
   &::placeholder {
-    color: ${theme.colors.text.light};
+    color: var(--text-light);
   }
 `;
 
@@ -248,16 +248,16 @@ const TextArea = styled.textarea`
   }
   
   &::placeholder {
-    color: ${theme.colors.text.light};
+    color: var(--text-light);
   }
 `;
 
 const ToggleButton = styled.button<{ $isActive: boolean }>`
   background: ${props => props.$isActive ? 
     `linear-gradient(135deg, ${theme.colors.accent.creamyYellow}, ${theme.colors.accent.lightCoral})` : 
-    theme.colors.background.white
+    'var(--bg-card)'
   };
-  color: ${props => props.$isActive ? theme.colors.text.primary : theme.colors.text.secondary};
+  color: ${props => props.$isActive ? 'var(--text-primary)' : 'var(--text-secondary)'};
   border: 2px solid ${props => props.$isActive ? 'transparent' : 'var(--border-input)'};
   border-radius: ${theme.borderRadius.md};
   padding: ${theme.spacing.sm} ${theme.spacing.md};
@@ -354,7 +354,7 @@ export const StoryFormStep2: React.FC<StoryFormStep2Props> = ({ formData, onUpda
       </SectionDescription>
 
       <FormSection>
-        <h4 style={{ marginBottom: theme.spacing.lg, color: theme.colors.text.primary }}>
+        <h4 style={{ marginBottom: theme.spacing.lg, color: 'var(--text-primary)' }}>
           🧍 Informations du protagoniste
         </h4>
         
@@ -383,7 +383,7 @@ export const StoryFormStep2: React.FC<StoryFormStep2Props> = ({ formData, onUpda
         </InputGroup>
 
         <FormSection ref={genderRef}>
-          <h4 style={{ marginBottom: theme.spacing.lg, color: theme.colors.text.primary }}>
+          <h4 style={{ marginBottom: theme.spacing.lg, color: 'var(--text-primary)' }}>
             Sexe *
           </h4>
           <SelectionGrid>
@@ -402,7 +402,7 @@ export const StoryFormStep2: React.FC<StoryFormStep2Props> = ({ formData, onUpda
       </FormSection>
 
       <FormSection ref={eyeColorRef}>
-        <h4 style={{ marginBottom: theme.spacing.lg, color: theme.colors.text.primary }}>
+        <h4 style={{ marginBottom: theme.spacing.lg, color: 'var(--text-primary)' }}>
           Couleur des yeux *
         </h4>
         <ColorGrid>
@@ -421,7 +421,7 @@ export const StoryFormStep2: React.FC<StoryFormStep2Props> = ({ formData, onUpda
       </FormSection>
 
       <FormSection ref={hairColorRef}>
-        <h4 style={{ marginBottom: theme.spacing.lg, color: theme.colors.text.primary }}>
+        <h4 style={{ marginBottom: theme.spacing.lg, color: 'var(--text-primary)' }}>
           Couleur des cheveux *
         </h4>
         <ColorGrid>
@@ -440,7 +440,7 @@ export const StoryFormStep2: React.FC<StoryFormStep2Props> = ({ formData, onUpda
       </FormSection>
 
       <FormSection ref={skinColorRef}>
-        <h4 style={{ marginBottom: theme.spacing.lg, color: theme.colors.text.primary }}>
+        <h4 style={{ marginBottom: theme.spacing.lg, color: 'var(--text-primary)' }}>
           Couleur de la peau *
         </h4>
         <ColorGrid>
@@ -459,7 +459,7 @@ export const StoryFormStep2: React.FC<StoryFormStep2Props> = ({ formData, onUpda
       </FormSection>
 
       <FormSection ref={photoRef}>
-        <h4 style={{ marginBottom: theme.spacing.lg, color: theme.colors.text.primary }}>
+        <h4 style={{ marginBottom: theme.spacing.lg, color: 'var(--text-primary)' }}>
           Photo du protagoniste (optionnel)
         </h4>
         <PhotoUploadSection>
@@ -479,10 +479,10 @@ export const StoryFormStep2: React.FC<StoryFormStep2Props> = ({ formData, onUpda
       </FormSection>
 
       <FormSection ref={languageRef}>
-        <h4 style={{ marginBottom: theme.spacing.lg, color: theme.colors.text.primary }}>
+        <h4 style={{ marginBottom: theme.spacing.lg, color: 'var(--text-primary)' }}>
           🌍 Langue du conte
         </h4>
-        <p style={{ color: theme.colors.text.light, marginBottom: theme.spacing.lg, fontSize: theme.fontSizes.sm }}>
+        <p style={{ color: 'var(--text-light)', marginBottom: theme.spacing.lg, fontSize: theme.fontSizes.sm }}>
           Dans quelle langue le livre doit-il être écrit ?
         </p>
         <SelectionGrid>
@@ -500,7 +500,7 @@ export const StoryFormStep2: React.FC<StoryFormStep2Props> = ({ formData, onUpda
       </FormSection>
 
       <FormSection>
-        <h4 style={{ marginBottom: theme.spacing.lg, color: theme.colors.text.primary }}>
+        <h4 style={{ marginBottom: theme.spacing.lg, color: 'var(--text-primary)' }}>
           💡 Informations supplémentaires sur le personnage principal (facultatif)
         </h4>
         
@@ -534,7 +534,7 @@ export const StoryFormStep2: React.FC<StoryFormStep2Props> = ({ formData, onUpda
       </FormSection>
 
       <FormSection>
-        <h4 style={{ marginBottom: theme.spacing.lg, color: theme.colors.text.primary }}>
+        <h4 style={{ marginBottom: theme.spacing.lg, color: 'var(--text-primary)' }}>
           🕊️ Option additionnelle : dimension religieuse (non obligatoire)
         </h4>
         
@@ -585,7 +585,7 @@ export const StoryFormStep2: React.FC<StoryFormStep2Props> = ({ formData, onUpda
       </FormSection>
 
       <SecondaryCharacterSection>
-        <h4 style={{ marginBottom: theme.spacing.lg, color: theme.colors.text.primary }}>
+        <h4 style={{ marginBottom: theme.spacing.lg, color: 'var(--text-primary)' }}>
           🧸 Personnage secondaire (optionnel)
         </h4>
         
@@ -613,10 +613,10 @@ export const StoryFormStep2: React.FC<StoryFormStep2Props> = ({ formData, onUpda
       </SecondaryCharacterSection>
 
       <FormSection>
-        <h4 style={{ marginBottom: theme.spacing.lg, color: theme.colors.text.primary }}>
+        <h4 style={{ marginBottom: theme.spacing.lg, color: 'var(--text-primary)' }}>
           🧑‍🎨 Vos détails personnels
         </h4>
-        <p style={{ color: theme.colors.text.light, marginBottom: theme.spacing.lg, fontSize: theme.fontSizes.sm }}>
+        <p style={{ color: 'var(--text-light)', marginBottom: theme.spacing.lg, fontSize: theme.fontSizes.sm }}>
           Ajoutez une touche unique en mentionnant le créateur du livre.
         </p>
         

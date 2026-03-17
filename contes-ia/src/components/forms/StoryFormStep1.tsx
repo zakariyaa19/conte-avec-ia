@@ -29,7 +29,7 @@ const StepContainer = styled.div`
 const SectionTitle = styled.h3`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.xl};
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin-bottom: ${theme.spacing.lg};
   text-align: center;
   
@@ -89,7 +89,7 @@ const CustomInput = styled.input`
   }
   
   &::placeholder {
-    color: ${theme.colors.text.light};
+    color: var(--text-light);
   }
 `;
 
@@ -141,7 +141,7 @@ export const StoryFormStep1: React.FC<StoryFormStep1Props> = ({ formData, onUpda
       </SectionDescription>
 
       <FormSection>
-        <h4 style={{ marginBottom: theme.spacing.lg, color: theme.colors.text.primary }}>
+        <h4 style={{ marginBottom: theme.spacing.lg, color: 'var(--text-primary)' }}>
           🧒 Pour quel âge ?
         </h4>
         <SelectionGrid $columns={2}>
@@ -160,7 +160,7 @@ export const StoryFormStep1: React.FC<StoryFormStep1Props> = ({ formData, onUpda
       </FormSection>
 
       <FormSection ref={themeRef}>
-        <h4 style={{ marginBottom: theme.spacing.lg, color: theme.colors.text.primary }}>
+        <h4 style={{ marginBottom: theme.spacing.lg, color: 'var(--text-primary)' }}>
           🌈 Quel thème général ?
         </h4>
         <SelectionGrid>
@@ -193,7 +193,7 @@ export const StoryFormStep1: React.FC<StoryFormStep1Props> = ({ formData, onUpda
       </FormSection>
 
       <FormSection ref={subjectRef}>
-        <h4 style={{ marginBottom: theme.spacing.lg, color: theme.colors.text.primary }}>
+        <h4 style={{ marginBottom: theme.spacing.lg, color: 'var(--text-primary)' }}>
           🪅 Sujet
         </h4>
         <SelectionGrid>
@@ -226,7 +226,7 @@ export const StoryFormStep1: React.FC<StoryFormStep1Props> = ({ formData, onUpda
       </FormSection>
 
       <FormSection ref={messageRef}>
-        <h4 style={{ marginBottom: theme.spacing.lg, color: theme.colors.text.primary }}>
+        <h4 style={{ marginBottom: theme.spacing.lg, color: 'var(--text-primary)' }}>
           💬 Message central
         </h4>
         <SelectionGrid>
@@ -259,7 +259,7 @@ export const StoryFormStep1: React.FC<StoryFormStep1Props> = ({ formData, onUpda
       </FormSection>
 
       <FormSection ref={styleRef}>
-        <h4 style={{ marginBottom: theme.spacing.lg, color: theme.colors.text.primary }}>
+        <h4 style={{ marginBottom: theme.spacing.lg, color: 'var(--text-primary)' }}>
           🎨 Style d'illustration
         </h4>
         <SelectionGrid>

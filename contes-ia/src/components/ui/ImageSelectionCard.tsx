@@ -125,7 +125,7 @@ export const ImageSelectionCard: React.FC<ImageSelectionCardProps> = ({
           target.style.display = 'none';
           const container = target.parentElement;
           if (container) {
-            container.style.background = theme.colors.background.secondary;
+            container.style.background = 'var(--bg-secondary)';
           }
         }}
       />

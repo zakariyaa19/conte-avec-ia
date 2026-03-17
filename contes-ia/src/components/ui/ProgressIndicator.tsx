@@ -44,7 +44,7 @@ const ProgressBarContainer = styled.div`
 const ProgressBar = styled.div`
   position: relative;
   height: 6px;
-  background: ${theme.colors.background.secondary};
+  background: var(--bg-secondary);
   border-radius: ${theme.borderRadius.full};
   margin-bottom: ${theme.spacing.md};
   overflow: hidden;
@@ -75,8 +75,8 @@ const StepItem = styled.div<{ $isCompleted: boolean; $isActive: boolean }>`
   font-size: ${theme.fontSizes.sm};
   color: ${props =>
     props.$isCompleted ? theme.colors.accent.coral :
-    props.$isActive ? theme.colors.text.primary :
-    theme.colors.text.light
+    props.$isActive ? 'var(--text-primary)' :
+    'var(--text-light)'
   };
   font-weight: ${props => props.$isActive || props.$isCompleted ? 600 : 400};
   transition: all ${theme.transitions.smooth};
@@ -100,11 +100,11 @@ const StepDot = styled.div<{ $isCompleted: boolean; $isActive: boolean }>`
   background: ${props =>
     props.$isCompleted ? `linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover})` :
     props.$isActive ? theme.colors.accent.lightCoral :
-    theme.colors.background.secondary
+    'var(--bg-secondary)'
   };
   color: ${props =>
     props.$isCompleted || props.$isActive ? theme.colors.text.white :
-    theme.colors.text.light
+    'var(--text-light)'
   };
   font-size: 11px;
   font-weight: 700;

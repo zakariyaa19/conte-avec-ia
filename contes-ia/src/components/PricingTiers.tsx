@@ -35,10 +35,10 @@ const Grid = styled.div`
 const Card = styled.div<{ $highlighted?: boolean }>`
   background: ${props => props.$highlighted
     ? 'linear-gradient(160deg, #FFFFFF 0%, #F0ECFF 40%, #EBE5FF 100%)'
-    : theme.colors.background.white};
+    : 'var(--bg-card)'};
   border: ${props => props.$highlighted
     ? '2px solid #764ba2'
-    : `1px solid ${theme.colors.background.secondary}`};
+    : `1px solid var(--bg-secondary)`};
   border-radius: 20px;
   padding: ${theme.spacing.xl};
   position: relative;
@@ -76,7 +76,7 @@ const Badge = styled.div`
 const CardTitle = styled.h3`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.xl};
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin: 0 0 ${theme.spacing.sm};
   font-weight: 700;
 
@@ -93,7 +93,7 @@ const PriceValue = styled.div`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes['3xl']};
   font-weight: 800;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   line-height: 1;
 
   @media (max-width: ${theme.breakpoints.sm}) {
@@ -103,7 +103,7 @@ const PriceValue = styled.div`
 
 const PriceNote = styled.p`
   font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.text.light};
+  color: var(--text-light);
   margin: 4px 0 0;
 `;
 
@@ -125,7 +125,7 @@ const Feature = styled.li<{ $disabled?: boolean; $premium?: boolean }>`
   gap: 10px;
   margin-bottom: 10px;
   font-size: 13px;
-  color: ${props => props.$disabled ? '#ccc' : theme.colors.text.secondary};
+  color: ${props => props.$disabled ? '#ccc' : 'var(--text-secondary)'};
   text-decoration: ${props => props.$disabled ? 'line-through' : 'none'};
   font-weight: ${props => props.$premium ? 600 : 400};
   line-height: 1.4;
@@ -146,7 +146,7 @@ const ToggleRow = styled.div`
 
 const ToggleContainer = styled.div`
   display: inline-flex;
-  background: ${theme.colors.background.secondary};
+  background: var(--bg-secondary);
   border-radius: ${theme.borderRadius.full};
   padding: 3px;
 `;
@@ -160,7 +160,7 @@ const ToggleButton = styled.button<{ $active: boolean }>`
   cursor: pointer;
   transition: all 0.2s;
   background: ${props => props.$active ? 'white' : 'transparent'};
-  color: ${props => props.$active ? theme.colors.text.primary : theme.colors.text.light};
+  color: ${props => props.$active ? 'var(--text-primary)' : 'var(--text-light)'};
   box-shadow: ${props => props.$active ? '0 1px 4px rgba(0,0,0,0.1)' : 'none'};
 `;
 
@@ -220,7 +220,7 @@ export const PricingTiers: React.FC<PricingTiersProps> = ({ onSelectPlan }) => {
           <Badge>Recommande</Badge>
           <CardTitle>Club des Histoires</CardTitle>
           <PriceBlock>
-            <PriceValue>{showAnnual ? '6,67€' : '9,99€'}<span style={{ fontSize: '16px', fontWeight: 400, color: theme.colors.text.light }}>/mois</span></PriceValue>
+            <PriceValue>{showAnnual ? '6,67€' : '9,99€'}<span style={{ fontSize: '16px', fontWeight: 400, color: 'var(--text-light)' }}>/mois</span></PriceValue>
             <PriceNote>{showAnnual ? '79,99€/an — economisez 40€' : 'Sans engagement'}</PriceNote>
           </PriceBlock>
           <Divider />

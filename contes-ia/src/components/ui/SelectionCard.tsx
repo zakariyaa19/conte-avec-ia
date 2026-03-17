@@ -19,7 +19,7 @@ const CardContainer = styled.div<{ $isSelected: boolean; $size: string; $isCusto
     if (props.$isCustom) {
       return props.$isSelected ? theme.colors.accent.pastelBlue + '30' : theme.colors.accent.pastelBlue + '15';
     }
-    return props.$isSelected ? theme.colors.accent.creamyYellow : theme.colors.background.white;
+    return props.$isSelected ? theme.colors.accent.creamyYellow : 'var(--bg-card)';
   }};
   border: 2px solid ${props => {
     if (props.$isCustom) {
@@ -90,7 +90,7 @@ const CardIcon = styled.div<{ $size: string }>`
 const CardLabel = styled.div<{ $size: string }>`
   font-family: ${theme.fonts.body};
   font-weight: 600;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   font-size: ${props => {
     switch (props.$size) {
       case 'sm': return theme.fontSizes.sm;
@@ -115,7 +115,7 @@ const CardLabel = styled.div<{ $size: string }>`
 
 const CardDescription = styled.div`
   font-size: ${theme.fontSizes.xs};
-  color: ${theme.colors.text.light};
+  color: var(--text-light);
   line-height: 1.4;
   
   @media (max-width: ${theme.breakpoints.sm}) {

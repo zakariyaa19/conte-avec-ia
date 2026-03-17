@@ -16,7 +16,7 @@ const PageContainer = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: ${theme.colors.background.primary};
+  background-color: var(--bg-primary);
 `;
 
 const MainContent = styled.main`
@@ -31,12 +31,12 @@ const MainContent = styled.main`
 const PageTitle = styled.h1`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes['2xl']};
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin-bottom: ${theme.spacing.xl};
 `;
 
 const ChildCard = styled.div`
-  background: ${theme.colors.background.white};
+  background: var(--bg-card);
   border-radius: ${theme.borderRadius.xl};
   box-shadow: ${theme.shadows.card};
   border: 1px solid rgba(0, 0, 0, 0.04);
@@ -50,12 +50,12 @@ const ChildCard = styled.div`
 const ChildInfo = styled.div`
   h3 {
     font-size: ${theme.fontSizes.lg};
-    color: ${theme.colors.text.primary};
+    color: var(--text-primary);
     margin: 0 0 ${theme.spacing.xs};
   }
   p {
     font-size: ${theme.fontSizes.sm};
-    color: ${theme.colors.text.secondary};
+    color: var(--text-secondary);
     margin: 0;
   }
 `;
@@ -66,7 +66,7 @@ const ChildActions = styled.div`
 `;
 
 const AddForm = styled.div`
-  background: ${theme.colors.background.white};
+  background: var(--bg-card);
   border-radius: ${theme.borderRadius.xl};
   box-shadow: ${theme.shadows.card};
   padding: ${theme.spacing.xl};
@@ -92,7 +92,7 @@ const InputField = styled.div`
   label {
     font-weight: 600;
     font-size: ${theme.fontSizes.sm};
-    color: ${theme.colors.text.primary};
+    color: var(--text-primary);
   }
 
   input {
@@ -251,7 +251,7 @@ export const ChildProfilesPage: React.FC = () => {
         {loading ? (
           <p>Chargement...</p>
         ) : children.length === 0 ? (
-          <p style={{ textAlign: 'center', color: theme.colors.text.secondary }}>
+          <p style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>
             Aucun profil enfant. Ajoutez-en un pour associer vos contes.
           </p>
         ) : (

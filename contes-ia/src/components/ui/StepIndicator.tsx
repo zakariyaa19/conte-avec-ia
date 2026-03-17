@@ -59,13 +59,13 @@ const StepCircle = styled.div<{ $isActive: boolean; $isCompleted: boolean }>`
     } else if (props.$isActive) {
       return `
         background-color: ${theme.colors.accent.creamyYellow};
-        color: ${theme.colors.text.primary};
+        color: var(--text-primary);
         border: 2px solid ${theme.colors.accent.coral};
       `;
     } else {
       return `
-        background-color: ${theme.colors.background.secondary};
-        color: ${theme.colors.text.light};
+        background-color: var(--bg-secondary);
+        color: var(--text-light);
         border: 2px solid #E5E5E5;
       `;
     }
@@ -92,13 +92,13 @@ const StepTitle = styled.div<{ $isActive: boolean }>`
   font-family: ${theme.fonts.body};
   font-weight: 600;
   font-size: ${theme.fontSizes.sm};
-  color: ${props => props.$isActive ? theme.colors.text.primary : theme.colors.text.light};
+  color: ${props => props.$isActive ? 'var(--text-primary)' : 'var(--text-light)'};
   margin-bottom: 4px;
 `;
 
 const StepDescription = styled.div`
   font-size: ${theme.fontSizes.xs};
-  color: ${theme.colors.text.light};
+  color: var(--text-light);
   line-height: 1.3;
 `;
 

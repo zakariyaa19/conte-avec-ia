@@ -19,8 +19,8 @@ const CardContainer = styled.div<{ $isSelected: boolean }>`
   padding: ${theme.spacing.lg};
   border-radius: ${theme.borderRadius.lg};
   background: ${props => props.$isSelected 
-    ? theme.colors.background.primary 
-    : theme.colors.background.secondary};
+    ? 'var(--bg-primary)'
+    : 'var(--bg-secondary)'};
   border: 3px solid ${props => props.$isSelected 
     ? theme.colors.accent.coral 
     : 'transparent'};
@@ -73,7 +73,7 @@ const AgeImage = styled.img`
 const Label = styled.div`
   font-size: ${theme.fontSizes.xl};
   font-weight: 700;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin-bottom: ${theme.spacing.xs};
   text-align: center;
   
@@ -84,7 +84,7 @@ const Label = styled.div`
 
 const Description = styled.div`
   font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.text.secondary};
+  color: var(--text-secondary);
   text-align: center;
   line-height: 1.4;
   

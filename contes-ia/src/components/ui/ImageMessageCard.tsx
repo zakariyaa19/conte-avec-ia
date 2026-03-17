@@ -18,8 +18,8 @@ const CardContainer = styled.div<{ $isSelected: boolean }>`
   padding: ${theme.spacing.lg};
   border-radius: ${theme.borderRadius.lg};
   background: ${props => props.$isSelected 
-    ? theme.colors.background.primary 
-    : theme.colors.background.secondary};
+    ? 'var(--bg-primary)'
+    : 'var(--bg-secondary)'};
   border: 3px solid ${props => props.$isSelected 
     ? theme.colors.accent.coral 
     : 'transparent'};
@@ -72,7 +72,7 @@ const MessageImage = styled.img`
 const Label = styled.div`
   font-size: ${theme.fontSizes.base};
   font-weight: 600;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   text-align: center;
   
   @media (max-width: ${theme.breakpoints.sm}) {

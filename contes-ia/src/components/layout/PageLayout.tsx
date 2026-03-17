@@ -13,7 +13,7 @@ const PageContainer = styled.div`
 
 const MainContent = styled.main`
   flex: 1;
-  background: var(--gradient-hero);
+  background: var(--bg-primary);
 `;
 
 interface PageLayoutProps {

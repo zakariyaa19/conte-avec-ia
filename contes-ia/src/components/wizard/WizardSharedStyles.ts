@@ -54,6 +54,11 @@ const pricingShimmer = keyframes`
    WIZARD LAYOUT
    ══════════════════════════════════════════════ */
 
+const twinkle = keyframes`
+  0%, 100% { opacity: 0.15; transform: scale(0.8); }
+  50% { opacity: 0.6; transform: scale(1.1); }
+`;
+
 export const WizardOverlay = styled.div`
   position: fixed;
   inset: 0;
@@ -162,6 +167,34 @@ export const StepContainer = styled.div<{
   -webkit-overflow-scrolling: touch;
   will-change: transform, opacity;
   ${stepAnimation}
+
+  /* Decorative orbs */
+  &::before {
+    content: '';
+    position: fixed;
+    top: 10%;
+    right: -5%;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, ${theme.colors.accent.coral}08 0%, transparent 70%);
+    pointer-events: none;
+    filter: blur(40px);
+  }
+
+  &::after {
+    content: '';
+    position: fixed;
+    bottom: 15%;
+    left: -8%;
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    background: radial-gradient(circle, ${theme.colors.accent.pastelBlue}08 0%, transparent 70%);
+    pointer-events: none;
+    filter: blur(40px);
+  }
+
   @media (max-width: ${theme.breakpoints.sm}) {
     padding: ${theme.spacing.lg} ${theme.spacing.md} 140px;
   }
@@ -313,7 +346,7 @@ export const TextCard = styled.button<{ $isSelected: boolean; $bg?: string; $del
   padding: 14px 12px;
   border: 2px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'var(--border-color)'};
   border-radius: 12px;
-  background: ${p => p.$isSelected ? theme.colors.accent.creamyYellow : (p.$bg || 'var(--bg-card)')};
+  background: ${p => p.$isSelected ? `${theme.colors.accent.coral}12` : (p.$bg || 'var(--bg-card)')};
   cursor: pointer; transition: all 0.2s ease;
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.sm};
@@ -351,7 +384,7 @@ export const ColorCard = styled.button<{ $isSelected: boolean; $color: string }>
   padding: ${theme.spacing.sm};
   border: 2px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'var(--border-color)'};
   border-radius: 10px;
-  background: ${p => p.$isSelected ? theme.colors.accent.creamyYellow : 'var(--bg-card)'};
+  background: ${p => p.$isSelected ? `${theme.colors.accent.coral}12` : 'var(--bg-card)'};
   cursor: pointer; transition: all 0.2s ease;
   -webkit-tap-highlight-color: transparent;
   ${p => p.$isSelected && css`box-shadow: 0 0 0 3px ${theme.colors.accent.coral}20;`}
@@ -434,13 +467,13 @@ export const TextArea = styled.textarea`
    ══════════════════════════════════════════════ */
 
 export const PhotoUploadZone = styled.div<{ $hasPhoto: boolean }>`
-  border: 2px dashed ${p => p.$hasPhoto ? theme.colors.accent.coral : '#D1D5DB'};
+  border: 2px dashed ${p => p.$hasPhoto ? theme.colors.accent.coral : 'var(--border-input)'};
   border-radius: ${theme.borderRadius.xl};
   padding: ${theme.spacing['2xl']} ${theme.spacing.xl};
   text-align: center; width: 100%; max-width: 360px;
   cursor: pointer; transition: all 0.2s ease;
   background: ${p => p.$hasPhoto
-    ? `linear-gradient(135deg, ${theme.colors.accent.creamyYellow}40, ${theme.colors.accent.lightCoral}15)`
+    ? `linear-gradient(135deg, ${`${theme.colors.accent.coral}12`}40, ${theme.colors.accent.lightCoral}15)`
     : 'var(--bg-secondary)'};
   &:hover { border-color: ${theme.colors.accent.coral}; box-shadow: ${theme.shadows.md}; }
 `;
@@ -461,7 +494,7 @@ export const ContinueButton = styled.button<{ $isReady: boolean }>`
   color: #fff; cursor: pointer; transition: all 0.3s ease;
   background: ${p => p.$isReady
     ? `linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover})`
-    : '#D1D5DB'};
+    : 'var(--border-input)'};
   ${p => p.$isReady && css`&:hover { transform: scale(1.02); box-shadow: 0 4px 20px ${theme.colors.accent.coral}40; }`}
   &:disabled { cursor: not-allowed; opacity: 0.5; }
   @media (max-width: ${theme.breakpoints.sm}) { max-width: 100%; font-size: ${theme.fontSizes.sm}; padding: 12px; }
@@ -543,7 +576,7 @@ export const CollapsiblePill = styled.button<{ $isOpen: boolean }>`
   padding: 6px ${theme.spacing.md};
   border: 1.5px solid ${p => p.$isOpen ? theme.colors.accent.coral : 'var(--border-input)'};
   border-radius: ${theme.borderRadius.full};
-  background: ${p => p.$isOpen ? theme.colors.accent.creamyYellow : 'transparent'};
+  background: ${p => p.$isOpen ? `${theme.colors.accent.coral}12` : 'transparent'};
   color: ${p => p.$isOpen ? theme.colors.accent.coral : 'var(--text-secondary)'};
   font-family: ${theme.fonts.body}; font-size: ${theme.fontSizes.xs}; font-weight: 600;
   cursor: pointer; transition: all 0.2s ease;
@@ -706,9 +739,9 @@ export const OrderCostSummary = styled.div<{ $variant: 'free' | 'paid' | 'info' 
   font-size: ${theme.fontSizes.xs}; font-weight: 600;
   margin-bottom: ${theme.spacing.md}; width: 100%; max-width: 560px; text-align: center;
   @media (min-width: ${theme.breakpoints.lg}) { max-width: 680px; font-size: ${theme.fontSizes.sm}; }
-  background: ${p => p.$variant === 'free' ? '#ecfdf5' : p.$variant === 'paid' ? theme.colors.accent.creamyYellow : 'var(--bg-secondary)'};
-  color: ${p => p.$variant === 'free' ? '#065f46' : 'var(--text-primary)'};
-  border: 1px solid ${p => p.$variant === 'free' ? '#a7f3d0' : p.$variant === 'paid' ? `${theme.colors.accent.lightCoral}30` : 'var(--border-input)'};
+  background: ${p => p.$variant === 'free' ? 'rgba(16,185,129,0.1)' : p.$variant === 'paid' ? `${theme.colors.accent.coral}10` : 'var(--bg-secondary)'};
+  color: ${p => p.$variant === 'free' ? '#10b981' : 'var(--text-primary)'};
+  border: 1px solid ${p => p.$variant === 'free' ? 'rgba(16,185,129,0.3)' : p.$variant === 'paid' ? `${theme.colors.accent.lightCoral}30` : 'var(--border-input)'};
 `;
 
 export const PayButton = styled.button<{ $isReady: boolean }>`
@@ -737,14 +770,14 @@ export const TrustBadge = styled.div`
 `;
 
 export const ErrorMessage = styled.div`
-  background: #FFF5F5; border: 1px solid #FED7D7; border-radius: ${theme.borderRadius.lg};
+  background: rgba(197,48,48,0.08); border: 1px solid rgba(197,48,48,0.2); border-radius: ${theme.borderRadius.lg};
   padding: ${theme.spacing.sm} ${theme.spacing.md}; margin-bottom: ${theme.spacing.md};
-  color: #C53030; font-size: ${theme.fontSizes.xs}; text-align: center; max-width: 500px; width: 100%;
+  color: #E53E3E; font-size: ${theme.fontSizes.xs}; text-align: center; max-width: 500px; width: 100%;
 `;
 
 export const ConnectedBanner = styled.div`
   padding: ${theme.spacing.sm} ${theme.spacing.md};
-  background: ${theme.colors.accent.creamyYellow};
+  background: ${theme.colors.accent.coral}10;
   border: 1px solid ${theme.colors.accent.lightCoral}30;
   border-radius: ${theme.borderRadius.md}; margin-bottom: ${theme.spacing.sm};
   font-size: ${theme.fontSizes.xs}; color: var(--text-primary);
@@ -752,7 +785,7 @@ export const ConnectedBanner = styled.div`
 `;
 
 export const ClubFreeCard = styled.div<{ $isSelected: boolean }>`
-  background: ${p => p.$isSelected ? theme.colors.accent.creamyYellow : 'var(--bg-card)'};
+  background: ${p => p.$isSelected ? `${theme.colors.accent.coral}12` : 'var(--bg-card)'};
   border: 2px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'var(--border-input)'};
   border-radius: ${theme.borderRadius.xl}; padding: ${theme.spacing.md};
   text-align: center; cursor: pointer; transition: all 0.2s ease;
@@ -2863,7 +2896,7 @@ export const SegmentDot = styled.div<{ $active: boolean; $done: boolean }>`
     ? theme.colors.accent.coral
     : p.$active
       ? theme.colors.accent.coral
-      : '#D1D5DB'};
+      : 'var(--border-input)'};
   ${p => p.$active && css`
     box-shadow: 0 0 0 3px ${theme.colors.accent.coral}25;
   `}
@@ -2931,7 +2964,7 @@ export const StickyContinueButton = styled.button<{ $isReady: boolean }>`
   -webkit-tap-highlight-color: transparent;
   background: ${p => p.$isReady
     ? `linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover})`
-    : '#D1D5DB'};
+    : 'var(--border-input)'};
 
   ${p => p.$isReady && css`
     box-shadow: 0 4px 16px ${theme.colors.accent.coral}30;
@@ -3181,7 +3214,7 @@ export const DetailChip = styled.button<{ $isSelected: boolean }>`
   padding: 6px 14px;
   border: 1.5px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'var(--border-input)'};
   border-radius: ${theme.borderRadius.full};
-  background: ${p => p.$isSelected ? theme.colors.accent.creamyYellow : 'var(--bg-card)'};
+  background: ${p => p.$isSelected ? `${theme.colors.accent.coral}12` : 'var(--bg-card)'};
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.xs};
   font-weight: 600;
@@ -3205,7 +3238,7 @@ export const AccordionHeader = styled.button<{ $isOpen: boolean }>`
   padding: ${theme.spacing.sm} ${theme.spacing.md};
   border: 1.5px solid ${p => p.$isOpen ? theme.colors.accent.coral : 'var(--border-input)'};
   border-radius: ${p => p.$isOpen ? '12px 12px 0 0' : '12px'};
-  background: ${p => p.$isOpen ? theme.colors.accent.creamyYellow : 'var(--bg-card)'};
+  background: ${p => p.$isOpen ? `${theme.colors.accent.coral}12` : 'var(--bg-card)'};
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.sm};
   font-weight: 600;
@@ -3244,7 +3277,7 @@ export const DraftBanner = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: ${theme.spacing.sm} ${theme.spacing.md};
-  background: linear-gradient(135deg, ${theme.colors.accent.creamyYellow}, #FFF8F0);
+  background: ${theme.colors.accent.coral}08;
   border: 1.5px solid ${theme.colors.accent.lightCoral}40;
   border-radius: ${theme.borderRadius.lg};
   margin: ${theme.spacing.sm} ${theme.spacing.lg};
@@ -3366,7 +3399,7 @@ export const BookPreviewBanner = styled.div`
   align-items: center;
   gap: ${theme.spacing.md};
   padding: ${theme.spacing.sm} ${theme.spacing.md};
-  background: linear-gradient(135deg, ${theme.colors.accent.creamyYellow}, ${theme.colors.accent.softPeach}30);
+  background: linear-gradient(135deg, ${`${theme.colors.accent.coral}12`}, ${theme.colors.accent.softPeach}30);
   border-radius: 16px;
   margin-bottom: ${theme.spacing.md};
   width: 100%;

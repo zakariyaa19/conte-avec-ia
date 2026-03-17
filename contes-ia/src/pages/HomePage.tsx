@@ -149,29 +149,56 @@ const Divider = styled.div`
 // =============================================
 
 const HeroSection = styled.section`
-  background: linear-gradient(135deg, var(--bg-primary) 0%, ${theme.colors.accent.paleYellow} 50%, ${theme.colors.accent.creamyYellow} 100%);
-  background-size: 400% 400%;
-  animation: ${gradientShift} 14s ease-in-out infinite;
+  background: var(--bg-primary);
   padding: ${theme.spacing['4xl']} 0 ${theme.spacing['2xl']};
   position: relative;
   overflow: hidden;
+
+  /* Orbe corail en haut à droite */
+  &::before {
+    content: '';
+    position: absolute;
+    top: -15%;
+    right: -10%;
+    width: 55%;
+    height: 80%;
+    background: radial-gradient(circle, ${theme.colors.accent.coral}18 0%, ${theme.colors.accent.softPink}10 40%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    filter: blur(40px);
+  }
+
+  /* Orbe dorée en bas à gauche */
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -20%;
+    left: -15%;
+    width: 50%;
+    height: 70%;
+    background: radial-gradient(circle, ${theme.colors.accent.paleYellow}30 0%, ${theme.colors.accent.creamyYellow}15 40%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    filter: blur(50px);
+  }
 
   @media (max-width: ${theme.breakpoints.md}) {
     padding: ${theme.spacing['3xl']} 0 ${theme.spacing['3xl']};
   }
 `;
 
-const HeroDecoCircle = styled.div<{ $size: number; $top: string; $left: string; $opacity: number }>`
+const HeroDecoCircle = styled.div<{ $size: number; $top: string; $left: string; $opacity: number; $color?: string; $delay?: string }>`
   position: absolute;
   width: ${p => p.$size}px;
   height: ${p => p.$size}px;
   border-radius: 50%;
-  background: ${theme.colors.accent.coral};
+  background: ${p => p.$color || theme.colors.accent.coral};
   opacity: ${p => p.$opacity};
   top: ${p => p.$top};
   left: ${p => p.$left};
   pointer-events: none;
-  filter: blur(60px);
+  animation: ${floatSoft} ${p => 5 + (p.$size % 4)}s ease-in-out infinite;
+  animation-delay: ${p => p.$delay || '0s'};
 `;
 
 const HeroContent = styled.div`
@@ -200,7 +227,7 @@ const HeroBadge = styled.span`
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(255, 255, 255, 0.8);
+  background: var(--hover-bg);
   backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 153, 153, 0.25);
   padding: 6px 16px;
@@ -422,7 +449,7 @@ const BookDot = styled.button<{ $active: boolean }>`
   cursor: pointer;
   background: ${p => p.$active
     ? `linear-gradient(90deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover})`
-    : 'rgba(0,0,0,0.15)'
+    : 'var(--border-input)'
   };
   transition: all 0.3s ease;
   padding: 0;
@@ -434,19 +461,34 @@ const BookDot = styled.button<{ $active: boolean }>`
 
 const ShowcaseSection = styled.section`
   padding: ${theme.spacing['3xl']} 0 ${theme.spacing['4xl']};
-  background: var(--bg-card);
+  background: var(--bg-secondary);
   position: relative;
   overflow: hidden;
 
   &::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 120px;
-    background: linear-gradient(to bottom, ${theme.colors.accent.creamyYellow}30, transparent);
+    top: -10%;
+    right: 10%;
+    width: 350px;
+    height: 350px;
+    border-radius: 50%;
+    background: radial-gradient(circle, ${theme.colors.accent.pastelBlue}12 0%, transparent 70%);
     pointer-events: none;
+    filter: blur(40px);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -5%;
+    left: 5%;
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    background: radial-gradient(circle, ${theme.colors.accent.coral}08 0%, transparent 70%);
+    pointer-events: none;
+    filter: blur(40px);
   }
 `;
 
@@ -601,25 +643,27 @@ const StepsSection = styled.section`
   &::before {
     content: '';
     position: absolute;
-    top: 40px;
-    left: -60px;
-    width: 180px;
-    height: 180px;
+    top: 10%;
+    left: -8%;
+    width: 300px;
+    height: 300px;
     border-radius: 50%;
-    background: ${theme.colors.accent.paleYellow}25;
+    background: radial-gradient(circle, ${theme.colors.accent.paleYellow}20 0%, transparent 70%);
     pointer-events: none;
+    filter: blur(30px);
   }
 
   &::after {
     content: '';
     position: absolute;
-    bottom: 30px;
-    right: -40px;
-    width: 140px;
-    height: 140px;
+    bottom: 5%;
+    right: -5%;
+    width: 250px;
+    height: 250px;
     border-radius: 50%;
-    background: ${theme.colors.accent.softPink}20;
+    background: radial-gradient(circle, ${theme.colors.accent.softPink}15 0%, transparent 70%);
     pointer-events: none;
+    filter: blur(30px);
   }
 `;
 
@@ -840,7 +884,22 @@ const IndicatorLabel = styled.span<{ $active: boolean }>`
 
 const LibrarySection = styled.section`
   padding: ${theme.spacing['4xl']} 0;
-  background: var(--bg-card);
+  background: var(--bg-primary);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 20%;
+    right: -10%;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, ${theme.colors.accent.lightGreen}10 0%, transparent 70%);
+    pointer-events: none;
+    filter: blur(50px);
+  }
 `;
 
 const LibraryGrid = styled.div`
@@ -917,7 +976,35 @@ const PricingSection = styled.section`
 
 const FeaturesSection = styled.section`
   padding: ${theme.spacing['4xl']} 0;
-  background: var(--bg-card);
+  background: var(--bg-secondary);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    bottom: 10%;
+    left: -5%;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, ${theme.colors.accent.paleYellow}15 0%, transparent 70%);
+    pointer-events: none;
+    filter: blur(40px);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 15%;
+    right: -8%;
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    background: radial-gradient(circle, ${theme.colors.accent.pastelBlue}10 0%, transparent 70%);
+    pointer-events: none;
+    filter: blur(40px);
+  }
 `;
 
 const FeaturesGrid = styled.div`
@@ -1015,7 +1102,7 @@ const FeatureDescription = styled.p`
 
 const FAQSection = styled.section`
   padding: ${theme.spacing['4xl']} 0;
-  background: var(--bg-card);
+  background: var(--bg-primary);
 `;
 
 // =============================================
@@ -1339,8 +1426,12 @@ const faqReveal = useScrollReveal();
 
         {/* ============ 1. HERO + BOOK CAROUSEL ============ */}
         <HeroSection>
-          <HeroDecoCircle $size={400} $top="-10%" $left="-5%" $opacity={0.04} />
-          <HeroDecoCircle $size={250} $top="60%" $left="85%" $opacity={0.05} />
+          <HeroDecoCircle $size={12} $top="15%" $left="8%" $opacity={0.25} $color={theme.colors.accent.coral} $delay="0s" />
+          <HeroDecoCircle $size={8} $top="35%" $left="18%" $opacity={0.2} $color={theme.colors.accent.pastelBlue} $delay="1s" />
+          <HeroDecoCircle $size={6} $top="20%" $left="42%" $opacity={0.18} $color={theme.colors.accent.paleYellow} $delay="2s" />
+          <HeroDecoCircle $size={10} $top="70%" $left="12%" $opacity={0.15} $color={theme.colors.accent.softPink} $delay="0.5s" />
+          <HeroDecoCircle $size={7} $top="55%" $left="92%" $opacity={0.2} $color={theme.colors.accent.lightGreen} $delay="1.5s" />
+          <HeroDecoCircle $size={9} $top="10%" $left="75%" $opacity={0.15} $color={theme.colors.accent.coral} $delay="3s" />
 
           <HeroContent>
             <HeroTextBlock>

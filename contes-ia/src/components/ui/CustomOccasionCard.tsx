@@ -78,8 +78,8 @@ const TextContainer = styled.div`
 const Label = styled.div`
   font-size: ${theme.fontSizes.lg};
   font-weight: 700;
-  color: ${theme.colors.text.primary};
-  
+  color: var(--text-primary);
+
   @media (max-width: ${theme.breakpoints.sm}) {
     font-size: ${theme.fontSizes.base};
     text-align: center;
@@ -88,7 +88,7 @@ const Label = styled.div`
 
 const Description = styled.div`
   font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.text.light};
+  color: var(--text-light);
   line-height: 1.4;
   
   @media (max-width: ${theme.breakpoints.sm}) {

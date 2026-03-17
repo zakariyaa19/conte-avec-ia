@@ -44,7 +44,7 @@ const BlogGrid = styled.div`
 const BlogCard = styled(Link)<{ $visible?: boolean; $delay?: string }>`
   display: flex;
   flex-direction: column;
-  background: ${theme.colors.background.white};
+  background: var(--bg-card);
   border-radius: ${theme.borderRadius['2xl']};
   overflow: hidden;
   box-shadow: ${theme.shadows.card};
@@ -93,7 +93,7 @@ const BlogCardContent = styled.div`
     font-family: ${theme.fonts.heading};
     font-size: ${theme.fontSizes.lg};
     font-weight: 700;
-    color: ${theme.colors.text.primary};
+    color: var(--text-primary);
     margin-bottom: ${theme.spacing.sm};
     line-height: 1.35;
     display: -webkit-box;
@@ -104,7 +104,7 @@ const BlogCardContent = styled.div`
 
   p {
     font-size: ${theme.fontSizes.sm};
-    color: ${theme.colors.text.secondary};
+    color: var(--text-secondary);
     line-height: 1.7;
     display: -webkit-box;
     -webkit-line-clamp: 3;
@@ -117,7 +117,7 @@ const CategoryTitle = styled.h2`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes['2xl']};
   font-weight: 700;
-  color: ${theme.colors.text.primary};
+  color: var(--text-primary);
   margin-bottom: ${theme.spacing.xl};
   padding-bottom: ${theme.spacing.sm};
   border-bottom: 3px solid ${theme.colors.accent.lightCoral};

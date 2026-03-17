@@ -18,7 +18,7 @@ export const GlobalStyles = createGlobalStyle`
     --shadow-card-hover: 0 8px 32px rgba(0,0,0,0.1);
     --header-glass: rgba(255,255,255,0.72);
     --hover-bg: rgba(255,153,153,0.06);
-    --gradient-hero: linear-gradient(135deg, #FEFCF8 0%, #FFE5B4 100%);
+    --gradient-hero: linear-gradient(135deg, #FEFCF8 0%, #FFF5E6 50%, #FEFCF8 100%);
   }
 
   [data-theme="dark"] {
