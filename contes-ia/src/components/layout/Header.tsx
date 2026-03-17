@@ -166,6 +166,13 @@ const DesktopOnly = styled.div`
   }
 `;
 
+const MobileOnly = styled.div`
+  display: none;
+  @media (max-width: ${theme.breakpoints.lg}) {
+    display: contents;
+  }
+`;
+
 /* ─── Right Section ─── */
 const RightSection = styled.div`
   display: flex;
@@ -528,26 +535,49 @@ export const Header: React.FC = () => {
               Creer
             </Button>
 
-            {/* User / Connexion — desktop only, drawer handles mobile */}
-            <DesktopOnly>
-              {isAuthenticated ? (
-                <div style={{ position: 'relative' }} ref={userMenuRef}>
+            {/* User / Connexion — desktop: full chip+dropdown, mobile: avatar or login icon */}
+            {isAuthenticated ? (
+              <div style={{ position: 'relative' }} ref={userMenuRef}>
+                {/* Desktop: full chip */}
+                <DesktopOnly>
                   <UserChip onClick={() => setUserMenu(!userMenu)}>
                     <UserAvatar>{initials}</UserAvatar>
                     {isClub && <ClubBadge>Club</ClubBadge>}
                     {user?.firstName || user?.email?.split('@')[0] || 'Compte'}
                   </UserChip>
+                </DesktopOnly>
+                {/* Mobile: just avatar circle */}
+                <MobileOnly>
+                  <UserAvatar onClick={() => setDrawerOpen(true)} style={{ cursor: 'pointer', width: '32px', height: '32px', fontSize: '13px' }}>
+                    {initials}
+                  </UserAvatar>
+                </MobileOnly>
+                <DesktopOnly>
                   <UserDropdown $open={userMenu}>
                     <UserDropdownItem onClick={() => go('/dashboard')}>Ma bibliotheque</UserDropdownItem>
                     <UserDropdownItem onClick={() => go('/dashboard/account')}>Mon compte</UserDropdownItem>
                     <Divider />
                     <UserDropdownItem $danger onClick={() => { logout(); go('/'); }}>Deconnexion</UserDropdownItem>
                   </UserDropdown>
-                </div>
-              ) : (
-                <NavPill onClick={() => go('/login')} style={{ fontSize: '0.8125rem' }}>Connexion</NavPill>
-              )}
-            </DesktopOnly>
+                </DesktopOnly>
+              </div>
+            ) : (
+              <>
+                {/* Desktop: text */}
+                <DesktopOnly>
+                  <NavPill onClick={() => go('/login')} style={{ fontSize: '0.8125rem' }}>Connexion</NavPill>
+                </DesktopOnly>
+                {/* Mobile: icon */}
+                <MobileOnly>
+                  <IconBtn onClick={() => go('/login')} aria-label="Connexion">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                      <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                  </IconBtn>
+                </MobileOnly>
+              </>
+            )}
 
             {/* Burger */}
             <BurgerBtn onClick={() => setDrawerOpen(!drawerOpen)}>
