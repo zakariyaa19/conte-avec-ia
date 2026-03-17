@@ -557,11 +557,12 @@ export const Header: React.FC = () => {
                     {user?.firstName || user?.email?.split('@')[0] || 'Compte'}
                   </UserChip>
                 </DesktopOnly>
-                {/* Mobile: just avatar circle */}
+                {/* Mobile: compact chip → dashboard */}
                 <MobileOnly>
-                  <UserAvatar onClick={() => setDrawerOpen(true)} style={{ cursor: 'pointer', width: '32px', height: '32px', fontSize: '13px' }}>
-                    {initials}
-                  </UserAvatar>
+                  <UserChip onClick={() => go('/dashboard')} style={{ padding: '4px 10px 4px 6px', fontSize: '12px' }}>
+                    <UserAvatar style={{ width: '24px', height: '24px', fontSize: '11px' }}>{initials}</UserAvatar>
+                    {user?.firstName || 'Compte'}
+                  </UserChip>
                 </MobileOnly>
                 <DesktopOnly>
                   <UserDropdown $open={userMenu}>
