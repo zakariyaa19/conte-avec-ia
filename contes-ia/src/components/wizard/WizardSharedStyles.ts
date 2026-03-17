@@ -162,7 +162,7 @@ export const StepContainer = styled.div<{
 }>`
   position: absolute; inset: 0;
   display: flex; flex-direction: column; align-items: center;
-  padding: ${theme.spacing['3xl']} ${theme.spacing.lg} 140px;
+  padding: ${theme.spacing.xl} ${theme.spacing.lg} 140px;
   overflow-y: auto; overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   will-change: transform, opacity;
@@ -211,7 +211,7 @@ export const StepContainer = styled.div<{
   }
 
   @media (max-width: ${theme.breakpoints.sm}) {
-    padding: ${theme.spacing['2xl']} ${theme.spacing.md} 140px;
+    padding: ${theme.spacing.md} ${theme.spacing.md} 140px;
   }
 `;
 
