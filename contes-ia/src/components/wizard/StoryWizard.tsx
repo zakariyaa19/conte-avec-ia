@@ -1562,32 +1562,15 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
             {formData.productType && (
               <div ref={orderFormRef} style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <OrderInfoSection>
-                  <SectionTitle>{isFirstPurchase ? 'Entrez votre email pour le recevoir' : 'Finalisez votre commande'}</SectionTitle>
+                  {!isFirstPurchase && <SectionTitle>Finalisez votre commande</SectionTitle>}
                   {isAuthenticated && currentUser && (
                     <ConnectedBanner>Connecté en tant que <strong>{currentUser.email}</strong></ConnectedBanner>
                   )}
                   <OrderInfoGrid>
-                    <FullWidthField>
-                      <ValidatedInput type="email" label="Email" value={formData.userEmail || ''}
-                        onChange={isAuthenticated ? () => {} : (v) => { setGlobalError(''); onUpdate({ userEmail: v }); if (errors.userEmail) setErrors(p => ({ ...p, userEmail: '' })); }}
-                        placeholder="votre@email.com" required error={errors.userEmail}
-                        disabled={isAuthenticated}
-                        onBlur={isAuthenticated ? undefined : () => { validateField('userEmail', formData.userEmail || '', 'email'); }} />
-                      <p style={{ fontSize: theme.fontSizes.xs, color: 'var(--text-light)', marginTop: '4px' }}>
-                        Vous recevrez votre livre et un lien de connexion par email
-                      </p>
-                    </FullWidthField>
-                    <FullWidthField>
-                      <ValidatedInput label="Prénom" value={formData.firstName || ''}
-                        onChange={(v) => { setGlobalError(''); onUpdate({ firstName: v }); if (errors.firstName) setErrors(p => ({ ...p, firstName: '' })); }}
-                        placeholder="Votre prénom" required error={errors.firstName}
-                        onBlur={() => validateField('firstName', formData.firstName || '')} />
-                    </FullWidthField>
-                    {/* Google connect (pour les non-connectés uniquement) */}
+                    {/* Google connect — EN PREMIER pour les non-connectés */}
                     {!isAuthenticated && !isInAppBrowser() && (
                       <FullWidthField>
-                        <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '14px', marginTop: '6px', textAlign: 'center' }}>
-                          <p style={{ fontSize: '11px', color: 'var(--text-light)', margin: '0 0 8px' }}>ou connectez-vous pour retrouver vos livres</p>
+                        <div style={{ textAlign: 'center', paddingBottom: '10px' }}>
                           <div style={{ display: 'flex', justifyContent: 'center' }}>
                             <GoogleLogin
                               onSuccess={(credentialResponse: CredentialResponse) => {
@@ -1597,6 +1580,11 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                                       if (res.data.token) localStorage.setItem('userToken', res.data.token);
                                       if (res.data.user?.email) onUpdate({ userEmail: res.data.user.email });
                                       if (res.data.user?.firstName) onUpdate({ firstName: res.data.user.firstName });
+                                      // Auto-submit after Google auth
+                                      setTimeout(() => {
+                                        clearDraft();
+                                        onSubmit();
+                                      }, 300);
                                     }
                                   }).catch(() => {});
                                 }
@@ -1607,9 +1595,27 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                               size="large"
                             />
                           </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', margin: '14px 0 4px' }}>
+                            <div style={{ flex: 1, height: '1px', background: 'var(--border-color)' }} />
+                            <span style={{ fontSize: '11px', color: 'var(--text-light)' }}>ou</span>
+                            <div style={{ flex: 1, height: '1px', background: 'var(--border-color)' }} />
+                          </div>
                         </div>
                       </FullWidthField>
                     )}
+                    <FullWidthField>
+                      <ValidatedInput type="email" label="Email" value={formData.userEmail || ''}
+                        onChange={isAuthenticated ? () => {} : (v) => { setGlobalError(''); onUpdate({ userEmail: v }); if (errors.userEmail) setErrors(p => ({ ...p, userEmail: '' })); }}
+                        placeholder="votre@email.com" required error={errors.userEmail}
+                        disabled={isAuthenticated}
+                        onBlur={isAuthenticated ? undefined : () => { validateField('userEmail', formData.userEmail || '', 'email'); }} />
+                    </FullWidthField>
+                    <FullWidthField>
+                      <ValidatedInput label="Prénom" value={formData.firstName || ''}
+                        onChange={(v) => { setGlobalError(''); onUpdate({ firstName: v }); if (errors.firstName) setErrors(p => ({ ...p, firstName: '' })); }}
+                        placeholder="Votre prénom" required error={errors.firstName}
+                        onBlur={() => validateField('firstName', formData.firstName || '')} />
+                    </FullWidthField>
                   </OrderInfoGrid>
                 </OrderInfoSection>
 
