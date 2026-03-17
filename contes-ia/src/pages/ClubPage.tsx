@@ -469,39 +469,39 @@ export const ClubPage: React.FC = () => {
       if (response.url) {
         window.location.href = response.url;
       } else {
-        setError('Erreur lors de la creation de la session');
+        setError('Erreur lors de la création de la session');
       }
     } catch {
-      setError('Erreur de connexion a Stripe');
+      setError('Erreur de connexion à Stripe');
     } finally {
       setLoading(false);
     }
   };
 
   const price = plan === 'monthly' ? '9,99' : '6,67';
-  const billingNote = plan === 'monthly' ? '/mois' : '/mois (79,99/an)';
+  const billingNote = plan === 'monthly' ? '/mois' : '/mois (79,99€/an)';
 
   const benefits = [
-    { icon: '\uD83D\uDCDA', label: '1 livre / semaine', desc: 'Nouvelle histoire chaque semaine' },
-    { icon: '\uD83C\uDFA8', label: '9 styles', desc: 'Aquarelle, 3D, manga...' },
-    { icon: '\uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC67', label: 'Personnages', desc: 'Famille, amis, animaux' },
-    { icon: '\uD83C\uDF1D', label: 'Occasions', desc: 'Anniversaire, fetes...' },
-    { icon: '\uD83C\uDF0D', label: 'Multi-langues', desc: 'FR, EN, ES, AR...' },
-    { icon: '\u2B07\uFE0F', label: 'PDF illimites', desc: 'Telecharger & imprimer' },
+    { icon: '📚', label: '1 livre / semaine', desc: 'Nouvelle histoire chaque semaine' },
+    { icon: '🎨', label: '9 styles', desc: 'Aquarelle, 3D, manga...' },
+    { icon: '👨‍👩‍👧', label: 'Personnages', desc: 'Famille, amis, animaux' },
+    { icon: '🌝', label: 'Occasions', desc: 'Anniversaire, fêtes...' },
+    { icon: '🌍', label: 'Multi-langues', desc: 'FR, EN, ES, AR...' },
+    { icon: '⬇️', label: 'PDF illimités', desc: 'Télécharger & imprimer' },
   ];
 
   const comparison = [
-    { feature: 'Livres / mois', free: '1', club: '4+' },
-    { feature: 'Styles illustration', free: '1', club: '9' },
-    { feature: 'Personnages secondaires', free: '\u2718', club: '\u2714' },
-    { feature: 'Choix des occasions', free: '\u2718', club: '\u2714' },
-    { feature: 'Multi-langues', free: '\u2718', club: '\u2714' },
-    { feature: 'PDF telechargeable', free: '\u2714', club: '\u2714' },
-    { feature: 'Bibliotheque en ligne', free: '\u2714', club: '\u2714' },
+    { feature: 'Livres/mois', free: '1', club: '4+' },
+    { feature: "Styles d'illustration", free: '1', club: '9' },
+    { feature: 'Personnages secondaires', free: '✘', club: '✔' },
+    { feature: 'Choix des occasions', free: '✘', club: '✔' },
+    { feature: 'Multi-langues', free: '✘', club: '✔' },
+    { feature: 'PDF téléchargeable', free: '✔', club: '✔' },
+    { feature: 'Bibliothèque en ligne', free: '✔', club: '✔' },
   ];
 
   const ctaLabel = isClub
-    ? 'Acceder a ma bibliotheque'
+    ? 'Accéder à ma bibliothèque'
     : isAuthenticated
       ? 'Rejoindre le Club'
       : 'Commencer maintenant';
@@ -515,9 +515,9 @@ export const ClubPage: React.FC = () => {
         <HeroSection>
           <HeroContent>
             <HeroBadge>Club des Histoires</HeroBadge>
-            <HeroTitle>Offrez des histoires illimitees a votre enfant</HeroTitle>
+            <HeroTitle>Offrez des histoires illimitées à votre enfant</HeroTitle>
             <HeroSub>
-              Des livres personnalises chaque semaine, avec son prenom et son visage.
+              Des livres personnalisés chaque semaine, avec son prénom et son visage.
             </HeroSub>
 
             {/* Floating books visual */}
@@ -542,7 +542,7 @@ export const ClubPage: React.FC = () => {
 
             {/* Price */}
             <HeroPrice>
-              <PriceBig>{price}\u20AC</PriceBig>
+              <PriceBig>{price}€</PriceBig>
               <PriceUnit>{billingNote}</PriceUnit>
             </HeroPrice>
 
@@ -553,9 +553,9 @@ export const ClubPage: React.FC = () => {
             {error && <ErrorMsg>{error}</ErrorMsg>}
 
             <TrustRow>
-              <span>\uD83D\uDD12 Paiement securise</span>
-              <span>\u274C Sans engagement</span>
-              <span>\u26A1 Annulable a tout moment</span>
+              <span>🔒 Paiement sécurisé</span>
+              <span>❌ Sans engagement</span>
+              <span>⚡ Annulable à tout moment</span>
             </TrustRow>
           </HeroContent>
         </HeroSection>
@@ -564,7 +564,7 @@ export const ClubPage: React.FC = () => {
         <Section $bg="var(--bg-secondary)">
           <Inner>
             <STitle>Ce que vous obtenez</STitle>
-            <SSub>Tout ce qu'il faut pour creer des souvenirs magiques</SSub>
+            <SSub>Tout ce qu'il faut pour créer des souvenirs magiques</SSub>
             <BenefitsGrid>
               {benefits.map((b, i) => (
                 <BenefitCard key={b.label} $delay={i}>
@@ -581,7 +581,7 @@ export const ClubPage: React.FC = () => {
         <Section>
           <Inner>
             <STitle>9 styles d'illustration</STitle>
-            <SSub>Chaque livre a un univers visuel unique</SSub>
+            <SSub>Chaque livre a son univers visuel unique</SSub>
           </Inner>
           <CarouselWrapper>
             <CarouselTrack>
@@ -601,7 +601,7 @@ export const ClubPage: React.FC = () => {
             <STitle>Gratuit vs Club</STitle>
             <SSub>Pourquoi passer au Club ?</SSub>
             <ComparisonTable>
-              <CompHeader>Fonctionnalite</CompHeader>
+              <CompHeader>Fonctionnalité</CompHeader>
               <CompHeader>Gratuit</CompHeader>
               <CompHeader $highlight>Club</CompHeader>
               {comparison.map((row, i) => (
@@ -621,13 +621,13 @@ export const ClubPage: React.FC = () => {
         <Section>
           <Inner>
             <TestimonialCard>
-              <p style={{ fontSize: '32px', margin: '0 0 12px' }}>{'\u2B50\u2B50\u2B50\u2B50\u2B50'}</p>
+              <p style={{ fontSize: '32px', margin: '0 0 12px' }}>⭐⭐⭐⭐⭐</p>
               <p style={{
                 fontSize: theme.fontSizes.base, color: 'var(--text-primary)',
                 fontStyle: 'italic', lineHeight: 1.6, margin: '0 0 12px',
               }}>
-                "Ma fille attend chaque semaine sa nouvelle histoire. Elle adore voir son prenom
-                et reconnaitre sa famille dans les illustrations !"
+                "Ma fille attend chaque semaine sa nouvelle histoire. Elle adore voir son prénom
+                et reconnaître sa famille dans les illustrations !"
               </p>
               <p style={{ fontSize: theme.fontSizes.sm, color: 'var(--text-light)', margin: 0 }}>
                 — Sarah, maman de Lea (4 ans)
@@ -643,15 +643,15 @@ export const ClubPage: React.FC = () => {
               fontFamily: theme.fonts.heading, fontSize: 'clamp(1.5rem, 4vw, 2.2rem)',
               fontWeight: 800, color: 'white', margin: '0 0 12px',
             }}>
-              {isClub ? 'Bienvenue dans le Club !' : 'Pret a commencer ?'}
+              {isClub ? 'Bienvenue dans le Club !' : 'Prêt à commencer ?'}
             </h2>
             <p style={{
               fontSize: theme.fontSizes.base, color: 'rgba(255,255,255,0.85)',
               margin: '0 0 28px',
             }}>
               {isClub
-                ? 'Retrouvez tous vos livres dans votre bibliotheque'
-                : `${price}\u20AC${billingNote} \u2022 Sans engagement \u2022 Annulable a tout moment`}
+                ? 'Retrouvez tous vos livres dans votre bibliothèque'
+                : `${price}€${billingNote} · Sans engagement · Annulable à tout moment`}
             </p>
             <CTAButton
               $variant="outline"

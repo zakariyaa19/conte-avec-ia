@@ -1084,7 +1084,7 @@ export const DashboardPage: React.FC = () => {
               </svg>
             </button>
             <button onClick={() => {
-              if (!isClub && stories.length >= 3) navigate('/upgrade');
+              if (!isClub && stories.length >= 3) navigate('/club');
               else navigate('/create-story');
             }} style={{
               height: 36, padding: '0 16px', borderRadius: 18, border: 'none',
@@ -1147,7 +1147,7 @@ export const DashboardPage: React.FC = () => {
 
         {/* ══════ 2B. JOIN CLUB (Basic) — compact banner ══════ */}
         {!loading && !isClub && !subscriptionActivating && (
-          <div onClick={() => navigate('/upgrade')} style={{
+          <div onClick={() => navigate('/club')} style={{
             background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
             borderRadius: '16px', padding: '16px 18px', marginBottom: '16px',
             position: 'relative', overflow: 'hidden', cursor: 'pointer',

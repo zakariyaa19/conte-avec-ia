@@ -481,7 +481,7 @@ export const SuccessPage: React.FC = () => {
             <Button
               variant="primary"
               size="md"
-              onClick={() => navigate('/upgrade')}
+              onClick={() => navigate('/club')}
               fullWidth
             >
               Decouvrir le Club — 9,99€/mois

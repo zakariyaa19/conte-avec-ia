@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import { GlobalStyles } from './styles/GlobalStyles';
@@ -88,7 +88,7 @@ function App() {
           <Route path="/dashboard/story/:id" element={<ProtectedRoute><StoryDetailPage /></ProtectedRoute>} />
           <Route path="/dashboard/account" element={<ProtectedRoute><AccountPage /></ProtectedRoute>} />
           <Route path="/club" element={<ClubPage />} />
-          <Route path="/upgrade" element={<UpgradePage />} />
+          <Route path="/upgrade" element={<Navigate to="/club" replace />} />
           <Route path="/story/:shareToken" element={<PublicStoryPage />} />
           <Route path="/admin/login" element={<AdminLoginRoute />} />
           <Route path="/admin" element={<AdminProtectedRoute><AdminPage /></AdminProtectedRoute>} />
