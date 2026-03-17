@@ -188,12 +188,6 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
   isAuthenticated = false, isClub = false, currentUser = null, clubCredit = null,
   isAdMode = false,
 }) => {
-  // Premier livre GRATUIT si le backend confirme isFirstPurchase === true OU si le champ est absent (nouveau compte)
-  // Si non authentifié (nouveau visiteur), on suppose que c'est le premier achat
-  // Le backend vérifiera de toute façon par email au moment de la commande
-  const isFirstPurchase = isAuthenticated ? currentUser?.isFirstPurchase !== false : true;
-  const singlePrice = isFirstPurchase ? 0 : 6.99;
-  const singlePriceLabel = isFirstPurchase ? 'GRATUIT' : '6,99\u20AC';
 
   // Mode simplifié = tout utilisateur NON-Club (qu'il vienne d'une pub ou pas)
   // Les abonnés Club actifs voient le formulaire complet avec toutes les options
@@ -216,6 +210,12 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [globalError, setGlobalError] = useState('');
   const [emailStatus, setEmailStatus] = useState<{ exists: boolean; hasPassword: boolean } | null>(null);
+
+  // Premier livre GRATUIT sauf si email déjà connu (compte existant = déjà eu le gratuit)
+  const emailAlreadyExists = !isAuthenticated && emailStatus?.exists === true;
+  const isFirstPurchase = emailAlreadyExists ? false : (isAuthenticated ? currentUser?.isFirstPurchase !== false : true);
+  const singlePrice = isFirstPurchase ? 0 : 6.99;
+  const singlePriceLabel = isFirstPurchase ? 'GRATUIT' : '6,99€';
 
   const { load: loadDraft, clear: clearDraft, autoSave, hasDraft } = useWizardPersistence();
 
@@ -1579,10 +1579,10 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                     )}
                     <FullWidthField>
                       <ValidatedInput type="email" label="Email" value={formData.userEmail || ''}
-                        onChange={isAuthenticated ? () => {} : (v) => { setGlobalError(''); onUpdate({ userEmail: v }); if (errors.userEmail) setErrors(p => ({ ...p, userEmail: '' })); }}
+                        onChange={isAuthenticated ? () => {} : (v) => { setGlobalError(''); setEmailStatus(null); onUpdate({ userEmail: v }); if (errors.userEmail) setErrors(p => ({ ...p, userEmail: '' })); }}
                         placeholder="votre@email.com" required error={errors.userEmail}
                         disabled={isAuthenticated}
-                        onBlur={isAuthenticated ? undefined : () => { validateField('userEmail', formData.userEmail || '', 'email'); }} />
+                        onBlur={isAuthenticated ? undefined : () => { validateField('userEmail', formData.userEmail || '', 'email'); handleEmailBlurCheck(); }} />
                     </FullWidthField>
                     <FullWidthField>
                       <ValidatedInput label="Prénom" value={formData.firstName || ''}
