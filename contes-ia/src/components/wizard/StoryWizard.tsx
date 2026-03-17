@@ -636,7 +636,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                         : '0 4px 20px rgba(255,153,153,0.12), 0 8px 32px rgba(0,0,0,0.08)'
                       : 'var(--shadow-card)',
                     transform: isCustomSelected ? 'scale(1.02)' : 'scale(1)',
-                    overflow: 'hidden',
+                    overflow: isCustomSelected ? 'visible' : 'hidden',
                   }}
                 >
                   {/* Image + text row — collapses when selected */}
@@ -683,7 +683,13 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                         onChange={(e) => handleInputChange('customTheme', e.target.value)}
                         onClick={(e) => e.stopPropagation()}
                         ref={(el) => { if (el) setTimeout(() => { el.focus(); }, 100); }}
-                        style={{ maxWidth: '100%', marginTop: 0, width: '100%' }} />
+                        style={{
+                          maxWidth: '100%', marginTop: 0, width: '100%',
+                          background: 'var(--bg-input)', color: 'var(--text-primary)',
+                          fontSize: '16px', padding: '14px 16px',
+                          border: '2px solid var(--border-input)',
+                          borderRadius: '12px',
+                        }} />
                       <ContinueButton $isReady={!!(formData.customTheme?.trim())} disabled={!formData.customTheme?.trim()}
                         onClick={(e) => { e.stopPropagation(); goNext(); }}
                         style={{ marginTop: theme.spacing.sm, width: '100%' }}>
