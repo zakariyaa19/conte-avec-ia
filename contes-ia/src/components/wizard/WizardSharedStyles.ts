@@ -2798,11 +2798,11 @@ export const WizardHeaderNew = styled.header`
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border-color);
-  padding: ${theme.spacing.sm} ${theme.spacing.lg} ${theme.spacing.md};
+  padding: ${theme.spacing.xs} ${theme.spacing.lg} ${theme.spacing.sm};
   flex-shrink: 0;
 
   @media (max-width: ${theme.breakpoints.sm}) {
-    padding: ${theme.spacing.xs} ${theme.spacing.md} ${theme.spacing.sm};
+    padding: 4px ${theme.spacing.md} 6px;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -2843,13 +2843,13 @@ export const HeaderStepLabel = styled.p`
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.xs};
   color: var(--text-secondary);
-  margin: 0 0 ${theme.spacing.sm};
+  margin: 0 0 ${theme.spacing.xs};
   text-align: center;
   font-weight: 500;
 
   @media (max-width: ${theme.breakpoints.sm}) {
     font-size: 11px;
-    margin-bottom: 6px;
+    margin-bottom: 3px;
   }
 `;
 
@@ -3514,7 +3514,6 @@ export const ProgressHintText = styled.span`
   margin-top: 4px;
 
   @media (max-width: ${theme.breakpoints.sm}) {
-    font-size: 9px;
-    margin-top: 2px;
+    display: none;
   }
 `;
