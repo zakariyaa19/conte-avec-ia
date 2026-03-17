@@ -213,8 +213,30 @@ export const AdminClientsPage: React.FC<AdminClientsPageProps> = ({ token }) => 
               </thead>
               <tbody>
                 {clients.map((client) => (
-                  <tr key={client.id} onClick={() => navigate(`/admin/clients/${client.id}`)} style={{ cursor: 'pointer' }}>
-                    <Td style={client.role === 'CLUB' ? { color: '#B8860B', fontWeight: 600 } : {}}>{client.email}</Td>
+                  <tr key={client.id} onClick={() => navigate(`/admin/clients/${client.id}`)} style={{
+                    cursor: 'pointer',
+                    ...(client.role === 'CLUB' ? {
+                      background: 'linear-gradient(90deg, rgba(139,92,246,0.08) 0%, rgba(139,92,246,0.03) 100%)',
+                      borderLeft: '3px solid #8B5CF6',
+                    } : {}),
+                  }}>
+                    <Td>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        {client.role === 'CLUB' && (
+                          <span style={{
+                            display: 'inline-flex', alignItems: 'center', gap: '3px',
+                            background: 'linear-gradient(135deg, #8B5CF6, #7C3AED)',
+                            color: 'white', fontSize: '9px', fontWeight: 700,
+                            padding: '2px 7px', borderRadius: '6px', flexShrink: 0,
+                          }}>
+                            ★ Club
+                          </span>
+                        )}
+                        <span style={client.role === 'CLUB' ? { fontWeight: 600, color: '#7C3AED' } : {}}>
+                          {client.email}
+                        </span>
+                      </div>
+                    </Td>
                     <Td>{client.firstName || '-'} {client.lastName || ''}</Td>
                     <Td>{roleBadge(client.role)}</Td>
                     <Td>{subBadge(client.subscriptionStatus)}</Td>

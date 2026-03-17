@@ -496,48 +496,67 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ token })
     );
   };
 
-  const renderOrderRow = (order: any, showActions = false) => (
-    <tr key={order.id}>
-      <Td>
-        <ActionBtn $variant="ghost" onClick={() => navigate(`/admin/order/${order.id}`)}>
-          #{order.id.slice(-8)}
-        </ActionBtn>
-      </Td>
-      <Td>{formatDate(order.createdAt)}</Td>
-      <Td>
-        <span style={order.user?.role === 'CLUB' ? { color: '#B8860B', fontWeight: 600 } : {}}>
-          {order.user?.email || '-'}
-        </span>
-        {order.user?.role === 'CLUB' && <Badge $color="#92400E" $bg="#FDE68A" style={{ marginLeft: '6px', fontSize: '10px' }}>Club</Badge>}
-      </Td>
-      <Td>{order.protagonistName}</Td>
-      <Td>{renderTypeBadge(order)}</Td>
-      <Td>{renderStatusDropdown(order)}</Td>
-      <Td>{formatPrice(order.price)}</Td>
-      {showActions && (
+  const renderOrderRow = (order: any, showActions = false) => {
+    const isClubUser = order.user?.role === 'CLUB';
+    return (
+      <tr key={order.id} style={isClubUser ? {
+        background: 'linear-gradient(90deg, rgba(139,92,246,0.08) 0%, rgba(139,92,246,0.03) 100%)',
+        borderLeft: '3px solid #8B5CF6',
+      } : undefined}>
         <Td>
-          <ActionsCell>
-            <ActionBtn $variant="ghost" onClick={() => navigate(`/admin/order/${order.id}`)}>
-              Voir
-            </ActionBtn>
-            {order.status === 'PAID' && (
-              <ActionBtn onClick={() => handleSendToGeneration(order.id)} disabled={updating}>
-                Generation
-              </ActionBtn>
-            )}
-            {order.status === 'GENERATED' && (
-              <ActionBtn $variant="success" onClick={() => handleDeliver(order.id)} disabled={updating}>
-                Livrer
-              </ActionBtn>
-            )}
-            <ActionBtn $variant="danger" onClick={() => handleDeleteOrder(order.id)} disabled={updating}>
-              Suppr.
-            </ActionBtn>
-          </ActionsCell>
+          <ActionBtn $variant="ghost" onClick={() => navigate(`/admin/order/${order.id}`)}>
+            #{order.id.slice(-8)}
+          </ActionBtn>
         </Td>
-      )}
-    </tr>
-  );
+        <Td>{formatDate(order.createdAt)}</Td>
+        <Td>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            {isClubUser && (
+              <span style={{
+                display: 'inline-flex', alignItems: 'center', gap: '3px',
+                background: 'linear-gradient(135deg, #8B5CF6, #7C3AED)',
+                color: 'white', fontSize: '9px', fontWeight: 700,
+                padding: '2px 7px', borderRadius: '6px',
+                letterSpacing: '0.03em', textTransform: 'uppercase',
+                flexShrink: 0,
+              }}>
+                ★ Club
+              </span>
+            )}
+            <span style={isClubUser ? { fontWeight: 600, color: '#7C3AED' } : {}}>
+              {order.user?.email || '-'}
+            </span>
+          </div>
+        </Td>
+        <Td>{order.protagonistName}</Td>
+        <Td>{renderTypeBadge(order)}</Td>
+        <Td>{renderStatusDropdown(order)}</Td>
+        <Td>{formatPrice(order.price)}</Td>
+        {showActions && (
+          <Td>
+            <ActionsCell>
+              <ActionBtn $variant="ghost" onClick={() => navigate(`/admin/order/${order.id}`)}>
+                Voir
+              </ActionBtn>
+              {order.status === 'PAID' && (
+                <ActionBtn onClick={() => handleSendToGeneration(order.id)} disabled={updating}>
+                  Generation
+                </ActionBtn>
+              )}
+              {order.status === 'GENERATED' && (
+                <ActionBtn $variant="success" onClick={() => handleDeliver(order.id)} disabled={updating}>
+                  Livrer
+                </ActionBtn>
+              )}
+              <ActionBtn $variant="danger" onClick={() => handleDeleteOrder(order.id)} disabled={updating}>
+                Suppr.
+              </ActionBtn>
+            </ActionsCell>
+          </Td>
+        )}
+      </tr>
+    );
+  };
 
   // Orders view (all orders with filters)
   if (isOrdersView) {
