@@ -1388,7 +1388,7 @@ export const PreviewLoadingSparkle = styled.span<{ $delay: number; $left: string
 export const PreviewLoadingText = styled.p`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.base};
-  color: #6B5B4E;
+  color: var(--text-secondary);
   margin: 0;
   z-index: 1;
   text-align: center;
@@ -1646,7 +1646,7 @@ export const BookTextHalf = styled.div`
   p {
     font-family: ${theme.fonts.heading};
     font-size: 13px;
-    color: #3D3530;
+    color: var(--text-primary);
     line-height: 2.1;
     margin: 0;
     text-align: center;

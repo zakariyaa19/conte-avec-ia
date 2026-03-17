@@ -813,12 +813,12 @@ const ErrorMessage = styled.div`
   align-items: center;
   justify-content: center;
   gap: ${theme.spacing.sm};
-  background-color: #FFF5F5;
-  border: 1px solid #FED7D7;
+  background-color: rgba(197, 48, 48, 0.08);
+  border: 1px solid rgba(197, 48, 48, 0.2);
   border-radius: ${theme.borderRadius.lg};
   padding: ${theme.spacing.md} ${theme.spacing.lg};
   margin-bottom: ${theme.spacing.lg};
-  color: #C53030;
+  color: #E53E3E;
   font-size: ${theme.fontSizes.sm};
   text-align: center;
   transition: all ${theme.transitions.base};

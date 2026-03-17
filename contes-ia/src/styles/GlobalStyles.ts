@@ -22,21 +22,21 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   [data-theme="dark"] {
-    --bg-primary: #1a1a2e;
-    --bg-secondary: #16213e;
-    --bg-card: #1e2744;
-    --bg-elevated: #243050;
-    --bg-input: #1e2744;
-    --text-primary: #E8E4DF;
-    --text-secondary: #A8A4A0;
-    --text-light: #7A7672;
-    --border-color: rgba(255,255,255,0.08);
-    --border-input: rgba(255,255,255,0.12);
-    --shadow-card: 0 2px 8px rgba(0,0,0,0.3);
-    --shadow-card-hover: 0 8px 32px rgba(0,0,0,0.4);
-    --header-glass: rgba(26,26,46,0.85);
-    --hover-bg: rgba(255,153,153,0.1);
-    --gradient-hero: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    --bg-primary: #1B1525;
+    --bg-secondary: #221C30;
+    --bg-card: #2A2338;
+    --bg-elevated: #332B48;
+    --bg-input: #252040;
+    --text-primary: #F2EDE6;
+    --text-secondary: #C0B9AF;
+    --text-light: #918B83;
+    --border-color: rgba(255,220,200,0.10);
+    --border-input: rgba(255,220,200,0.18);
+    --shadow-card: 0 2px 12px rgba(0,0,0,0.4);
+    --shadow-card-hover: 0 8px 32px rgba(0,0,0,0.5);
+    --header-glass: rgba(27,21,37,0.80);
+    --hover-bg: rgba(255,153,153,0.12);
+    --gradient-hero: linear-gradient(135deg, #1B1525 0%, #261D35 50%, #1E1828 100%);
   }
 
   * {
@@ -130,6 +130,7 @@ export const GlobalStyles = createGlobalStyle`
     padding: 0.75rem ${theme.spacing.md};
     transition: all ${theme.transitions.base};
     background-color: var(--bg-input);
+    color: var(--text-primary);
     box-sizing: border-box;
     max-width: 100%;
 
@@ -140,7 +141,7 @@ export const GlobalStyles = createGlobalStyle`
     }
 
     &::placeholder {
-      color: #B5B0AB;
+      color: var(--text-light);
     }
 
     @media (max-width: 480px) {

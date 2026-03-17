@@ -97,7 +97,7 @@ const InputField = styled.div`
 
   input {
     padding: ${theme.spacing.sm} ${theme.spacing.md};
-    border: 2px solid #E5E7EB;
+    border: 2px solid var(--border-input);
     border-radius: ${theme.borderRadius.md};
     font-size: ${theme.fontSizes.base};
 

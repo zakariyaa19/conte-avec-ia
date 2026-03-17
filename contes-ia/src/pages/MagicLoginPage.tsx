@@ -41,7 +41,7 @@ const Spinner = styled.div`
   width: 40px;
   height: 40px;
   margin: 20px auto;
-  border: 3px solid #E5E7EB;
+  border: 3px solid var(--border-input);
   border-top-color: ${theme.colors.accent.coral};
   border-radius: 50%;
   animation: spin 0.8s linear infinite;

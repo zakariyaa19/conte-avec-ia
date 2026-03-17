@@ -312,7 +312,7 @@ const CollectionLabel = styled.span`
 const ProgressBarContainer = styled.div`
   width: 100%;
   height: 8px;
-  background: #E5E7EB;
+  background: var(--border-input);
   border-radius: ${theme.borderRadius.full};
   overflow: hidden;
 `;
@@ -448,7 +448,7 @@ const FilterBar = styled.div`
 
 const FilterButton = styled.button<{ $active: boolean }>`
   padding: 5px 14px;
-  border: 1.5px solid ${p => p.$active ? theme.colors.accent.coral : '#E5E7EB'};
+  border: 1.5px solid ${p => p.$active ? theme.colors.accent.coral : 'var(--border-input)'};
   border-radius: 20px;
   background: ${p => p.$active ? theme.colors.accent.coral : 'transparent'};
   color: ${p => p.$active ? 'white' : 'var(--text-secondary)'};
@@ -705,7 +705,7 @@ const EpisodeNumber = styled.span<{ $active: boolean }>`
   flex-shrink: 0;
   background: ${p => p.$active
     ? `linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.accent.softPink})`
-    : '#E5E7EB'};
+    : 'var(--border-input)'};
   color: ${p => p.$active ? 'white' : 'var(--text-light)'};
 `;
 

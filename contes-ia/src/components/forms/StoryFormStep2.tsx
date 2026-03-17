@@ -215,7 +215,7 @@ const SelectionGrid = styled.div`
 const CustomInput = styled.input`
   width: 100%;
   padding: ${theme.spacing.md};
-  border: 2px solid #E5E7EB;
+  border: 2px solid var(--border-input);
   border-radius: ${theme.borderRadius.md};
   font-size: ${theme.fontSizes.base};
   margin-top: ${theme.spacing.md};
@@ -234,7 +234,7 @@ const CustomInput = styled.input`
 const TextArea = styled.textarea`
   width: 100%;
   padding: ${theme.spacing.md};
-  border: 2px solid #E5E7EB;
+  border: 2px solid var(--border-input);
   border-radius: ${theme.borderRadius.md};
   font-size: ${theme.fontSizes.base};
   font-family: ${theme.fonts.body};
@@ -258,7 +258,7 @@ const ToggleButton = styled.button<{ $isActive: boolean }>`
     theme.colors.background.white
   };
   color: ${props => props.$isActive ? theme.colors.text.primary : theme.colors.text.secondary};
-  border: 2px solid ${props => props.$isActive ? 'transparent' : '#E5E7EB'};
+  border: 2px solid ${props => props.$isActive ? 'transparent' : 'var(--border-input)'};
   border-radius: ${theme.borderRadius.md};
   padding: ${theme.spacing.sm} ${theme.spacing.md};
   font-weight: 600;

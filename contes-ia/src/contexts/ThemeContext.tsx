@@ -7,7 +7,7 @@ interface ThemeContextType {
 }
 
 const ThemeContext = createContext<ThemeContextType>({
-  isDark: true,
+  isDark: false,
   toggleTheme: () => {},
 });
 
@@ -20,7 +20,7 @@ export const ThemeContextProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const [isDark, setIsDark] = useState(() => {
     const saved = localStorage.getItem('theme-preference');
     if (saved) return saved === 'dark';
-    return true; // dark by default
+    return false; // light by default
   });
 
   const toggleTheme = useCallback(() => {

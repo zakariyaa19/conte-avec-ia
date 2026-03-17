@@ -77,7 +77,7 @@ const FormSection = styled.div`
 const CustomInput = styled.input`
   width: 100%;
   padding: ${theme.spacing.md};
-  border: 2px solid #E5E7EB;
+  border: 2px solid var(--border-input);
   border-radius: ${theme.borderRadius.md};
   font-size: ${theme.fontSizes.base};
   margin-top: ${theme.spacing.md};

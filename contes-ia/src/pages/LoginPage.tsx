@@ -95,11 +95,11 @@ const Input = styled.input`
 `;
 
 const ErrorMsg = styled.div`
-  background: #FFF5F5;
-  border: 1px solid #FED7D7;
+  background: rgba(197, 48, 48, 0.08);
+  border: 1px solid rgba(197, 48, 48, 0.2);
   border-radius: ${theme.borderRadius.md};
   padding: ${theme.spacing.sm} ${theme.spacing.md};
-  color: #C53030;
+  color: #E53E3E;
   font-size: ${theme.fontSizes.sm};
   text-align: center;
 `;
@@ -196,7 +196,7 @@ const PlanCard = styled.button<{ $selected: boolean; $isPro?: boolean; $isAnnual
       ? theme.colors.accent.coral
       : $selected
         ? '#60A5FA'
-        : '#E5E7EB'};
+        : 'var(--border-input)'};
   border-radius: 16px;
   padding: ${({ $isPro }) => $isPro ? '20px 16px' : '14px 16px'};
   cursor: pointer;
@@ -325,7 +325,7 @@ const CheckMark = styled.div<{ $visible: boolean }>`
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: ${({ $visible }) => $visible ? '#3B82F6' : '#E5E7EB'};
+  background: ${({ $visible }) => $visible ? '#3B82F6' : 'var(--border-input)'};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -339,7 +339,7 @@ const CheckMark = styled.div<{ $visible: boolean }>`
 const CheckMarkPro = styled(CheckMark)`
   background: ${({ $visible }) => $visible
     ? `linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover})`
-    : '#E5E7EB'};
+    : 'var(--border-input)'};
 `;
 
 /* ─── Stripe redirect overlay ─── */
@@ -377,11 +377,11 @@ const Spinner = styled.div`
 `;
 
 const RedirectError = styled.div`
-  background: #FFF5F5;
-  border: 1px solid #FED7D7;
+  background: rgba(197, 48, 48, 0.08);
+  border: 1px solid rgba(197, 48, 48, 0.2);
   border-radius: ${theme.borderRadius.md};
   padding: ${theme.spacing.md};
-  color: #C53030;
+  color: #E53E3E;
   font-size: ${theme.fontSizes.sm};
   text-align: center;
   margin-top: ${theme.spacing.md};

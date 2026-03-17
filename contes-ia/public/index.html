@@ -83,7 +83,7 @@
     <script>
       (function(){
         var t = localStorage.getItem('theme-preference');
-        if (!t) t = 'dark';
+        if (!t) t = 'light';
         if (window.location.pathname.indexOf('/admin') === 0) t = 'light';
         document.documentElement.setAttribute('data-theme', t);
       })();

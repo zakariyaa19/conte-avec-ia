@@ -114,8 +114,8 @@ const CheckIcon = styled.span<{ $type: 'free' | 'club' | 'locked' }>`
     color: #764ba2;
   `}
   ${props => props.$type === 'locked' && css`
-    background: #f5f5f5;
-    color: #ccc;
+    background: var(--bg-secondary);
+    color: var(--text-light);
   `}
 `;
 
