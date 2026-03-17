@@ -576,51 +576,87 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
           </>
         );
 
-      case 'theme':
+      case 'theme': {
+        const SIMPLIFIED_THEMES = ['fairy-tales', 'stories', 'family'] as const;
+        const THEME_DESCRIPTIONS: Record<string, string> = {
+          'fairy-tales': 'Magie et aventures',
+          'stories': 'Des récits captivants',
+          'family': 'Des moments remplis d\'amour',
+        };
+        const themeList = isSimplifiedMode
+          ? THEME_OPTIONS.filter(o => (SIMPLIFIED_THEMES as readonly string[]).includes(o.value))
+          : THEME_OPTIONS.filter(o => o.value !== 'custom');
+
         return (
           <>
             <StepTitle>Quel univers ?</StepTitle>
-            <CardGrid $columns={3} $compact>
-              {THEME_OPTIONS.filter(o => o.value !== 'custom').map((o, i) => {
+            <StepMicroText>Choisissez l'aventure de votre enfant</StepMicroText>
+            <CardGrid $columns={isSimplifiedMode ? 3 : 3} $compact={!isSimplifiedMode}>
+              {themeList.map((o, i) => {
                 const isRecommended = recommendedThemes.includes(o.value);
                 return (
                   <ImageCard key={o.value} $isSelected={formData.generalTheme === o.value} $delay={i}
+                    $hero={isSimplifiedMode}
                     aria-label={o.label} style={{ position: 'relative' }}
                     onClick={() => handleCardSelect('generalTheme', o.value)}>
-                    {isRecommended && <CardBadgePill $variant="recommended">Recommandé</CardBadgePill>}
+                    {!isSimplifiedMode && isRecommended && <CardBadgePill $variant="recommended">Recommandé</CardBadgePill>}
                     <CardImg $src={o.imagePath} />
-                    <CardImgLabel>{o.label}</CardImgLabel>
+                    <CardImgLabel $hero={isSimplifiedMode}>{o.label}</CardImgLabel>
+                    {isSimplifiedMode && THEME_DESCRIPTIONS[o.value] && (
+                      <span style={{
+                        display: 'block', fontSize: '10px', color: 'var(--text-light)',
+                        textAlign: 'center', padding: '0 4px 8px', lineHeight: 1.3,
+                        fontFamily: theme.fonts.body, marginTop: '-4px',
+                      }}>
+                        {THEME_DESCRIPTIONS[o.value]}
+                      </span>
+                    )}
                   </ImageCard>
                 );
               })}
             </CardGrid>
 
-            {/* Custom theme — full-width card */}
+            {/* Custom theme — full-width hero card */}
             <div
               onClick={() => onUpdate({ generalTheme: 'custom' })}
               style={{
-                width: '100%', maxWidth: 480, marginTop: theme.spacing.md,
-                padding: '16px 20px',
-                borderRadius: theme.borderRadius.xl,
-                border: `2px solid ${formData.generalTheme === 'custom' ? theme.colors.accent.coral : 'var(--border-color)'}`,
+                width: '100%', maxWidth: isSimplifiedMode ? 560 : 480,
+                marginTop: theme.spacing.md,
+                padding: isSimplifiedMode ? '20px 24px' : '16px 20px',
+                borderRadius: isSimplifiedMode ? '18px' : theme.borderRadius.xl,
+                border: `${isSimplifiedMode ? '3px' : '2px'} solid ${formData.generalTheme === 'custom'
+                  ? theme.colors.accent.coral
+                  : isSimplifiedMode ? 'rgba(255,153,153,0.25)' : 'var(--border-color)'}`,
                 background: formData.generalTheme === 'custom'
-                  ? `linear-gradient(135deg, ${theme.colors.accent.coral}08, ${theme.colors.accent.softPink}10)`
-                  : 'var(--bg-card)',
+                  ? `linear-gradient(135deg, ${theme.colors.accent.coral}10, ${theme.colors.accent.softPink}15)`
+                  : isSimplifiedMode
+                    ? 'var(--bg-elevated)'
+                    : 'var(--bg-card)',
                 cursor: 'pointer',
-                transition: 'all 0.2s ease',
+                transition: 'all 0.3s cubic-bezier(0.34,1.56,0.64,1)',
                 textAlign: 'center',
+                boxShadow: isSimplifiedMode
+                  ? formData.generalTheme === 'custom'
+                    ? `0 0 0 4px ${theme.colors.accent.coral}35, 0 8px 32px ${theme.colors.accent.coral}25`
+                    : '0 4px 20px rgba(255,153,153,0.12), 0 8px 32px rgba(0,0,0,0.08)'
+                  : 'var(--shadow-card)',
+                transform: formData.generalTheme === 'custom' ? 'scale(1.02)' : 'scale(1)',
               }}
             >
               <div style={{
-                fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.base, fontWeight: 700,
+                fontFamily: theme.fonts.heading,
+                fontSize: isSimplifiedMode ? theme.fontSizes.lg : theme.fontSizes.base,
+                fontWeight: 700,
                 color: 'var(--text-primary)', marginBottom: '4px',
               }}>
-                Inventez votre propre univers
+                {isSimplifiedMode ? 'Créer un univers personnalisé' : 'Inventez votre propre univers'}
               </div>
               <div style={{
                 fontSize: theme.fontSizes.xs, color: 'var(--text-light)', lineHeight: 1.5,
               }}>
-                Harry Potter, Star Wars, Pat'Patrouille, Monde des dinosaures, Pirates...
+                {isSimplifiedMode
+                  ? 'Ex : pirates, dinosaures, magie, espace...'
+                  : 'Harry Potter, Star Wars, Pat\'Patrouille, Monde des dinosaures, Pirates...'}
               </div>
             </div>
 
@@ -637,6 +673,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
             )}
           </>
         );
+      }
 
       case 'occasion':
         return (
