@@ -688,20 +688,44 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
                         Vous aussi, creez votre livre gratuitement
                       </SharedCTA>
 
-                      {/* Upsell club subtil */}
-                      <ClubUpsellCard onClick={() => window.location.href = '/club/checkout'}>
-                        <ClubUpsellLabel>Club des Histoires</ClubUpsellLabel>
-                        <ClubUpsellText>
-                          Personnages secondaires, animal de compagnie, styles d'illustration... Personnalisez encore plus vos livres
-                          <ClubUpsellArrow>&rarr;</ClubUpsellArrow>
-                        </ClubUpsellText>
-                      </ClubUpsellCard>
+                      {/* Club CTA — même bloc que pour le propriétaire */}
+                      <div
+                        onClick={() => window.location.href = '/club/checkout'}
+                        style={{
+                          width: '100%', maxWidth: 320, cursor: 'pointer',
+                          background: 'linear-gradient(135deg, #FF9999, #E88888)',
+                          borderRadius: '18px', padding: '24px 20px',
+                          textAlign: 'center', marginTop: 16,
+                          boxShadow: '0 8px 32px rgba(255,153,153,0.3)',
+                        }}
+                      >
+                        <p style={{ fontSize: '20px', margin: '0 0 8px' }}>✨📚</p>
+                        <p style={{
+                          color: 'white', fontWeight: 800, fontSize: '16px',
+                          margin: '0 0 8px', lineHeight: 1.3,
+                        }}>
+                          Envie de plus de pages, de personnages et bien plus ?
+                        </p>
+                        <p style={{
+                          color: 'rgba(255,255,255,0.85)', fontSize: '13px',
+                          margin: '0 0 12px', lineHeight: 1.4,
+                        }}>
+                          Decouvrez le Club des Histoires Uniques
+                        </p>
+                        <span style={{
+                          display: 'inline-block', background: 'white',
+                          color: '#E88888', fontWeight: 700, fontSize: '14px',
+                          padding: '10px 24px', borderRadius: '12px',
+                        }}>
+                          Decouvrir le Club &rarr;
+                        </span>
+                      </div>
                     </>
                   ) : (
                     <>
-                      {/* Propriétaire : partage + navigation */}
+                      {/* Propriétaire : partage */}
                       {onShare && (
-                        <div style={{ marginBottom: 24 }}>
+                        <div style={{ marginBottom: 20 }}>
                           <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12, margin: '0 0 10px', textTransform: 'uppercase', letterSpacing: 1, fontWeight: 600 }}>
                             Faites decouvrir cette histoire
                           </p>
@@ -711,27 +735,50 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
                         </div>
                       )}
 
+                      {/* Club CTA — gros bloc central qui tape à l'œil */}
+                      {!isClub && (
+                        <div
+                          onClick={() => window.location.href = '/club/checkout'}
+                          style={{
+                            width: '100%', maxWidth: 320, cursor: 'pointer',
+                            background: 'linear-gradient(135deg, #FF9999, #E88888)',
+                            borderRadius: '18px', padding: '24px 20px',
+                            textAlign: 'center', marginBottom: 16,
+                            boxShadow: '0 8px 32px rgba(255,153,153,0.3)',
+                            transition: 'transform 0.2s ease',
+                          }}
+                        >
+                          <p style={{ fontSize: '20px', margin: '0 0 8px' }}>✨📚</p>
+                          <p style={{
+                            color: 'white', fontWeight: 800, fontSize: '16px',
+                            margin: '0 0 8px', lineHeight: 1.3,
+                          }}>
+                            Envie de plus de pages, de personnages et bien plus ?
+                          </p>
+                          <p style={{
+                            color: 'rgba(255,255,255,0.85)', fontSize: '13px',
+                            margin: '0 0 12px', lineHeight: 1.4,
+                          }}>
+                            Decouvrez le Club des Histoires Uniques
+                          </p>
+                          <span style={{
+                            display: 'inline-block', background: 'white',
+                            color: '#E88888', fontWeight: 700, fontSize: '14px',
+                            padding: '10px 24px', borderRadius: '12px',
+                          }}>
+                            Decouvrir le Club &rarr;
+                          </span>
+                        </div>
+                      )}
+
+                      {/* Créer une nouvelle histoire */}
                       <EndButtons>
                         {onCreateAnother && (
                           <EndButton onClick={onCreateAnother}>
                             Creer une nouvelle histoire
                           </EndButton>
                         )}
-                        <EndButton onClick={onClose}>
-                          Retour a la bibliotheque
-                        </EndButton>
                       </EndButtons>
-
-                      {/* Upsell club pour non-abonnés */}
-                      {!isClub && (
-                        <ClubUpsellCard onClick={() => window.location.href = '/club/checkout'}>
-                          <ClubUpsellLabel>Club des Histoires</ClubUpsellLabel>
-                          <ClubUpsellText>
-                            Personnages secondaires, animal de compagnie, choix du style d'illustration... Personnalisez encore plus !
-                            <ClubUpsellArrow>&rarr;</ClubUpsellArrow>
-                          </ClubUpsellText>
-                        </ClubUpsellCard>
-                      )}
                     </>
                   )}
 
