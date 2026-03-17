@@ -357,12 +357,16 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
   useEffect(() => {
     if (ALL_STEPS[currentStep] === 'preview') {
       if (!previewStartRef.current) previewStartRef.current = Date.now();
-      if (!coverImageUrl && !isCoverGenerating) generateCover();
-      // Auto-select free offer for first-time users (no Club option shown)
-      if (isFirstPurchase && !isClub && !selectedOffer) {
+      // Delay cover generation slightly to let protagonistAge propagate (simplified mode derives it)
+      const timer = setTimeout(() => {
+        if (!coverImageUrl && !isCoverGenerating) generateCover();
+      }, isSimplifiedMode ? 200 : 0);
+      // Auto-select offer for all simplified mode users (non-Club)
+      if (isSimplifiedMode && !selectedOffer) {
         setSelectedOffer('single');
         onUpdate({ productType: 'ebook', purchaseType: 'single' });
       }
+      return () => clearTimeout(timer);
     } else {
       previewStartRef.current = null;
     }
@@ -558,15 +562,6 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 </ImageCard>
               ))}
             </CardGrid>
-            {false && isSimplifiedMode && (
-              <p style={{
-                fontFamily: theme.fonts.body, fontSize: '11px',
-                color: 'var(--text-light)', marginTop: theme.spacing.md,
-                textAlign: 'center', letterSpacing: '0.02em',
-              }}>
-                Gratuit &middot; Sans engagement &middot; Envoi par email
-              </p>
-            )}
           </>
         );
 
@@ -585,7 +580,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
           <>
             <StepTitle style={isSimplifiedMode ? { marginBottom: '2px' } : undefined}>Quel univers ?</StepTitle>
             <StepMicroText style={isSimplifiedMode ? { marginBottom: theme.spacing.sm } : undefined}>Choisissez l'aventure de votre enfant</StepMicroText>
-            <CardGrid $columns={3} $compact={isSimplifiedMode || !isSimplifiedMode}>
+            <CardGrid $columns={3} $compact>
               {themeList.map((o, i) => {
                 const isRecommended = recommendedThemes.includes(o.value);
                 return (
@@ -1256,7 +1251,8 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
 
         // ── LOADING STATE: immersive fullscreen canvas ──
         if (!allReady) {
-          const stage = 0;
+          const elapsed = previewStartRef.current ? Date.now() - previewStartRef.current : 0;
+          const stage = elapsed < 3000 ? 0 : elapsed < 8000 ? 1 : 2;
 
           const stageMessages = [
             [
