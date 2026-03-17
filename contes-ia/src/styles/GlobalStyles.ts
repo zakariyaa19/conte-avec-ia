@@ -22,21 +22,21 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   [data-theme="dark"] {
-    --bg-primary: #1B1525;
-    --bg-secondary: #221C30;
-    --bg-card: #2A2338;
-    --bg-elevated: #332B48;
+    --bg-primary: #13101E;
+    --bg-secondary: #1A1628;
+    --bg-card: #2C2540;
+    --bg-elevated: #362E50;
     --bg-input: #252040;
     --text-primary: #F2EDE6;
     --text-secondary: #C0B9AF;
     --text-light: #918B83;
-    --border-color: rgba(255,220,200,0.10);
+    --border-color: rgba(255,220,200,0.12);
     --border-input: rgba(255,220,200,0.18);
-    --shadow-card: 0 2px 12px rgba(0,0,0,0.4);
-    --shadow-card-hover: 0 8px 32px rgba(0,0,0,0.5);
-    --header-glass: rgba(27,21,37,0.80);
+    --shadow-card: 0 4px 16px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,220,200,0.06);
+    --shadow-card-hover: 0 8px 32px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,153,153,0.15);
+    --header-glass: rgba(19,16,30,0.82);
     --hover-bg: rgba(255,153,153,0.12);
-    --gradient-hero: linear-gradient(135deg, #1B1525 0%, #261D35 50%, #1E1828 100%);
+    --gradient-hero: linear-gradient(135deg, #13101E 0%, #1E1830 50%, #16122A 100%);
   }
 
   * {
