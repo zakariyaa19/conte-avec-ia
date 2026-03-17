@@ -812,143 +812,108 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
               ))}
             </div>
 
-            {/* ── Photo upload — visual hero block with transform animation ── */}
+            {/* ── Photo upload — clear, explicit, visual ── */}
             {isSimplifiedMode && (
-              <div
-                onClick={() => fileInputRef.current?.click()}
-                style={{
-                  width: '100%', maxWidth: 400, cursor: 'pointer',
-                  borderRadius: '20px', overflow: 'hidden',
-                  border: `3px solid ${formData.photo ? theme.colors.accent.coral : 'rgba(255,153,153,0.22)'}`,
-                  background: formData.photo
-                    ? `linear-gradient(135deg, ${theme.colors.accent.coral}0A, ${theme.colors.accent.softPink}15)`
-                    : 'var(--bg-elevated)',
-                  boxShadow: formData.photo
-                    ? `0 0 0 4px ${theme.colors.accent.coral}30, 0 8px 32px ${theme.colors.accent.coral}20`
-                    : '0 4px 24px rgba(255,153,153,0.12), 0 8px 32px rgba(0,0,0,0.08)',
-                  transition: 'all 0.3s ease',
-                }}
-              >
-                {/* Visual transform illustration — centered, large */}
+              <div style={{ width: '100%', maxWidth: 400, textAlign: 'center' }}>
+                {/* Title */}
+                <p style={{
+                  fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.lg, fontWeight: 700,
+                  color: 'var(--text-primary)', margin: `0 0 4px`,
+                }}>
+                  Ajoutez une photo de votre enfant
+                </p>
+                <p style={{
+                  fontSize: theme.fontSizes.sm, color: 'var(--text-secondary)',
+                  margin: `0 0 ${theme.spacing.md}`, lineHeight: 1.4,
+                }}>
+                  Les illustrations du livre ressembleront à votre enfant
+                </p>
+
+                {/* Visual: Photo → Character */}
                 <div style={{
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  gap: '12px', padding: '20px 16px 12px',
+                  gap: '16px', marginBottom: theme.spacing.md,
                 }}>
+                  {/* Left: Photo icon */}
+                  <div style={{
+                    width: '72px', height: '72px', borderRadius: '16px',
+                    background: 'var(--bg-card)',
+                    border: '2px solid var(--border-color)',
+                    display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                    gap: '2px', flexShrink: 0,
+                  }}>
+                    <span style={{ fontSize: '28px', lineHeight: 1 }}>&#x1F4F7;</span>
+                    <span style={{ fontSize: '9px', color: 'var(--text-light)', fontWeight: 600 }}>Photo</span>
+                  </div>
+
+                  {/* Arrow */}
+                  <svg viewBox="0 0 40 24" width="40" height="24" fill="none">
+                    <path d="M4 12h28m-6-5l6 5-6 5" stroke={theme.colors.accent.coral} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+
+                  {/* Right: Character result */}
+                  <div style={{
+                    width: '72px', height: '72px', borderRadius: '16px',
+                    background: `linear-gradient(135deg, ${theme.colors.accent.coral}12, ${theme.colors.accent.softPink}18)`,
+                    border: `2px solid ${theme.colors.accent.coral}40`,
+                    display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                    gap: '2px', flexShrink: 0,
+                  }}>
+                    <span style={{ fontSize: '28px', lineHeight: 1 }}>&#x1F9D2;</span>
+                    <span style={{ fontSize: '9px', color: theme.colors.accent.coral, fontWeight: 600 }}>Héros</span>
+                  </div>
+                </div>
+
+                {/* Upload zone */}
+                <div
+                  onClick={() => fileInputRef.current?.click()}
+                  style={{
+                    cursor: 'pointer',
+                    borderRadius: '16px', overflow: 'hidden',
+                    border: `2.5px ${formData.photo ? 'solid' : 'dashed'} ${formData.photo ? theme.colors.accent.coral : 'rgba(255,153,153,0.35)'}`,
+                    background: formData.photo
+                      ? `linear-gradient(135deg, ${theme.colors.accent.coral}0A, ${theme.colors.accent.softPink}15)`
+                      : 'var(--bg-elevated)',
+                    boxShadow: formData.photo
+                      ? `0 0 0 4px ${theme.colors.accent.coral}30, 0 8px 32px ${theme.colors.accent.coral}20`
+                      : '0 4px 20px rgba(255,153,153,0.10), 0 8px 32px rgba(0,0,0,0.06)',
+                    padding: '16px 20px',
+                    display: 'flex', alignItems: 'center', gap: '14px',
+                    transition: 'all 0.3s ease',
+                  }}
+                >
                   {formData.photo ? (
-                    /* When photo uploaded: show preview */
                     <div style={{
-                      width: '80px', height: '80px', borderRadius: '16px', overflow: 'hidden',
-                      border: `3px solid ${theme.colors.accent.coral}`,
-                      boxShadow: `0 4px 16px ${theme.colors.accent.coral}30`,
+                      width: '56px', height: '56px', borderRadius: '12px', overflow: 'hidden',
+                      border: `2px solid ${theme.colors.accent.coral}`, flexShrink: 0,
                     }}>
                       <img src={URL.createObjectURL(formData.photo as File)} alt=""
                         style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     </div>
                   ) : (
-                    /* Transform animation: Photo → Magic → Character */
-                    <>
-                      {/* Photo frame */}
-                      <div style={{
-                        width: '64px', height: '64px', borderRadius: '14px',
-                        border: '2px dashed var(--text-light)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        background: 'var(--bg-card)', opacity: 0.8, flexShrink: 0,
-                      }}>
-                        <svg viewBox="0 0 40 40" width="32" height="32" fill="none">
-                          <rect x="4" y="8" width="32" height="24" rx="4" fill="none" stroke="var(--text-light)" strokeWidth="1.5" />
-                          <circle cx="20" cy="18" r="6" fill="none" stroke="var(--text-light)" strokeWidth="1.5" />
-                          <circle cx="20" cy="18" r="2.5" fill="var(--text-light)" opacity="0.4" />
-                          <path d="M10 28 L16 22 L20 26 L26 20 L32 28" fill="none" stroke="var(--text-light)" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                      </div>
-
-                      {/* Magic sparkles arrow */}
-                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
-                        <svg viewBox="0 0 48 32" width="48" height="32" fill="none">
-                          {/* Sparkles */}
-                          <circle cx="8" cy="8" r="2" fill={theme.colors.accent.coral} opacity="0.5">
-                            <animate attributeName="opacity" values="0.3;0.8;0.3" dur="2s" repeatCount="indefinite" />
-                          </circle>
-                          <circle cx="16" cy="4" r="1.5" fill={theme.colors.accent.softPink}>
-                            <animate attributeName="opacity" values="0.4;0.9;0.4" dur="1.8s" repeatCount="indefinite" />
-                          </circle>
-                          <circle cx="32" cy="6" r="1.5" fill={theme.colors.accent.coral} opacity="0.4">
-                            <animate attributeName="opacity" values="0.2;0.7;0.2" dur="2.2s" repeatCount="indefinite" />
-                          </circle>
-                          <circle cx="40" cy="10" r="2" fill={theme.colors.accent.softPink}>
-                            <animate attributeName="opacity" values="0.3;0.8;0.3" dur="1.6s" repeatCount="indefinite" />
-                          </circle>
-                          {/* Arrow */}
-                          <path d="M6 18h36m-6-5l6 5-6 5" stroke={theme.colors.accent.coral} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" opacity="0.5" />
-                          {/* Star */}
-                          <path d="M24 26l-2 1.2 0.4-2.3-1.7-1.6 2.3-0.3L24 21l1 2 2.3 0.3-1.7 1.6 0.4 2.3z" fill={theme.colors.accent.coral} opacity="0.4">
-                            <animate attributeName="opacity" values="0.2;0.6;0.2" dur="2.5s" repeatCount="indefinite" />
-                          </path>
-                        </svg>
-                      </div>
-
-                      {/* Illustrated character result */}
-                      <div style={{
-                        width: '64px', height: '64px', borderRadius: '14px',
-                        border: `2px solid ${theme.colors.accent.coral}40`,
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        background: `linear-gradient(135deg, ${theme.colors.accent.coral}10, ${theme.colors.accent.softPink}15)`,
-                        flexShrink: 0,
-                      }}>
-                        <svg viewBox="0 0 48 56" width="40" height="48" fill="none">
-                          {/* Hair */}
-                          <path d="M12 18 Q16 6 24 8 Q32 6 36 18" fill="none" stroke="#E8A87C" strokeWidth="3" strokeLinecap="round" />
-                          <path d="M10 20 Q8 28 12 32" fill="none" stroke="#E8A87C" strokeWidth="2.5" strokeLinecap="round" />
-                          <path d="M38 20 Q40 28 36 32" fill="none" stroke="#E8A87C" strokeWidth="2.5" strokeLinecap="round" />
-                          {/* Face */}
-                          <circle cx="24" cy="24" r="14" fill={`${theme.colors.accent.coral}18`} stroke={theme.colors.accent.coral} strokeWidth="2" />
-                          {/* Eyes */}
-                          <circle cx="19" cy="22" r="2" fill="var(--text-primary)" />
-                          <circle cx="29" cy="22" r="2" fill="var(--text-primary)" />
-                          <circle cx="20" cy="21.5" r="0.7" fill="white" />
-                          <circle cx="30" cy="21.5" r="0.7" fill="white" />
-                          {/* Smile */}
-                          <path d="M19 28 Q24 33 29 28" fill="none" stroke="var(--text-primary)" strokeWidth="1.8" strokeLinecap="round" />
-                          {/* Cheeks */}
-                          <circle cx="15" cy="26" r="2.5" fill={theme.colors.accent.coral} opacity="0.2" />
-                          <circle cx="33" cy="26" r="2.5" fill={theme.colors.accent.coral} opacity="0.2" />
-                          {/* Body hint */}
-                          <path d="M16 38 Q24 42 32 38" fill="none" stroke={theme.colors.accent.coral} strokeWidth="1.5" strokeLinecap="round" opacity="0.4" />
-                        </svg>
-                      </div>
-                    </>
-                  )}
-                </div>
-
-                {/* Text & CTA */}
-                <div style={{
-                  textAlign: 'center', padding: '0 20px 16px',
-                }}>
-                  <p style={{
-                    fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.base, fontWeight: 700,
-                    color: 'var(--text-primary)', margin: '0 0 4px',
-                  }}>
-                    {formData.photo ? 'Photo ajoutée !' : 'Ajoutez une photo pour que le héros lui ressemble'}
-                  </p>
-                  <p style={{
-                    fontSize: '12px',
-                    color: formData.photo ? theme.colors.accent.coral : 'var(--text-secondary)',
-                    margin: 0, lineHeight: 1.4,
-                  }}>
-                    {formData.photo
-                      ? 'Cliquez pour changer la photo'
-                      : 'Sa photo sera utilisée comme modèle pour créer le personnage'}
-                  </p>
-                  {!formData.photo && (
-                    <span style={{
-                      display: 'inline-block', marginTop: '8px', fontSize: '11px',
-                      color: theme.colors.accent.coral, fontWeight: 600,
-                      padding: '4px 14px', borderRadius: '20px',
+                    <div style={{
+                      width: '56px', height: '56px', borderRadius: '12px',
                       background: `${theme.colors.accent.coral}10`,
-                      border: `1px solid ${theme.colors.accent.coral}25`,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
                     }}>
-                      Importer une photo
-                    </span>
+                      <span style={{ fontSize: '24px' }}>&#x1F4F7;</span>
+                    </div>
+                  )}
+                  <div style={{ flex: 1, textAlign: 'left' }}>
+                    <p style={{
+                      fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.sm, fontWeight: 700,
+                      color: 'var(--text-primary)', margin: '0 0 2px',
+                    }}>
+                      {formData.photo ? 'Photo ajoutée !' : 'Importer une photo'}
+                    </p>
+                    <p style={{ fontSize: '12px', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.3 }}>
+                      {formData.photo ? 'Cliquez pour changer' : 'Depuis votre galerie ou appareil photo'}
+                    </p>
+                  </div>
+                  {!formData.photo && (
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" style={{ flexShrink: 0, opacity: 0.4 }}>
+                      <path d="M12 5v14M5 12h14" stroke="var(--text-primary)" strokeWidth="2" strokeLinecap="round" />
+                    </svg>
                   )}
                 </div>
 
@@ -956,17 +921,17 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                   const file = e.target.files?.[0];
                   if (file) { onUpdate({ photo: file, appearanceMode: 'photo', eyeColor: '', hairColor: '', skinColor: '' }); }
                 }} />
-              </div>
-            )}
 
-            {/* Optionnel — discret sous le bloc */}
-            {isSimplifiedMode && !formData.photo && (
-              <p style={{
-                fontSize: '10px', color: 'var(--text-light)', textAlign: 'center',
-                marginTop: '6px', fontFamily: theme.fonts.body,
-              }}>
-                Optionnel — vous pouvez continuer sans photo
-              </p>
+                {/* Optionnel — discret */}
+                {!formData.photo && (
+                  <p style={{
+                    fontSize: '11px', color: 'var(--text-light)', marginTop: '8px',
+                    fontFamily: theme.fonts.body,
+                  }}>
+                    Optionnel — vous pouvez continuer sans photo
+                  </p>
+                )}
+              </div>
             )}
           </>
         );
