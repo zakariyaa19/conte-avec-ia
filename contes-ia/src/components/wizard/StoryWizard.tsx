@@ -1394,7 +1394,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
 
               {/* Cover — clic = autoscroll vers la section pricing/commande */}
               <BookPageFrame $portrait style={{ cursor: 'pointer' }}
-                onClick={() => (isFirstPurchase ? orderFormRef : pricingRef).current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>
+                onClick={() => (isSimplifiedMode ? orderFormRef : pricingRef).current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>
                 <BookCoverImage>
                   <MaterializeImage $ready>
                     <img src={coverImageUrl} alt="Couverture" />
@@ -1402,8 +1402,8 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 </BookCoverImage>
               </BookPageFrame>
 
-              {/* Locked page — story + illustrations generated after purchase (payant uniquement) */}
-              {!isFirstPurchase && (
+              {/* Locked page — only for Club members (full form mode) */}
+              {!isSimplifiedMode && (
                 <BookPageFrame $compact ref={lockedPageRef}>
                   <BookLockedOverlay onClick={() => pricingRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })}>
                     <BookLockedContent>
@@ -1416,16 +1416,16 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
               )}
             </BookPreviewWrapper>
 
-            {/* ── Timer — payant uniquement ── */}
-            {!isFirstPurchase && (
+            {/* ── Timer — only for Club members (full form mode) ── */}
+            {!isSimplifiedMode && (
               <PreviewTimerBar>
                 <span>Votre livre est réservé pendant encore</span>
                 <PreviewTimerDigits>{timerDisplay}</PreviewTimerDigits>
               </PreviewTimerBar>
             )}
 
-            {/* ── Pricing section — masquée pour premier livre gratuit ── */}
-            {!isFirstPurchase && (
+            {/* ── Pricing section — only for Club members (full form mode) ── */}
+            {!isSimplifiedMode && (
             <div ref={pricingRef} style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <PreviewSectionTitle>
                 {heroName} est prêt pour la suite de son aventure
@@ -1534,8 +1534,8 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
             </div>
             )}
 
-            {/* ── Social proof — toujours visible (flow gratuit: après cover) ── */}
-            {isFirstPurchase && (
+            {/* ── Social proof — visible in simplified mode (after cover) ── */}
+            {isSimplifiedMode && (
               <SocialProofLine>
                 <span>&#x2B50;</span> Déjà +500 parents ont créé une histoire pour leur enfant
               </SocialProofLine>
