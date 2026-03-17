@@ -745,18 +745,29 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
       case 'hero':
         return (
           <>
-            <StepTitle>{isSimplifiedMode ? 'Comment s\'appelle votre enfant ?' : 'Votre héros'}</StepTitle>
-            <StepSubtitle>{isSimplifiedMode ? 'Le héros de l\'histoire, c\'est lui !' : 'Qui sera le personnage principal ?'}</StepSubtitle>
+            <StepTitle style={isSimplifiedMode ? { marginBottom: '2px' } : undefined}>
+              {isSimplifiedMode ? 'Comment s\'appelle votre enfant ?' : 'Votre héros'}
+            </StepTitle>
+            {!isSimplifiedMode && <StepSubtitle>Qui sera le personnage principal ?</StepSubtitle>}
             {showSummary && (
-              <SummaryChipsRow>
-                {summaryChips.map((c, i) => (
-                  <SummaryChip key={c.label} $delay={i}>{c.label}: {c.value}</SummaryChip>
+              <div style={{
+                display: 'flex', gap: '6px', justifyContent: 'center', flexWrap: 'wrap',
+                marginBottom: isSimplifiedMode ? theme.spacing.sm : theme.spacing.md,
+              }}>
+                {summaryChips.map((c) => (
+                  <span key={c.label} style={{
+                    fontSize: '10px', color: 'var(--text-light)', background: 'var(--bg-card)',
+                    padding: '3px 8px', borderRadius: '20px', border: '1px solid var(--border-color)',
+                    fontFamily: theme.fonts.body,
+                  }}>
+                    {c.label}: {c.value}
+                  </span>
                 ))}
-              </SummaryChipsRow>
+              </div>
             )}
-            <InputRow>
+            <InputRow style={isSimplifiedMode ? { marginBottom: theme.spacing.sm, maxWidth: 340 } : undefined}>
               <InputField>
-                <ValidatedInput label="Prénom *" value={formData.protagonistName || ''}
+                <ValidatedInput label="Prénom" value={formData.protagonistName || ''}
                   onChange={(v) => handleInputChange('protagonistName', v)} placeholder="Ex : Emma, Lucas..." required error={errors.protagonistName} />
               </InputField>
               {!isSimplifiedMode && (
@@ -766,14 +777,21 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 </InputField>
               )}
             </InputRow>
-            <CardGrid $columns={2} style={{ maxWidth: 320 }}>
+
+            {/* Gender — compact inline cards */}
+            <div style={{
+              display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px',
+              width: '100%', maxWidth: isSimplifiedMode ? 280 : 320,
+              marginBottom: isSimplifiedMode ? theme.spacing.sm : theme.spacing.md,
+            }}>
               {GENDER_OPTIONS.map((o, i) => (
                 <GenderCard key={o.value} $isSelected={formData.protagonistGender === o.value} $delay={i}
                   aria-label={`Genre: ${o.label}`}
+                  style={isSimplifiedMode ? { padding: '10px 8px', gap: '4px', borderRadius: '14px' } : undefined}
                   onClick={() => onUpdate({ protagonistGender: o.value as 'boy' | 'girl' })}>
-                  <GenderCardIcon>
+                  <GenderCardIcon style={isSimplifiedMode ? { width: '48px', height: '48px' } : undefined}>
                     {o.value === 'girl' ? (
-                      <svg viewBox="0 0 80 80" fill="none" width="64" height="64">
+                      <svg viewBox="0 0 80 80" fill="none" width={isSimplifiedMode ? '44' : '64'} height={isSimplifiedMode ? '44' : '64'}>
                         <circle cx="40" cy="32" r="20" fill="#FF9999" fillOpacity="0.25" stroke={theme.colors.accent.coral} strokeWidth="3" />
                         <circle cx="34" cy="29" r="2.5" fill="var(--text-primary)" />
                         <circle cx="46" cy="29" r="2.5" fill="var(--text-primary)" />
@@ -786,7 +804,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                         <circle cx="40" cy="58" r="7" fill="none" stroke={theme.colors.accent.coral} strokeWidth="3" />
                       </svg>
                     ) : (
-                      <svg viewBox="0 0 80 80" fill="none" width="64" height="64">
+                      <svg viewBox="0 0 80 80" fill="none" width={isSimplifiedMode ? '44' : '64'} height={isSimplifiedMode ? '44' : '64'}>
                         <circle cx="40" cy="34" r="20" fill="#A8D8EA" fillOpacity="0.3" stroke="#7CB9D0" strokeWidth="3" />
                         <circle cx="34" cy="31" r="2.5" fill="var(--text-primary)" />
                         <circle cx="46" cy="31" r="2.5" fill="var(--text-primary)" />
@@ -799,34 +817,91 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                       </svg>
                     )}
                   </GenderCardIcon>
-                  <GenderCardLabel $isSelected={formData.protagonistGender === o.value}>{o.label}</GenderCardLabel>
+                  <GenderCardLabel $isSelected={formData.protagonistGender === o.value}
+                    style={isSimplifiedMode ? { fontSize: theme.fontSizes.sm } : undefined}>
+                    {o.label}
+                  </GenderCardLabel>
                 </GenderCard>
               ))}
-            </CardGrid>
+            </div>
 
-            {/* Photo optionnelle — compact, intégré dans l'étape héros en mode simplifié */}
+            {/* Photo optionnelle — compact, with visual transform illustration */}
             {isSimplifiedMode && (
-              <div style={{ width: '100%', maxWidth: 400, marginTop: theme.spacing.lg }}>
-                <p style={{
-                  fontSize: theme.fontSizes.sm, fontWeight: 600, color: 'var(--text-secondary)',
-                  textAlign: 'center', marginBottom: theme.spacing.sm,
-                }}>
-                  Ajoutez sa photo <span style={{ fontWeight: 400, color: 'var(--text-light)' }}>(optionnel)</span>
-                </p>
+              <div style={{
+                width: '100%', maxWidth: 360, marginTop: theme.spacing.xs,
+              }}>
                 <PhotoUploadZone
                   $hasPhoto={!!formData.photo}
                   onClick={() => fileInputRef.current?.click()}
-                  style={{ padding: '16px', minHeight: 'auto' }}
+                  style={{
+                    padding: '14px 16px', minHeight: 'auto',
+                    borderRadius: '16px',
+                    border: `2.5px ${formData.photo ? 'solid' : 'dashed'} ${formData.photo ? theme.colors.accent.coral : 'rgba(255,153,153,0.3)'}`,
+                    background: formData.photo
+                      ? `linear-gradient(135deg, ${theme.colors.accent.coral}08, ${theme.colors.accent.softPink}12)`
+                      : 'var(--bg-elevated)',
+                    boxShadow: '0 4px 20px rgba(255,153,153,0.10), 0 8px 32px rgba(0,0,0,0.06)',
+                  }}
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <PhotoIcon style={{ fontSize: '1.5rem', margin: 0 }}>{formData.photo ? '✓' : '📷'}</PhotoIcon>
-                    <div style={{ textAlign: 'left' }}>
-                      <PhotoMainText style={{ fontSize: theme.fontSizes.sm, marginBottom: '2px' }}>
-                        {formData.photo ? (formData.photo as File).name : 'Importer une photo'}
-                      </PhotoMainText>
-                      <PhotoSubText style={{ fontSize: theme.fontSizes.xs }}>
-                        {formData.photo ? 'Cliquez pour changer' : 'Le personnage ressemblera à votre enfant'}
-                      </PhotoSubText>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '14px', width: '100%' }}>
+                    {/* Mini transform illustration: photo → sparkle → character */}
+                    <div style={{
+                      display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0,
+                    }}>
+                      {formData.photo ? (
+                        <div style={{
+                          width: '44px', height: '44px', borderRadius: '12px', overflow: 'hidden',
+                          border: `2px solid ${theme.colors.accent.coral}`,
+                        }}>
+                          <img src={URL.createObjectURL(formData.photo as File)} alt=""
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        </div>
+                      ) : (
+                        <>
+                          {/* Photo placeholder */}
+                          <svg viewBox="0 0 36 36" width="32" height="32" fill="none" style={{ opacity: 0.7 }}>
+                            <rect x="2" y="6" width="32" height="24" rx="4" fill="var(--bg-card)" stroke="var(--text-light)" strokeWidth="1.5" strokeDasharray="3 2" />
+                            <circle cx="18" cy="16" r="5" fill="none" stroke="var(--text-light)" strokeWidth="1.5" />
+                            <circle cx="18" cy="16" r="2" fill="var(--text-light)" opacity="0.4" />
+                          </svg>
+                          {/* Arrow with sparkles */}
+                          <svg viewBox="0 0 24 24" width="18" height="18" fill="none">
+                            <path d="M5 12h14m-4-4l4 4-4 4" stroke={theme.colors.accent.coral} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.6" />
+                            <circle cx="12" cy="6" r="1.5" fill={theme.colors.accent.coral} opacity="0.4" />
+                            <circle cx="15" cy="3" r="1" fill={theme.colors.accent.coral} opacity="0.3" />
+                          </svg>
+                          {/* Character result */}
+                          <svg viewBox="0 0 36 36" width="32" height="32" fill="none">
+                            <circle cx="18" cy="14" r="8" fill={`${theme.colors.accent.coral}20`} stroke={theme.colors.accent.coral} strokeWidth="1.5" />
+                            <circle cx="15" cy="13" r="1.2" fill="var(--text-primary)" />
+                            <circle cx="21" cy="13" r="1.2" fill="var(--text-primary)" />
+                            <path d="M15.5 17 Q18 19.5 20.5 17" fill="none" stroke="var(--text-primary)" strokeWidth="1.2" strokeLinecap="round" />
+                            <path d="M10 9 Q14 3 18 4 Q22 3 26 9" fill="none" stroke="#E8A87C" strokeWidth="1.8" strokeLinecap="round" />
+                            <rect x="12" y="24" width="12" height="8" rx="3" fill={`${theme.colors.accent.coral}15`} stroke={theme.colors.accent.coral} strokeWidth="1" />
+                          </svg>
+                        </>
+                      )}
+                    </div>
+                    <div style={{ flex: 1, textAlign: 'left' }}>
+                      <p style={{
+                        fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.sm, fontWeight: 700,
+                        color: 'var(--text-primary)', margin: '0 0 2px',
+                      }}>
+                        {formData.photo ? (formData.photo as File).name : 'Ajoutez sa photo'}
+                      </p>
+                      <p style={{
+                        fontSize: '11px', color: formData.photo ? theme.colors.accent.coral : 'var(--text-secondary)',
+                        margin: 0, lineHeight: 1.3,
+                      }}>
+                        {formData.photo
+                          ? 'Cliquez pour changer'
+                          : 'Le héros du livre ressemblera à votre enfant'}
+                      </p>
+                      <span style={{
+                        fontSize: '9px', color: 'var(--text-light)', marginTop: '2px', display: 'inline-block',
+                      }}>
+                        {formData.photo ? '' : 'Optionnel'}
+                      </span>
                     </div>
                   </div>
                   <HiddenFileInput ref={fileInputRef} type="file" accept="image/*" onChange={(e) => {
