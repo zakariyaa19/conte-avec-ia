@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled, { keyframes, css } from 'styled-components';
 import { theme } from '../styles/theme';
@@ -437,6 +437,12 @@ export const ClubPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [plan, setPlan] = useState<'monthly' | 'annual'>('monthly');
+  const checkoutRef = useRef<HTMLDivElement>(null);
+
+  const scrollToCheckout = () => {
+    if (isClub) { navigate('/dashboard'); return; }
+    checkoutRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
 
   const illustrationStyles = [
     { name: 'Aquarelle', img: '/images/illustration-styles/aquarelle.jpg' },
@@ -546,11 +552,9 @@ export const ClubPage: React.FC = () => {
               <PriceUnit>{billingNote}</PriceUnit>
             </HeroPrice>
 
-            <ShimmerCTA onClick={handleJoin} disabled={loading}>
-              {loading ? 'Redirection...' : ctaLabel}
+            <ShimmerCTA onClick={scrollToCheckout}>
+              {ctaLabel}
             </ShimmerCTA>
-
-            {error && <ErrorMsg>{error}</ErrorMsg>}
 
             <TrustRow>
               <span>🔒 Paiement sécurisé</span>
@@ -636,35 +640,132 @@ export const ClubPage: React.FC = () => {
           </Inner>
         </Section>
 
-        {/* ═══ FINAL CTA ═══ */}
-        <Section $bg={`linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.accent.coralDark})`}>
-          <Inner style={{ textAlign: 'center' }}>
-            <h2 style={{
-              fontFamily: theme.fonts.heading, fontSize: 'clamp(1.5rem, 4vw, 2.2rem)',
-              fontWeight: 800, color: 'white', margin: '0 0 12px',
+        {/* ═══ CHECKOUT — Recap + Pay ═══ */}
+        <Section ref={checkoutRef}>
+          <Inner>
+            <div style={{
+              maxWidth: 480, margin: '0 auto',
+              background: 'var(--bg-card)',
+              border: `2px solid ${theme.colors.accent.coral}30`,
+              borderRadius: '24px',
+              padding: '32px 24px',
+              boxShadow: `0 0 0 1px var(--border-color), 0 8px 40px rgba(0,0,0,0.12), 0 0 80px ${theme.colors.accent.coral}08`,
             }}>
-              {isClub ? 'Bienvenue dans le Club !' : 'Prêt à commencer ?'}
-            </h2>
-            <p style={{
-              fontSize: theme.fontSizes.base, color: 'rgba(255,255,255,0.85)',
-              margin: '0 0 28px',
-            }}>
-              {isClub
-                ? 'Retrouvez tous vos livres dans votre bibliothèque'
-                : `${price}€${billingNote} · Sans engagement · Annulable à tout moment`}
-            </p>
-            <CTAButton
-              $variant="outline"
-              onClick={handleJoin}
-              disabled={loading}
-              style={{
-                borderColor: 'white', color: 'white',
-                background: 'rgba(255,255,255,0.1)',
-                backdropFilter: 'blur(8px)',
-              }}
-            >
-              {loading ? 'Redirection...' : ctaLabel}
-            </CTAButton>
+              {/* Header */}
+              <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+                <span style={{
+                  display: 'inline-block', background: `${theme.colors.accent.coral}15`,
+                  color: theme.colors.accent.coral, fontSize: '12px', fontWeight: 700,
+                  padding: '4px 12px', borderRadius: '20px', marginBottom: '12px',
+                }}>
+                  Récapitulatif
+                </span>
+                <h2 style={{
+                  fontFamily: theme.fonts.heading, fontSize: theme.fontSizes['2xl'],
+                  fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 4px',
+                }}>
+                  Club des Histoires
+                </h2>
+                <p style={{ fontSize: theme.fontSizes.sm, color: 'var(--text-secondary)', margin: 0 }}>
+                  Votre abonnement commence aujourd'hui
+                </p>
+              </div>
+
+              {/* Toggle */}
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+                <PlanToggle>
+                  <PlanOption $active={plan === 'monthly'} onClick={() => setPlan('monthly')}>
+                    Mensuel
+                  </PlanOption>
+                  <PlanOption $active={plan === 'annual'} onClick={() => setPlan('annual')}>
+                    Annuel
+                    <SaveBadge>-33%</SaveBadge>
+                  </PlanOption>
+                </PlanToggle>
+              </div>
+
+              {/* What's included */}
+              <div style={{
+                background: 'var(--bg-secondary)', borderRadius: '14px',
+                padding: '16px', marginBottom: '20px',
+              }}>
+                {[
+                  '1 livre personnalisé par semaine',
+                  '9 styles d\'illustration',
+                  'Personnages secondaires (famille, amis)',
+                  'Multi-langues (FR, EN, ES, AR...)',
+                  'PDF téléchargeables illimités',
+                  'Bibliothèque en ligne',
+                  'Crédits cumulables',
+                ].map((item) => (
+                  <div key={item} style={{
+                    display: 'flex', alignItems: 'center', gap: '8px',
+                    padding: '6px 0', fontSize: '13px', color: 'var(--text-primary)',
+                  }}>
+                    <span style={{ color: '#4CAF50', fontWeight: 700, fontSize: '14px' }}>✓</span>
+                    {item}
+                  </div>
+                ))}
+              </div>
+
+              {/* Price */}
+              <div style={{
+                textAlign: 'center', padding: '16px 0', marginBottom: '16px',
+                borderTop: '1px solid var(--border-color)',
+                borderBottom: '1px solid var(--border-color)',
+              }}>
+                <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: '6px' }}>
+                  <span style={{
+                    fontFamily: theme.fonts.heading, fontSize: '2.5rem',
+                    fontWeight: 800, color: theme.colors.accent.coral,
+                  }}>
+                    {price}€
+                  </span>
+                  <span style={{ fontSize: theme.fontSizes.base, color: 'var(--text-light)' }}>
+                    {billingNote}
+                  </span>
+                </div>
+                {plan === 'annual' && (
+                  <p style={{
+                    fontSize: '12px', color: '#4CAF50', fontWeight: 600, margin: '4px 0 0',
+                  }}>
+                    Économisez 40€ par an
+                  </p>
+                )}
+              </div>
+
+              {/* CTA */}
+              <ShimmerCTA
+                onClick={handleJoin}
+                disabled={loading}
+                style={{ width: '100%', borderRadius: '14px' }}
+              >
+                {loading ? 'Redirection vers Stripe...' : 'Payer et commencer'}
+              </ShimmerCTA>
+
+              {error && <ErrorMsg>{error}</ErrorMsg>}
+
+              {/* Trust */}
+              <div style={{
+                display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap',
+                marginTop: '16px',
+              }}>
+                {['🔒 Stripe sécurisé', '❌ Sans engagement', '⚡ Annulable'].map(t => (
+                  <span key={t} style={{ fontSize: '11px', color: 'var(--text-light)' }}>{t}</span>
+                ))}
+              </div>
+
+              <p style={{
+                fontSize: '11px', color: 'var(--text-light)', textAlign: 'center',
+                marginTop: '12px', lineHeight: 1.4,
+              }}>
+                Vous serez redirigé vers Stripe pour finaliser le paiement.
+                {plan === 'monthly'
+                  ? ' Prélèvement mensuel de 9,99€.'
+                  : ' Prélèvement annuel de 79,99€.'}
+                {' '}Annulable à tout moment depuis votre espace client.
+              </p>
+            </div>
           </Inner>
         </Section>
 

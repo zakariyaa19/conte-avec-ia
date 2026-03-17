@@ -159,6 +159,13 @@ const DropdownItem = styled.button`
   }
 `;
 
+const DesktopOnly = styled.div`
+  display: contents;
+  @media (max-width: ${theme.breakpoints.lg}) {
+    display: none;
+  }
+`;
+
 /* ─── Right Section ─── */
 const RightSection = styled.div`
   display: flex;
@@ -521,24 +528,26 @@ export const Header: React.FC = () => {
               Creer
             </Button>
 
-            {/* User / Connexion */}
-            {isAuthenticated ? (
-              <div style={{ position: 'relative' }} ref={userMenuRef}>
-                <UserChip onClick={() => setUserMenu(!userMenu)}>
-                  <UserAvatar>{initials}</UserAvatar>
-                  {isClub && <ClubBadge>Club</ClubBadge>}
-                  {user?.firstName || user?.email?.split('@')[0] || 'Compte'}
-                </UserChip>
-                <UserDropdown $open={userMenu}>
-                  <UserDropdownItem onClick={() => go('/dashboard')}>Ma bibliotheque</UserDropdownItem>
-                  <UserDropdownItem onClick={() => go('/dashboard/account')}>Mon compte</UserDropdownItem>
-                  <Divider />
-                  <UserDropdownItem $danger onClick={() => { logout(); go('/'); }}>Deconnexion</UserDropdownItem>
-                </UserDropdown>
-              </div>
-            ) : (
-              <NavPill onClick={() => go('/login')} style={{ fontSize: '0.8125rem' }}>Connexion</NavPill>
-            )}
+            {/* User / Connexion — desktop only, drawer handles mobile */}
+            <DesktopOnly>
+              {isAuthenticated ? (
+                <div style={{ position: 'relative' }} ref={userMenuRef}>
+                  <UserChip onClick={() => setUserMenu(!userMenu)}>
+                    <UserAvatar>{initials}</UserAvatar>
+                    {isClub && <ClubBadge>Club</ClubBadge>}
+                    {user?.firstName || user?.email?.split('@')[0] || 'Compte'}
+                  </UserChip>
+                  <UserDropdown $open={userMenu}>
+                    <UserDropdownItem onClick={() => go('/dashboard')}>Ma bibliotheque</UserDropdownItem>
+                    <UserDropdownItem onClick={() => go('/dashboard/account')}>Mon compte</UserDropdownItem>
+                    <Divider />
+                    <UserDropdownItem $danger onClick={() => { logout(); go('/'); }}>Deconnexion</UserDropdownItem>
+                  </UserDropdown>
+                </div>
+              ) : (
+                <NavPill onClick={() => go('/login')} style={{ fontSize: '0.8125rem' }}>Connexion</NavPill>
+              )}
+            </DesktopOnly>
 
             {/* Burger */}
             <BurgerBtn onClick={() => setDrawerOpen(!drawerOpen)}>
