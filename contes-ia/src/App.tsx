@@ -10,6 +10,7 @@ import { StoryFormPage } from './pages/StoryFormPage';
 import { SuccessPage } from './pages/SuccessPage';
 import { CancelPage } from './pages/CancelPage';
 import { AdminPage } from './pages/AdminPage';
+import { AdminLoginPage } from './pages/AdminLoginPage';
 import { LoginPage } from './pages/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { StoryDetailPage } from './pages/StoryDetailPage';
@@ -61,6 +62,10 @@ import { MagicLoginPage } from './pages/MagicLoginPage';
 import { UpgradePage } from './pages/UpgradePage';
 import { ThemeContextProvider } from './contexts/ThemeContext';
 
+const AdminLoginRoute = () => (
+  <AdminLoginPage onLoginSuccess={() => { window.location.href = '/admin'; }} />
+);
+
 function App() {
   return (
     <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID || ''}>
@@ -85,6 +90,7 @@ function App() {
           <Route path="/club" element={<ClubPage />} />
           <Route path="/upgrade" element={<UpgradePage />} />
           <Route path="/story/:shareToken" element={<PublicStoryPage />} />
+          <Route path="/admin/login" element={<AdminLoginRoute />} />
           <Route path="/admin" element={<AdminProtectedRoute><AdminPage /></AdminProtectedRoute>} />
           <Route path="/admin/orders" element={<AdminProtectedRoute><AdminPage /></AdminProtectedRoute>} />
           <Route path="/admin/order/:orderId" element={<AdminProtectedRoute><AdminPage /></AdminProtectedRoute>} />
