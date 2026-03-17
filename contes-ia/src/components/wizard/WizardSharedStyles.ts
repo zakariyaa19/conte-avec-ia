@@ -290,20 +290,21 @@ export const ImageCard = styled.button<{ $isSelected: boolean; $delay?: number }
   position: relative;
   display: flex; flex-direction: column;
   border: 2.5px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'var(--border-color)'};
-  border-radius: 12px;
+  border-radius: 14px;
   overflow: hidden; cursor: pointer;
   transition: all 0.3s ease;
-  background: var(--bg-card);
+  background: var(--bg-elevated);
   box-shadow: var(--shadow-card);
   -webkit-tap-highlight-color: transparent;
   animation: ${cardReveal} 0.4s cubic-bezier(0.34,1.56,0.64,1) ${p => (p.$delay || 0) * 0.06}s both;
   ${p => p.$isSelected && css`
     border-color: ${theme.colors.accent.coral};
-    box-shadow: 0 0 0 3px ${theme.colors.accent.coral}25, 0 4px 20px ${theme.colors.accent.coral}15, var(--shadow-card);
+    box-shadow: 0 0 0 3px ${theme.colors.accent.coral}30, 0 4px 24px ${theme.colors.accent.coral}20, 0 8px 32px rgba(0,0,0,0.3);
+    background: var(--bg-elevated);
   `}
   &:active { transform: scale(0.96); }
   @media (min-width: ${theme.breakpoints.lg}) {
-    border-radius: 14px;
+    border-radius: 16px;
     &:hover { transform: scale(1.04); box-shadow: var(--shadow-card-hover); }
   }
 `;
@@ -356,8 +357,8 @@ export const TextCard = styled.button<{ $isSelected: boolean; $bg?: string; $del
   display: flex; align-items: center; justify-content: center;
   padding: 14px 12px;
   border: 2px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'var(--border-color)'};
-  border-radius: 12px;
-  background: ${p => p.$isSelected ? `${theme.colors.accent.coral}12` : (p.$bg || 'var(--bg-card)')};
+  border-radius: 14px;
+  background: ${p => p.$isSelected ? `${theme.colors.accent.coral}15` : (p.$bg || 'var(--bg-elevated)')};
   cursor: pointer; transition: all 0.2s ease;
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.sm};
@@ -366,7 +367,7 @@ export const TextCard = styled.button<{ $isSelected: boolean; $bg?: string; $del
   min-height: 48px;
   -webkit-tap-highlight-color: transparent;
   animation: ${cardReveal} 0.35s ease ${p => (p.$delay || 0) * 0.06}s both;
-  ${p => p.$isSelected && css`box-shadow: 0 0 0 3px ${theme.colors.accent.coral}20;`}
+  ${p => p.$isSelected && css`box-shadow: 0 0 0 3px ${theme.colors.accent.coral}25, 0 4px 16px ${theme.colors.accent.coral}12;`}
   &:active { transform: scale(0.96); }
   @media (max-width: ${theme.breakpoints.sm}) {
     padding: 10px 8px; font-size: ${theme.fontSizes.xs}; min-height: 42px;
@@ -395,10 +396,10 @@ export const ColorCard = styled.button<{ $isSelected: boolean; $color: string }>
   padding: ${theme.spacing.sm};
   border: 2px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'var(--border-color)'};
   border-radius: 10px;
-  background: ${p => p.$isSelected ? `${theme.colors.accent.coral}12` : 'var(--bg-card)'};
+  background: ${p => p.$isSelected ? `${theme.colors.accent.coral}15` : 'var(--bg-elevated)'};
   cursor: pointer; transition: all 0.2s ease;
   -webkit-tap-highlight-color: transparent;
-  ${p => p.$isSelected && css`box-shadow: 0 0 0 3px ${theme.colors.accent.coral}20;`}
+  ${p => p.$isSelected && css`box-shadow: 0 0 0 3px ${theme.colors.accent.coral}25, 0 4px 12px ${theme.colors.accent.coral}12;`}
   &:active { transform: scale(0.95); }
 `;
 
@@ -531,7 +532,7 @@ export const ChoiceCard = styled.button<{ $variant: 'primary' | 'secondary' }>`
   -webkit-tap-highlight-color: transparent;
   background: ${p => p.$variant === 'primary'
     ? `linear-gradient(135deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover})`
-    : 'var(--bg-card)'};
+    : 'var(--bg-elevated)'};
   ${p => p.$variant === 'primary' && css`animation: ${ctaPulse} 2.5s ease-in-out infinite; color: white;`}
   ${p => p.$variant === 'secondary' && css`
     color: var(--text-primary); box-shadow: ${theme.shadows.sm};
@@ -624,7 +625,7 @@ export const PricingOption = styled.div<{ $isSelected: boolean }>`
   border: 2px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'var(--border-color)'};
   border-radius: 16px; padding: ${theme.spacing.md} ${theme.spacing.sm};
   cursor: pointer; transition: all 0.3s ease;
-  background: ${p => p.$isSelected ? 'var(--bg-elevated)' : 'var(--bg-card)'};
+  background: ${p => p.$isSelected ? 'var(--bg-elevated)' : 'var(--bg-elevated)'};
   overflow: hidden; -webkit-tap-highlight-color: transparent;
   ${p => p.$isSelected && css`box-shadow: 0 4px 20px ${theme.colors.accent.coral}18;`}
   &:hover { border-color: ${theme.colors.accent.coral}80; }
@@ -729,7 +730,8 @@ export const ClubSmallPrice = styled.p`
    ══════════════════════════════════════════════ */
 
 export const OrderInfoSection = styled.div`
-  background: var(--bg-secondary);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   padding: ${theme.spacing.md}; border-radius: ${theme.borderRadius.lg};
   margin-top: ${theme.spacing.xl}; margin-bottom: ${theme.spacing.md}; width: 100%; max-width: 560px;
   @media (max-width: ${theme.breakpoints.sm}) { margin-top: ${theme.spacing.lg}; }
@@ -796,7 +798,7 @@ export const ConnectedBanner = styled.div`
 `;
 
 export const ClubFreeCard = styled.div<{ $isSelected: boolean }>`
-  background: ${p => p.$isSelected ? `${theme.colors.accent.coral}12` : 'var(--bg-card)'};
+  background: ${p => p.$isSelected ? `${theme.colors.accent.coral}12` : 'var(--bg-elevated)'};
   border: 2px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'var(--border-input)'};
   border-radius: ${theme.borderRadius.xl}; padding: ${theme.spacing.md};
   text-align: center; cursor: pointer; transition: all 0.2s ease;
@@ -2107,7 +2109,7 @@ export const PricingCard = styled.div<{ $isSelected: boolean; $featured?: boolea
     ? `${theme.colors.accent.coral}08`
     : p.$featured
       ? `${theme.colors.accent.coral}05`
-      : 'var(--bg-card)'};
+      : 'var(--bg-elevated)'};
   -webkit-tap-highlight-color: transparent;
   animation: ${cardSlideUp} 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
   animation-delay: ${p => p.$featured ? '0s' : '0.1s'};
@@ -2475,7 +2477,7 @@ export const ClubMiniCard = styled.div<{ $isSelected: boolean }>`
   border: 1.5px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'var(--border-color)'};
   border-radius: 14px;
   cursor: pointer;
-  background: ${p => p.$isSelected ? `${theme.colors.accent.coral}08` : 'var(--bg-card)'};
+  background: ${p => p.$isSelected ? `${theme.colors.accent.coral}08` : 'var(--bg-elevated)'};
   transition: all 0.2s ease;
   -webkit-tap-highlight-color: transparent;
   margin-bottom: ${theme.spacing.sm};
@@ -2702,7 +2704,7 @@ export const SingleFallbackCard = styled.div<{ $isSelected: boolean }>`
   border: 1.5px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'var(--border-color)'};
   border-radius: 14px;
   cursor: pointer;
-  background: ${p => p.$isSelected ? 'var(--bg-elevated)' : 'var(--bg-card)'};
+  background: ${p => p.$isSelected ? 'var(--bg-elevated)' : 'var(--bg-elevated)'};
   transition: all 0.2s ease;
   -webkit-tap-highlight-color: transparent;
   margin-top: ${theme.spacing.sm};
@@ -3018,7 +3020,7 @@ export const NewChoiceCard = styled.button<{ $isSelected: boolean; $delay?: numb
   border-radius: 16px;
   background: ${p => p.$isSelected
     ? `linear-gradient(160deg, #FFF8F5, #FFF)`
-    : 'var(--bg-card)'};
+    : 'var(--bg-elevated)'};
   cursor: pointer;
   transition: all 0.25s ease;
   -webkit-tap-highlight-color: transparent;
@@ -3225,7 +3227,7 @@ export const DetailChip = styled.button<{ $isSelected: boolean }>`
   padding: 6px 14px;
   border: 1.5px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'var(--border-input)'};
   border-radius: ${theme.borderRadius.full};
-  background: ${p => p.$isSelected ? `${theme.colors.accent.coral}12` : 'var(--bg-card)'};
+  background: ${p => p.$isSelected ? `${theme.colors.accent.coral}12` : 'var(--bg-elevated)'};
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.xs};
   font-weight: 600;
@@ -3249,7 +3251,7 @@ export const AccordionHeader = styled.button<{ $isOpen: boolean }>`
   padding: ${theme.spacing.sm} ${theme.spacing.md};
   border: 1.5px solid ${p => p.$isOpen ? theme.colors.accent.coral : 'var(--border-input)'};
   border-radius: ${p => p.$isOpen ? '12px 12px 0 0' : '12px'};
-  background: ${p => p.$isOpen ? `${theme.colors.accent.coral}12` : 'var(--bg-card)'};
+  background: ${p => p.$isOpen ? `${theme.colors.accent.coral}12` : 'var(--bg-elevated)'};
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.sm};
   font-weight: 600;
@@ -3346,7 +3348,7 @@ export const GenderCard = styled.button<{ $isSelected: boolean; $delay?: number 
   border-radius: 20px;
   background: ${p => p.$isSelected
     ? `linear-gradient(160deg, #FFF8F5, #FFF)`
-    : 'var(--bg-card)'};
+    : 'var(--bg-elevated)'};
   cursor: pointer;
   transition: all 0.3s ease;
   -webkit-tap-highlight-color: transparent;

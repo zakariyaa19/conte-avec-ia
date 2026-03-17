@@ -22,21 +22,26 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   [data-theme="dark"] {
-    --bg-primary: #0F0C1A;
-    --bg-secondary: #161226;
-    --bg-card: #302848;
-    --bg-elevated: #3A3158;
-    --bg-input: #252040;
-    --text-primary: #F2EDE6;
-    --text-secondary: #C0B9AF;
-    --text-light: #918B83;
-    --border-color: rgba(255,200,220,0.10);
-    --border-input: rgba(255,200,220,0.16);
-    --shadow-card: 0 4px 20px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,153,200,0.08), 0 0 20px rgba(255,153,153,0.03);
-    --shadow-card-hover: 0 8px 32px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,153,153,0.18), 0 0 30px rgba(255,153,153,0.06);
-    --header-glass: rgba(15,12,26,0.85);
-    --hover-bg: rgba(255,153,153,0.12);
-    --gradient-hero: linear-gradient(135deg, #0F0C1A 0%, #1A1430 50%, #120E24 100%);
+    /* Fond : nuit profonde et chaleureuse */
+    --bg-primary: #141028;
+    --bg-secondary: #1C1735;
+    /* Cartes : surfaces lumineuses, bien détachées du fond */
+    --bg-card: #2E2850;
+    --bg-elevated: #3B3468;
+    --bg-input: #28224A;
+    /* Texte : crème chaud, très lisible */
+    --text-primary: #F5F0E8;
+    --text-secondary: #C8C0B5;
+    --text-light: #9A9490;
+    /* Bordures : teinte rosée chaleureuse, visibles */
+    --border-color: rgba(255,180,200,0.14);
+    --border-input: rgba(255,180,200,0.22);
+    /* Ombres : glow chaud qui fait "veilleuse" */
+    --shadow-card: 0 4px 16px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,180,200,0.10);
+    --shadow-card-hover: 0 8px 28px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,153,153,0.22), 0 0 24px rgba(255,153,153,0.08);
+    --header-glass: rgba(20,16,40,0.88);
+    --hover-bg: rgba(255,153,153,0.14);
+    --gradient-hero: linear-gradient(135deg, #141028 0%, #1E1838 50%, #161230 100%);
   }
 
   * {
