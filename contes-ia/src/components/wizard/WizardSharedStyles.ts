@@ -3019,7 +3019,7 @@ export const NewChoiceCard = styled.button<{ $isSelected: boolean; $delay?: numb
   border: 2px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'var(--border-color)'};
   border-radius: 16px;
   background: ${p => p.$isSelected
-    ? `linear-gradient(160deg, #FFF8F5, #FFF)`
+    ? `${theme.colors.accent.coral}15`
     : 'var(--bg-elevated)'};
   cursor: pointer;
   transition: all 0.25s ease;
@@ -3347,16 +3347,16 @@ export const GenderCard = styled.button<{ $isSelected: boolean; $delay?: number 
   border: 2.5px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'var(--border-color)'};
   border-radius: 20px;
   background: ${p => p.$isSelected
-    ? `linear-gradient(160deg, #FFF8F5, #FFF)`
+    ? `${theme.colors.accent.coral}15`
     : 'var(--bg-elevated)'};
   cursor: pointer;
   transition: all 0.3s ease;
   -webkit-tap-highlight-color: transparent;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+  box-shadow: var(--shadow-card);
   animation: ${cardReveal} 0.4s cubic-bezier(0.34,1.56,0.64,1) ${p => (p.$delay || 0) * 0.1}s both;
 
   ${p => p.$isSelected && css`
-    box-shadow: 0 0 0 4px ${theme.colors.accent.coral}18, 0 6px 24px rgba(0,0,0,0.08);
+    box-shadow: 0 0 0 4px ${theme.colors.accent.coral}25, 0 6px 24px ${theme.colors.accent.coral}15, 0 8px 32px rgba(0,0,0,0.2);
     transform: scale(1.02);
   `}
 
@@ -3382,12 +3382,12 @@ export const GenderCardIcon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 64px;
-  height: 64px;
+  width: 72px;
+  height: 72px;
 
   @media (min-width: ${theme.breakpoints.lg}) {
-    width: 72px;
-    height: 72px;
+    width: 80px;
+    height: 80px;
   }
 `;
 

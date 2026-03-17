@@ -715,29 +715,29 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                   onClick={() => onUpdate({ protagonistGender: o.value as 'boy' | 'girl' })}>
                   <GenderCardIcon>
                     {o.value === 'girl' ? (
-                      <svg viewBox="0 0 80 80" fill="none" width="52" height="52">
-                        <circle cx="40" cy="32" r="18" fill="#FFE0EC" stroke={theme.colors.accent.coral} strokeWidth="2.5" />
+                      <svg viewBox="0 0 80 80" fill="none" width="64" height="64">
+                        <circle cx="40" cy="32" r="20" fill="#FF9999" fillOpacity="0.25" stroke={theme.colors.accent.coral} strokeWidth="3" />
                         <circle cx="34" cy="29" r="2.5" fill="var(--text-primary)" />
                         <circle cx="46" cy="29" r="2.5" fill="var(--text-primary)" />
                         <path d="M35 36 Q40 41 45 36" fill="none" stroke="var(--text-primary)" strokeWidth="2" strokeLinecap="round" />
-                        <path d="M24 22 Q28 10 40 12 Q52 10 56 22" fill="none" stroke="#D4A574" strokeWidth="3" strokeLinecap="round" />
-                        <path d="M22 24 Q20 34 24 38" fill="none" stroke="#D4A574" strokeWidth="2.5" strokeLinecap="round" />
-                        <path d="M58 24 Q60 34 56 38" fill="none" stroke="#D4A574" strokeWidth="2.5" strokeLinecap="round" />
-                        <path d="M40 50 L40 62" stroke={theme.colors.accent.coral} strokeWidth="2.5" strokeLinecap="round" />
-                        <path d="M32 62 L48 62" stroke={theme.colors.accent.coral} strokeWidth="2.5" strokeLinecap="round" />
-                        <circle cx="40" cy="56" r="6" fill="none" stroke={theme.colors.accent.coral} strokeWidth="2.5" />
+                        <path d="M22 22 Q28 8 40 10 Q52 8 58 22" fill="none" stroke="#E8A87C" strokeWidth="3.5" strokeLinecap="round" />
+                        <path d="M20 24 Q18 34 22 38" fill="none" stroke="#E8A87C" strokeWidth="3" strokeLinecap="round" />
+                        <path d="M60 24 Q62 34 58 38" fill="none" stroke="#E8A87C" strokeWidth="3" strokeLinecap="round" />
+                        <path d="M40 52 L40 64" stroke={theme.colors.accent.coral} strokeWidth="3" strokeLinecap="round" />
+                        <path d="M32 64 L48 64" stroke={theme.colors.accent.coral} strokeWidth="3" strokeLinecap="round" />
+                        <circle cx="40" cy="58" r="7" fill="none" stroke={theme.colors.accent.coral} strokeWidth="3" />
                       </svg>
                     ) : (
-                      <svg viewBox="0 0 80 80" fill="none" width="52" height="52">
-                        <circle cx="40" cy="34" r="18" fill="#E0F0FF" stroke="#7CB9D0" strokeWidth="2.5" />
+                      <svg viewBox="0 0 80 80" fill="none" width="64" height="64">
+                        <circle cx="40" cy="34" r="20" fill="#A8D8EA" fillOpacity="0.3" stroke="#7CB9D0" strokeWidth="3" />
                         <circle cx="34" cy="31" r="2.5" fill="var(--text-primary)" />
                         <circle cx="46" cy="31" r="2.5" fill="var(--text-primary)" />
                         <path d="M35 38 Q40 43 45 38" fill="none" stroke="var(--text-primary)" strokeWidth="2" strokeLinecap="round" />
-                        <path d="M24 26 Q30 14 40 16 Q50 14 56 26" fill="none" stroke="#8B6914" strokeWidth="3" strokeLinecap="round" />
-                        <path d="M26 26 L24 20" stroke="#8B6914" strokeWidth="2.5" strokeLinecap="round" />
-                        <path d="M54 26 L56 20" stroke="#8B6914" strokeWidth="2.5" strokeLinecap="round" />
-                        <path d="M40 52 L52 64" stroke="#7CB9D0" strokeWidth="2.5" strokeLinecap="round" />
-                        <path d="M47 58 L57 58 M52 53 L52 63" stroke="#7CB9D0" strokeWidth="2" strokeLinecap="round" />
+                        <path d="M22 26 Q30 12 40 14 Q50 12 58 26" fill="none" stroke="#C8A860" strokeWidth="3.5" strokeLinecap="round" />
+                        <path d="M24 26 L22 18" stroke="#C8A860" strokeWidth="3" strokeLinecap="round" />
+                        <path d="M56 26 L58 18" stroke="#C8A860" strokeWidth="3" strokeLinecap="round" />
+                        <path d="M40 54 L54 66" stroke="#7CB9D0" strokeWidth="3" strokeLinecap="round" />
+                        <path d="M48 60 L58 60 M53 55 L53 65" stroke="#7CB9D0" strokeWidth="2.5" strokeLinecap="round" />
                       </svg>
                     )}
                   </GenderCardIcon>
