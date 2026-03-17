@@ -32,14 +32,7 @@ export const HeroSection = styled.section<{ $accentColor?: string }>`
   text-align: center;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(
-    135deg,
-    var(--bg-primary) 0%,
-    ${theme.colors.accent.paleYellow} 50%,
-    ${theme.colors.accent.creamyYellow} 100%
-  );
-  background-size: 400% 400%;
-  animation: ${gradientShift} 14s ease-in-out infinite;
+  background: var(--bg-primary);
   padding: ${theme.spacing['3xl']} ${theme.spacing.lg};
 
   @media (max-width: ${theme.breakpoints.md}) {

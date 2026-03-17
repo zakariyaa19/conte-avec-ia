@@ -22,21 +22,21 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   [data-theme="dark"] {
-    --bg-primary: #13101E;
-    --bg-secondary: #1A1628;
-    --bg-card: #2C2540;
-    --bg-elevated: #362E50;
+    --bg-primary: #0F0C1A;
+    --bg-secondary: #161226;
+    --bg-card: #302848;
+    --bg-elevated: #3A3158;
     --bg-input: #252040;
     --text-primary: #F2EDE6;
     --text-secondary: #C0B9AF;
     --text-light: #918B83;
-    --border-color: rgba(255,220,200,0.12);
-    --border-input: rgba(255,220,200,0.18);
-    --shadow-card: 0 4px 16px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,220,200,0.06);
-    --shadow-card-hover: 0 8px 32px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,153,153,0.15);
-    --header-glass: rgba(19,16,30,0.82);
+    --border-color: rgba(255,200,220,0.10);
+    --border-input: rgba(255,200,220,0.16);
+    --shadow-card: 0 4px 20px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,153,200,0.08), 0 0 20px rgba(255,153,153,0.03);
+    --shadow-card-hover: 0 8px 32px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,153,153,0.18), 0 0 30px rgba(255,153,153,0.06);
+    --header-glass: rgba(15,12,26,0.85);
     --hover-bg: rgba(255,153,153,0.12);
-    --gradient-hero: linear-gradient(135deg, #13101E 0%, #1E1830 50%, #16122A 100%);
+    --gradient-hero: linear-gradient(135deg, #0F0C1A 0%, #1A1430 50%, #120E24 100%);
   }
 
   * {

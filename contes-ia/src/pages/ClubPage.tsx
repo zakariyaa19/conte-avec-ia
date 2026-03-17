@@ -97,9 +97,7 @@ const HeroSection = styled.section`
   text-align: center;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(135deg, #FDF2F8 0%, ${theme.colors.accent.paleYellow} 40%, ${theme.colors.accent.creamyYellow} 100%);
-  background-size: 400% 400%;
-  animation: ${gradientShift} 14s ease-in-out infinite;
+  background: var(--bg-primary);
   padding: ${theme.spacing['3xl']} ${theme.spacing.lg};
 `;
 
@@ -536,7 +534,7 @@ const StepText = styled.p`
 
 const PriceSection = styled.section`
   padding: ${theme.spacing['4xl']} 0;
-  background: linear-gradient(135deg, var(--bg-primary) 0%, ${theme.colors.accent.paleYellow}40 100%);
+  background: var(--bg-secondary);
 `;
 
 const PriceGrid = styled.div`

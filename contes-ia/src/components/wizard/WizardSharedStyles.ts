@@ -168,31 +168,46 @@ export const StepContainer = styled.div<{
   will-change: transform, opacity;
   ${stepAnimation}
 
-  /* Decorative orbs */
+  /* Starry fairy background — only in dark mode */
+  background-image: radial-gradient(1px 1px at 10% 15%, rgba(255,200,220,0.25) 50%, transparent 100%),
+    radial-gradient(1px 1px at 30% 45%, rgba(200,180,255,0.2) 50%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 55% 20%, rgba(255,220,200,0.3) 50%, transparent 100%),
+    radial-gradient(1px 1px at 70% 65%, rgba(200,220,255,0.2) 50%, transparent 100%),
+    radial-gradient(1px 1px at 85% 30%, rgba(255,180,200,0.25) 50%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 20% 75%, rgba(255,200,150,0.2) 50%, transparent 100%),
+    radial-gradient(1px 1px at 45% 85%, rgba(200,200,255,0.2) 50%, transparent 100%),
+    radial-gradient(1px 1px at 90% 80%, rgba(255,200,220,0.15) 50%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 65% 50%, rgba(255,220,180,0.2) 50%, transparent 100%),
+    radial-gradient(1px 1px at 5% 55%, rgba(220,180,255,0.2) 50%, transparent 100%);
+
+  [data-theme="light"] & {
+    background-image: none;
+  }
+
   &::before {
     content: '';
     position: fixed;
-    top: 10%;
-    right: -5%;
-    width: 300px;
-    height: 300px;
+    top: 5%;
+    right: -10%;
+    width: 350px;
+    height: 350px;
     border-radius: 50%;
-    background: radial-gradient(circle, ${theme.colors.accent.coral}08 0%, transparent 70%);
+    background: radial-gradient(circle, ${theme.colors.accent.coral}10 0%, transparent 70%);
     pointer-events: none;
-    filter: blur(40px);
+    filter: blur(50px);
   }
 
   &::after {
     content: '';
     position: fixed;
-    bottom: 15%;
-    left: -8%;
-    width: 250px;
-    height: 250px;
+    bottom: 10%;
+    left: -10%;
+    width: 300px;
+    height: 300px;
     border-radius: 50%;
-    background: radial-gradient(circle, ${theme.colors.accent.pastelBlue}08 0%, transparent 70%);
+    background: radial-gradient(circle, ${theme.colors.accent.pastelBlue}10 0%, transparent 70%);
     pointer-events: none;
-    filter: blur(40px);
+    filter: blur(50px);
   }
 
   @media (max-width: ${theme.breakpoints.sm}) {
@@ -201,10 +216,7 @@ export const StepContainer = styled.div<{
 `;
 
 export const StepContainerCentered = styled(StepContainer)`
-  &::before, &::after {
-    content: '';
-    flex: 1;
-  }
+  justify-content: center;
 `;
 
 export const StepContainerTop = styled(StepContainer)`
@@ -288,12 +300,13 @@ export const ImageCard = styled.button<{ $isSelected: boolean; $delay?: number }
   -webkit-tap-highlight-color: transparent;
   animation: ${cardReveal} 0.4s cubic-bezier(0.34,1.56,0.64,1) ${p => (p.$delay || 0) * 0.06}s both;
   ${p => p.$isSelected && css`
-    box-shadow: 0 0 0 3px ${theme.colors.accent.coral}20, 0 4px 16px rgba(0,0,0,0.08);
+    border-color: ${theme.colors.accent.coral};
+    box-shadow: 0 0 0 3px ${theme.colors.accent.coral}25, 0 4px 20px ${theme.colors.accent.coral}15, var(--shadow-card);
   `}
   &:active { transform: scale(0.96); }
   @media (min-width: ${theme.breakpoints.lg}) {
     border-radius: 14px;
-    &:hover { transform: scale(1.04); box-shadow: 0 8px 28px rgba(0,0,0,0.12); }
+    &:hover { transform: scale(1.04); box-shadow: var(--shadow-card-hover); }
   }
 `;
 
