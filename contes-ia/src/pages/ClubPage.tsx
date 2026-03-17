@@ -536,41 +536,24 @@ export const ClubPage: React.FC = () => {
               Des livres personnalisés chaque semaine, avec son prénom et son visage.
             </HeroSub>
 
-            {/* Floating books visual */}
+            {/* Floating books — real book covers */}
             <HeroVisual>
-              {illustrationStyles.slice(0, 5).map((s, i) => (
-                <FloatingBook key={s.name} $delay={i}>
-                  <img src={s.img} alt={s.name} />
+              {[
+                { src: '/images/covers/emma-noel.jpg', alt: 'Emma et le Noël enchanté' },
+                { src: '/images/covers/hajar-ramadan.jpg', alt: 'Hajar et le Ramadan' },
+                { src: '/images/covers/younes-paques.jpg', alt: 'Younès et Pâques' },
+                { src: '/images/covers/adele-carnaval.jpg', alt: 'Adèle au Carnaval' },
+                { src: '/images/covers/forest-adventure.jpg', alt: 'Roméo et la forêt enchantée' },
+              ].map((book, i) => (
+                <FloatingBook key={book.alt} $delay={i}>
+                  <img src={book.src} alt={book.alt} />
                 </FloatingBook>
               ))}
             </HeroVisual>
 
-            {/* Plan toggle */}
-            <PlanToggle>
-              <PlanOption $active={plan === 'monthly'} onClick={() => setPlan('monthly')}>
-                Mensuel
-              </PlanOption>
-              <PlanOption $active={plan === 'annual'} onClick={() => setPlan('annual')}>
-                Annuel
-                <SaveBadge>-33%</SaveBadge>
-              </PlanOption>
-            </PlanToggle>
-
-            {/* Price */}
-            <HeroPrice>
-              <PriceBig>{price}€</PriceBig>
-              <PriceUnit>{billingNote}</PriceUnit>
-            </HeroPrice>
-
             <ShimmerCTA onClick={scrollToCheckout}>
               {ctaLabel}
             </ShimmerCTA>
-
-            <TrustRow>
-              <span>🔒 Paiement sécurisé</span>
-              <span>❌ Sans engagement</span>
-              <span>⚡ Annulable à tout moment</span>
-            </TrustRow>
           </HeroContent>
         </HeroSection>
 
