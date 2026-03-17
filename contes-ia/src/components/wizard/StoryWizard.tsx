@@ -565,9 +565,9 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
 
         return (
           <>
-            <StepTitle>Quel univers ?</StepTitle>
-            <StepMicroText>Choisissez l'aventure de votre enfant</StepMicroText>
-            <CardGrid $columns={isSimplifiedMode ? 3 : 3} $compact={!isSimplifiedMode}>
+            <StepTitle style={isSimplifiedMode ? { marginBottom: '2px' } : undefined}>Quel univers ?</StepTitle>
+            <StepMicroText style={isSimplifiedMode ? { marginBottom: theme.spacing.sm } : undefined}>Choisissez l'aventure de votre enfant</StepMicroText>
+            <CardGrid $columns={3} $compact={isSimplifiedMode || !isSimplifiedMode}>
               {themeList.map((o, i) => {
                 const isRecommended = recommendedThemes.includes(o.value);
                 return (
@@ -580,9 +580,9 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                     <CardImgLabel $hero={isSimplifiedMode}>{o.label}</CardImgLabel>
                     {isSimplifiedMode && THEME_DESCRIPTIONS[o.value] && (
                       <span style={{
-                        display: 'block', fontSize: '10px', color: 'var(--text-light)',
-                        textAlign: 'center', padding: '0 4px 8px', lineHeight: 1.3,
-                        fontFamily: theme.fonts.body, marginTop: '-4px',
+                        display: 'block', fontSize: '9px', color: 'var(--text-light)',
+                        textAlign: 'center', padding: '0 2px 6px', lineHeight: 1.2,
+                        fontFamily: theme.fonts.body, marginTop: '-2px',
                       }}>
                         {THEME_DESCRIPTIONS[o.value]}
                       </span>
@@ -597,9 +597,9 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
               onClick={() => onUpdate({ generalTheme: 'custom' })}
               style={{
                 width: '100%', maxWidth: isSimplifiedMode ? 560 : 480,
-                marginTop: theme.spacing.md,
-                padding: isSimplifiedMode ? '20px 24px' : '16px 20px',
-                borderRadius: isSimplifiedMode ? '18px' : theme.borderRadius.xl,
+                marginTop: isSimplifiedMode ? theme.spacing.sm : theme.spacing.md,
+                padding: isSimplifiedMode ? '12px 18px' : '16px 20px',
+                borderRadius: isSimplifiedMode ? '16px' : theme.borderRadius.xl,
                 border: `${isSimplifiedMode ? '3px' : '2px'} solid ${formData.generalTheme === 'custom'
                   ? theme.colors.accent.coral
                   : isSimplifiedMode ? 'rgba(255,153,153,0.25)' : 'var(--border-color)'}`,
@@ -621,14 +621,14 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
             >
               <div style={{
                 fontFamily: theme.fonts.heading,
-                fontSize: isSimplifiedMode ? theme.fontSizes.lg : theme.fontSizes.base,
+                fontSize: isSimplifiedMode ? theme.fontSizes.base : theme.fontSizes.base,
                 fontWeight: 700,
-                color: 'var(--text-primary)', marginBottom: '4px',
+                color: 'var(--text-primary)', marginBottom: '2px',
               }}>
                 {isSimplifiedMode ? 'Créer un univers personnalisé' : 'Inventez votre propre univers'}
               </div>
               <div style={{
-                fontSize: theme.fontSizes.xs, color: 'var(--text-light)', lineHeight: 1.5,
+                fontSize: '11px', color: 'var(--text-light)', lineHeight: 1.4,
               }}>
                 {isSimplifiedMode
                   ? 'Ex : pirates, dinosaures, magie, espace...'
