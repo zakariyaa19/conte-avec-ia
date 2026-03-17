@@ -1,12 +1,10 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled, { keyframes, css } from 'styled-components';
 import { theme } from '../styles/theme';
 import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
 import { useAuth } from '../contexts/AuthContext';
-import { ApiService } from '../config/api';
-import { metaTrackSubscribe } from '../utils/metaPixel';
 
 // ── Animations ──
 const fadeInUp = keyframes`
@@ -434,25 +432,11 @@ const SSub = styled.p`
 export const ClubPage: React.FC = () => {
   const { isClub, isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [plan, setPlan] = useState<'monthly' | 'annual'>('monthly');
-  const checkoutRef = useRef<HTMLDivElement>(null);
 
-  const scrollToCheckout = () => {
+  const goToCheckout = () => {
     if (isClub) { navigate('/dashboard'); return; }
-    checkoutRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    navigate('/club/checkout');
   };
-
-  // Auto-scroll to checkout if #checkout hash
-  useEffect(() => {
-    if (location.hash === '#checkout') {
-      setTimeout(() => {
-        checkoutRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }, 300);
-    }
-  }, [location.hash]);
 
   const illustrationStyles = [
     { name: 'Aquarelle', img: '/images/illustration-styles/aquarelle.jpg' },
@@ -466,36 +450,6 @@ export const ClubPage: React.FC = () => {
     { name: 'Manga', img: '/images/illustration-styles/dessin-japonais-manga.jpg' },
   ];
 
-  const handleJoin = async () => {
-    if (!isAuthenticated) {
-      metaTrackSubscribe();
-      navigate(`/login?mode=register&plan=${plan === 'annual' ? 'club_annual' : 'club'}`);
-      return;
-    }
-    if (isClub) {
-      navigate('/dashboard');
-      return;
-    }
-    metaTrackSubscribe();
-    setLoading(true);
-    setError('');
-    try {
-      const token = localStorage.getItem('userToken') || '';
-      const response = await ApiService.createSubscriptionSession(token, undefined, plan);
-      if (response.url) {
-        window.location.href = response.url;
-      } else {
-        setError('Erreur lors de la création de la session');
-      }
-    } catch {
-      setError('Erreur de connexion à Stripe');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const price = plan === 'monthly' ? '9,99' : '6,67';
-  const billingNote = plan === 'monthly' ? '/mois' : '/mois (79,99€/an)';
 
   const benefits = [
     { icon: '📚', label: '1 livre / semaine', desc: 'Nouvelle histoire chaque semaine' },
@@ -551,7 +505,7 @@ export const ClubPage: React.FC = () => {
               ))}
             </HeroVisual>
 
-            <ShimmerCTA onClick={scrollToCheckout}>
+            <ShimmerCTA onClick={goToCheckout}>
               {ctaLabel}
             </ShimmerCTA>
           </HeroContent>
@@ -630,135 +584,6 @@ export const ClubPage: React.FC = () => {
                 — Sarah, maman de Lea (4 ans)
               </p>
             </TestimonialCard>
-          </Inner>
-        </Section>
-
-        {/* ═══ CHECKOUT — Recap + Pay ═══ */}
-        <Section ref={checkoutRef}>
-          <Inner>
-            <div style={{
-              maxWidth: 480, margin: '0 auto',
-              background: 'var(--bg-card)',
-              border: `2px solid ${theme.colors.accent.coral}30`,
-              borderRadius: '24px',
-              padding: '32px 24px',
-              boxShadow: `0 0 0 1px var(--border-color), 0 8px 40px rgba(0,0,0,0.12), 0 0 80px ${theme.colors.accent.coral}08`,
-            }}>
-              {/* Header */}
-              <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-                <span style={{
-                  display: 'inline-block', background: `${theme.colors.accent.coral}15`,
-                  color: theme.colors.accent.coral, fontSize: '12px', fontWeight: 700,
-                  padding: '4px 12px', borderRadius: '20px', marginBottom: '12px',
-                }}>
-                  Récapitulatif
-                </span>
-                <h2 style={{
-                  fontFamily: theme.fonts.heading, fontSize: theme.fontSizes['2xl'],
-                  fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 4px',
-                }}>
-                  Club des Histoires
-                </h2>
-                <p style={{ fontSize: theme.fontSizes.sm, color: 'var(--text-secondary)', margin: 0 }}>
-                  Votre abonnement commence aujourd'hui
-                </p>
-              </div>
-
-              {/* Toggle */}
-              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
-                <PlanToggle>
-                  <PlanOption $active={plan === 'monthly'} onClick={() => setPlan('monthly')}>
-                    Mensuel
-                  </PlanOption>
-                  <PlanOption $active={plan === 'annual'} onClick={() => setPlan('annual')}>
-                    Annuel
-                    <SaveBadge>-33%</SaveBadge>
-                  </PlanOption>
-                </PlanToggle>
-              </div>
-
-              {/* What's included */}
-              <div style={{
-                background: 'var(--bg-secondary)', borderRadius: '14px',
-                padding: '16px', marginBottom: '20px',
-              }}>
-                {[
-                  '1 livre personnalisé par semaine',
-                  '9 styles d\'illustration',
-                  'Personnages secondaires (famille, amis)',
-                  'Multi-langues (FR, EN, ES, AR...)',
-                  'PDF téléchargeables illimités',
-                  'Bibliothèque en ligne',
-                  'Crédits cumulables',
-                ].map((item) => (
-                  <div key={item} style={{
-                    display: 'flex', alignItems: 'center', gap: '8px',
-                    padding: '6px 0', fontSize: '13px', color: 'var(--text-primary)',
-                  }}>
-                    <span style={{ color: '#4CAF50', fontWeight: 700, fontSize: '14px' }}>✓</span>
-                    {item}
-                  </div>
-                ))}
-              </div>
-
-              {/* Price */}
-              <div style={{
-                textAlign: 'center', padding: '16px 0', marginBottom: '16px',
-                borderTop: '1px solid var(--border-color)',
-                borderBottom: '1px solid var(--border-color)',
-              }}>
-                <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: '6px' }}>
-                  <span style={{
-                    fontFamily: theme.fonts.heading, fontSize: '2.5rem',
-                    fontWeight: 800, color: theme.colors.accent.coral,
-                  }}>
-                    {price}€
-                  </span>
-                  <span style={{ fontSize: theme.fontSizes.base, color: 'var(--text-light)' }}>
-                    {billingNote}
-                  </span>
-                </div>
-                {plan === 'annual' && (
-                  <p style={{
-                    fontSize: '12px', color: '#4CAF50', fontWeight: 600, margin: '4px 0 0',
-                  }}>
-                    Économisez 40€ par an
-                  </p>
-                )}
-              </div>
-
-              {/* CTA */}
-              <ShimmerCTA
-                onClick={handleJoin}
-                disabled={loading}
-                style={{ width: '100%', borderRadius: '14px' }}
-              >
-                {loading ? 'Redirection vers Stripe...' : 'Payer et commencer'}
-              </ShimmerCTA>
-
-              {error && <ErrorMsg>{error}</ErrorMsg>}
-
-              {/* Trust */}
-              <div style={{
-                display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap',
-                marginTop: '16px',
-              }}>
-                {['🔒 Stripe sécurisé', '❌ Sans engagement', '⚡ Annulable'].map(t => (
-                  <span key={t} style={{ fontSize: '11px', color: 'var(--text-light)' }}>{t}</span>
-                ))}
-              </div>
-
-              <p style={{
-                fontSize: '11px', color: 'var(--text-light)', textAlign: 'center',
-                marginTop: '12px', lineHeight: 1.4,
-              }}>
-                Vous serez redirigé vers Stripe pour finaliser le paiement.
-                {plan === 'monthly'
-                  ? ' Prélèvement mensuel de 9,99€.'
-                  : ' Prélèvement annuel de 79,99€.'}
-                {' '}Annulable à tout moment depuis votre espace client.
-              </p>
-            </div>
           </Inner>
         </Section>
 

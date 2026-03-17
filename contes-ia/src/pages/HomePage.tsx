@@ -1352,7 +1352,7 @@ export const HomePage: React.FC = () => {
       navigate('/create-story');
     } else if (isAuthenticated) {
       // Connecté → direct vers checkout Club
-      navigate('/club#checkout');
+      navigate('/club/checkout');
     } else if (plan === 'annual') {
       navigate('/login?mode=register&plan=club_annual');
     } else {

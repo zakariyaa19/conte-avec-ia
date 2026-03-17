@@ -310,7 +310,7 @@ export const AccountPage: React.FC = () => {
                   Gerer mon abonnement
                 </Button>
               ) : (
-                <Button variant="primary" size="sm" onClick={() => navigate('/club#checkout')}>
+                <Button variant="primary" size="sm" onClick={() => navigate('/club/checkout')}>
                   Passer au Club
                 </Button>
               )}

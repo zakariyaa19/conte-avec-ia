@@ -11,6 +11,7 @@ import { SuccessPage } from './pages/SuccessPage';
 import { CancelPage } from './pages/CancelPage';
 import { AdminPage } from './pages/AdminPage';
 import { AdminLoginPage } from './pages/AdminLoginPage';
+import { ClubCheckoutPage } from './pages/ClubCheckoutPage';
 import { LoginPage } from './pages/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { StoryDetailPage } from './pages/StoryDetailPage';
@@ -88,7 +89,8 @@ function App() {
           <Route path="/dashboard/story/:id" element={<ProtectedRoute><StoryDetailPage /></ProtectedRoute>} />
           <Route path="/dashboard/account" element={<ProtectedRoute><AccountPage /></ProtectedRoute>} />
           <Route path="/club" element={<ClubPage />} />
-          <Route path="/upgrade" element={<Navigate to="/club#checkout" replace />} />
+          <Route path="/club/checkout" element={<ClubCheckoutPage />} />
+          <Route path="/upgrade" element={<Navigate to="/club/checkout" replace />} />
           <Route path="/story/:shareToken" element={<PublicStoryPage />} />
           <Route path="/admin/login" element={<AdminLoginRoute />} />
           <Route path="/admin" element={<AdminProtectedRoute><AdminPage /></AdminProtectedRoute>} />
