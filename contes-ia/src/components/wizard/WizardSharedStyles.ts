@@ -162,7 +162,7 @@ export const StepContainer = styled.div<{
 }>`
   position: absolute; inset: 0;
   display: flex; flex-direction: column; align-items: center;
-  padding: ${theme.spacing.xl} ${theme.spacing.lg} 140px;
+  padding: ${theme.spacing['2xl']} ${theme.spacing.lg} 140px;
   overflow-y: auto; overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   will-change: transform, opacity;
@@ -211,12 +211,14 @@ export const StepContainer = styled.div<{
   }
 
   @media (max-width: ${theme.breakpoints.sm}) {
-    padding: ${theme.spacing.lg} ${theme.spacing.md} 140px;
+    padding: ${theme.spacing.xl} ${theme.spacing.md} 140px;
   }
 `;
 
 export const StepContainerCentered = styled(StepContainer)`
-  justify-content: center;
+  @media (min-width: ${theme.breakpoints.lg}) {
+    justify-content: center;
+  }
 `;
 
 export const StepContainerTop = styled(StepContainer)`
@@ -626,7 +628,7 @@ export const PricingOption = styled.div<{ $isSelected: boolean }>`
   border: 2px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'var(--border-color)'};
   border-radius: 16px; padding: ${theme.spacing.md} ${theme.spacing.sm};
   cursor: pointer; transition: all 0.3s ease;
-  background: ${p => p.$isSelected ? 'linear-gradient(160deg, #FFF8F5, var(--bg-card))' : 'var(--bg-card)'};
+  background: ${p => p.$isSelected ? 'var(--bg-elevated)' : 'var(--bg-card)'};
   overflow: hidden; -webkit-tap-highlight-color: transparent;
   ${p => p.$isSelected && css`box-shadow: 0 4px 20px ${theme.colors.accent.coral}18;`}
   &:hover { border-color: ${theme.colors.accent.coral}80; }
@@ -1208,7 +1210,7 @@ export const CanvasBookIcon = styled.div`
 export const CanvasBookSpine = styled.div`
   position: absolute; left: 0; top: 0;
   width: 42%; height: 100%;
-  background: linear-gradient(135deg, #F5E6D0, #E8D5BE);
+  background: var(--bg-elevated);
   border-radius: 4px 0 0 4px;
   box-shadow: -2px 2px 10px rgba(0, 0, 0, 0.15);
   border-right: 2px solid rgba(200, 170, 130, 0.5);
@@ -1224,7 +1226,7 @@ export const CanvasBookSpine = styled.div`
 export const CanvasBookCover = styled.div`
   position: absolute; right: 0; top: 0;
   width: 55%; height: 100%;
-  background: linear-gradient(135deg, #F5E6D0, #EDD9C2);
+  background: var(--bg-elevated);
   border-radius: 0 4px 4px 0;
   box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.12);
   transform-origin: left center;
@@ -1359,7 +1361,7 @@ export const PreviewLoadingContainer = styled.div`
   max-width: 700px;
   aspect-ratio: 3 / 2;
   border-radius: ${theme.borderRadius.xl};
-  background: linear-gradient(135deg, #FFF9F0, #FFE8D6, #FFDAB9, #FFE5B4, #FFF9F0);
+  background: var(--bg-elevated);
   background-size: 300% 300%;
   animation: ${gradientShift} 6s ease infinite;
   display: flex;
@@ -1391,10 +1393,10 @@ export const PreviewLoadingBook = styled.div`
     top: 0;
     width: 38px;
     height: 100%;
-    background: #FFF9F0;
+    background: var(--bg-elevated);
     border-radius: 4px 0 0 4px;
     box-shadow: -2px 2px 10px rgba(0,0,0,0.08);
-    border-right: 2px solid #E8D5C0;
+    border-right: 2px solid var(--border-color);
   }
 
   &::after {
@@ -1404,7 +1406,7 @@ export const PreviewLoadingBook = styled.div`
     top: 0;
     width: 38px;
     height: 100%;
-    background: linear-gradient(135deg, #FFF9F0, #FDF6E3);
+    background: var(--bg-elevated);
     border-radius: 0 4px 4px 0;
     box-shadow: 2px 2px 10px rgba(0,0,0,0.06);
     transform-origin: left center;
@@ -1621,7 +1623,7 @@ export const BookStoryLayout = styled.div`
   height: 100%;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  background: #FAF3E0;
+  background: var(--bg-elevated);
   position: relative;
 
   /* Paper texture feel */
@@ -1807,7 +1809,7 @@ export const BookLockedOverlay = styled.div`
   width: 100%;
   height: 100%;
   position: relative;
-  background: #FAF3E0;
+  background: var(--bg-elevated);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1922,7 +1924,7 @@ export const PreviewTimerBar = styled.div`
   width: 100%;
   max-width: 700px;
   margin-top: ${theme.spacing.xl};
-  background: linear-gradient(135deg, #FFF8F2, #FFF0E6, #FFF8F2);
+  background: var(--bg-elevated);
   border: 1.5px solid rgba(255, 153, 153, 0.2);
   border-radius: ${theme.borderRadius.xl};
   padding: 14px 24px;
@@ -1972,7 +1974,7 @@ export const ValueBlock = styled.div`
   width: 100%;
   max-width: 500px;
   margin-top: ${theme.spacing.xl};
-  background: linear-gradient(160deg, #FFFCF5, #FFF8EE);
+  background: var(--bg-elevated);
   border: 1px solid rgba(210, 175, 130, 0.2);
   border-radius: ${theme.borderRadius.xl};
   padding: ${theme.spacing.lg} ${theme.spacing.lg};
@@ -2106,9 +2108,9 @@ export const PricingCard = styled.div<{ $isSelected: boolean; $featured?: boolea
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   background: ${p => p.$isSelected
-    ? 'linear-gradient(160deg, #FFF0EC, #FFFAF8)'
+    ? `${theme.colors.accent.coral}08`
     : p.$featured
-      ? 'linear-gradient(160deg, #FFFBF8, #FFF5EE)'
+      ? `${theme.colors.accent.coral}05`
       : 'var(--bg-card)'};
   -webkit-tap-highlight-color: transparent;
   animation: ${cardSlideUp} 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
@@ -2344,7 +2346,7 @@ export const TripwireHeroCard = styled.div<{ $isSelected: boolean }>`
   border: 3px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'rgba(255, 153, 153, 0.4)'};
   border-radius: 24px;
   cursor: pointer;
-  background: linear-gradient(160deg, #FFF5EE, #FFFAF8, #FFF0EC);
+  background: var(--bg-elevated);
   box-shadow:
     0 12px 40px rgba(255, 153, 153, 0.18),
     0 4px 16px rgba(0, 0, 0, 0.04);
@@ -2477,7 +2479,7 @@ export const ClubMiniCard = styled.div<{ $isSelected: boolean }>`
   border: 1.5px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'var(--border-color)'};
   border-radius: 14px;
   cursor: pointer;
-  background: ${p => p.$isSelected ? 'linear-gradient(160deg, #FFF0EC, #FFFAF8)' : 'var(--bg-card)'};
+  background: ${p => p.$isSelected ? `${theme.colors.accent.coral}08` : 'var(--bg-card)'};
   transition: all 0.2s ease;
   -webkit-tap-highlight-color: transparent;
   margin-bottom: ${theme.spacing.sm};
@@ -2550,8 +2552,8 @@ export const ClubShowcaseCard = styled.div<{ $isSelected: boolean; $hero?: boole
   -webkit-tap-highlight-color: transparent;
 
   background: ${p => p.$isSelected
-    ? 'linear-gradient(160deg, #FFF0EC 0%, #FFFAF8 40%, #FFF5EE 100%)'
-    : 'linear-gradient(160deg, #FAFBFF 0%, #FFF9F6 40%, #FFFBF8 100%)'};
+    ? `${theme.colors.accent.coral}10`
+    : 'var(--bg-elevated)'};
   border: 2px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'var(--border-color)'};
 
   ${p => p.$hero && css`
@@ -2704,7 +2706,7 @@ export const SingleFallbackCard = styled.div<{ $isSelected: boolean }>`
   border: 1.5px solid ${p => p.$isSelected ? theme.colors.accent.coral : 'var(--border-color)'};
   border-radius: 14px;
   cursor: pointer;
-  background: ${p => p.$isSelected ? '#FFFAF8' : 'var(--bg-card)'};
+  background: ${p => p.$isSelected ? 'var(--bg-elevated)' : 'var(--bg-card)'};
   transition: all 0.2s ease;
   -webkit-tap-highlight-color: transparent;
   margin-top: ${theme.spacing.sm};

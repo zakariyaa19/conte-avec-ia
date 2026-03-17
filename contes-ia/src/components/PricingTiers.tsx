@@ -34,7 +34,7 @@ const Grid = styled.div`
 
 const Card = styled.div<{ $highlighted?: boolean }>`
   background: ${props => props.$highlighted
-    ? 'linear-gradient(160deg, #FFFFFF 0%, #F0ECFF 40%, #EBE5FF 100%)'
+    ? 'var(--bg-elevated)'
     : 'var(--bg-card)'};
   border: ${props => props.$highlighted
     ? '2px solid #764ba2'
@@ -159,7 +159,7 @@ const ToggleButton = styled.button<{ $active: boolean }>`
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
-  background: ${props => props.$active ? 'white' : 'transparent'};
+  background: ${props => props.$active ? 'var(--bg-card)' : 'transparent'};
   color: ${props => props.$active ? 'var(--text-primary)' : 'var(--text-light)'};
   box-shadow: ${props => props.$active ? '0 1px 4px rgba(0,0,0,0.1)' : 'none'};
 `;

@@ -214,8 +214,8 @@ const ErrorMsg = styled.div`
   border-radius: ${theme.borderRadius.md};
   margin-bottom: ${theme.spacing.md};
   font-size: ${theme.fontSizes.sm};
-  color: #DC2626;
-  background: #FEE2E2;
+  color: #E53E3E;
+  background: rgba(197,48,48,0.08);
   text-align: center;
 `;
 
