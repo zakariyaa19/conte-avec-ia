@@ -1099,9 +1099,9 @@ export const GenerationCanvas = styled.div`
   position: relative;
   overflow: hidden;
   box-shadow:
-    0 8px 32px rgba(30, 20, 40, 0.15),
-    0 2px 8px rgba(30, 20, 40, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    0 8px 40px rgba(255, 153, 153, 0.12),
+    0 4px 16px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 180, 200, 0.12);
 
   @media (max-width: ${theme.breakpoints.sm}) {
     aspect-ratio: 3 / 4;
@@ -1122,8 +1122,8 @@ export const CanvasGradientBg = styled.div`
   height: 100%;
   background: linear-gradient(
     135deg,
-    #1a1025 0%, #2d1b3d 15%, #1e2a4a 30%,
-    #2a1f3a 45%, #1a2540 60%, #2d1b3d 75%, #1a1025 100%
+    #1E1540 0%, #352860 15%, #2A3065 30%,
+    #352555 45%, #253060 60%, #352860 75%, #1E1540 100%
   );
   background-size: 400% 400%;
   animation: ${canvasGradientAnim} 12s ease infinite;
@@ -1131,7 +1131,7 @@ export const CanvasGradientBg = styled.div`
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse at center, transparent 40%, rgba(10, 5, 20, 0.4) 100%);
+    background: radial-gradient(ellipse at center, rgba(255,153,153,0.05) 0%, transparent 50%, rgba(10, 5, 20, 0.3) 100%);
   }
 `;
 
@@ -1141,9 +1141,9 @@ export const FloatingPage = styled.div<{ $delay: number; $left: string; $top: st
   top: ${p => p.$top};
   width: ${p => p.$size}px;
   height: ${p => p.$size * 1.4}px;
-  background: linear-gradient(145deg, rgba(255, 250, 240, 0.12), rgba(255, 240, 220, 0.06));
-  border-radius: 3px;
-  border: 1px solid rgba(255, 250, 240, 0.08);
+  background: linear-gradient(145deg, rgba(255, 250, 240, 0.18), rgba(255, 240, 220, 0.10));
+  border-radius: 4px;
+  border: 1px solid rgba(255, 250, 240, 0.14);
   --r: ${p => p.$rotate}deg;
   animation: ${pageFloatAnim} ${p => 5 + (p.$delay % 3)}s ease-in-out ${p => p.$delay}s infinite;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -1208,10 +1208,10 @@ export const CanvasBookIcon = styled.div`
 export const CanvasBookSpine = styled.div`
   position: absolute; left: 0; top: 0;
   width: 42%; height: 100%;
-  background: var(--bg-elevated);
+  background: linear-gradient(135deg, #4A4080, #554A90);
   border-radius: 4px 0 0 4px;
-  box-shadow: -2px 2px 10px rgba(0, 0, 0, 0.15);
-  border-right: 2px solid rgba(200, 170, 130, 0.5);
+  box-shadow: -2px 2px 14px rgba(0, 0, 0, 0.25);
+  border-right: 2px solid rgba(255, 200, 150, 0.3);
   &::after {
     content: '';
     position: absolute; top: 30%; left: 20%; right: 20%;
@@ -1224,9 +1224,9 @@ export const CanvasBookSpine = styled.div`
 export const CanvasBookCover = styled.div`
   position: absolute; right: 0; top: 0;
   width: 55%; height: 100%;
-  background: var(--bg-elevated);
+  background: linear-gradient(135deg, #554A90, #6055A0);
   border-radius: 0 4px 4px 0;
-  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.12);
+  box-shadow: 2px 2px 14px rgba(0, 0, 0, 0.2);
   transform-origin: left center;
   animation: ${bookPageFlipAnim} 4s ease-in-out infinite;
   display: flex; align-items: center; justify-content: center;
@@ -1241,7 +1241,7 @@ export const CanvasBookStar = styled.span`
 export const CanvasBookGlow = styled.div`
   position: absolute; inset: -20px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 200, 100, 0.15), transparent 70%);
+  background: radial-gradient(circle, rgba(255, 200, 100, 0.25), transparent 70%);
   animation: ${bookGlowAnim} 3s ease-in-out infinite;
   pointer-events: none;
 `;
@@ -1630,8 +1630,8 @@ export const BookStoryLayout = styled.div`
     position: absolute;
     inset: 0;
     background:
-      radial-gradient(ellipse at 20% 50%, rgba(255, 245, 220, 0.5) 0%, transparent 60%),
-      radial-gradient(ellipse at 80% 30%, rgba(255, 230, 200, 0.3) 0%, transparent 50%);
+      radial-gradient(ellipse at 20% 50%, rgba(255, 200, 180, 0.06) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 30%, rgba(255, 180, 150, 0.04) 0%, transparent 50%);
     pointer-events: none;
     z-index: 0;
   }
@@ -1818,7 +1818,7 @@ export const BookLockedOverlay = styled.div`
 
   &:hover {
     transform: scale(1.01);
-    &::after { background: radial-gradient(ellipse at center, rgba(250, 243, 224, 0.65) 0%, rgba(250, 243, 224, 0.85) 70%); }
+    &::after { opacity: 0.85; }
   }
   &:active { transform: scale(0.99); }
 
@@ -1831,24 +1831,24 @@ export const BookLockedOverlay = styled.div`
       repeating-linear-gradient(
         0deg,
         transparent, transparent 14px,
-        rgba(180, 160, 140, 0.15) 14px, rgba(180, 160, 140, 0.15) 16px
+        rgba(255, 200, 180, 0.08) 14px, rgba(255, 200, 180, 0.08) 16px
       ),
-      linear-gradient(90deg, rgba(250, 243, 224, 1) 48%, rgba(200, 180, 150, 0.3) 48%);
+      linear-gradient(90deg, var(--bg-elevated) 48%, rgba(255, 200, 180, 0.05) 48%);
     filter: blur(5px);
-    opacity: 0.8;
+    opacity: 0.6;
   }
 
-  /* Warm cream overlay */
+  /* Warm overlay */
   &::after {
     content: '';
     position: absolute;
     inset: 0;
     background: radial-gradient(
       ellipse at center,
-      rgba(250, 243, 224, 0.7) 0%,
-      rgba(250, 243, 224, 0.92) 65%
+      rgba(59, 52, 104, 0.85) 0%,
+      rgba(46, 40, 80, 0.95) 65%
     );
-    transition: background 0.3s ease;
+    transition: opacity 0.3s ease;
   }
 `;
 

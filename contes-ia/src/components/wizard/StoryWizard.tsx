@@ -1383,7 +1383,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                     {/* Google connect (pour les non-connectés uniquement) */}
                     {!isAuthenticated && !isInAppBrowser() && (
                       <FullWidthField>
-                        <div style={{ borderTop: '1px solid #f0f0f0', paddingTop: '14px', marginTop: '6px', textAlign: 'center' }}>
+                        <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '14px', marginTop: '6px', textAlign: 'center' }}>
                           <p style={{ fontSize: '11px', color: 'var(--text-light)', margin: '0 0 8px' }}>ou connectez-vous pour retrouver vos livres</p>
                           <div style={{ display: 'flex', justifyContent: 'center' }}>
                             <GoogleLogin
@@ -1438,7 +1438,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                   )}
                 </TrustBadgesRow>
 
-                <div style={{ marginTop: '12px', padding: '12px 16px', background: '#FAFAFA', borderRadius: '12px', maxWidth: 440, width: '100%' }}>
+                <div style={{ marginTop: '12px', padding: '12px 16px', background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: '12px', maxWidth: 440, width: '100%' }}>
                   <p style={{ fontSize: '12px', color: 'var(--text-secondary)', textAlign: 'center', lineHeight: 1.5, margin: 0, fontStyle: 'italic' }}>
                     "Ma fille a adoré voir son prénom dans l'histoire ! Elle me demande de lui relire tous les soirs."
                   </p>
