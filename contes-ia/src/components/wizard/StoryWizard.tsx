@@ -1605,18 +1605,41 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
 
                 {globalError && <ErrorMessage>{globalError}</ErrorMessage>}
 
+                {/* Message quand email déjà connu + gratuit déjà utilisé */}
+                {!isAuthenticated && emailStatus?.exists && !isFirstPurchase && (
+                  <div style={{
+                    background: `${theme.colors.accent.coral}10`,
+                    border: `1px solid ${theme.colors.accent.coral}30`,
+                    borderRadius: '12px', padding: '12px 16px',
+                    marginBottom: '12px', textAlign: 'center', maxWidth: 440, width: '100%',
+                  }}>
+                    <p style={{
+                      fontSize: theme.fontSizes.sm, fontWeight: 600,
+                      color: 'var(--text-primary)', margin: '0 0 4px',
+                    }}>
+                      Un compte existe déjà avec cet email
+                    </p>
+                    <p style={{
+                      fontSize: theme.fontSizes.xs, color: 'var(--text-secondary)',
+                      margin: 0, lineHeight: 1.4,
+                    }}>
+                      Votre livre gratuit a déjà été utilisé. Le prochain livre coûte 6,99€.
+                    </p>
+                  </div>
+                )}
+
                 <PayButton $isReady={isPaymentInfoComplete} disabled={!formData.productType || isSubmitting} onClick={handleFormSubmit}>
                   {isSubmitting
                     ? 'Traitement en cours...'
                     : formData.purchaseType === 'club' && isClub && clubCredit?.canSubmit
                       ? 'Recevoir mon eBook gratuit'
-                      : isFirstPurchase && formData.purchaseType !== 'club'
+                      : isFirstPurchase && !isClub && formData.purchaseType !== 'club'
                         ? 'Recevoir mon livre GRATUIT'
-                        : `Payer ${singlePriceLabel} — Recevoir mon livre`}
+                        : `Payer ${isClub && !clubCredit?.canSubmit ? '6,99€' : singlePriceLabel} — Recevoir mon livre`}
                 </PayButton>
 
                 <TrustBadgesRow>
-                  {isFirstPurchase && formData.purchaseType !== 'club' ? (
+                  {isFirstPurchase && !isClub && formData.purchaseType !== 'club' ? (
                     <>
                       <TrustBadge>&#x2705; 100% gratuit</TrustBadge>
                       <TrustBadge>&#x1F4E7; Recu par email</TrustBadge>
