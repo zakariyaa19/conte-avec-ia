@@ -217,28 +217,69 @@ const IconBtn = styled.button`
 `;
 
 /* ─── User Menu ─── */
-const UserChip = styled.button`
+const userChipBase = `
   all: unset;
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 12px 4px 8px;
   border-radius: 9999px;
-  font-size: 0.8125rem;
   font-weight: 600;
   color: var(--text-primary);
   background: var(--hover-bg);
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
+  &:hover { background: rgba(255,153,153,0.15); }
+`;
 
-  &:hover {
-    background: rgba(255,153,153,0.15);
-  }
+/* Desktop: full chip with name, hidden on mobile */
+const UserChipDesktop = styled.button`
+  ${userChipBase}
+  padding: 4px 12px 4px 8px;
+  font-size: 0.8125rem;
+  @media (max-width: ${theme.breakpoints.lg}) { display: none; }
+`;
 
-  @media (max-width: ${theme.breakpoints.md}) {
-    display: none;
-  }
+/* Mobile: compact chip, hidden on desktop */
+const UserChipMobile = styled.button`
+  ${userChipBase}
+  padding: 4px 10px 4px 6px;
+  font-size: 12px;
+  display: none;
+  @media (max-width: ${theme.breakpoints.lg}) { display: flex; }
+`;
+
+/* Desktop-only dropdown */
+const UserDropdownDesktop = styled.div<{ $open: boolean }>`
+  @media (max-width: ${theme.breakpoints.lg}) { display: none !important; }
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 180px;
+  padding: 6px;
+  border-radius: 14px;
+  background: var(--bg-elevated);
+  backdrop-filter: blur(40px) saturate(200%);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
+  border: 0.5px solid var(--border-color);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
+  opacity: ${p => p.$open ? 1 : 0};
+  visibility: ${p => p.$open ? 'visible' : 'hidden'};
+  pointer-events: ${p => p.$open ? 'auto' : 'none'};
+  transition: opacity 0.18s ease, visibility 0.18s ease;
+  z-index: 1001;
+  animation: ${p => p.$open ? fadeIn : 'none'} 0.18s ease;
+`;
+
+/* Connexion: desktop text, mobile icon */
+const ConnexionDesktop = styled(NavPill)`
+  font-size: 0.8125rem;
+  @media (max-width: ${theme.breakpoints.lg}) { display: none; }
+`;
+
+const ConnexionMobile = styled(IconBtn)`
+  display: none;
+  @media (max-width: ${theme.breakpoints.lg}) { display: flex; }
 `;
 
 const UserAvatar = styled.div`
@@ -264,25 +305,7 @@ const ClubBadge = styled.span`
   letter-spacing: 0.02em;
 `;
 
-const UserDropdown = styled.div<{ $open: boolean }>`
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  min-width: 180px;
-  padding: 6px;
-  border-radius: 14px;
-  background: var(--bg-elevated);
-  backdrop-filter: blur(40px) saturate(200%);
-  -webkit-backdrop-filter: blur(40px) saturate(200%);
-  border: 0.5px solid var(--border-color);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
-  opacity: ${p => p.$open ? 1 : 0};
-  visibility: ${p => p.$open ? 'visible' : 'hidden'};
-  pointer-events: ${p => p.$open ? 'auto' : 'none'};
-  transition: opacity 0.18s ease, visibility 0.18s ease;
-  z-index: 1001;
-  animation: ${p => p.$open ? fadeIn : 'none'} 0.18s ease;
-`;
+/* UserDropdown removed — replaced by UserDropdownDesktop above */
 
 const UserDropdownItem = styled.button<{ $danger?: boolean }>`
   all: unset;
@@ -546,48 +569,38 @@ export const Header: React.FC = () => {
               Creer
             </Button>
 
-            {/* User / Connexion — desktop: full chip+dropdown, mobile: avatar or login icon */}
+            {/* User / Connexion */}
             {isAuthenticated ? (
               <div style={{ position: 'relative' }} ref={userMenuRef}>
-                {/* Desktop: full chip */}
-                <DesktopOnly>
-                  <UserChip onClick={() => setUserMenu(!userMenu)}>
-                    <UserAvatar>{initials}</UserAvatar>
-                    {isClub && <ClubBadge>Club</ClubBadge>}
-                    {user?.firstName || user?.email?.split('@')[0] || 'Compte'}
-                  </UserChip>
-                </DesktopOnly>
-                {/* Mobile: compact chip → dashboard */}
-                <MobileOnly>
-                  <UserChip onClick={() => go('/dashboard')} style={{ padding: '4px 10px 4px 6px', fontSize: '12px' }}>
-                    <UserAvatar style={{ width: '24px', height: '24px', fontSize: '11px' }}>{initials}</UserAvatar>
-                    {user?.firstName || 'Compte'}
-                  </UserChip>
-                </MobileOnly>
-                <DesktopOnly>
-                  <UserDropdown $open={userMenu}>
-                    <UserDropdownItem onClick={() => go('/dashboard')}>Ma bibliotheque</UserDropdownItem>
-                    <UserDropdownItem onClick={() => go('/dashboard/account')}>Mon compte</UserDropdownItem>
-                    <Divider />
-                    <UserDropdownItem $danger onClick={() => { logout(); go('/'); }}>Deconnexion</UserDropdownItem>
-                  </UserDropdown>
-                </DesktopOnly>
+                {/* Desktop: full chip with dropdown */}
+                <UserChipDesktop onClick={() => setUserMenu(!userMenu)}>
+                  <UserAvatar>{initials}</UserAvatar>
+                  {isClub && <ClubBadge>Club</ClubBadge>}
+                  {user?.firstName || user?.email?.split('@')[0] || 'Compte'}
+                </UserChipDesktop>
+                {/* Mobile: compact chip → dashboard direct */}
+                <UserChipMobile onClick={() => go('/dashboard')}>
+                  <UserAvatar style={{ width: '24px', height: '24px', fontSize: '11px' }}>{initials}</UserAvatar>
+                  {user?.firstName || 'Compte'}
+                </UserChipMobile>
+                <UserDropdownDesktop $open={userMenu}>
+                  <UserDropdownItem onClick={() => go('/dashboard')}>Ma bibliotheque</UserDropdownItem>
+                  <UserDropdownItem onClick={() => go('/dashboard/account')}>Mon compte</UserDropdownItem>
+                  <Divider />
+                  <UserDropdownItem $danger onClick={() => { logout(); go('/'); }}>Deconnexion</UserDropdownItem>
+                </UserDropdownDesktop>
               </div>
             ) : (
               <>
-                {/* Desktop: text */}
-                <DesktopOnly>
-                  <NavPill onClick={() => go('/login')} style={{ fontSize: '0.8125rem' }}>Connexion</NavPill>
-                </DesktopOnly>
+                {/* Desktop: text link */}
+                <ConnexionDesktop onClick={() => go('/login')}>Connexion</ConnexionDesktop>
                 {/* Mobile: icon */}
-                <MobileOnly>
-                  <IconBtn onClick={() => go('/login')} aria-label="Connexion">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                      <circle cx="12" cy="7" r="4"/>
-                    </svg>
-                  </IconBtn>
-                </MobileOnly>
+                <ConnexionMobile onClick={() => go('/login')} aria-label="Connexion">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                  </svg>
+                </ConnexionMobile>
               </>
             )}
 
