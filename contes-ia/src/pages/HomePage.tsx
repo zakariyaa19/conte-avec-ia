@@ -1351,8 +1351,8 @@ export const HomePage: React.FC = () => {
     if (plan === 'single') {
       navigate('/create-story');
     } else if (isAuthenticated) {
-      // Connecté → direct vers la page d'upgrade/paiement
-      navigate('/club');
+      // Connecté → direct vers checkout Club
+      navigate('/club#checkout');
     } else if (plan === 'annual') {
       navigate('/login?mode=register&plan=club_annual');
     } else {

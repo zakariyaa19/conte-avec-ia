@@ -88,7 +88,7 @@ function App() {
           <Route path="/dashboard/story/:id" element={<ProtectedRoute><StoryDetailPage /></ProtectedRoute>} />
           <Route path="/dashboard/account" element={<ProtectedRoute><AccountPage /></ProtectedRoute>} />
           <Route path="/club" element={<ClubPage />} />
-          <Route path="/upgrade" element={<Navigate to="/club" replace />} />
+          <Route path="/upgrade" element={<Navigate to="/club#checkout" replace />} />
           <Route path="/story/:shareToken" element={<PublicStoryPage />} />
           <Route path="/admin/login" element={<AdminLoginRoute />} />
           <Route path="/admin" element={<AdminProtectedRoute><AdminPage /></AdminProtectedRoute>} />

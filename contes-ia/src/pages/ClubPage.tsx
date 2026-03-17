@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import styled, { keyframes, css } from 'styled-components';
 import { theme } from '../styles/theme';
 import { Header } from '../components/layout/Header';
@@ -434,6 +434,7 @@ const SSub = styled.p`
 export const ClubPage: React.FC = () => {
   const { isClub, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [plan, setPlan] = useState<'monthly' | 'annual'>('monthly');
@@ -443,6 +444,15 @@ export const ClubPage: React.FC = () => {
     if (isClub) { navigate('/dashboard'); return; }
     checkoutRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
+
+  // Auto-scroll to checkout if #checkout hash
+  useEffect(() => {
+    if (location.hash === '#checkout') {
+      setTimeout(() => {
+        checkoutRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 300);
+    }
+  }, [location.hash]);
 
   const illustrationStyles = [
     { name: 'Aquarelle', img: '/images/illustration-styles/aquarelle.jpg' },

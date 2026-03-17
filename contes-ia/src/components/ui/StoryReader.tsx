@@ -689,7 +689,7 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
                       </SharedCTA>
 
                       {/* Upsell club subtil */}
-                      <ClubUpsellCard onClick={() => window.location.href = '/club'}>
+                      <ClubUpsellCard onClick={() => window.location.href = '/club#checkout'}>
                         <ClubUpsellLabel>Club des Histoires</ClubUpsellLabel>
                         <ClubUpsellText>
                           Personnages secondaires, animal de compagnie, styles d'illustration... Personnalisez encore plus vos livres
@@ -724,7 +724,7 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
 
                       {/* Upsell club pour non-abonnés */}
                       {!isClub && (
-                        <ClubUpsellCard onClick={() => window.location.href = '/club'}>
+                        <ClubUpsellCard onClick={() => window.location.href = '/club#checkout'}>
                           <ClubUpsellLabel>Club des Histoires</ClubUpsellLabel>
                           <ClubUpsellText>
                             Personnages secondaires, animal de compagnie, choix du style d'illustration... Personnalisez encore plus !

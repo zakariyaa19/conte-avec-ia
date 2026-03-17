@@ -145,7 +145,7 @@ export const StoryFormPage: React.FC = () => {
 
       if (!orderResponse.success) {
         if (orderResponse.limitReached) {
-          window.location.href = '/club';
+          window.location.href = '/club#checkout';
           return;
         }
         throw new Error(orderResponse.message || 'Erreur lors de la création de la commande');
