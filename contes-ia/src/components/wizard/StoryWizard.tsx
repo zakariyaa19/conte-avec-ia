@@ -234,6 +234,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
   const viewportRef = useRef<HTMLDivElement>(null);
   const pricingRef = useRef<HTMLDivElement>(null);
   const orderFormRef = useRef<HTMLDivElement>(null);
+  const googleAutoSubmitRef = useRef(false);
   const storyPageRef = useRef<HTMLDivElement>(null);
   const lockedPageRef = useRef<HTMLDivElement>(null);
 
@@ -450,6 +451,15 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
     ? !!formData.photo
     : !!(formData.eyeColor && formData.hairColor && formData.skinColor);
   const isPaymentInfoComplete = !!(formData.productType && formData.userEmail && formData.firstName);
+
+  // Auto-submit after Google auth — waits for formData to be updated
+  useEffect(() => {
+    if (googleAutoSubmitRef.current && formData.userEmail && formData.firstName) {
+      googleAutoSubmitRef.current = false;
+      clearDraft();
+      onSubmit();
+    }
+  }, [formData.userEmail, formData.firstName]); // eslint-disable-line
 
   // Summary chips data (shown from step 3+)
   const summaryChips: { label: string; value: string }[] = [];
@@ -1543,13 +1553,12 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                                   ApiService.googleAuth(credentialResponse.credential).then(res => {
                                     if (res.success && res.data) {
                                       if (res.data.token) localStorage.setItem('userToken', res.data.token);
-                                      if (res.data.user?.email) onUpdate({ userEmail: res.data.user.email });
-                                      if (res.data.user?.firstName) onUpdate({ firstName: res.data.user.firstName });
-                                      // Auto-submit after Google auth
-                                      setTimeout(() => {
-                                        clearDraft();
-                                        onSubmit();
-                                      }, 300);
+                                      const googleEmail = res.data.user?.email || '';
+                                      const googleFirstName = res.data.user?.firstName || '';
+                                      // Update both fields in one call
+                                      onUpdate({ userEmail: googleEmail, firstName: googleFirstName });
+                                      // Flag for auto-submit via useEffect
+                                      googleAutoSubmitRef.current = true;
                                     }
                                   }).catch(() => {});
                                 }
