@@ -922,6 +922,7 @@ export const StoryDetailPage: React.FC = () => {
             paragraphs={paragraphs}
             illustrationUrls={illustrations}
             creatorName={story.creatorName}
+            narratedBy={(story as any).narratedBy}
             protagonistName={story.protagonistName || ''}
             onClose={() => setReaderOpen(false)}
             onShare={() => { setReaderOpen(false); setShareOpen(true); }}

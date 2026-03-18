@@ -1125,6 +1125,19 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
         return (
           <>
             <StepTitle>Dernières touches</StepTitle>
+
+            {/* Raconté par — Club only */}
+            <ExtrasSection>
+              <SectionTitle>Raconté par</SectionTitle>
+              <p style={{ fontSize: theme.fontSizes.xs, color: 'var(--text-light)', margin: `-4px 0 ${theme.spacing.sm}` }}>
+                Ce nom apparaîtra en signature à la fin du livre
+              </p>
+              <CustomInput type="text" placeholder="Ex : Papa, Maman, Mamie..."
+                value={formData.narratedBy || ''}
+                onChange={(e) => handleInputChange('narratedBy', e.target.value)}
+                style={{ maxWidth: 360 }} />
+            </ExtrasSection>
+
             <ExtrasSection>
               <SectionTitle>Détails à intégrer</SectionTitle>
               <TextArea placeholder="Décrivez des détails ou événements spéciaux..."

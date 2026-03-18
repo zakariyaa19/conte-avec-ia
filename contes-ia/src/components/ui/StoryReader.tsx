@@ -14,6 +14,7 @@ interface StoryReaderProps {
   paragraphs: string[];
   illustrationUrls: string[];
   creatorName?: string;
+  narratedBy?: string;
   protagonistName: string;
   onClose: () => void;
   onShare?: () => void;
@@ -261,7 +262,7 @@ const Sparkle = styled.div<{ $left: string; $top: string; $delay: number; $size:
 /* ═══════════ COMPONENT ═══════════ */
 export const StoryReader: React.FC<StoryReaderProps> = ({
   coverImageUrl, coverTitle, paragraphs, illustrationUrls,
-  creatorName, protagonistName, onClose, onShare, onCreateAnother,
+  creatorName, narratedBy, protagonistName, onClose, onShare, onCreateAnother,
   isShared = false, isClub = false, shareUrl,
 }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -411,6 +412,16 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
                     {parts.map((part, pi) => <p key={pi}>{part}</p>)}
                   </PageText>
                   <PageDivider $accent={c.accent} />
+                  {/* Signature auteur — dernière page uniquement */}
+                  {i === pageCount - 1 && (narratedBy || creatorName) && (
+                    <p style={{
+                      marginTop: '16px', fontSize: '12px', fontStyle: 'italic',
+                      color: nightMode ? 'rgba(255,255,255,0.45)' : 'rgba(0,0,0,0.35)',
+                      textAlign: 'center',
+                    }}>
+                      Histoire racontée par {narratedBy || creatorName}
+                    </p>
+                  )}
                 </PageTextBox>
               </PageSlide>
             );
