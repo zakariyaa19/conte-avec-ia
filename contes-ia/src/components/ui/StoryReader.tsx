@@ -156,10 +156,10 @@ const PageImageBox = styled.div<{ $side: 'left' | 'right' }>`
   position: relative; overflow: hidden;
   background: #000;
 
-  /* Mobile: full width, 50% of viewport — shows full square image */
+  /* Mobile: full width, 55% of viewport — image dominates */
   @media (orientation: portrait) and (max-width: 1024px) {
     width: 100%;
-    height: 50dvh;
+    height: 55dvh;
     flex-shrink: 0;
   }
   /* Desktop: 50% width, full height */
@@ -180,7 +180,7 @@ const PageImg = styled.img<{ $visible: boolean }>`
 const PageTextBox = styled.div<{ $accent: string; $night: boolean }>`
   flex: 1; display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  padding: 16px 22px 28px;
+  padding: 10px 22px 20px;
   overflow-y: auto;
 
   /* Desktop: 50% */
@@ -193,7 +193,7 @@ const PageTextBox = styled.div<{ $accent: string; $night: boolean }>`
 const PageNum = styled.div<{ $accent: string; $night: boolean }>`
   width: 32px; height: 32px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  font-size: 13px; font-weight: 700; margin-bottom: 14px;
+  font-size: 13px; font-weight: 700; margin-bottom: 10px;
   background: ${p => p.$night ? `${p.$accent}25` : `${p.$accent}18`};
   color: ${p => p.$accent};
   flex-shrink: 0;
