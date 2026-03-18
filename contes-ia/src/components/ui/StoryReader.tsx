@@ -154,10 +154,10 @@ const PageImageBox = styled.div<{ $side: 'left' | 'right' }>`
   position: relative; overflow: hidden;
   background: #000;
 
-  /* Mobile: full width, ~45% of viewport height (not square to leave room for text) */
+  /* Mobile: full width, 50% of viewport — shows full square image */
   @media (orientation: portrait) and (max-width: 1024px) {
     width: 100%;
-    height: 45dvh;
+    height: 50dvh;
     flex-shrink: 0;
   }
   /* Desktop: 50% width, full height */
@@ -178,7 +178,7 @@ const PageImg = styled.img<{ $visible: boolean }>`
 const PageTextBox = styled.div<{ $accent: string; $night: boolean }>`
   flex: 1; display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  padding: 24px 24px 32px;
+  padding: 16px 22px 28px;
   overflow-y: auto;
 
   /* Desktop: 50% */
