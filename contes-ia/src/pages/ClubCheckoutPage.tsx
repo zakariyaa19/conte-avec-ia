@@ -234,11 +234,11 @@ export const ClubCheckoutPage: React.FC = () => {
   };
 
   const features = [
-    '1 livre personnalisé par semaine',
+    '4 livres par mois (soit 2,50€/livre)',
+    '12 pages & 12 illustrations par livre',
     '9 styles d\'illustration exclusifs',
     'Personnages secondaires',
     'Multi-langues',
-    'PDF téléchargeables illimités',
     'Crédits cumulables',
   ];
 

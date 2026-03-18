@@ -1437,11 +1437,11 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 <ClubFreeCard $isSelected={formData.purchaseType === 'club'} onClick={() => handlePreviewSelect('club')}>
                   <ClubBadge>Membre Club</ClubBadge>
                   <h3 style={{ fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.lg, margin: `${theme.spacing.sm} 0 4px` }}>
-                    Utiliser mon eBook gratuit
+                    Utiliser un crédit Club
                   </h3>
-                  <p style={{ fontSize: theme.fontSizes.sm, color: theme.colors.accent.coral, fontWeight: 700, margin: '0 0 4px' }}>0,00 EUR</p>
+                  <p style={{ fontSize: theme.fontSizes.sm, color: theme.colors.accent.coral, fontWeight: 700, margin: '0 0 4px' }}>Inclus dans votre abonnement</p>
                   <p style={{ fontSize: theme.fontSizes.xs, color: 'var(--text-secondary)', margin: 0 }}>
-                    Il vous reste {clubCredit.remaining} eBook(s) gratuit(s)
+                    {clubCredit.remaining}/4 crédits restants ce mois
                   </p>
                 </ClubFreeCard>
               ) : isClub ? (
@@ -1453,8 +1453,8 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                   <TripwireHeroPrice>6,99€</TripwireHeroPrice>
                   <PricingCardSub>
                     {clubCredit?.nextCreditDate
-                      ? `Prochain credit gratuit le ${new Date(clubCredit.nextCreditDate).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}`
-                      : 'Votre credit hebdomadaire a ete utilise'}
+                      ? `Prochains crédits le ${new Date(clubCredit.nextCreditDate).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}`
+                      : 'Vos crédits mensuels ont été utilisés'}
                   </PricingCardSub>
                   <PricingCardFeaturesList>
                     <PricingCardFeatureItem $highlight>1 livre personnalisé pour {heroName}</PricingCardFeatureItem>
@@ -1496,7 +1496,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                       <ClubShowcasePriceUnit>/mois · sans engagement</ClubShowcasePriceUnit>
                     </ClubShowcasePrice>
                     <ClubShowcaseFeatures>
-                      <ClubShowcaseFeature $premium><ClubFeatureIcon>&#x1F4D6;</ClubFeatureIcon>1 livre par semaine</ClubShowcaseFeature>
+                      <ClubShowcaseFeature $premium><ClubFeatureIcon>&#x1F4D6;</ClubFeatureIcon>4 livres par mois · 12 pages</ClubShowcaseFeature>
                       <ClubShowcaseFeature $premium><ClubFeatureIcon>&#x1F464;</ClubFeatureIcon>Personnages secondaires</ClubShowcaseFeature>
                       <ClubShowcaseFeature $premium><ClubFeatureIcon>&#x1F3A8;</ClubFeatureIcon>Styles d'illustration</ClubShowcaseFeature>
                       <ClubShowcaseFeature $premium><ClubFeatureIcon>&#x1F381;</ClubFeatureIcon>Thèmes et occasions</ClubShowcaseFeature>
@@ -1632,7 +1632,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                   {isSubmitting
                     ? 'Traitement en cours...'
                     : formData.purchaseType === 'club' && isClub && clubCredit?.canSubmit
-                      ? 'Recevoir mon eBook gratuit'
+                      ? 'Utiliser un crédit Club'
                       : isFirstPurchase && !isClub && formData.purchaseType !== 'club'
                         ? 'Recevoir mon livre GRATUIT'
                         : `Payer ${isClub && !clubCredit?.canSubmit ? '6,99€' : singlePriceLabel} — Recevoir mon livre`}

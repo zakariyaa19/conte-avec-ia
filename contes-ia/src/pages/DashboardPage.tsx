@@ -1119,11 +1119,11 @@ export const DashboardPage: React.FC = () => {
               <div>
                 <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
                   {clubCredit?.canSubmit
-                    ? `${clubCredit.remaining} credit${clubCredit.remaining > 1 ? 's' : ''} disponible${clubCredit.remaining > 1 ? 's' : ''}`
-                    : 'Aucun credit'}
+                    ? `${clubCredit.remaining}/4 crédits disponibles`
+                    : '0/4 crédits'}
                 </p>
                 <p style={{ fontSize: 11, color: 'var(--text-light)', margin: 0 }}>
-                  {countdown ? `Prochain dans ${countdown.days}j ${countdown.hours}h` : 'Club des Histoires'}
+                  {countdown ? `Prochains crédits dans ${countdown.days}j ${countdown.hours}h` : 'Club des Histoires'}
                 </p>
               </div>
             </div>
@@ -1166,7 +1166,7 @@ export const DashboardPage: React.FC = () => {
                 </span>
               </div>
               <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.7)', margin: 0 }}>
-                Livres illimites, styles, personnages...
+                4 livres/mois, 12 pages, 9 styles, personnages...
               </p>
             </div>
             <div style={{

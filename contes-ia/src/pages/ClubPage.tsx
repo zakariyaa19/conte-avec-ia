@@ -453,22 +453,22 @@ export const ClubPage: React.FC = () => {
 
 
   const benefits = [
-    { icon: '📚', label: '1 livre / semaine', desc: 'Nouvelle histoire chaque semaine' },
+    { icon: '📚', label: '4 livres / mois', desc: 'Utilisez-les quand vous voulez' },
+    { icon: '📖', label: '12 pages / livre', desc: '2x plus que le gratuit' },
     { icon: '🎨', label: '9 styles', desc: 'Aquarelle, 3D, manga...' },
     { icon: '👨‍👩‍👧', label: 'Personnages', desc: 'Famille, amis, animaux' },
-    { icon: '🌝', label: 'Occasions', desc: 'Anniversaire, fêtes...' },
     { icon: '🌍', label: 'Multi-langues', desc: 'FR, EN, ES, AR...' },
     { icon: '⬇️', label: 'PDF illimités', desc: 'Télécharger & imprimer' },
   ];
 
   const comparison = [
-    { feature: 'Livres/mois', free: '1', club: '4+' },
+    { feature: 'Livres/mois', free: '1', club: '4' },
+    { feature: 'Pages/livre', free: '6', club: '12' },
+    { feature: 'Illustrations/livre', free: '6', club: '12' },
     { feature: "Styles d'illustration", free: '1', club: '9' },
     { feature: 'Personnages secondaires', free: '✘', club: '✔' },
-    { feature: 'Choix des occasions', free: '✘', club: '✔' },
     { feature: 'Multi-langues', free: '✘', club: '✔' },
     { feature: 'PDF téléchargeable', free: '✔', club: '✔' },
-    { feature: 'Bibliothèque en ligne', free: '✔', club: '✔' },
   ];
 
   const ctaLabel = isClub
@@ -488,7 +488,7 @@ export const ClubPage: React.FC = () => {
             <HeroBadge>Club des Histoires</HeroBadge>
             <HeroTitle>Offrez des histoires illimitées à votre enfant</HeroTitle>
             <HeroSub>
-              Des livres personnalisés chaque semaine, avec son prénom et son visage.
+              4 livres de 12 pages chaque mois, avec son prénom et son visage.
             </HeroSub>
 
             {/* Floating books — real book covers */}
@@ -521,9 +521,9 @@ export const ClubPage: React.FC = () => {
               msOverflowStyle: 'none', scrollbarWidth: 'none',
             }}>
               {[
-                { icon: '📚', text: '1 livre/semaine' },
+                { icon: '📚', text: '4 livres/mois' },
+                { icon: '📖', text: '12 pages' },
                 { icon: '🎨', text: '9 styles' },
-                { icon: '👨‍👩‍👧', text: 'Personnages' },
                 { icon: '🌍', text: 'Multi-langues' },
                 { icon: '⬇️', text: 'PDF illimités' },
               ].map(h => (

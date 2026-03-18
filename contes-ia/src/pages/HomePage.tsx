@@ -1310,7 +1310,7 @@ const faqItems = [
   {
     id: '3',
     question: "Qu'est-ce que le Club des Histoires Uniques ?",
-    answer: "Votre premier livre est 100% gratuit ! Le Club des Histoires a 9,99\u20AC/mois vous donne 1 nouveau livre par semaine avec personnalisation avancee : styles d'illustration, personnages secondaires, animaux de compagnie, occasions speciales et bien plus. Credits cumulables, bibliotheque illimitee, sans engagement. Offre annuelle a 79,99\u20AC/an (-33%)."
+    answer: "Votre premier livre est 100% gratuit ! Le Club des Histoires à 9,99€/mois vous donne 4 livres par mois de 12 pages et 12 illustrations chacun (soit 2,50€ le livre). Personnalisation avancée : 9 styles d'illustration, personnages secondaires, multi-langues et bien plus. Crédits cumulables, sans engagement. Offre annuelle à 79,99€/an (-33%)."
   },
   {
     id: '4',
