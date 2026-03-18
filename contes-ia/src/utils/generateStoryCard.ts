@@ -17,16 +17,31 @@ export async function generateStoryCard(
   canvas.height = CARD_HEIGHT;
   const ctx = canvas.getContext('2d')!;
 
-  // Load cover image
-  const img = await loadImage(coverImageUrl);
+  // Load cover image (CORS-safe via fetch + objectURL)
+  let img: HTMLImageElement | null = null;
+  try {
+    img = await loadImageSafe(coverImageUrl);
+  } catch {
+    // Image loading failed — generate text-only card
+    console.warn('[StoryCard] Image load failed, generating text-only card');
+  }
 
-  // === BACKGROUND: blurred cover ===
-  ctx.save();
-  ctx.filter = 'blur(60px) brightness(0.4) saturate(1.3)';
-  ctx.drawImage(img, -100, -100, CARD_WIDTH + 200, CARD_HEIGHT + 200);
-  ctx.restore();
+  if (img) {
+    // === BACKGROUND: blurred cover ===
+    ctx.save();
+    ctx.filter = 'blur(60px) brightness(0.4) saturate(1.3)';
+    ctx.drawImage(img, -100, -100, CARD_WIDTH + 200, CARD_HEIGHT + 200);
+    ctx.restore();
+  } else {
+    // Fallback background gradient
+    const grad = ctx.createLinearGradient(0, 0, CARD_WIDTH, CARD_HEIGHT);
+    grad.addColorStop(0, '#1a1428');
+    grad.addColorStop(1, '#16213e');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, CARD_WIDTH, CARD_HEIGHT);
+  }
 
-  // === Dark overlay for readability ===
+  // === Dark overlay ===
   const overlay = ctx.createLinearGradient(0, 0, 0, CARD_HEIGHT);
   overlay.addColorStop(0, 'rgba(0,0,0,0.3)');
   overlay.addColorStop(0.4, 'rgba(0,0,0,0.1)');
@@ -35,101 +50,99 @@ export async function generateStoryCard(
   ctx.fillStyle = overlay;
   ctx.fillRect(0, 0, CARD_WIDTH, CARD_HEIGHT);
 
-  // === COVER IMAGE: centered, large, with rounded corners ===
-  const coverSize = 680;
-  const coverX = (CARD_WIDTH - coverSize) / 2;
-  const coverY = 280;
-  const radius = 40;
+  if (img) {
+    // === COVER IMAGE: centered, large, with rounded corners ===
+    const coverSize = 680;
+    const coverX = (CARD_WIDTH - coverSize) / 2;
+    const coverY = 280;
+    const radius = 40;
 
-  // Shadow behind cover
-  ctx.save();
-  ctx.shadowColor = 'rgba(0,0,0,0.5)';
-  ctx.shadowBlur = 60;
-  ctx.shadowOffsetY = 20;
-  roundRect(ctx, coverX, coverY, coverSize, coverSize, radius);
-  ctx.fillStyle = '#000';
-  ctx.fill();
-  ctx.restore();
+    // Shadow
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,0.5)';
+    ctx.shadowBlur = 60;
+    ctx.shadowOffsetY = 20;
+    roundRect(ctx, coverX, coverY, coverSize, coverSize, radius);
+    ctx.fillStyle = '#000';
+    ctx.fill();
+    ctx.restore();
 
-  // Clipped cover image
-  ctx.save();
-  roundRect(ctx, coverX, coverY, coverSize, coverSize, radius);
-  ctx.clip();
-  // Maintain aspect ratio — cover the square
-  const imgRatio = img.width / img.height;
-  let sx = 0, sy = 0, sw = img.width, sh = img.height;
-  if (imgRatio > 1) {
-    sw = img.height;
-    sx = (img.width - sw) / 2;
-  } else {
-    sh = img.width;
-    sy = (img.height - sh) / 2;
+    // Clipped cover
+    ctx.save();
+    roundRect(ctx, coverX, coverY, coverSize, coverSize, radius);
+    ctx.clip();
+    const imgRatio = img.width / img.height;
+    let sx = 0, sy = 0, sw = img.width, sh = img.height;
+    if (imgRatio > 1) { sw = img.height; sx = (img.width - sw) / 2; }
+    else { sh = img.width; sy = (img.height - sh) / 2; }
+    ctx.drawImage(img, sx, sy, sw, sh, coverX, coverY, coverSize, coverSize);
+    ctx.restore();
+
+    // Border
+    ctx.save();
+    roundRect(ctx, coverX, coverY, coverSize, coverSize, radius);
+    ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.restore();
   }
-  ctx.drawImage(img, sx, sy, sw, sh, coverX, coverY, coverSize, coverSize);
-  ctx.restore();
-
-  // === Subtle border on cover ===
-  ctx.save();
-  roundRect(ctx, coverX, coverY, coverSize, coverSize, radius);
-  ctx.strokeStyle = 'rgba(255,255,255,0.15)';
-  ctx.lineWidth = 2;
-  ctx.stroke();
-  ctx.restore();
 
   // === TITLE ===
+  const titleY = img ? 280 + 680 + 100 : CARD_HEIGHT / 2 - 60;
   ctx.textAlign = 'center';
   ctx.fillStyle = 'white';
-  ctx.font = 'bold 56px "Baloo 2", "Comic Neue", sans-serif';
+  ctx.font = 'bold 56px sans-serif';
   ctx.shadowColor = 'rgba(0,0,0,0.5)';
   ctx.shadowBlur = 20;
-  wrapText(ctx, bookTitle, CARD_WIDTH / 2, coverY + coverSize + 100, CARD_WIDTH - 120, 68);
+  wrapText(ctx, bookTitle, CARD_WIDTH / 2, titleY, CARD_WIDTH - 120, 68);
   ctx.shadowBlur = 0;
 
   // === SUBTITLE ===
-  ctx.font = '36px "Poppins", "Inter", sans-serif';
+  ctx.font = '36px sans-serif';
   ctx.fillStyle = 'rgba(255,255,255,0.7)';
-  ctx.fillText(`L'histoire de ${protagonistName}`, CARD_WIDTH / 2, coverY + coverSize + 220);
+  ctx.fillText(`L'histoire de ${protagonistName}`, CARD_WIDTH / 2, titleY + 120);
 
-  // === SWIPE UP CTA ===
-  // Arrow up
+  // === CTA ===
   const ctaY = CARD_HEIGHT - 200;
-  ctx.fillStyle = 'rgba(255,255,255,0.5)';
-  ctx.beginPath();
-  ctx.moveTo(CARD_WIDTH / 2 - 12, ctaY - 30);
-  ctx.lineTo(CARD_WIDTH / 2, ctaY - 45);
-  ctx.lineTo(CARD_WIDTH / 2 + 12, ctaY - 30);
-  ctx.closePath();
-  ctx.fill();
-
-  ctx.font = '600 28px "Poppins", "Inter", sans-serif';
+  ctx.font = '600 28px sans-serif';
   ctx.fillStyle = 'rgba(255,255,255,0.6)';
   ctx.fillText('Créez le vôtre gratuitement', CARD_WIDTH / 2, ctaY);
 
   // === BRANDING ===
-  ctx.font = 'bold 30px "Poppins", "Inter", sans-serif';
+  ctx.font = 'bold 30px sans-serif';
   ctx.fillStyle = '#FF9999';
   ctx.fillText('contedia.fr', CARD_WIDTH / 2, CARD_HEIGHT - 80);
 
-  // Convert to blob
   return new Promise((resolve, reject) => {
     canvas.toBlob(
       (blob) => blob ? resolve(blob) : reject(new Error('Canvas toBlob failed')),
-      'image/png',
-      1
+      'image/png', 1
     );
   });
 }
 
-// === Helpers ===
-
-function loadImage(url: string): Promise<HTMLImageElement> {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.onload = () => resolve(img);
-    img.onerror = reject;
-    img.src = url;
-  });
+// Load image via fetch to avoid CORS cache issues
+async function loadImageSafe(url: string): Promise<HTMLImageElement> {
+  try {
+    const response = await fetch(url, { mode: 'cors' });
+    const blob = await response.blob();
+    const objectUrl = URL.createObjectURL(blob);
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => { URL.revokeObjectURL(objectUrl); resolve(img); };
+      img.onerror = () => { URL.revokeObjectURL(objectUrl); reject(new Error('Image load failed')); };
+      img.src = objectUrl;
+    });
+  } catch {
+    // Fallback: try direct load
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => resolve(img);
+      img.onerror = reject;
+      img.src = url;
+    });
+  }
 }
 
 function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
@@ -150,7 +163,6 @@ function wrapText(ctx: CanvasRenderingContext2D, text: string, x: number, y: num
   const words = text.split(' ');
   let line = '';
   let currentY = y;
-
   for (const word of words) {
     const testLine = line + word + ' ';
     if (ctx.measureText(testLine).width > maxWidth && line) {
