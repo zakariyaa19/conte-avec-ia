@@ -186,61 +186,30 @@ const PlanCard = styled.button<{ $selected: boolean; $isPro?: boolean; $isAnnual
   position: relative;
   width: 100%;
   background: ${({ $selected, $isPro }) =>
-    $selected && $isPro
-      ? 'linear-gradient(135deg, #FFF8F0 0%, #FFF0E0 100%)'
-      : $selected
-        ? '#F0F9FF'
-        : 'var(--bg-card)'};
+    $selected
+      ? $isPro
+        ? `${theme.colors.accent.coral}12`
+        : 'var(--hover-bg)'
+      : 'var(--bg-elevated)'};
   border: 2px solid ${({ $selected, $isPro }) =>
-    $selected && $isPro
-      ? theme.colors.accent.coral
-      : $selected
-        ? '#60A5FA'
-        : 'var(--border-input)'};
-  border-radius: 16px;
-  padding: ${({ $isPro }) => $isPro ? '20px 16px' : '14px 16px'};
+    $selected
+      ? $isPro ? theme.colors.accent.coral : 'var(--text-light)'
+      : 'var(--border-color)'};
+  border-radius: 14px;
+  padding: ${({ $isPro }) => $isPro ? '16px 14px' : '12px 14px'};
   cursor: pointer;
   text-align: left;
-  transition: all 0.25s ease;
+  transition: all 0.2s ease;
   outline: none;
   overflow: hidden;
   font-family: ${theme.fonts.body};
 
-  ${({ $isPro, $selected }) => $isPro && !$selected && css`
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 3px;
-      background: linear-gradient(90deg,
-        ${theme.colors.accent.coral},
-        ${theme.colors.accent.softPink},
-        ${theme.colors.accent.pastelBlue},
-        ${theme.colors.accent.coral}
-      );
-      background-size: 200% auto;
-      animation: ${shimmerLine} 3s linear infinite;
-    }
-  `}
-
-  ${({ $isPro, $selected }) => $isPro && $selected && css`
-    animation: ${planPulse} 3s ease-in-out infinite;
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, ${theme.colors.accent.coral}, ${theme.colors.button.primaryHover});
-    }
-  `}
-
-  ${({ $selected, $isPro }) => $selected && !$isPro && css`
-    box-shadow: 0 0 0 3px #60A5FA20;
+  ${({ $selected, $isPro }) => $selected && $isPro && css`
+    box-shadow: 0 0 0 3px ${theme.colors.accent.coral}25;
   `}
 
   &:hover {
-    border-color: ${({ $isPro }) => $isPro ? theme.colors.accent.coral : '#60A5FA'};
-    transform: translateY(-2px);
+    border-color: ${({ $isPro }) => $isPro ? theme.colors.accent.coral : 'var(--text-light)'};
   }
 `;
 
@@ -285,11 +254,10 @@ const PlanPrice = styled.div<{ $isPro?: boolean }>`
 `;
 
 const PlanFeatures = styled.div<{ $columns?: boolean }>`
-  display: ${({ $columns }) => $columns ? 'grid' : 'flex'};
-  grid-template-columns: ${({ $columns }) => $columns ? '1fr 1fr' : 'unset'};
+  display: flex;
   flex-direction: column;
-  gap: 4px;
-  margin-top: 8px;
+  gap: 3px;
+  margin-top: 6px;
 `;
 
 const PlanFeature = styled.div<{ $premium?: boolean }>`
@@ -312,28 +280,27 @@ const PlanFeature = styled.div<{ $premium?: boolean }>`
 
 const PlanFreeTag = styled.span`
   display: inline-block;
-  background: linear-gradient(135deg, #D1FAE520, #a8e6cf30);
-  border: 1px solid #a8e6cf;
+  background: ${theme.colors.accent.coral}15;
+  border: 1px solid ${theme.colors.accent.coral}30;
   border-radius: 20px;
   padding: 2px 10px;
   font-size: 10px;
   font-weight: 700;
-  color: #2d6a4f;
+  color: ${theme.colors.accent.coral};
 `;
 
 const CheckMark = styled.div<{ $visible: boolean }>`
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
-  background: ${({ $visible }) => $visible ? '#3B82F6' : 'var(--border-input)'};
+  background: ${({ $visible }) => $visible ? 'var(--text-secondary)' : 'var(--border-color)'};
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-  font-size: 12px;
+  transition: all 0.2s ease;
+  font-size: 11px;
   color: white;
   flex-shrink: 0;
-  transform: scale(${({ $visible }) => $visible ? 1 : 0.8});
 `;
 
 const CheckMarkPro = styled(CheckMark)`
@@ -731,16 +698,11 @@ export const LoginPage: React.FC = () => {
                           <CheckMarkPro $visible={selectedPlan === 'club'}>{selectedPlan === 'club' ? '\u2713' : ''}</CheckMarkPro>
                         </div>
                       </PlanCardHeader>
-                      <PlanFreeTag>Premier conte inclus</PlanFreeTag>
-                      <PlanFeatures $columns>
-                        <PlanFeature $premium>4 livres/mois · 2x plus de pages</PlanFeature>
-                        <PlanFeature $premium>9 styles d'illustration</PlanFeature>
-                        <PlanFeature $premium>5 personnages secondaires</PlanFeature>
-                        <PlanFeature $premium>Themes et occasions</PlanFeature>
-                        <PlanFeature>Bibliotheque illimitee</PlanFeature>
-                        <PlanFeature>PDF telechargeables</PlanFeature>
-                        <PlanFeature>Credits cumulables</PlanFeature>
-                        <PlanFeature>Annulable a tout moment</PlanFeature>
+                      <PlanFeatures>
+                        <PlanFeature $premium>4 livres gratuits/mois</PlanFeature>
+                        <PlanFeature $premium>2x plus de pages et illustrations</PlanFeature>
+                        <PlanFeature $premium>9 styles · Personnages · Multi-langues</PlanFeature>
+                        <PlanFeature>Sans engagement · Annulable</PlanFeature>
                       </PlanFeatures>
                     </PlanCard>
                   </PlanGrid>
