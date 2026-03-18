@@ -164,7 +164,7 @@ export async function trackViewContent(contentId: string, contentName: string, v
 
 // Track InitiateCheckout (début du paiement) - UNE SEULE FOIS par session
 // IMPORTANT: Retourne une Promise qui se résout après confirmation d'envoi
-export async function trackInitiateCheckout(productType: string, userEmail?: string, singlePrice: number = 6.99): Promise<void> {
+export async function trackInitiateCheckout(productType: string, userEmail?: string, singlePrice: number = 3.99): Promise<void> {
   return new Promise(async (resolve) => {
     const ttqReady = await waitForTTQ();
     
@@ -262,7 +262,7 @@ export async function trackInitiateCheckout(productType: string, userEmail?: str
 }
 
 // Track Purchase (achat confirmé) - UNE SEULE FOIS par commande
-export async function trackPurchase(productType: string, orderId: string, userEmail?: string, purchaseValue: number = 6.99) {
+export async function trackPurchase(productType: string, orderId: string, userEmail?: string, purchaseValue: number = 3.99) {
   if (typeof window !== 'undefined' && window.ttq) {
     try {
       // Vérifier si déjà déclenché pour cette commande

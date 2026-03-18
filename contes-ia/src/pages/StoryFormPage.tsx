@@ -14,9 +14,9 @@ export const StoryFormPage: React.FC = () => {
   const isAdMode = useMemo(() => new URLSearchParams(location.search).get('from') === 'ad', [location.search]);
   const [clubCredit, setClubCredit] = useState<{ canSubmit: boolean; remaining: number; nextCreditDate?: string; totalEarned?: number } | null>(null);
 
-  // Premier livre gratuit, sinon 6,99€ (club members toujours 6,99€)
+  // Premier livre gratuit, sinon 3,99€ (club members toujours 3,99€)
   const isFirstPurchase = isAuthenticated ? user?.isFirstPurchase !== false : true;
-  const viewContentPrice = isClub ? 6.99 : (isFirstPurchase ? 0 : 6.99);
+  const viewContentPrice = isClub ? 3.99 : (isFirstPurchase ? 0 : 3.99);
 
   // Track ViewContent au chargement de la page
   useEffect(() => {

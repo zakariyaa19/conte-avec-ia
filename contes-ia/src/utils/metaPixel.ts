@@ -66,7 +66,7 @@ export async function metaTrackViewContent(
 // Track InitiateCheckout - UNE SEULE FOIS par session
 export async function metaTrackInitiateCheckout(
   productType: string,
-  value: number = 6.99,
+  value: number = 3.99,
   currency: string = 'EUR'
 ): Promise<void> {
   const fbqReady = await waitForFbq();
@@ -112,7 +112,7 @@ export async function metaTrackInitiateCheckout(
 // Track AddToCart - quand l'utilisateur sélectionne un produit (ebook ou club)
 export function metaTrackAddToCart(
   purchaseType: 'single' | 'club',
-  singlePrice: number = 6.99,
+  singlePrice: number = 3.99,
   currency: string = 'EUR'
 ): void {
   if (typeof window === 'undefined' || !window.fbq) return;
@@ -140,7 +140,7 @@ export function metaTrackAddToCart(
 
 // Track Lead - quand l'utilisateur fournit son email (signal fort pour Meta)
 export function metaTrackLead(
-  singlePrice: number = 6.99,
+  singlePrice: number = 3.99,
   currency: string = 'EUR'
 ): void {
   if (typeof window === 'undefined' || !window.fbq) return;
@@ -210,7 +210,7 @@ export function metaTrackSubscribe(): void {
 export async function metaTrackPurchase(
   productType: string,
   orderId: string,
-  value: number = 6.99,
+  value: number = 3.99,
   currency: string = 'EUR'
 ): Promise<void> {
   const fbqReady = await waitForFbq();

@@ -1,7 +1,7 @@
 // Logique de calcul des prix
 
 export const PRODUCT_PRICES = {
-  EBOOK: 6.99,
+  EBOOK: 3.99,
   EBOOK_FIRST: 1.99,
   EBOOK_FREE: 0
 } as const;

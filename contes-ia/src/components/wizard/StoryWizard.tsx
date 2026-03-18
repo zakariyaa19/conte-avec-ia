@@ -222,8 +222,8 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
     // email connu : utiliser isFirstPurchase du backend (false si déjà utilisé)
     return emailStatus.isFirstPurchase === true;
   })();
-  const singlePrice = isFirstPurchase ? 0 : 6.99;
-  const singlePriceLabel = isFirstPurchase ? 'GRATUIT' : '6,99€';
+  const singlePrice = isFirstPurchase ? 0 : 3.99;
+  const singlePriceLabel = isFirstPurchase ? 'GRATUIT' : '3,99€';
 
   const { load: loadDraft, clear: clearDraft, autoSave, hasDraft } = useWizardPersistence();
 
@@ -418,7 +418,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
     if (!formData.userEmail) return;
     const ev = validateEmail(formData.userEmail);
     if (!ev.isValid) return;
-    metaTrackLead(isClub ? 6.99 : singlePrice);
+    metaTrackLead(isClub ? 3.99 : singlePrice);
     try {
       const res = await ApiService.checkEmail(formData.userEmail);
       if (res.success) setEmailStatus({ exists: res.exists, hasPassword: !!res.hasPassword, isFirstPurchase: res.isFirstPurchase });
@@ -1219,7 +1219,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
             previewUpdate.coverTitle = coverTitle || undefined;
           }
           onUpdate(previewUpdate);
-          metaTrackAddToCart(type, isClub ? 6.99 : singlePrice);
+          metaTrackAddToCart(type, isClub ? 3.99 : singlePrice);
           // Scroll to order form
           setTimeout(() => {
             orderFormRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1432,12 +1432,12 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                   </p>
                 </ClubFreeCard>
               ) : isClub ? (
-                /* ── CLUB MEMBER WITHOUT CREDIT: single purchase at full price (6.99€) ── */
+                /* ── CLUB MEMBER WITHOUT CREDIT: single purchase at full price (3.99€) ── */
                 <TripwireHeroCard $isSelected={selectedOffer === 'single'} onClick={() => handlePreviewSelect('single')}>
                   <TripwireHeroBadge>Membre Club</TripwireHeroBadge>
                   {selectedOffer === 'single' && <PricingSelectedCheck>&#x2713;</PricingSelectedCheck>}
                   <PricingCardName>Livre supplémentaire</PricingCardName>
-                  <TripwireHeroPrice>6,99€</TripwireHeroPrice>
+                  <TripwireHeroPrice>3,99€</TripwireHeroPrice>
                   <PricingCardSub>
                     {clubCredit?.nextCreditDate
                       ? `Prochains crédits le ${new Date(clubCredit.nextCreditDate).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}`
@@ -1448,7 +1448,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                     <PricingCardFeatureItem>7 illustrations HD uniques</PricingCardFeatureItem>
                     <PricingCardFeatureItem>PDF telechargeable et imprimable</PricingCardFeatureItem>
                   </PricingCardFeaturesList>
-                  <TripwireHeroCTA>{selectedOffer === 'single' ? 'Selectionne !' : 'Obtenir pour 6,99€'}</TripwireHeroCTA>
+                  <TripwireHeroCTA>{selectedOffer === 'single' ? 'Selectionne !' : 'Obtenir pour 3,99€'}</TripwireHeroCTA>
                 </TripwireHeroCard>
               ) : isFirstPurchase ? (
                 /* ── PREMIER LIVRE GRATUIT — pas de Club, juste le gratuit ── */
@@ -1456,7 +1456,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                   <TripwireHeroBadge>100% GRATUIT</TripwireHeroBadge>
                   {selectedOffer === 'single' && <PricingSelectedCheck>&#x2713;</PricingSelectedCheck>}
                   <PricingCardName>Votre Premier Livre</PricingCardName>
-                  <TripwireHeroOldPrice>6,99€</TripwireHeroOldPrice>
+                  <TripwireHeroOldPrice>3,99€</TripwireHeroOldPrice>
                   <TripwireHeroPrice>GRATUIT</TripwireHeroPrice>
                   <PricingCardSub>Juste votre email — pas de carte bancaire</PricingCardSub>
                   <PricingCardFeaturesList>
@@ -1610,7 +1610,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                       fontSize: theme.fontSizes.xs, color: 'var(--text-secondary)',
                       margin: 0, lineHeight: 1.4,
                     }}>
-                      Votre livre gratuit a déjà été utilisé. Le prochain livre coûte 6,99€.
+                      Votre livre gratuit a déjà été utilisé. Le prochain livre coûte 3,99€.
                     </p>
                   </div>
                 )}
@@ -1622,7 +1622,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                       ? 'Utiliser un crédit Club'
                       : isFirstPurchase && !isClub && formData.purchaseType !== 'club'
                         ? 'Recevoir mon livre GRATUIT'
-                        : `Payer ${isClub && !clubCredit?.canSubmit ? '6,99€' : singlePriceLabel} — Recevoir mon livre`}
+                        : `Payer ${isClub && !clubCredit?.canSubmit ? '3,99€' : singlePriceLabel} — Recevoir mon livre`}
                 </PayButton>
 
                 <TrustBadgesRow>
