@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { theme } from '../styles/theme';
@@ -145,8 +145,18 @@ export const AccountPage: React.FC = () => {
 
   const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
   const [loading, setLoading] = useState(false);
+  const [clubCredit, setClubCredit] = useState<{ remaining: number; nextCreditDate?: string } | null>(null);
 
   const getToken = () => localStorage.getItem('userToken') || '';
+
+  // Fetch club credits
+  useEffect(() => {
+    if (isClub) {
+      ApiService.getClubCredit(getToken())
+        .then(res => { if (res.success) setClubCredit(res.data); })
+        .catch(() => {});
+    }
+  }, [isClub]); // eslint-disable-line
 
   const handleSaveProfile = async () => {
     setLoading(true);
@@ -292,26 +302,63 @@ export const AccountPage: React.FC = () => {
               <InfoLabel>Statut</InfoLabel>
               <InfoValue>
                 <Badge $variant={subscriptionVariant}>
-                  {isClub ? (user?.subscriptionStatus === 'canceling' ? 'Club (annulation programmee)' : 'Membre Club') : 'Basique'}
+                  {isClub
+                    ? user?.subscriptionStatus === 'canceling'
+                      ? 'Club (annulation programmée)'
+                      : user?.subscriptionStatus === 'past_due'
+                        ? 'Club (paiement en attente)'
+                        : 'Membre Club'
+                    : 'Plan Gratuit'}
                 </Badge>
               </InfoValue>
             </InfoRow>
 
+            {user?.subscriptionStatus === 'past_due' && (
+              <div style={{
+                background: '#FEF3C7', border: '1px solid #F59E0B', borderRadius: '8px',
+                padding: '10px 14px', margin: '8px 0', fontSize: '13px', color: '#92400E',
+              }}>
+                Votre paiement a échoué. Mettez à jour votre moyen de paiement pour conserver votre accès Club.
+              </div>
+            )}
+
+            {isClub && clubCredit && (
+              <InfoRow>
+                <InfoLabel>Crédits ce mois</InfoLabel>
+                <InfoValue style={{ fontWeight: 700 }}>
+                  {clubCredit.remaining}/4 disponibles
+                </InfoValue>
+              </InfoRow>
+            )}
+
             {isClub && user?.subscriptionPeriodEnd && (
               <InfoRow>
-                <InfoLabel>{user?.subscriptionStatus === 'canceling' ? 'Acces jusqu\'au' : 'Prochaine facturation'}</InfoLabel>
+                <InfoLabel>{user?.subscriptionStatus === 'canceling' ? 'Accès jusqu\'au' : 'Prochaine facturation'}</InfoLabel>
                 <InfoValue>{new Date(user.subscriptionPeriodEnd).toLocaleDateString('fr-FR')}</InfoValue>
+              </InfoRow>
+            )}
+
+            {isClub && clubCredit?.nextCreditDate && user?.subscriptionStatus !== 'canceling' && (
+              <InfoRow>
+                <InfoLabel>Prochains crédits</InfoLabel>
+                <InfoValue>{new Date(clubCredit.nextCreditDate).toLocaleDateString('fr-FR')}</InfoValue>
               </InfoRow>
             )}
 
             <ButtonRow>
               {isClub ? (
-                <Button variant="outline" size="sm" onClick={handleManageSubscription}>
-                  Gerer mon abonnement
-                </Button>
+                <>
+                  <Button variant="outline" size="sm" onClick={handleManageSubscription}>
+                    Gérer mon abonnement
+                  </Button>
+                  <Button variant="ghost" size="sm" onClick={handleManageSubscription}
+                    style={{ color: 'var(--text-light)', fontSize: '12px' }}>
+                    Résilier / Passer au plan gratuit
+                  </Button>
+                </>
               ) : (
                 <Button variant="primary" size="sm" onClick={() => navigate('/club/checkout')}>
-                  Passer au Club
+                  Passer au Club — 9,99€/mois
                 </Button>
               )}
             </ButtonRow>
