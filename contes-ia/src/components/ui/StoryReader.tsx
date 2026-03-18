@@ -134,24 +134,29 @@ const ScrollHint = styled.div`
 /* ═══════════ STORY PAGE SLIDE — dual layout ═══════════ */
 const PageSlide = styled(Slide)<{ $bg: string }>`
   background: ${p => p.$bg};
-  /* Mobile portrait: vertical stack */
+
+  /* Mobile portrait: vertical stack, scrollable if content overflows */
   @media (orientation: portrait) and (max-width: 1024px) {
     flex-direction: column;
+    justify-content: flex-start;
     padding: 0;
   }
   /* Desktop / landscape: horizontal side-by-side */
   @media (orientation: landscape), (min-width: 1025px) {
     flex-direction: row;
+    justify-content: stretch;
     padding: 0;
   }
 `;
 
 const PageImageBox = styled.div<{ $side: 'left' | 'right' }>`
   position: relative; overflow: hidden;
-  /* Mobile: full width, square aspect */
+  background: #000;
+
+  /* Mobile: full width, ~45% of viewport height (not square to leave room for text) */
   @media (orientation: portrait) and (max-width: 1024px) {
     width: 100%;
-    aspect-ratio: 1;
+    height: 45dvh;
     flex-shrink: 0;
   }
   /* Desktop: 50% width, full height */
@@ -165,14 +170,16 @@ const PageImageBox = styled.div<{ $side: 'left' | 'right' }>`
 const PageImg = styled.img<{ $visible: boolean }>`
   width: 100%; height: 100%; object-fit: cover;
   opacity: ${p => p.$visible ? 1 : 0};
-  transition: opacity 0.8s ease;
+  transform: scale(${p => p.$visible ? 1 : 1.05});
+  transition: opacity 0.8s ease, transform 6s ease-out;
 `;
 
 const PageTextBox = styled.div<{ $accent: string; $night: boolean }>`
   flex: 1; display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  padding: 28px 24px 40px;
-  min-height: 0;
+  padding: 24px 24px 32px;
+  overflow-y: auto;
+
   /* Desktop: 50% */
   @media (orientation: landscape), (min-width: 1025px) {
     width: 50%;
@@ -181,25 +188,27 @@ const PageTextBox = styled.div<{ $accent: string; $night: boolean }>`
 `;
 
 const PageNum = styled.div<{ $accent: string; $night: boolean }>`
-  width: 36px; height: 36px; border-radius: 50%;
+  width: 32px; height: 32px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  font-size: 14px; font-weight: 700; margin-bottom: 16px;
+  font-size: 13px; font-weight: 700; margin-bottom: 14px;
   background: ${p => p.$night ? `${p.$accent}25` : `${p.$accent}18`};
   color: ${p => p.$accent};
+  flex-shrink: 0;
 `;
 
 const PageText = styled.p<{ $night: boolean }>`
   font-family: ${theme.fonts.body};
-  font-size: 16px; line-height: 1.85; text-align: center;
+  font-size: 15px; line-height: 1.8; text-align: center;
   max-width: 480px; margin: 0;
   color: ${p => p.$night ? 'rgba(255,255,255,0.88)' : '#2C2C2C'};
   letter-spacing: 0.01em;
-  @media (min-width: 1025px) { font-size: 18px; }
+  @media (min-width: 1025px) { font-size: 17px; line-height: 1.85; }
 `;
 
 const PageDivider = styled.div<{ $accent: string }>`
-  width: 40px; height: 3px; border-radius: 2px; margin: 20px auto 0;
+  width: 36px; height: 2.5px; border-radius: 2px; margin: 16px auto 0;
   background: ${p => `${p.$accent}40`};
+  flex-shrink: 0;
 `;
 
 /* ═══════════ END SLIDE ═══════════ */
