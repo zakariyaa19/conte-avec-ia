@@ -149,7 +149,7 @@ export const createSubscriptionSession = async (req: ClientAuthRequest, res: Res
       line_items: [{ price: priceId, quantity: 1 }],
       mode: 'subscription',
       success_url: `${process.env.FRONTEND_URL}/dashboard?subscription=success`,
-      cancel_url: `${process.env.FRONTEND_URL}/create-story?subscription=cancelled`,
+      cancel_url: `${process.env.FRONTEND_URL}/cancel?type=subscription`,
       metadata: {
         userId: user.id,
         plan: plan || 'monthly',

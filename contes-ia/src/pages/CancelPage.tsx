@@ -1,206 +1,184 @@
 import React, { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import { theme } from '../styles/theme';
-import { Button } from '../components/ui/Button';
 import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
 import { ApiService } from '../config/api';
 
-const fadeInUp = keyframes`
-  from { opacity: 0; transform: translateY(20px); }
+const fadeIn = keyframes`
+  from { opacity: 0; transform: translateY(16px); }
   to { opacity: 1; transform: translateY(0); }
 `;
 
-const PageContainer = styled.div`
+const Page = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: var(--bg-primary);
+  background: var(--bg-primary);
 `;
 
-const CancelContainer = styled.main`
+const Main = styled.main`
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: ${theme.spacing['3xl']} ${theme.spacing.lg};
-
-  @media (max-width: ${theme.breakpoints.sm}) {
-    padding: ${theme.spacing.xl} ${theme.spacing.md};
-  }
+  padding: 40px 20px;
 `;
 
-const CancelCard = styled.div`
-  background: var(--bg-card);
-  border-radius: ${theme.borderRadius['2xl']};
-  padding: ${theme.spacing['3xl']};
-  text-align: center;
-  max-width: 620px;
+const Card = styled.div`
+  max-width: 440px;
   width: 100%;
-  box-shadow: var(--shadow-card);
-  border: 1px solid var(--border-color);
-  animation: ${fadeInUp} 0.6s ease-out;
-
-  @media (max-width: ${theme.breakpoints.sm}) {
-    padding: ${theme.spacing.xl} ${theme.spacing.lg};
-    border-radius: ${theme.borderRadius.xl};
-  }
+  text-align: center;
+  animation: ${fadeIn} 0.5s ease both;
 `;
 
-const CancelIcon = styled.div`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 88px;
-  height: 88px;
+const IconCircle = styled.div`
+  width: 72px; height: 72px;
   border-radius: 50%;
-  background: ${theme.colors.accent.coral}12;
-  font-size: 2.5rem;
-  margin-bottom: ${theme.spacing.xl};
-
-  @media (max-width: ${theme.breakpoints.sm}) {
-    width: 72px;
-    height: 72px;
-    font-size: 2rem;
-    margin-bottom: ${theme.spacing.lg};
-  }
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 20px;
+  font-size: 32px;
 `;
 
-const CancelTitle = styled.h1`
+const Title = styled.h1`
   font-family: ${theme.fonts.heading};
-  font-size: ${theme.fontSizes['3xl']};
+  font-size: clamp(1.4rem, 4vw, 1.8rem);
+  font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: ${theme.spacing.md};
-  letter-spacing: -0.01em;
-
-  @media (max-width: ${theme.breakpoints.sm}) {
-    font-size: ${theme.fontSizes['2xl']};
-  }
+  margin: 0 0 8px;
 `;
 
-const CancelMessage = styled.p`
-  color: var(--text-secondary);
-  font-size: ${theme.fontSizes.base};
-  line-height: 1.7;
-  margin-bottom: ${theme.spacing.lg};
-
-  @media (max-width: ${theme.breakpoints.sm}) {
-    font-size: ${theme.fontSizes.sm};
-  }
-`;
-
-const InfoBox = styled.div`
-  background: var(--bg-secondary);
-  padding: ${theme.spacing.lg};
-  border-radius: ${theme.borderRadius.xl};
-  margin-bottom: ${theme.spacing.md};
-  text-align: left;
-`;
-
-const InfoText = styled.p`
-  color: var(--text-secondary);
+const Sub = styled.p`
   font-size: ${theme.fontSizes.sm};
-  line-height: 1.7;
-
-  strong {
-    color: var(--text-primary);
-    font-weight: 600;
-  }
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0 0 28px;
 `;
 
-const ButtonGroup = styled.div`
-  display: flex;
-  gap: ${theme.spacing.md};
-  justify-content: center;
-  margin-top: ${theme.spacing.xl};
+const InfoCard = styled.div`
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 16px 20px;
+  text-align: left;
+  margin-bottom: 24px;
+`;
 
-  @media (max-width: ${theme.breakpoints.sm}) {
-    flex-direction: column;
-  }
+const InfoLine = styled.div`
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 6px 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+`;
+
+const InfoIcon = styled.span`
+  font-size: 15px;
+  flex-shrink: 0;
+  margin-top: 1px;
+`;
+
+const Actions = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+`;
+
+const PrimaryLink = styled.button`
+  appearance: none;
+  border: none;
+  background: ${theme.colors.accent.coral};
+  color: white;
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.base};
+  font-weight: 700;
+  padding: 14px 32px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  &:hover { transform: translateY(-1px); box-shadow: 0 4px 16px ${theme.colors.accent.coral}40; }
+  &:active { transform: scale(0.97); }
+`;
+
+const SecondaryLink = styled.button`
+  appearance: none;
+  border: none;
+  background: none;
+  color: var(--text-light);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 8px;
+  &:hover { color: var(--text-secondary); }
 `;
 
 export const CancelPage: React.FC = () => {
+  const navigate = useNavigate();
   const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const isSubscription = params.get('type') === 'subscription';
+  const orderId = params.get('order_id');
 
-  // Marquer la commande comme abandonnee
   useEffect(() => {
-    const searchParams = new URLSearchParams(location.search);
-    const orderId = searchParams.get('order_id');
     if (orderId) {
       ApiService.abandonOrder(orderId).catch(() => {});
     }
-  }, [location.search]);
+  }, [orderId]);
 
   useEffect(() => {
-    document.title = 'Paiement Annule | Reprendre votre Commande de Livre Personnalise';
-
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', 'Paiement annule. Reprenez facilement votre commande de livre personnalise enfant. Aucun montant debite, votre conte sur mesure vous attend.');
-    } else {
-      const newMetaDescription = document.createElement('meta');
-      newMetaDescription.name = 'description';
-      newMetaDescription.content = 'Paiement annule. Reprenez facilement votre commande de livre personnalise enfant. Aucun montant debite, votre conte sur mesure vous attend.';
-      document.head.appendChild(newMetaDescription);
-    }
+    document.title = 'Paiement annulé | Contes d\'IA';
   }, []);
 
-  const handleRetryPayment = () => {
-    window.location.href = '/create-story';
-  };
-
-  const handleReturnHome = () => {
-    window.location.href = '/';
-  };
-
   return (
-    <PageContainer>
+    <Page>
       <Header />
-      <CancelContainer>
-        <CancelCard>
-          <CancelIcon>😔</CancelIcon>
-          <CancelTitle>Paiement annule</CancelTitle>
-          <CancelMessage>
-            Votre paiement a ete annule. Aucun montant n'a ete debite de votre compte.
-          </CancelMessage>
+      <Main>
+        <Card>
+          <IconCircle>✋</IconCircle>
+          <Title>Paiement non finalisé</Title>
+          <Sub>
+            {isSubscription
+              ? 'Votre abonnement n\'a pas été activé. Aucun montant n\'a été débité.'
+              : 'Votre commande n\'a pas été finalisée. Aucun montant n\'a été débité.'}
+          </Sub>
 
-          <InfoBox>
-            <InfoText>
-              <strong>Que s'est-il passe ?</strong><br/>
-              Vous avez annule le processus de paiement ou ferme la fenetre de paiement.
-              Votre commande n'a pas ete finalisee et reste en attente.
-            </InfoText>
-          </InfoBox>
+          <InfoCard>
+            <InfoLine>
+              <InfoIcon>🔒</InfoIcon>
+              <span>Aucun prélèvement n'a été effectué</span>
+            </InfoLine>
+            <InfoLine>
+              <InfoIcon>📖</InfoIcon>
+              <span>
+                {isSubscription
+                  ? 'Vous pouvez rejoindre le Club à tout moment'
+                  : 'Votre livre vous attend — reprenez quand vous voulez'}
+              </span>
+            </InfoLine>
+            <InfoLine>
+              <InfoIcon>💬</InfoIcon>
+              <span>Un souci ? Contactez-nous à contact@contedia.fr</span>
+            </InfoLine>
+          </InfoCard>
 
-          <InfoBox>
-            <InfoText>
-              <strong>Vous pouvez :</strong><br/>
-              • Reprendre votre commande la ou vous l'avez laissee<br/>
-              • Modifier vos choix si necessaire<br/>
-              • Contacter notre support si vous rencontrez des difficultes
-            </InfoText>
-          </InfoBox>
-
-          <ButtonGroup>
-            <Button
-              variant="primary"
-              size="lg"
-              onClick={handleRetryPayment}
-            >
-              Reprendre ma commande
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              onClick={handleReturnHome}
-            >
-              Retour a l'accueil
-            </Button>
-          </ButtonGroup>
-        </CancelCard>
-      </CancelContainer>
+          <Actions>
+            <PrimaryLink onClick={() => navigate(isSubscription ? '/club/checkout' : '/create-story')}>
+              {isSubscription ? 'Rejoindre le Club' : 'Reprendre ma commande'}
+            </PrimaryLink>
+            <SecondaryLink onClick={() => navigate('/')}>
+              Retour à l'accueil
+            </SecondaryLink>
+          </Actions>
+        </Card>
+      </Main>
       <Footer />
-    </PageContainer>
+    </Page>
   );
 };
+
+export default CancelPage;
