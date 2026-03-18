@@ -493,17 +493,23 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
                         onClick={() => window.location.href = '/club/checkout'}
                         style={{
                           width: '100%', maxWidth: 320, cursor: 'pointer',
-                          background: 'linear-gradient(135deg, #FF9999, #E88888)',
-                          borderRadius: '16px', padding: '18px 16px',
+                          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 40%, #f093fb 100%)',
+                          borderRadius: '16px', padding: '16px',
                           textAlign: 'center', marginTop: 8,
-                          boxShadow: '0 8px 32px rgba(255,153,153,0.3)',
+                          boxShadow: '0 4px 24px rgba(118,75,162,0.4)',
+                          border: '1px solid rgba(255,255,255,0.15)',
                         }}
                       >
-                        <p style={{ color: 'white', fontWeight: 800, fontSize: '15px', margin: '0 0 10px', lineHeight: 1.3 }}>
+                        <p style={{ color: 'white', fontWeight: 700, fontSize: '14px', margin: '0 0 8px' }}>
                           Envie de plus de pages ? ✨
                         </p>
-                        <span style={{ display: 'inline-block', background: 'white', color: '#E88888', fontWeight: 700, fontSize: '13px', padding: '8px 20px', borderRadius: '10px' }}>
-                          Decouvrir le Club &rarr;
+                        <span style={{
+                          display: 'inline-block', fontSize: '12px', fontWeight: 600,
+                          color: 'rgba(255,255,255,0.9)', padding: '6px 16px',
+                          borderRadius: '20px', background: 'rgba(255,255,255,0.15)',
+                          backdropFilter: 'blur(4px)',
+                        }}>
+                          Découvrir le Club &rarr;
                         </span>
                       </div>
                     </>
@@ -538,12 +544,24 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
 
                       {!isClub && (
                         <div onClick={() => window.location.href = '/club/checkout'}
-                          style={{ width: '100%', maxWidth: 320, cursor: 'pointer', background: 'linear-gradient(135deg, #FF9999, #E88888)', borderRadius: '16px', padding: '18px 16px', textAlign: 'center', marginBottom: 14, boxShadow: '0 8px 32px rgba(255,153,153,0.3)' }}>
-                          <p style={{ color: 'white', fontWeight: 800, fontSize: '15px', margin: '0 0 10px', lineHeight: 1.3 }}>
+                          style={{
+                            width: '100%', maxWidth: 320, cursor: 'pointer',
+                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 40%, #f093fb 100%)',
+                            borderRadius: '16px', padding: '16px',
+                            textAlign: 'center', marginBottom: 14,
+                            boxShadow: '0 4px 24px rgba(118,75,162,0.4)',
+                            border: '1px solid rgba(255,255,255,0.15)',
+                          }}>
+                          <p style={{ color: 'white', fontWeight: 700, fontSize: '14px', margin: '0 0 8px' }}>
                             Envie de plus de pages ? ✨
                           </p>
-                          <span style={{ display: 'inline-block', background: 'white', color: '#E88888', fontWeight: 700, fontSize: '13px', padding: '8px 20px', borderRadius: '10px' }}>
-                            Decouvrir le Club &rarr;
+                          <span style={{
+                            display: 'inline-block', fontSize: '12px', fontWeight: 600,
+                            color: 'rgba(255,255,255,0.9)', padding: '6px 16px',
+                            borderRadius: '20px', background: 'rgba(255,255,255,0.15)',
+                            backdropFilter: 'blur(4px)',
+                          }}>
+                            Découvrir le Club &rarr;
                           </span>
                         </div>
                       )}
