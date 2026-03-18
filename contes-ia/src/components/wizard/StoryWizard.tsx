@@ -1454,14 +1454,14 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                     <ClubShowcaseHeader>
                       <ClubShowcaseFreeTag>Ce livre est inclus gratuitement</ClubShowcaseFreeTag>
                       <ClubShowcaseTitle>Club des Histoires</ClubShowcaseTitle>
-                      <ClubShowcaseSubtitle>4 livres de 12 pages chaque mois</ClubShowcaseSubtitle>
+                      <ClubShowcaseSubtitle>4 livres avec 2x plus de pages chaque mois</ClubShowcaseSubtitle>
                     </ClubShowcaseHeader>
                     <ClubShowcasePrice>
                       <ClubShowcasePriceValue>9,99€</ClubShowcasePriceValue>
                       <ClubShowcasePriceUnit>/mois · sans engagement</ClubShowcasePriceUnit>
                     </ClubShowcasePrice>
                     <ClubShowcaseFeatures>
-                      <ClubShowcaseFeature $premium><ClubFeatureIcon>&#x1F4D6;</ClubFeatureIcon>4 livres par mois · 12 pages</ClubShowcaseFeature>
+                      <ClubShowcaseFeature $premium><ClubFeatureIcon>&#x1F4D6;</ClubFeatureIcon>4 livres/mois · 2x plus de pages</ClubShowcaseFeature>
                       <ClubShowcaseFeature $premium><ClubFeatureIcon>&#x1F464;</ClubFeatureIcon>Personnages secondaires</ClubShowcaseFeature>
                       <ClubShowcaseFeature $premium><ClubFeatureIcon>&#x1F3A8;</ClubFeatureIcon>Styles d'illustration</ClubShowcaseFeature>
                       <ClubShowcaseFeature $premium><ClubFeatureIcon>&#x1F381;</ClubFeatureIcon>Thèmes et occasions</ClubShowcaseFeature>

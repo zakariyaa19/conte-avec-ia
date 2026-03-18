@@ -235,7 +235,7 @@ export const ClubCheckoutPage: React.FC = () => {
 
   const features = [
     '4 livres par mois (soit 2,50€/livre)',
-    '12 pages & 12 illustrations par livre',
+    '2x plus de pages et d\'illustrations',
     '9 styles d\'illustration exclusifs',
     'Personnages secondaires',
     'Multi-langues',

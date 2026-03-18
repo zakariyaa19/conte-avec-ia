@@ -470,11 +470,11 @@ export const SuccessPage: React.FC = () => {
           <UpsellCard>
             <UpsellTitle>Envie de plus ?</UpsellTitle>
             <UpsellText>
-              Avec le Club, créez 4 livres de 12 pages chaque mois avec des personnages et styles exclusifs.
+              Avec le Club, créez 4 livres avec 2x plus de pages chaque mois, des personnages et styles exclusifs.
             </UpsellText>
             <UpsellFeatures>
-              <UpsellFeature>4 livres/mois · 12 pages</UpsellFeature>
-              <UpsellFeature>12 illustrations par livre</UpsellFeature>
+              <UpsellFeature>4 livres/mois · 2x plus de pages</UpsellFeature>
+              <UpsellFeature>2x plus d'illustrations</UpsellFeature>
               <UpsellFeature>9 styles + personnages</UpsellFeature>
               <UpsellFeature>Soit 2,50€ par livre</UpsellFeature>
             </UpsellFeatures>

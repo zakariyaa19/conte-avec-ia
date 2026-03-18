@@ -1648,7 +1648,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
                       price="9,99 € / mois"
                       features={[
                         "Cet eBook est inclus immédiatement",
-                        "4 livres de 12 pages par mois",
+                        "4 livres avec 2x plus de pages par mois",
                         "Bibliothèque illimitée",
                         "Annulable à tout moment"
                       ]}

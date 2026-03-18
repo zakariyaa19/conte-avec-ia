@@ -733,7 +733,7 @@ export const LoginPage: React.FC = () => {
                       </PlanCardHeader>
                       <PlanFreeTag>Premier conte inclus</PlanFreeTag>
                       <PlanFeatures $columns>
-                        <PlanFeature $premium>4 livres/mois · 12 pages</PlanFeature>
+                        <PlanFeature $premium>4 livres/mois · 2x plus de pages</PlanFeature>
                         <PlanFeature $premium>9 styles d'illustration</PlanFeature>
                         <PlanFeature $premium>5 personnages secondaires</PlanFeature>
                         <PlanFeature $premium>Themes et occasions</PlanFeature>

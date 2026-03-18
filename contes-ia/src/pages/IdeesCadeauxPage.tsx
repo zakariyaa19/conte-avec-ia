@@ -77,8 +77,8 @@ const giftFormats = [
   {
     format: "Club des Histoires",
     price: "9,99€/mois",
-    description: "L'abonnement ideal pour les familles : 4 livres de 12 pages par mois, 9 styles, personnages secondaires. Credits cumulables.",
-    advantages: ["4 livres par mois", "12 pages & 12 illustrations", "Sans engagement", "Soit 2,50€ par livre"],
+    description: "L'abonnement ideal pour les familles : 4 livres avec 2x plus de pages par mois, 9 styles, personnages secondaires. Credits cumulables.",
+    advantages: ["4 livres par mois", "2x plus de pages & illustrations", "Sans engagement", "Soit 2,50€ par livre"],
     bestFor: ["Families passionnees", "Cadeaux reguliers", "Lecteurs assidus", "Budget maitrise"],
     icon: "\u2B50"
   }

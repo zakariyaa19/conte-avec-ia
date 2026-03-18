@@ -1166,7 +1166,7 @@ export const DashboardPage: React.FC = () => {
                 </span>
               </div>
               <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.7)', margin: 0 }}>
-                4 livres/mois, 12 pages, 9 styles, personnages...
+                4 livres/mois, 2x plus de pages, 9 styles...
               </p>
             </div>
             <div style={{

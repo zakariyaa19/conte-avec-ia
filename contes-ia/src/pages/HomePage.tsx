@@ -1310,7 +1310,7 @@ const faqItems = [
   {
     id: '3',
     question: "Qu'est-ce que le Club des Histoires Uniques ?",
-    answer: "Votre premier livre est 100% gratuit ! Le Club des Histoires à 9,99€/mois vous donne 4 livres par mois de 12 pages et 12 illustrations chacun (soit 2,50€ le livre). Personnalisation avancée : 9 styles d'illustration, personnages secondaires, multi-langues et bien plus. Crédits cumulables, sans engagement. Offre annuelle à 79,99€/an (-33%)."
+    answer: "Votre premier livre est 100% gratuit ! Le Club des Histoires à 9,99€/mois vous donne 4 livres avec 2x plus de pages et d'illustrations chaque mois (soit 2,50€ le livre). Personnalisation avancée : 9 styles d'illustration, personnages secondaires, multi-langues et bien plus. Crédits cumulables, sans engagement. Offre annuelle à 79,99€/an (-33%)."
   },
   {
     id: '4',
@@ -1410,11 +1410,11 @@ const faqReveal = useScrollReveal();
 
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', "Offrez a votre enfant un livre unique et magique ! Creez facilement un conte personnalise avec l'intelligence artificielle. Rejoignez le Club pour 4 livres de 12 pages chaque mois.");
+      metaDescription.setAttribute('content', "Offrez a votre enfant un livre unique et magique ! Creez facilement un conte personnalise avec l'intelligence artificielle. Rejoignez le Club pour 4 livres avec 2x plus de pages chaque mois.");
     } else {
       const meta = document.createElement('meta');
       meta.name = 'description';
-      meta.content = "Offrez a votre enfant un livre unique et magique ! Creez facilement un conte personnalise avec l'intelligence artificielle. Rejoignez le Club pour 4 livres de 12 pages chaque mois.";
+      meta.content = "Offrez a votre enfant un livre unique et magique ! Creez facilement un conte personnalise avec l'intelligence artificielle. Rejoignez le Club pour 4 livres avec 2x plus de pages chaque mois.";
       document.head.appendChild(meta);
     }
   }, []);
