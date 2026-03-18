@@ -49,6 +49,7 @@ export interface StoryFormData {
   
   // Détails personnels
   creatorName?: string;
+  narratedBy?: string; // Club only: "Raconté par..."
   
   // Preview data (passed to order for reuse in generation)
   firstIllustrationUrl?: string;

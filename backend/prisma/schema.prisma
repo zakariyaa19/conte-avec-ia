@@ -108,6 +108,7 @@ model Order {
 
   // Details personnels
   creatorName       String?
+  narratedBy        String?
 
   // Informations produit
   productType       ProductType

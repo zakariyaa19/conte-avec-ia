@@ -21,6 +21,8 @@ export interface StoryTextParams {
   language?: string;
   secondaryCharactersJson?: string;
   creatorName?: string;
+  narratedBy?: string;
+  isClub?: boolean;
 }
 
 export interface StoryTextResult {
@@ -141,21 +143,105 @@ Pas de titre, pas de commentaire, JUSTE le JSON array.
 Exemple : ["Premier paragraphe...", "Deuxieme paragraphe...", ...]`;
 }
 
+// --- Club Premium prompt (12 paragraphs, rich narrative) ---
+
+function buildClubStoryPrompt(params: StoryTextParams): string {
+  const name = params.protagonistName || 'Enfant';
+  const genderWord = params.protagonistGender === 'girl' ? 'fille' : 'garcon';
+  const hasSpecificAge = !!params.protagonistAge;
+  const ageForVocab = params.protagonistAge || (params.ageRange === '0-2' ? '2' : params.ageRange === '3-5' ? '4' : params.ageRange === '10+' ? '11' : '7');
+
+  const theme = params.customTheme || THEME_LABELS[params.generalTheme] || params.generalTheme;
+  const occasion = params.customSubject || OCCASION_LABELS[params.specificSubject] || params.specificSubject || '';
+  const message = params.customMessage || MESSAGE_LABELS[params.centralMessage] || params.centralMessage || '';
+  const language = params.language || 'francais';
+
+  let secondaryChars = '';
+  if (params.secondaryCharactersJson) {
+    try {
+      const chars = JSON.parse(params.secondaryCharactersJson);
+      if (Array.isArray(chars) && chars.length > 0) {
+        secondaryChars = chars.map((c: any) => {
+          const kindLabel = c.kind === 'animal' ? 'Animal' : 'Humain';
+          const parts = [`- ${c.name || 'Ami(e)'} (${kindLabel})`];
+          if (c.ageOrType) parts.push(c.ageOrType);
+          if (c.physical) parts.push(`description : ${c.physical}`);
+          return parts.join(' — ');
+        }).join('\n');
+      }
+    } catch { /* ignore */ }
+  }
+
+  const religionNote = params.customReligion || params.religion || '';
+  const narratedBy = params.narratedBy || params.creatorName || '';
+
+  return `Tu es un auteur professionnel de livres premium pour enfants. Ecris un conte LONG et IMMERSIF en ${language} de EXACTEMENT 12 paragraphes.
+
+PROTAGONISTE :
+- Prenom : ${name}
+${hasSpecificAge ? `- Age : ${params.protagonistAge} ans` : `- Tranche d'age : ${params.ageRange || '6-9'} ans (NE PAS mentionner un age precis)`}
+- Genre : ${genderWord}
+${params.hobbies ? `- Passions/Hobbies : ${params.hobbies} — ces passions doivent etre un element CENTRAL de l'aventure, pas juste mentionnees` : ''}
+${params.favoriteDish ? `- Plat favori : ${params.favoriteDish} — l'integrer naturellement dans une scene` : ''}
+
+${secondaryChars ? `PERSONNAGES SECONDAIRES (CRUCIAL — chacun doit avoir un VRAI role) :
+${secondaryChars}
+Regles strictes :
+- Chaque personnage secondaire doit apparaitre dans AU MOINS 3 paragraphes
+- Ils doivent avoir des dialogues, des actions, des emotions
+- Ils interagissent activement avec ${name}
+- Les animaux ont un comportement coherent et attachant
+- Les humains ont une personnalite distincte` : ''}
+
+THEME : ${theme}
+${occasion ? `OCCASION : ${occasion} — l'histoire se deroule ENTIEREMENT dans le contexte de cette occasion. Ambiance, decors, details doivent correspondre.` : ''}
+${message ? `MESSAGE CENTRAL : ${message} — ce theme est le FIL ROUGE de toute l'histoire. Il doit transparaitre dans les choix, les actions et la resolution.` : ''}
+${religionNote ? `CONTEXTE SPIRITUEL : ${religionNote} (integrer avec respect et delicatesse)` : ''}
+${params.specialEvents ? `EVENEMENT SPECIAL : ${params.specialEvents} — element important de l'intrigue` : ''}
+
+STRUCTURE NARRATIVE OBLIGATOIRE (12 paragraphes) :
+- Paragraphes 1-2 : INTRODUCTION — Presenter ${name}, son monde, ses proches. Creer l'atmosphere.
+- Paragraphe 3 : DECLENCHEUR — Un evenement inattendu lance l'aventure.
+- Paragraphes 4-6 : DEVELOPPEMENT — ${name} explore, decouvre, progresse. Rencontres et interactions.
+- Paragraphes 7-8 : OBSTACLE — Un defi majeur. ${name} doit trouver une solution. Moment de doute.
+- Paragraphes 9-10 : RESOLUTION — ${name} surmonte l'obstacle grace a ses qualites et l'aide de ses proches.
+- Paragraphe 11 : CONCLUSION — Retour au calme. Celebration. Reconnaissance.
+- Paragraphe 12 : MORALE ET OUVERTURE — Lecon apprise, formulee avec douceur.${narratedBy ? ` Terminer par "Histoire racontee par ${narratedBy}" en derniere phrase.` : ''}
+
+EXIGENCES QUALITE PREMIUM :
+1. Chaque paragraphe fait 3 a 4 phrases (plus riche que la version basique, mais toujours aere)
+2. Vocabulaire adapte a un enfant de ${ageForVocab} ans mais avec de la richesse
+3. Le prenom "${name}" apparait dans au moins 8 paragraphes sur 12
+4. Descriptions sensorielles : couleurs, sons, odeurs, textures
+5. Dialogues vivants entre les personnages (au moins 3 echanges dans l'histoire)
+6. Emotions claires et evoluant au fil de l'histoire
+7. Coherence parfaite entre tous les elements personnalises
+8. Ecris UNIQUEMENT en ${language} — aucun mot dans une autre langue
+${!hasSpecificAge ? `9. NE MENTIONNE JAMAIS un age precis pour ${name}` : ''}
+
+FORMAT DE REPONSE :
+Reponds UNIQUEMENT avec un JSON array de EXACTEMENT 12 strings.
+Pas de titre, pas de commentaire, JUSTE le JSON array.
+Exemple : ["Premier paragraphe...", "Deuxieme...", ..., "Douzieme paragraphe..."]`;
+}
+
 // --- Generate story text ---
 
 export async function generateStoryText(params: StoryTextParams, title: string): Promise<StoryTextResult> {
   const openai = getOpenAI();
-  const prompt = buildStoryPrompt(params);
+  const isClub = params.isClub === true;
+  const targetParagraphs = isClub ? 12 : 6;
+  const prompt = isClub ? buildClubStoryPrompt(params) : buildStoryPrompt(params);
 
-  console.log('[StoryTextGenerator] Generating 6 paragraphs for:', params.protagonistName);
+  console.log(`[StoryTextGenerator] Generating ${targetParagraphs} paragraphs (${isClub ? 'CLUB' : 'FREE'}) for:`, params.protagonistName);
 
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
       const response = await openai.chat.completions.create({
         model: 'gpt-4o-mini',
         messages: [{ role: 'user', content: prompt }],
-        max_tokens: 4000,
-        temperature: 0.8,
+        max_tokens: isClub ? 8000 : 4000,
+        temperature: isClub ? 0.85 : 0.8,
       });
 
       const content = response.choices[0]?.message?.content?.trim();
@@ -163,7 +249,6 @@ export async function generateStoryText(params: StoryTextParams, title: string):
         throw new Error('Reponse GPT vide');
       }
 
-      // Extract JSON array from response (handle markdown code blocks)
       let jsonStr = content;
       const jsonMatch = content.match(/\[[\s\S]*\]/);
       if (jsonMatch) {
@@ -172,21 +257,19 @@ export async function generateStoryText(params: StoryTextParams, title: string):
 
       const paragraphs = JSON.parse(jsonStr);
 
-      if (!Array.isArray(paragraphs) || paragraphs.length !== 6) {
-        console.warn(`[StoryTextGenerator] Attempt ${attempt + 1}: Got ${Array.isArray(paragraphs) ? paragraphs.length : 'non-array'} paragraphs, expected 6`);
+      if (!Array.isArray(paragraphs) || paragraphs.length !== targetParagraphs) {
+        console.warn(`[StoryTextGenerator] Attempt ${attempt + 1}: Got ${Array.isArray(paragraphs) ? paragraphs.length : 'non-array'} paragraphs, expected ${targetParagraphs}`);
         if (attempt === 0) continue;
-        // On second attempt, accept close to 6 or pad/trim
-        if (Array.isArray(paragraphs) && paragraphs.length >= 4) {
-          while (paragraphs.length < 6) paragraphs.push(paragraphs[paragraphs.length - 1]);
-          return { title, paragraphs: paragraphs.slice(0, 6) };
+        if (Array.isArray(paragraphs) && paragraphs.length >= targetParagraphs - 2) {
+          while (paragraphs.length < targetParagraphs) paragraphs.push(paragraphs[paragraphs.length - 1]);
+          return { title, paragraphs: paragraphs.slice(0, targetParagraphs) };
         }
-        throw new Error(`GPT a retourne ${Array.isArray(paragraphs) ? paragraphs.length : 0} paragraphes au lieu de 6`);
+        throw new Error(`GPT a retourne ${Array.isArray(paragraphs) ? paragraphs.length : 0} paragraphes au lieu de ${targetParagraphs}`);
       }
 
-      // Validate all entries are strings
       const validParagraphs = paragraphs.map((p: any) => String(p));
 
-      console.log('[StoryTextGenerator] Successfully generated 6 paragraphs');
+      console.log(`[StoryTextGenerator] Successfully generated ${targetParagraphs} paragraphs (${isClub ? 'CLUB' : 'FREE'})`);
       return { title, paragraphs: validParagraphs };
 
     } catch (error) {

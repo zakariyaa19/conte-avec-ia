@@ -41,14 +41,16 @@ export interface ImageGenerationParams {
   specialEvents?: string;
   photoUrl?: string;
   secondaryCharactersJson?: string;
+  isClub?: boolean;
 }
 
 export interface ImageGenerationResult {
-  images: Buffer[]; // 6 interior images (cost-optimized: every other page)
+  images: Buffer[];
 }
 
-// Indices des paragraphes qui recoivent une illustration (chaque paragraphe = 1 image)
+// Indices des paragraphes qui recoivent une illustration (1 image par paragraphe)
 export const IMAGE_PARAGRAPH_INDICES = [0, 1, 2, 3, 4, 5];
+export const CLUB_IMAGE_PARAGRAPH_INDICES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
 type ProgressCallback = (imageIndex: number, total: number) => void;
 
@@ -201,22 +203,28 @@ function buildPageImagePrompt(
   visualBible: string,
   paragraph: string,
   pageIndex: number,
+  totalPages: number,
   hasReferenceImage: boolean
 ): string {
   const refNote = hasReferenceImage
     ? `CREATE A COMPLETELY NEW SCENE (do NOT modify the reference image):`
     : `CREATE A SCENE:`;
 
+  const isClub = params.isClub === true;
+  const format = isClub
+    ? 'Square format (1:1), full illustration, no borders.'
+    : 'Portrait format (2:3 vertical), full illustration, no borders.';
+
   return `${visualBible}
 
 ${refNote}
 
-Scene (page ${pageIndex} of 6):
+Scene (page ${pageIndex} of ${totalPages}):
 "${paragraph}"
 
-Show ${params.protagonistName} as the central visible character in this scene. Rich details, warm atmosphere.
+Show ${params.protagonistName} as the central visible character in this scene. Rich details, warm atmosphere.${isClub ? ' Cinematic quality, detailed backgrounds, expressive emotions on faces.' : ''}
 
-Portrait format (2:3 vertical), full illustration, no borders.
+${format}
 
 CRITICAL: Absolutely NO text, NO letters, NO words, NO numbers anywhere. No signs, no books with visible text, no inscriptions on walls or objects. Pure illustration only.`;
 }
@@ -240,7 +248,7 @@ export async function generateFirstIllustration(
 
   const hasReferenceImage = !!coverImageData;
   const visualBible = buildVisualBible(params, hasReferenceImage);
-  const prompt = buildPageImagePrompt(params, visualBible, paragraph0, 1, hasReferenceImage);
+  const prompt = buildPageImagePrompt(params, visualBible, paragraph0, 1, 6, hasReferenceImage);
 
   console.log(`[StoryImageGenerator] Generating first illustration (reference: ${hasReferenceImage})`);
 
@@ -336,8 +344,11 @@ export async function generateStoryImages(
   existingFirstImage?: Buffer  // First illustration from preview (skip generation)
 ): Promise<ImageGenerationResult> {
   const isDryRun = process.env.STORY_DRY_RUN === 'true';
+  const isClub = params.isClub === true;
+  const indices = isClub ? CLUB_IMAGE_PARAGRAPH_INDICES : IMAGE_PARAGRAPH_INDICES;
+  const imageSize = isClub ? '1024x1024' : '1024x1536';
   const hasExistingFirst = !!existingFirstImage;
-  const totalImages = hasExistingFirst ? IMAGE_PARAGRAPH_INDICES.length - 1 : IMAGE_PARAGRAPH_INDICES.length;
+  const totalImages = hasExistingFirst ? indices.length - 1 : indices.length;
   const images: Buffer[] = [];
 
   // If we have the first illustration from preview, prepend it
@@ -349,9 +360,9 @@ export async function generateStoryImages(
   const hasReferenceImage = !!referenceImage;
   const visualBible = buildVisualBible(params, hasReferenceImage);
 
-  const imagesToGenerate = hasExistingFirst ? IMAGE_PARAGRAPH_INDICES.length - 1 : IMAGE_PARAGRAPH_INDICES.length;
-  console.log(`[StoryImageGenerator] Generating ${imagesToGenerate} images (${hasExistingFirst ? '1 reused from preview' : 'all new'}) on ${paragraphs.length} paragraphs (dry run: ${isDryRun})`);
-  console.log(`[StoryImageGenerator] Paragraphes illustres: ${IMAGE_PARAGRAPH_INDICES.map(i => i + 1).join(', ')}`);
+  const imagesToGenerate = totalImages;
+  console.log(`[StoryImageGenerator] Generating ${imagesToGenerate} images ${isClub ? '(CLUB 1024x1024)' : '(FREE 1024x1536)'} (${hasExistingFirst ? '1 reused from preview' : 'all new'}) on ${paragraphs.length} paragraphs (dry run: ${isDryRun})`);
+  console.log(`[StoryImageGenerator] Paragraphes illustres: ${indices.map(i => i + 1).join(', ')}`);
   console.log(`[StoryImageGenerator] Modele: gpt-image-1 avec reference visuelle: ${hasReferenceImage ? 'OUI' : 'NON'}`);
   console.log(`[StoryImageGenerator] Style: ${params.illustrationStyle}, Personnage: ${params.protagonistName}`);
 
@@ -369,11 +380,11 @@ export async function generateStoryImages(
   // Skip first image index if we already have it from preview
   const startIndex = hasExistingFirst ? 1 : 0;
 
-  for (let i = startIndex; i < IMAGE_PARAGRAPH_INDICES.length; i++) {
+  for (let i = startIndex; i < indices.length; i++) {
     const progressIndex = hasExistingFirst ? i - 1 : i;
     if (onProgress) onProgress(progressIndex, totalImages);
 
-    const paragraphIndex = IMAGE_PARAGRAPH_INDICES[i];
+    const paragraphIndex = indices[i];
 
     if (isDryRun) {
       console.log(`[StoryImageGenerator] Dry run: placeholder ${i + 1}/${totalImages} (paragraphe ${paragraphIndex + 1})`);
@@ -382,7 +393,7 @@ export async function generateStoryImages(
       continue;
     }
 
-    const prompt = buildPageImagePrompt(params, visualBible, paragraphs[paragraphIndex], i + 1, hasReferenceImage);
+    const prompt = buildPageImagePrompt(params, visualBible, paragraphs[paragraphIndex], i + 1, indices.length, hasReferenceImage);
 
     let lastError: Error | null = null;
     for (let attempt = 0; attempt < 3; attempt++) {
@@ -406,7 +417,7 @@ export async function generateStoryImages(
               image: referenceFile,
               prompt,
               n: 1,
-              size: '1024x1536' as any,
+              size: imageSize as any,
               quality: 'medium',
             }),
             IMAGE_TIMEOUT,
@@ -429,7 +440,7 @@ export async function generateStoryImages(
               model: 'gpt-image-1',
               prompt,
               n: 1,
-              size: '1024x1536' as any,
+              size: imageSize as any,
               quality: 'medium',
             }),
             IMAGE_TIMEOUT,

@@ -646,6 +646,9 @@ async function runGenerationPipeline(orderId: string, order: any, genLogId: stri
 
     const title = order.coverTitle || await generateBookTitle(titleParams);
 
+    const isClubOrder = order.purchaseType === 'CLUB';
+    console.log(`[Generation] Order type: ${isClubOrder ? 'CLUB (12 pages, premium)' : 'FREE/SINGLE (6 pages)'}`);
+
     const textParams: StoryTextParams = {
       protagonistName: order.protagonistName,
       protagonistAge: order.protagonistAge || undefined,
@@ -665,6 +668,8 @@ async function runGenerationPipeline(orderId: string, order: any, genLogId: stri
       language: order.language || 'francais',
       secondaryCharactersJson: order.secondaryCharactersJson || undefined,
       creatorName: order.creatorName || undefined,
+      narratedBy: (order as any).narratedBy || order.creatorName || undefined,
+      isClub: isClubOrder,
     };
 
     const storyText = await generateStoryText(textParams, title);
@@ -720,6 +725,7 @@ async function runGenerationPipeline(orderId: string, order: any, genLogId: stri
       hobbies: order.hobbies || undefined,
       specialEvents: order.specialEvents || undefined,
       secondaryCharactersJson: order.secondaryCharactersJson || undefined,
+      isClub: isClubOrder,
     };
 
     const imageResult = await generateStoryImages(
