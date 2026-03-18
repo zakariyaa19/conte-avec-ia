@@ -196,13 +196,22 @@ const PageNum = styled.div<{ $accent: string; $night: boolean }>`
   flex-shrink: 0;
 `;
 
-const PageText = styled.p<{ $night: boolean }>`
+const PageText = styled.div<{ $night: boolean; $small?: boolean }>`
   font-family: ${theme.fonts.body};
-  font-size: 15px; line-height: 1.8; text-align: center;
+  font-size: ${p => p.$small ? '13px' : '15px'};
+  line-height: ${p => p.$small ? '1.7' : '1.85'};
+  text-align: center;
   max-width: 480px; margin: 0;
   color: ${p => p.$night ? 'rgba(255,255,255,0.88)' : '#2C2C2C'};
-  letter-spacing: 0.01em;
-  @media (min-width: 1025px) { font-size: 17px; line-height: 1.85; }
+  letter-spacing: 0.015em;
+  word-spacing: 0.05em;
+
+  p { margin: 0 0 12px; &:last-child { margin-bottom: 0; } }
+
+  @media (min-width: 1025px) {
+    font-size: ${p => p.$small ? '14px' : '17px'};
+    line-height: ${p => p.$small ? '1.75' : '1.85'};
+  }
 `;
 
 const PageDivider = styled.div<{ $accent: string }>`
@@ -320,6 +329,26 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
 
   const colors = nightMode ? COLORS_NIGHT : COLORS_DAY;
 
+  // Split long paragraphs into breathable sub-paragraphs at sentence boundaries
+  const formatText = (text: string) => {
+    if (!text) return { parts: [''], isLong: false };
+    const isLong = text.length > 350;
+    // Split on sentence endings (. ! ?) followed by space, group ~2 sentences per block
+    const sentences = text.split(/(?<=[.!?])\s+/);
+    const parts: string[] = [];
+    let current = '';
+    for (const s of sentences) {
+      if (current && (current + ' ' + s).length > 180) {
+        parts.push(current.trim());
+        current = s;
+      } else {
+        current = current ? current + ' ' + s : s;
+      }
+    }
+    if (current.trim()) parts.push(current.trim());
+    return { parts: parts.length > 0 ? parts : [text], isLong };
+  };
+
   return (
     <Overlay>
       <ProgressBar><ProgressFill $progress={progress} /></ProgressBar>
@@ -364,7 +393,8 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
             const i = slide.index;
             const c = colors[i % colors.length];
             const imgUrl = i < illustrationUrls.length ? illustrationUrls[i] : null;
-            const text = i < paragraphs.length ? paragraphs[i] : '';
+            const rawText = i < paragraphs.length ? paragraphs[i] : '';
+            const { parts, isLong } = formatText(rawText);
             // Alternate image side: even=right, odd=left (desktop only)
             const imgSide: 'left' | 'right' = i % 2 === 0 ? 'right' : 'left';
 
@@ -377,7 +407,9 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
                 )}
                 <PageTextBox $accent={c.accent} $night={nightMode}>
                   <PageNum $accent={c.accent} $night={nightMode}>{i + 1}</PageNum>
-                  <PageText $night={nightMode}>{text}</PageText>
+                  <PageText $night={nightMode} $small={isLong}>
+                    {parts.map((part, pi) => <p key={pi}>{part}</p>)}
+                  </PageText>
                   <PageDivider $accent={c.accent} />
                 </PageTextBox>
               </PageSlide>
