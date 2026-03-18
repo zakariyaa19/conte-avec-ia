@@ -848,41 +848,6 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                   Les illustrations du livre ressembleront à votre enfant
                 </p>
 
-                {/* Visual: Photo → Character */}
-                <div style={{
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  gap: '16px', marginBottom: theme.spacing.md,
-                }}>
-                  {/* Left: Photo icon */}
-                  <div style={{
-                    width: '72px', height: '72px', borderRadius: '16px',
-                    background: 'var(--bg-card)',
-                    border: '2px solid var(--border-color)',
-                    display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                    gap: '2px', flexShrink: 0,
-                  }}>
-                    <span style={{ fontSize: '28px', lineHeight: 1 }}>&#x1F4F7;</span>
-                    <span style={{ fontSize: '9px', color: 'var(--text-light)', fontWeight: 600 }}>Photo</span>
-                  </div>
-
-                  {/* Arrow */}
-                  <svg viewBox="0 0 40 24" width="40" height="24" fill="none">
-                    <path d="M4 12h28m-6-5l6 5-6 5" stroke={theme.colors.accent.coral} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-
-                  {/* Right: Character result */}
-                  <div style={{
-                    width: '72px', height: '72px', borderRadius: '16px',
-                    background: `linear-gradient(135deg, ${theme.colors.accent.coral}12, ${theme.colors.accent.softPink}18)`,
-                    border: `2px solid ${theme.colors.accent.coral}40`,
-                    display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                    gap: '2px', flexShrink: 0,
-                  }}>
-                    <span style={{ fontSize: '28px', lineHeight: 1 }}>&#x1F9D2;</span>
-                    <span style={{ fontSize: '9px', color: theme.colors.accent.coral, fontWeight: 600 }}>Héros</span>
-                  </div>
-                </div>
-
                 {/* Upload zone */}
                 <div
                   onClick={() => fileInputRef.current?.click()}
