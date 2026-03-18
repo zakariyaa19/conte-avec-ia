@@ -76,18 +76,20 @@ const ProgressFill = styled.div<{ $progress: number }>`
 const TopControls = styled.div`
   position: fixed; top: 12px; left: 16px; right: 16px;
   display: flex; justify-content: space-between; z-index: 10003;
-  pointer-events: none;
-  > * { pointer-events: auto; }
 `;
 
 const CtrlBtn = styled.button<{ $active?: boolean }>`
-  all: unset; cursor: pointer;
-  width: 40px; height: 40px; border-radius: 50%;
+  appearance: none;
+  border: none; outline: none; margin: 0; padding: 0;
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+  width: 44px; height: 44px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  background: rgba(0,0,0,0.4); backdrop-filter: blur(8px);
+  background: rgba(0,0,0,0.5); backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   color: ${p => p.$active ? '#FFD700' : 'rgba(255,255,255,0.8)'};
   font-size: 18px; transition: all 0.2s;
+  position: relative; z-index: 10004;
+  &:active { transform: scale(0.9); opacity: 0.8; }
 `;
 
 const PageIndicator = styled.div<{ $visible: boolean }>`
