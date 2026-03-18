@@ -93,6 +93,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     refreshProfile();
   }, [refreshProfile]);
 
+  // After any auth method sets user without isFirstPurchase, refresh to get full profile
+  useEffect(() => {
+    if (user && user.isFirstPurchase === undefined) {
+      refreshProfile();
+    }
+  }, [user?.id]); // eslint-disable-line
+
   const login = async (email: string, password: string) => {
     try {
       const response = await ApiService.unifiedLogin(email, password);
