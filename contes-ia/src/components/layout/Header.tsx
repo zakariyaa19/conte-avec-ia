@@ -564,7 +564,7 @@ export const Header: React.FC = () => {
             </IconBtn>
 
             {/* CTA */}
-            <Button variant="primary" size="sm" onClick={() => go(isAuthenticated ? '/create-story' : '/story-form')}
+            <Button variant="primary" size="sm" onClick={() => go('/create-story')}
               style={{ fontSize: '0.8125rem', padding: '6px 16px', borderRadius: '9999px', height: '32px' }}>
               Creer
             </Button>

@@ -1075,8 +1075,8 @@ export const DashboardPage: React.FC = () => {
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
             <button onClick={() => navigate('/dashboard/account')} style={{
-              width: 36, height: 36, borderRadius: '50%', border: '1px solid #e0e0e0',
-              background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              width: 36, height: 36, borderRadius: '50%', border: '1px solid var(--border-color)',
+              background: 'var(--bg-card)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
               fontSize: 16, color: 'var(--text-secondary)',
             }}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -1084,7 +1084,12 @@ export const DashboardPage: React.FC = () => {
               </svg>
             </button>
             <button onClick={() => {
-              if (!isClub && stories.length >= 3) navigate('/club/checkout');
+              if (!isClub && stories.length >= 3) {
+                if (window.confirm('Votre bibliothèque gratuite est limitée à 3 livres.\n\nRejoignez le Club pour créer des livres illimités !')) {
+                  navigate('/club/checkout');
+                }
+                return;
+              }
               else navigate('/create-story');
             }} style={{
               height: 36, padding: '0 16px', borderRadius: 18, border: 'none',
