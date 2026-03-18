@@ -446,8 +446,13 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
   const handleFormSubmit = () => {
     setGlobalError('');
     if (validatePaymentForm()) {
+      // Inject cover image if not already in formData (simplified mode skips handlePreviewSelect)
+      if (rawBase64 && !formData.coverImageBase64) {
+        onUpdate({ coverImageBase64: rawBase64, coverTitle: coverTitle || undefined });
+      }
       clearDraft();
-      onSubmit();
+      // Small delay to let onUpdate propagate before submit
+      setTimeout(() => onSubmit(), rawBase64 && !formData.coverImageBase64 ? 100 : 0);
     } else {
       // Scroll to error so user sees what's missing
       setTimeout(() => {
@@ -468,8 +473,12 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
   useEffect(() => {
     if (googleAutoSubmitRef.current && formData.userEmail && formData.firstName) {
       googleAutoSubmitRef.current = false;
+      // Inject cover image before submit
+      if (rawBase64 && !formData.coverImageBase64) {
+        onUpdate({ coverImageBase64: rawBase64, coverTitle: coverTitle || undefined });
+      }
       clearDraft();
-      onSubmit();
+      setTimeout(() => onSubmit(), 100);
     }
   }, [formData.userEmail, formData.firstName]); // eslint-disable-line
 
