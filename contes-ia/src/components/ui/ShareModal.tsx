@@ -216,7 +216,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
     }
   };
 
-  const shareText = `${protagonistName} est le héros de son propre livre ! Découvrez son histoire créée avec Contes d'IA`;
+  const shareText = `📖 Découvrez l'histoire de ${protagonistName} ! Un livre personnalisé créé avec l'IA ✨ Créez le vôtre gratuitement sur contedia.fr`;
   const title = coverTitle || `L'histoire de ${protagonistName}`;
 
   const handleNativeShare = async () => {

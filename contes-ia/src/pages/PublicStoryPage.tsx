@@ -313,7 +313,7 @@ export const PublicStoryPage: React.FC = () => {
   const displayTitle = story.coverTitle || `L'histoire de ${story.protagonistName}`;
   const coverUrl = story.coverImageUrl ? getImageUrl(story.coverImageUrl) : null;
   const illustrationUrl = story.firstIllustrationUrl ? getImageUrl(story.firstIllustrationUrl) : null;
-  const ogDescription = `${story.protagonistName} est le héros de son propre livre ! Découvrez cette aventure personnalisée créée avec Contes d'IA.`;
+  const ogDescription = `📖 Découvrez l'histoire de ${story.protagonistName} ! Un livre personnalisé créé avec l'IA. Créez le vôtre gratuitement en 2 minutes.`;
 
   return (
     <PageContainer>
