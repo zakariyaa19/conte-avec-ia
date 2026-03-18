@@ -581,6 +581,7 @@ export const Header: React.FC = () => {
                 {/* Mobile: compact chip → dashboard direct */}
                 <UserChipMobile onClick={() => go('/dashboard')}>
                   <UserAvatar style={{ width: '24px', height: '24px', fontSize: '11px' }}>{initials}</UserAvatar>
+                  {isClub && <ClubBadge style={{ fontSize: '8px', padding: '1px 5px' }}>Club</ClubBadge>}
                   {user?.firstName || 'Compte'}
                 </UserChipMobile>
                 <UserDropdownDesktop $open={userMenu}>

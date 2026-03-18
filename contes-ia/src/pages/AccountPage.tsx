@@ -302,7 +302,7 @@ export const AccountPage: React.FC = () => {
               <InfoLabel>Statut</InfoLabel>
               <InfoValue>
                 <Badge $variant={subscriptionVariant}>
-                  {isClub
+                  {user?.role === 'CLUB'
                     ? user?.subscriptionStatus === 'canceling'
                       ? 'Club (annulation programmée)'
                       : user?.subscriptionStatus === 'past_due'
@@ -346,7 +346,7 @@ export const AccountPage: React.FC = () => {
             )}
 
             <ButtonRow>
-              {isClub ? (
+              {isClub || user?.role === 'CLUB' ? (
                 <>
                   <Button variant="outline" size="sm" onClick={handleManageSubscription}>
                     Gérer mon abonnement

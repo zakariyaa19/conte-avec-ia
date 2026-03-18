@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled, { keyframes, css } from 'styled-components';
 import { theme } from '../styles/theme';
@@ -199,6 +199,11 @@ export const ClubCheckoutPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // Redirect Club members immediately
+  useEffect(() => {
+    if (isClub) navigate('/dashboard');
+  }, [isClub, navigate]);
+
   const price = plan === 'monthly' ? '9,99' : '6,67';
   const perLabel = plan === 'monthly' ? '/mois' : '/mois';
   const billingDetail = plan === 'monthly'
@@ -296,8 +301,8 @@ export const ClubCheckoutPage: React.FC = () => {
             {loading
               ? 'Redirection...'
               : isAuthenticated
-                ? 'Passer en compte Pro →'
-                : 'Créer mon compte Pro →'}
+                ? 'Rejoindre le Club →'
+                : 'Créer mon compte Club →'}
           </CTA>
 
           {error && <ErrorMsg>{error}</ErrorMsg>}
