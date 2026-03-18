@@ -188,12 +188,12 @@ const PlanCard = styled.button<{ $selected: boolean; $isPro?: boolean; $isAnnual
   background: ${({ $selected, $isPro }) =>
     $selected
       ? $isPro
-        ? `${theme.colors.accent.coral}12`
-        : 'var(--hover-bg)'
+        ? `${theme.colors.accent.coral}20`
+        : 'var(--bg-card)'
       : 'var(--bg-elevated)'};
-  border: 2px solid ${({ $selected, $isPro }) =>
+  border: 2.5px solid ${({ $selected, $isPro }) =>
     $selected
-      ? $isPro ? theme.colors.accent.coral : 'var(--text-light)'
+      ? $isPro ? theme.colors.accent.coral : 'var(--text-secondary)'
       : 'var(--border-color)'};
   border-radius: 14px;
   padding: ${({ $isPro }) => $isPro ? '16px 14px' : '12px 14px'};
@@ -205,11 +205,15 @@ const PlanCard = styled.button<{ $selected: boolean; $isPro?: boolean; $isAnnual
   font-family: ${theme.fonts.body};
 
   ${({ $selected, $isPro }) => $selected && $isPro && css`
-    box-shadow: 0 0 0 3px ${theme.colors.accent.coral}25;
+    box-shadow: 0 0 0 4px ${theme.colors.accent.coral}30, 0 4px 16px ${theme.colors.accent.coral}15;
+  `}
+
+  ${({ $selected, $isPro }) => $selected && !$isPro && css`
+    box-shadow: 0 0 0 3px var(--border-color);
   `}
 
   &:hover {
-    border-color: ${({ $isPro }) => $isPro ? theme.colors.accent.coral : 'var(--text-light)'};
+    border-color: ${({ $isPro }) => $isPro ? theme.colors.accent.coral : 'var(--text-secondary)'};
   }
 `;
 
