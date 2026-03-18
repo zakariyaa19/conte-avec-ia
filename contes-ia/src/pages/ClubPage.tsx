@@ -622,7 +622,7 @@ export const ClubPage: React.FC = () => {
                 fontSize: theme.fontSizes.base, color: 'var(--text-primary)',
                 fontStyle: 'italic', lineHeight: 1.6, margin: '0 0 12px',
               }}>
-                "Ma fille attend chaque semaine sa nouvelle histoire. Elle adore voir son prénom
+                "Ma fille adore ses livres personnalisés. Elle adore voir son prénom
                 et reconnaître sa famille dans les illustrations !"
               </p>
               <p style={{ fontSize: theme.fontSizes.sm, color: 'var(--text-light)', margin: 0 }}>

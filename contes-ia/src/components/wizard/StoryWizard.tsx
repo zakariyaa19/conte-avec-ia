@@ -1489,7 +1489,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                     <ClubShowcaseHeader>
                       <ClubShowcaseFreeTag>Ce livre est inclus gratuitement</ClubShowcaseFreeTag>
                       <ClubShowcaseTitle>Club des Histoires</ClubShowcaseTitle>
-                      <ClubShowcaseSubtitle>Offrez-lui une nouvelle aventure chaque semaine</ClubShowcaseSubtitle>
+                      <ClubShowcaseSubtitle>4 livres de 12 pages chaque mois</ClubShowcaseSubtitle>
                     </ClubShowcaseHeader>
                     <ClubShowcasePrice>
                       <ClubShowcasePriceValue>9,99€</ClubShowcasePriceValue>

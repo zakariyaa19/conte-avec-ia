@@ -1622,7 +1622,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
                 {/* Club exhausted */}
                 {isClub && clubCredit && !clubCredit.canSubmit && (
                   <ClubExhaustedMsg>
-                    Votre credit de la semaine est utilise. Prochain credit bientot ! Choisissez un format payant ci-dessous.
+                    Vos crédits mensuels sont utilisés. Prochains crédits bientôt ! Choisissez un format payant ci-dessous.
                   </ClubExhaustedMsg>
                 )}
 
@@ -1648,7 +1648,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
                       price="9,99 € / mois"
                       features={[
                         "Cet eBook est inclus immédiatement",
-                        "Un nouveau conte chaque semaine",
+                        "4 livres de 12 pages par mois",
                         "Bibliothèque illimitée",
                         "Annulable à tout moment"
                       ]}

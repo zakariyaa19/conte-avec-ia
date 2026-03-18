@@ -1410,11 +1410,11 @@ const faqReveal = useScrollReveal();
 
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', "Offrez a votre enfant un livre unique et magique ! Creez facilement un conte personnalise avec l'intelligence artificielle. Rejoignez le Club pour un nouveau conte chaque semaine.");
+      metaDescription.setAttribute('content', "Offrez a votre enfant un livre unique et magique ! Creez facilement un conte personnalise avec l'intelligence artificielle. Rejoignez le Club pour 4 livres de 12 pages chaque mois.");
     } else {
       const meta = document.createElement('meta');
       meta.name = 'description';
-      meta.content = "Offrez a votre enfant un livre unique et magique ! Creez facilement un conte personnalise avec l'intelligence artificielle. Rejoignez le Club pour un nouveau conte chaque semaine.";
+      meta.content = "Offrez a votre enfant un livre unique et magique ! Creez facilement un conte personnalise avec l'intelligence artificielle. Rejoignez le Club pour 4 livres de 12 pages chaque mois.";
       document.head.appendChild(meta);
     }
   }, []);
