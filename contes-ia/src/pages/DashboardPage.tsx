@@ -1257,87 +1257,14 @@ export const DashboardPage: React.FC = () => {
                 );
               })}
 
-              {/* ══════ 5. TEASER CARD ══════ */}
+              {/* ══════ 5. TEASER CARD — compact ══════ */}
               <TeaserCard onClick={() => navigate('/create-story')}>
                 <TeaserIcon>+</TeaserIcon>
-                <TeaserTitle>
-                  {heroName ? `Prochaine aventure de ${heroName}` : 'Prochaine aventure'}
-                </TeaserTitle>
-                <TeaserSubtitle>
-                  {isClub && clubCredit?.canSubmit
-                    ? 'Disponible maintenant'
-                    : isClub && countdown
-                      ? `Disponible dans ${countdown.days}j ${countdown.hours}h`
-                      : 'Disponible maintenant'
-                  }
-                </TeaserSubtitle>
               </TeaserCard>
             </BookshelfGrid>
           </>
         )}
 
-        {/* ══════ 6. COLLECTION SECTION ══════ */}
-        {!loading && mainCollection && mainCollection.stories.length > 1 && (
-          <CollectionSection>
-            <CollectionTitle>Les aventures de {mainCollection.name}</CollectionTitle>
-            <CollectionSubtitle>
-              {mainCollection.name} a déjà {mainCollection.stories.length} aventure{mainCollection.stories.length > 1 ? 's' : ''} dans sa collection.
-              Quelle sera sa prochaine histoire ?
-            </CollectionSubtitle>
-
-            <EpisodeList>
-              {mainCollection.stories.map((story: any, idx: number) => {
-                const title = story.coverTitle || `Conte de ${story.protagonistName}`;
-                return (
-                  <EpisodeItem key={story.id} $available onClick={() => navigate(`/dashboard/story/${story.id}`)}>
-                    <EpisodeNumber $active>{idx + 1}</EpisodeNumber>
-                    <EpisodeInfo>
-                      <h4>{title}</h4>
-                      <p>{new Date(story.createdAt).toLocaleDateString('fr-FR')}</p>
-                    </EpisodeInfo>
-                  </EpisodeItem>
-                );
-              })}
-
-              {/* Next episode placeholder */}
-              <EpisodeItem $available={false}>
-                <EpisodeNumber $active={false}>{mainCollection.stories.length + 1}</EpisodeNumber>
-                <EpisodeInfo>
-                  <h4>La prochaine aventure arrive bientôt...</h4>
-                  <p>
-                    {isClub && clubCredit?.canSubmit
-                      ? 'Crédit disponible maintenant'
-                      : isClub && countdown
-                        ? `Prochain crédit dans ${countdown.days}j ${countdown.hours}h`
-                        : ''
-                    }
-                  </p>
-                </EpisodeInfo>
-              </EpisodeItem>
-            </EpisodeList>
-
-            <div style={{ textAlign: 'center' }}>
-              <Button variant="primary" size="md" onClick={() => navigate('/create-story')}>
-                Créer la prochaine histoire
-              </Button>
-            </div>
-          </CollectionSection>
-        )}
-
-        {/* ══════ 7. EMOTIONAL CTA ══════ */}
-        {!loading && stories.length > 0 && (
-          <CTASection>
-            <CTAText>
-              {heroName
-                ? `${heroName} attend sa prochaine histoire ✨`
-                : 'Votre enfant attend sa prochaine histoire ✨'
-              }
-            </CTAText>
-            <Button variant="primary" size="lg" onClick={() => navigate('/create-story')}>
-              Créer une nouvelle aventure
-            </Button>
-          </CTASection>
-        )}
 
       </MainContent>
       <Footer />
