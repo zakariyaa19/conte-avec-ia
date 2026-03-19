@@ -170,7 +170,7 @@ const SIMPLIFIED_SKIP_STEPS = new Set([2, 3, 5, 6, 7, 8]);
 interface StoryWizardProps {
   formData: Partial<StoryFormData>;
   onUpdate: (data: Partial<StoryFormData>) => void;
-  onSubmit: () => void;
+  onSubmit: (overrideData?: Partial<StoryFormData>) => void;
   isSubmitting: boolean;
   isAuthenticated?: boolean;
   isClub?: boolean;
@@ -446,13 +446,17 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
   const handleFormSubmit = () => {
     setGlobalError('');
     if (validatePaymentForm()) {
-      // Inject cover image if not already in formData (simplified mode skips handlePreviewSelect)
-      if (rawBase64 && !formData.coverImageBase64) {
-        onUpdate({ coverImageBase64: rawBase64, coverTitle: coverTitle || undefined });
-      }
       clearDraft();
-      // Small delay to let onUpdate propagate before submit
-      setTimeout(() => onSubmit(), rawBase64 && !formData.coverImageBase64 ? 100 : 0);
+      // Pass cover image directly in submit (no async state dependency)
+      const coverOverride: Partial<StoryFormData> = {};
+      if (rawBase64) {
+        coverOverride.coverImageBase64 = rawBase64;
+        coverOverride.coverTitle = coverTitle || undefined;
+        console.log('[Wizard] Injecting cover base64 in submit:', rawBase64.length, 'chars');
+      } else {
+        console.warn('[Wizard] No rawBase64 available at submit time!');
+      }
+      onSubmit(Object.keys(coverOverride).length > 0 ? coverOverride : undefined);
     } else {
       // Scroll to error so user sees what's missing
       setTimeout(() => {
@@ -473,12 +477,14 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
   useEffect(() => {
     if (googleAutoSubmitRef.current && formData.userEmail && formData.firstName) {
       googleAutoSubmitRef.current = false;
-      // Inject cover image before submit
-      if (rawBase64 && !formData.coverImageBase64) {
-        onUpdate({ coverImageBase64: rawBase64, coverTitle: coverTitle || undefined });
-      }
       clearDraft();
-      setTimeout(() => onSubmit(), 100);
+      // Pass cover image directly in submit
+      const coverOverride: Partial<StoryFormData> = {};
+      if (rawBase64 && !formData.coverImageBase64) {
+        coverOverride.coverImageBase64 = rawBase64;
+        coverOverride.coverTitle = coverTitle || undefined;
+      }
+      onSubmit(Object.keys(coverOverride).length > 0 ? coverOverride : undefined);
     }
   }, [formData.userEmail, formData.firstName]); // eslint-disable-line
 

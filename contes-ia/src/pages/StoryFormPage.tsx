@@ -118,28 +118,34 @@ export const StoryFormPage: React.FC = () => {
     setFormData(prev => ({ ...prev, ...newData }));
   };
 
-  const handleSubmit = async () => {
-    if (!formData.userEmail || !formData.productType) {
+  const handleSubmit = async (overrideData?: Partial<StoryFormData>) => {
+    // Merge any last-minute data (e.g., cover image from wizard)
+    const submitData = overrideData ? { ...formData, ...overrideData } : formData;
+
+    if (!submitData.userEmail || !submitData.productType) {
       console.error('Données manquantes pour la soumission');
       setIsSubmitting(false);
       return;
     }
+
+    // Also update the state for consistency
+    if (overrideData) setFormData(prev => ({ ...prev, ...overrideData }));
 
     setIsSubmitting(true);
 
     try {
       // Fire-and-forget : le tracking ne doit JAMAIS bloquer le paiement
       try {
-        trackInitiateCheckout(formData.productType, formData.userEmail, viewContentPrice);
-        metaTrackInitiateCheckout(formData.productType, viewContentPrice);
-        identifyUser(formData.userEmail);
+        trackInitiateCheckout(submitData.productType, submitData.userEmail, viewContentPrice);
+        metaTrackInitiateCheckout(submitData.productType, viewContentPrice);
+        identifyUser(submitData.userEmail);
       } catch { /* tracking failure must never block payment */ }
 
       const authToken = localStorage.getItem('userToken') || undefined;
 
       const orderResponse = await ApiService.createOrder({
-        userEmail: formData.userEmail,
-        formData,
+        userEmail: submitData.userEmail,
+        formData: submitData,
         authToken
       });
 
