@@ -1545,27 +1545,13 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 }}
               >
                 <p style={{
-                  fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.lg,
-                  fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 4px',
-                }}>
-                  Plus qu'une étape ! 🎉
-                </p>
-                <p style={{
-                  fontSize: theme.fontSizes.sm, color: 'var(--text-secondary)',
-                  margin: 0, lineHeight: 1.4,
+                  fontSize: theme.fontSizes.sm, fontWeight: 600,
+                  color: 'var(--text-primary)', margin: 0, lineHeight: 1.4,
                 }}>
                   {isAuthenticated
-                    ? 'Cliquez sur le bouton ci-dessous pour recevoir votre livre'
-                    : 'Entrez votre email et recevez votre livre gratuitement'}
+                    ? 'Votre livre est prêt — cliquez ci-dessous pour le recevoir'
+                    : 'Entrez votre email pour recevoir votre livre gratuitement ↓'}
                 </p>
-                {!isAuthenticated && (
-                  <span style={{
-                    display: 'inline-block', marginTop: '8px',
-                    fontSize: '11px', color: 'var(--text-light)',
-                  }}>
-                    ↓ C'est gratuit, sans carte bancaire
-                  </span>
-                )}
               </div>
             )}
 
