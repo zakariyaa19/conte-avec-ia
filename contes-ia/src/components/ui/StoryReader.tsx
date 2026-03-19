@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useCallback } from 'react';
+import React, { useRef, useState, useEffect, useCallback, useLayoutEffect } from 'react';
 import styled, { keyframes, css } from 'styled-components';
 import { theme } from '../../styles/theme';
 import { getImageUrl } from '../../config/constants';
@@ -205,26 +205,49 @@ const PageNum = styled.div<{ $accent: string; $night: boolean }>`
   flex-shrink: 0;
 `;
 
-const fontSizes = { micro: '10px', tiny: '11.5px', small: '13px', normal: '14.5px' };
-const lineHeights = { micro: '1.45', tiny: '1.5', small: '1.6', normal: '1.75' };
-const fontSizesDesktop = { micro: '12px', tiny: '14px', small: '15px', normal: '17px' };
-const lineHeightsDesktop = { micro: '1.5', tiny: '1.6', small: '1.7', normal: '1.85' };
+/* Auto-fit text: starts at maxFontSize, shrinks until it fits in parent */
+const AutoFitText: React.FC<{ text: string; night: boolean }> = ({ text, night }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [fontSize, setFontSize] = useState(15);
 
-const PageText = styled.div<{ $night: boolean; $size: 'normal' | 'small' | 'tiny' | 'micro' }>`
-  font-family: ${theme.fonts.body};
-  font-size: ${p => fontSizes[p.$size]};
-  line-height: ${p => lineHeights[p.$size]};
-  text-align: center;
-  max-width: 480px; margin: 0;
-  color: ${p => p.$night ? 'rgba(255,255,255,0.88)' : '#2C2C2C'};
-  letter-spacing: 0.01em;
-  overflow: hidden;
+  useLayoutEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    // Start at 15px, shrink until text fits without overflow
+    let size = 15;
+    const minSize = 9;
+    el.style.fontSize = `${size}px`;
+    while (el.scrollHeight > el.clientHeight && size > minSize) {
+      size -= 0.5;
+      el.style.fontSize = `${size}px`;
+      el.style.lineHeight = size <= 10 ? '1.4' : size <= 12 ? '1.5' : '1.65';
+    }
+    setFontSize(size);
+  }, [text]);
 
-  @media (min-width: 1025px) {
-    font-size: ${p => fontSizesDesktop[p.$size]};
-    line-height: ${p => lineHeightsDesktop[p.$size]};
-  }
-`;
+  return (
+    <div
+      ref={containerRef}
+      style={{
+        fontFamily: theme.fonts.body,
+        fontSize: `${fontSize}px`,
+        lineHeight: fontSize <= 10 ? '1.4' : fontSize <= 12 ? '1.5' : '1.65',
+        textAlign: 'center',
+        maxWidth: 480,
+        margin: 0,
+        color: night ? 'rgba(255,255,255,0.88)' : '#2C2C2C',
+        letterSpacing: '0.01em',
+        overflow: 'hidden',
+        flex: 1,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <span>{text}</span>
+    </div>
+  );
+};
 
 const PageDivider = styled.div<{ $accent: string }>`
   width: 30px; height: 2px; border-radius: 2px; margin: 8px auto 0;
@@ -379,16 +402,6 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
 
   const colors = nightMode ? COLORS_NIGHT : COLORS_DAY;
 
-  // Determine text size to ALWAYS fit in ~45dvh (mobile text area)
-  // 4 tiers: normal (short), small, tiny, micro (very long Club paragraphs)
-  type TextSize = 'normal' | 'small' | 'tiny' | 'micro';
-  const formatText = (text: string): { parts: string[]; size: TextSize } => {
-    if (!text) return { parts: [''], size: 'normal' };
-    const len = text.length;
-    const size: TextSize = len > 600 ? 'micro' : len > 400 ? 'tiny' : len > 220 ? 'small' : 'normal';
-    // Don't split into sub-paragraphs — just render as one block, font handles it
-    return { parts: [text], size };
-  };
 
   return (
     <Overlay>
@@ -435,9 +448,9 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
             const c = colors[i % colors.length];
             const imgUrl = i < illustrationUrls.length ? illustrationUrls[i] : null;
             const rawText = i < paragraphs.length ? paragraphs[i] : '';
-            const { parts, size } = formatText(rawText);
-            // Alternate image side: even=right, odd=left (desktop only)
             const imgSide: 'left' | 'right' = i % 2 === 0 ? 'right' : 'left';
+            const authorSuffix = i === pageCount - 1 && (narratedBy || creatorName)
+              ? `\n\n— Histoire racontée par ${narratedBy || creatorName}` : '';
 
             return (
               <PageSlide key={`page-${i}`} data-slide-index={idx} $bg={c.bg}>
@@ -448,20 +461,8 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
                 )}
                 <PageTextBox $accent={c.accent} $night={nightMode}>
                   <PageNum $accent={c.accent} $night={nightMode}>{i + 1}</PageNum>
-                  <PageText $night={nightMode} $size={size}>
-                    {parts.map((part, pi) => <p key={pi}>{part}</p>)}
-                  </PageText>
+                  <AutoFitText text={rawText + authorSuffix} night={nightMode} />
                   <PageDivider $accent={c.accent} />
-                  {/* Signature auteur — dernière page uniquement */}
-                  {i === pageCount - 1 && (narratedBy || creatorName) && (
-                    <p style={{
-                      marginTop: '16px', fontSize: '12px', fontStyle: 'italic',
-                      color: nightMode ? 'rgba(255,255,255,0.45)' : 'rgba(0,0,0,0.35)',
-                      textAlign: 'center',
-                    }}>
-                      Histoire racontée par {narratedBy || creatorName}
-                    </p>
-                  )}
                 </PageTextBox>
               </PageSlide>
             );
