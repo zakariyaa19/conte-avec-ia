@@ -1632,10 +1632,8 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 <PayButton $isReady={isPaymentInfoComplete} disabled={!formData.productType || isSubmitting} onClick={handleFormSubmit}>
                   {isSubmitting
                     ? 'Traitement en cours...'
-                    : formData.purchaseType === 'club' && isClub && clubCredit?.canSubmit
-                      ? 'Utiliser un crédit Club'
-                      : isFirstPurchase && !isClub && formData.purchaseType !== 'club'
-                        ? 'Recevoir mon livre GRATUIT'
+                    : (formData.purchaseType === 'club' && isClub && clubCredit?.canSubmit) || (isFirstPurchase && !isClub && formData.purchaseType !== 'club')
+                      ? 'Recevoir mon livre GRATUIT'
                         : `Payer ${isClub && !clubCredit?.canSubmit ? '3,99€' : singlePriceLabel} — Recevoir mon livre`}
                 </PayButton>
 
