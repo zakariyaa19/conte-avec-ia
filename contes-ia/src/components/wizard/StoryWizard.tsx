@@ -1434,18 +1434,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 {heroName} est prêt pour la suite de son aventure
               </PreviewSectionTitle>
 
-              {isClub && clubCredit?.canSubmit ? (
-                <ClubFreeCard $isSelected={formData.purchaseType === 'club'} onClick={() => handlePreviewSelect('club')}>
-                  <ClubBadge>Membre Club</ClubBadge>
-                  <h3 style={{ fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.lg, margin: `${theme.spacing.sm} 0 4px` }}>
-                    Utiliser un crédit Club
-                  </h3>
-                  <p style={{ fontSize: theme.fontSizes.sm, color: theme.colors.accent.coral, fontWeight: 700, margin: '0 0 4px' }}>Inclus dans votre abonnement</p>
-                  <p style={{ fontSize: theme.fontSizes.xs, color: 'var(--text-secondary)', margin: 0 }}>
-                    {clubCredit.remaining}/4 crédits restants ce mois
-                  </p>
-                </ClubFreeCard>
-              ) : isClub ? (
+              {isClub ? (
                 /* ── CLUB MEMBER WITHOUT CREDIT: single purchase at full price (3.99€) ── */
                 <TripwireHeroCard $isSelected={selectedOffer === 'single'} onClick={() => handlePreviewSelect('single')}>
                   <TripwireHeroBadge>Membre Club</TripwireHeroBadge>
@@ -1751,7 +1740,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
               <ProgressSegment key={ALL_STEPS[i]} $status={getSegmentStatus(i)} />
             ))}
           </SegmentedProgressBar>
-          <ProgressHintText>{isFirstPurchase ? 'Votre premier livre personnalise — GRATUIT' : `Votre livre personnalise — ${singlePriceLabel} seulement`}</ProgressHintText>
+          <ProgressHintText>{isFirstPurchase || isClubWithCredit ? 'Votre livre personnalisé — GRATUIT' : `Votre livre personnalisé — ${singlePriceLabel}`}</ProgressHintText>
         </WizardHeaderNew>
       )}
 
