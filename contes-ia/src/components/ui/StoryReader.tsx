@@ -53,6 +53,9 @@ const COLORS_NIGHT = [
 const Overlay = styled.div`
   position: fixed; inset: 0; z-index: 10000;
   background: #000; animation: ${fadeIn} 0.3s ease;
+  touch-action: pan-y; /* block pinch-zoom, allow vertical scroll only */
+  user-select: none;
+  -webkit-user-select: none;
 `;
 
 const ScrollContainer = styled.div`
@@ -103,10 +106,11 @@ const PageIndicator = styled.div<{ $visible: boolean }>`
 
 /* ═══════════ SLIDE BASE ═══════════ */
 const Slide = styled.div`
-  min-height: 100dvh; width: 100%;
+  height: 100dvh; width: 100%;
   scroll-snap-align: start; scroll-snap-stop: always;
   position: relative; overflow: hidden;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
+  flex-shrink: 0;
 `;
 
 /* ═══════════ COVER SLIDE (unchanged) ═══════════ */
@@ -181,8 +185,9 @@ const PageImg = styled.img<{ $visible: boolean }>`
 const PageTextBox = styled.div<{ $accent: string; $night: boolean }>`
   flex: 1; display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  padding: 10px 22px 20px;
-  overflow-y: auto;
+  padding: 8px 20px 12px;
+  overflow: hidden; /* NO internal scroll — text must fit */
+  min-height: 0; /* allow flex shrinking */
 
   /* Desktop: 50% */
   @media (orientation: landscape), (min-width: 1025px) {
@@ -192,34 +197,35 @@ const PageTextBox = styled.div<{ $accent: string; $night: boolean }>`
 `;
 
 const PageNum = styled.div<{ $accent: string; $night: boolean }>`
-  width: 32px; height: 32px; border-radius: 50%;
+  width: 28px; height: 28px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  font-size: 13px; font-weight: 700; margin-bottom: 10px;
+  font-size: 12px; font-weight: 700; margin-bottom: 6px;
   background: ${p => p.$night ? `${p.$accent}25` : `${p.$accent}18`};
   color: ${p => p.$accent};
   flex-shrink: 0;
 `;
 
-const PageText = styled.div<{ $night: boolean; $small?: boolean }>`
+const PageText = styled.div<{ $night: boolean; $size: 'normal' | 'small' | 'tiny' }>`
   font-family: ${theme.fonts.body};
-  font-size: ${p => p.$small ? '13px' : '15px'};
-  line-height: ${p => p.$small ? '1.7' : '1.85'};
+  font-size: ${p => p.$size === 'tiny' ? '11px' : p.$size === 'small' ? '13px' : '15px'};
+  line-height: ${p => p.$size === 'tiny' ? '1.55' : p.$size === 'small' ? '1.65' : '1.8'};
   text-align: center;
   max-width: 480px; margin: 0;
   color: ${p => p.$night ? 'rgba(255,255,255,0.88)' : '#2C2C2C'};
   letter-spacing: 0.015em;
-  word-spacing: 0.05em;
+  overflow: hidden;
 
-  p { margin: 0 0 12px; &:last-child { margin-bottom: 0; } }
+  p { margin: 0 0 ${p => p.$size === 'tiny' ? '6px' : p.$size === 'small' ? '8px' : '10px'};
+    &:last-child { margin-bottom: 0; } }
 
   @media (min-width: 1025px) {
-    font-size: ${p => p.$small ? '14px' : '17px'};
-    line-height: ${p => p.$small ? '1.75' : '1.85'};
+    font-size: ${p => p.$size === 'tiny' ? '13px' : p.$size === 'small' ? '15px' : '17px'};
+    line-height: ${p => p.$size === 'tiny' ? '1.6' : p.$size === 'small' ? '1.7' : '1.85'};
   }
 `;
 
 const PageDivider = styled.div<{ $accent: string }>`
-  width: 36px; height: 2.5px; border-radius: 2px; margin: 16px auto 0;
+  width: 30px; height: 2px; border-radius: 2px; margin: 8px auto 0;
   background: ${p => `${p.$accent}40`};
   flex-shrink: 0;
 `;
@@ -371,16 +377,16 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
 
   const colors = nightMode ? COLORS_NIGHT : COLORS_DAY;
 
-  // Split long paragraphs into breathable sub-paragraphs at sentence boundaries
-  const formatText = (text: string) => {
-    if (!text) return { parts: [''], isLong: false };
-    const isLong = text.length > 350;
-    // Split on sentence endings (. ! ?) followed by space, group ~2 sentences per block
+  // Split long paragraphs + determine text size to always fit in ~45dvh
+  const formatText = (text: string): { parts: string[]; size: 'normal' | 'small' | 'tiny' } => {
+    if (!text) return { parts: [''], size: 'normal' };
+    const size: 'normal' | 'small' | 'tiny' = text.length > 500 ? 'tiny' : text.length > 280 ? 'small' : 'normal';
     const sentences = text.split(/(?<=[.!?])\s+/);
     const parts: string[] = [];
     let current = '';
+    const maxChunk = size === 'tiny' ? 140 : size === 'small' ? 160 : 180;
     for (const s of sentences) {
-      if (current && (current + ' ' + s).length > 180) {
+      if (current && (current + ' ' + s).length > maxChunk) {
         parts.push(current.trim());
         current = s;
       } else {
@@ -388,7 +394,7 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
       }
     }
     if (current.trim()) parts.push(current.trim());
-    return { parts: parts.length > 0 ? parts : [text], isLong };
+    return { parts: parts.length > 0 ? parts : [text], size };
   };
 
   return (
@@ -436,7 +442,7 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
             const c = colors[i % colors.length];
             const imgUrl = i < illustrationUrls.length ? illustrationUrls[i] : null;
             const rawText = i < paragraphs.length ? paragraphs[i] : '';
-            const { parts, isLong } = formatText(rawText);
+            const { parts, size } = formatText(rawText);
             // Alternate image side: even=right, odd=left (desktop only)
             const imgSide: 'left' | 'right' = i % 2 === 0 ? 'right' : 'left';
 
@@ -449,7 +455,7 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
                 )}
                 <PageTextBox $accent={c.accent} $night={nightMode}>
                   <PageNum $accent={c.accent} $night={nightMode}>{i + 1}</PageNum>
-                  <PageText $night={nightMode} $small={isLong}>
+                  <PageText $night={nightMode} $size={size}>
                     {parts.map((part, pi) => <p key={pi}>{part}</p>)}
                   </PageText>
                   <PageDivider $accent={c.accent} />
