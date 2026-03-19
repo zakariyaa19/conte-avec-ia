@@ -205,22 +205,24 @@ const PageNum = styled.div<{ $accent: string; $night: boolean }>`
   flex-shrink: 0;
 `;
 
-const PageText = styled.div<{ $night: boolean; $size: 'normal' | 'small' | 'tiny' }>`
+const fontSizes = { micro: '10px', tiny: '11.5px', small: '13px', normal: '14.5px' };
+const lineHeights = { micro: '1.45', tiny: '1.5', small: '1.6', normal: '1.75' };
+const fontSizesDesktop = { micro: '12px', tiny: '14px', small: '15px', normal: '17px' };
+const lineHeightsDesktop = { micro: '1.5', tiny: '1.6', small: '1.7', normal: '1.85' };
+
+const PageText = styled.div<{ $night: boolean; $size: 'normal' | 'small' | 'tiny' | 'micro' }>`
   font-family: ${theme.fonts.body};
-  font-size: ${p => p.$size === 'tiny' ? '11px' : p.$size === 'small' ? '13px' : '15px'};
-  line-height: ${p => p.$size === 'tiny' ? '1.55' : p.$size === 'small' ? '1.65' : '1.8'};
+  font-size: ${p => fontSizes[p.$size]};
+  line-height: ${p => lineHeights[p.$size]};
   text-align: center;
   max-width: 480px; margin: 0;
   color: ${p => p.$night ? 'rgba(255,255,255,0.88)' : '#2C2C2C'};
-  letter-spacing: 0.015em;
+  letter-spacing: 0.01em;
   overflow: hidden;
 
-  p { margin: 0 0 ${p => p.$size === 'tiny' ? '6px' : p.$size === 'small' ? '8px' : '10px'};
-    &:last-child { margin-bottom: 0; } }
-
   @media (min-width: 1025px) {
-    font-size: ${p => p.$size === 'tiny' ? '13px' : p.$size === 'small' ? '15px' : '17px'};
-    line-height: ${p => p.$size === 'tiny' ? '1.6' : p.$size === 'small' ? '1.7' : '1.85'};
+    font-size: ${p => fontSizesDesktop[p.$size]};
+    line-height: ${p => lineHeightsDesktop[p.$size]};
   }
 `;
 
@@ -377,24 +379,15 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
 
   const colors = nightMode ? COLORS_NIGHT : COLORS_DAY;
 
-  // Split long paragraphs + determine text size to always fit in ~45dvh
-  const formatText = (text: string): { parts: string[]; size: 'normal' | 'small' | 'tiny' } => {
+  // Determine text size to ALWAYS fit in ~45dvh (mobile text area)
+  // 4 tiers: normal (short), small, tiny, micro (very long Club paragraphs)
+  type TextSize = 'normal' | 'small' | 'tiny' | 'micro';
+  const formatText = (text: string): { parts: string[]; size: TextSize } => {
     if (!text) return { parts: [''], size: 'normal' };
-    const size: 'normal' | 'small' | 'tiny' = text.length > 500 ? 'tiny' : text.length > 280 ? 'small' : 'normal';
-    const sentences = text.split(/(?<=[.!?])\s+/);
-    const parts: string[] = [];
-    let current = '';
-    const maxChunk = size === 'tiny' ? 140 : size === 'small' ? 160 : 180;
-    for (const s of sentences) {
-      if (current && (current + ' ' + s).length > maxChunk) {
-        parts.push(current.trim());
-        current = s;
-      } else {
-        current = current ? current + ' ' + s : s;
-      }
-    }
-    if (current.trim()) parts.push(current.trim());
-    return { parts: parts.length > 0 ? parts : [text], size };
+    const len = text.length;
+    const size: TextSize = len > 600 ? 'micro' : len > 400 ? 'tiny' : len > 220 ? 'small' : 'normal';
+    // Don't split into sub-paragraphs — just render as one block, font handles it
+    return { parts: [text], size };
   };
 
   return (
