@@ -222,8 +222,9 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
     // email connu : utiliser isFirstPurchase du backend (false si déjà utilisé)
     return emailStatus.isFirstPurchase === true;
   })();
-  const singlePrice = isFirstPurchase ? 0 : 3.99;
-  const singlePriceLabel = isFirstPurchase ? 'GRATUIT' : '3,99€';
+  const isClubWithCredit = isClub && clubCredit?.canSubmit;
+  const singlePrice = isFirstPurchase || isClubWithCredit ? 0 : 3.99;
+  const singlePriceLabel = isFirstPurchase || isClubWithCredit ? 'GRATUIT' : '3,99€';
 
   const { load: loadDraft, clear: clearDraft, autoSave, hasDraft } = useWizardPersistence();
 
@@ -361,10 +362,17 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
       const timer = setTimeout(() => {
         if (!coverImageUrl && !isCoverGenerating) generateCover();
       }, isSimplifiedMode ? 200 : 0);
-      // Auto-select offer for all simplified mode users (non-Club)
-      if (isSimplifiedMode && !selectedOffer) {
-        setSelectedOffer('single');
-        onUpdate({ productType: 'ebook', purchaseType: 'single' });
+      // Auto-select offer
+      if (!selectedOffer) {
+        if (isClub && clubCredit?.canSubmit) {
+          // Club with credits: auto-select club free
+          setSelectedOffer('single');
+          onUpdate({ productType: 'ebook', purchaseType: 'club' });
+        } else if (isSimplifiedMode) {
+          // Non-club simplified: auto-select single
+          setSelectedOffer('single');
+          onUpdate({ productType: 'ebook', purchaseType: 'single' });
+        }
       }
       return () => clearTimeout(timer);
     } else {
@@ -1389,7 +1397,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
 
               {/* Cover — clic = autoscroll vers la section pricing/commande */}
               <BookPageFrame $portrait style={{ cursor: 'pointer' }}
-                onClick={() => (isSimplifiedMode ? orderFormRef : pricingRef).current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>
+                onClick={() => (isSimplifiedMode || isClubWithCredit ? orderFormRef : pricingRef).current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>
                 <BookCoverImage>
                   <MaterializeImage $ready>
                     <img src={coverImageUrl} alt="Couverture" />
@@ -1397,8 +1405,8 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 </BookCoverImage>
               </BookPageFrame>
 
-              {/* Locked page — only for Club members (full form mode) */}
-              {!isSimplifiedMode && (
+              {/* Locked page — only for Club members WITHOUT credits */}
+              {!isSimplifiedMode && !isClubWithCredit && (
                 <BookPageFrame $compact ref={lockedPageRef}>
                   <BookLockedOverlay onClick={() => pricingRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })}>
                     <BookLockedContent>
@@ -1411,16 +1419,16 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
               )}
             </BookPreviewWrapper>
 
-            {/* ── Timer — only for Club members (full form mode) ── */}
-            {!isSimplifiedMode && (
+            {/* ── Timer — only for Club members WITHOUT credits ── */}
+            {!isSimplifiedMode && !isClubWithCredit && (
               <PreviewTimerBar>
                 <span>Votre livre est réservé pendant encore</span>
                 <PreviewTimerDigits>{timerDisplay}</PreviewTimerDigits>
               </PreviewTimerBar>
             )}
 
-            {/* ── Pricing section — only for Club members (full form mode) ── */}
-            {!isSimplifiedMode && (
+            {/* ── Pricing section — only for Club members WITHOUT credits ── */}
+            {!isSimplifiedMode && !isClubWithCredit && (
             <div ref={pricingRef} style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <PreviewSectionTitle>
                 {heroName} est prêt pour la suite de son aventure
@@ -1529,8 +1537,8 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
             </div>
             )}
 
-            {/* ── Social proof — visible in simplified mode (after cover) ── */}
-            {isSimplifiedMode && (
+            {/* ── Social proof — visible in simplified mode + Club with credits ── */}
+            {(isSimplifiedMode || isClubWithCredit) && (
               <SocialProofLine>
                 <span>&#x2B50;</span> Déjà +500 parents ont créé une histoire pour leur enfant
               </SocialProofLine>
@@ -1540,7 +1548,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
             {formData.productType && (
               <div ref={orderFormRef} style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <OrderInfoSection>
-                  {!isFirstPurchase && <SectionTitle>Finalisez votre commande</SectionTitle>}
+                  {!isFirstPurchase && !isClubWithCredit && <SectionTitle>Finalisez votre commande</SectionTitle>}
                   {isAuthenticated && currentUser && (
                     <ConnectedBanner>Connecté en tant que <strong>{currentUser.email}</strong></ConnectedBanner>
                   )}
@@ -1632,9 +1640,9 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 </PayButton>
 
                 <TrustBadgesRow>
-                  {isFirstPurchase && !isClub && formData.purchaseType !== 'club' ? (
+                  {(isFirstPurchase && !isClub) || isClubWithCredit ? (
                     <>
-                      <TrustBadge>&#x2705; 100% gratuit</TrustBadge>
+                      <TrustBadge>&#x2705; {isClubWithCredit ? 'Inclus dans votre Club' : '100% gratuit'}</TrustBadge>
                       <TrustBadge>&#x1F4E7; Recu par email</TrustBadge>
                       <TrustBadge>&#x26A1; Pret en 5 minutes</TrustBadge>
                     </>
