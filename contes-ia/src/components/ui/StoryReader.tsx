@@ -299,7 +299,7 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
         await navigator.share({
           files: [file],
           title: coverTitle,
-          text: `Découvrez l'histoire de ${protagonistName} ! 📖✨ Créez le vôtre sur contedia.fr`,
+          text: `📖 ${protagonistName} a son propre livre ! Clique pour lire son histoire ✨`,
         });
       } else {
         // Fallback: download the image

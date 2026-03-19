@@ -216,7 +216,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
     }
   };
 
-  const shareText = `📖 Découvrez l'histoire de ${protagonistName} ! Un livre personnalisé créé avec l'IA ✨ Créez le vôtre gratuitement sur contedia.fr`;
+  const shareText = `📖 ${protagonistName} est le héros d'un livre rien que pour lui ! Clique pour lire son histoire ✨`;
   const title = coverTitle || `L'histoire de ${protagonistName}`;
 
   const handleNativeShare = async () => {
@@ -265,8 +265,8 @@ export const ShareModal: React.FC<ShareModalProps> = ({
     <Overlay onClick={onClose}>
       <Modal onClick={e => e.stopPropagation()}>
         <ModalHandle />
-        <ModalTitle>Partager l'histoire de {protagonistName}</ModalTitle>
-        <ModalSubtitle>Montrez cette aventure à votre famille</ModalSubtitle>
+        <ModalTitle>Envoyer le livre de {protagonistName}</ModalTitle>
+        <ModalSubtitle>Vos proches pourront lire son histoire</ModalSubtitle>
 
         {/* Primary: native share (works on all mobile) */}
         {typeof navigator.share === 'function' && shareUrl && (
