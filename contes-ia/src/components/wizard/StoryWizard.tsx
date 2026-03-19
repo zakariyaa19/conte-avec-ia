@@ -1533,6 +1533,42 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
               </SocialProofLine>
             )}
 
+            {/* ── CTA banner — guide the user to complete ── */}
+            {formData.productType && (isFirstPurchase || isClubWithCredit) && (
+              <div
+                onClick={() => orderFormRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
+                style={{
+                  width: '100%', maxWidth: 440, textAlign: 'center', cursor: 'pointer',
+                  background: `linear-gradient(135deg, ${theme.colors.accent.coral}15, ${theme.colors.accent.softPink}20)`,
+                  border: `1.5px solid ${theme.colors.accent.coral}30`,
+                  borderRadius: '16px', padding: '14px 20px', marginBottom: theme.spacing.md,
+                }}
+              >
+                <p style={{
+                  fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.lg,
+                  fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 4px',
+                }}>
+                  Plus qu'une étape ! 🎉
+                </p>
+                <p style={{
+                  fontSize: theme.fontSizes.sm, color: 'var(--text-secondary)',
+                  margin: 0, lineHeight: 1.4,
+                }}>
+                  {isAuthenticated
+                    ? 'Cliquez sur le bouton ci-dessous pour recevoir votre livre'
+                    : 'Entrez votre email et recevez votre livre gratuitement'}
+                </p>
+                {!isAuthenticated && (
+                  <span style={{
+                    display: 'inline-block', marginTop: '8px',
+                    fontSize: '11px', color: 'var(--text-light)',
+                  }}>
+                    ↓ C'est gratuit, sans carte bancaire
+                  </span>
+                )}
+              </div>
+            )}
+
             {/* ── Order form (appears when offer selected) ── */}
             {formData.productType && (
               <div ref={orderFormRef} style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
