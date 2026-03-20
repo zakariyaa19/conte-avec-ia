@@ -1345,19 +1345,40 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 {/* ── CASE A: Club connecté avec crédits → juste un bouton ── */}
                 {isClubWithCredit && isAuthenticated && (
                   <>
-                    {/* Cover or loading */}
-                    <div style={{
-                      width: '120px', height: '164px', borderRadius: '4px 10px 10px 4px',
-                      overflow: 'hidden', margin: '0 auto 14px',
-                      boxShadow: '0 6px 20px rgba(0,0,0,0.3)',
-                      background: 'var(--bg-card)',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    }}>
-                      {coverImageUrl
-                        ? <img src={coverImageUrl} alt="Couverture" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                        : <span style={{ fontSize: '32px', animation: 'pulse 1.5s ease-in-out infinite' }}>📖</span>
-                      }
-                    </div>
+                    {/* Cover or animated loading */}
+                    {coverImageUrl ? (
+                      <div style={{
+                        width: '160px', height: '220px', borderRadius: '6px 14px 14px 6px',
+                        overflow: 'hidden', margin: '0 auto 14px',
+                        boxShadow: '0 8px 28px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,153,153,0.1)',
+                      }}>
+                        <img src={coverImageUrl} alt="Couverture" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      </div>
+                    ) : (
+                      <div style={{
+                        width: '160px', height: '220px', borderRadius: '6px 14px 14px 6px',
+                        margin: '0 auto 14px', position: 'relative', overflow: 'hidden',
+                        background: 'linear-gradient(135deg, #1a1428, #2E2850)',
+                        boxShadow: '0 8px 28px rgba(0,0,0,0.35)',
+                        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                      }}>
+                        {/* Animated glow */}
+                        <div style={{
+                          position: 'absolute', inset: 0,
+                          background: `radial-gradient(circle at 50% 50%, ${theme.colors.accent.coral}20 0%, transparent 70%)`,
+                          animation: 'pulse 2s ease-in-out infinite',
+                        }} />
+                        {/* Sparkles */}
+                        <div style={{ position: 'absolute', width: '4px', height: '4px', borderRadius: '50%', background: '#FFD700', top: '20%', left: '25%', animation: 'pulse 1.5s ease-in-out infinite', opacity: 0.6 }} />
+                        <div style={{ position: 'absolute', width: '3px', height: '3px', borderRadius: '50%', background: '#FF9999', top: '35%', right: '20%', animation: 'pulse 2s ease-in-out 0.5s infinite', opacity: 0.5 }} />
+                        <div style={{ position: 'absolute', width: '5px', height: '5px', borderRadius: '50%', background: '#A8D8EA', bottom: '25%', left: '30%', animation: 'pulse 1.8s ease-in-out 1s infinite', opacity: 0.4 }} />
+                        {/* Book icon */}
+                        <span style={{ fontSize: '36px', position: 'relative', zIndex: 1, animation: 'pulse 2s ease-in-out infinite' }}>✨</span>
+                        <p style={{ fontSize: '10px', color: 'rgba(255,255,255,0.6)', marginTop: '8px', textAlign: 'center', position: 'relative', zIndex: 1 }}>
+                          Création en cours...
+                        </p>
+                      </div>
+                    )}
 
                     <div ref={orderFormRef} />
 
@@ -1377,19 +1398,37 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 {/* ── CASE B: Non connecté OU connecté gratuit (premier livre) ── */}
                 {!isClubWithCredit && (
                   <>
-                    {/* Cover or loading */}
-                    <div style={{
-                      width: '120px', height: '164px', borderRadius: '4px 10px 10px 4px',
-                      overflow: 'hidden', margin: '0 auto 12px',
-                      boxShadow: '0 6px 20px rgba(0,0,0,0.3)',
-                      background: 'var(--bg-card)',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    }}>
-                      {coverImageUrl
-                        ? <img src={coverImageUrl} alt="Couverture" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                        : <span style={{ fontSize: '32px', animation: 'pulse 1.5s ease-in-out infinite' }}>📖</span>
-                      }
-                    </div>
+                    {/* Cover or animated loading */}
+                    {coverImageUrl ? (
+                      <div style={{
+                        width: '160px', height: '220px', borderRadius: '6px 14px 14px 6px',
+                        overflow: 'hidden', margin: '0 auto 12px',
+                        boxShadow: '0 8px 28px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,153,153,0.1)',
+                      }}>
+                        <img src={coverImageUrl} alt="Couverture" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      </div>
+                    ) : (
+                      <div style={{
+                        width: '160px', height: '220px', borderRadius: '6px 14px 14px 6px',
+                        margin: '0 auto 12px', position: 'relative', overflow: 'hidden',
+                        background: 'linear-gradient(135deg, #1a1428, #2E2850)',
+                        boxShadow: '0 8px 28px rgba(0,0,0,0.35)',
+                        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                      }}>
+                        <div style={{
+                          position: 'absolute', inset: 0,
+                          background: `radial-gradient(circle at 50% 50%, ${theme.colors.accent.coral}20 0%, transparent 70%)`,
+                          animation: 'pulse 2s ease-in-out infinite',
+                        }} />
+                        <div style={{ position: 'absolute', width: '4px', height: '4px', borderRadius: '50%', background: '#FFD700', top: '20%', left: '25%', animation: 'pulse 1.5s ease-in-out infinite', opacity: 0.6 }} />
+                        <div style={{ position: 'absolute', width: '3px', height: '3px', borderRadius: '50%', background: '#FF9999', top: '35%', right: '20%', animation: 'pulse 2s ease-in-out 0.5s infinite', opacity: 0.5 }} />
+                        <div style={{ position: 'absolute', width: '5px', height: '5px', borderRadius: '50%', background: '#A8D8EA', bottom: '25%', left: '30%', animation: 'pulse 1.8s ease-in-out 1s infinite', opacity: 0.4 }} />
+                        <span style={{ fontSize: '36px', position: 'relative', zIndex: 1, animation: 'pulse 2s ease-in-out infinite' }}>✨</span>
+                        <p style={{ fontSize: '10px', color: 'rgba(255,255,255,0.6)', marginTop: '8px', textAlign: 'center', position: 'relative', zIndex: 1 }}>
+                          Création en cours...
+                        </p>
+                      </div>
+                    )}
 
                     <p style={{
                       fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.sm,
