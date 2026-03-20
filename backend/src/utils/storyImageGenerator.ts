@@ -83,13 +83,21 @@ function buildVisualBible(params: ImageGenerationParams, hasReferenceImage: bool
 
   if (hasReferenceImage) {
     // PHOTO MODE: rely on the reference image, do NOT inject manual colors
-    characterBlock = `=== PRIORITY 1 — MAIN CHARACTER (MOST IMPORTANT) ===
-The reference image shows the EXACT character to reproduce. This is the #1 priority.
+    characterBlock = `=== PRIORITY 1 — MAIN CHARACTER (ABSOLUTE TOP PRIORITY) ===
+The reference image shows the EXACT child to reproduce. This is based on a REAL child's photo — the parents will compare.
 ${params.protagonistName} is ${bodyType} — a cheerful ${ageLabel} ${genderWord}.
-Reproduce the EXACT same face, hair, skin tone, clothing, and proportions from the reference image.
-Do NOT change any physical feature. The illustrated character must be clearly recognizable as the same child from the reference photo.
-Face: cute, round, friendly smile. Clothing: same outfit as in the reference image.
-The main character MUST look IDENTICAL to the reference image on EVERY page. Same face, same hair color, same skin tone, same eyes, same body proportions, same clothing.`;
+
+MANDATORY — reproduce from the reference image:
+- EXACT same face shape, nose, mouth, chin
+- EXACT same skin tone and complexion (do NOT lighten or darken)
+- EXACT same hair color, length, texture, and style
+- EXACT same eye color, shape, and size
+- ANY distinctive features (freckles, dimples, glasses, gap teeth, birthmarks)
+- Same clothing style and colors as the reference
+
+The character MUST be INSTANTLY recognizable as the same child on EVERY page.
+Do NOT change, simplify, or genericize ANY physical feature between pages.
+Consistency is MORE important than artistic style — the child must look IDENTICAL throughout.`;
   } else {
     // MANUAL MODE: use color selections
     const eyeColorMap: Record<string, string> = {

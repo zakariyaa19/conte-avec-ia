@@ -252,24 +252,27 @@ async function analyzePhotoWithVision(photoBase64: string): Promise<string | nul
   try {
     const openai = getOpenAI();
     const response = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
+      model: 'gpt-4o',
       messages: [
         {
           role: 'user',
           content: [
             {
               type: 'text',
-              text: `Analyze this photo of a child and provide a very detailed physical description for use as a reference in an illustration. Focus on:
-- Exact skin tone (light peach, olive, medium brown, dark brown, etc.)
-- Hair: exact color, length (short/medium/long), texture (straight, curly, wavy, coily), style (bangs, ponytail, braids, etc.)
-- Face shape and proportions (round cheeks, oval face, etc.)
-- Eye shape and expression
-- Any distinctive features (freckles, dimples, glasses, gap teeth, etc.)
-- Overall vibe/expression of the child (shy smile, big grin, serious, playful)
+              text: `You are an expert character designer for children's illustrated books. Analyze this photo of a child and provide an EXTREMELY detailed physical description that will be used to recreate this exact child as an illustrated character.
 
-Be very specific and detailed — this description will be used to recreate the child as a character in an illustrated book cover. The character MUST be recognizable as the same child.
+DESCRIBE IN PRECISE DETAIL:
+1. SKIN: Exact tone (e.g., "very light peachy pink", "warm golden brown", "deep rich dark brown with warm undertones")
+2. HAIR: Exact color (e.g., "dark chestnut brown with reddish highlights"), length (short/medium/long), texture (straight/wavy/curly/coily/kinky), style (bangs, parted left/right, ponytail, braids, afro, etc.), volume (thin/thick/voluminous)
+3. FACE: Shape (round/oval/heart), cheek fullness, chin shape, nose shape (small button/wide/narrow), lip shape and color
+4. EYES: Color, shape (round/almond/hooded), size relative to face, eyelash prominence, eyebrow shape and color
+5. DISTINCTIVE FEATURES: Freckles, dimples, birthmarks, gap teeth, glasses, ear shape, beauty marks — anything that makes this child unique and recognizable
+6. EXPRESSION & VIBE: Current expression, overall personality vibe (shy, energetic, curious, mischievous)
+7. CLOTHING: What they're wearing (colors, style, patterns)
 
-Keep the description to 3-4 sentences. If the photo does not clearly show a child's face, respond with exactly "UNIDENTIFIABLE".
+The illustrated character MUST be INSTANTLY recognizable as THIS specific child. Parents will compare the illustration to the photo — accuracy is critical.
+
+Write 5-7 detailed sentences. If the photo does not clearly show a child's face, respond with exactly "UNIDENTIFIABLE".
 
 Respond in English only.`
             },
@@ -283,8 +286,8 @@ Respond in English only.`
           ]
         }
       ],
-      max_tokens: 300,
-      temperature: 0.2
+      max_tokens: 500,
+      temperature: 0.1
     });
 
     const description = response.choices[0]?.message?.content?.trim();
@@ -330,8 +333,8 @@ function buildCharacterDescription(params: CoverGenerationParams, photoAnalysis:
   const { ageLabel, bodyType } = getAgeDescription(params.ageRange, params.protagonistAge);
 
   if (photoAnalysis) {
-    // Photo analyzed successfully — use the description from Vision API
-    return `${bodyType} (${ageLabel} ${genderWord}). IMPORTANT — this character must closely match this real child's appearance: ${photoAnalysis}. Ensure the illustrated character is clearly recognizable as this specific child, with matching skin tone, hair, facial features, and AGE-APPROPRIATE body proportions.`;
+    // Photo analyzed successfully — use the detailed description from Vision API
+    return `${bodyType} (${ageLabel} ${genderWord}). CRITICAL — this character is based on a REAL child's photo. The parent will compare the illustration to the photo, so accuracy is essential. Here is the exact appearance to reproduce: ${photoAnalysis}. The illustrated character MUST be INSTANTLY recognizable as this specific child. Match EVERY detail: exact skin tone, exact hair color/style/texture, exact eye color/shape, face shape, and any distinctive features. AGE-APPROPRIATE body proportions for a ${ageLabel}.`;
   }
 
   if (hasPhoto) {

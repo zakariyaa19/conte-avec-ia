@@ -576,7 +576,7 @@ export class ApiService {
 
   // Compresser une photo (iPhone 12MP → ~300KB JPEG)
   // Timeout 10s pour ne jamais bloquer sur appareil lent
-  private static compressPhoto(file: File, maxSize = 800, quality = 0.7): Promise<File> {
+  private static compressPhoto(file: File, maxSize = 1200, quality = 0.85): Promise<File> {
     return new Promise((resolve) => {
       // Timeout de sécurité : si compression prend > 10s, envoyer l'original
       const timeout = setTimeout(() => {
