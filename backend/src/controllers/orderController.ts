@@ -186,37 +186,49 @@ export class OrderController {
         }
       }
 
+      // Défensif : garantir que les champs obligatoires ne sont jamais null/undefined
+      const safeSpecificSubject = formData.specificSubject || formData.generalTheme || 'non spécifié';
+      const safeCentralMessage = formData.centralMessage || 'non spécifié';
+      const safeIllustrationStyle = formData.illustrationStyle || '3d-animation';
+
+      console.log('📦 Création commande:', {
+        userId: user?.id, userEmail, purchaseType, price,
+        ageRange: formData.ageRange, generalTheme: formData.generalTheme,
+        specificSubject: safeSpecificSubject, protagonistName: formData.protagonistName,
+        coverImageUrl: coverImageUrl ? 'OUI' : 'NON',
+      });
+
       // Créer la commande (omit exclut les champs binaires volumineux de la reponse)
       const order = await prisma.order.create({
         data: {
           userId: user?.id,
           ageRange: formData.ageRange,
           generalTheme: formData.generalTheme,
-          customTheme: formData.customTheme,
-          specificSubject: formData.specificSubject,
-          customSubject: formData.customSubject,
-          centralMessage: formData.centralMessage,
-          customMessage: formData.customMessage,
-          illustrationStyle: formData.illustrationStyle,
+          customTheme: formData.customTheme || null,
+          specificSubject: safeSpecificSubject,
+          customSubject: formData.customSubject || null,
+          centralMessage: safeCentralMessage,
+          customMessage: formData.customMessage || null,
+          illustrationStyle: safeIllustrationStyle,
           protagonistName: formData.protagonistName,
-          protagonistAge: formData.protagonistAge,
-          protagonistGender: formData.protagonistGender,
+          protagonistAge: formData.protagonistAge || null,
+          protagonistGender: formData.protagonistGender || null,
           eyeColor: photoUrl ? null : (formData.eyeColor || null),
           hairColor: photoUrl ? null : (formData.hairColor || null),
           skinColor: photoUrl ? null : (formData.skinColor || null),
           photoUrl: photoUrl,
           coverImageUrl: coverImageUrl,
           coverTitle: coverTitle,
-          language: formData.language,
-          hobbies: formData.hobbies,
-          favoriteDish: formData.favoriteDish,
-          specialEvents: formData.specialEvents,
-          religion: formData.religion,
-          customReligion: formData.customReligion,
+          language: formData.language || null,
+          hobbies: formData.hobbies || null,
+          favoriteDish: formData.favoriteDish || null,
+          specialEvents: formData.specialEvents || null,
+          religion: formData.religion || null,
+          customReligion: formData.customReligion || null,
           secondaryCharactersJson: stringifySecondaryCharacters(formData.secondaryCharacters),
-          secondaryCharacterName: formData.secondaryCharacterName,
-          secondaryCharacterAge: formData.secondaryCharacterAge,
-          creatorName: formData.creatorName,
+          secondaryCharacterName: formData.secondaryCharacterName || null,
+          secondaryCharacterAge: formData.secondaryCharacterAge || null,
+          creatorName: formData.creatorName || null,
           firstIllustrationUrl: formData.firstIllustrationUrl || null,
           storyPreviewTextJson: formData.storyPreviewTextJson || null,
           productType: 'EBOOK',
