@@ -78,8 +78,9 @@ const ProgressFill = styled.div<{ $progress: number }>`
 `;
 
 const TopControls = styled.div`
-  position: fixed; top: 12px; left: 16px; right: 16px;
+  position: fixed; top: max(env(safe-area-inset-top, 12px), 12px); left: 16px; right: 16px;
   display: flex; justify-content: space-between; z-index: 10003;
+  padding-top: 4px;
 `;
 
 const CtrlBtn = styled.button<{ $active?: boolean }>`

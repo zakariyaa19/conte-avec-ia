@@ -1846,7 +1846,6 @@ const faqReveal = useScrollReveal();
           protagonistName={selectedStory.protagonistName}
           onClose={closeStoryViewer}
           onCreateAnother={() => navigate('/create-story')}
-          isShared
         />
       )}
 

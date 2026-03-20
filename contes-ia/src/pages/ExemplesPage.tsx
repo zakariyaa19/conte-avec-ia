@@ -372,7 +372,6 @@ export const ExemplesPage: React.FC = () => {
           protagonistName={selectedStory.protagonistName}
           onClose={() => { setReaderOpen(false); setSelectedStory(null); }}
           onCreateAnother={() => navigate('/create-story')}
-          isShared
         />
       )}
     </PageContainer>
