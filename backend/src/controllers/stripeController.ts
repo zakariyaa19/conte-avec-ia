@@ -170,35 +170,70 @@ export const createSubscriptionSession = async (req: ClientAuthRequest, res: Res
 export const applyRetentionDiscount = async (req: ClientAuthRequest, res: Response) => {
   try {
     const userId = req.clientUser?.id;
-    if (!userId) return res.status(401).json({ error: 'Authentification requise' });
+    if (!userId) return res.status(401).json({ success: false, message: 'Authentification requise' });
 
     const user = await prisma.user.findUnique({ where: { id: userId } });
-    if (!user || !user.subscriptionId) {
-      return res.status(400).json({ error: 'Aucun abonnement actif' });
+    if (!user) {
+      return res.status(400).json({ success: false, message: 'Utilisateur non trouvé' });
     }
 
     const couponId = process.env.STRIPE_RETENTION_COUPON_ID;
     if (!couponId) {
-      return res.status(500).json({ error: 'Coupon de retention non configure' });
+      return res.status(500).json({ success: false, message: 'Coupon de retention non configure' });
+    }
+
+    // Trouver la subscription active — soit par subscriptionId en BDD, soit via le customer Stripe
+    let subscriptionId = user.subscriptionId;
+
+    if (!subscriptionId && user.stripeCustomerId) {
+      // Chercher la subscription active du customer
+      const subs = await stripe.subscriptions.list({ customer: user.stripeCustomerId, status: 'active', limit: 1 });
+      if (subs.data.length > 0) {
+        subscriptionId = subs.data[0].id;
+        await prisma.user.update({ where: { id: userId }, data: { subscriptionId } });
+        console.log(`[Retention] subscriptionId retrouvé: ${subscriptionId}`);
+      }
+    }
+
+    // Si toujours pas de subscription, chercher le customer par email
+    if (!subscriptionId && user.email) {
+      const customers = await stripe.customers.list({ email: user.email, limit: 1 });
+      if (customers.data.length > 0) {
+        const custId = customers.data[0].id;
+        if (custId !== user.stripeCustomerId) {
+          await prisma.user.update({ where: { id: userId }, data: { stripeCustomerId: custId } });
+        }
+        const subs = await stripe.subscriptions.list({ customer: custId, status: 'active', limit: 1 });
+        if (subs.data.length > 0) {
+          subscriptionId = subs.data[0].id;
+          await prisma.user.update({ where: { id: userId }, data: { subscriptionId } });
+          console.log(`[Retention] subscriptionId retrouvé via email: ${subscriptionId}`);
+        }
+      }
+    }
+
+    if (!subscriptionId) {
+      return res.status(400).json({ success: false, message: 'Aucun abonnement actif trouvé' });
     }
 
     // Check if coupon already applied (prevent double application)
-    const subscription = await stripe.subscriptions.retrieve(user.subscriptionId);
+    const subscription = await stripe.subscriptions.retrieve(subscriptionId);
     if (subscription.discounts && subscription.discounts.length > 0) {
       return res.json({ success: true, message: 'Une reduction est deja active sur votre abonnement !' });
     }
 
     // Apply the coupon to the subscription (next invoice only)
-    await stripe.subscriptions.update(user.subscriptionId, {
+    await stripe.subscriptions.update(subscriptionId, {
       discounts: [{ coupon: couponId }],
     });
 
-    console.log(`[Stripe] Retention discount applied for user ${user.email} on subscription ${user.subscriptionId}`);
+    console.log(`[Stripe] Retention discount applied for user ${user.email} on subscription ${subscriptionId}`);
 
     res.json({ success: true, message: 'Reduction de 70% appliquee sur votre prochaine facture !' });
   } catch (error: any) {
-    console.error('Erreur application reduction retention:', error.message);
-    res.status(500).json({ error: 'Erreur lors de l\'application de la reduction' });
+    const msg = error?.raw?.message || error?.message || 'Erreur inconnue';
+    console.error('Erreur application reduction retention:', msg);
+    res.status(500).json({ success: false, message: `Erreur: ${msg}` });
   }
 };
 
@@ -409,12 +444,30 @@ export const createCustomerPortal = async (req: ClientAuthRequest, res: Response
 
     console.log(`[Portal] Création session portail pour customer ${customerId}`);
 
-    const session = await stripe.billingPortal.sessions.create({
-      customer: customerId,
-      return_url: `${process.env.FRONTEND_URL}/dashboard/account`
-    });
-
-    res.json({ url: session.url });
+    try {
+      const session = await stripe.billingPortal.sessions.create({
+        customer: customerId,
+        return_url: `${process.env.FRONTEND_URL}/dashboard/account`
+      });
+      return res.json({ url: session.url });
+    } catch (portalErr: any) {
+      // Customer introuvable dans Stripe → chercher le bon par email
+      if (portalErr?.code === 'resource_missing' && user.email) {
+        console.log(`[Portal] Customer ${customerId} introuvable dans Stripe, recherche par email...`);
+        const found = await stripe.customers.list({ email: user.email, limit: 1 });
+        if (found.data.length > 0) {
+          const realId = found.data[0].id;
+          await prisma.user.update({ where: { id: userId }, data: { stripeCustomerId: realId } });
+          console.log(`[Portal] Customer corrigé: ${customerId} → ${realId}`);
+          const session = await stripe.billingPortal.sessions.create({
+            customer: realId,
+            return_url: `${process.env.FRONTEND_URL}/dashboard/account`
+          });
+          return res.json({ url: session.url });
+        }
+      }
+      throw portalErr;
+    }
   } catch (error: any) {
     const stripeMsg = error?.raw?.message || error?.message || 'Erreur inconnue';
     console.error('Erreur portail client:', stripeMsg, error?.statusCode, error?.type);
