@@ -159,12 +159,13 @@ const blogArticles = [
     { id: 22, title: "Comment un livre personnalise peut aider un enfant timide ou anxieux", excerpt: "Decouvrez comment les livres personnalises aident les enfants timides et anxieux a developper leur confiance en soi.", slug: "livre-personnalise-enfant-timide", image: "livre-personnalise-enfant-timide" },
     { id: 23, title: "Cadeau de naissance ou anniversaire : le livre personnalise intemporel", excerpt: "Decouvrez pourquoi le livre personnalise est le cadeau parfait pour une naissance ou un anniversaire.", slug: "cadeau-livre-personnalise-enfant", image: "cadeau-livre-personnalise-enfant" },
     { id: 24, title: "Comment sont creees les histoires personnalisees sur Conte d'IA", excerpt: "Decouvrez les coulisses de la creation d'histoires personnalisees sur Conte d'IA.", slug: "creation-histoires-personnalisees-conte-ia", image: "creation-histoires-personnalisees-conte-ia" },
-    { id: 25, title: "Les bienfaits de la lecture personnalisee sur le developpement emotionnel", excerpt: "Decouvrez comment la lecture personnalisee favorise le developpement emotionnel des enfants.", slug: "bienfaits-lecture-personnalisee-enfant", image: "bienfaits-lecture-personnalisee-enfant" }
+    { id: 25, title: "Les bienfaits de la lecture personnalisee sur le developpement emotionnel", excerpt: "Decouvrez comment la lecture personnalisee favorise le developpement emotionnel des enfants.", slug: "bienfaits-lecture-personnalisee-enfant", image: "bienfaits-lecture-personnalisee-enfant" },
+    { id: 26, title: "Livre Personnalise Enfant : Le Guide Complet 2026 (par Age)", excerpt: "Le guide ultime pour choisir le meilleur livre personnalise pour votre enfant. Conseils par age (0-8 ans), comparatif classique vs IA, et creation en 3 etapes.", slug: "guide-livre-personnalise-enfant-2026", image: "livre-personnalise-enfant-guide-complet" }
 ];
 
 // ─── Article categories ───
 
-const recentArticles = blogArticles.filter(a => a.id >= 16 && a.id <= 25);
+const recentArticles = blogArticles.filter(a => a.id >= 16);
 const animalArticles = blogArticles.filter(a => a.id >= 6 && a.id <= 10);
 const faithArticles = blogArticles.filter(a => a.id >= 11 && a.id <= 15);
 const firstArticles = blogArticles.filter(a => a.id >= 1 && a.id <= 5);

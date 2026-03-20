@@ -55,6 +55,7 @@ import BlogArticleNouveau7 from './pages/BlogArticleNouveau7';
 import BlogArticleNouveau8 from './pages/BlogArticleNouveau8';
 import BlogArticleNouveau9 from './pages/BlogArticleNouveau9';
 import BlogArticleNouveau10 from './pages/BlogArticleNouveau10';
+import BlogArticleSEO1 from './pages/BlogArticleSEO1';
 import { MentionsLegalesPage } from './pages/MentionsLegalesPage';
 import { PolitiqueConfidentialitePage } from './pages/PolitiqueConfidentialitePage';
 import ScrollToTop from './components/utils/ScrollToTop';
@@ -142,6 +143,8 @@ function App() {
           <Route path="/blog/cadeau-livre-personnalise-enfant" element={<BlogArticleNouveau8 />} />
           <Route path="/blog/creation-histoires-personnalisees-conte-ia" element={<BlogArticleNouveau9 />} />
           <Route path="/blog/bienfaits-lecture-personnalisee-enfant" element={<BlogArticleNouveau10 />} />
+          {/* Articles SEO 2026 */}
+          <Route path="/blog/guide-livre-personnalise-enfant-2026" element={<BlogArticleSEO1 />} />
           {/* Pages légales */}
           <Route path="/mentions-legales" element={<MentionsLegalesPage />} />
           <Route path="/politique-confidentialite" element={<PolitiqueConfidentialitePage />} />
