@@ -456,7 +456,9 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
 
   const handleFormSubmit = () => {
     setGlobalError('');
-    if (validatePaymentForm()) {
+    // Club connected with credits: skip validation (user data comes from auth token)
+    const skipValidation = isClubWithCredit && isAuthenticated;
+    if (skipValidation || validatePaymentForm()) {
       clearDraft();
       // Pass cover image directly in submit (no async state dependency)
       const coverOverride: Partial<StoryFormData> = {};
