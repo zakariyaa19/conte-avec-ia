@@ -205,8 +205,7 @@ export const PricingTiers: React.FC<PricingTiersProps> = ({ onSelectPlan }) => {
             <Feature><FeatureIcon>&#x2705;</FeatureIcon>7 illustrations par livre</Feature>
             <Feature><FeatureIcon>&#x2705;</FeatureIcon>Bibliotheque en ligne</Feature>
             <Feature><FeatureIcon>&#x2705;</FeatureIcon>Lecture + telechargement</Feature>
-            <Feature $disabled><FeatureIcon>&#x2014;</FeatureIcon>Personnages secondaires</Feature>
-            <Feature $disabled><FeatureIcon>&#x2014;</FeatureIcon>Animaux de compagnie</Feature>
+            <Feature><FeatureIcon>&#x2705;</FeatureIcon>1 personnage secondaire</Feature>
             <Feature $disabled><FeatureIcon>&#x2014;</FeatureIcon>Styles d'illustration</Feature>
             <Feature $disabled><FeatureIcon>&#x2014;</FeatureIcon>Occasions speciales</Feature>
           </Features>

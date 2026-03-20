@@ -940,6 +940,82 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 )}
               </div>
             )}
+
+            {/* ── Compagnon secondaire (1 max en mode simplifié) ── */}
+            {isSimplifiedMode && (
+              <div style={{ width: '100%', maxWidth: 400, marginTop: theme.spacing.md }}>
+                <p style={{
+                  fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.sm,
+                  fontWeight: 600, color: 'var(--text-secondary)', textAlign: 'center',
+                  margin: `0 0 ${theme.spacing.sm}`,
+                }}>
+                  Ajouter un compagnon <span style={{ fontWeight: 400, color: 'var(--text-light)' }}>(optionnel)</span>
+                </p>
+
+                {/* Type toggle */}
+                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginBottom: '10px' }}>
+                  {([
+                    { type: 'human' as const, icon: '👦', label: 'Ami(e)' },
+                    { type: 'animal' as const, icon: '🐕', label: 'Animal' },
+                  ]).map(opt => {
+                    const current = formData.secondaryCharacters?.[0];
+                    const isActive = current?.kind === opt.type;
+                    return (
+                      <button key={opt.type} onClick={() => {
+                        if (isActive) {
+                          onUpdate({ secondaryCharacters: undefined });
+                        } else {
+                          onUpdate({ secondaryCharacters: [{ kind: opt.type, name: '', ageOrType: '' }] });
+                        }
+                      }} style={{
+                        appearance: 'none', border: `2px solid ${isActive ? theme.colors.accent.coral : 'var(--border-color)'}`,
+                        borderRadius: '12px', padding: '10px 18px', cursor: 'pointer',
+                        background: isActive ? `${theme.colors.accent.coral}12` : 'var(--bg-elevated)',
+                        display: 'flex', alignItems: 'center', gap: '6px',
+                        fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)',
+                        transition: 'all 0.2s',
+                      }}>
+                        <span style={{ fontSize: '18px' }}>{opt.icon}</span>
+                        {opt.label}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Name input — shows when type is selected */}
+                {(() => {
+                  const current = formData.secondaryCharacters?.[0];
+                  if (!current) return null;
+
+                  return (
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <div style={{ flex: 1 }}>
+                        <ValidatedInput
+                          label={current.kind === 'animal' ? "Nom de l'animal" : "Prénom de l'ami(e)"}
+                          value={current.name || ''}
+                          onChange={(v) => {
+                            onUpdate({ secondaryCharacters: [{ ...current, name: v }] });
+                          }}
+                          placeholder={current.kind === 'animal' ? 'Ex : Rex, Luna...' : 'Ex : Léa, Hugo...'}
+                        />
+                      </div>
+                      {current.kind === 'animal' && (
+                        <div style={{ width: '120px' }}>
+                          <ValidatedInput
+                            label="Type"
+                            value={current.ageOrType || ''}
+                            onChange={(v) => {
+                              onUpdate({ secondaryCharacters: [{ ...current, ageOrType: v }] });
+                            }}
+                            placeholder="Chien, chat..."
+                          />
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
+              </div>
+            )}
           </>
         );
 
@@ -1607,7 +1683,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                     </ClubShowcasePrice>
                     <ClubShowcaseFeatures>
                       <ClubShowcaseFeature $premium><ClubFeatureIcon>&#x1F4D6;</ClubFeatureIcon>4 livres/mois · 2x plus de pages</ClubShowcaseFeature>
-                      <ClubShowcaseFeature $premium><ClubFeatureIcon>&#x1F464;</ClubFeatureIcon>Personnages secondaires</ClubShowcaseFeature>
+                      <ClubShowcaseFeature $premium><ClubFeatureIcon>&#x1F464;</ClubFeatureIcon>5 personnages secondaires</ClubShowcaseFeature>
                       <ClubShowcaseFeature $premium><ClubFeatureIcon>&#x1F3A8;</ClubFeatureIcon>Styles d'illustration</ClubShowcaseFeature>
                       <ClubShowcaseFeature $premium><ClubFeatureIcon>&#x1F381;</ClubFeatureIcon>Thèmes et occasions</ClubShowcaseFeature>
                       <ClubShowcaseFeature><ClubFeatureIcon>&#x1F4DA;</ClubFeatureIcon>Bibliothèque en ligne</ClubShowcaseFeature>

@@ -466,7 +466,7 @@ export const ClubPage: React.FC = () => {
     { feature: 'Pages/livre', free: '6', club: '2x plus' },
     { feature: 'Illustrations/livre', free: '6', club: '2x plus' },
     { feature: "Styles d'illustration", free: '1', club: '9' },
-    { feature: 'Personnages secondaires', free: '✘', club: '✔' },
+    { feature: 'Personnages secondaires', free: '1', club: '5' },
     { feature: 'Multi-langues', free: '✘', club: '✔' },
     { feature: 'PDF téléchargeable', free: '✔', club: '✔' },
   ];

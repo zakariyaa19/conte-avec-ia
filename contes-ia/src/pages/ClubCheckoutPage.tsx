@@ -242,7 +242,7 @@ export const ClubCheckoutPage: React.FC = () => {
     '4 livres gratuits par mois',
     '2x plus de pages et d\'illustrations',
     '9 styles d\'illustration exclusifs',
-    'Personnages secondaires',
+    'Jusqu\'à 5 personnages secondaires',
     'Multi-langues',
     'Crédits cumulables',
   ];
