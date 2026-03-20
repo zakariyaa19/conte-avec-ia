@@ -1398,9 +1398,11 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
         const isCompactPreview = isSimplifiedMode || isClubWithCredit;
         return (
           <>
-            <StepTitle style={{ fontSize: isCompactPreview ? theme.fontSizes.base : theme.fontSizes.lg, marginBottom: isCompactPreview ? '6px' : theme.spacing.sm, flexShrink: 0 }}>
-              {allReady ? `Le livre de ${heroName} est prêt !` : `Création du livre de ${heroName}...`}
-            </StepTitle>
+            {!isCompactPreview && (
+              <StepTitle style={{ fontSize: theme.fontSizes.lg, marginBottom: theme.spacing.sm, flexShrink: 0 }}>
+                {allReady ? `Le livre de ${heroName} est prêt !` : `Création du livre de ${heroName}...`}
+              </StepTitle>
+            )}
             {allReady && !isCompactPreview && (
               <StepSubtitle style={{ marginBottom: theme.spacing.md }}>
                 Montrez l'histoire de {heroName} à votre famille
@@ -1501,20 +1503,20 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 {/* ── CASE B: Non connecté OU connecté gratuit (premier livre) ── */}
                 {!isClubWithCredit && (
                   <>
-                    {/* Cover — petit sur mobile pour laisser place au formulaire */}
+                    {/* Cover — prend tout l'espace disponible au-dessus du formulaire */}
                     <div style={{
-                      flex: '0 0 auto', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      margin: '0 0 6px',
+                      flex: '1 1 0', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      minHeight: 0, margin: '0 0 6px',
                     }}>
                       {coverImageUrl ? (
                         <img src={coverImageUrl} alt="Couverture" style={{
-                          height: '120px', width: 'auto',
+                          maxHeight: '100%', maxWidth: '70%', width: 'auto', height: 'auto',
                           borderRadius: '12px', objectFit: 'contain',
                           boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
                         }} />
                       ) : (
                         <div style={{
-                          height: '100px', aspectRatio: '3/4', borderRadius: '12px',
+                          maxHeight: '100%', width: 'auto', aspectRatio: '3/4', borderRadius: '12px',
                           overflow: 'hidden',
                           background: 'linear-gradient(145deg, #2E2850, #1C1735)',
                           boxShadow: '0 8px 24px rgba(0,0,0,0.35)',
@@ -1554,13 +1556,15 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                       )}
                     </div>
 
-                    <p style={{
-                      fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.sm,
-                      fontWeight: 700, color: 'var(--text-primary)', textAlign: 'center',
-                      margin: '0 0 8px', flexShrink: 0,
-                    }}>
-                      {isAuthenticated ? `Le livre de ${heroName} est prêt !` : `Recevez le livre de ${heroName} gratuitement`}
-                    </p>
+                    {!isAuthenticated && (
+                      <p style={{
+                        fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.sm,
+                        fontWeight: 700, color: 'var(--text-primary)', textAlign: 'center',
+                        margin: '0 0 8px', flexShrink: 0,
+                      }}>
+                        Recevez le livre de {heroName} gratuitement
+                      </p>
+                    )}
 
                     <div ref={orderFormRef} style={{ width: '100%', flexShrink: 0 }}>
                       {/* Google (non connecté uniquement) */}
