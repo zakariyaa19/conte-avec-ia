@@ -668,6 +668,41 @@ export class AdminController {
     }
   }
 
+  // Modifier les credits d'un client Club
+  static async updateClientCredits(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const { action, amount } = req.body; // action: 'add' | 'set', amount: number
+
+      const user = await prisma.user.findUnique({ where: { id } });
+      if (!user) {
+        return res.status(404).json({ success: false, message: 'Client non trouve' });
+      }
+
+      if (user.role !== 'CLUB') {
+        return res.status(400).json({ success: false, message: 'Ce client n\'est pas membre Club' });
+      }
+
+      const currentUsed = user.weeklySubmissionCount || 0;
+
+      if (action === 'add') {
+        // Ajouter des credits = reduire le compteur d'utilisation
+        const newCount = Math.max(0, currentUsed - (amount || 1));
+        await prisma.user.update({ where: { id }, data: { weeklySubmissionCount: newCount } });
+        res.json({ success: true, message: `${amount || 1} credit(s) ajoute(s). Credits utilises: ${newCount}` });
+      } else if (action === 'set') {
+        // Definir le nombre de credits utilises directement
+        await prisma.user.update({ where: { id }, data: { weeklySubmissionCount: Math.max(0, amount || 0) } });
+        res.json({ success: true, message: `Credits utilises definis a ${amount || 0}` });
+      } else {
+        res.status(400).json({ success: false, message: 'Action invalide (add ou set)' });
+      }
+    } catch (error) {
+      console.error('Erreur modification credits:', error);
+      res.status(500).json({ success: false, message: 'Erreur lors de la modification des credits' });
+    }
+  }
+
   // Stats etendues
   static async getDashboardStatsExtended(req: Request, res: Response) {
     try {

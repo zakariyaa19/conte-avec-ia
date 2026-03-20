@@ -34,6 +34,7 @@ router.get('/clients', authenticateAdmin, requireAdmin, AdminController.getClien
 router.get('/clients/:id', authenticateAdmin, requireAdmin, AdminController.getClientDetail);
 router.delete('/clients/:id', authenticateAdmin, requireAdmin, AdminController.deleteClient);
 router.patch('/clients/:id/password', authenticateAdmin, requireAdmin, AdminController.updateClientPassword);
+router.patch('/clients/:id/credits', authenticateAdmin, requireAdmin, AdminController.updateClientCredits);
 
 // Generation de contes
 router.get('/generation/orders', authenticateAdmin, requireAdmin, StoryGenerationController.getGenerationQueue);

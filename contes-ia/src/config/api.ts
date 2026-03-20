@@ -321,6 +321,17 @@ export class ApiService {
     });
   }
 
+  static async updateAdminClientCredits(token: string, clientId: string, action: 'add' | 'set', amount: number): Promise<{ success: boolean; message: string }> {
+    return this.request(`/api/admin/clients/${clientId}/credits`, {
+      method: 'PATCH',
+      body: JSON.stringify({ action, amount }),
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+  }
+
   // ========== Unified Login ==========
   static async unifiedLogin(email: string, password: string): Promise<{ success: boolean; data: any; message?: string }> {
     return this.request('/api/auth/unified-login', {

@@ -374,9 +374,98 @@ export const AdminClientDetailPage: React.FC<AdminClientDetailPageProps> = ({ to
               </InfoRow>
             )}
             <InfoRow>
-              <InfoLabel>Credits utilises</InfoLabel>
+              <InfoLabel>Crédits utilisés</InfoLabel>
               <InfoValue>{client.weeklySubmissionCount || 0}</InfoValue>
             </InfoRow>
+
+            {/* Credits management for Club members */}
+            {client.role === 'CLUB' && (() => {
+              const startDate = client.weeklySubmissionReset ? new Date(client.weeklySubmissionReset) : null;
+              const now = new Date();
+              const monthsSinceStart = startDate ? (now.getTime() - startDate.getTime()) / (30 * 24 * 60 * 60 * 1000) : 0;
+              const totalEarned = startDate ? (Math.floor(monthsSinceStart) + 1) * 4 : 0;
+              const used = client.weeklySubmissionCount || 0;
+              const remaining = Math.max(0, totalEarned - used);
+
+              return (
+                <>
+                  <InfoRow>
+                    <InfoLabel>Crédits restants</InfoLabel>
+                    <InfoValue style={{ fontWeight: 700, color: remaining > 0 ? '#22C55E' : '#EF4444' }}>
+                      {remaining}/4 ce mois (total gagné: {totalEarned})
+                    </InfoValue>
+                  </InfoRow>
+                  <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
+                    <button
+                      onClick={async () => {
+                        const token = localStorage.getItem('adminToken') || '';
+                        try {
+                          const res = await ApiService.updateAdminClientCredits(token, client.id, 'add', 1);
+                          if (res.success) {
+                            alert(res.message);
+                            window.location.reload();
+                          } else {
+                            alert(res.message || 'Erreur');
+                          }
+                        } catch { alert('Erreur réseau'); }
+                      }}
+                      style={{
+                        padding: '6px 14px', borderRadius: '8px', border: 'none',
+                        background: '#22C55E', color: 'white', fontSize: '12px',
+                        fontWeight: 600, cursor: 'pointer',
+                      }}
+                    >
+                      + Ajouter 1 crédit
+                    </button>
+                    <button
+                      onClick={async () => {
+                        const amount = prompt('Combien de crédits ajouter ?', '4');
+                        if (!amount) return;
+                        const token = localStorage.getItem('adminToken') || '';
+                        try {
+                          const res = await ApiService.updateAdminClientCredits(token, client.id, 'add', parseInt(amount));
+                          if (res.success) {
+                            alert(res.message);
+                            window.location.reload();
+                          } else {
+                            alert(res.message || 'Erreur');
+                          }
+                        } catch { alert('Erreur réseau'); }
+                      }}
+                      style={{
+                        padding: '6px 14px', borderRadius: '8px', border: '1px solid #ddd',
+                        background: 'transparent', color: 'var(--text-primary)', fontSize: '12px',
+                        fontWeight: 600, cursor: 'pointer',
+                      }}
+                    >
+                      + Ajouter X crédits
+                    </button>
+                    <button
+                      onClick={async () => {
+                        if (!confirm('Remettre les crédits utilisés à 0 ?')) return;
+                        const token = localStorage.getItem('adminToken') || '';
+                        try {
+                          const res = await ApiService.updateAdminClientCredits(token, client.id, 'set', 0);
+                          if (res.success) {
+                            alert(res.message);
+                            window.location.reload();
+                          } else {
+                            alert(res.message || 'Erreur');
+                          }
+                        } catch { alert('Erreur réseau'); }
+                      }}
+                      style={{
+                        padding: '6px 14px', borderRadius: '8px', border: '1px solid #EF4444',
+                        background: 'transparent', color: '#EF4444', fontSize: '12px',
+                        fontWeight: 600, cursor: 'pointer',
+                      }}
+                    >
+                      Reset à 0
+                    </button>
+                  </div>
+                </>
+              );
+            })()}
           </CardBody>
         </Card>
       </CardsGrid>
