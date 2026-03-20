@@ -49,8 +49,13 @@ export class OrderController {
       const coverTitle = formData.coverTitle || null;
 
       // Gestion de la couverture generee par GPT
-      console.log('🖼️ coverImageBase64 present:', !!formData.coverImageBase64, 'length:', formData.coverImageBase64?.length || 0);
-      if (formData.coverImageBase64) {
+      // Priorité : URL Cloudinary (déjà uploadée côté frontend) > base64 (fallback)
+      if (formData.coverImageUrl && formData.coverImageUrl.startsWith('http')) {
+        coverImageUrl = formData.coverImageUrl;
+        console.log('🖼️ Cover URL Cloudinary reçue:', coverImageUrl);
+        delete formData.coverImageUrl;
+      } else if (formData.coverImageBase64) {
+        console.log('🖼️ Cover base64 reçue (fallback):', (formData.coverImageBase64.length / 1024 / 1024).toFixed(1), 'MB');
         try {
           const result = await saveCoverImage(formData.coverImageBase64);
           coverImageUrl = result.url;

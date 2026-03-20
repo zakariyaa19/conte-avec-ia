@@ -6,6 +6,8 @@ interface UseCoverPreviewReturn {
   coverImageUrl: string | null;
   coverTitle: string | null;
   rawBase64: string | null;
+  /** URL Cloudinary de la cover (prête pour soumission — léger, pas de base64) */
+  cloudinaryUrl: string | null;
   isGenerating: boolean;
   error: string | null;
   generate: () => void;
@@ -49,6 +51,7 @@ export function useCoverPreview(formData: Partial<StoryFormData>): UseCoverPrevi
   const [coverImageUrl, setCoverImageUrl] = useState<string | null>(null);
   const [coverTitle, setCoverTitle] = useState<string | null>(null);
   const [rawBase64, setRawBase64] = useState<string | null>(null);
+  const [cloudinaryUrl, setCloudinaryUrl] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -131,10 +134,24 @@ export function useCoverPreview(formData: Partial<StoryFormData>): UseCoverPrevi
       if (controller.signal.aborted) return;
 
       if (result.success && result.data) {
-        setCoverImageUrl(`data:image/png;base64,${result.data.imageBase64}`);
-        setRawBase64(result.data.imageBase64);
+        const base64 = result.data.imageBase64;
+        setCoverImageUrl(`data:image/png;base64,${base64}`);
+        setRawBase64(base64);
         setCoverTitle(result.data.title || null);
         setError(null);
+
+        // Upload immédiat sur Cloudinary en background (fire-and-forget)
+        // Le formulaire enverra l'URL Cloudinary au lieu du base64 (quelques octets vs 20MB)
+        ApiService.uploadCoverToCloud(base64)
+          .then(res => {
+            if (res.success && res.url) {
+              setCloudinaryUrl(res.url);
+              console.log('[Cover] Cloudinary upload OK:', res.url);
+            } else {
+              console.warn('[Cover] Cloudinary upload failed, fallback base64');
+            }
+          })
+          .catch(err => console.warn('[Cover] Cloudinary upload error, fallback base64:', err));
       } else {
         setError(result.message || 'Erreur de génération');
       }
@@ -153,6 +170,7 @@ export function useCoverPreview(formData: Partial<StoryFormData>): UseCoverPrevi
     coverImageUrl,
     coverTitle,
     rawBase64,
+    cloudinaryUrl,
     isGenerating,
     error,
     generate,

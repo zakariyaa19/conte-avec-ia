@@ -49,6 +49,8 @@ app.use(morgan(process.env.NODE_ENV === 'production' ? 'short' : 'combined'));
 app.use('/api/stripe', stripeRoutes);
 
 // Middleware de parsing
+// 50MB pour supporter le fallback base64 si l'upload Cloudinary échoue
+// En temps normal, le formulaire n'envoie que l'URL Cloudinary (quelques octets)
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 

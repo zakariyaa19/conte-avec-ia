@@ -60,6 +60,7 @@ export interface StoryFormData {
   userEmail: string;
   password?: string;
   coverImageBase64?: string;
+  coverImageUrl?: string;
   coverTitle?: string;
   productType: 'ebook';
   purchaseType?: 'single' | 'club';

@@ -212,6 +212,16 @@ export class ApiService {
     });
   }
 
+  // Upload cover base64 → Cloudinary AVANT la soumission du formulaire
+  // Retourne l'URL Cloudinary pour l'inclure dans le JSON (quelques octets au lieu de 20MB)
+  static async uploadCoverToCloud(coverImageBase64: string): Promise<{ success: boolean; url?: string }> {
+    return this.request('/api/upload/cover', {
+      method: 'POST',
+      body: JSON.stringify({ coverImageBase64 }),
+      signal: this.createTimeoutSignal(120000), // 2min pour upload gros fichier
+    });
+  }
+
   // Authentification admin
   static async adminLogin(email: string, password: string): Promise<{ success: boolean; data: any; message?: string }> {
     return this.request('/api/admin/login', {

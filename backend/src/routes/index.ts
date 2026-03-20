@@ -8,6 +8,7 @@ import tiktokRouter from './tiktok';
 import previewRouter from './preview';
 import publicRouter from './public';
 import jobsRouter from './jobs';
+import uploadRouter from './upload';
 
 const router = Router();
 
@@ -21,6 +22,7 @@ router.use('/tiktok', tiktokRouter);
 router.use('/preview', previewRouter);
 router.use('/public', publicRouter);
 router.use('/jobs', jobsRouter);
+router.use('/upload', uploadRouter);
 
 // Route de santé
 router.get('/health', (req, res) => {

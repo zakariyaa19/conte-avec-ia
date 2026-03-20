@@ -231,7 +231,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
 
   const { load: loadDraft, clear: clearDraft, autoSave, hasDraft } = useWizardPersistence();
 
-  const { coverImageUrl, coverTitle, rawBase64, isGenerating: isCoverGenerating, error: coverError, generate: generateCover } = useCoverPreview(formData);
+  const { coverImageUrl, coverTitle, rawBase64, cloudinaryUrl, isGenerating: isCoverGenerating, error: coverError, generate: generateCover } = useCoverPreview(formData);
   const { previewTitle, previewParagraphs, isGenerating: isStoryPreviewGenerating, error: storyPreviewError, generate: generateStoryPreview } = useStoryPreview(formData);
   const { illustrationUrl, illustrationBase64, isGenerating: isIllustrationGenerating, generate: generateIllustration } = useFirstIllustration(formData);
   const illustrationTriggeredRef = useRef(false);
@@ -466,14 +466,19 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
     const skipValidation = isAuthenticated;
     if (skipValidation || validatePaymentForm()) {
       clearDraft();
-      // Pass cover image directly in submit (no async state dependency)
       const coverOverride: Partial<StoryFormData> = {};
-      if (rawBase64) {
+      if (cloudinaryUrl) {
+        // Préférer l'URL Cloudinary (quelques octets au lieu de 20MB de base64)
+        coverOverride.coverImageUrl = cloudinaryUrl;
+        coverOverride.coverTitle = coverTitle || undefined;
+        console.log('[Wizard] Using Cloudinary URL:', cloudinaryUrl);
+      } else if (rawBase64) {
+        // Fallback: envoyer le base64 si l'upload Cloudinary n'est pas terminé
         coverOverride.coverImageBase64 = rawBase64;
         coverOverride.coverTitle = coverTitle || undefined;
-        console.log('[Wizard] Injecting cover base64 in submit:', rawBase64.length, 'chars');
+        console.log('[Wizard] Fallback: sending base64:', rawBase64.length, 'chars');
       } else {
-        console.warn('[Wizard] No rawBase64 available at submit time!');
+        console.warn('[Wizard] No cover available at submit time!');
       }
       onSubmit(Object.keys(coverOverride).length > 0 ? coverOverride : undefined);
     } else {
