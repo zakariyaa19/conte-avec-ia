@@ -403,15 +403,18 @@ export const createCustomerPortal = async (req: ClientAuthRequest, res: Response
       return res.status(400).json({ error: 'Aucun compte de paiement trouve. Contactez le support.' });
     }
 
+    console.log(`[Portal] Ouverture portail pour customer ${customerId} (user ${user.email})`);
+
     const session = await stripe.billingPortal.sessions.create({
       customer: customerId,
       return_url: `${process.env.FRONTEND_URL}/dashboard/account`
     });
 
     res.json({ url: session.url });
-  } catch (error) {
-    console.error('Erreur portail client:', error);
-    res.status(500).json({ error: 'Erreur lors de la creation du portail' });
+  } catch (error: any) {
+    console.error('Erreur portail client:', error?.message || error);
+    const stripeMsg = error?.raw?.message || error?.message || '';
+    res.status(500).json({ error: `Erreur portail: ${stripeMsg || 'Erreur inconnue'}` });
   }
 };
 
