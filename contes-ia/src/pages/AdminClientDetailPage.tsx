@@ -392,7 +392,7 @@ export const AdminClientDetailPage: React.FC<AdminClientDetailPageProps> = ({ to
                   <InfoRow>
                     <InfoLabel>Crédits restants</InfoLabel>
                     <InfoValue style={{ fontWeight: 700, color: remaining > 0 ? '#22C55E' : '#EF4444' }}>
-                      {remaining}/4 ce mois (total gagné: {totalEarned})
+                      {remaining} restant{remaining > 1 ? 's' : ''} (gagné: {totalEarned}, utilisé: {used})
                     </InfoValue>
                   </InfoRow>
                   <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
@@ -419,11 +419,13 @@ export const AdminClientDetailPage: React.FC<AdminClientDetailPageProps> = ({ to
                     </button>
                     <button
                       onClick={async () => {
-                        const amount = prompt('Combien de crédits ajouter ?', '4');
-                        if (!amount) return;
+                        const input = prompt('Combien de crédits ajouter ?', '4');
+                        if (!input) return;
+                        const num = parseInt(input);
+                        if (isNaN(num) || num <= 0) { alert('Entrez un nombre positif'); return; }
                         const token = localStorage.getItem('adminToken') || '';
                         try {
-                          const res = await ApiService.updateAdminClientCredits(token, client.id, 'add', parseInt(amount));
+                          const res = await ApiService.updateAdminClientCredits(token, client.id, 'add', num);
                           if (res.success) {
                             alert(res.message);
                             window.location.reload();

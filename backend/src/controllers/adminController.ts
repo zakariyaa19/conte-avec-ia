@@ -683,17 +683,22 @@ export class AdminController {
         return res.status(400).json({ success: false, message: 'Ce client n\'est pas membre Club' });
       }
 
+      const parsedAmount = typeof amount === 'number' ? amount : parseInt(amount);
+      if (isNaN(parsedAmount) || parsedAmount < 0) {
+        return res.status(400).json({ success: false, message: 'Montant invalide (doit etre un nombre positif)' });
+      }
+
       const currentUsed = user.weeklySubmissionCount || 0;
 
       if (action === 'add') {
         // Ajouter des credits = reduire le compteur d'utilisation
-        const newCount = Math.max(0, currentUsed - (amount || 1));
+        const newCount = Math.max(0, currentUsed - parsedAmount);
         await prisma.user.update({ where: { id }, data: { weeklySubmissionCount: newCount } });
-        res.json({ success: true, message: `${amount || 1} credit(s) ajoute(s). Credits utilises: ${newCount}` });
+        res.json({ success: true, message: `${parsedAmount} credit(s) ajoute(s). Credits utilises: ${currentUsed} → ${newCount}` });
       } else if (action === 'set') {
         // Definir le nombre de credits utilises directement
-        await prisma.user.update({ where: { id }, data: { weeklySubmissionCount: Math.max(0, amount || 0) } });
-        res.json({ success: true, message: `Credits utilises definis a ${amount || 0}` });
+        await prisma.user.update({ where: { id }, data: { weeklySubmissionCount: parsedAmount } });
+        res.json({ success: true, message: `Credits utilises definis a ${parsedAmount}` });
       } else {
         res.status(400).json({ success: false, message: 'Action invalide (add ou set)' });
       }
