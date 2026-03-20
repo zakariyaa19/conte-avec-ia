@@ -1630,16 +1630,20 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
 
                       {!rawBase64 ? (
                         <div style={{ width: '100%', marginTop: '6px' }}>
-                          <div style={{ height: '3px', borderRadius: '2px', background: 'var(--border-color)', overflow: 'hidden' }}>
+                          <div style={{ height: '4px', borderRadius: '2px', background: 'var(--border-color)', overflow: 'hidden' }}>
                             <div style={{
-                              height: '100%', borderRadius: '2px',
-                              background: `linear-gradient(90deg, ${theme.colors.accent.coral}, #FF7F7F)`,
-                              animation: 'coverProgress 15s ease-out forwards',
+                              height: '100%', borderRadius: '2px', width: '40%',
+                              background: `linear-gradient(90deg, ${theme.colors.accent.coral}, #FF7F7F, ${theme.colors.accent.coral})`,
+                              animation: 'coverShimmer 1.5s ease-in-out infinite',
                             }} />
                           </div>
-                          <p style={{ fontSize: '10px', color: 'var(--text-light)', marginTop: '4px', textAlign: 'center' }}>
-                            Votre livre est en cours de creation... Entrez votre email en attendant
+                          <p style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '6px', textAlign: 'center', fontWeight: 500 }}>
+                            Votre livre est en cours de creation...
                           </p>
+                          <p style={{ fontSize: '10px', color: 'var(--text-light)', marginTop: '2px', textAlign: 'center' }}>
+                            Entrez votre email en attendant
+                          </p>
+                          <style>{`@keyframes coverShimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(350%); } }`}</style>
                         </div>
                       ) : (
                         <p style={{ fontSize: '10px', color: 'var(--text-light)', marginTop: '6px', textAlign: 'center' }}>
