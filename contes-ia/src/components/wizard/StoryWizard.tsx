@@ -1471,9 +1471,9 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
 
                     {globalError && <ErrorMessage>{globalError}</ErrorMessage>}
 
-                    <PayButton $isReady={!!cloudinaryUrl} disabled={isSubmitting || !cloudinaryUrl} onClick={handleFormSubmit}
+                    <PayButton $isReady={!!rawBase64} disabled={isSubmitting || !rawBase64} onClick={handleFormSubmit}
                       style={{ width: '100%', borderRadius: '14px', padding: '16px', fontSize: theme.fontSizes.base, flexShrink: 0 }}>
-                      {isSubmitting ? 'Génération en cours...' : !rawBase64 ? 'Préparation de la couverture...' : !cloudinaryUrl ? 'Finalisation...' : `Lire le livre de ${heroName} gratuitement →`}
+                      {isSubmitting ? 'Génération en cours...' : !rawBase64 ? 'Préparation de la couverture...' : `Lire le livre de ${heroName} gratuitement →`}
                     </PayButton>
 
                     {!rawBase64 ? (
