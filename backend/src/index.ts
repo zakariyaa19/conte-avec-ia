@@ -109,11 +109,9 @@ app.use('/files', filesRoutes);
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error('Error:', err);
   
-  const isDev = process.env.NODE_ENV === 'development';
   res.status(err.status || 500).json({
     success: false,
-    message: isDev ? (err.message || 'Erreur interne du serveur') : 'Erreur interne du serveur',
-    ...(isDev && { stack: err.stack })
+    message: err.message || 'Erreur interne du serveur',
   });
 });
 

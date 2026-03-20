@@ -455,11 +455,12 @@ export class OrderController {
         message: isFirstBookFree ? 'Premier livre gratuit cree avec succes' : isClubFreeOrder ? 'Conte Club gratuit cree avec succes' : 'Commande creee avec succes'
       });
 
-    } catch (error) {
-      console.error('Erreur création commande:', error);
+    } catch (error: any) {
+      const errMsg = error?.message || String(error);
+      console.error('Erreur création commande:', errMsg, error?.stack);
       res.status(500).json({
         success: false,
-        message: 'Erreur lors de la création de la commande'
+        message: `Erreur création commande: ${errMsg}`
       });
     }
   }

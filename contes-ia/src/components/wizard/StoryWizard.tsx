@@ -1462,7 +1462,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
 
                     <PayButton $isReady={!!rawBase64} disabled={isSubmitting || !rawBase64} onClick={handleFormSubmit}
                       style={{ width: '100%', borderRadius: '14px', padding: '16px', fontSize: theme.fontSizes.base, flexShrink: 0 }}>
-                      {isSubmitting ? 'Génération en cours...' : !rawBase64 ? 'Préparation de la couverture...' : `Générer le livre de ${heroName} →`}
+                      {isSubmitting ? 'Génération en cours...' : !rawBase64 ? 'Préparation de la couverture...' : `Lire le livre de ${heroName} gratuitement →`}
                     </PayButton>
 
                     {!rawBase64 ? (
@@ -1614,7 +1614,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                         {isSubmitting ? 'Traitement...'
                           : !rawBase64 ? 'Préparation de la couverture...'
                           : isFirstPurchase ? 'Lire mon livre gratuitement →'
-                          : `Payer ${singlePriceLabel} — Recevoir mon livre`}
+                          : `Payer ${singlePriceLabel} — Paiement sécurisé`}
                       </PayButton>
 
                       {!rawBase64 ? (
