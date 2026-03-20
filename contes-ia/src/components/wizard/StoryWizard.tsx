@@ -1384,12 +1384,13 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
         };
 
         // ── PREVIEW STEP: show form immediately, cover loads in background ──
+        const isCompactPreview = isSimplifiedMode || isClubWithCredit;
         return (
           <>
-            <StepTitle style={{ fontSize: theme.fontSizes.lg, marginBottom: theme.spacing.sm }}>
+            <StepTitle style={{ fontSize: isCompactPreview ? theme.fontSizes.base : theme.fontSizes.lg, marginBottom: isCompactPreview ? '6px' : theme.spacing.sm, flexShrink: 0 }}>
               {allReady ? `Le livre de ${heroName} est prêt !` : `Création du livre de ${heroName}...`}
             </StepTitle>
-            {allReady && (
+            {allReady && !isCompactPreview && (
               <StepSubtitle style={{ marginBottom: theme.spacing.md }}>
                 Montrez l'histoire de {heroName} à votre famille
               </StepSubtitle>
@@ -1397,106 +1398,75 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
 
             {/* ══════ COMPACT FLOW ══════ */}
             {(isSimplifiedMode || isClubWithCredit) && formData.productType && (
-              <div style={{ width: '100%', maxWidth: 400, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <div style={{ width: '100%', maxWidth: 400, flex: '1 1 0', minHeight: 0, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
                 {/* ── CASE A: Club connecté avec crédits → juste un bouton ── */}
                 {isClubWithCredit && isAuthenticated && (
                   <>
-                    {/* Cover or animated loading — LARGE since no form fields */}
-                    {coverImageUrl ? (
-                      <div style={{
-                        width: '220px', height: '300px', borderRadius: '16px',
-                        overflow: 'hidden', margin: '0 auto 16px',
-                        boxShadow: '0 12px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,153,153,0.12)',
-                      }}>
-                        <img src={coverImageUrl} alt="Couverture" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '16px' }} />
-                      </div>
-                    ) : (
-                      <div style={{
-                        width: '220px', height: '300px', borderRadius: '16px',
-                        margin: '0 auto 16px', overflow: 'hidden',
-                        background: 'linear-gradient(145deg, #1C1735, #2E2850, #1C1735)',
-                        boxShadow: '0 12px 40px rgba(0,0,0,0.4)',
-                      }}>
-                        <svg viewBox="0 0 160 220" width="220" height="300" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          {/* Background shimmer */}
-                          <rect width="160" height="220" fill="url(#shimmerGrad)">
-                            <animate attributeName="opacity" values="0.3;0.6;0.3" dur="2s" repeatCount="indefinite" />
-                          </rect>
-                          <defs>
-                            <linearGradient id="shimmerGrad" x1="0" y1="0" x2="160" y2="220">
-                              <stop offset="0%" stopColor="#FF9999" stopOpacity="0.08" />
-                              <stop offset="50%" stopColor="#A78BFA" stopOpacity="0.12" />
-                              <stop offset="100%" stopColor="#FF9999" stopOpacity="0.06" />
-                            </linearGradient>
-                          </defs>
-                          {/* Book spine */}
-                          <rect x="10" y="30" width="8" height="160" rx="4" fill="#FF9999" opacity="0.3">
-                            <animate attributeName="height" values="0;160" dur="1s" fill="freeze" />
-                          </rect>
-                          {/* Book cover outline */}
-                          <rect x="18" y="30" width="120" height="160" rx="6" stroke="#FF9999" strokeWidth="1.5" opacity="0.25">
-                            <animate attributeName="stroke-dashoffset" from="560" to="0" dur="2s" fill="freeze" />
-                            <animate attributeName="stroke-dasharray" values="560;560" dur="0.01s" fill="freeze" />
-                          </rect>
-                          {/* Image placeholder area */}
-                          <rect x="28" y="45" width="100" height="70" rx="4" fill="#FF9999" opacity="0.06">
-                            <animate attributeName="opacity" values="0.04;0.1;0.04" dur="2.5s" repeatCount="indefinite" />
-                          </rect>
-                          {/* Painting brush strokes */}
-                          <rect x="35" y="55" width="0" height="8" rx="4" fill="#E8A060" opacity="0.3">
-                            <animate attributeName="width" values="0;80" dur="1.5s" begin="0.5s" fill="freeze" />
-                          </rect>
-                          <rect x="35" y="70" width="0" height="6" rx="3" fill="#6BA3D6" opacity="0.25">
-                            <animate attributeName="width" values="0;65" dur="1.2s" begin="1s" fill="freeze" />
-                          </rect>
-                          <rect x="35" y="83" width="0" height="6" rx="3" fill="#E88AAA" opacity="0.2">
-                            <animate attributeName="width" values="0;72" dur="1.3s" begin="1.4s" fill="freeze" />
-                          </rect>
-                          <rect x="35" y="96" width="0" height="5" rx="2.5" fill="#6BBF8A" opacity="0.2">
-                            <animate attributeName="width" values="0;55" dur="1s" begin="1.8s" fill="freeze" />
-                          </rect>
-                          {/* Text lines */}
-                          <rect x="28" y="128" width="0" height="3" rx="1.5" fill="white" opacity="0.15">
-                            <animate attributeName="width" values="0;90" dur="0.8s" begin="2s" fill="freeze" />
-                          </rect>
-                          <rect x="28" y="137" width="0" height="3" rx="1.5" fill="white" opacity="0.12">
-                            <animate attributeName="width" values="0;75" dur="0.7s" begin="2.3s" fill="freeze" />
-                          </rect>
-                          <rect x="28" y="146" width="0" height="3" rx="1.5" fill="white" opacity="0.1">
-                            <animate attributeName="width" values="0;82" dur="0.75s" begin="2.5s" fill="freeze" />
-                          </rect>
-                          <rect x="28" y="155" width="0" height="3" rx="1.5" fill="white" opacity="0.08">
-                            <animate attributeName="width" values="0;60" dur="0.6s" begin="2.7s" fill="freeze" />
-                          </rect>
-                          {/* Sparkles */}
-                          <circle cx="120" cy="42" r="3" fill="#FFD700">
-                            <animate attributeName="opacity" values="0;0.8;0" dur="1.5s" repeatCount="indefinite" />
-                            <animate attributeName="r" values="2;4;2" dur="1.5s" repeatCount="indefinite" />
-                          </circle>
-                          <circle cx="40" cy="175" r="2.5" fill="#FF9999">
-                            <animate attributeName="opacity" values="0;0.6;0" dur="2s" begin="0.8s" repeatCount="indefinite" />
-                          </circle>
-                          <circle cx="130" cy="170" r="2" fill="#A8D8EA">
-                            <animate attributeName="opacity" values="0;0.7;0" dur="1.8s" begin="0.4s" repeatCount="indefinite" />
-                          </circle>
-                          {/* Loading text */}
-                          <text x="80" y="200" textAnchor="middle" fill="rgba(255,255,255,0.4)" fontSize="9" fontFamily="sans-serif">Création en cours...</text>
-                        </svg>
-                      </div>
-                    )}
+                    {/* Cover — fills all available viewport space */}
+                    <div style={{
+                      flex: '1 1 0', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      minHeight: 0, margin: '0 0 12px',
+                    }}>
+                      {coverImageUrl ? (
+                        <img src={coverImageUrl} alt="Couverture" style={{
+                          maxHeight: '100%', maxWidth: '80%', width: 'auto', height: 'auto',
+                          borderRadius: '16px', objectFit: 'contain',
+                          boxShadow: '0 16px 48px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,153,153,0.12)',
+                        }} />
+                      ) : (
+                        <div style={{
+                          width: '65%', maxWidth: '260px', aspectRatio: '3/4', borderRadius: '16px',
+                          overflow: 'hidden',
+                          background: 'linear-gradient(145deg, #2E2850, #1C1735)',
+                          boxShadow: '0 16px 48px rgba(0,0,0,0.5)',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        }}>
+                          <svg viewBox="0 0 160 220" width="100%" height="100%" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="160" height="220" fill="url(#shimmerGrad)">
+                              <animate attributeName="opacity" values="0.3;0.6;0.3" dur="2s" repeatCount="indefinite" />
+                            </rect>
+                            <defs>
+                              <linearGradient id="shimmerGrad" x1="0" y1="0" x2="160" y2="220">
+                                <stop offset="0%" stopColor="#FF9999" stopOpacity="0.08" />
+                                <stop offset="50%" stopColor="#A78BFA" stopOpacity="0.12" />
+                                <stop offset="100%" stopColor="#FF9999" stopOpacity="0.06" />
+                              </linearGradient>
+                            </defs>
+                            <rect x="18" y="30" width="120" height="160" rx="6" stroke="#FF9999" strokeWidth="1.5" opacity="0.25">
+                              <animate attributeName="stroke-dashoffset" from="560" to="0" dur="2s" fill="freeze" />
+                              <animate attributeName="stroke-dasharray" values="560;560" dur="0.01s" fill="freeze" />
+                            </rect>
+                            <rect x="35" y="55" width="0" height="8" rx="4" fill="#E8A060" opacity="0.3">
+                              <animate attributeName="width" values="0;80" dur="1.5s" begin="0.5s" fill="freeze" />
+                            </rect>
+                            <rect x="35" y="70" width="0" height="6" rx="3" fill="#6BA3D6" opacity="0.25">
+                              <animate attributeName="width" values="0;65" dur="1.2s" begin="1s" fill="freeze" />
+                            </rect>
+                            <rect x="35" y="83" width="0" height="6" rx="3" fill="#E88AAA" opacity="0.2">
+                              <animate attributeName="width" values="0;72" dur="1.3s" begin="1.4s" fill="freeze" />
+                            </rect>
+                            <circle cx="120" cy="42" r="3" fill="#FFD700">
+                              <animate attributeName="opacity" values="0;0.8;0" dur="1.5s" repeatCount="indefinite" />
+                              <animate attributeName="r" values="2;4;2" dur="1.5s" repeatCount="indefinite" />
+                            </circle>
+                            <text x="80" y="200" textAnchor="middle" fill="rgba(255,255,255,0.4)" fontSize="9" fontFamily="sans-serif">Création en cours...</text>
+                          </svg>
+                        </div>
+                      )}
+                    </div>
 
                     <div ref={orderFormRef} />
 
                     {globalError && <ErrorMessage>{globalError}</ErrorMessage>}
 
                     <PayButton $isReady={!!rawBase64} disabled={isSubmitting || !rawBase64} onClick={handleFormSubmit}
-                      style={{ width: '100%', borderRadius: '14px', padding: '16px', fontSize: theme.fontSizes.base }}>
+                      style={{ width: '100%', borderRadius: '14px', padding: '16px', fontSize: theme.fontSizes.base, flexShrink: 0 }}>
                       {isSubmitting ? 'Génération en cours...' : !rawBase64 ? 'Préparation de la couverture...' : `Générer le livre de ${heroName} →`}
                     </PayButton>
 
                     {!rawBase64 ? (
-                      <div style={{ width: '100%', marginTop: '10px' }}>
+                      <div style={{ width: '100%', marginTop: '10px', flexShrink: 0 }}>
                         <div style={{ height: '4px', borderRadius: '2px', background: 'var(--border-color)', overflow: 'hidden' }}>
                           <div style={{
                             height: '100%', borderRadius: '2px',
@@ -1510,8 +1480,8 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                         <style>{`@keyframes coverProgress { 0% { width: 0%; } 50% { width: 60%; } 80% { width: 85%; } 100% { width: 95%; } }`}</style>
                       </div>
                     ) : (
-                      <p style={{ fontSize: '11px', color: 'var(--text-light)', marginTop: '8px', textAlign: 'center' }}>
-                        ✅ Inclus dans votre Club · ⚡ Prêt en 5 min
+                      <p style={{ fontSize: '11px', color: 'var(--text-light)', marginTop: '8px', textAlign: 'center', flexShrink: 0 }}>
+                        Inclus dans votre Club
                       </p>
                     )}
                   </>
@@ -1520,91 +1490,68 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 {/* ── CASE B: Non connecté OU connecté gratuit (premier livre) ── */}
                 {!isClubWithCredit && (
                   <>
-                    {/* Cover or animated loading */}
-                    {coverImageUrl ? (
-                      <div style={{
-                        width: '200px', height: '270px', borderRadius: '14px',
-                        overflow: 'hidden', margin: '0 auto 10px',
-                        boxShadow: '0 8px 28px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,153,153,0.1)',
-                      }}>
-                        <img src={coverImageUrl} alt="Couverture" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '14px' }} />
-                      </div>
-                    ) : (
-                      <div style={{
-                        width: '200px', height: '270px', borderRadius: '14px',
-                        margin: '0 auto 10px', overflow: 'hidden',
-                        background: 'linear-gradient(145deg, #1C1735, #2E2850, #1C1735)',
-                        boxShadow: '0 8px 28px rgba(0,0,0,0.35)',
-                      }}>
-                        <svg viewBox="0 0 160 220" width="200" height="270" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <rect width="160" height="220" fill="url(#shimGrad2)">
-                            <animate attributeName="opacity" values="0.3;0.6;0.3" dur="2s" repeatCount="indefinite" />
-                          </rect>
-                          <defs>
-                            <linearGradient id="shimGrad2" x1="0" y1="0" x2="160" y2="220">
-                              <stop offset="0%" stopColor="#FF9999" stopOpacity="0.08" />
-                              <stop offset="50%" stopColor="#A78BFA" stopOpacity="0.12" />
-                              <stop offset="100%" stopColor="#FF9999" stopOpacity="0.06" />
-                            </linearGradient>
-                          </defs>
-                          <rect x="10" y="30" width="8" height="160" rx="4" fill="#FF9999" opacity="0.3">
-                            <animate attributeName="height" values="0;160" dur="1s" fill="freeze" />
-                          </rect>
-                          <rect x="18" y="30" width="120" height="160" rx="6" stroke="#FF9999" strokeWidth="1.5" opacity="0.25">
-                            <animate attributeName="stroke-dashoffset" from="560" to="0" dur="2s" fill="freeze" />
-                            <animate attributeName="stroke-dasharray" values="560;560" dur="0.01s" fill="freeze" />
-                          </rect>
-                          <rect x="28" y="45" width="100" height="70" rx="4" fill="#FF9999" opacity="0.06">
-                            <animate attributeName="opacity" values="0.04;0.1;0.04" dur="2.5s" repeatCount="indefinite" />
-                          </rect>
-                          <rect x="35" y="55" width="0" height="8" rx="4" fill="#E8A060" opacity="0.3">
-                            <animate attributeName="width" values="0;80" dur="1.5s" begin="0.5s" fill="freeze" />
-                          </rect>
-                          <rect x="35" y="70" width="0" height="6" rx="3" fill="#6BA3D6" opacity="0.25">
-                            <animate attributeName="width" values="0;65" dur="1.2s" begin="1s" fill="freeze" />
-                          </rect>
-                          <rect x="35" y="83" width="0" height="6" rx="3" fill="#E88AAA" opacity="0.2">
-                            <animate attributeName="width" values="0;72" dur="1.3s" begin="1.4s" fill="freeze" />
-                          </rect>
-                          <rect x="35" y="96" width="0" height="5" rx="2.5" fill="#6BBF8A" opacity="0.2">
-                            <animate attributeName="width" values="0;55" dur="1s" begin="1.8s" fill="freeze" />
-                          </rect>
-                          <rect x="28" y="128" width="0" height="3" rx="1.5" fill="white" opacity="0.15">
-                            <animate attributeName="width" values="0;90" dur="0.8s" begin="2s" fill="freeze" />
-                          </rect>
-                          <rect x="28" y="137" width="0" height="3" rx="1.5" fill="white" opacity="0.12">
-                            <animate attributeName="width" values="0;75" dur="0.7s" begin="2.3s" fill="freeze" />
-                          </rect>
-                          <rect x="28" y="146" width="0" height="3" rx="1.5" fill="white" opacity="0.1">
-                            <animate attributeName="width" values="0;82" dur="0.75s" begin="2.5s" fill="freeze" />
-                          </rect>
-                          <rect x="28" y="155" width="0" height="3" rx="1.5" fill="white" opacity="0.08">
-                            <animate attributeName="width" values="0;60" dur="0.6s" begin="2.7s" fill="freeze" />
-                          </rect>
-                          <circle cx="120" cy="42" r="3" fill="#FFD700">
-                            <animate attributeName="opacity" values="0;0.8;0" dur="1.5s" repeatCount="indefinite" />
-                            <animate attributeName="r" values="2;4;2" dur="1.5s" repeatCount="indefinite" />
-                          </circle>
-                          <circle cx="40" cy="175" r="2.5" fill="#FF9999">
-                            <animate attributeName="opacity" values="0;0.6;0" dur="2s" begin="0.8s" repeatCount="indefinite" />
-                          </circle>
-                          <circle cx="130" cy="170" r="2" fill="#A8D8EA">
-                            <animate attributeName="opacity" values="0;0.7;0" dur="1.8s" begin="0.4s" repeatCount="indefinite" />
-                          </circle>
-                          <text x="80" y="200" textAnchor="middle" fill="rgba(255,255,255,0.4)" fontSize="9" fontFamily="sans-serif">Création en cours...</text>
-                        </svg>
-                      </div>
-                    )}
+                    {/* Cover — fills available space above the form */}
+                    <div style={{
+                      flex: '1 1 0', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      minHeight: 0, margin: '0 0 10px',
+                    }}>
+                      {coverImageUrl ? (
+                        <img src={coverImageUrl} alt="Couverture" style={{
+                          maxHeight: '100%', maxWidth: '70%', width: 'auto', height: 'auto',
+                          borderRadius: '14px', objectFit: 'contain',
+                          boxShadow: '0 12px 36px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,153,153,0.1)',
+                        }} />
+                      ) : (
+                        <div style={{
+                          width: '55%', maxWidth: '220px', aspectRatio: '3/4', borderRadius: '14px',
+                          overflow: 'hidden',
+                          background: 'linear-gradient(145deg, #2E2850, #1C1735)',
+                          boxShadow: '0 12px 36px rgba(0,0,0,0.45)',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        }}>
+                          <svg viewBox="0 0 160 220" width="100%" height="100%" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="160" height="220" fill="url(#shimGrad2)">
+                              <animate attributeName="opacity" values="0.3;0.6;0.3" dur="2s" repeatCount="indefinite" />
+                            </rect>
+                            <defs>
+                              <linearGradient id="shimGrad2" x1="0" y1="0" x2="160" y2="220">
+                                <stop offset="0%" stopColor="#FF9999" stopOpacity="0.08" />
+                                <stop offset="50%" stopColor="#A78BFA" stopOpacity="0.12" />
+                                <stop offset="100%" stopColor="#FF9999" stopOpacity="0.06" />
+                              </linearGradient>
+                            </defs>
+                            <rect x="18" y="30" width="120" height="160" rx="6" stroke="#FF9999" strokeWidth="1.5" opacity="0.25">
+                              <animate attributeName="stroke-dashoffset" from="560" to="0" dur="2s" fill="freeze" />
+                              <animate attributeName="stroke-dasharray" values="560;560" dur="0.01s" fill="freeze" />
+                            </rect>
+                            <rect x="35" y="55" width="0" height="8" rx="4" fill="#E8A060" opacity="0.3">
+                              <animate attributeName="width" values="0;80" dur="1.5s" begin="0.5s" fill="freeze" />
+                            </rect>
+                            <rect x="35" y="70" width="0" height="6" rx="3" fill="#6BA3D6" opacity="0.25">
+                              <animate attributeName="width" values="0;65" dur="1.2s" begin="1s" fill="freeze" />
+                            </rect>
+                            <rect x="35" y="83" width="0" height="6" rx="3" fill="#E88AAA" opacity="0.2">
+                              <animate attributeName="width" values="0;72" dur="1.3s" begin="1.4s" fill="freeze" />
+                            </rect>
+                            <circle cx="120" cy="42" r="3" fill="#FFD700">
+                              <animate attributeName="opacity" values="0;0.8;0" dur="1.5s" repeatCount="indefinite" />
+                              <animate attributeName="r" values="2;4;2" dur="1.5s" repeatCount="indefinite" />
+                            </circle>
+                            <text x="80" y="200" textAnchor="middle" fill="rgba(255,255,255,0.4)" fontSize="9" fontFamily="sans-serif">Création en cours...</text>
+                          </svg>
+                        </div>
+                      )}
+                    </div>
 
                     <p style={{
                       fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.sm,
                       fontWeight: 700, color: 'var(--text-primary)', textAlign: 'center',
-                      margin: '0 0 12px',
+                      margin: '0 0 8px', flexShrink: 0,
                     }}>
                       {isAuthenticated ? `Le livre de ${heroName} est prêt !` : `Recevez le livre de ${heroName} gratuitement`}
                     </p>
 
-                    <div ref={orderFormRef} style={{ width: '100%' }}>
+                    <div ref={orderFormRef} style={{ width: '100%', flexShrink: 0 }}>
                       {/* Google (non connecté uniquement) */}
                       {!isAuthenticated && !isInAppBrowser() && (
                         <div style={{ textAlign: 'center', marginBottom: '8px' }}>
@@ -1968,7 +1915,8 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
   };
 
   const renderStepInContainer = (step: number, state: 'entering' | 'active' | 'exiting') => (
-    <StepContainerCentered key={`step-${step}`} $state={state} $direction={direction} data-wizard-step>
+    <StepContainerCentered key={`step-${step}`} $state={state} $direction={direction} data-wizard-step
+      style={ALL_STEPS[step] === 'preview' ? { paddingBottom: '24px', overflow: 'hidden' } : undefined}>
       {renderStep(step)}
     </StepContainerCentered>
   );
