@@ -13,6 +13,7 @@ import { AdminPage } from './pages/AdminPage';
 import { AdminLoginPage } from './pages/AdminLoginPage';
 import { ClubCheckoutPage } from './pages/ClubCheckoutPage';
 import { ReferralPage } from './pages/ReferralPage';
+import { CancelSubscriptionPage } from './pages/CancelSubscriptionPage';
 import { LoginPage } from './pages/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { StoryDetailPage } from './pages/StoryDetailPage';
@@ -92,6 +93,7 @@ function App() {
           <Route path="/club" element={<ClubPage />} />
           <Route path="/club/checkout" element={<ClubCheckoutPage />} />
           <Route path="/referral" element={<ReferralPage />} />
+          <Route path="/account/cancel" element={<CancelSubscriptionPage />} />
           <Route path="/upgrade" element={<Navigate to="/club/checkout" replace />} />
           <Route path="/story/:shareToken" element={<PublicStoryPage />} />
           <Route path="/admin/login" element={<AdminLoginRoute />} />

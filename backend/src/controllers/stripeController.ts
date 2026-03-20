@@ -166,6 +166,36 @@ export const createSubscriptionSession = async (req: ClientAuthRequest, res: Res
   }
 };
 
+// Appliquer la reduction de retention (-70% sur la prochaine facture)
+export const applyRetentionDiscount = async (req: ClientAuthRequest, res: Response) => {
+  try {
+    const userId = req.clientUser?.id;
+    if (!userId) return res.status(401).json({ error: 'Authentification requise' });
+
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user || !user.subscriptionId) {
+      return res.status(400).json({ error: 'Aucun abonnement actif' });
+    }
+
+    const couponId = process.env.STRIPE_RETENTION_COUPON_ID;
+    if (!couponId) {
+      return res.status(500).json({ error: 'Coupon de retention non configure' });
+    }
+
+    // Apply the coupon to the subscription (next invoice only)
+    await stripe.subscriptions.update(user.subscriptionId, {
+      coupon: couponId,
+    });
+
+    console.log(`[Stripe] Retention discount applied for user ${user.email} on subscription ${user.subscriptionId}`);
+
+    res.json({ success: true, message: 'Reduction de 70% appliquee sur votre prochaine facture !' });
+  } catch (error: any) {
+    console.error('Erreur application reduction retention:', error.message);
+    res.status(500).json({ error: 'Erreur lors de l\'application de la reduction' });
+  }
+};
+
 // Finalise les commandes CLUB en attente pour un utilisateur qui vient d'etre active
 async function finalizePendingClubOrders(userId: string) {
   try {

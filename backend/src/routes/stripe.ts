@@ -1,5 +1,5 @@
 import express from 'express';
-import { createPaymentSession, checkPaymentStatus, handleStripeWebhook, createSubscriptionSession, createCustomerPortal, checkSubscriptionStatus } from '../controllers/stripeController';
+import { createPaymentSession, checkPaymentStatus, handleStripeWebhook, createSubscriptionSession, createCustomerPortal, checkSubscriptionStatus, applyRetentionDiscount } from '../controllers/stripeController';
 import { authenticateClient } from '../middleware/clientAuth';
 
 const router = express.Router();
@@ -17,6 +17,7 @@ router.get('/check-payment-status', checkPaymentStatus);
 // Routes protegees (necessite authentification client)
 router.post('/create-subscription-session', authenticateClient, createSubscriptionSession);
 router.post('/create-customer-portal', authenticateClient, createCustomerPortal);
+router.post('/apply-retention-discount', authenticateClient, applyRetentionDiscount);
 router.get('/check-subscription-status', authenticateClient, checkSubscriptionStatus);
 
 export default router;

@@ -332,6 +332,14 @@ export class ApiService {
     });
   }
 
+  // ========== Retention ==========
+  static async applyRetentionDiscount(token: string): Promise<{ success: boolean; message: string }> {
+    return this.request('/api/stripe/apply-retention-discount', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
+    });
+  }
+
   // ========== Referral ==========
   static async getReferralInfo(token: string): Promise<{ success: boolean; data: { referralCode: string; referralCredits: number; referralCount: number; maxCredits: number; referralLink: string } }> {
     return this.request('/api/client/referral', {

@@ -351,7 +351,7 @@ export const AccountPage: React.FC = () => {
                   <Button variant="outline" size="sm" onClick={handleManageSubscription}>
                     Gérer mon abonnement
                   </Button>
-                  <Button variant="ghost" size="sm" onClick={handleManageSubscription}
+                  <Button variant="ghost" size="sm" onClick={() => navigate('/account/cancel')}
                     style={{ color: 'var(--text-light)', fontSize: '12px' }}>
                     Résilier / Passer au plan gratuit
                   </Button>
