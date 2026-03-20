@@ -1326,141 +1326,17 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
           if (!coverImageUrl) generateCover();
         };
 
-        // ── LOADING STATE: immersive fullscreen canvas ──
-        if (!allReady) {
-          const elapsed = previewStartRef.current ? Date.now() - previewStartRef.current : 0;
-          const stage = elapsed < 3000 ? 0 : elapsed < 8000 ? 1 : 2;
-
-          const stageMessages = [
-            [
-              `Création de la couverture de ${heroName}...`,
-              'Notre IA imagine votre histoire...',
-              'Les couleurs prennent forme...',
-              'Votre livre se dessine...',
-            ],
-            [
-              'Presque prêt...',
-            ],
-            [
-              'Les illustrations prennent vie...',
-              'Les détails apparaissent...',
-              'Encore quelques instants magiques...',
-              'Votre livre est presque prêt...',
-            ],
-          ];
-          const messages = stageMessages[stage];
-
-          return (
-            <GenerationCanvas>
-              {/* Background animated layers */}
-              <CanvasLayer $z={0}>
-                <CanvasGradientBg />
-              </CanvasLayer>
-
-              {/* Floating book pages */}
-              <CanvasLayer $z={1}>
-                <FloatingPage $delay={0} $left="8%" $top="15%" $rotate={-12} $size={60} />
-                <FloatingPage $delay={1.5} $left="78%" $top="10%" $rotate={8} $size={50} />
-                <FloatingPage $delay={3} $left="15%" $top="65%" $rotate={-6} $size={45} />
-                <FloatingPage $delay={2.2} $left="72%" $top="60%" $rotate={15} $size={55} />
-                <FloatingPage $delay={4} $left="45%" $top="8%" $rotate={-3} $size={40} />
-              </CanvasLayer>
-
-              {/* Paint splashes */}
-              <CanvasLayer $z={2}>
-                <CanvasSplash $delay={0} $left="20%" $top="25%" $color="rgba(255, 180, 120, 0.12)" $size={120} />
-                <CanvasSplash $delay={1.8} $left="65%" $top="40%" $color="rgba(200, 160, 220, 0.10)" $size={140} />
-                <CanvasSplash $delay={3.5} $left="35%" $top="60%" $color="rgba(150, 200, 255, 0.08)" $size={100} />
-                <CanvasSplash $delay={0.9} $left="75%" $top="70%" $color="rgba(255, 215, 140, 0.10)" $size={110} />
-              </CanvasLayer>
-
-              {/* Sparkle particles */}
-              <CanvasLayer $z={3}>
-                <CanvasSparkle $delay={0} $left="12%" $top="20%" />
-                <CanvasSparkle $delay={0.8} $left="35%" $top="12%" />
-                <CanvasSparkle $delay={1.6} $left="55%" $top="25%" />
-                <CanvasSparkle $delay={2.4} $left="80%" $top="18%" />
-                <CanvasSparkle $delay={0.4} $left="25%" $top="75%" />
-                <CanvasSparkle $delay={1.2} $left="60%" $top="70%" />
-                <CanvasSparkle $delay={2.0} $left="88%" $top="55%" />
-                <CanvasSparkle $delay={3.2} $left="42%" $top="82%" />
-              </CanvasLayer>
-
-              {/* Central book icon */}
-              <CanvasLayer $z={4}>
-                <CanvasCenterContent>
-                  <CanvasBookIcon>
-                    <CanvasBookSpine />
-                    <CanvasBookCover>
-                      <CanvasBookStar>&#x2728;</CanvasBookStar>
-                    </CanvasBookCover>
-                    <CanvasBookGlow />
-                  </CanvasBookIcon>
-                </CanvasCenterContent>
-              </CanvasLayer>
-
-              {/* Text overlay */}
-              <CanvasLayer $z={5}>
-                <CanvasTextOverlay>
-                  <CanvasTitle>{messages[0]}</CanvasTitle>
-                  <CanvasMessagesContainer>
-                    {messages.slice(1).map((msg, i) => (
-                      <CanvasMessage key={`${stage}-${i}`} $index={i} $total={messages.length - 1}>{msg}</CanvasMessage>
-                    ))}
-                  </CanvasMessagesContainer>
-                </CanvasTextOverlay>
-              </CanvasLayer>
-
-              {/* Progress bar */}
-              <CanvasProgressContainer>
-                <CanvasProgressTrack>
-                  <CanvasProgressFill $stage={stage} />
-                </CanvasProgressTrack>
-                <CanvasProgressSteps>
-                  <CanvasProgressStep $done={false} $active={true}>Création de la couverture...</CanvasProgressStep>
-                </CanvasProgressSteps>
-              </CanvasProgressContainer>
-
-              {/* Retry button when generation is stuck or errored */}
-              {(hasError || isStuck) && (
-                <div style={{
-                  position: 'absolute', bottom: '100px', left: '50%', transform: 'translateX(-50%)',
-                  zIndex: 10, textAlign: 'center',
-                }}>
-                  <button
-                    onClick={handleRetryGeneration}
-                    style={{
-                      background: theme.colors.accent.coral,
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '12px',
-                      padding: '12px 24px',
-                      fontSize: '14px',
-                      fontWeight: 600,
-                      cursor: 'pointer',
-                      boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
-                    }}
-                  >
-                    Relancer la création
-                  </button>
-                  <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '12px', marginTop: '8px' }}>
-                    La connexion a été interrompue
-                  </p>
-                </div>
-              )}
-            </GenerationCanvas>
-          );
-        }
-
-        // ── ALL READY: show full preview + timer + pricing ──
+        // ── PREVIEW STEP: show form immediately, cover loads in background ──
         return (
           <>
             <StepTitle style={{ fontSize: theme.fontSizes.lg, marginBottom: theme.spacing.sm }}>
-              Le livre de {heroName} est prêt !
+              {allReady ? `Le livre de ${heroName} est prêt !` : `Création du livre de ${heroName}...`}
             </StepTitle>
-            <StepSubtitle style={{ marginBottom: theme.spacing.md }}>
-              Montrez l'histoire de {heroName} à votre famille
-            </StepSubtitle>
+            {allReady && (
+              <StepSubtitle style={{ marginBottom: theme.spacing.md }}>
+                Montrez l'histoire de {heroName} à votre famille
+              </StepSubtitle>
+            )}
 
             {/* ══════ COMPACT FLOW ══════ */}
             {(isSimplifiedMode || isClubWithCredit) && formData.productType && (
@@ -1469,12 +1345,18 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 {/* ── CASE A: Club connecté avec crédits → juste un bouton ── */}
                 {isClubWithCredit && isAuthenticated && (
                   <>
+                    {/* Cover or loading */}
                     <div style={{
                       width: '120px', height: '164px', borderRadius: '4px 10px 10px 4px',
                       overflow: 'hidden', margin: '0 auto 14px',
                       boxShadow: '0 6px 20px rgba(0,0,0,0.3)',
+                      background: 'var(--bg-card)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
                     }}>
-                      {coverImageUrl && <img src={coverImageUrl} alt="Couverture" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
+                      {coverImageUrl
+                        ? <img src={coverImageUrl} alt="Couverture" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        : <span style={{ fontSize: '32px', animation: 'pulse 1.5s ease-in-out infinite' }}>📖</span>
+                      }
                     </div>
 
                     <div ref={orderFormRef} />
@@ -1495,12 +1377,18 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 {/* ── CASE B: Non connecté OU connecté gratuit (premier livre) ── */}
                 {!isClubWithCredit && (
                   <>
+                    {/* Cover or loading */}
                     <div style={{
                       width: '120px', height: '164px', borderRadius: '4px 10px 10px 4px',
                       overflow: 'hidden', margin: '0 auto 12px',
                       boxShadow: '0 6px 20px rgba(0,0,0,0.3)',
+                      background: 'var(--bg-card)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
                     }}>
-                      {coverImageUrl && <img src={coverImageUrl} alt="Couverture" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
+                      {coverImageUrl
+                        ? <img src={coverImageUrl} alt="Couverture" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        : <span style={{ fontSize: '32px', animation: 'pulse 1.5s ease-in-out infinite' }}>📖</span>
+                      }
                     </div>
 
                     <p style={{
@@ -1598,11 +1486,17 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
 
               <BookPageFrame $portrait style={{ cursor: 'pointer' }}
                 onClick={() => pricingRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>
-                <BookCoverImage>
-                  <MaterializeImage $ready>
-                    <img src={coverImageUrl} alt="Couverture" />
-                  </MaterializeImage>
-                </BookCoverImage>
+                {coverImageUrl ? (
+                  <BookCoverImage>
+                    <MaterializeImage $ready>
+                      <img src={coverImageUrl} alt="Couverture" />
+                    </MaterializeImage>
+                  </BookCoverImage>
+                ) : (
+                  <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-card)' }}>
+                    <span style={{ fontSize: '48px', animation: 'pulse 1.5s ease-in-out infinite' }}>📖</span>
+                  </div>
+                )}
               </BookPageFrame>
 
               <BookPageFrame $compact ref={lockedPageRef}>
