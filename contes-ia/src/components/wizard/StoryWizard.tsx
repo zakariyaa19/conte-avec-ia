@@ -446,9 +446,15 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
   const validatePaymentForm = () => {
     let ok = true;
     const e: Record<string, string> = {};
-    if (!formData.userEmail) { e.userEmail = "L'email est obligatoire"; ok = false; }
-    else { const ev = validateEmail(formData.userEmail); if (!ev.isValid) { e.userEmail = ev.error || 'Email invalide'; ok = false; } }
-    if (!formData.firstName) { e.firstName = 'Le prénom est obligatoire'; ok = false; }
+    // Email required only for non-authenticated users
+    if (!isAuthenticated) {
+      if (!formData.userEmail) { e.userEmail = "L'email est obligatoire"; ok = false; }
+      else { const ev = validateEmail(formData.userEmail); if (!ev.isValid) { e.userEmail = ev.error || 'Email invalide'; ok = false; } }
+    }
+    // firstName: NOT required in simplified mode (optional) — backend works without it
+    if (!isSimplifiedMode && !isAuthenticated && !formData.firstName) {
+      e.firstName = 'Le prénom est obligatoire'; ok = false;
+    }
     setErrors(e);
     if (!ok) setGlobalError('Veuillez remplir tous les champs obligatoires');
     return ok;
@@ -456,8 +462,8 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
 
   const handleFormSubmit = () => {
     setGlobalError('');
-    // Club connected with credits: skip validation (user data comes from auth token)
-    const skipValidation = isClubWithCredit && isAuthenticated;
+    // Connected users: skip validation entirely (user data comes from auth token)
+    const skipValidation = isAuthenticated;
     if (skipValidation || validatePaymentForm()) {
       clearDraft();
       // Pass cover image directly in submit (no async state dependency)
@@ -486,9 +492,9 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
     : !!(formData.eyeColor && formData.hairColor && formData.skinColor);
   const isPaymentInfoComplete = !!(formData.productType && formData.userEmail && formData.firstName);
 
-  // Auto-submit after Google auth — waits for formData + cover to be ready
+  // Auto-submit after Google auth — waits for email + cover (firstName optional)
   useEffect(() => {
-    if (googleAutoSubmitRef.current && formData.userEmail && formData.firstName && rawBase64) {
+    if (googleAutoSubmitRef.current && formData.userEmail && rawBase64) {
       googleAutoSubmitRef.current = false;
       clearDraft();
       const coverOverride: Partial<StoryFormData> = {
@@ -497,7 +503,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
       };
       onSubmit(coverOverride);
     }
-  }, [formData.userEmail, formData.firstName, rawBase64]); // eslint-disable-line
+  }, [formData.userEmail, rawBase64]); // eslint-disable-line
 
   // Summary chips data (shown from step 3+)
   const summaryChips: { label: string; value: string }[] = [];
@@ -1399,20 +1405,20 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                     {/* Cover or animated loading — LARGE since no form fields */}
                     {coverImageUrl ? (
                       <div style={{
-                        width: '200px', height: '280px', borderRadius: '6px 16px 16px 6px',
-                        overflow: 'hidden', margin: '0 auto 20px',
+                        width: '180px', height: '180px', borderRadius: '16px',
+                        overflow: 'hidden', margin: '0 auto 16px',
                         boxShadow: '0 12px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,153,153,0.12)',
                       }}>
-                        <img src={coverImageUrl} alt="Couverture" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        <img src={coverImageUrl} alt="Couverture" style={{ width: '100%', height: '100%', objectFit: 'contain', background: '#1C1735' }} />
                       </div>
                     ) : (
                       <div style={{
-                        width: '200px', height: '280px', borderRadius: '6px 16px 16px 6px',
-                        margin: '0 auto 20px', overflow: 'hidden',
+                        width: '180px', height: '180px', borderRadius: '16px',
+                        margin: '0 auto 16px', overflow: 'hidden',
                         background: 'linear-gradient(145deg, #1C1735, #2E2850, #1C1735)',
                         boxShadow: '0 12px 40px rgba(0,0,0,0.4)',
                       }}>
-                        <svg viewBox="0 0 160 220" width="200" height="280" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <svg viewBox="0 0 160 220" width="180" height="180" fill="none" xmlns="http://www.w3.org/2000/svg">
                           {/* Background shimmer */}
                           <rect width="160" height="220" fill="url(#shimmerGrad)">
                             <animate attributeName="opacity" values="0.3;0.6;0.3" dur="2s" repeatCount="indefinite" />
@@ -1517,20 +1523,20 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                     {/* Cover or animated loading */}
                     {coverImageUrl ? (
                       <div style={{
-                        width: '160px', height: '220px', borderRadius: '6px 14px 14px 6px',
-                        overflow: 'hidden', margin: '0 auto 12px',
+                        width: '150px', height: '150px', borderRadius: '14px',
+                        overflow: 'hidden', margin: '0 auto 10px',
                         boxShadow: '0 8px 28px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,153,153,0.1)',
                       }}>
-                        <img src={coverImageUrl} alt="Couverture" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        <img src={coverImageUrl} alt="Couverture" style={{ width: '100%', height: '100%', objectFit: 'contain', background: '#1C1735' }} />
                       </div>
                     ) : (
                       <div style={{
-                        width: '160px', height: '220px', borderRadius: '6px 14px 14px 6px',
-                        margin: '0 auto 12px', overflow: 'hidden',
+                        width: '150px', height: '150px', borderRadius: '14px',
+                        margin: '0 auto 10px', overflow: 'hidden',
                         background: 'linear-gradient(145deg, #1C1735, #2E2850, #1C1735)',
                         boxShadow: '0 8px 28px rgba(0,0,0,0.35)',
                       }}>
-                        <svg viewBox="0 0 160 220" width="160" height="220" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <svg viewBox="0 0 160 220" width="150" height="150" fill="none" xmlns="http://www.w3.org/2000/svg">
                           <rect width="160" height="220" fill="url(#shimGrad2)">
                             <animate attributeName="opacity" values="0.3;0.6;0.3" dur="2s" repeatCount="indefinite" />
                           </rect>
