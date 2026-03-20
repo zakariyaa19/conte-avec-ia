@@ -1396,23 +1396,23 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 {/* ── CASE A: Club connecté avec crédits → juste un bouton ── */}
                 {isClubWithCredit && isAuthenticated && (
                   <>
-                    {/* Cover or animated loading */}
+                    {/* Cover or animated loading — LARGE since no form fields */}
                     {coverImageUrl ? (
                       <div style={{
-                        width: '160px', height: '220px', borderRadius: '6px 14px 14px 6px',
-                        overflow: 'hidden', margin: '0 auto 14px',
-                        boxShadow: '0 8px 28px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,153,153,0.1)',
+                        width: '200px', height: '280px', borderRadius: '6px 16px 16px 6px',
+                        overflow: 'hidden', margin: '0 auto 20px',
+                        boxShadow: '0 12px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,153,153,0.12)',
                       }}>
                         <img src={coverImageUrl} alt="Couverture" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                       </div>
                     ) : (
                       <div style={{
-                        width: '160px', height: '220px', borderRadius: '6px 14px 14px 6px',
-                        margin: '0 auto 14px', overflow: 'hidden',
+                        width: '200px', height: '280px', borderRadius: '6px 16px 16px 6px',
+                        margin: '0 auto 20px', overflow: 'hidden',
                         background: 'linear-gradient(145deg, #1C1735, #2E2850, #1C1735)',
-                        boxShadow: '0 8px 28px rgba(0,0,0,0.35)',
+                        boxShadow: '0 12px 40px rgba(0,0,0,0.4)',
                       }}>
-                        <svg viewBox="0 0 160 220" width="160" height="220" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <svg viewBox="0 0 160 220" width="200" height="280" fill="none" xmlns="http://www.w3.org/2000/svg">
                           {/* Background shimmer */}
                           <rect width="160" height="220" fill="url(#shimmerGrad)">
                             <animate attributeName="opacity" values="0.3;0.6;0.3" dur="2s" repeatCount="indefinite" />
