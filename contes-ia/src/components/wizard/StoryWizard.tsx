@@ -1357,26 +1357,75 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                     ) : (
                       <div style={{
                         width: '160px', height: '220px', borderRadius: '6px 14px 14px 6px',
-                        margin: '0 auto 14px', position: 'relative', overflow: 'hidden',
-                        background: 'linear-gradient(135deg, #1a1428, #2E2850)',
+                        margin: '0 auto 14px', overflow: 'hidden',
+                        background: 'linear-gradient(145deg, #1C1735, #2E2850, #1C1735)',
                         boxShadow: '0 8px 28px rgba(0,0,0,0.35)',
-                        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                       }}>
-                        {/* Animated glow */}
-                        <div style={{
-                          position: 'absolute', inset: 0,
-                          background: `radial-gradient(circle at 50% 50%, ${theme.colors.accent.coral}20 0%, transparent 70%)`,
-                          animation: 'pulse 2s ease-in-out infinite',
-                        }} />
-                        {/* Sparkles */}
-                        <div style={{ position: 'absolute', width: '4px', height: '4px', borderRadius: '50%', background: '#FFD700', top: '20%', left: '25%', animation: 'pulse 1.5s ease-in-out infinite', opacity: 0.6 }} />
-                        <div style={{ position: 'absolute', width: '3px', height: '3px', borderRadius: '50%', background: '#FF9999', top: '35%', right: '20%', animation: 'pulse 2s ease-in-out 0.5s infinite', opacity: 0.5 }} />
-                        <div style={{ position: 'absolute', width: '5px', height: '5px', borderRadius: '50%', background: '#A8D8EA', bottom: '25%', left: '30%', animation: 'pulse 1.8s ease-in-out 1s infinite', opacity: 0.4 }} />
-                        {/* Book icon */}
-                        <span style={{ fontSize: '36px', position: 'relative', zIndex: 1, animation: 'pulse 2s ease-in-out infinite' }}>✨</span>
-                        <p style={{ fontSize: '10px', color: 'rgba(255,255,255,0.6)', marginTop: '8px', textAlign: 'center', position: 'relative', zIndex: 1 }}>
-                          Création en cours...
-                        </p>
+                        <svg viewBox="0 0 160 220" width="160" height="220" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          {/* Background shimmer */}
+                          <rect width="160" height="220" fill="url(#shimmerGrad)">
+                            <animate attributeName="opacity" values="0.3;0.6;0.3" dur="2s" repeatCount="indefinite" />
+                          </rect>
+                          <defs>
+                            <linearGradient id="shimmerGrad" x1="0" y1="0" x2="160" y2="220">
+                              <stop offset="0%" stopColor="#FF9999" stopOpacity="0.08" />
+                              <stop offset="50%" stopColor="#A78BFA" stopOpacity="0.12" />
+                              <stop offset="100%" stopColor="#FF9999" stopOpacity="0.06" />
+                            </linearGradient>
+                          </defs>
+                          {/* Book spine */}
+                          <rect x="10" y="30" width="8" height="160" rx="4" fill="#FF9999" opacity="0.3">
+                            <animate attributeName="height" values="0;160" dur="1s" fill="freeze" />
+                          </rect>
+                          {/* Book cover outline */}
+                          <rect x="18" y="30" width="120" height="160" rx="6" stroke="#FF9999" strokeWidth="1.5" opacity="0.25">
+                            <animate attributeName="stroke-dashoffset" from="560" to="0" dur="2s" fill="freeze" />
+                            <animate attributeName="stroke-dasharray" values="560;560" dur="0.01s" fill="freeze" />
+                          </rect>
+                          {/* Image placeholder area */}
+                          <rect x="28" y="45" width="100" height="70" rx="4" fill="#FF9999" opacity="0.06">
+                            <animate attributeName="opacity" values="0.04;0.1;0.04" dur="2.5s" repeatCount="indefinite" />
+                          </rect>
+                          {/* Painting brush strokes */}
+                          <rect x="35" y="55" width="0" height="8" rx="4" fill="#E8A060" opacity="0.3">
+                            <animate attributeName="width" values="0;80" dur="1.5s" begin="0.5s" fill="freeze" />
+                          </rect>
+                          <rect x="35" y="70" width="0" height="6" rx="3" fill="#6BA3D6" opacity="0.25">
+                            <animate attributeName="width" values="0;65" dur="1.2s" begin="1s" fill="freeze" />
+                          </rect>
+                          <rect x="35" y="83" width="0" height="6" rx="3" fill="#E88AAA" opacity="0.2">
+                            <animate attributeName="width" values="0;72" dur="1.3s" begin="1.4s" fill="freeze" />
+                          </rect>
+                          <rect x="35" y="96" width="0" height="5" rx="2.5" fill="#6BBF8A" opacity="0.2">
+                            <animate attributeName="width" values="0;55" dur="1s" begin="1.8s" fill="freeze" />
+                          </rect>
+                          {/* Text lines */}
+                          <rect x="28" y="128" width="0" height="3" rx="1.5" fill="white" opacity="0.15">
+                            <animate attributeName="width" values="0;90" dur="0.8s" begin="2s" fill="freeze" />
+                          </rect>
+                          <rect x="28" y="137" width="0" height="3" rx="1.5" fill="white" opacity="0.12">
+                            <animate attributeName="width" values="0;75" dur="0.7s" begin="2.3s" fill="freeze" />
+                          </rect>
+                          <rect x="28" y="146" width="0" height="3" rx="1.5" fill="white" opacity="0.1">
+                            <animate attributeName="width" values="0;82" dur="0.75s" begin="2.5s" fill="freeze" />
+                          </rect>
+                          <rect x="28" y="155" width="0" height="3" rx="1.5" fill="white" opacity="0.08">
+                            <animate attributeName="width" values="0;60" dur="0.6s" begin="2.7s" fill="freeze" />
+                          </rect>
+                          {/* Sparkles */}
+                          <circle cx="120" cy="42" r="3" fill="#FFD700">
+                            <animate attributeName="opacity" values="0;0.8;0" dur="1.5s" repeatCount="indefinite" />
+                            <animate attributeName="r" values="2;4;2" dur="1.5s" repeatCount="indefinite" />
+                          </circle>
+                          <circle cx="40" cy="175" r="2.5" fill="#FF9999">
+                            <animate attributeName="opacity" values="0;0.6;0" dur="2s" begin="0.8s" repeatCount="indefinite" />
+                          </circle>
+                          <circle cx="130" cy="170" r="2" fill="#A8D8EA">
+                            <animate attributeName="opacity" values="0;0.7;0" dur="1.8s" begin="0.4s" repeatCount="indefinite" />
+                          </circle>
+                          {/* Loading text */}
+                          <text x="80" y="200" textAnchor="middle" fill="rgba(255,255,255,0.4)" fontSize="9" fontFamily="sans-serif">Création en cours...</text>
+                        </svg>
                       </div>
                     )}
 
@@ -1410,23 +1459,67 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                     ) : (
                       <div style={{
                         width: '160px', height: '220px', borderRadius: '6px 14px 14px 6px',
-                        margin: '0 auto 12px', position: 'relative', overflow: 'hidden',
-                        background: 'linear-gradient(135deg, #1a1428, #2E2850)',
+                        margin: '0 auto 12px', overflow: 'hidden',
+                        background: 'linear-gradient(145deg, #1C1735, #2E2850, #1C1735)',
                         boxShadow: '0 8px 28px rgba(0,0,0,0.35)',
-                        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                       }}>
-                        <div style={{
-                          position: 'absolute', inset: 0,
-                          background: `radial-gradient(circle at 50% 50%, ${theme.colors.accent.coral}20 0%, transparent 70%)`,
-                          animation: 'pulse 2s ease-in-out infinite',
-                        }} />
-                        <div style={{ position: 'absolute', width: '4px', height: '4px', borderRadius: '50%', background: '#FFD700', top: '20%', left: '25%', animation: 'pulse 1.5s ease-in-out infinite', opacity: 0.6 }} />
-                        <div style={{ position: 'absolute', width: '3px', height: '3px', borderRadius: '50%', background: '#FF9999', top: '35%', right: '20%', animation: 'pulse 2s ease-in-out 0.5s infinite', opacity: 0.5 }} />
-                        <div style={{ position: 'absolute', width: '5px', height: '5px', borderRadius: '50%', background: '#A8D8EA', bottom: '25%', left: '30%', animation: 'pulse 1.8s ease-in-out 1s infinite', opacity: 0.4 }} />
-                        <span style={{ fontSize: '36px', position: 'relative', zIndex: 1, animation: 'pulse 2s ease-in-out infinite' }}>✨</span>
-                        <p style={{ fontSize: '10px', color: 'rgba(255,255,255,0.6)', marginTop: '8px', textAlign: 'center', position: 'relative', zIndex: 1 }}>
-                          Création en cours...
-                        </p>
+                        <svg viewBox="0 0 160 220" width="160" height="220" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <rect width="160" height="220" fill="url(#shimGrad2)">
+                            <animate attributeName="opacity" values="0.3;0.6;0.3" dur="2s" repeatCount="indefinite" />
+                          </rect>
+                          <defs>
+                            <linearGradient id="shimGrad2" x1="0" y1="0" x2="160" y2="220">
+                              <stop offset="0%" stopColor="#FF9999" stopOpacity="0.08" />
+                              <stop offset="50%" stopColor="#A78BFA" stopOpacity="0.12" />
+                              <stop offset="100%" stopColor="#FF9999" stopOpacity="0.06" />
+                            </linearGradient>
+                          </defs>
+                          <rect x="10" y="30" width="8" height="160" rx="4" fill="#FF9999" opacity="0.3">
+                            <animate attributeName="height" values="0;160" dur="1s" fill="freeze" />
+                          </rect>
+                          <rect x="18" y="30" width="120" height="160" rx="6" stroke="#FF9999" strokeWidth="1.5" opacity="0.25">
+                            <animate attributeName="stroke-dashoffset" from="560" to="0" dur="2s" fill="freeze" />
+                            <animate attributeName="stroke-dasharray" values="560;560" dur="0.01s" fill="freeze" />
+                          </rect>
+                          <rect x="28" y="45" width="100" height="70" rx="4" fill="#FF9999" opacity="0.06">
+                            <animate attributeName="opacity" values="0.04;0.1;0.04" dur="2.5s" repeatCount="indefinite" />
+                          </rect>
+                          <rect x="35" y="55" width="0" height="8" rx="4" fill="#E8A060" opacity="0.3">
+                            <animate attributeName="width" values="0;80" dur="1.5s" begin="0.5s" fill="freeze" />
+                          </rect>
+                          <rect x="35" y="70" width="0" height="6" rx="3" fill="#6BA3D6" opacity="0.25">
+                            <animate attributeName="width" values="0;65" dur="1.2s" begin="1s" fill="freeze" />
+                          </rect>
+                          <rect x="35" y="83" width="0" height="6" rx="3" fill="#E88AAA" opacity="0.2">
+                            <animate attributeName="width" values="0;72" dur="1.3s" begin="1.4s" fill="freeze" />
+                          </rect>
+                          <rect x="35" y="96" width="0" height="5" rx="2.5" fill="#6BBF8A" opacity="0.2">
+                            <animate attributeName="width" values="0;55" dur="1s" begin="1.8s" fill="freeze" />
+                          </rect>
+                          <rect x="28" y="128" width="0" height="3" rx="1.5" fill="white" opacity="0.15">
+                            <animate attributeName="width" values="0;90" dur="0.8s" begin="2s" fill="freeze" />
+                          </rect>
+                          <rect x="28" y="137" width="0" height="3" rx="1.5" fill="white" opacity="0.12">
+                            <animate attributeName="width" values="0;75" dur="0.7s" begin="2.3s" fill="freeze" />
+                          </rect>
+                          <rect x="28" y="146" width="0" height="3" rx="1.5" fill="white" opacity="0.1">
+                            <animate attributeName="width" values="0;82" dur="0.75s" begin="2.5s" fill="freeze" />
+                          </rect>
+                          <rect x="28" y="155" width="0" height="3" rx="1.5" fill="white" opacity="0.08">
+                            <animate attributeName="width" values="0;60" dur="0.6s" begin="2.7s" fill="freeze" />
+                          </rect>
+                          <circle cx="120" cy="42" r="3" fill="#FFD700">
+                            <animate attributeName="opacity" values="0;0.8;0" dur="1.5s" repeatCount="indefinite" />
+                            <animate attributeName="r" values="2;4;2" dur="1.5s" repeatCount="indefinite" />
+                          </circle>
+                          <circle cx="40" cy="175" r="2.5" fill="#FF9999">
+                            <animate attributeName="opacity" values="0;0.6;0" dur="2s" begin="0.8s" repeatCount="indefinite" />
+                          </circle>
+                          <circle cx="130" cy="170" r="2" fill="#A8D8EA">
+                            <animate attributeName="opacity" values="0;0.7;0" dur="1.8s" begin="0.4s" repeatCount="indefinite" />
+                          </circle>
+                          <text x="80" y="200" textAnchor="middle" fill="rgba(255,255,255,0.4)" fontSize="9" fontFamily="sans-serif">Création en cours...</text>
+                        </svg>
                       </div>
                     )}
 
