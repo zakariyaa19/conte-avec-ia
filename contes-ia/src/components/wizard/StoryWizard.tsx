@@ -495,7 +495,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
   const isAppearanceComplete = formData.appearanceMode === 'photo'
     ? !!formData.photo
     : !!(formData.eyeColor && formData.hairColor && formData.skinColor);
-  const isPaymentInfoComplete = !!(formData.productType && formData.userEmail && formData.firstName);
+  const isPaymentInfoComplete = !!(formData.productType && formData.userEmail && (isSimplifiedMode || formData.firstName));
 
   // Auto-submit after Google auth — waits for email + cover (firstName optional)
   useEffect(() => {
