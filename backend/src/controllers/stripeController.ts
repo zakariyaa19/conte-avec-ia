@@ -379,13 +379,33 @@ export const createCustomerPortal = async (req: ClientAuthRequest, res: Response
     }
 
     const user = await prisma.user.findUnique({ where: { id: userId } });
-    if (!user?.stripeCustomerId) {
-      return res.status(400).json({ error: 'Pas de compte Stripe associe' });
+    if (!user) {
+      return res.status(404).json({ error: 'Utilisateur non trouve' });
+    }
+
+    let customerId = user.stripeCustomerId;
+
+    // Si pas de stripeCustomerId en base, chercher par email dans Stripe
+    if (!customerId && user.email) {
+      const customers = await stripe.customers.list({ email: user.email, limit: 1 });
+      if (customers.data.length > 0) {
+        customerId = customers.data[0].id;
+        // Sauvegarder pour les prochaines fois
+        await prisma.user.update({
+          where: { id: userId },
+          data: { stripeCustomerId: customerId }
+        });
+        console.log(`[Portal] stripeCustomerId retrouve et sauvegarde pour ${user.email}: ${customerId}`);
+      }
+    }
+
+    if (!customerId) {
+      return res.status(400).json({ error: 'Aucun compte de paiement trouve. Contactez le support.' });
     }
 
     const session = await stripe.billingPortal.sessions.create({
-      customer: user.stripeCustomerId,
-      return_url: `${process.env.FRONTEND_URL}/dashboard`
+      customer: customerId,
+      return_url: `${process.env.FRONTEND_URL}/dashboard/account`
     });
 
     res.json({ url: session.url });

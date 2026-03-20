@@ -201,14 +201,20 @@ export const AccountPage: React.FC = () => {
     }
   };
 
+  const [portalLoading, setPortalLoading] = useState(false);
   const handleManageSubscription = async () => {
+    setPortalLoading(true);
     try {
       const response = await ApiService.createCustomerPortal(getToken());
       if (response.url) {
         window.location.href = response.url;
+      } else {
+        setMessage({ text: 'Impossible d\'ouvrir le portail de gestion', type: 'error' });
       }
     } catch {
       setMessage({ text: 'Erreur lors de l\'ouverture du portail', type: 'error' });
+    } finally {
+      setPortalLoading(false);
     }
   };
 
@@ -348,8 +354,8 @@ export const AccountPage: React.FC = () => {
             <ButtonRow>
               {isClub || user?.role === 'CLUB' ? (
                 <>
-                  <Button variant="outline" size="sm" onClick={handleManageSubscription}>
-                    Gérer mon abonnement
+                  <Button variant="outline" size="sm" onClick={handleManageSubscription} disabled={portalLoading}>
+                    {portalLoading ? 'Chargement...' : 'Gérer mon abonnement'}
                   </Button>
                   <Button variant="ghost" size="sm" onClick={() => navigate('/account/cancel')}
                     style={{ color: 'var(--text-light)', fontSize: '12px' }}>
