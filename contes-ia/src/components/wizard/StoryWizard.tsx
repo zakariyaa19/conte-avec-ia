@@ -166,6 +166,9 @@ const AGE_RANGE_TO_PROTAGONIST_AGE: Record<string, string> = {
 
 // Étapes à skip en mode simplifié (non-Club) : occasion, style, appearance, choice, extras1, extras2
 const SIMPLIFIED_SKIP_STEPS = new Set([2, 3, 5, 6, 7, 8]);
+// Étapes à skip pour Club : appearance (intégré dans hero), choice (inutile)
+// Club skips: appearance(5), choice(6), extras1(7) — extras1 content merged into extras2
+const CLUB_SKIP_STEPS = new Set([5, 6, 7]);
 
 interface StoryWizardProps {
   formData: Partial<StoryFormData>;
@@ -322,22 +325,22 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
 
   const goNext = useCallback(() => {
     let next = currentStep + 1;
-    // Mode pub : sauter occasion(2)+style(3), choice(6)+extras(7,8)
     if (isSimplifiedRef.current) {
       while (next < ALL_STEPS.length && SIMPLIFIED_SKIP_STEPS.has(next)) next++;
     } else {
-      if (!wantsExtrasRef.current && next === 7) next = 9;
+      // Club: skip appearance(5) + choice(6)
+      while (next < ALL_STEPS.length && CLUB_SKIP_STEPS.has(next)) next++;
     }
     goToStep(next);
   }, [currentStep, goToStep]);
 
   const goBack = useCallback(() => {
     let prev = currentStep - 1;
-    // Mode pub : revenir en arrière en sautant les étapes skippées
     if (isSimplifiedRef.current) {
       while (prev >= 0 && SIMPLIFIED_SKIP_STEPS.has(prev)) prev--;
     } else {
-      if (!wantsExtrasRef.current && prev === 8) prev = 6;
+      // Club: skip appearance(5) + choice(6) backwards
+      while (prev >= 0 && CLUB_SKIP_STEPS.has(prev)) prev--;
     }
     goToStep(prev);
   }, [currentStep, goToStep]);
@@ -854,9 +857,8 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
               ))}
             </div>
 
-            {/* ── Photo upload — clear, explicit, visual ── */}
-            {isSimplifiedMode && (
-              <div style={{ width: '100%', maxWidth: 400, textAlign: 'center' }}>
+            {/* ── Photo upload ── */}
+            <div style={{ width: '100%', maxWidth: 400, textAlign: 'center' }}>
                 {/* Title */}
                 <p style={{
                   fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.lg, fontWeight: 700,
@@ -938,84 +940,106 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                     Optionnel — vous pouvez continuer sans photo
                   </p>
                 )}
-              </div>
-            )}
+            </div>
 
-            {/* ── Compagnon secondaire (1 max en mode simplifié) ── */}
-            {isSimplifiedMode && (
-              <div style={{ width: '100%', maxWidth: 400, marginTop: theme.spacing.md }}>
-                <p style={{
-                  fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.sm,
-                  fontWeight: 600, color: 'var(--text-secondary)', textAlign: 'center',
-                  margin: `0 0 ${theme.spacing.sm}`,
-                }}>
-                  Ajouter un compagnon <span style={{ fontWeight: 400, color: 'var(--text-light)' }}>(optionnel)</span>
-                </p>
+            {/* ── Compagnons — 1 max gratuit, 5 max Club ── */}
+            {(() => {
+              const maxCompanions = isSimplifiedMode ? 1 : 5;
+              const chars = formData.secondaryCharacters || [];
+              const canAdd = chars.length < maxCompanions;
 
-                {/* Type toggle */}
-                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginBottom: '10px' }}>
-                  {([
-                    { type: 'human' as const, icon: '👦', label: 'Ami(e)' },
-                    { type: 'animal' as const, icon: '🐕', label: 'Animal' },
-                  ]).map(opt => {
-                    const current = formData.secondaryCharacters?.[0];
-                    const isActive = current?.kind === opt.type;
-                    return (
-                      <button key={opt.type} onClick={() => {
-                        if (isActive) {
-                          onUpdate({ secondaryCharacters: undefined });
-                        } else {
-                          onUpdate({ secondaryCharacters: [{ kind: opt.type, name: '', ageOrType: '' }] });
-                        }
+              return (
+                <div style={{ width: '100%', maxWidth: 400, marginTop: theme.spacing.md }}>
+                  <p style={{
+                    fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.sm,
+                    fontWeight: 600, color: 'var(--text-secondary)', textAlign: 'center',
+                    margin: `0 0 ${theme.spacing.sm}`,
+                  }}>
+                    {isSimplifiedMode ? 'Ajouter un compagnon' : `Compagnons (${chars.length}/${maxCompanions})`}
+                    <span style={{ fontWeight: 400, color: 'var(--text-light)' }}> (optionnel)</span>
+                  </p>
+
+                  {/* Existing companions */}
+                  {chars.map((char, idx) => (
+                    <div key={idx} style={{
+                      display: 'flex', gap: '6px', alignItems: 'flex-end', marginBottom: '8px',
+                      background: 'var(--bg-card)', border: '1px solid var(--border-color)',
+                      borderRadius: '12px', padding: '10px 12px',
+                    }}>
+                      {/* Type toggle */}
+                      <button onClick={() => {
+                        const updated = [...chars];
+                        updated[idx] = { ...char, kind: char.kind === 'human' ? 'animal' : 'human', ageOrType: '' };
+                        onUpdate({ secondaryCharacters: updated });
                       }} style={{
-                        appearance: 'none', border: `2px solid ${isActive ? theme.colors.accent.coral : 'var(--border-color)'}`,
-                        borderRadius: '12px', padding: '10px 18px', cursor: 'pointer',
-                        background: isActive ? `${theme.colors.accent.coral}12` : 'var(--bg-elevated)',
-                        display: 'flex', alignItems: 'center', gap: '6px',
-                        fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)',
-                        transition: 'all 0.2s',
+                        appearance: 'none', border: 'none', cursor: 'pointer', background: 'none',
+                        fontSize: '20px', padding: '4px', flexShrink: 0,
                       }}>
-                        <span style={{ fontSize: '18px' }}>{opt.icon}</span>
-                        {opt.label}
+                        {char.kind === 'animal' ? '🐕' : '👦'}
                       </button>
-                    );
-                  })}
-                </div>
-
-                {/* Name input — shows when type is selected */}
-                {(() => {
-                  const current = formData.secondaryCharacters?.[0];
-                  if (!current) return null;
-
-                  return (
-                    <div style={{ display: 'flex', gap: '8px' }}>
                       <div style={{ flex: 1 }}>
                         <ValidatedInput
-                          label={current.kind === 'animal' ? "Nom de l'animal" : "Prénom de l'ami(e)"}
-                          value={current.name || ''}
+                          label={char.kind === 'animal' ? 'Nom' : 'Prénom'}
+                          value={char.name || ''}
                           onChange={(v) => {
-                            onUpdate({ secondaryCharacters: [{ ...current, name: v }] });
+                            const updated = [...chars];
+                            updated[idx] = { ...char, name: v };
+                            onUpdate({ secondaryCharacters: updated });
                           }}
-                          placeholder={current.kind === 'animal' ? 'Ex : Rex, Luna...' : 'Ex : Léa, Hugo...'}
+                          placeholder={char.kind === 'animal' ? 'Rex, Luna...' : 'Léa, Hugo...'}
                         />
                       </div>
-                      {current.kind === 'animal' && (
-                        <div style={{ width: '120px' }}>
-                          <ValidatedInput
-                            label="Type"
-                            value={current.ageOrType || ''}
+                      {char.kind === 'animal' && (
+                        <div style={{ width: '90px' }}>
+                          <ValidatedInput label="Type" value={char.ageOrType || ''}
                             onChange={(v) => {
-                              onUpdate({ secondaryCharacters: [{ ...current, ageOrType: v }] });
+                              const updated = [...chars];
+                              updated[idx] = { ...char, ageOrType: v };
+                              onUpdate({ secondaryCharacters: updated });
                             }}
-                            placeholder="Chien, chat..."
+                            placeholder="Chien..."
                           />
                         </div>
                       )}
+                      {/* Remove button */}
+                      <button onClick={() => {
+                        const updated = chars.filter((_, i) => i !== idx);
+                        onUpdate({ secondaryCharacters: updated.length > 0 ? updated : undefined });
+                      }} style={{
+                        appearance: 'none', border: 'none', cursor: 'pointer', background: 'none',
+                        color: 'var(--text-light)', fontSize: '16px', padding: '4px', flexShrink: 0,
+                      }}>✕</button>
                     </div>
-                  );
-                })()}
-              </div>
-            )}
+                  ))}
+
+                  {/* Add button */}
+                  {canAdd && (
+                    <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                      <button onClick={() => {
+                        onUpdate({ secondaryCharacters: [...chars, { kind: 'human', name: '', ageOrType: '' }] });
+                      }} style={{
+                        appearance: 'none', border: `1.5px dashed var(--border-color)`,
+                        borderRadius: '10px', padding: '8px 16px', cursor: 'pointer',
+                        background: 'transparent', display: 'flex', alignItems: 'center', gap: '6px',
+                        fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)',
+                      }}>
+                        👦 + Ami(e)
+                      </button>
+                      <button onClick={() => {
+                        onUpdate({ secondaryCharacters: [...chars, { kind: 'animal', name: '', ageOrType: '' }] });
+                      }} style={{
+                        appearance: 'none', border: `1.5px dashed var(--border-color)`,
+                        borderRadius: '10px', padding: '8px 16px', cursor: 'pointer',
+                        background: 'transparent', display: 'flex', alignItems: 'center', gap: '6px',
+                        fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)',
+                      }}>
+                        🐕 + Animal
+                      </button>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
           </>
         );
 
@@ -1223,9 +1247,55 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
       case 'extras2':
         return (
           <>
-            <StepTitle>Dernières touches</StepTitle>
+            <StepTitle>Personnalisez votre livre</StepTitle>
 
-            {/* Raconté par — Club only */}
+            {/* Message — merged from extras1 */}
+            <ExtrasSection>
+              <SectionTitle>Message de l'histoire</SectionTitle>
+              <CardGrid $columns={4} $compact>
+                {MESSAGE_OPTIONS.map((o, i) => (
+                  <ImageCard key={o.value} $isSelected={formData.centralMessage === o.value} $delay={i}
+                    aria-label={o.label}
+                    onClick={() => handleInputChange('centralMessage', o.value)}>
+                    <CardImg $src={o.imagePath} />
+                    <CardImgLabel>{o.label}</CardImgLabel>
+                  </ImageCard>
+                ))}
+              </CardGrid>
+              {formData.centralMessage === 'custom' && (
+                <CustomInput type="text" placeholder="Votre message personnalisé..." value={formData.customMessage || ''}
+                  onChange={(e) => handleInputChange('customMessage', e.target.value)} />
+              )}
+            </ExtrasSection>
+
+            {/* Langue — merged from extras1 */}
+            <ExtrasSection>
+              <SectionTitle>Langue</SectionTitle>
+              <DetailChipGroup>
+                {LANG_TOP.map((o) => (
+                  <DetailChip key={o.value} $isSelected={formData.language === o.value}
+                    onClick={() => handleInputChange('language', o.value)}>
+                    {o.label}
+                  </DetailChip>
+                ))}
+                <DetailChip $isSelected={false}
+                  onClick={() => setShowAllLanguages(!showAllLanguages)}>
+                  {showAllLanguages ? 'Masquer ▲' : 'Autre ▼'}
+                </DetailChip>
+              </DetailChipGroup>
+              {showAllLanguages && (
+                <DetailChipGroup>
+                  {LANG_OTHER.map((o) => (
+                    <DetailChip key={o.value} $isSelected={formData.language === o.value}
+                      onClick={() => handleInputChange('language', o.value)}>
+                      {o.label}
+                    </DetailChip>
+                  ))}
+                </DetailChipGroup>
+              )}
+            </ExtrasSection>
+
+            {/* Raconté par */}
             <ExtrasSection>
               <SectionTitle>Raconté par</SectionTitle>
               <p style={{ fontSize: theme.fontSizes.xs, color: 'var(--text-light)', margin: `-4px 0 ${theme.spacing.sm}` }}>
@@ -1264,18 +1334,6 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                   <CustomInput type="text" placeholder="Précisez..." value={formData.customReligion || ''}
                     onChange={(e) => handleInputChange('customReligion', e.target.value)} />
                 )}
-              </AccordionBody>
-            </ExtrasSection>
-
-            <ExtrasSection>
-              <AccordionHeader $isOpen={showSecondaryChars} onClick={() => setShowSecondaryChars(!showSecondaryChars)}>
-                <span>Personnages secondaires</span>
-                <AccordionChevron $isOpen={showSecondaryChars}>▼</AccordionChevron>
-              </AccordionHeader>
-              <AccordionBody $isOpen={showSecondaryChars}>
-                <SecondaryCharactersSection
-                  secondaryCharacters={formData.secondaryCharacters || []}
-                  onChange={(chars) => onUpdate({ secondaryCharacters: chars })} />
               </AccordionBody>
             </ExtrasSection>
 
