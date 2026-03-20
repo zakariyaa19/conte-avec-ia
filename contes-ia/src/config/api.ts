@@ -158,15 +158,13 @@ export class ApiService {
       headers['Authorization'] = `Bearer ${orderData.authToken}`;
     }
 
-    // Clean formData: remove heavy binary fields that don't serialize well
+    // Clean formData: remove heavy binary fields
     const cleanFormData = { ...orderData.formData };
-    // photo File object will be sent separately in FormData
     const photoFile = cleanFormData.photo instanceof File ? cleanFormData.photo : null;
     delete cleanFormData.photo;
-    // Si l'URL Cloudinary est présente, supprimer le base64 (économise 20MB+)
-    if (cleanFormData.coverImageUrl && cleanFormData.coverImageUrl.startsWith('http')) {
-      delete cleanFormData.coverImageBase64;
-    }
+    // TOUJOURS supprimer le base64 du JSON — il ne doit JAMAIS être envoyé dans le formulaire
+    // La cover est soit déjà uploadée sur Cloudinary (coverImageUrl), soit sera générée par le backend
+    delete cleanFormData.coverImageBase64;
 
     // Photo file upload: use FormData (multipart)
     if (photoFile) {
