@@ -294,7 +294,8 @@ export const ShareModal: React.FC<ShareModalProps> = ({
   const handleNativeShare = async () => {
     if (navigator.share && shareUrl) {
       try {
-        await navigator.share({ title, text: shareText, url: shareUrl });
+        // Fusionner texte + URL dans le champ text (iOS ignore text si url est séparé)
+        await navigator.share({ text: `${shareText}\n\n${shareUrl}` });
         return true;
       } catch { /* cancelled */ }
     }
