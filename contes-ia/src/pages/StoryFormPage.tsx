@@ -129,6 +129,9 @@ export const StoryFormPage: React.FC = () => {
     // Inject referral code if present
     if (referralCode) submitData.referralCode = referralCode;
 
+    // Trim email pour éviter les espaces accidentels
+    if (submitData.userEmail) submitData.userEmail = submitData.userEmail.trim().toLowerCase();
+
     if (!submitData.userEmail || !submitData.productType) {
       console.error('Données manquantes pour la soumission');
       setIsSubmitting(false);
@@ -167,15 +170,17 @@ export const StoryFormPage: React.FC = () => {
       if (orderResponse.token && orderResponse.user) {
         // Sauvegarder le token AVANT la redirection (synchrone)
         localStorage.setItem('userToken', orderResponse.token);
+        // Double-écriture pour garantir la persistance sur mobile Safari
+        try { sessionStorage.setItem('userToken_backup', orderResponse.token); } catch {}
         setTokenAndUser(orderResponse.token, orderResponse.user);
       }
 
       // Club gratuit ou premier livre gratuit : redirection directe vers le livre
       if (orderResponse.isClubFreeOrder || orderResponse.isFirstBookFree) {
-        // Petit délai pour que localStorage soit bien persisté sur mobile
+        // Délai 500ms pour garantir localStorage persisté sur mobile Safari
         setTimeout(() => {
           window.location.href = `/dashboard/story/${orderResponse.data.id}`;
-        }, 100);
+        }, 500);
         return;
       }
 

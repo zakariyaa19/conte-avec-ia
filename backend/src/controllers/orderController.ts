@@ -31,6 +31,9 @@ export class OrderController {
         userEmail = req.body.userEmail || formData.userEmail;
       }
 
+      // Normaliser l'email (trim + lowercase) pour éviter les doublons
+      if (userEmail) userEmail = userEmail.trim().toLowerCase();
+
       // Validation des données requises
       if (!formData.ageRange || !formData.generalTheme || !formData.protagonistName ||
           !formData.productType) {

@@ -65,8 +65,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     }
 
-    // Check client token
-    const token = localStorage.getItem('userToken');
+    // Check client token (localStorage + backup sessionStorage)
+    let token = localStorage.getItem('userToken');
+    if (!token) {
+      // Fallback: récupérer depuis sessionStorage (backup mobile Safari)
+      const backup = sessionStorage.getItem('userToken_backup');
+      if (backup) {
+        token = backup;
+        localStorage.setItem('userToken', token);
+      }
+    }
     if (!token) {
       setUser(null);
       setIsLoading(false);
@@ -78,25 +86,33 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (response.success) {
         setUser(response.data);
       } else {
-        // Profil invalide (401) → déconnecter
         localStorage.removeItem('userToken');
+        sessionStorage.removeItem('userToken_backup');
         setUser(null);
       }
     } catch (error) {
-      // Erreur réseau (timeout, connexion lente) → garder le token et réessayer
-      // Ne PAS supprimer le token sur erreur réseau — sinon l'utilisateur est déconnecté sur mobile
-      console.warn('[Auth] Erreur chargement profil (token conservé):', error);
-      // Décoder le token localement pour au moins avoir les infos de base
+      // Erreur réseau → garder le token, décoder le JWT localement
+      console.warn('[Auth] Erreur réseau profil, décodage JWT local');
       try {
         const payload = JSON.parse(atob(token.split('.')[1]));
         if (payload.exp && payload.exp > Date.now() / 1000) {
-          setUser({ id: payload.userId, email: payload.email, role: payload.role } as any);
+          setUser({
+            id: payload.userId,
+            email: payload.email,
+            role: payload.role,
+            firstName: payload.firstName || null,
+            lastName: payload.lastName || null,
+            isFirstPurchase: undefined, // sera résolu au prochain refreshProfile
+          } as any);
         } else {
           localStorage.removeItem('userToken');
+          sessionStorage.removeItem('userToken_backup');
           setUser(null);
         }
       } catch {
+        // Token corrompu → déconnecter
         localStorage.removeItem('userToken');
+        sessionStorage.removeItem('userToken_backup');
         setUser(null);
       }
     } finally {

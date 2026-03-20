@@ -575,8 +575,16 @@ export class ApiService {
   }
 
   // Compresser une photo (iPhone 12MP → ~300KB JPEG)
+  // Timeout 10s pour ne jamais bloquer sur appareil lent
   private static compressPhoto(file: File, maxSize = 800, quality = 0.7): Promise<File> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
+      // Timeout de sécurité : si compression prend > 10s, envoyer l'original
+      const timeout = setTimeout(() => {
+        console.warn('[Photo] Compression timeout, envoi original');
+        resolve(file);
+      }, 10000);
+
+      const objectUrl = URL.createObjectURL(file);
       const img = new Image();
       img.onload = () => {
         try {
@@ -590,18 +598,24 @@ export class ApiService {
           canvas.width = width;
           canvas.height = height;
           const ctx = canvas.getContext('2d');
-          if (!ctx) { resolve(file); return; }
+          if (!ctx) { clearTimeout(timeout); URL.revokeObjectURL(objectUrl); resolve(file); return; }
           ctx.drawImage(img, 0, 0, width, height);
           canvas.toBlob(blob => {
+            clearTimeout(timeout);
+            URL.revokeObjectURL(objectUrl);
             if (!blob) { resolve(file); return; }
             const compressed = new File([blob], file.name.replace(/\.\w+$/, '.jpg'), { type: 'image/jpeg' });
             console.log(`[Photo] Compressée: ${(file.size/1024).toFixed(0)}KB → ${(compressed.size/1024).toFixed(0)}KB`);
             resolve(compressed);
           }, 'image/jpeg', quality);
-        } catch { resolve(file); }
+        } catch {
+          clearTimeout(timeout);
+          URL.revokeObjectURL(objectUrl);
+          resolve(file);
+        }
       };
-      img.onerror = () => resolve(file);
-      img.src = URL.createObjectURL(file);
+      img.onerror = () => { clearTimeout(timeout); URL.revokeObjectURL(objectUrl); resolve(file); };
+      img.src = objectUrl;
     });
   }
 
