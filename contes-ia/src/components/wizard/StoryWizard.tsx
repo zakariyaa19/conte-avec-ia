@@ -502,10 +502,13 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
     if (googleAutoSubmitRef.current && formData.userEmail && rawBase64) {
       googleAutoSubmitRef.current = false;
       clearDraft();
-      const coverOverride: Partial<StoryFormData> = {
-        coverImageBase64: rawBase64,
-        coverTitle: coverTitle || undefined,
-      };
+      const coverOverride: Partial<StoryFormData> = {};
+      if (cloudinaryUrl) {
+        coverOverride.coverImageUrl = cloudinaryUrl;
+      } else {
+        coverOverride.coverImageBase64 = rawBase64;
+      }
+      coverOverride.coverTitle = coverTitle || undefined;
       onSubmit(coverOverride);
     }
   }, [formData.userEmail, rawBase64]); // eslint-disable-line
