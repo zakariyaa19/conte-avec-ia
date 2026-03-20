@@ -792,7 +792,7 @@ export const PayButton = styled.button<{ $isReady: boolean }>`
     box-shadow: 0 0 20px ${theme.colors.accent.coral}40;
     &:hover { box-shadow: 0 0 30px ${theme.colors.accent.coral}60; }
   `}
-  &:disabled { cursor: not-allowed; opacity: 0.5; }
+  &:disabled { cursor: not-allowed; opacity: 1; background: var(--bg-card); color: var(--text-light); box-shadow: none; border: 1px solid var(--border-color); }
   @media (max-width: ${theme.breakpoints.sm}) { max-width: 100%; }
   @media (min-width: ${theme.breakpoints.lg}) { max-width: 440px; font-size: ${theme.fontSizes.lg}; padding: 16px; }
 `;

@@ -1487,9 +1487,25 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                       {isSubmitting ? 'Génération en cours...' : !rawBase64 ? 'Préparation de la couverture...' : `Générer le livre de ${heroName} →`}
                     </PayButton>
 
-                    <p style={{ fontSize: '11px', color: 'var(--text-light)', marginTop: '8px', textAlign: 'center' }}>
-                      ✅ Inclus dans votre Club · ⚡ Prêt en 5 min
-                    </p>
+                    {!rawBase64 ? (
+                      <div style={{ width: '100%', marginTop: '10px' }}>
+                        <div style={{ height: '4px', borderRadius: '2px', background: 'var(--border-color)', overflow: 'hidden' }}>
+                          <div style={{
+                            height: '100%', borderRadius: '2px',
+                            background: `linear-gradient(90deg, ${theme.colors.accent.coral}, #FF7F7F)`,
+                            animation: 'coverProgress 15s ease-out forwards',
+                          }} />
+                        </div>
+                        <p style={{ fontSize: '10px', color: 'var(--text-light)', marginTop: '6px', textAlign: 'center' }}>
+                          Votre couverture est en cours de création...
+                        </p>
+                        <style>{`@keyframes coverProgress { 0% { width: 0%; } 50% { width: 60%; } 80% { width: 85%; } 100% { width: 95%; } }`}</style>
+                      </div>
+                    ) : (
+                      <p style={{ fontSize: '11px', color: 'var(--text-light)', marginTop: '8px', textAlign: 'center' }}>
+                        ✅ Inclus dans votre Club · ⚡ Prêt en 5 min
+                      </p>
+                    )}
                   </>
                 )}
 
@@ -1646,9 +1662,24 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                           : `Payer ${singlePriceLabel} — Recevoir mon livre`}
                       </PayButton>
 
-                      <p style={{ fontSize: '10px', color: 'var(--text-light)', marginTop: '6px', textAlign: 'center' }}>
-                        {isFirstPurchase ? '✅ Gratuit · ⚡ Prêt en 5 min' : '🔒 Paiement Stripe · ⚡ Prêt en 5 min'}
-                      </p>
+                      {!rawBase64 ? (
+                        <div style={{ width: '100%', marginTop: '8px' }}>
+                          <div style={{ height: '4px', borderRadius: '2px', background: 'var(--border-color)', overflow: 'hidden' }}>
+                            <div style={{
+                              height: '100%', borderRadius: '2px',
+                              background: `linear-gradient(90deg, ${theme.colors.accent.coral}, #FF7F7F)`,
+                              animation: 'coverProgress 15s ease-out forwards',
+                            }} />
+                          </div>
+                          <p style={{ fontSize: '10px', color: 'var(--text-light)', marginTop: '6px', textAlign: 'center' }}>
+                            Couverture en cours... Entrez votre email en attendant ↑
+                          </p>
+                        </div>
+                      ) : (
+                        <p style={{ fontSize: '10px', color: 'var(--text-light)', marginTop: '6px', textAlign: 'center' }}>
+                          {isFirstPurchase ? '✅ Gratuit · ⚡ Prêt en 5 min' : '🔒 Paiement Stripe · ⚡ Prêt en 5 min'}
+                        </p>
+                      )}
                     </div>
                   </>
                 )}
