@@ -619,6 +619,42 @@ async function runGenerationPipeline(orderId: string, order: any, genLogId: stri
         : null;
     }
 
+    // If still no cover, generate one now and save the URL
+    if (!coverImageData && !order.coverImageUrl) {
+      console.log(`[Generation] No cover image found — generating one now...`);
+      try {
+        const hasPhoto = !!order.photoUrl;
+        const coverGenParams: CoverGenerationParams = {
+          protagonistName: order.protagonistName,
+          protagonistAge: order.protagonistAge || '',
+          protagonistGender: order.protagonistGender || 'boy',
+          eyeColor: hasPhoto ? undefined : (order.eyeColor || ''),
+          hairColor: hasPhoto ? undefined : (order.hairColor || ''),
+          skinColor: hasPhoto ? undefined : (order.skinColor || ''),
+          illustrationStyle: order.illustrationStyle,
+          generalTheme: order.generalTheme,
+          customTheme: order.customTheme || undefined,
+          specificSubject: order.specificSubject,
+          customSubject: order.customSubject || undefined,
+          centralMessage: order.centralMessage || undefined,
+          customMessage: order.customMessage || undefined,
+          ageRange: order.ageRange || '6-9',
+        };
+        const coverResult = await generateCoverImage(coverGenParams);
+        coverImageData = Buffer.from(coverResult.imageBase64, 'base64');
+        // Upload to Cloudinary and save URL
+        const coverPublicId = `cover-${orderId}-${Date.now()}`;
+        const coverUrl = await uploadCoverToCloudinary(coverImageData, coverPublicId);
+        await prisma.order.update({
+          where: { id: orderId },
+          data: { coverImageUrl: coverUrl, coverTitle: coverResult.title || order.coverTitle }
+        });
+        console.log(`[Generation] Cover generated and saved: ${coverUrl}`);
+      } catch (coverErr: any) {
+        console.error(`[Generation] Failed to generate cover:`, coverErr.message);
+      }
+    }
+
     // --- Step 1: Generate text (0-10%) ---
     logStep('text', 'started');
     await updateProgress(orderId, 'GENERATING_TEXT', 2);
