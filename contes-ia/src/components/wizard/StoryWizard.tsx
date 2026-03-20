@@ -1337,13 +1337,6 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
               </AccordionBody>
             </ExtrasSection>
 
-            <ExtrasSection>
-              <SectionTitle>Créateur du livre</SectionTitle>
-              <InputField>
-                <ValidatedInput label="" value={formData.creatorName || ''}
-                  onChange={(v) => handleInputChange('creatorName', v)} placeholder="Ex : Créé par Papa et Maman..." required={false} />
-              </InputField>
-            </ExtrasSection>
           </>
         );
 
