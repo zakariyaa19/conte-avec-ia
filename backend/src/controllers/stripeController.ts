@@ -375,19 +375,22 @@ export const createCustomerPortal = async (req: ClientAuthRequest, res: Response
   try {
     const userId = req.clientUser?.id;
     if (!userId) {
-      return res.status(401).json({ error: 'Authentification requise' });
+      return res.status(401).json({ success: false, message: 'Authentification requise' });
     }
 
     const user = await prisma.user.findUnique({ where: { id: userId } });
     if (!user) {
-      return res.status(404).json({ error: 'Utilisateur non trouve' });
+      return res.status(404).json({ success: false, message: 'Utilisateur non trouve' });
     }
 
     let customerId = user.stripeCustomerId;
+    console.log(`[Portal] User ${user.email}, stripeCustomerId en BDD: ${customerId || 'AUCUN'}`);
 
     // Si pas de stripeCustomerId en base, chercher par email dans Stripe
     if (!customerId && user.email) {
+      console.log(`[Portal] Recherche client Stripe par email: ${user.email}`);
       const customers = await stripe.customers.list({ email: user.email, limit: 1 });
+      console.log(`[Portal] Résultats recherche: ${customers.data.length} client(s) trouvé(s)`);
       if (customers.data.length > 0) {
         customerId = customers.data[0].id;
         // Sauvegarder pour les prochaines fois
@@ -395,15 +398,16 @@ export const createCustomerPortal = async (req: ClientAuthRequest, res: Response
           where: { id: userId },
           data: { stripeCustomerId: customerId }
         });
-        console.log(`[Portal] stripeCustomerId retrouve et sauvegarde pour ${user.email}: ${customerId}`);
+        console.log(`[Portal] stripeCustomerId retrouve et sauvegarde: ${customerId}`);
       }
     }
 
     if (!customerId) {
-      return res.status(400).json({ error: 'Aucun compte de paiement trouve. Contactez le support.' });
+      console.log(`[Portal] AUCUN client Stripe trouvé pour ${user.email}`);
+      return res.status(400).json({ success: false, message: 'Aucun compte de paiement trouvé pour cet email.' });
     }
 
-    console.log(`[Portal] Ouverture portail pour customer ${customerId} (user ${user.email})`);
+    console.log(`[Portal] Création session portail pour customer ${customerId}`);
 
     const session = await stripe.billingPortal.sessions.create({
       customer: customerId,
@@ -412,9 +416,9 @@ export const createCustomerPortal = async (req: ClientAuthRequest, res: Response
 
     res.json({ url: session.url });
   } catch (error: any) {
-    console.error('Erreur portail client:', error?.message || error);
-    const stripeMsg = error?.raw?.message || error?.message || '';
-    res.status(500).json({ error: `Erreur portail: ${stripeMsg || 'Erreur inconnue'}` });
+    const stripeMsg = error?.raw?.message || error?.message || 'Erreur inconnue';
+    console.error('Erreur portail client:', stripeMsg, error?.statusCode, error?.type);
+    res.status(500).json({ success: false, message: `Erreur portail: ${stripeMsg}` });
   }
 };
 
