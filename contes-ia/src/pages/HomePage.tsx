@@ -9,7 +9,8 @@ import { Footer } from '../components/layout/Footer';
 import { useNavigate } from 'react-router-dom';
 import { exampleStories } from '../data/exampleStories';
 import { useScrollReveal, useStaggerReveal } from '../hooks/useScrollReveal';
-import { StoryPDFViewer } from '../components/ui/StoryPDFViewer';
+import { StoryReader } from '../components/ui/StoryReader';
+import { ApiService } from '../config/api';
 import { useAuth } from '../contexts/AuthContext';
 
 // =============================================
@@ -1344,8 +1345,9 @@ export const HomePage: React.FC = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [stepKey, setStepKey] = useState(0);
   const [activeBook, setActiveBook] = useState(0);
-  const [pdfViewerOpen, setPdfViewerOpen] = useState(false);
+  const [readerOpen, setReaderOpen] = useState(false);
   const [selectedStory, setSelectedStory] = useState<typeof exampleStories[0] | null>(null);
+  const [readerData, setReaderData] = useState<{ paragraphs: string[]; illustrationUrls: string[]; creatorName?: string } | null>(null);
 
   const handleSelectPlan = (plan: PricingPlan) => {
     if (plan === 'single') {
@@ -1397,11 +1399,24 @@ const faqReveal = useScrollReveal();
 
   const openStoryViewer = useCallback((story: typeof exampleStories[0]) => {
     setSelectedStory(story);
-    setPdfViewerOpen(true);
+    // Charger les données complètes (paragraphs, illustrations) depuis l'API
+    const baseUrl = ApiService.getBaseUrl();
+    fetch(`${baseUrl}/api/public/examples`)
+      .then(r => r.json())
+      .then(res => {
+        if (res.success && res.data) {
+          const match = res.data.find((s: any) => s.id === story.id);
+          if (match && match.paragraphs?.length > 0) {
+            setReaderData({ paragraphs: match.paragraphs, illustrationUrls: match.illustrationUrls, creatorName: match.creatorName });
+            setReaderOpen(true);
+          }
+        }
+      })
+      .catch(() => {});
   }, []);
 
   const closeStoryViewer = useCallback(() => {
-    setPdfViewerOpen(false);
+    setReaderOpen(false);
     setSelectedStory(null);
   }, []);
 
@@ -1813,13 +1828,20 @@ const faqReveal = useScrollReveal();
       </main>
       <Footer />
 
-      {/* ============ PDF VIEWER MODAL ============ */}
-      <StoryPDFViewer
-        isOpen={pdfViewerOpen}
-        onClose={closeStoryViewer}
-        pdfUrl={selectedStory?.pdfUrl || null}
-        title={selectedStory?.title || ''}
-      />
+      {/* ============ STORY READER MODAL ============ */}
+      {readerOpen && selectedStory && readerData && (
+        <StoryReader
+          coverImageUrl={selectedStory.coverImage}
+          coverTitle={selectedStory.title}
+          paragraphs={readerData.paragraphs}
+          illustrationUrls={readerData.illustrationUrls}
+          creatorName={readerData.creatorName}
+          protagonistName={selectedStory.protagonistName}
+          onClose={closeStoryViewer}
+          onCreateAnother={() => navigate('/create-story')}
+          isShared
+        />
+      )}
 
     </PageContainer>
   );
