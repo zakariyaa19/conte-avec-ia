@@ -78,12 +78,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (response.success) {
         setUser(response.data);
       } else {
+        // Profil invalide (401) → déconnecter
         localStorage.removeItem('userToken');
         setUser(null);
       }
     } catch (error) {
-      localStorage.removeItem('userToken');
-      setUser(null);
+      // Erreur réseau (timeout, connexion lente) → garder le token et réessayer
+      // Ne PAS supprimer le token sur erreur réseau — sinon l'utilisateur est déconnecté sur mobile
+      console.warn('[Auth] Erreur chargement profil (token conservé):', error);
+      // Décoder le token localement pour au moins avoir les infos de base
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        if (payload.exp && payload.exp > Date.now() / 1000) {
+          setUser({ id: payload.userId, email: payload.email, role: payload.role } as any);
+        } else {
+          localStorage.removeItem('userToken');
+          setUser(null);
+        }
+      } catch {
+        localStorage.removeItem('userToken');
+        setUser(null);
+      }
     } finally {
       setIsLoading(false);
     }
