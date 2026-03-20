@@ -1386,125 +1386,126 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
               Montrez l'histoire de {heroName} à votre famille
             </StepSubtitle>
 
-            {/* ── COMPACT FLOW: for free users (simplified + Club with credits) ── */}
+            {/* ══════ COMPACT FLOW ══════ */}
             {(isSimplifiedMode || isClubWithCredit) && formData.productType && (
               <div style={{ width: '100%', maxWidth: 400, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                {/* Small cover preview */}
-                <div style={{
-                  width: '140px', height: '190px', borderRadius: '6px 12px 12px 6px',
-                  overflow: 'hidden', margin: '0 auto 16px',
-                  boxShadow: '0 8px 24px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,153,153,0.15)',
-                }}>
-                  {coverImageUrl && <img src={coverImageUrl} alt="Couverture" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
-                </div>
 
-                {/* Title */}
-                <p style={{
-                  fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.base,
-                  fontWeight: 700, color: 'var(--text-primary)', textAlign: 'center',
-                  margin: '0 0 4px',
-                }}>
-                  Le livre de {heroName} est prêt !
-                </p>
-                <p style={{
-                  fontSize: theme.fontSizes.xs, color: 'var(--text-secondary)',
-                  textAlign: 'center', margin: '0 0 16px',
-                }}>
-                  {isAuthenticated
-                    ? 'Un clic pour recevoir votre livre'
-                    : 'Connectez-vous pour recevoir votre livre gratuitement'}
-                </p>
-
-                {/* Google + Email form inline */}
-                <div ref={orderFormRef} style={{ width: '100%' }}>
-                  {!isAuthenticated && !isInAppBrowser() && (
-                    <div style={{ textAlign: 'center', marginBottom: '10px' }}>
-                      <div style={{ display: 'flex', justifyContent: 'center' }}>
-                        <GoogleLogin
-                          onSuccess={(credentialResponse: CredentialResponse) => {
-                            if (credentialResponse.credential) {
-                              ApiService.googleAuth(credentialResponse.credential).then(res => {
-                                if (res.success && res.data) {
-                                  if (res.data.token) localStorage.setItem('userToken', res.data.token);
-                                  const googleEmail = res.data.user?.email || '';
-                                  const googleFirstName = res.data.user?.firstName || '';
-                                  onUpdate({ userEmail: googleEmail, firstName: googleFirstName });
-                                  googleAutoSubmitRef.current = true;
-                                }
-                              }).catch(() => {});
-                            }
-                          }}
-                          onError={() => {}}
-                          text="continue_with"
-                          shape="rectangular"
-                          size="large"
-                        />
-                      </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', margin: '12px 0 8px' }}>
-                        <div style={{ flex: 1, height: '1px', background: 'var(--border-color)' }} />
-                        <span style={{ fontSize: '11px', color: 'var(--text-light)' }}>ou</span>
-                        <div style={{ flex: 1, height: '1px', background: 'var(--border-color)' }} />
-                      </div>
-                    </div>
-                  )}
-
-                  {isAuthenticated && currentUser && (
-                    <ConnectedBanner>Connecté en tant que <strong>{currentUser.email}</strong></ConnectedBanner>
-                  )}
-
-                  {!isAuthenticated && (
-                    <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
-                      <div style={{ flex: 1 }}>
-                        <ValidatedInput type="email" label="Email" value={formData.userEmail || ''}
-                          onChange={(v) => { setGlobalError(''); setEmailStatus(null); onUpdate({ userEmail: v }); if (errors.userEmail) setErrors(p => ({ ...p, userEmail: '' })); }}
-                          placeholder="votre@email.com" required error={errors.userEmail}
-                          onBlur={() => { validateField('userEmail', formData.userEmail || '', 'email'); handleEmailBlurCheck(); }} />
-                      </div>
-                    </div>
-                  )}
-
-                  {globalError && <ErrorMessage>{globalError}</ErrorMessage>}
-
-                  {/* Email connu + gratuit déjà utilisé */}
-                  {!isAuthenticated && emailStatus?.exists && !isFirstPurchase && (
+                {/* ── CASE A: Club connecté avec crédits → juste un bouton ── */}
+                {isClubWithCredit && isAuthenticated && (
+                  <>
                     <div style={{
-                      background: `${theme.colors.accent.coral}10`, border: `1px solid ${theme.colors.accent.coral}30`,
-                      borderRadius: '10px', padding: '10px 14px', marginBottom: '10px', textAlign: 'center',
+                      width: '120px', height: '164px', borderRadius: '4px 10px 10px 4px',
+                      overflow: 'hidden', margin: '0 auto 14px',
+                      boxShadow: '0 6px 20px rgba(0,0,0,0.3)',
                     }}>
-                      <p style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-primary)', margin: '0 0 2px' }}>
-                        Compte existant — livre gratuit déjà utilisé
-                      </p>
-                      <p style={{ fontSize: '11px', color: 'var(--text-secondary)', margin: 0 }}>
-                        Le prochain livre coûte {singlePriceLabel}
+                      {coverImageUrl && <img src={coverImageUrl} alt="Couverture" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
+                    </div>
+
+                    <div ref={orderFormRef} />
+
+                    {globalError && <ErrorMessage>{globalError}</ErrorMessage>}
+
+                    <PayButton $isReady disabled={isSubmitting} onClick={handleFormSubmit}
+                      style={{ width: '100%', borderRadius: '14px', padding: '16px', fontSize: theme.fontSizes.base }}>
+                      {isSubmitting ? 'Génération en cours...' : `Générer le livre de ${heroName} →`}
+                    </PayButton>
+
+                    <p style={{ fontSize: '11px', color: 'var(--text-light)', marginTop: '8px', textAlign: 'center' }}>
+                      ✅ Inclus dans votre Club · ⚡ Prêt en 5 min
+                    </p>
+                  </>
+                )}
+
+                {/* ── CASE B: Non connecté OU connecté gratuit (premier livre) ── */}
+                {!isClubWithCredit && (
+                  <>
+                    <div style={{
+                      width: '120px', height: '164px', borderRadius: '4px 10px 10px 4px',
+                      overflow: 'hidden', margin: '0 auto 12px',
+                      boxShadow: '0 6px 20px rgba(0,0,0,0.3)',
+                    }}>
+                      {coverImageUrl && <img src={coverImageUrl} alt="Couverture" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
+                    </div>
+
+                    <p style={{
+                      fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.sm,
+                      fontWeight: 700, color: 'var(--text-primary)', textAlign: 'center',
+                      margin: '0 0 12px',
+                    }}>
+                      {isAuthenticated ? `Le livre de ${heroName} est prêt !` : `Recevez le livre de ${heroName} gratuitement`}
+                    </p>
+
+                    <div ref={orderFormRef} style={{ width: '100%' }}>
+                      {/* Google (non connecté uniquement) */}
+                      {!isAuthenticated && !isInAppBrowser() && (
+                        <div style={{ textAlign: 'center', marginBottom: '8px' }}>
+                          <div style={{ display: 'flex', justifyContent: 'center' }}>
+                            <GoogleLogin
+                              onSuccess={(credentialResponse: CredentialResponse) => {
+                                if (credentialResponse.credential) {
+                                  ApiService.googleAuth(credentialResponse.credential).then(res => {
+                                    if (res.success && res.data) {
+                                      if (res.data.token) localStorage.setItem('userToken', res.data.token);
+                                      onUpdate({ userEmail: res.data.user?.email || '', firstName: res.data.user?.firstName || '' });
+                                      googleAutoSubmitRef.current = true;
+                                    }
+                                  }).catch(() => {});
+                                }
+                              }}
+                              onError={() => {}} text="continue_with" shape="rectangular" size="large"
+                            />
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', margin: '10px 0 6px' }}>
+                            <div style={{ flex: 1, height: '1px', background: 'var(--border-color)' }} />
+                            <span style={{ fontSize: '10px', color: 'var(--text-light)' }}>ou</span>
+                            <div style={{ flex: 1, height: '1px', background: 'var(--border-color)' }} />
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Connecté → juste le badge */}
+                      {isAuthenticated && currentUser && (
+                        <ConnectedBanner>Connecté : <strong>{currentUser.email}</strong></ConnectedBanner>
+                      )}
+
+                      {/* Email (non connecté) */}
+                      {!isAuthenticated && (
+                        <div style={{ marginBottom: '10px' }}>
+                          <ValidatedInput type="email" label="Email" value={formData.userEmail || ''}
+                            onChange={(v) => { setGlobalError(''); setEmailStatus(null); onUpdate({ userEmail: v }); if (errors.userEmail) setErrors(p => ({ ...p, userEmail: '' })); }}
+                            placeholder="votre@email.com" required error={errors.userEmail}
+                            onBlur={() => { validateField('userEmail', formData.userEmail || '', 'email'); handleEmailBlurCheck(); }} />
+                        </div>
+                      )}
+
+                      {globalError && <ErrorMessage>{globalError}</ErrorMessage>}
+
+                      {/* Email connu + gratuit utilisé */}
+                      {!isAuthenticated && emailStatus?.exists && !isFirstPurchase && (
+                        <div style={{
+                          background: `${theme.colors.accent.coral}10`, border: `1px solid ${theme.colors.accent.coral}30`,
+                          borderRadius: '10px', padding: '8px 12px', marginBottom: '8px', textAlign: 'center',
+                        }}>
+                          <p style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>
+                            Livre gratuit déjà utilisé · Prochain : {singlePriceLabel}
+                          </p>
+                        </div>
+                      )}
+
+                      {/* CTA */}
+                      <PayButton $isReady={isPaymentInfoComplete} disabled={!formData.productType || isSubmitting} onClick={handleFormSubmit}
+                        style={{ width: '100%', borderRadius: '14px', padding: '14px' }}>
+                        {isSubmitting ? 'Traitement...'
+                          : isFirstPurchase ? 'Lire mon livre gratuitement →'
+                          : `Payer ${singlePriceLabel} — Recevoir mon livre`}
+                      </PayButton>
+
+                      <p style={{ fontSize: '10px', color: 'var(--text-light)', marginTop: '6px', textAlign: 'center' }}>
+                        {isFirstPurchase ? '✅ Gratuit · ⚡ Prêt en 5 min' : '🔒 Paiement Stripe · ⚡ Prêt en 5 min'}
                       </p>
                     </div>
-                  )}
-
-                  {/* CTA */}
-                  <PayButton $isReady={isPaymentInfoComplete} disabled={!formData.productType || isSubmitting} onClick={handleFormSubmit}
-                    style={{ width: '100%', borderRadius: '14px', padding: '14px' }}>
-                    {isSubmitting
-                      ? 'Traitement en cours...'
-                      : (isFirstPurchase || isClubWithCredit)
-                        ? 'Lire mon livre gratuitement →'
-                        : `Payer ${singlePriceLabel} — Recevoir mon livre`}
-                  </PayButton>
-
-                  {/* Trust */}
-                  <TrustBadgesRow>
-                    {(isFirstPurchase && !isClub) || isClubWithCredit ? (
-                      <>
-                        <TrustBadge>&#x2705; {isClubWithCredit ? 'Inclus dans votre Club' : 'Gratuit'}</TrustBadge>
-                        <TrustBadge>&#x26A1; Prêt en 5 min</TrustBadge>
-                      </>
-                    ) : (
-                      <>
-                        <TrustBadge>&#x1F512; Stripe sécurisé</TrustBadge>
-                        <TrustBadge>&#x26A1; Prêt en 5 min</TrustBadge>
-                      </>
-                    )}
-                  </TrustBadgesRow>
-                </div>
+                  </>
+                )}
               </div>
             )}
 
