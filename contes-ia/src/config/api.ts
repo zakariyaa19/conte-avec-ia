@@ -160,14 +160,19 @@ export class ApiService {
 
     // Clean formData: remove heavy binary fields
     const cleanFormData = { ...orderData.formData };
-    const photoFile = cleanFormData.photo instanceof File ? cleanFormData.photo : null;
+    let photoFile = cleanFormData.photo instanceof File ? cleanFormData.photo : null;
     delete cleanFormData.photo;
-    // TOUJOURS supprimer le base64 du JSON — il ne doit JAMAIS être envoyé dans le formulaire
-    // La cover est soit déjà uploadée sur Cloudinary (coverImageUrl), soit sera générée par le backend
+    // TOUJOURS supprimer le base64 — la cover est sur Cloudinary ou sera générée par le backend
     delete cleanFormData.coverImageBase64;
 
-    // Photo file upload: use FormData (multipart)
+    // Compresser la photo avant envoi (les photos iPhone font 8-15MB, on réduit à ~300KB)
     if (photoFile) {
+      try {
+        photoFile = await this.compressPhoto(photoFile);
+      } catch (e) {
+        console.warn('[API] Compression photo échouée, envoi original:', e);
+      }
+
       const formDataToSend = new FormData();
       formDataToSend.append('userEmail', orderData.userEmail);
       formDataToSend.append('formData', JSON.stringify(cleanFormData));
@@ -177,7 +182,7 @@ export class ApiService {
         method: 'POST',
         body: formDataToSend,
         headers,
-        signal: this.createTimeoutSignal(120000), // 2min for mobile upload
+        signal: this.createTimeoutSignal(120000),
       });
     }
 
@@ -567,6 +572,37 @@ export class ApiService {
 
   static async getPublicStory(shareToken: string): Promise<{ success: boolean; data: any }> {
     return this.request(`/api/public/stories/${shareToken}`);
+  }
+
+  // Compresser une photo (iPhone 12MP → ~300KB JPEG)
+  private static compressPhoto(file: File, maxSize = 800, quality = 0.7): Promise<File> {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        try {
+          const canvas = document.createElement('canvas');
+          let { width, height } = img;
+          if (width > height) {
+            if (width > maxSize) { height = Math.round(height * maxSize / width); width = maxSize; }
+          } else {
+            if (height > maxSize) { width = Math.round(width * maxSize / height); height = maxSize; }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          if (!ctx) { resolve(file); return; }
+          ctx.drawImage(img, 0, 0, width, height);
+          canvas.toBlob(blob => {
+            if (!blob) { resolve(file); return; }
+            const compressed = new File([blob], file.name.replace(/\.\w+$/, '.jpg'), { type: 'image/jpeg' });
+            console.log(`[Photo] Compressée: ${(file.size/1024).toFixed(0)}KB → ${(compressed.size/1024).toFixed(0)}KB`);
+            resolve(compressed);
+          }, 'image/jpeg', quality);
+        } catch { resolve(file); }
+      };
+      img.onerror = () => resolve(file);
+      img.src = URL.createObjectURL(file);
+    });
   }
 
   // Get base URL (used for PDF preview links)
