@@ -1405,20 +1405,20 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                     {/* Cover or animated loading — LARGE since no form fields */}
                     {coverImageUrl ? (
                       <div style={{
-                        width: '180px', height: '180px', borderRadius: '16px',
+                        width: '220px', height: '300px', borderRadius: '16px',
                         overflow: 'hidden', margin: '0 auto 16px',
                         boxShadow: '0 12px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,153,153,0.12)',
                       }}>
-                        <img src={coverImageUrl} alt="Couverture" style={{ width: '100%', height: '100%', objectFit: 'contain', background: '#1C1735' }} />
+                        <img src={coverImageUrl} alt="Couverture" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '16px' }} />
                       </div>
                     ) : (
                       <div style={{
-                        width: '180px', height: '180px', borderRadius: '16px',
+                        width: '220px', height: '300px', borderRadius: '16px',
                         margin: '0 auto 16px', overflow: 'hidden',
                         background: 'linear-gradient(145deg, #1C1735, #2E2850, #1C1735)',
                         boxShadow: '0 12px 40px rgba(0,0,0,0.4)',
                       }}>
-                        <svg viewBox="0 0 160 220" width="180" height="180" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <svg viewBox="0 0 160 220" width="220" height="300" fill="none" xmlns="http://www.w3.org/2000/svg">
                           {/* Background shimmer */}
                           <rect width="160" height="220" fill="url(#shimmerGrad)">
                             <animate attributeName="opacity" values="0.3;0.6;0.3" dur="2s" repeatCount="indefinite" />
@@ -1523,20 +1523,20 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                     {/* Cover or animated loading */}
                     {coverImageUrl ? (
                       <div style={{
-                        width: '150px', height: '150px', borderRadius: '14px',
+                        width: '200px', height: '270px', borderRadius: '14px',
                         overflow: 'hidden', margin: '0 auto 10px',
                         boxShadow: '0 8px 28px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,153,153,0.1)',
                       }}>
-                        <img src={coverImageUrl} alt="Couverture" style={{ width: '100%', height: '100%', objectFit: 'contain', background: '#1C1735' }} />
+                        <img src={coverImageUrl} alt="Couverture" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '14px' }} />
                       </div>
                     ) : (
                       <div style={{
-                        width: '150px', height: '150px', borderRadius: '14px',
+                        width: '200px', height: '270px', borderRadius: '14px',
                         margin: '0 auto 10px', overflow: 'hidden',
                         background: 'linear-gradient(145deg, #1C1735, #2E2850, #1C1735)',
                         boxShadow: '0 8px 28px rgba(0,0,0,0.35)',
                       }}>
-                        <svg viewBox="0 0 160 220" width="150" height="150" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <svg viewBox="0 0 160 220" width="200" height="270" fill="none" xmlns="http://www.w3.org/2000/svg">
                           <rect width="160" height="220" fill="url(#shimGrad2)">
                             <animate attributeName="opacity" values="0.3;0.6;0.3" dur="2s" repeatCount="indefinite" />
                           </rect>

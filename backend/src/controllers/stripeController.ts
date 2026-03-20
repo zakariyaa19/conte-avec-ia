@@ -184,13 +184,13 @@ export const applyRetentionDiscount = async (req: ClientAuthRequest, res: Respon
 
     // Check if coupon already applied (prevent double application)
     const subscription = await stripe.subscriptions.retrieve(user.subscriptionId);
-    if (subscription.discount?.coupon) {
+    if (subscription.discounts && subscription.discounts.length > 0) {
       return res.json({ success: true, message: 'Une reduction est deja active sur votre abonnement !' });
     }
 
     // Apply the coupon to the subscription (next invoice only)
     await stripe.subscriptions.update(user.subscriptionId, {
-      coupon: couponId,
+      discounts: [{ coupon: couponId }],
     });
 
     console.log(`[Stripe] Retention discount applied for user ${user.email} on subscription ${user.subscriptionId}`);
