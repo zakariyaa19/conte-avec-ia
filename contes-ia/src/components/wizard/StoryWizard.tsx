@@ -1501,20 +1501,20 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 {/* ── CASE B: Non connecté OU connecté gratuit (premier livre) ── */}
                 {!isClubWithCredit && (
                   <>
-                    {/* Cover — fills available space above the form */}
+                    {/* Cover — compact on mobile to leave space for form */}
                     <div style={{
-                      flex: '1 1 0', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      minHeight: 0, margin: '0 0 10px',
+                      flex: '0 0 auto', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      margin: '0 0 8px',
                     }}>
                       {coverImageUrl ? (
                         <img src={coverImageUrl} alt="Couverture" style={{
-                          maxHeight: '100%', maxWidth: '70%', width: 'auto', height: 'auto',
+                          height: '28dvh', maxHeight: '200px', width: 'auto',
                           borderRadius: '14px', objectFit: 'contain',
                           boxShadow: '0 12px 36px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,153,153,0.1)',
                         }} />
                       ) : (
                         <div style={{
-                          width: '55%', maxWidth: '220px', aspectRatio: '3/4', borderRadius: '14px',
+                          height: '28dvh', maxHeight: '200px', aspectRatio: '3/4', borderRadius: '14px',
                           overflow: 'hidden',
                           background: 'linear-gradient(145deg, #2E2850, #1C1735)',
                           boxShadow: '0 12px 36px rgba(0,0,0,0.45)',
