@@ -1348,6 +1348,18 @@ export const HomePage: React.FC = () => {
   const [readerOpen, setReaderOpen] = useState(false);
   const [selectedStory, setSelectedStory] = useState<typeof exampleStories[0] | null>(null);
   const [readerData, setReaderData] = useState<{ paragraphs: string[]; illustrationUrls: string[]; creatorName?: string } | null>(null);
+  const [apiExamples, setApiExamples] = useState<any[] | null>(null);
+
+  // Pré-charger les données exemples depuis l'API
+  useEffect(() => {
+    const baseUrl = ApiService.getBaseUrl();
+    fetch(`${baseUrl}/api/public/examples`)
+      .then(r => r.json())
+      .then(res => {
+        if (res.success && res.data) setApiExamples(res.data);
+      })
+      .catch(() => {});
+  }, []);
 
   const handleSelectPlan = (plan: PricingPlan) => {
     if (plan === 'single') {
@@ -1399,21 +1411,16 @@ const faqReveal = useScrollReveal();
 
   const openStoryViewer = useCallback((story: typeof exampleStories[0]) => {
     setSelectedStory(story);
-    // Charger les données complètes (paragraphs, illustrations) depuis l'API
-    const baseUrl = ApiService.getBaseUrl();
-    fetch(`${baseUrl}/api/public/examples`)
-      .then(r => r.json())
-      .then(res => {
-        if (res.success && res.data) {
-          const match = res.data.find((s: any) => s.id === story.id);
-          if (match && match.paragraphs?.length > 0) {
-            setReaderData({ paragraphs: match.paragraphs, illustrationUrls: match.illustrationUrls, creatorName: match.creatorName });
-            setReaderOpen(true);
-          }
-        }
-      })
-      .catch(() => {});
-  }, []);
+    if (!apiExamples) return;
+    // Matcher par nom du protagoniste (les IDs statiques != IDs base de données)
+    const match = apiExamples.find((s: any) =>
+      s.protagonistName.toLowerCase() === story.protagonistName.toLowerCase()
+    );
+    if (match && match.paragraphs?.length > 0) {
+      setReaderData({ paragraphs: match.paragraphs, illustrationUrls: match.illustrationUrls, creatorName: match.creatorName });
+      setReaderOpen(true);
+    }
+  }, [apiExamples]);
 
   const closeStoryViewer = useCallback(() => {
     setReaderOpen(false);
@@ -1831,7 +1838,7 @@ const faqReveal = useScrollReveal();
       {/* ============ STORY READER MODAL ============ */}
       {readerOpen && selectedStory && readerData && (
         <StoryReader
-          coverImageUrl={selectedStory.coverImage}
+          coverImageUrl={apiExamples?.find((s: any) => s.protagonistName.toLowerCase() === selectedStory.protagonistName.toLowerCase())?.coverImageUrl || selectedStory.coverImage}
           coverTitle={selectedStory.title}
           paragraphs={readerData.paragraphs}
           illustrationUrls={readerData.illustrationUrls}
