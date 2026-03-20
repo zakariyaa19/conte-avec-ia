@@ -484,20 +484,18 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
     : !!(formData.eyeColor && formData.hairColor && formData.skinColor);
   const isPaymentInfoComplete = !!(formData.productType && formData.userEmail && formData.firstName);
 
-  // Auto-submit after Google auth — waits for formData to be updated
+  // Auto-submit after Google auth — waits for formData + cover to be ready
   useEffect(() => {
-    if (googleAutoSubmitRef.current && formData.userEmail && formData.firstName) {
+    if (googleAutoSubmitRef.current && formData.userEmail && formData.firstName && rawBase64) {
       googleAutoSubmitRef.current = false;
       clearDraft();
-      // Pass cover image directly in submit
-      const coverOverride: Partial<StoryFormData> = {};
-      if (rawBase64 && !formData.coverImageBase64) {
-        coverOverride.coverImageBase64 = rawBase64;
-        coverOverride.coverTitle = coverTitle || undefined;
-      }
-      onSubmit(Object.keys(coverOverride).length > 0 ? coverOverride : undefined);
+      const coverOverride: Partial<StoryFormData> = {
+        coverImageBase64: rawBase64,
+        coverTitle: coverTitle || undefined,
+      };
+      onSubmit(coverOverride);
     }
-  }, [formData.userEmail, formData.firstName]); // eslint-disable-line
+  }, [formData.userEmail, formData.firstName, rawBase64]); // eslint-disable-line
 
   // Summary chips data (shown from step 3+)
   const summaryChips: { label: string; value: string }[] = [];
@@ -1484,9 +1482,9 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
 
                     {globalError && <ErrorMessage>{globalError}</ErrorMessage>}
 
-                    <PayButton $isReady disabled={isSubmitting} onClick={handleFormSubmit}
+                    <PayButton $isReady={!!rawBase64} disabled={isSubmitting || !rawBase64} onClick={handleFormSubmit}
                       style={{ width: '100%', borderRadius: '14px', padding: '16px', fontSize: theme.fontSizes.base }}>
-                      {isSubmitting ? 'Génération en cours...' : `Générer le livre de ${heroName} →`}
+                      {isSubmitting ? 'Génération en cours...' : !rawBase64 ? 'Préparation de la couverture...' : `Générer le livre de ${heroName} →`}
                     </PayButton>
 
                     <p style={{ fontSize: '11px', color: 'var(--text-light)', marginTop: '8px', textAlign: 'center' }}>
@@ -1640,9 +1638,10 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                       )}
 
                       {/* CTA */}
-                      <PayButton $isReady={isPaymentInfoComplete} disabled={!formData.productType || isSubmitting} onClick={handleFormSubmit}
+                      <PayButton $isReady={isPaymentInfoComplete && !!rawBase64} disabled={!formData.productType || isSubmitting || !rawBase64} onClick={handleFormSubmit}
                         style={{ width: '100%', borderRadius: '14px', padding: '14px' }}>
                         {isSubmitting ? 'Traitement...'
+                          : !rawBase64 ? 'Préparation de la couverture...'
                           : isFirstPurchase ? 'Lire mon livre gratuitement →'
                           : `Payer ${singlePriceLabel} — Recevoir mon livre`}
                       </PayButton>
