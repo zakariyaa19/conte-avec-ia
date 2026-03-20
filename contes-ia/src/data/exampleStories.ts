@@ -67,7 +67,7 @@ export const exampleStories: ExampleStory[] = [
     specificSubject: "Noel en famille",
     centralMessage: "Amour",
     illustrationStyle: "Kawaii",
-    protagonistName: "Timeo",
+    protagonistName: "Timéo",
     protagonistAge: "4 ans",
     protagonistGender: "boy",
     eyeColor: "",

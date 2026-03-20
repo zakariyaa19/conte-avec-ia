@@ -1413,8 +1413,9 @@ const faqReveal = useScrollReveal();
     setSelectedStory(story);
     if (!apiExamples) return;
     // Matcher par nom du protagoniste (les IDs statiques != IDs base de données)
+    const normalize = (s: string) => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     const match = apiExamples.find((s: any) =>
-      s.protagonistName.toLowerCase() === story.protagonistName.toLowerCase()
+      normalize(s.protagonistName) === normalize(story.protagonistName)
     );
     if (match && match.paragraphs?.length > 0) {
       setReaderData({ paragraphs: match.paragraphs, illustrationUrls: match.illustrationUrls, creatorName: match.creatorName });
@@ -1838,7 +1839,7 @@ const faqReveal = useScrollReveal();
       {/* ============ STORY READER MODAL ============ */}
       {readerOpen && selectedStory && readerData && (
         <StoryReader
-          coverImageUrl={apiExamples?.find((s: any) => s.protagonistName.toLowerCase() === selectedStory.protagonistName.toLowerCase())?.coverImageUrl || selectedStory.coverImage}
+          coverImageUrl={(() => { const n = (s: string) => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); return apiExamples?.find((s: any) => n(s.protagonistName) === n(selectedStory.protagonistName))?.coverImageUrl || selectedStory.coverImage; })()}
           coverTitle={selectedStory.title}
           paragraphs={readerData.paragraphs}
           illustrationUrls={readerData.illustrationUrls}
