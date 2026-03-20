@@ -93,7 +93,7 @@ function App() {
           <Route path="/club" element={<ClubPage />} />
           <Route path="/club/checkout" element={<ClubCheckoutPage />} />
           <Route path="/referral" element={<ReferralPage />} />
-          <Route path="/account/cancel" element={<CancelSubscriptionPage />} />
+          <Route path="/account/cancel" element={<ProtectedRoute><CancelSubscriptionPage /></ProtectedRoute>} />
           <Route path="/upgrade" element={<Navigate to="/club/checkout" replace />} />
           <Route path="/story/:shareToken" element={<PublicStoryPage />} />
           <Route path="/admin/login" element={<AdminLoginRoute />} />

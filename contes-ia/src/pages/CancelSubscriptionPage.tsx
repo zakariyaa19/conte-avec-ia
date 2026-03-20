@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, Navigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import { theme } from '../styles/theme';
 import { Header } from '../components/layout/Header';
@@ -20,9 +20,9 @@ export const CancelSubscriptionPage: React.FC = () => {
   const [discountApplied, setDiscountApplied] = useState(false);
   const [error, setError] = useState('');
 
+  // Redirect non-Club users
   if (!isAuthenticated || !isClub) {
-    navigate('/dashboard');
-    return null;
+    return <Navigate to="/dashboard" replace />;
   }
 
   const handleApplyDiscount = async () => {
@@ -33,6 +33,7 @@ export const CancelSubscriptionPage: React.FC = () => {
       const res = await ApiService.applyRetentionDiscount(token);
       if (res.success) {
         setDiscountApplied(true);
+        refreshProfile(); // Refresh auth context
       } else {
         setError(res.message || 'Erreur');
       }
