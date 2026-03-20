@@ -1386,7 +1386,131 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
               Montrez l'histoire de {heroName} à votre famille
             </StepSubtitle>
 
-            {/* ── Book preview: cover + story page + locked page ── */}
+            {/* ── COMPACT FLOW: for free users (simplified + Club with credits) ── */}
+            {(isSimplifiedMode || isClubWithCredit) && formData.productType && (
+              <div style={{ width: '100%', maxWidth: 400, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                {/* Small cover preview */}
+                <div style={{
+                  width: '140px', height: '190px', borderRadius: '6px 12px 12px 6px',
+                  overflow: 'hidden', margin: '0 auto 16px',
+                  boxShadow: '0 8px 24px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,153,153,0.15)',
+                }}>
+                  {coverImageUrl && <img src={coverImageUrl} alt="Couverture" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
+                </div>
+
+                {/* Title */}
+                <p style={{
+                  fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.base,
+                  fontWeight: 700, color: 'var(--text-primary)', textAlign: 'center',
+                  margin: '0 0 4px',
+                }}>
+                  Le livre de {heroName} est prêt !
+                </p>
+                <p style={{
+                  fontSize: theme.fontSizes.xs, color: 'var(--text-secondary)',
+                  textAlign: 'center', margin: '0 0 16px',
+                }}>
+                  {isAuthenticated
+                    ? 'Un clic pour recevoir votre livre'
+                    : 'Connectez-vous pour recevoir votre livre gratuitement'}
+                </p>
+
+                {/* Google + Email form inline */}
+                <div ref={orderFormRef} style={{ width: '100%' }}>
+                  {!isAuthenticated && !isInAppBrowser() && (
+                    <div style={{ textAlign: 'center', marginBottom: '10px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'center' }}>
+                        <GoogleLogin
+                          onSuccess={(credentialResponse: CredentialResponse) => {
+                            if (credentialResponse.credential) {
+                              ApiService.googleAuth(credentialResponse.credential).then(res => {
+                                if (res.success && res.data) {
+                                  if (res.data.token) localStorage.setItem('userToken', res.data.token);
+                                  const googleEmail = res.data.user?.email || '';
+                                  const googleFirstName = res.data.user?.firstName || '';
+                                  onUpdate({ userEmail: googleEmail, firstName: googleFirstName });
+                                  googleAutoSubmitRef.current = true;
+                                }
+                              }).catch(() => {});
+                            }
+                          }}
+                          onError={() => {}}
+                          text="continue_with"
+                          shape="rectangular"
+                          size="large"
+                        />
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', margin: '12px 0 8px' }}>
+                        <div style={{ flex: 1, height: '1px', background: 'var(--border-color)' }} />
+                        <span style={{ fontSize: '11px', color: 'var(--text-light)' }}>ou</span>
+                        <div style={{ flex: 1, height: '1px', background: 'var(--border-color)' }} />
+                      </div>
+                    </div>
+                  )}
+
+                  {isAuthenticated && currentUser && (
+                    <ConnectedBanner>Connecté en tant que <strong>{currentUser.email}</strong></ConnectedBanner>
+                  )}
+
+                  {!isAuthenticated && (
+                    <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
+                      <div style={{ flex: 1 }}>
+                        <ValidatedInput type="email" label="Email" value={formData.userEmail || ''}
+                          onChange={(v) => { setGlobalError(''); setEmailStatus(null); onUpdate({ userEmail: v }); if (errors.userEmail) setErrors(p => ({ ...p, userEmail: '' })); }}
+                          placeholder="votre@email.com" required error={errors.userEmail}
+                          onBlur={() => { validateField('userEmail', formData.userEmail || '', 'email'); handleEmailBlurCheck(); }} />
+                      </div>
+                    </div>
+                  )}
+
+                  {globalError && <ErrorMessage>{globalError}</ErrorMessage>}
+
+                  {/* Email connu + gratuit déjà utilisé */}
+                  {!isAuthenticated && emailStatus?.exists && !isFirstPurchase && (
+                    <div style={{
+                      background: `${theme.colors.accent.coral}10`, border: `1px solid ${theme.colors.accent.coral}30`,
+                      borderRadius: '10px', padding: '10px 14px', marginBottom: '10px', textAlign: 'center',
+                    }}>
+                      <p style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-primary)', margin: '0 0 2px' }}>
+                        Compte existant — livre gratuit déjà utilisé
+                      </p>
+                      <p style={{ fontSize: '11px', color: 'var(--text-secondary)', margin: 0 }}>
+                        Le prochain livre coûte {singlePriceLabel}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* CTA */}
+                  <PayButton $isReady={isPaymentInfoComplete} disabled={!formData.productType || isSubmitting} onClick={handleFormSubmit}
+                    style={{ width: '100%', borderRadius: '14px', padding: '14px' }}>
+                    {isSubmitting
+                      ? 'Traitement en cours...'
+                      : (isFirstPurchase || isClubWithCredit)
+                        ? 'Lire mon livre gratuitement →'
+                        : `Payer ${singlePriceLabel} — Recevoir mon livre`}
+                  </PayButton>
+
+                  {/* Trust */}
+                  <TrustBadgesRow>
+                    {(isFirstPurchase && !isClub) || isClubWithCredit ? (
+                      <>
+                        <TrustBadge>&#x2705; {isClubWithCredit ? 'Inclus dans votre Club' : 'Gratuit'}</TrustBadge>
+                        <TrustBadge>&#x26A1; Prêt en 5 min</TrustBadge>
+                      </>
+                    ) : (
+                      <>
+                        <TrustBadge>&#x1F512; Stripe sécurisé</TrustBadge>
+                        <TrustBadge>&#x26A1; Prêt en 5 min</TrustBadge>
+                      </>
+                    )}
+                  </TrustBadgesRow>
+                </div>
+              </div>
+            )}
+
+            {/* ── FULL FLOW: for Club members WITHOUT credits (needs pricing selection) ── */}
+            {!isSimplifiedMode && !isClubWithCredit && (
+            <>
             <BookPreviewWrapper>
               <MagicParticle $delay={0} $left="8%" $size={3} />
               <MagicParticle $delay={1.5} $left="22%" $size={5} />
@@ -1395,9 +1519,8 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
               <MagicParticle $delay={2.2} $left="80%" $size={3} />
               <MagicParticle $delay={4} $left="92%" $size={4} />
 
-              {/* Cover — clic = autoscroll vers la section pricing/commande */}
               <BookPageFrame $portrait style={{ cursor: 'pointer' }}
-                onClick={() => (isSimplifiedMode || isClubWithCredit ? orderFormRef : pricingRef).current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>
+                onClick={() => pricingRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>
                 <BookCoverImage>
                   <MaterializeImage $ready>
                     <img src={coverImageUrl} alt="Couverture" />
@@ -1405,26 +1528,22 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 </BookCoverImage>
               </BookPageFrame>
 
-              {/* Locked page — only for Club members WITHOUT credits */}
-              {!isSimplifiedMode && !isClubWithCredit && (
-                <BookPageFrame $compact ref={lockedPageRef}>
-                  <BookLockedOverlay onClick={() => pricingRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })}>
-                    <BookLockedContent>
-                      <BookLockedIcon>&#x1F512;</BookLockedIcon>
-                      <BookLockedTitle>L'aventure de {heroName} continue...</BookLockedTitle>
-                      <BookLockedSubtitle>12 pages illustrées vous attendent</BookLockedSubtitle>
-                    </BookLockedContent>
-                  </BookLockedOverlay>
-                </BookPageFrame>
-              )}
+              <BookPageFrame $compact ref={lockedPageRef}>
+                <BookLockedOverlay onClick={() => pricingRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })}>
+                  <BookLockedContent>
+                    <BookLockedIcon>&#x1F512;</BookLockedIcon>
+                    <BookLockedTitle>L'aventure de {heroName} continue...</BookLockedTitle>
+                    <BookLockedSubtitle>12 pages illustrées vous attendent</BookLockedSubtitle>
+                  </BookLockedContent>
+                </BookLockedOverlay>
+              </BookPageFrame>
             </BookPreviewWrapper>
 
-            {/* ── Timer — only for Club members WITHOUT credits ── */}
-            {!isSimplifiedMode && !isClubWithCredit && (
-              <PreviewTimerBar>
-                <span>Votre livre est réservé pendant encore</span>
-                <PreviewTimerDigits>{timerDisplay}</PreviewTimerDigits>
-              </PreviewTimerBar>
+            <PreviewTimerBar>
+              <span>Votre livre est réservé pendant encore</span>
+              <PreviewTimerDigits>{timerDisplay}</PreviewTimerDigits>
+            </PreviewTimerBar>
+            </>
             )}
 
             {/* ── Pricing section — only for Club members WITHOUT credits ── */}
@@ -1526,37 +1645,8 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
             </div>
             )}
 
-            {/* ── Social proof — visible in simplified mode + Club with credits ── */}
-            {(isSimplifiedMode || isClubWithCredit) && (
-              <SocialProofLine>
-                <span>&#x2B50;</span> Déjà +500 parents ont créé une histoire pour leur enfant
-              </SocialProofLine>
-            )}
-
-            {/* ── CTA banner — guide the user to complete ── */}
-            {formData.productType && (isFirstPurchase || isClubWithCredit) && (
-              <div
-                onClick={() => orderFormRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
-                style={{
-                  width: '100%', maxWidth: 440, textAlign: 'center', cursor: 'pointer',
-                  background: `linear-gradient(135deg, ${theme.colors.accent.coral}15, ${theme.colors.accent.softPink}20)`,
-                  border: `1.5px solid ${theme.colors.accent.coral}30`,
-                  borderRadius: '16px', padding: '14px 20px', marginBottom: theme.spacing.md,
-                }}
-              >
-                <p style={{
-                  fontSize: theme.fontSizes.sm, fontWeight: 600,
-                  color: 'var(--text-primary)', margin: 0, lineHeight: 1.4,
-                }}>
-                  {isAuthenticated
-                    ? 'Votre livre est prêt — cliquez ci-dessous pour le recevoir'
-                    : 'Entrez votre email pour recevoir votre livre gratuitement ↓'}
-                </p>
-              </div>
-            )}
-
-            {/* ── Order form (appears when offer selected) ── */}
-            {formData.productType && (
+            {/* ── Order form — ONLY for full flow (Club without credits + returning paid users) ── */}
+            {formData.productType && !isSimplifiedMode && !isClubWithCredit && (
               <div ref={orderFormRef} style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <OrderInfoSection>
                   {!isFirstPurchase && !isClubWithCredit && <SectionTitle>Finalisez votre commande</SectionTitle>}
