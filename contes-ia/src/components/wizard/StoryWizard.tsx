@@ -1468,9 +1468,9 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
 
                     {globalError && <ErrorMessage>{globalError}</ErrorMessage>}
 
-                    <PayButton $isReady={!!rawBase64} disabled={isSubmitting || !rawBase64} onClick={handleFormSubmit}
+                    <PayButton $isReady={!!cloudinaryUrl} disabled={isSubmitting || !cloudinaryUrl} onClick={handleFormSubmit}
                       style={{ width: '100%', borderRadius: '14px', padding: '16px', fontSize: theme.fontSizes.base, flexShrink: 0 }}>
-                      {isSubmitting ? 'Génération en cours...' : !rawBase64 ? 'Préparation de la couverture...' : `Lire le livre de ${heroName} gratuitement →`}
+                      {isSubmitting ? 'Génération en cours...' : !rawBase64 ? 'Préparation de la couverture...' : !cloudinaryUrl ? 'Finalisation...' : `Lire le livre de ${heroName} gratuitement →`}
                     </PayButton>
 
                     {!rawBase64 ? (
@@ -1617,7 +1617,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                       )}
 
                       {/* CTA */}
-                      <PayButton $isReady={isPaymentInfoComplete && !!rawBase64} disabled={!formData.productType || isSubmitting || !rawBase64} onClick={handleFormSubmit}
+                      <PayButton $isReady={isPaymentInfoComplete && !!(cloudinaryUrl || rawBase64)} disabled={!formData.productType || isSubmitting || !rawBase64} onClick={handleFormSubmit}
                         style={{ width: '100%', borderRadius: '14px', padding: '14px' }}>
                         {isSubmitting ? 'Traitement...'
                           : !rawBase64 ? 'Préparation de la couverture...'
@@ -1877,7 +1877,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                   </div>
                 )}
 
-                <PayButton $isReady={isPaymentInfoComplete && !!rawBase64} disabled={!formData.productType || isSubmitting || !rawBase64} onClick={handleFormSubmit}>
+                <PayButton $isReady={isPaymentInfoComplete && !!(cloudinaryUrl || rawBase64)} disabled={!formData.productType || isSubmitting || !rawBase64} onClick={handleFormSubmit}>
                   {isSubmitting
                     ? 'Traitement en cours...'
                     : !rawBase64
