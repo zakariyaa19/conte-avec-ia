@@ -20,4 +20,22 @@ router.post('/create-customer-portal', authenticateClient, createCustomerPortal)
 router.post('/apply-retention-discount', authenticateClient, applyRetentionDiscount);
 router.get('/check-subscription-status', authenticateClient, checkSubscriptionStatus);
 
+// Diagnostic — retourne les infos Stripe de l'utilisateur (temporaire)
+router.get('/debug-user', authenticateClient, async (req: any, res: any) => {
+  try {
+    const { prisma } = await import('../utils/database');
+    const user = await prisma.user.findUnique({ where: { id: req.clientUser.id } });
+    if (!user) return res.json({ error: 'user not found' });
+    res.json({
+      id: user.id,
+      email: user.email,
+      role: user.role,
+      stripeCustomerId: user.stripeCustomerId || 'NULL',
+      subscriptionId: user.subscriptionId || 'NULL',
+      subscriptionStatus: user.subscriptionStatus || 'NULL',
+      subscriptionPeriodEnd: user.subscriptionPeriodEnd || 'NULL',
+    });
+  } catch (e: any) { res.status(500).json({ error: e.message }); }
+});
+
 export default router;
