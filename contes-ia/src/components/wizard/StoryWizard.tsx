@@ -1369,7 +1369,10 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
             purchaseType: type,
             billingPeriod: billing || undefined,
           };
-          if (rawBase64) {
+          if (cloudinaryUrl) {
+            previewUpdate.coverImageUrl = cloudinaryUrl;
+            previewUpdate.coverTitle = coverTitle || undefined;
+          } else if (rawBase64) {
             previewUpdate.coverImageBase64 = rawBase64;
             previewUpdate.coverTitle = coverTitle || undefined;
           }

@@ -163,6 +163,10 @@ export class ApiService {
     // photo File object will be sent separately in FormData
     const photoFile = cleanFormData.photo instanceof File ? cleanFormData.photo : null;
     delete cleanFormData.photo;
+    // Si l'URL Cloudinary est présente, supprimer le base64 (économise 20MB+)
+    if (cleanFormData.coverImageUrl && cleanFormData.coverImageUrl.startsWith('http')) {
+      delete cleanFormData.coverImageBase64;
+    }
 
     // Photo file upload: use FormData (multipart)
     if (photoFile) {
