@@ -1501,23 +1501,23 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 {/* ── CASE B: Non connecté OU connecté gratuit (premier livre) ── */}
                 {!isClubWithCredit && (
                   <>
-                    {/* Cover — compact on mobile to leave space for form */}
+                    {/* Cover — petit sur mobile pour laisser place au formulaire */}
                     <div style={{
                       flex: '0 0 auto', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      margin: '0 0 8px',
+                      margin: '0 0 6px',
                     }}>
                       {coverImageUrl ? (
                         <img src={coverImageUrl} alt="Couverture" style={{
-                          height: '28dvh', maxHeight: '200px', width: 'auto',
-                          borderRadius: '14px', objectFit: 'contain',
-                          boxShadow: '0 12px 36px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,153,153,0.1)',
+                          height: '120px', width: 'auto',
+                          borderRadius: '12px', objectFit: 'contain',
+                          boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
                         }} />
                       ) : (
                         <div style={{
-                          height: '28dvh', maxHeight: '200px', aspectRatio: '3/4', borderRadius: '14px',
+                          height: '100px', aspectRatio: '3/4', borderRadius: '12px',
                           overflow: 'hidden',
                           background: 'linear-gradient(145deg, #2E2850, #1C1735)',
-                          boxShadow: '0 12px 36px rgba(0,0,0,0.45)',
+                          boxShadow: '0 8px 24px rgba(0,0,0,0.35)',
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                         }}>
                           <svg viewBox="0 0 160 220" width="100%" height="100%" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1622,23 +1622,23 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                       {/* CTA */}
                       <PayButton $isReady={isPaymentInfoComplete && !!(cloudinaryUrl || rawBase64)} disabled={!formData.productType || isSubmitting || !rawBase64} onClick={handleFormSubmit}
                         style={{ width: '100%', borderRadius: '14px', padding: '14px' }}>
-                        {isSubmitting ? 'Traitement...'
-                          : !rawBase64 ? 'Préparation de la couverture...'
+                        {isSubmitting ? 'Envoi en cours...'
+                          : !rawBase64 ? 'Lire mon livre gratuitement →'
                           : isFirstPurchase ? 'Lire mon livre gratuitement →'
                           : `Payer ${singlePriceLabel} — Paiement sécurisé`}
                       </PayButton>
 
                       {!rawBase64 ? (
-                        <div style={{ width: '100%', marginTop: '8px' }}>
-                          <div style={{ height: '4px', borderRadius: '2px', background: 'var(--border-color)', overflow: 'hidden' }}>
+                        <div style={{ width: '100%', marginTop: '6px' }}>
+                          <div style={{ height: '3px', borderRadius: '2px', background: 'var(--border-color)', overflow: 'hidden' }}>
                             <div style={{
                               height: '100%', borderRadius: '2px',
                               background: `linear-gradient(90deg, ${theme.colors.accent.coral}, #FF7F7F)`,
                               animation: 'coverProgress 15s ease-out forwards',
                             }} />
                           </div>
-                          <p style={{ fontSize: '10px', color: 'var(--text-light)', marginTop: '6px', textAlign: 'center' }}>
-                            Couverture en cours... Entrez votre email en attendant ↑
+                          <p style={{ fontSize: '10px', color: 'var(--text-light)', marginTop: '4px', textAlign: 'center' }}>
+                            Votre livre est en cours de creation... Entrez votre email en attendant
                           </p>
                         </div>
                       ) : (

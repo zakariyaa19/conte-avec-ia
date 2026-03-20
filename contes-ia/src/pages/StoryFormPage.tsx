@@ -165,12 +165,17 @@ export const StoryFormPage: React.FC = () => {
       }
 
       if (orderResponse.token && orderResponse.user) {
+        // Sauvegarder le token AVANT la redirection (synchrone)
+        localStorage.setItem('userToken', orderResponse.token);
         setTokenAndUser(orderResponse.token, orderResponse.user);
       }
 
       // Club gratuit ou premier livre gratuit : redirection directe vers le livre
       if (orderResponse.isClubFreeOrder || orderResponse.isFirstBookFree) {
-        window.location.href = `/dashboard/story/${orderResponse.data.id}`;
+        // Petit délai pour que localStorage soit bien persisté sur mobile
+        setTimeout(() => {
+          window.location.href = `/dashboard/story/${orderResponse.data.id}`;
+        }, 100);
         return;
       }
 
