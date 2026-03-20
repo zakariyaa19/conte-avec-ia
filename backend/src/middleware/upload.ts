@@ -59,12 +59,12 @@ const pdfFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCal
   }
 };
 
-// Upload de photos (5MB fichier, 50MB champs texte pour le JSON formData qui peut contenir le cover base64 en fallback)
+// Upload de photos (15MB fichier pour photos iPhone haute résolution, 50MB champs texte)
 export const upload = multer({
   storage: photoStorage,
   fileFilter: imageFilter,
   limits: {
-    fileSize: 5 * 1024 * 1024,
+    fileSize: 15 * 1024 * 1024,
     fieldSize: 50 * 1024 * 1024,
   }
 });
