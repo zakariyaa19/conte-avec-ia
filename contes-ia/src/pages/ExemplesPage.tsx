@@ -4,18 +4,59 @@ import { theme } from '../styles/theme';
 import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
 import { Button } from '../components/ui/Button';
-import { exampleStories } from '../data/exampleStories';
 import { useNavigate } from 'react-router-dom';
 import { useStaggerReveal } from '../hooks/useScrollReveal';
-import { StoryPDFViewer } from '../components/ui/StoryPDFViewer';
+import { StoryReader } from '../components/ui/StoryReader';
+import { ApiService } from '../config/api';
+
+interface ExampleStory {
+  id: string;
+  coverImageUrl: string | null;
+  coverTitle: string;
+  protagonistName: string;
+  protagonistAge: string | null;
+  protagonistGender: string | null;
+  ageRange: string;
+  generalTheme: string;
+  specificSubject: string;
+  centralMessage: string;
+  illustrationStyle: string;
+  creatorName: string | null;
+  paragraphs: string[];
+  illustrationUrls: string[];
+}
 
 const STYLE_COLORS: Record<string, string> = {
-  'Animation 3D': '#6C5CE7',
-  'Manga': '#D63031',
-  'Kawaii': '#E84393',
-  'Papier Decoupe': '#E17055',
-  'Aquarelle': '#00B894',
-  'Geometrique': '#0984E3',
+  '3d-animation': '#6C5CE7',
+  'japanese-manga': '#D63031',
+  'kawaii': '#E84393',
+  'paper-cut': '#E17055',
+  'watercolor': '#00B894',
+  'geometric': '#0984E3',
+};
+
+const STYLE_LABELS: Record<string, string> = {
+  '3d-animation': 'Animation 3D',
+  'japanese-manga': 'Manga',
+  'kawaii': 'Kawaii',
+  'paper-cut': 'Papier Decoupage',
+  'watercolor': 'Aquarelle',
+  'geometric': 'Geometrique',
+};
+
+const THEME_LABELS: Record<string, string> = {
+  'fairy-tales': 'Contes de fees',
+  'custom': 'Personnalise',
+  'adventure': 'Aventure',
+};
+
+const MESSAGE_LABELS: Record<string, string> = {
+  'sharing': 'Partage',
+  'love': 'Amour',
+  'respect': 'Respect',
+  'courage': 'Courage',
+  'non spécifié': 'Aventure',
+  '': 'Decouverte',
 };
 
 const PageContainer = styled.div`
@@ -223,18 +264,29 @@ const ShowcaseFooter = styled.div`
 
 export const ExemplesPage: React.FC = () => {
   const navigate = useNavigate();
-  const showcaseReveal = useStaggerReveal(exampleStories.length);
-  const [pdfViewerOpen, setPdfViewerOpen] = useState(false);
-  const [selectedStory, setSelectedStory] = useState<typeof exampleStories[0] | null>(null);
+  const [stories, setStories] = useState<ExampleStory[]>([]);
+  const [loading, setLoading] = useState(true);
+  const showcaseReveal = useStaggerReveal(5);
+  const [readerOpen, setReaderOpen] = useState(false);
+  const [selectedStory, setSelectedStory] = useState<ExampleStory | null>(null);
 
-  const openStoryViewer = useCallback((story: typeof exampleStories[0]) => {
-    setSelectedStory(story);
-    setPdfViewerOpen(true);
+  // Charger les exemples depuis l'API
+  useEffect(() => {
+    const baseUrl = ApiService.getBaseUrl();
+    fetch(`${baseUrl}/api/public/examples`)
+      .then(r => r.json())
+      .then(res => {
+        if (res.success && res.data) setStories(res.data);
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
   }, []);
 
-  const closeStoryViewer = useCallback(() => {
-    setPdfViewerOpen(false);
-    setSelectedStory(null);
+  const openStoryViewer = useCallback((story: ExampleStory) => {
+    if (story.paragraphs.length > 0) {
+      setSelectedStory(story);
+      setReaderOpen(true);
+    }
   }, []);
 
   useEffect(() => {
@@ -253,46 +305,52 @@ export const ExemplesPage: React.FC = () => {
               Chaque conte est une creation unique. Cliquez pour feuilleter directement dans votre navigateur.
             </SectionSubtitle>
 
-            <ShowcaseGrid>
-              {exampleStories.map((story, i) => {
-                const styleColor = STYLE_COLORS[story.illustrationStyle] || theme.colors.accent.coral;
-                return (
-                  <ShowcaseCard
-                    key={story.id}
-                    $visible={showcaseReveal.isVisible}
-                    $delay={showcaseReveal.getDelay(i)}
-                    onClick={() => openStoryViewer(story)}
-                  >
-                    <ShowcardCover>
-                      <img
-                        src={story.coverImage}
-                        alt={story.title}
-                        loading="lazy"
-                        crossOrigin="anonymous"
-                      />
-                      <ShowcardOverlay>
-                        <ShowcardHint>Feuilleter le conte</ShowcardHint>
-                      </ShowcardOverlay>
-                    </ShowcardCover>
-                    <ShowcardInfo>
-                      <ShowcardStyleBadge $color={styleColor}>
-                        {story.illustrationStyle}
-                      </ShowcardStyleBadge>
-                      <ShowcardTitle>{story.title}</ShowcardTitle>
-                      <ShowcardMeta>
-                        <ShowcardTag>{story.ageRange}</ShowcardTag>
-                        <ShowcardTag>{story.generalTheme}</ShowcardTag>
-                        <ShowcardTag>{story.centralMessage}</ShowcardTag>
-                      </ShowcardMeta>
-                      <ShowcardDescription>
-                        L'histoire de {story.protagonistName}, {story.protagonistAge}
-                        {story.secondaryCharacterName && `, accompagne de ${story.secondaryCharacterName}`}.
-                      </ShowcardDescription>
-                    </ShowcardInfo>
-                  </ShowcaseCard>
-                );
-              })}
-            </ShowcaseGrid>
+            {loading ? (
+              <p style={{ textAlign: 'center', color: 'var(--text-light)' }}>Chargement des exemples...</p>
+            ) : (
+              <ShowcaseGrid>
+                {stories.map((story, i) => {
+                  const styleColor = STYLE_COLORS[story.illustrationStyle] || theme.colors.accent.coral;
+                  const styleLabel = STYLE_LABELS[story.illustrationStyle] || story.illustrationStyle;
+                  const themeLabel = THEME_LABELS[story.generalTheme] || story.generalTheme;
+                  const messageLabel = MESSAGE_LABELS[story.centralMessage] || story.centralMessage || 'Decouverte';
+                  return (
+                    <ShowcaseCard
+                      key={story.id}
+                      $visible={showcaseReveal.isVisible}
+                      $delay={showcaseReveal.getDelay(i)}
+                      onClick={() => openStoryViewer(story)}
+                    >
+                      <ShowcardCover>
+                        <img
+                          src={story.coverImageUrl || ''}
+                          alt={story.coverTitle}
+                          loading="lazy"
+                          crossOrigin="anonymous"
+                        />
+                        <ShowcardOverlay>
+                          <ShowcardHint>Lire le conte</ShowcardHint>
+                        </ShowcardOverlay>
+                      </ShowcardCover>
+                      <ShowcardInfo>
+                        <ShowcardStyleBadge $color={styleColor}>
+                          {styleLabel}
+                        </ShowcardStyleBadge>
+                        <ShowcardTitle>{story.coverTitle}</ShowcardTitle>
+                        <ShowcardMeta>
+                          <ShowcardTag>{story.ageRange} ans</ShowcardTag>
+                          <ShowcardTag>{themeLabel}</ShowcardTag>
+                          <ShowcardTag>{messageLabel}</ShowcardTag>
+                        </ShowcardMeta>
+                        <ShowcardDescription>
+                          L'histoire de {story.protagonistName}{story.protagonistAge ? `, ${story.protagonistAge} ans` : ''}.
+                        </ShowcardDescription>
+                      </ShowcardInfo>
+                    </ShowcaseCard>
+                  );
+                })}
+              </ShowcaseGrid>
+            )}
 
             <ShowcaseFooter>
               <Button variant="primary" size="lg" onClick={() => navigate('/create-story')}>
@@ -304,12 +362,19 @@ export const ExemplesPage: React.FC = () => {
       </main>
       <Footer />
 
-      <StoryPDFViewer
-        isOpen={pdfViewerOpen}
-        onClose={closeStoryViewer}
-        pdfUrl={selectedStory?.pdfUrl || null}
-        title={selectedStory?.title || ''}
-      />
+      {readerOpen && selectedStory && (
+        <StoryReader
+          coverImageUrl={selectedStory.coverImageUrl}
+          coverTitle={selectedStory.coverTitle}
+          paragraphs={selectedStory.paragraphs}
+          illustrationUrls={selectedStory.illustrationUrls}
+          creatorName={selectedStory.creatorName || undefined}
+          protagonistName={selectedStory.protagonistName}
+          onClose={() => { setReaderOpen(false); setSelectedStory(null); }}
+          onCreateAnother={() => navigate('/create-story')}
+          isShared
+        />
+      )}
     </PageContainer>
   );
 };
