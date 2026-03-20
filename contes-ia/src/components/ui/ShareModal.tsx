@@ -13,17 +13,22 @@ const slideUp = keyframes`
   to { opacity: 1; transform: translateY(0); }
 `;
 
+const pulse = keyframes`
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+`;
+
 const Overlay = styled.div`
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: flex-end;
   justify-content: center;
   animation: ${fadeIn} 0.2s ease;
-  -webkit-backdrop-filter: blur(4px);
-  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
 
   @media (min-width: ${theme.breakpoints.md}) {
     align-items: center;
@@ -32,52 +37,120 @@ const Overlay = styled.div`
 
 const Modal = styled.div`
   background: var(--bg-elevated);
-  border-radius: 20px 20px 0 0;
-  padding: ${theme.spacing.xl} ${theme.spacing.lg} ${theme.spacing['2xl']};
+  border-radius: 24px 24px 0 0;
+  padding: ${theme.spacing.lg} ${theme.spacing.lg} ${theme.spacing['2xl']};
   width: 100%;
   max-width: 420px;
   animation: ${slideUp} 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
   @media (min-width: ${theme.breakpoints.md}) {
-    border-radius: 20px;
+    border-radius: 24px;
   }
 `;
 
 const ModalHandle = styled.div`
   width: 36px;
   height: 4px;
-  background: #D1D5DB;
+  background: var(--border-color);
   border-radius: 2px;
-  margin: 0 auto ${theme.spacing.lg};
+  margin: 0 auto ${theme.spacing.md};
 
   @media (min-width: ${theme.breakpoints.md}) {
     display: none;
   }
 `;
 
-const ModalTitle = styled.h3`
-  font-family: ${theme.fonts.heading};
-  font-size: ${theme.fontSizes.lg};
-  color: var(--text-primary);
+const HeroSection = styled.div`
   text-align: center;
-  margin: 0 0 4px;
+  margin-bottom: ${theme.spacing.lg};
 `;
 
-const ModalSubtitle = styled.p`
+const HeroEmoji = styled.div`
+  font-size: 40px;
+  margin-bottom: 8px;
+  animation: ${pulse} 2s ease-in-out infinite;
+`;
+
+const HeroTitle = styled.h3`
+  font-family: ${theme.fonts.heading};
+  font-size: ${theme.fontSizes.xl};
+  color: var(--text-primary);
+  margin: 0 0 6px;
+  line-height: 1.3;
+`;
+
+const HeroSubtitle = styled.p`
   font-size: ${theme.fontSizes.sm};
   color: var(--text-secondary);
-  text-align: center;
-  margin: 0 0 ${theme.spacing.xl};
+  margin: 0;
+  line-height: 1.5;
+`;
+
+const MessagePreview = styled.div`
+  background: var(--bg-secondary);
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin-bottom: ${theme.spacing.lg};
+  border-left: 3px solid ${theme.colors.accent.coral};
+`;
+
+const MessageText = styled.p`
+  font-size: ${theme.fontSizes.sm};
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.5;
+  font-style: italic;
+`;
+
+const NativeShareButton = styled.button`
+  appearance: none;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  padding: 16px;
+  border-radius: 14px;
+  margin-bottom: 14px;
+  background: linear-gradient(135deg, ${theme.colors.accent.coral}, #FF7F7F);
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: transform 0.15s;
+  box-shadow: 0 4px 16px rgba(255, 120, 120, 0.3);
+
+  &:active { transform: scale(0.97); }
+`;
+
+const Divider = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+
+  &::before, &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border-color);
+  }
+`;
+
+const DividerText = styled.span`
+  font-size: ${theme.fontSizes.xs};
+  color: var(--text-light);
 `;
 
 const ShareGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: ${theme.spacing.md};
+  grid-template-columns: repeat(3, 1fr);
+  gap: ${theme.spacing.sm};
   margin-bottom: ${theme.spacing.lg};
 `;
 
-const ShareButton = styled.button<{ $bg: string }>`
+const ShareButton = styled.button`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -85,62 +158,62 @@ const ShareButton = styled.button<{ $bg: string }>`
   background: none;
   border: none;
   cursor: pointer;
-  padding: ${theme.spacing.sm};
+  padding: 10px;
   border-radius: ${theme.borderRadius.lg};
   transition: all 0.2s ease;
 
-  &:hover {
-    background: var(--bg-secondary);
-  }
+  &:hover { background: var(--bg-secondary); }
   &:active { transform: scale(0.95); }
 `;
 
 const ShareIcon = styled.div<{ $bg: string }>`
   width: 52px;
   height: 52px;
-  border-radius: 50%;
+  border-radius: 14px;
   background: ${p => p.$bg};
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
   font-size: 24px;
+  box-shadow: 0 2px 8px ${p => p.$bg}40;
 `;
 
 const ShareLabel = styled.span`
-  font-size: ${theme.fontSizes.xs};
+  font-size: 11px;
   color: var(--text-secondary);
-  font-weight: 500;
+  font-weight: 600;
 `;
 
 const CopyLinkRow = styled.div`
   display: flex;
   gap: ${theme.spacing.sm};
   align-items: center;
-  padding: ${theme.spacing.sm} ${theme.spacing.md};
+  padding: 10px 14px;
   background: var(--bg-secondary);
-  border-radius: ${theme.borderRadius.lg};
+  border-radius: 12px;
   margin-bottom: ${theme.spacing.md};
 `;
 
 const LinkText = styled.span`
   flex: 1;
-  font-size: ${theme.fontSizes.xs};
+  font-size: 11px;
   color: var(--text-light);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-family: monospace;
 `;
 
 const CopyButton = styled.button<{ $copied: boolean }>`
   padding: 6px 14px;
-  border-radius: ${theme.borderRadius.md};
+  border-radius: 8px;
   border: none;
-  font-size: ${theme.fontSizes.xs};
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
-  background: ${p => p.$copied ? theme.colors.status.success : theme.colors.accent.coral};
+  background: ${p => p.$copied ? '#10B981' : theme.colors.accent.coral};
   color: white;
   white-space: nowrap;
 `;
@@ -148,15 +221,17 @@ const CopyButton = styled.button<{ $copied: boolean }>`
 const CloseButton = styled.button`
   display: block;
   width: 100%;
-  padding: ${theme.spacing.sm};
+  padding: 10px;
   border: none;
   background: none;
   color: var(--text-light);
   font-size: ${theme.fontSizes.sm};
+  font-weight: 500;
   cursor: pointer;
   text-align: center;
+  border-radius: 10px;
 
-  &:hover { color: var(--text-primary); }
+  &:hover { color: var(--text-primary); background: var(--bg-secondary); }
 `;
 
 interface ShareModalProps {
@@ -201,23 +276,20 @@ export const ShareModal: React.FC<ShareModalProps> = ({
     if (!shareUrl) return;
     try {
       await navigator.clipboard.writeText(shareUrl);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
     } catch {
-      // Fallback
       const input = document.createElement('input');
       input.value = shareUrl;
       document.body.appendChild(input);
       input.select();
       document.execCommand('copy');
       document.body.removeChild(input);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
     }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2500);
   };
 
-  const shareText = `📖 ${protagonistName} est le héros d'un livre rien que pour lui ! Clique pour lire son histoire ✨`;
-  const title = coverTitle || `L'histoire de ${protagonistName}`;
+  const shareText = `Regarde le conte personnalise de ${protagonistName} ! Une histoire magique creee rien que pour lui. Viens la decouvrir :`;
+  const title = coverTitle || `Le conte de ${protagonistName}`;
 
   const handleNativeShare = async () => {
     if (navigator.share && shareUrl) {
@@ -231,7 +303,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
 
   const handleWhatsApp = () => {
     if (!shareUrl) return;
-    const text = encodeURIComponent(`${shareText}\n${shareUrl}`);
+    const text = encodeURIComponent(`${shareText}\n\n${shareUrl}`);
     window.open(`https://wa.me/?text=${text}`, '_blank');
   };
 
@@ -240,57 +312,42 @@ export const ShareModal: React.FC<ShareModalProps> = ({
     window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank');
   };
 
-  const handleInstagram = () => {
-    // Instagram doesn't support direct URL sharing, copy link instead
-    handleCopy();
-  };
-
-  const handleShare = async (platform: string) => {
-    // Try native share on mobile first
-    if (platform === 'native') {
-      const shared = await handleNativeShare();
-      if (shared) return;
-    }
-
-    switch (platform) {
-      case 'whatsapp': handleWhatsApp(); break;
-      case 'facebook': handleFacebook(); break;
-      case 'instagram': handleInstagram(); break;
-    }
-  };
-
   if (!isOpen) return null;
 
   return (
     <Overlay onClick={onClose}>
       <Modal onClick={e => e.stopPropagation()}>
         <ModalHandle />
-        <ModalTitle>Envoyer le livre de {protagonistName}</ModalTitle>
-        <ModalSubtitle>Vos proches pourront lire son histoire</ModalSubtitle>
 
-        {/* Primary: native share (works on all mobile) */}
+        <HeroSection>
+          <HeroEmoji>📖</HeroEmoji>
+          <HeroTitle>Partagez le conte de {protagonistName}</HeroTitle>
+          <HeroSubtitle>Faites decouvrir cette histoire magique a vos proches</HeroSubtitle>
+        </HeroSection>
+
+        {/* Aperçu du message qui sera envoyé */}
+        <MessagePreview>
+          <MessageText>
+            "{shareText}"
+          </MessageText>
+        </MessagePreview>
+
+        {/* Bouton principal : partage natif (mobile) */}
         {typeof navigator.share === 'function' && shareUrl && (
-          <button
-            onClick={handleNativeShare}
-            style={{
-              appearance: 'none', border: 'none', cursor: 'pointer', width: '100%',
-              padding: '16px', borderRadius: '14px', marginBottom: '12px',
-              background: `linear-gradient(135deg, ${theme.colors.accent.coral}, #FF7F7F)`,
-              color: 'white', fontSize: '16px', fontWeight: 700,
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-            }}
-          >
+          <NativeShareButton onClick={handleNativeShare}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
               <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
             </svg>
-            Envoyer via WhatsApp, SMS, Email...
-          </button>
+            Envoyer a mes proches
+          </NativeShareButton>
         )}
 
-        {/* Fallback: direct links */}
+        <Divider><DividerText>ou choisir</DividerText></Divider>
+
+        {/* Grille : WhatsApp, Facebook, Copier */}
         <ShareGrid>
-          <ShareButton $bg="#25D366" onClick={handleWhatsApp}>
+          <ShareButton onClick={handleWhatsApp}>
             <ShareIcon $bg="#25D366">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="white">
                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
@@ -299,7 +356,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
             <ShareLabel>WhatsApp</ShareLabel>
           </ShareButton>
 
-          <ShareButton $bg="#1877F2" onClick={handleFacebook}>
+          <ShareButton onClick={handleFacebook}>
             <ShareIcon $bg="#1877F2">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="white">
                 <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
@@ -308,28 +365,35 @@ export const ShareModal: React.FC<ShareModalProps> = ({
             <ShareLabel>Facebook</ShareLabel>
           </ShareButton>
 
-          <ShareButton $bg="#6B7280" onClick={handleCopy}>
-            <ShareIcon $bg="#6B7280">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
-              </svg>
+          <ShareButton onClick={handleCopy}>
+            <ShareIcon $bg={copied ? '#10B981' : '#6B7280'}>
+              {copied ? (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              ) : (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+                </svg>
+              )}
             </ShareIcon>
-            <ShareLabel>{copied ? 'Copié !' : 'Copier'}</ShareLabel>
+            <ShareLabel>{copied ? 'Copie !' : 'Copier'}</ShareLabel>
           </ShareButton>
         </ShareGrid>
 
+        {/* Lien visible */}
         {shareUrl && (
           <CopyLinkRow>
             <LinkText>{shareUrl}</LinkText>
             <CopyButton $copied={copied} onClick={handleCopy}>
-              {copied ? 'Copié !' : 'Copier'}
+              {copied ? 'Copie !' : 'Copier'}
             </CopyButton>
           </CopyLinkRow>
         )}
 
         {loading && (
           <CopyLinkRow>
-            <LinkText>Génération du lien...</LinkText>
+            <LinkText>Generation du lien de partage...</LinkText>
           </CopyLinkRow>
         )}
 
