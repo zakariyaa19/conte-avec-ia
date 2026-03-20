@@ -12,6 +12,11 @@ export const StoryFormPage: React.FC = () => {
   const { user, isAuthenticated, isClub, setTokenAndUser } = useAuth();
   const location = useLocation();
   const isAdMode = useMemo(() => new URLSearchParams(location.search).get('from') === 'ad', [location.search]);
+  const referralCode = useMemo(() => {
+    const ref = new URLSearchParams(location.search).get('ref');
+    if (ref) localStorage.setItem('referralCode', ref);
+    return ref || localStorage.getItem('referralCode') || '';
+  }, [location.search]);
   const [clubCredit, setClubCredit] = useState<{ canSubmit: boolean; remaining: number; nextCreditDate?: string; totalEarned?: number } | null>(null);
 
   // Premier livre gratuit, sinon 3,99€ (club members toujours 3,99€)
@@ -120,7 +125,9 @@ export const StoryFormPage: React.FC = () => {
 
   const handleSubmit = async (overrideData?: Partial<StoryFormData>) => {
     // Merge any last-minute data (e.g., cover image from wizard)
-    const submitData = overrideData ? { ...formData, ...overrideData } : formData;
+    const submitData = overrideData ? { ...formData, ...overrideData } : { ...formData };
+    // Inject referral code if present
+    if (referralCode) submitData.referralCode = referralCode;
 
     if (!submitData.userEmail || !submitData.productType) {
       console.error('Données manquantes pour la soumission');

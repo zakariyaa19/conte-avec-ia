@@ -50,6 +50,7 @@ export interface StoryFormData {
   // Détails personnels
   creatorName?: string;
   narratedBy?: string; // Club only: "Raconté par..."
+  referralCode?: string; // Code de parrainage
   
   // Preview data (passed to order for reuse in generation)
   firstIllustrationUrl?: string;

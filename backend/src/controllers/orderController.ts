@@ -110,6 +110,18 @@ export class OrderController {
           isFirstBookFree = true;
           console.log('🎁 Premier livre GRATUIT pour', userEmail);
         } else {
+          // Vérifier si l'utilisateur a des crédits de parrainage
+          const existingUser = await prisma.user.findUnique({ where: { email: userEmail } });
+          if (existingUser && (existingUser.referralCredits || 0) > 0) {
+            price = PRODUCT_PRICES.EBOOK_FREE;
+            isFirstBookFree = true;
+            // Décrémenter le crédit de parrainage
+            await prisma.user.update({
+              where: { id: existingUser.id },
+              data: { referralCredits: { decrement: 1 } }
+            });
+            console.log('🎁 Livre GRATUIT via crédit parrainage pour', userEmail, '- crédits restants:', (existingUser.referralCredits || 1) - 1);
+          } else {
           // Vérifier la limite de bibliothèque (3 livres max pour les non-Club)
           const deliveredCount = await prisma.order.count({
             where: {
@@ -126,6 +138,32 @@ export class OrderController {
               bookLimit: FREE_BOOK_LIMIT
             });
           }
+          } // end referralCredits else
+        }
+      }
+
+      // --- Attribution parrainage : créditer le parrain si le filleul crée son 1er livre ---
+      const refCode = formData.referralCode || formData.ref;
+      if (refCode && isFirstBookFree) {
+        try {
+          const referrer = await prisma.user.findUnique({ where: { referralCode: refCode } });
+          if (referrer && referrer.email !== userEmail && (referrer.referralCount || 0) < 3) {
+            await prisma.user.update({
+              where: { id: referrer.id },
+              data: {
+                referralCredits: { increment: 1 },
+                referralCount: { increment: 1 }
+              }
+            });
+            // Stocker le parrain sur le filleul
+            const filleul = await prisma.user.findUnique({ where: { email: userEmail } });
+            if (filleul && !filleul.referredBy) {
+              await prisma.user.update({ where: { id: filleul.id }, data: { referredBy: referrer.id } });
+            }
+            console.log(`🎉 Parrainage: ${referrer.email} a gagné 1 crédit grâce à ${userEmail}`);
+          }
+        } catch (refErr) {
+          console.error('Erreur attribution parrainage:', refErr);
         }
       }
 

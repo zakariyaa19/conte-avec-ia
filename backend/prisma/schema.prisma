@@ -33,6 +33,12 @@ model User {
   weeklySubmissionCount Int       @default(0)
   weeklySubmissionReset DateTime?
 
+  // Parrainage
+  referralCode    String?  @unique
+  referredBy      String?
+  referralCredits Int      @default(0)
+  referralCount   Int      @default(0)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

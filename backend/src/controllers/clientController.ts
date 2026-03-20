@@ -317,6 +317,38 @@ export class ClientController {
     }
   }
 
+  // Parrainage
+  static async getReferralInfo(req: ClientAuthRequest, res: Response) {
+    try {
+      const userId = req.clientUser!.id;
+      let user = await prisma.user.findUnique({ where: { id: userId } });
+      if (!user) return res.status(404).json({ success: false, message: 'Utilisateur non trouve' });
+
+      // Generate referral code if not exists
+      if (!user.referralCode) {
+        const code = userId.slice(-6).toUpperCase() + Math.random().toString(36).slice(2, 4).toUpperCase();
+        user = await prisma.user.update({
+          where: { id: userId },
+          data: { referralCode: code }
+        });
+      }
+
+      res.json({
+        success: true,
+        data: {
+          referralCode: user.referralCode,
+          referralCredits: user.referralCredits || 0,
+          referralCount: user.referralCount || 0,
+          maxCredits: 3,
+          referralLink: `${process.env.FRONTEND_URL || 'https://contedia.fr'}/create-story?ref=${user.referralCode}`
+        }
+      });
+    } catch (error) {
+      console.error('Erreur referral:', error);
+      res.status(500).json({ success: false, message: 'Erreur parrainage' });
+    }
+  }
+
   // Statut abonnement
   static async getSubscription(req: ClientAuthRequest, res: Response) {
     try {

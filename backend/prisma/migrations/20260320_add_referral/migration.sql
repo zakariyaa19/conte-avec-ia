@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "users" ADD COLUMN "referralCode" TEXT UNIQUE;
+ALTER TABLE "users" ADD COLUMN "referredBy" TEXT;
+ALTER TABLE "users" ADD COLUMN "referralCredits" INTEGER DEFAULT 0 NOT NULL;
+ALTER TABLE "users" ADD COLUMN "referralCount" INTEGER DEFAULT 0 NOT NULL;

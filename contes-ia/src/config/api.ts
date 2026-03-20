@@ -332,6 +332,13 @@ export class ApiService {
     });
   }
 
+  // ========== Referral ==========
+  static async getReferralInfo(token: string): Promise<{ success: boolean; data: { referralCode: string; referralCredits: number; referralCount: number; maxCredits: number; referralLink: string } }> {
+    return this.request('/api/client/referral', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+  }
+
   // ========== Unified Login ==========
   static async unifiedLogin(email: string, password: string): Promise<{ success: boolean; data: any; message?: string }> {
     return this.request('/api/auth/unified-login', {

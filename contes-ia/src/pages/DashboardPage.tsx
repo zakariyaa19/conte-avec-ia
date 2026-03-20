@@ -1183,6 +1183,27 @@ export const DashboardPage: React.FC = () => {
           </div>
         )}
 
+        {/* ══════ REFERRAL CARD ══════ */}
+        {!loading && stories.length > 0 && (
+          <div onClick={() => navigate('/referral')} style={{
+            background: 'linear-gradient(135deg, rgba(255,153,153,0.08), rgba(255,127,127,0.12))',
+            border: '1px solid rgba(255,153,153,0.2)',
+            borderRadius: '12px', padding: '12px 16px', marginBottom: '12px',
+            cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px',
+          }}>
+            <span style={{ fontSize: '22px' }}>🎁</span>
+            <div style={{ flex: 1 }}>
+              <p style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
+                Gagnez un livre gratuit
+              </p>
+              <p style={{ fontSize: '11px', color: 'var(--text-secondary)', margin: 0 }}>
+                Partagez votre lien → votre proche crée un livre → vous gagnez un crédit
+              </p>
+            </div>
+            <span style={{ fontSize: '12px', color: theme.colors.accent.coral, fontWeight: 600 }}>Voir →</span>
+          </div>
+        )}
+
         {/* ══════ 3. FILTER BAR ══════ */}
         {!loading && stories.length > 0 && (
           <FilterBar>

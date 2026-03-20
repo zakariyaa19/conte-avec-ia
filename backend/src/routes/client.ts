@@ -33,4 +33,7 @@ router.get('/subscription', ClientController.getSubscription);
 // Credit Club
 router.get('/club-credit', ClientController.getClubCredit);
 
+// Parrainage
+router.get('/referral', ClientController.getReferralInfo);
+
 export default router;
