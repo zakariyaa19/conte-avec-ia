@@ -1,291 +1,286 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <!-- Page d'accueil -->
+
+  <!-- ══════ PAGES PRINCIPALES (priorité haute) ══════ -->
   <url>
     <loc>https://contedia.fr/</loc>
-    <lastmod>2025-10-21</lastmod>
+    <lastmod>2026-03-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
-  
-  <!-- Pages principales -->
   <url>
     <loc>https://contedia.fr/create-story</loc>
-    <lastmod>2025-10-21</lastmod>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-03-22</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
-  
-  <url>
-    <loc>https://contedia.fr/story-form</loc>
-    <lastmod>2025-10-21</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  
   <url>
     <loc>https://contedia.fr/exemples</loc>
-    <lastmod>2025-10-21</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  
-  <url>
-    <loc>https://contedia.fr/fonctionnalites</loc>
-    <lastmod>2025-10-21</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  
-  <!-- Pages SEO -->
-  <url>
-    <loc>https://contedia.fr/themes-de-contes</loc>
-    <lastmod>2025-10-21</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  
-  <url>
-    <loc>https://contedia.fr/contes-par-age</loc>
-    <lastmod>2025-10-21</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  
-  <url>
-    <loc>https://contedia.fr/styles-illustration</loc>
-    <lastmod>2025-10-21</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  
-  <url>
-    <loc>https://contedia.fr/contes-multilingues</loc>
-    <lastmod>2025-10-21</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  
-  <url>
-    <loc>https://contedia.fr/valeurs-educatives</loc>
-    <lastmod>2025-10-21</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  
-  <url>
-    <loc>https://contedia.fr/idees-cadeaux</loc>
-    <lastmod>2025-10-21</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  
-  <url>
-    <loc>https://contedia.fr/ia-creation-conte</loc>
-    <lastmod>2025-10-21</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  
-  <!-- Blog -->
-  <url>
-    <loc>https://contedia.fr/blog</loc>
-    <lastmod>2025-10-21</lastmod>
+    <lastmod>2026-03-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
-  
-  <!-- Articles de blog originaux -->
+  <url>
+    <loc>https://contedia.fr/club</loc>
+    <lastmod>2026-03-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://contedia.fr/club/checkout</loc>
+    <lastmod>2026-03-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://contedia.fr/login</loc>
+    <lastmod>2026-03-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <!-- ══════ PAGES SEO (content pillars) ══════ -->
+  <url>
+    <loc>https://contedia.fr/themes-de-contes</loc>
+    <lastmod>2026-03-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://contedia.fr/contes-par-age</loc>
+    <lastmod>2026-03-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://contedia.fr/styles-illustration</loc>
+    <lastmod>2026-03-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://contedia.fr/contes-multilingues</loc>
+    <lastmod>2026-03-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://contedia.fr/valeurs-educatives</loc>
+    <lastmod>2026-03-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://contedia.fr/idees-cadeaux</loc>
+    <lastmod>2026-03-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://contedia.fr/ia-creation-conte</loc>
+    <lastmod>2026-03-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- ══════ BLOG — Index ══════ -->
+  <url>
+    <loc>https://contedia.fr/blog</loc>
+    <lastmod>2026-03-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- ══════ BLOG — Articles SEO 2026 (haute priorité) ══════ -->
+  <url>
+    <loc>https://contedia.fr/blog/guide-livre-personnalise-enfant-2026</loc>
+    <lastmod>2026-03-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://contedia.fr/blog/meilleurs-livres-personnalises-enfants-comparatif-2026</loc>
+    <lastmod>2026-03-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- ══════ BLOG — Articles animaux (cluster performant) ══════ -->
   <url>
     <loc>https://contedia.fr/blog/histoire-animal-compagnie-livre-personnalise</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2026-03-22</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.7</priority>
   </url>
-  
-  <url>
-    <loc>https://contedia.fr/blog/nouveaux-personnages-styles-aventures-ados</loc>
-    <lastmod>2025-11-04</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://contedia.fr/blog/evolution-livres-enfants-contes-fees-aventures-personnalisees</loc>
-    <lastmod>2025-11-04</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://contedia.fr/blog/ia-revolution-creation-histoires-enfants</loc>
-    <lastmod>2025-11-04</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://contedia.fr/blog/integrer-valeurs-religieuses-contes-personnalises</loc>
-    <lastmod>2025-11-04</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-
-  <!-- Articles sur les animaux de compagnie -->
   <url>
     <loc>https://contedia.fr/blog/animal-compagnie-stimule-imagination-enfant</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2026-03-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
-  
   <url>
     <loc>https://contedia.fr/blog/conte-personnalise-noel-cadeau-amoureux-animaux</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2026-03-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
-  
   <url>
     <loc>https://contedia.fr/blog/photo-heros-conte-ia-transforme-animal-personnage</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2026-03-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
-  
   <url>
     <loc>https://contedia.fr/blog/lire-compagnon-quatre-pattes-rituel-lien-enfant-animal</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2026-03-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
-  
   <url>
     <loc>https://contedia.fr/blog/top-5-themes-histoires-animal-heros-conte</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2026-03-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 
-  <!-- Articles sur la foi et la religion -->
+  <!-- ══════ BLOG — Articles originaux ══════ -->
+  <url>
+    <loc>https://contedia.fr/blog/nouveaux-personnages-styles-aventures-ados</loc>
+    <lastmod>2026-03-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://contedia.fr/blog/evolution-livres-enfants-contes-fees-aventures-personnalisees</loc>
+    <lastmod>2026-03-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://contedia.fr/blog/ia-revolution-creation-histoires-enfants</loc>
+    <lastmod>2026-03-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://contedia.fr/blog/integrer-valeurs-religieuses-contes-personnalises</loc>
+    <lastmod>2026-03-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- ══════ BLOG — Articles foi et religion ══════ -->
   <url>
     <loc>https://contedia.fr/blog/transmettre-foi-histoires-contes-personnalises-spiritualite</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2026-03-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
-  
   <url>
     <loc>https://contedia.fr/blog/fetes-religieuses-conte-personnalise-noel-ramadan-paque-diwali</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2026-03-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
-  
   <url>
     <loc>https://contedia.fr/blog/personnaliser-foi-ia-adapte-valeurs-religieuses</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2026-03-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
-  
   <url>
     <loc>https://contedia.fr/blog/heros-foi-inspirer-enfants-personnages-spirituels</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2026-03-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
-  
   <url>
     <loc>https://contedia.fr/blog/foi-tolerance-ouverture-respect-differentes-religions</loc>
-    <lastmod>2025-11-04</lastmod>
+    <lastmod>2026-03-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
-  
-  <!-- Nouveaux articles 2026 -->
+
+  <!-- ══════ BLOG — Articles 2026 (éducatifs) ══════ -->
   <url>
     <loc>https://contedia.fr/blog/livre-personnalise-enfant-2026</loc>
-    <lastmod>2026-02-01</lastmod>
+    <lastmod>2026-03-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
-  
   <url>
     <loc>https://contedia.fr/blog/conte-personnalise-confiance-imagination-enfant</loc>
-    <lastmod>2026-02-01</lastmod>
+    <lastmod>2026-03-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
-  
   <url>
     <loc>https://contedia.fr/blog/livre-personnalise-vs-livre-classique-enfant</loc>
-    <lastmod>2026-02-01</lastmod>
+    <lastmod>2026-03-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
-  
   <url>
     <loc>https://contedia.fr/blog/intelligence-artificielle-histoires-enfants</loc>
-    <lastmod>2026-02-01</lastmod>
+    <lastmod>2026-03-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
-  
   <url>
     <loc>https://contedia.fr/blog/enfant-heros-propre-histoire</loc>
-    <lastmod>2026-02-01</lastmod>
+    <lastmod>2026-03-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
-  
   <url>
     <loc>https://contedia.fr/blog/conte-personnalise-rituel-coucher</loc>
-    <lastmod>2026-02-01</lastmod>
+    <lastmod>2026-03-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
-  
   <url>
     <loc>https://contedia.fr/blog/livre-personnalise-enfant-timide</loc>
-    <lastmod>2026-02-01</lastmod>
+    <lastmod>2026-03-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
-  
   <url>
     <loc>https://contedia.fr/blog/cadeau-livre-personnalise-enfant</loc>
-    <lastmod>2026-02-01</lastmod>
+    <lastmod>2026-03-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
-  
   <url>
     <loc>https://contedia.fr/blog/creation-histoires-personnalisees-conte-ia</loc>
-    <lastmod>2026-02-01</lastmod>
+    <lastmod>2026-03-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
-  
   <url>
     <loc>https://contedia.fr/blog/bienfaits-lecture-personnalisee-enfant</loc>
-    <lastmod>2026-02-01</lastmod>
+    <lastmod>2026-03-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
-  
-  <!-- Pages légales -->
+
+  <!-- ══════ PAGES LÉGALES ══════ -->
   <url>
     <loc>https://contedia.fr/mentions-legales</loc>
-    <lastmod>2025-10-21</lastmod>
+    <lastmod>2026-03-22</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
-  
   <url>
     <loc>https://contedia.fr/politique-confidentialite</loc>
-    <lastmod>2025-10-21</lastmod>
+    <lastmod>2026-03-22</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
+  <url>
+    <loc>https://contedia.fr/conditions-generales-de-vente</loc>
+    <lastmod>2026-03-22</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
 </urlset>
