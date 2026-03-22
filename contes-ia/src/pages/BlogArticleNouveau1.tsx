@@ -1,6 +1,9 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { PageLayout } from '../components/layout/PageLayout';
+import { SEOHead } from '../components/SEOHead';
+import { SchemaBreadcrumb } from '../components/SchemaMarkup';
+import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticleNouveau1: React.FC = () => {
@@ -43,6 +46,19 @@ const BlogArticleNouveau1: React.FC = () => {
 
   return (
     <PageLayout>
+      <SEOHead
+        title="Pourquoi Offrir un Livre Personnalisé à un Enfant en 2026 | Contedia"
+        description="Découvrez comment pourquoi offrir un livre personnalisé à un enfant en 2026. Guide complet, conseils pratiques et premier livre gratuit sur Contedia."
+        type="article"
+      />
+      <SchemaBreadcrumb items={[
+        { name: "Accueil", url: "https://contedia.fr/" },
+        { name: "Blog", url: "https://contedia.fr/blog" },
+        { name: "Pourquoi Offrir un Livre Personnalisé à un Enfant ", url: "https://contedia.fr/blog/livre-personnalise-enfant-2026" }
+      ]} />
+      <Helmet>
+        <script type="application/ld+json">{`{"@context":"https://schema.org","@type":"Article","headline":"Pourquoi Offrir un Livre Personnalisé à un Enfant en 2026","author":{"@type":"Organization","name":"Contedia"},"publisher":{"@type":"Organization","name":"Contedia"},"dateModified":"2026-03-22"}`}</script>
+      </Helmet>
       <div className="article-container">
         <div className="article-breadcrumb">
           <Link to="/blog">Blog</Link> / Pourquoi offrir un livre personnalisé à un enfant en 2026 ?
@@ -53,7 +69,7 @@ const BlogArticleNouveau1: React.FC = () => {
             <div className="article-header">
               <h1>Pourquoi offrir un livre personnalisé à un enfant en 2026 ?</h1>
               <div className="article-meta">
-                <span>Dernière mise à jour le 27-01-2026</span>
+                <span>Par l'équipe Contedia · Mis à jour le 22 mars 2026</span>
               </div>
             </div>
 

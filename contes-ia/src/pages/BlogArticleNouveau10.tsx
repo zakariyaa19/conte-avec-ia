@@ -1,6 +1,9 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { PageLayout } from '../components/layout/PageLayout';
+import { SEOHead } from '../components/SEOHead';
+import { SchemaBreadcrumb } from '../components/SchemaMarkup';
+import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticleNouveau10: React.FC = () => {
@@ -43,6 +46,19 @@ const BlogArticleNouveau10: React.FC = () => {
 
   return (
     <PageLayout>
+      <SEOHead
+        title="Les Bienfaits de la Lecture Personnalisée sur le Développement Émotionnel | Contedia"
+        description="Découvrez comment les bienfaits de la lecture personnalisée sur le développement émotionnel. Guide complet, conseils pratiques et premier livre gratuit sur Contedia."
+        type="article"
+      />
+      <SchemaBreadcrumb items={[
+        { name: "Accueil", url: "https://contedia.fr/" },
+        { name: "Blog", url: "https://contedia.fr/blog" },
+        { name: "Les Bienfaits de la Lecture Personnalisée sur le D", url: "https://contedia.fr/blog/bienfaits-lecture-personnalisee-enfant" }
+      ]} />
+      <Helmet>
+        <script type="application/ld+json">{`{"@context":"https://schema.org","@type":"Article","headline":"Les Bienfaits de la Lecture Personnalisée sur le Développement Émotionnel","author":{"@type":"Organization","name":"Contedia"},"publisher":{"@type":"Organization","name":"Contedia"},"dateModified":"2026-03-22"}`}</script>
+      </Helmet>
       <div className="article-container">
         <div className="article-breadcrumb">
           <Link to="/blog">Blog</Link> / Les bienfaits de la lecture personnalisée sur le développement émotionnel
@@ -53,7 +69,7 @@ const BlogArticleNouveau10: React.FC = () => {
             <div className="article-header">
               <h1>Les bienfaits de la lecture personnalisée sur le développement émotionnel</h1>
               <div className="article-meta">
-                <span>Dernière mise à jour le 27-01-2026</span>
+                <span>Par l'équipe Contedia · Mis à jour le 22 mars 2026</span>
               </div>
             </div>
 

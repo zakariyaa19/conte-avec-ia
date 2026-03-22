@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { PageLayout } from '../components/layout/PageLayout';
 import { SEOHead } from '../components/SEOHead';
 import { SchemaFAQ, SchemaBreadcrumb } from '../components/SchemaMarkup';
+import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticleAnimaux5: React.FC = () => {
@@ -70,7 +71,11 @@ const BlogArticleAnimaux5: React.FC = () => {
           <div className="article-main">
             <div className="article-header">
               <h1>Top 5 des thèmes d'histoires pour transformer votre animal en héros de conte</h1>
-              <div className="article-meta">
+              <Helmet>
+              <script type="application/ld+json">{`{"@context":"https://schema.org","@type":"Article","headline":"Top 5 Thèmes Histoires Animal Héros","author":{"@type":"Organization","name":"Contedia"},"publisher":{"@type":"Organization","name":"Contedia"},"dateModified":"2026-03-22"}`}</script>
+            </Helmet>
+
+            <div className="article-meta">
                 <span>Dernière mise à jour le 04-11-2025</span>
               </div>
             </div>

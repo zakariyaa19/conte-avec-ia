@@ -1,6 +1,9 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { PageLayout } from '../components/layout/PageLayout';
+import { SEOHead } from '../components/SEOHead';
+import { SchemaBreadcrumb } from '../components/SchemaMarkup';
+import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticleFoi4: React.FC = () => {
@@ -41,6 +44,19 @@ const BlogArticleFoi4: React.FC = () => {
 
   return (
     <PageLayout>
+      <SEOHead
+        title="Des Héros de Foi : Inspirer les Enfants avec des Personnages Spirituels | Contedia"
+        description="Découvrez comment des héros de foi : inspirer les enfants avec des personnages spirituels. Guide complet, conseils pratiques et premier livre gratuit sur Contedia."
+        type="article"
+      />
+      <SchemaBreadcrumb items={[
+        { name: "Accueil", url: "https://contedia.fr/" },
+        { name: "Blog", url: "https://contedia.fr/blog" },
+        { name: "Des Héros de Foi : Inspirer les Enfants avec des P", url: "https://contedia.fr/blog/heros-foi-inspirer-enfants-personnages-spirituels" }
+      ]} />
+      <Helmet>
+        <script type="application/ld+json">{`{"@context":"https://schema.org","@type":"Article","headline":"Des Héros de Foi : Inspirer les Enfants avec des Personnages Spirituels","author":{"@type":"Organization","name":"Contedia"},"publisher":{"@type":"Organization","name":"Contedia"},"dateModified":"2026-03-22"}`}</script>
+      </Helmet>
       <div className="article-container">
         <div className="article-breadcrumb">
           <Link to="/blog">Blog</Link> / Des héros de foi : inspirer les enfants à travers des personnages spirituels
@@ -51,7 +67,7 @@ const BlogArticleFoi4: React.FC = () => {
             <div className="article-header">
               <h1>Des héros de foi : inspirer les enfants à travers des personnages spirituels dans leurs histoires personnalisées</h1>
               <div className="article-meta">
-                <span>Dernière mise à jour le 04-11-2025</span>
+                <span>Par l'équipe Contedia · Mis à jour le 22 mars 2026</span>
               </div>
             </div>
 

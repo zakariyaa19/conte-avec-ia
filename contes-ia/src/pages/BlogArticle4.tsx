@@ -1,6 +1,9 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { PageLayout } from '../components/layout/PageLayout';
+import { SEOHead } from '../components/SEOHead';
+import { SchemaBreadcrumb } from '../components/SchemaMarkup';
+import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticle4: React.FC = () => {
@@ -46,6 +49,19 @@ const BlogArticle4: React.FC = () => {
 
   return (
     <PageLayout>
+      <SEOHead
+        title="Comment l'IA Révolutionne la Création d'Histoires pour Enfants | Contedia"
+        description="Découvrez comment comment l'ia révolutionne la création d'histoires pour enfants. Guide complet, conseils pratiques et premier livre gratuit sur Contedia."
+        type="article"
+      />
+      <SchemaBreadcrumb items={[
+        { name: "Accueil", url: "https://contedia.fr/" },
+        { name: "Blog", url: "https://contedia.fr/blog" },
+        { name: "Comment l'IA Révolutionne la Création d'Histoires ", url: "https://contedia.fr/blog/ia-revolution-creation-histoires-enfants" }
+      ]} />
+      <Helmet>
+        <script type="application/ld+json">{`{"@context":"https://schema.org","@type":"Article","headline":"Comment l'IA Révolutionne la Création d'Histoires pour Enfants","author":{"@type":"Organization","name":"Contedia"},"publisher":{"@type":"Organization","name":"Contedia"},"dateModified":"2026-03-22"}`}</script>
+      </Helmet>
       <div className="article-container">
         <div className="article-breadcrumb">
           <Link to="/blog">Blog</Link> / Comment l'IA révolutionne la création d'histoires pour enfants
@@ -56,7 +72,7 @@ const BlogArticle4: React.FC = () => {
             <div className="article-header">
               <h1>Comment l'IA révolutionne la création d'histoires pour enfants</h1>
               <div className="article-meta">
-                <span>Dernière mise à jour le 12-06-2025</span>
+                <span>Par l'équipe Contedia · Mis à jour le 22 mars 2026</span>
               </div>
             </div>
 

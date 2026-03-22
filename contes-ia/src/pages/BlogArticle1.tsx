@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { PageLayout } from '../components/layout/PageLayout';
+import { SEOHead } from '../components/SEOHead';
+import { SchemaBreadcrumb } from '../components/SchemaMarkup';
 import '../styles/BlogArticle.css';
 
 const BlogArticle1: React.FC = () => {
@@ -97,8 +99,12 @@ const BlogArticle1: React.FC = () => {
           <div className="article-main">
             <div className="article-header">
               <h1>Livre Personnalisé Chien : Créez un Conte où votre Enfant et son Animal sont les Héros</h1>
-              <div className="article-meta">
-                <span>Dernière mise à jour le 22-03-2026 · Temps de lecture : 7 min</span>
+              <Helmet>
+              <script type="application/ld+json">{`{"@context":"https://schema.org","@type":"Article","headline":"Livre Personnalisé Chien","author":{"@type":"Organization","name":"Contedia"},"publisher":{"@type":"Organization","name":"Contedia"},"dateModified":"2026-03-22"}`}</script>
+            </Helmet>
+
+            <div className="article-meta">
+                <span>Par l'équipe Contedia · Mis à jour le 22 mars 2026</span>
               </div>
             </div>
 

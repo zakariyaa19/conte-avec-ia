@@ -1,6 +1,9 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { PageLayout } from '../components/layout/PageLayout';
+import { SEOHead } from '../components/SEOHead';
+import { SchemaBreadcrumb } from '../components/SchemaMarkup';
+import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticleAnimaux2: React.FC = () => {
@@ -42,6 +45,19 @@ const BlogArticleAnimaux2: React.FC = () => {
 
   return (
     <PageLayout>
+      <SEOHead
+        title="Conte Personnalisé Noël : Le Cadeau Parfait pour les Amoureux des Animaux | Contedia"
+        description="Découvrez comment conte personnalisé noël : le cadeau parfait pour les amoureux des animaux. Guide complet, conseils pratiques et premier livre gratuit sur Contedia."
+        type="article"
+      />
+      <SchemaBreadcrumb items={[
+        { name: "Accueil", url: "https://contedia.fr/" },
+        { name: "Blog", url: "https://contedia.fr/blog" },
+        { name: "Conte Personnalisé Noël : Le Cadeau Parfait pour l", url: "https://contedia.fr/blog/conte-personnalise-noel-cadeau-amoureux-animaux" }
+      ]} />
+      <Helmet>
+        <script type="application/ld+json">{`{"@context":"https://schema.org","@type":"Article","headline":"Conte Personnalisé Noël : Le Cadeau Parfait pour les Amoureux des Animaux","author":{"@type":"Organization","name":"Contedia"},"publisher":{"@type":"Organization","name":"Contedia"},"dateModified":"2026-03-22"}`}</script>
+      </Helmet>
       <div className="article-container">
         <div className="article-breadcrumb">
           <Link to="/blog">Blog</Link> / Offrir un conte personnalisé pour Noël : le cadeau parfait pour les amoureux des animaux
@@ -52,7 +68,7 @@ const BlogArticleAnimaux2: React.FC = () => {
             <div className="article-header">
               <h1>Offrir un conte personnalisé pour Noël : le cadeau parfait pour les amoureux des animaux</h1>
               <div className="article-meta">
-                <span>Dernière mise à jour le 04-11-2025</span>
+                <span>Par l'équipe Contedia · Mis à jour le 22 mars 2026</span>
               </div>
             </div>
 

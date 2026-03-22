@@ -1,6 +1,9 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { PageLayout } from '../components/layout/PageLayout';
+import { SEOHead } from '../components/SEOHead';
+import { SchemaBreadcrumb } from '../components/SchemaMarkup';
+import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticleFoi2: React.FC = () => {
@@ -41,6 +44,19 @@ const BlogArticleFoi2: React.FC = () => {
 
   return (
     <PageLayout>
+      <SEOHead
+        title="Fêtes Religieuses : Créer un Conte Personnalisé pour Noël, Ramadan, Pâques | Contedia"
+        description="Découvrez comment fêtes religieuses : créer un conte personnalisé pour noël, ramadan, pâques. Guide complet, conseils pratiques et premier livre gratuit sur Contedia."
+        type="article"
+      />
+      <SchemaBreadcrumb items={[
+        { name: "Accueil", url: "https://contedia.fr/" },
+        { name: "Blog", url: "https://contedia.fr/blog" },
+        { name: "Fêtes Religieuses : Créer un Conte Personnalisé po", url: "https://contedia.fr/blog/fetes-religieuses-conte-personnalise-noel-ramadan-paque-diwali" }
+      ]} />
+      <Helmet>
+        <script type="application/ld+json">{`{"@context":"https://schema.org","@type":"Article","headline":"Fêtes Religieuses : Créer un Conte Personnalisé pour Noël, Ramadan, Pâques","author":{"@type":"Organization","name":"Contedia"},"publisher":{"@type":"Organization","name":"Contedia"},"dateModified":"2026-03-22"}`}</script>
+      </Helmet>
       <div className="article-container">
         <div className="article-breadcrumb">
           <Link to="/blog">Blog</Link> / Les grandes fêtes religieuses revisitées
@@ -51,7 +67,7 @@ const BlogArticleFoi2: React.FC = () => {
             <div className="article-header">
               <h1>Les grandes fêtes religieuses revisitées : créer un conte personnalisé pour Noël, Ramadan, Pâque ou Diwali</h1>
               <div className="article-meta">
-                <span>Dernière mise à jour le 04-11-2025</span>
+                <span>Par l'équipe Contedia · Mis à jour le 22 mars 2026</span>
               </div>
             </div>
 

@@ -1,6 +1,9 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { PageLayout } from '../components/layout/PageLayout';
+import { SEOHead } from '../components/SEOHead';
+import { SchemaBreadcrumb } from '../components/SchemaMarkup';
+import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticle2: React.FC = () => {
@@ -42,6 +45,19 @@ const BlogArticle2: React.FC = () => {
 
   return (
     <PageLayout>
+      <SEOHead
+        title="Contes pour Enfants à Personnaliser : Nouveaux Héros et Univers | Contedia"
+        description="Découvrez comment contes pour enfants à personnaliser : nouveaux héros et univers. Guide complet, conseils pratiques et premier livre gratuit sur Contedia."
+        type="article"
+      />
+      <SchemaBreadcrumb items={[
+        { name: "Accueil", url: "https://contedia.fr/" },
+        { name: "Blog", url: "https://contedia.fr/blog" },
+        { name: "Contes pour Enfants à Personnaliser : Nouveaux Hér", url: "https://contedia.fr/blog/nouveaux-personnages-styles-aventures-ados" }
+      ]} />
+      <Helmet>
+        <script type="application/ld+json">{`{"@context":"https://schema.org","@type":"Article","headline":"Contes pour Enfants à Personnaliser : Nouveaux Héros et Univers","author":{"@type":"Organization","name":"Contedia"},"publisher":{"@type":"Organization","name":"Contedia"},"dateModified":"2026-03-22"}`}</script>
+      </Helmet>
       <div className="article-container">
         <div className="article-breadcrumb">
           <Link to="/blog">Blog</Link> / Des contes pour enfants à personnaliser : nouveaux héros et univers illustrés
@@ -52,7 +68,7 @@ const BlogArticle2: React.FC = () => {
             <div className="article-header">
               <h1>Des contes pour enfants à personnaliser : de nouveaux héros, des univers illustrés uniques et des histoires pour ados</h1>
               <div className="article-meta">
-                <span>Dernière mise à jour le 12-06-2025</span>
+                <span>Par l'équipe Contedia · Mis à jour le 22 mars 2026</span>
               </div>
             </div>
 

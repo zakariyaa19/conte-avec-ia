@@ -1,6 +1,9 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { PageLayout } from '../components/layout/PageLayout';
+import { SEOHead } from '../components/SEOHead';
+import { SchemaBreadcrumb } from '../components/SchemaMarkup';
+import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticleNouveau8: React.FC = () => {
@@ -43,6 +46,19 @@ const BlogArticleNouveau8: React.FC = () => {
 
   return (
     <PageLayout>
+      <SEOHead
+        title="Cadeau de Naissance ou Anniversaire : Le Livre Personnalisé Intemporel | Contedia"
+        description="Découvrez comment cadeau de naissance ou anniversaire : le livre personnalisé intemporel. Guide complet, conseils pratiques et premier livre gratuit sur Contedia."
+        type="article"
+      />
+      <SchemaBreadcrumb items={[
+        { name: "Accueil", url: "https://contedia.fr/" },
+        { name: "Blog", url: "https://contedia.fr/blog" },
+        { name: "Cadeau de Naissance ou Anniversaire : Le Livre Per", url: "https://contedia.fr/blog/cadeau-livre-personnalise-enfant" }
+      ]} />
+      <Helmet>
+        <script type="application/ld+json">{`{"@context":"https://schema.org","@type":"Article","headline":"Cadeau de Naissance ou Anniversaire : Le Livre Personnalisé Intemporel","author":{"@type":"Organization","name":"Contedia"},"publisher":{"@type":"Organization","name":"Contedia"},"dateModified":"2026-03-22"}`}</script>
+      </Helmet>
       <div className="article-container">
         <div className="article-breadcrumb">
           <Link to="/blog">Blog</Link> / Cadeau de naissance ou anniversaire : le livre personnalisé intemporel
@@ -53,7 +69,7 @@ const BlogArticleNouveau8: React.FC = () => {
             <div className="article-header">
               <h1>Cadeau de naissance ou anniversaire : le livre personnalisé intemporel</h1>
               <div className="article-meta">
-                <span>Dernière mise à jour le 27-01-2026</span>
+                <span>Par l'équipe Contedia · Mis à jour le 22 mars 2026</span>
               </div>
             </div>
 

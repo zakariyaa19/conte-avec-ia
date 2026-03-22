@@ -1,6 +1,9 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { PageLayout } from '../components/layout/PageLayout';
+import { SEOHead } from '../components/SEOHead';
+import { SchemaBreadcrumb } from '../components/SchemaMarkup';
+import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticle3: React.FC = () => {
@@ -43,6 +46,19 @@ const BlogArticle3: React.FC = () => {
 
   return (
     <PageLayout>
+      <SEOHead
+        title="Contes de Fées Modernes : Magie et Personnalisation | Contedia"
+        description="Découvrez comment contes de fées modernes : magie et personnalisation. Guide complet, conseils pratiques et premier livre gratuit sur Contedia."
+        type="article"
+      />
+      <SchemaBreadcrumb items={[
+        { name: "Accueil", url: "https://contedia.fr/" },
+        { name: "Blog", url: "https://contedia.fr/blog" },
+        { name: "Contes de Fées Modernes : Magie et Personnalisatio", url: "https://contedia.fr/blog/evolution-livres-enfants-contes-fees-aventures-personnalisees" }
+      ]} />
+      <Helmet>
+        <script type="application/ld+json">{`{"@context":"https://schema.org","@type":"Article","headline":"Contes de Fées Modernes : Magie et Personnalisation","author":{"@type":"Organization","name":"Contedia"},"publisher":{"@type":"Organization","name":"Contedia"},"dateModified":"2026-03-22"}`}</script>
+      </Helmet>
       <div className="article-container">
         <div className="article-breadcrumb">
           <Link to="/blog">Blog</Link> / Contes de Fées Modernes et Aventures Personnalisées
@@ -53,7 +69,7 @@ const BlogArticle3: React.FC = () => {
             <div className="article-header">
               <h1>Contes de Fées Modernes : Quand la Magie Rencontre la Personnalisation</h1>
               <div className="article-meta">
-                <span>Dernière mise à jour le 12-06-2025</span>
+                <span>Par l'équipe Contedia · Mis à jour le 22 mars 2026</span>
               </div>
             </div>
 

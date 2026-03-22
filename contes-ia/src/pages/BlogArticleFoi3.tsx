@@ -1,6 +1,9 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { PageLayout } from '../components/layout/PageLayout';
+import { SEOHead } from '../components/SEOHead';
+import { SchemaBreadcrumb } from '../components/SchemaMarkup';
+import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticleFoi3: React.FC = () => {
@@ -41,6 +44,19 @@ const BlogArticleFoi3: React.FC = () => {
 
   return (
     <PageLayout>
+      <SEOHead
+        title="Personnaliser la Foi : l'IA s'Adapte à vos Valeurs Religieuses | Contedia"
+        description="Découvrez comment personnaliser la foi : l'ia s'adapte à vos valeurs religieuses. Guide complet, conseils pratiques et premier livre gratuit sur Contedia."
+        type="article"
+      />
+      <SchemaBreadcrumb items={[
+        { name: "Accueil", url: "https://contedia.fr/" },
+        { name: "Blog", url: "https://contedia.fr/blog" },
+        { name: "Personnaliser la Foi : l'IA s'Adapte à vos Valeurs", url: "https://contedia.fr/blog/personnaliser-foi-ia-adapte-valeurs-religieuses" }
+      ]} />
+      <Helmet>
+        <script type="application/ld+json">{`{"@context":"https://schema.org","@type":"Article","headline":"Personnaliser la Foi : l'IA s'Adapte à vos Valeurs Religieuses","author":{"@type":"Organization","name":"Contedia"},"publisher":{"@type":"Organization","name":"Contedia"},"dateModified":"2026-03-22"}`}</script>
+      </Helmet>
       <div className="article-container">
         <div className="article-breadcrumb">
           <Link to="/blog">Blog</Link> / Personnalisér la foi : quand l'IA s'adapte à vos valeurs religieuses
@@ -51,7 +67,7 @@ const BlogArticleFoi3: React.FC = () => {
             <div className="article-header">
               <h1>Personnalisér la foi : quand l'IA s'adapte à vos valeurs religieuses</h1>
               <div className="article-meta">
-                <span>Dernière mise à jour le 04-11-2025</span>
+                <span>Par l'équipe Contedia · Mis à jour le 22 mars 2026</span>
               </div>
             </div>
 

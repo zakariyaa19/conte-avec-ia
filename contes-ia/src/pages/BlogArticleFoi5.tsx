@@ -1,6 +1,9 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { PageLayout } from '../components/layout/PageLayout';
+import { SEOHead } from '../components/SEOHead';
+import { SchemaBreadcrumb } from '../components/SchemaMarkup';
+import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticleFoi5: React.FC = () => {
@@ -41,6 +44,19 @@ const BlogArticleFoi5: React.FC = () => {
 
   return (
     <PageLayout>
+      <SEOHead
+        title="Foi, Tolérance et Ouverture : les Contes qui Enseignent le Respect | Contedia"
+        description="Découvrez comment foi, tolérance et ouverture : les contes qui enseignent le respect. Guide complet, conseils pratiques et premier livre gratuit sur Contedia."
+        type="article"
+      />
+      <SchemaBreadcrumb items={[
+        { name: "Accueil", url: "https://contedia.fr/" },
+        { name: "Blog", url: "https://contedia.fr/blog" },
+        { name: "Foi, Tolérance et Ouverture : les Contes qui Ensei", url: "https://contedia.fr/blog/foi-tolerance-ouverture-respect-differentes-religions" }
+      ]} />
+      <Helmet>
+        <script type="application/ld+json">{`{"@context":"https://schema.org","@type":"Article","headline":"Foi, Tolérance et Ouverture : les Contes qui Enseignent le Respect","author":{"@type":"Organization","name":"Contedia"},"publisher":{"@type":"Organization","name":"Contedia"},"dateModified":"2026-03-22"}`}</script>
+      </Helmet>
       <div className="article-container">
         <div className="article-breadcrumb">
           <Link to="/blog">Blog</Link> / Foi, tolérance et ouverture : comment les contes favorisent le respect des différentes religions
@@ -51,7 +67,7 @@ const BlogArticleFoi5: React.FC = () => {
             <div className="article-header">
               <h1>Foi, tolérance et ouverture : comment les contes personnalisés favorisent le respect des différentes religions</h1>
               <div className="article-meta">
-                <span>Dernière mise à jour le 04-11-2025</span>
+                <span>Par l'équipe Contedia · Mis à jour le 22 mars 2026</span>
               </div>
             </div>
 

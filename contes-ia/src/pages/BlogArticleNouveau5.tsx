@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { PageLayout } from '../components/layout/PageLayout';
 import { SEOHead } from '../components/SEOHead';
 import { SchemaFAQ, SchemaBreadcrumb } from '../components/SchemaMarkup';
+import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticleNouveau5: React.FC = () => {
@@ -71,7 +72,11 @@ const BlogArticleNouveau5: React.FC = () => {
           <div className="article-main">
             <div className="article-header">
               <h1>Pourquoi les enfants adorent être le héros de leur propre histoire</h1>
-              <div className="article-meta">
+              <Helmet>
+              <script type="application/ld+json">{`{"@context":"https://schema.org","@type":"Article","headline":"Pourquoi les Enfants Adorent Être le Héros","author":{"@type":"Organization","name":"Contedia"},"publisher":{"@type":"Organization","name":"Contedia"},"dateModified":"2026-03-22"}`}</script>
+            </Helmet>
+
+            <div className="article-meta">
                 <span>Dernière mise à jour le 27-01-2026</span>
               </div>
             </div>
