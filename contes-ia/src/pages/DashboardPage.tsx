@@ -9,6 +9,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { ApiService } from '../config/api';
 import { getImageUrl } from '../config/constants';
 import { ShareModal } from '../components/ui/ShareModal';
+import { SEOHead } from '../components/SEOHead';
 
 /* ══════════════════════════════════════════════
    ANIMATIONS
@@ -1045,6 +1046,11 @@ export const DashboardPage: React.FC = () => {
 
   return (
     <PageContainer>
+      <SEOHead
+        title="Ma Bibliothèque | Contedia"
+        description="Retrouvez tous vos livres personnalisés dans votre bibliothèque Contedia."
+        noindex={true}
+      />
       <Header />
       <MainContent>
 

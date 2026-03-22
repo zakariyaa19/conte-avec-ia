@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { useStaggerReveal } from '../hooks/useScrollReveal';
 import { StoryReader } from '../components/ui/StoryReader';
 import { ApiService } from '../config/api';
+import { SEOHead } from '../components/SEOHead';
 
 interface ExampleStory {
   id: string;
@@ -295,6 +296,10 @@ export const ExemplesPage: React.FC = () => {
 
   return (
     <PageContainer>
+      <SEOHead
+        title="Exemples de Livres Personnalisés pour Enfants | Contedia"
+        description="Découvrez nos exemples de contes personnalisés. Feuilletez des livres créés par IA avec illustrations uniques. Créez le vôtre gratuitement."
+      />
       <Header />
       <main>
         <ShowcaseSection ref={showcaseReveal.ref}>

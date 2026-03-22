@@ -12,6 +12,7 @@ import { useScrollReveal, useStaggerReveal } from '../hooks/useScrollReveal';
 import { StoryReader } from '../components/ui/StoryReader';
 import { ApiService } from '../config/api';
 import { useAuth } from '../contexts/AuthContext';
+import { SEOHead } from '../components/SEOHead';
 
 // =============================================
 // ANIMATIONS
@@ -1444,6 +1445,10 @@ const faqReveal = useScrollReveal();
 
   return (
     <PageContainer>
+      <SEOHead
+        title="Livre Personnalisé Enfant Gratuit — Conte sur Mesure par IA | Contedia"
+        description="Créez un livre personnalisé gratuit pour votre enfant. Histoire unique générée par IA avec illustrations sur mesure. Premier livre offert, prêt en 5 minutes."
+      />
       <Header />
       <main>
 

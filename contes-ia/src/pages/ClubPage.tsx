@@ -5,6 +5,7 @@ import { theme } from '../styles/theme';
 import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
 import { useAuth } from '../contexts/AuthContext';
+import { SEOHead } from '../components/SEOHead';
 
 // ── Animations ──
 const fadeInUp = keyframes`
@@ -479,6 +480,10 @@ export const ClubPage: React.FC = () => {
 
   return (
     <Page>
+      <SEOHead
+        title="Club Contedia — 4 Livres Personnalisés par Mois | 9,99€"
+        description="Rejoignez le Club Contedia : 4 livres personnalisés par mois, 12 pages illustrées, 9 styles d'illustration. Abonnement à 9,99€/mois."
+      />
       <Header />
       <main>
 

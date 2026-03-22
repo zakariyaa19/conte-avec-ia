@@ -10,6 +10,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { ApiService } from '../config/api';
 import { metaTrackCompleteRegistration } from '../utils/metaPixel';
 import { isInAppBrowser } from '../utils/safeStorage';
+import { SEOHead } from '../components/SEOHead';
 
 const fadeInUp = keyframes`
   from { opacity: 0; transform: translateY(20px); }
@@ -501,6 +502,11 @@ export const LoginPage: React.FC = () => {
 
   return (
     <PageContainer>
+      <SEOHead
+        title="Connexion | Contedia"
+        description="Connectez-vous à votre compte Contedia pour retrouver vos livres personnalisés."
+        noindex={true}
+      />
       <Header />
       <LoginContainer>
         <LoginCard $wide={isRegister}>

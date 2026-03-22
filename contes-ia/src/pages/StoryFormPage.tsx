@@ -6,6 +6,7 @@ import { StoryFormData } from '../types/FormTypes';
 import { identifyUser, trackInitiateCheckout, trackViewContent } from '../utils/tiktokPixel';
 import { metaTrackViewContent, metaTrackInitiateCheckout } from '../utils/metaPixel';
 import { useAuth } from '../contexts/AuthContext';
+import { SEOHead } from '../components/SEOHead';
 
 export const StoryFormPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -276,16 +277,23 @@ export const StoryFormPage: React.FC = () => {
   /* The wizard is full-screen (position: fixed, inset: 0).
      No site Header/Footer needed — the wizard has its own fixed header. */
   return (
-    <StoryWizard
-      formData={formData}
-      onUpdate={handleFormUpdate}
-      onSubmit={handleSubmit}
-      isSubmitting={isSubmitting}
-      isAuthenticated={isAuthenticated}
-      isClub={isClub}
-      currentUser={user}
-      clubCredit={clubCredit}
-      isAdMode={isAdMode}
-    />
+    <>
+      <SEOHead
+        title="Créer un Livre Personnalisé pour Enfant | Conte sur Mesure avec IA"
+        description="Créez facilement un conte personnalisé pour votre enfant en 3 étapes simples. Premier livre gratuit, prêt en 5 minutes."
+        noindex={false}
+      />
+      <StoryWizard
+        formData={formData}
+        onUpdate={handleFormUpdate}
+        onSubmit={handleSubmit}
+        isSubmitting={isSubmitting}
+        isAuthenticated={isAuthenticated}
+        isClub={isClub}
+        currentUser={user}
+        clubCredit={clubCredit}
+        isAdMode={isAdMode}
+      />
+    </>
   );
 };

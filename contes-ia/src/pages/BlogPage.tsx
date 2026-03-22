@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
 import { useScrollReveal, useStaggerReveal } from '../hooks/useScrollReveal';
+import { SEOHead } from '../components/SEOHead';
 import { theme } from '../styles/theme';
 import {
   PageContainer,
@@ -222,12 +223,11 @@ const BlogPage: React.FC = () => {
 
   return (
     <PageContainer>
+      <SEOHead
+        title="Blog — Livres Personnalisés Enfants, Contes IA, Idées Cadeaux | Contedia"
+        description="Articles et guides sur les livres personnalisés pour enfants. Conseils lecture, comparatifs, idées cadeaux et astuces pour créer le conte parfait."
+      />
       <Helmet>
-        <title>Blog Contes Personnalises | Conseils Parents et Developpement Enfant</title>
-        <meta
-          name="description"
-          content="Blog expert sur les contes personnalises : pourquoi offrir un livre personnalise a un enfant, les avantages des contes personnalises pour le developpement de l'enfant, conseils parents et inspiration."
-        />
         <meta
           name="keywords"
           content="pourquoi offrir un livre personnalise a un enfant, les avantages des contes personnalises pour le developpement de l'enfant, top 10 des cadeaux personnalises pour enfants, comment choisir un conte adapte a l'age de son enfant, blog contes personnalises"
