@@ -1,174 +1,210 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { PageLayout } from '../components/layout/PageLayout';
 import { SEOHead } from '../components/SEOHead';
-import { SchemaBreadcrumb } from '../components/SchemaMarkup';
-import { Helmet } from 'react-helmet-async';
+import { SchemaFAQ, SchemaBreadcrumb } from '../components/SchemaMarkup';
 import '../styles/BlogArticle.css';
 
 const BlogArticleFoi5: React.FC = () => {
   useEffect(() => {
-    document.title = 'Foi, tolérance et ouverture : comment les contes personnalisés favorisent le respect des différentes religions | Contes d\'IA';
-    
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', 'Découvrez comment les contes personnalisés enseignent la tolérance religieuse et le respect des différentes croyances aux enfants, favorisant une coexistence harmonieuse.');
-    }
-
-    const metaKeywords = document.querySelector('meta[name="keywords"]') || document.createElement('meta');
-    metaKeywords.setAttribute('content', 'tolérance religieuse enfant, respect différentes religions, dialogue interreligieux enfant, coexistence spirituelle, éducation tolérance foi');
-    if (!document.querySelector('meta[name="keywords"]')) {
-      document.head.appendChild(metaKeywords);
-    }
+    document.title = 'Apprendre la Tolérance Religieuse à son Enfant par les Contes Personnalisés | Contedia';
   }, []);
 
   const tableOfContents = [
-    { title: "L'importance de la tolérance religieuse", id: "importance-tolerance" },
-    { title: "Enseigner le respect des différences", id: "enseigner-respect" },
-    { title: "Découvrir la richesse des autres traditions", id: "richesse-traditions" },
-    { title: "Créer des ponts entre les communautés", id: "ponts-communautés" },
-    { title: "Développer l'empathie spirituelle", id: "empathie-spirituelle" },
-    { title: "Célébrer l'unité dans la diversité", id: "unite-diversite" },
-    { title: "Créer votre conte de tolérance", id: "conte-tolerance" }
+    { title: "Pourquoi enseigner la tolérance dès le plus jeune âge", id: "pourquoi" },
+    { title: "Ce que les enfants comprennent de la différence", id: "comprendre" },
+    { title: "Comment un conte personnalisé enseigne le respect", id: "comment" },
+    { title: "Exemples concrets de contes sur la tolérance", id: "exemples" },
+    { title: "Le dialogue parent-enfant après la lecture", id: "dialogue" },
+    { title: "Ce que les parents en disent", id: "temoignages" },
+    { title: "FAQ : Tolérance et contes personnalisés", id: "faq" },
   ];
 
   const handleScrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
-      element.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start'
-      });
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+  };
+
+  const faqQuestions = [
+    {
+      question: "Un conte personnalisé peut-il enseigner la tolérance religieuse ?",
+      answer: "Oui ! L'IA peut créer une histoire où votre enfant rencontre des amis de différentes cultures et traditions. Il découvre que malgré les différences, ils partagent les mêmes valeurs de partage, de courage et d'amitié. Le message passe naturellement, sans leçon de morale."
+    },
+    {
+      question: "Mon enfant peut-il avoir un ami d'une autre religion dans son conte ?",
+      answer: "Oui ! Vous pouvez ajouter des personnages secondaires de différentes origines. L'IA crée une aventure où les enfants collaborent et s'entraident, montrant que la diversité est une force."
+    },
+    {
+      question: "Le conte ne va-t-il pas relativiser notre propre foi ?",
+      answer: "Non. Le conte montre que votre enfant peut être fier de sa tradition ET respecter celles des autres. On peut être profondément enraciné dans sa foi tout en reconnaissant la beauté des autres chemins. C'est l'ouverture, pas le relativisme."
+    },
+    {
+      question: "À quel âge aborder la tolérance religieuse ?",
+      answer: "Dès 3-4 ans, l'enfant peut comprendre que 'les gens fêtent des choses différentes et c'est bien'. À 5-6 ans, il saisit que 'mon ami fête le Ramadan, moi Noël, mais on s'aime quand même'. À 7-8 ans, il peut réfléchir sur les valeurs communes entre les traditions."
+    },
+    {
+      question: "Comment créer un conte sur la tolérance ?",
+      answer: "Sur Contedia, choisissez un thème d'aventure ou de fête et ajoutez des personnages secondaires de différentes origines. L'IA tissera naturellement un récit où la collaboration et le respect mutuel sont au cœur de l'histoire. Premier livre gratuit."
+    }
+  ];
+
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Apprendre la Tolérance Religieuse à son Enfant par les Contes Personnalisés",
+    "description": "Comment les contes personnalisés enseignent la tolérance et le respect des différentes religions aux enfants. Exemples concrets, dialogue parent-enfant.",
+    "image": "https://contedia.fr/images/blog/tolerance-religieuse-conte-enfant.jpg",
+    "author": { "@type": "Organization", "name": "Contedia", "url": "https://contedia.fr" },
+    "publisher": { "@type": "Organization", "name": "Contedia", "logo": { "@type": "ImageObject", "url": "https://contedia.fr/logo-conte-ia.png" } },
+    "datePublished": "2025-11-04",
+    "dateModified": "2026-03-22",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://contedia.fr/blog/foi-tolerance-ouverture-respect-differentes-religions" }
   };
 
   return (
     <PageLayout>
       <SEOHead
-        title="Foi, Tolérance et Ouverture : les Contes qui Enseignent le Respect | Contedia"
-        description="Découvrez comment foi, tolérance et ouverture : les contes qui enseignent le respect. Guide complet, conseils pratiques et premier livre gratuit sur Contedia."
+        title="Apprendre la Tolérance Religieuse à son Enfant par les Contes Personnalisés"
+        description="Comment enseigner la tolérance et le respect des différentes religions à votre enfant grâce aux contes personnalisés. Exemples, dialogue. Gratuit."
         type="article"
       />
+      <SchemaFAQ questions={faqQuestions} />
       <SchemaBreadcrumb items={[
         { name: "Accueil", url: "https://contedia.fr/" },
         { name: "Blog", url: "https://contedia.fr/blog" },
-        { name: "Foi, Tolérance et Ouverture : les Contes qui Ensei", url: "https://contedia.fr/blog/foi-tolerance-ouverture-respect-differentes-religions" }
+        { name: "Tolérance religieuse et contes", url: "https://contedia.fr/blog/foi-tolerance-ouverture-respect-differentes-religions" }
       ]} />
       <Helmet>
-        <script type="application/ld+json">{`{"@context":"https://schema.org","@type":"Article","headline":"Foi, Tolérance et Ouverture : les Contes qui Enseignent le Respect","author":{"@type":"Organization","name":"Contedia"},"publisher":{"@type":"Organization","name":"Contedia"},"dateModified":"2026-03-22"}`}</script>
+        <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>
       </Helmet>
+
       <div className="article-container">
         <div className="article-breadcrumb">
-          <Link to="/blog">Blog</Link> / Foi, tolérance et ouverture : comment les contes favorisent le respect des différentes religions
+          <Link to="/blog">Blog</Link> / Tolérance religieuse et contes personnalisés
         </div>
 
         <div className="article-layout">
           <div className="article-main">
             <div className="article-header">
-              <h1>Foi, tolérance et ouverture : comment les contes personnalisés favorisent le respect des différentes religions</h1>
+              <h1>Apprendre la Tolérance Religieuse à son Enfant : Le Pouvoir des Contes Personnalisés</h1>
               <div className="article-meta">
-                <span>Par l'équipe Contedia · Mis à jour le 22 mars 2026</span>
+                <span>Par l'équipe Contedia · Mis à jour le 22 mars 2026 · 7 min de lecture</span>
               </div>
             </div>
 
             <div className="article-image">
               <img
                 src="/images/blog/tolerance-religieuse-conte-enfant.jpg"
-                alt="Enfants de différentes confessions partageant harmonieusement leurs histoires spirituelles"
+                alt="Enfants de différentes cultures lisant ensemble un conte personnalisé sur le respect et la tolérance"
                 loading="lazy"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.src = '/images/placeholder-blog.jpg';
-                }}
+                onError={(e) => { const target = e.target as HTMLImageElement; target.src = '/images/placeholder-blog.jpg'; }}
               />
             </div>
 
             <div className="article-content">
               <p className="article-intro">
-                Dans notre monde multiculturel, enseigner la tolérance religieuse à nos enfants devient essentiel pour construire une société harmonieuse. Comment les contes personnalisés peuvent-ils contribuer à cette noble mission ? En créant des histoires qui célèbrent la diversité spirituelle tout en respectant chaque tradition, nous ouvrons les cœurs de nos enfants à la beauté de la différence.
+                <strong>« Papa, pourquoi Yasmine ne fête pas Noël ? »</strong> — C'est le genre de question qui prend les parents au dépourvu. Comment expliquer à un enfant de 4 ans que son amie a une autre religion, sans le troubler ni simplifier ? Un <strong>conte personnalisé</strong> fait ça magnifiquement : votre enfant vit une aventure avec des amis de différentes traditions et découvre que <strong>la différence enrichit</strong>. Pas de leçon de morale. Juste une belle histoire qui ouvre les cœurs.
               </p>
 
-              <h2 id="importance-tolerance">L'importance de la tolérance religieuse</h2>
+              <h2 id="pourquoi">Pourquoi enseigner la tolérance dès le plus jeune âge</h2>
               <p>
-                La tolérance religieuse ne signifie pas l'abandon de ses propres convictions, mais plutôt la capacité à respecter et comprendre les croyances d'autrui. Cette vertu essentielle permet de vivre en harmonie dans nos sociétés multiculturelles tout en préservant l'authenticité de sa propre foi.
+                Les études en psychologie du développement montrent que les enfants commencent à percevoir les différences culturelles et religieuses dès <strong>3-4 ans</strong>. C'est exactement le bon moment pour leur montrer que la différence est une richesse :
               </p>
-              <p>
-                Les contes personnalisés peuvent enseigner cette sagesse précieuse en montrant comment différentes traditions spirituelles partagent des valeurs communes d'amour, de compassion et de justice. L'enfant découvre ainsi que la diversité religieuse enrichit l'humanité plutôt qu'elle ne la divise.
-              </p>
-              <p>
-                Cette approche éducative développe chez l'enfant une intelligence spirituelle qui lui permettra de naviguer avec sagesse dans un monde pluriel, en restant fidèle à ses convictions tout en respectant celles des autres.
-              </p>
-
-              <h2 id="enseigner-respect">Enseigner le respect des différences</h2>
-              <p>
-                Un conte personnalisé peut mettre votre enfant en situation de rencontrer des personnages de différentes confessions, apprenant à apprécier leurs qualités humaines au-delà de leurs croyances spécifiques. Cette approche narrative développe naturellement l'empathie et le respect mutuel.
-              </p>
-              <p>
-                Ces rencontres fictives préparent l'enfant aux interactions réelles qu'il aura dans sa vie. Il apprend à voir en chaque personne un être humain digne de respect, indépendamment de sa religion, de sa culture ou de ses traditions particulières.
-              </p>
-              <p>
-                L'histoire peut montrer comment des enfants de différentes confessions deviennent amis, partagent leurs jeux et leurs rêves, découvrant que leurs similitudes dépassent largement leurs différences. Cette leçon de vie devient alors naturelle et évidente pour le jeune lecteur.
-              </p>
-
-              <h2 id="richesse-traditions">Découvrir la richesse des autres traditions</h2>
-              <p>
-                Chaque tradition religieuse apporte sa propre sagesse et beauté au patrimoine spirituel de l'humanité. Les contes peuvent faire découvrir à votre enfant cette richesse extraordinaire : la générosité et le partage du Ramadan, la lumière triomphante de Diwali, la paix et l'amour de Noël, ou la liberté célébrée à Pâque.
-              </p>
-              <p>
-                Cette découverte ne menace pas la foi de l'enfant, mais l'enrichit en lui montrant comment l'aspiration vers le divin s'exprime de multiples façons à travers les cultures. Il comprend que chaque tradition a développé des trésors de sagesse qui peuvent inspirer et élever l'âme humaine.
-              </p>
-              <p>
-                Les contes peuvent également explorer les arts, la musique, l'architecture et les traditions culinaires liées à chaque religion, montrant comment la foi inspire la créativité humaine sous toutes ses formes.
-              </p>
-
-              <h2 id="ponts-communautés">Créer des ponts entre les communautés</h2>
-              <p>
-                Les histoires ont le pouvoir unique de créer des liens entre les personnes et les communautés. Un conte personnalisé peut montrer votre enfant collaborant avec des amis de différentes confessions pour résoudre des défis communs, illustrant concrètement l'importance et la beauté de la coopération interreligieuse.
-              </p>
-              <p>
-                Ces récits peuvent mettre en scène des projets communs : organiser une fête multiculturelle, aider des personnes dans le besoin, ou protéger l'environnement. L'enfant découvre ainsi que les valeurs spirituelles authentiques poussent naturellement vers l'action commune et la solidarité.
-              </p>
-              <p>
-                L'histoire peut également montrer comment les différentes traditions se complètent et s'enrichissent mutuellement, créant une symphonie spirituelle où chaque voix apporte sa note unique à l'harmonie générale.
-              </p>
-
-              <h2 id="empathie-spirituelle">Développer l'empathie spirituelle</h2>
-              <p>
-                L'empathie spirituelle consiste à comprendre et respecter les sentiments religieux d'autrui, même quand ils diffèrent des nôtres. Cette capacité précieuse permet de créer des liens authentiques au-delà des différences confessionnelles.
-              </p>
-              <p>
-                Les contes personnalisés peuvent cultiver cette qualité en montrant des situations où la compréhension mutuelle triomphe des préjugés et des malentendus. L'enfant apprend à se mettre à la place de l'autre, à comprendre ses motivations spirituelles et à respecter sa sincérité.
-              </p>
-              <p>
-                Cette empathie spirituelle ne relativise pas les convictions, mais les humanise. Elle permet à l'enfant de maintenir ses propres croyances tout en reconnaissant la dignité et la valeur des autres chemins spirituels.
-              </p>
-
-              <h2 id="unite-diversite">Célébrer l'unité dans la diversité</h2>
-              <p>
-                Malgré leurs différences apparentes, toutes les traditions spirituelles authentiques aspirent à élever l'âme humaine vers le bien, la vérité et la beauté. Un conte personnalisé peut illustrer cette unité fondamentale tout en célébrant la richesse de la diversité religieuse.
-              </p>
-              <p>
-                Cette perspective permet à l'enfant de développer une vision large et généreuse de la spiritualité humaine. Il comprend que les différentes religions sont comme des langues différentes exprimant les mêmes aspirations profondes de l'âme humaine vers le transcendant.
-              </p>
-              <p>
-                Les contes peuvent montrer comment les valeurs universelles - amour, compassion, justice, vérité, paix - se retrouvent dans toutes les traditions, créant un socle commun sur lequel peut s'édifier une coexistence harmonieuse et respectueuse.
-              </p>
-
-              <h2 id="conte-tolerance">Créer votre conte de tolérance</h2>
-              <p>
-                Créer un conte personnalisé sur la tolérance religieuse permet d'aborder ces sujets délicats avec la douceur et la sagesse nécessaires. L'histoire devient un espace sûr où votre enfant peut explorer ces questions importantes et développer une spiritualité ouverte et respectueuse.
-              </p>
-              <p>
-                Ce processus créatif vous permet également, en tant que parent, de transmettre vos propres valeurs de respect et d'ouverture tout en affirmant l'importance de votre tradition familiale. L'enfant apprend ainsi à être fier de ses racines spirituelles tout en étant ouvert au dialogue et à la rencontre.
-              </p>
-              <p>
-                Le résultat est un conte qui prépare votre enfant à devenir un citoyen du monde, capable de contribuer positivement à une société plurielle tout en restant fidèle à ses convictions profondes.</p>
+              <ul>
+                <li><strong>Avant les préjugés</strong> — À cet âge, l'enfant n'a pas encore de préjugés. Il est naturellement curieux et ouvert. C'est le moment idéal pour poser les bases du respect.</li>
+                <li><strong>Par l'émotion, pas la théorie</strong> — Un enfant ne retient pas « toutes les religions se valent ». Mais il retient l'histoire où son ami Youssef l'invite à l'iftar du Ramadan et où c'est le plus beau repas de sa vie.</li>
+                <li><strong>Pour la vie en société</strong> — Votre enfant grandira dans une société diverse. Lui apprendre le respect maintenant, c'est lui donner les outils pour des relations harmonieuses toute sa vie.</li>
+                <li><strong>Sans perdre sa propre foi</strong> — Apprendre la tolérance ne signifie PAS abandonner ses convictions. C'est être fier de ses racines ET curieux des autres. Les deux se renforcent mutuellement.</li>
+              </ul>
 
               <div className="article-cta">
                 <Link to="/create-story" className="cta-button">
-                  🌍 Créer notre conte de tolérance et d'ouverture
+                  ✨ Créez un conte qui ouvre les cœurs — Premier livre gratuit
                 </Link>
               </div>
+
+              <h2 id="comprendre">Ce que les enfants comprennent de la différence religieuse, par âge</h2>
+              <ul>
+                <li><strong>3-4 ans</strong> — « Les gens fêtent des choses différentes et c'est bien. » L'enfant ne comprend pas les concepts théologiques mais il comprend que son ami mange des choses différentes, fête d'autres jours, et que c'est normal et intéressant.</li>
+                <li><strong>5-6 ans</strong> — « Mon ami fête le Ramadan, moi Noël, mais on est amis quand même. » L'enfant commence à percevoir les similitudes : on fête tous ensemble, on partage, on est heureux.</li>
+                <li><strong>7-8 ans</strong> — « Toutes les religions parlent de partage et de courage. » L'enfant peut identifier les <strong>valeurs communes</strong> entre les traditions et comprendre que les différences sont dans la forme, pas dans le fond.</li>
+              </ul>
+
+              <h2 id="comment">Comment un conte personnalisé enseigne le respect</h2>
+              <p>
+                Sur <strong>Contedia</strong>, l'IA peut créer une histoire où votre enfant vit une aventure avec des amis de différentes traditions. Pas de cours de religion comparée — juste une belle histoire :
+              </p>
+              <ul>
+                <li><strong>L'aventure commune</strong> — Votre enfant et ses amis de différentes origines doivent résoudre un défi ensemble. Chacun apporte ses forces, ses idées, sa perspective. Ils réussissent PARCE QU'ils sont différents, pas malgré leurs différences.</li>
+                <li><strong>La fête partagée</strong> — Votre enfant est invité à célébrer la fête d'un ami d'une autre tradition. Il découvre de nouvelles saveurs, de nouvelles musiques, de nouvelles histoires. Il repart émerveillé, pas menacé.</li>
+                <li><strong>La valeur commune</strong> — Au moment clé de l'histoire, votre enfant et son ami réalisent qu'ils ont la même valeur au cœur (le partage, le courage, la gentillesse) même s'ils la vivent différemment.</li>
+              </ul>
+              <p>
+                Le message passe <strong>naturellement</strong>, par l'aventure et l'émotion — pas par un discours moralisateur.
+              </p>
+
+              <h2 id="exemples">Exemples concrets de contes sur la tolérance</h2>
+              <ul>
+                <li><strong>« Léa et le repas magique »</strong> — Léa, 5 ans (chrétienne), est invitée chez son ami Amir pour l'iftar du Ramadan. Elle découvre les dattes, le lait et les rires de la famille d'Amir. Elle comprend que Ramadan est un mois de partage, comme Noël est un temps de don. Elle rentre chez elle en disant : « Maman, les deux fêtes c'est pour être gentil ! »</li>
+                <li><strong>« Noah et les bougies de Sarah »</strong> — Noah, 6 ans (musulman), est invité chez Sarah pour Hanoukka. Il voit les bougies s'allumer une par une et Sarah lui explique que chaque flamme représente l'espoir. Noah dit : « Nous aussi on allume des bougies le soir du Ramadan ! » Ils réalisent que la lumière est importante dans toutes les traditions.</li>
+                <li><strong>« Jade et le festival des couleurs »</strong> — Jade, 7 ans (laïque), participe au Holi (fête des couleurs) chez son amie Priya. Elle découvre que les couleurs représentent la joie et le renouveau. Elle rentre chez elle avec des couleurs dans les cheveux et un cœur plein de bonheur.</li>
+              </ul>
+
+              <div className="article-cta">
+                <Link to="/create-story" className="cta-button">
+                  ✨ Créez un conte de tolérance — Gratuit et prêt en 5 min
+                </Link>
+              </div>
+
+              <h2 id="dialogue">Le dialogue parent-enfant après la lecture</h2>
+              <p>
+                Le conte est un <strong>point de départ</strong>, pas une fin. Après la lecture, voici comment prolonger la conversation :
+              </p>
+              <ul>
+                <li><strong>« Qu'est-ce que tu as aimé dans la fête de l'ami ? »</strong> — L'enfant exprime sa curiosité naturelle</li>
+                <li><strong>« Qu'est-ce que vous aviez en commun ? »</strong> — L'enfant identifie les valeurs partagées</li>
+                <li><strong>« Tu voudrais inviter ton ami à notre fête ? »</strong> — Le conte inspire une action réelle</li>
+                <li><strong>« Est-ce que tu connais quelqu'un qui fête différemment ? »</strong> — Le conte se connecte à la vraie vie de l'enfant</li>
+              </ul>
+              <p>
+                Ces questions ouvertes transforment le conte en <Link to="/blog/transmettre-foi-histoires-contes-personnalises-spiritualite">outil de transmission vivant</Link>. L'enfant ne reçoit pas une leçon — il construit sa propre compréhension.
+              </p>
+
+              <h2 id="temoignages">Ce que les parents en disent</h2>
+              <ul>
+                <li><strong>Marie, maman de Léa (5 ans)</strong> — <em>« Léa a un ami musulman à l'école. Après le conte sur l'iftar, elle lui a dit "Amir, raconte-moi encore ta fête !" Leur amitié s'est renforcée. C'est exactement ce que je voulais. »</em></li>
+                <li><strong>Rachid, papa de Karim (6 ans)</strong> — <em>« Karim a été invité à l'anniversaire d'un ami chrétien. Avant, il ne comprenait pas pourquoi il y avait un gâteau avec des bougies. On a créé un conte où Karim découvre les traditions de son ami. Maintenant il dit "chez chaque ami c'est différent et c'est bien". »</em></li>
+                <li><strong>Nathalie, maman de jumeaux (7 ans)</strong> — <em>« Dans leur école, il y a des enfants de toutes origines. Le conte de tolérance a ouvert un dialogue incroyable. Mes jumeaux posent des questions, s'intéressent, comprennent. C'est le plus beau cadeau éducatif qu'on ait fait. »</em></li>
+              </ul>
+
+              <div className="article-cta">
+                <Link to="/create-story" className="cta-button">
+                  ✨ Rejoignez +500 familles — Un conte qui ouvre au monde
+                </Link>
+              </div>
+
+              <h2 id="faq">FAQ : Tolérance religieuse et contes personnalisés</h2>
+
+              {faqQuestions.map((faq, i) => (
+                <React.Fragment key={i}>
+                  <h3>{faq.question}</h3>
+                  <p>{faq.answer}</p>
+                </React.Fragment>
+              ))}
+
+              <p>
+                <em>Découvrez aussi :</em>
+              </p>
+              <ul>
+                <li><Link to="/blog/integrer-valeurs-religieuses-contes-personnalises">Comment personnaliser la religion dans un conte</Link></li>
+                <li><Link to="/blog/transmettre-foi-histoires-contes-personnalises-spiritualite">Transmettre la foi par les histoires : guide par âge</Link></li>
+                <li><Link to="/blog/heros-foi-inspirer-enfants-personnages-spirituels">Votre enfant, héros de foi</Link></li>
+                <li><Link to="/blog/fetes-religieuses-conte-personnalise-noel-ramadan-paque-diwali">Contes pour Noël, Ramadan, Pâques et Diwali</Link></li>
+                <li><Link to="/blog/personnaliser-foi-ia-adapte-valeurs-religieuses">Comment l'IA respecte votre religion</Link></li>
+              </ul>
             </div>
           </div>
 
@@ -178,10 +214,7 @@ const BlogArticleFoi5: React.FC = () => {
               <ul>
                 {tableOfContents.map((item, index) => (
                   <li key={index}>
-                    <button 
-                      onClick={() => handleScrollToSection(item.id)}
-                      className="toc-link"
-                    >
+                    <button onClick={() => handleScrollToSection(item.id)} className="toc-link">
                       {item.title}
                     </button>
                   </li>
