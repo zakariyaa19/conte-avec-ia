@@ -1,191 +1,243 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { PageLayout } from '../components/layout/PageLayout';
 import { SEOHead } from '../components/SEOHead';
-import { SchemaBreadcrumb } from '../components/SchemaMarkup';
-import { Helmet } from 'react-helmet-async';
+import { SchemaFAQ, SchemaBreadcrumb } from '../components/SchemaMarkup';
 import '../styles/BlogArticle.css';
 
 const BlogArticle5: React.FC = () => {
   useEffect(() => {
-    document.title = 'Intégrer les valeurs religieuses dans les contes personnalisés | Blog Contes IA';
-    
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', 'Guide complet pour personnaliser la religion dans les contes IA. Créez des histoires respectueuses des croyances familiales tout en stimulant l\'imagination et les valeurs morales de votre enfant.');
-    }
-
-    const metaKeywords = document.querySelector('meta[name="keywords"]') || document.createElement('meta');
-    metaKeywords.setAttribute('name', 'keywords');
-    metaKeywords.setAttribute('content', 'conte personnalisé religion, histoire enfant valeurs religieuses, livre personnalisé croyances, conte IA religion, personnalisation religion enfant, valeurs morales conte, éducation religieuse histoire, conte respectueux croyances');
-    if (!document.querySelector('meta[name="keywords"]')) {
-      document.head.appendChild(metaKeywords);
-    }
+    document.title = 'Conte Personnalisé Religieux : Transmettre la Foi à votre Enfant avec Douceur | Contedia';
   }, []);
 
   const tableOfContents = [
-    { title: "L'importance des valeurs religieuses dans l'éducation", id: "importance-valeurs" },
-    { title: "Transmission naturelle par le récit", id: "transmission-naturelle" },
-    { title: "Respect de la diversité des croyances", id: "respect-diversite" },
-    { title: "Comment personnaliser la religion dans nos contes", id: "personnaliser-religion" },
-    { title: "Adaptation du vocabulaire et des références", id: "adaptation-vocabulaire" },
-    { title: "Intégration des fêtes et traditions", id: "fetes-traditions" },
-    { title: "Personnages et modèles de rôle", id: "personnages-modeles" },
-    { title: "Valeurs universelles et spécificités religieuses", id: "valeurs-universelles" },
-    { title: "Tolérance et ouverture d'esprit", id: "tolerance-ouverture" },
-    { title: "Compassion et bienveillance", id: "compassion-bienveillance" },
-    { title: "Conseils pratiques pour les parents", id: "conseils-pratiques" }
+    { title: "Pourquoi transmettre la foi par les histoires", id: "pourquoi" },
+    { title: "Les religions disponibles sur Contedia", id: "religions" },
+    { title: "Contes personnalisés pour le Ramadan et l'Aïd", id: "ramadan" },
+    { title: "Contes personnalisés pour Noël chrétien", id: "noel" },
+    { title: "Contes pour Pâques, Hanoukka et autres fêtes", id: "autres-fetes" },
+    { title: "Comment créer un conte avec des valeurs religieuses", id: "comment" },
+    { title: "Ce que les parents en disent", id: "temoignages" },
+    { title: "FAQ : Conte personnalisé et religion", id: "faq" },
   ];
 
   const handleScrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
-      element.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start'
-      });
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+  };
+
+  const faqQuestions = [
+    {
+      question: "Peut-on choisir la religion dans un conte personnalisé ?",
+      answer: "Oui ! Sur Contedia, vous pouvez sélectionner la religion ou la spiritualité de votre famille lors de la création. L'IA adapte l'histoire, le vocabulaire et les valeurs en conséquence : islam, christianisme, judaïsme, bouddhisme, hindouisme, ou approche laïque."
+    },
+    {
+      question: "Comment l'IA respecte-t-elle les croyances religieuses ?",
+      answer: "L'IA de Contedia est conçue pour traiter chaque tradition avec respect et authenticité. Elle intègre le vocabulaire approprié, les valeurs centrales et les fêtes de chaque religion. Aucune croyance n'est mise au-dessus d'une autre. Le contenu est supervisé pour garantir le respect."
+    },
+    {
+      question: "Peut-on créer un conte pour le Ramadan ?",
+      answer: "Oui ! Contedia propose un thème dédié au Ramadan et à l'Aïd. L'histoire intègre les valeurs de partage, de patience et de générosité propres à cette période. Votre enfant devient le héros d'une aventure qui célèbre sa foi. C'est l'un de nos thèmes les plus demandés."
+    },
+    {
+      question: "Un conte personnalisé peut-il remplacer l'éducation religieuse ?",
+      answer: "Non, et ce n'est pas l'objectif. Le conte personnalisé complète l'éducation religieuse en rendant les valeurs concrètes et accessibles à l'enfant. C'est un support ludique qui ouvre la discussion en famille, pas un substitut à l'enseignement traditionnel."
+    },
+    {
+      question: "Peut-on créer un conte avec des valeurs sans religion ?",
+      answer: "Absolument ! Vous pouvez choisir une approche laïque centrée sur les valeurs universelles : courage, partage, respect, empathie, honnêteté. L'IA crée une histoire éducative sans référence religieuse, adaptée à toutes les familles."
+    },
+    {
+      question: "Les contes religieux sont-ils adaptés aux tout-petits ?",
+      answer: "Oui. Pour les 0-2 ans, le conte est très simple avec des valeurs de douceur et d'amour. Pour les 3-5 ans, l'histoire introduit des concepts comme le partage et la gratitude. Pour les 6-8 ans, des thèmes plus profonds comme la patience et la foi sont abordés."
+    }
+  ];
+
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Conte Personnalisé Religieux : Transmettre la Foi à votre Enfant avec Douceur",
+    "description": "Créez un conte personnalisé qui intègre les valeurs religieuses de votre famille. Islam, christianisme, judaïsme... Premier livre gratuit sur Contedia.",
+    "image": "https://contedia.fr/images/blog/religion-contes-personnalises.jpg",
+    "author": { "@type": "Organization", "name": "Contedia", "url": "https://contedia.fr" },
+    "publisher": { "@type": "Organization", "name": "Contedia", "logo": { "@type": "ImageObject", "url": "https://contedia.fr/logo-conte-ia.png" } },
+    "datePublished": "2025-11-04",
+    "dateModified": "2026-03-22",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://contedia.fr/blog/integrer-valeurs-religieuses-contes-personnalises" }
   };
 
   return (
     <PageLayout>
       <SEOHead
-        title="Intégrer les Valeurs Religieuses dans les Contes Personnalisés | Contedia"
-        description="Découvrez comment intégrer les valeurs religieuses dans les contes personnalisés. Guide complet, conseils pratiques et premier livre gratuit sur Contedia."
+        title="Conte Personnalisé Religieux : Transmettre la Foi à votre Enfant avec Douceur"
+        description="Créez un conte personnalisé avec les valeurs religieuses de votre famille. Ramadan, Noël, Pâques... L'IA adapte l'histoire à votre foi. Premier livre gratuit."
         type="article"
       />
+      <SchemaFAQ questions={faqQuestions} />
       <SchemaBreadcrumb items={[
         { name: "Accueil", url: "https://contedia.fr/" },
         { name: "Blog", url: "https://contedia.fr/blog" },
-        { name: "Intégrer les Valeurs Religieuses dans les Contes P", url: "https://contedia.fr/blog/integrer-valeurs-religieuses-contes-personnalises" }
+        { name: "Conte personnalisé et religion", url: "https://contedia.fr/blog/integrer-valeurs-religieuses-contes-personnalises" }
       ]} />
       <Helmet>
-        <script type="application/ld+json">{`{"@context":"https://schema.org","@type":"Article","headline":"Intégrer les Valeurs Religieuses dans les Contes Personnalisés","author":{"@type":"Organization","name":"Contedia"},"publisher":{"@type":"Organization","name":"Contedia"},"dateModified":"2026-03-22"}`}</script>
+        <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>
       </Helmet>
+
       <div className="article-container">
         <div className="article-breadcrumb">
-          <Link to="/blog">Blog</Link> / Intégrer les valeurs religieuses dans les contes personnalisés
+          <Link to="/blog">Blog</Link> / Conte personnalisé et valeurs religieuses
         </div>
 
         <div className="article-layout">
           <div className="article-main">
             <div className="article-header">
-              <h1>Intégrer les valeurs religieuses dans les contes personnalisés</h1>
+              <h1>Conte Personnalisé Religieux : Comment Transmettre la Foi à votre Enfant avec Douceur</h1>
               <div className="article-meta">
-                <span>Par l'équipe Contedia · Mis à jour le 22 mars 2026</span>
+                <span>Par l'équipe Contedia · Mis à jour le 22 mars 2026 · 9 min de lecture</span>
               </div>
             </div>
 
             <div className="article-image">
               <img
-                src="/images/blog/religion-contes-personnalisés.jpg"
-                alt="Famille diverse lisant ensemble un livre personnalisé"
+                src="/images/blog/religion-contes-personnalises.jpg"
+                alt="Famille lisant ensemble un conte personnalisé qui transmet des valeurs spirituelles à leur enfant"
                 loading="lazy"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.src = '/images/placeholder-blog.jpg';
-                }}
+                onError={(e) => { const target = e.target as HTMLImageElement; target.src = '/images/placeholder-blog.jpg'; }}
               />
             </div>
 
             <div className="article-content">
               <p className="article-intro">
-                Dans un monde de plus en plus connecté mais parfois déraciné, transmettre ses valeurs religieuses et spirituelles à ses enfants devient un défi majeur pour de nombreuses familles. Les contes personnalisés offrent une opportunité unique de marier tradition et innovation, permettant aux parents de partager leurs croyances de manière naturelle et engageante. Découvrez comment notre technologie respecte et célèbre la diversité des foi.
+                <strong>« Comment expliquer le Ramadan à mon fils de 4 ans ? »</strong> — C'est la question que Fatima nous a posée avant de créer son premier conte sur Contedia. La réponse : en faisant de son fils le héros d'une histoire de partage et de générosité pendant le mois sacré. Depuis des millénaires, les contes transmettent les valeurs spirituelles aux enfants. En 2026, les <strong>contes personnalisés</strong> permettent de le faire avec le prénom, la photo et la foi de VOTRE famille. Premier livre gratuit.
               </p>
 
-              <h2 id="importance-valeurs">L'importance des valeurs religieuses dans l'éducation</h2>
-              
-              <h3 id="transmission-naturelle">Transmission naturelle par le récit</h3>
+              <h2 id="pourquoi">Pourquoi transmettre la foi par les histoires</h2>
               <p>
-                Depuis la nuit des temps, les communautés religieuses utilisent les histoires pour transmettre leurs enseignements. Des paraboles du Nouveau Testament aux récits coraniques, des légendes bouddhistes aux contes hassidiques, le récit a toujours été le véhicule privilégié de la sagesse spirituelle.
-              </p>
-              <p>
-                Les contes personnalisés s'inscrivent dans cette tradition millénaire tout en l'adaptant aux réalités contemporaines. Ils permettent aux enfants de s'identifier directement aux héros qui vivent et appliquent les valeurs de leur foi, créant un lien émotionnel profond avec les enseignements religieux.
-              </p>
-
-              <h3 id="respect-diversite">Respect de la diversité des croyances</h3>
-              <p>
-                Notre approche de la personnalisation religieuse repose sur un principe fondamental : le respect absolu de toutes les traditions spirituelles. Que votre famille soit chrétienne, musulmane, juive, bouddhiste, hindoue ou pratique toute autre foi, notre IA est conçue pour honorer vos croyances avec authenticité et sensibilité.
-              </p>
-              <p>
-                Cette inclusivité ne se limite pas aux grandes religions mondiales. Nous respectons également les spiritualités autochtones, les pratiques néo-païennes, et même les approches laïques axées sur l'humanisme et l'éthique universelle.
-              </p>
-
-              <h2 id="personnaliser-religion">Comment personnaliser la religion dans nos contes</h2>
-
-              <h3 id="adaptation-vocabulaire">Adaptation du vocabulaire et des références</h3>
-              <p>
-                Notre IA maîtrise les subtilités linguistiques et culturelles de différentes traditions religieuses. Elle peut naturellement intégrer :
+                Les paraboles du Nouveau Testament, les récits coraniques, les légendes bouddhistes — depuis toujours, les communautés de foi utilisent les histoires pour transmettre leurs enseignements. Pourquoi ? Parce qu'un enfant ne retient pas un cours de morale. Mais il retient l'histoire du petit garçon qui a partagé son repas pendant le Ramadan.
               </p>
               <ul>
-                <li><strong>Vocabulaire spécifique</strong> : Termes sacrés, expressions de foi appropriées</li>
-                <li><strong>Références scripturaires</strong> : Allusions aux textes saints adaptées à l'âge de l'enfant</li>
-                <li><strong>Concepts théologiques</strong> : Notions spirituelles expliquées de manière accessible</li>
-                <li><strong>Pratiques rituelles</strong> : Intégration naturelle des observances religieuses</li>
+                <li><strong>L'identification</strong> — Quand c'est VOTRE enfant qui fait preuve de générosité dans l'histoire, le message devient personnel. Ce n'est plus « il faut partager » mais « j'ai partagé et ça a rendu les gens heureux ».</li>
+                <li><strong>La douceur</strong> — Pas de leçon de morale. Pas de « tu dois ». L'enfant découvre les valeurs par l'aventure, naturellement, avec joie.</li>
+                <li><strong>La répétition</strong> — Un conte personnalisé, l'enfant veut le relire 10, 20, 50 fois. Chaque relecture renforce les valeurs. C'est la <Link to="/blog/conte-personnalise-rituel-coucher">puissance du rituel du coucher</Link>.</li>
+                <li><strong>Le dialogue</strong> — Le conte ouvre la discussion. « Pourquoi le héros a-t-il fait ça ? » devient une conversation naturelle sur la foi en famille.</li>
               </ul>
-              <p>
-                Cette adaptation va bien au-delà de la simple mention de mots religieux. L'IA comprend le contexte culturel et ajuste le ton, les métaphores et les enseignements moraux selon la tradition spirituelle de la famille.
-              </p>
 
-              <h3 id="fetes-traditions">Intégration des fêtes et traditions</h3>
+              <div className="article-cta">
+                <Link to="/create-story" className="cta-button">
+                  ✨ Créez un conte qui transmet vos valeurs — C'est gratuit
+                </Link>
+              </div>
+
+              <h2 id="religions">Les religions et spiritualités disponibles sur Contedia</h2>
               <p>
-                Les célébrations religieuses marquent le rythme de la vie spirituelle familiale. Nos contes peuvent s'adapter aux calendriers religieux et intégrer :
+                Sur <strong>Contedia</strong>, vous pouvez sélectionner la religion ou la spiritualité de votre famille lors de la création. L'IA adapte automatiquement :
               </p>
               <ul>
-                <li>Les grandes fêtes (Noël, Ramadan, Pâque, Diwali, etc.)</li>
-                <li>Les rites de passage (baptême, bar/bat mitzvah, confirmation, etc.)</li>
-                <li>Les pratiques quotidiennes (prières, méditation, gratitude)</li>
-                <li>Les valeurs saisonnières (partage, jeûne, contemplation, joie)</li>
+                <li><strong>Islam</strong> — Valeurs de partage, patience, gratitude, générosité. Thèmes Ramadan et Aïd disponibles. Vocabulaire adapté (bismillah, inchallah utilisés naturellement dans le récit).</li>
+                <li><strong>Christianisme</strong> — Valeurs d'amour, pardon, solidarité, espérance. Thèmes Noël et Pâques. Références naturelles à la foi chrétienne.</li>
+                <li><strong>Judaïsme</strong> — Valeurs de justice, sagesse, transmission, communauté. Thèmes Hanoukka, Pâque juive, Shabbat.</li>
+                <li><strong>Bouddhisme</strong> — Valeurs de compassion, sérénité, respect du vivant. Contes méditatifs et contemplatifs.</li>
+                <li><strong>Hindouisme</strong> — Valeurs de dharma, respect, famille. Thèmes Diwali et festivals.</li>
+                <li><strong>Approche laïque</strong> — Valeurs universelles sans référence religieuse : courage, partage, respect, empathie. Adapté à toutes les familles.</li>
               </ul>
-
-              <h3 id="personnages-modeles">Personnages et modèles de rôle</h3>
               <p>
-                Dans nos histoires personnalisées, votre enfant peut rencontrer et interagir avec des figures inspirantes de sa tradition religieuse. Ces personnages, adaptés à l'âge et à la compréhension de l'enfant, servent de guides spirituels bienveillants qui l'accompagnent dans ses aventures.
-              </p>
-              <p>
-                Ces modèles de rôle ne sont pas présentés de manière dogmatique, mais comme des compagnons sages qui partagent leur sagesse à travers l'exemple et l'action, encourageant l'enfant à développer ses propres qualités spirituelles.
+                <em>Contedia est le <strong>seul service de livres personnalisés</strong> en France qui propose cette personnalisation religieuse. C'est l'une de nos fonctionnalités les plus demandées et les plus appréciées.</em>
               </p>
 
-              <h2 id="valeurs-universelles">Valeurs universelles et spécificités religieuses</h2>
-
-              <h3 id="tolerance-ouverture">Tolérance et ouverture d'esprit</h3>
+              <h2 id="ramadan">Contes personnalisés pour le Ramadan et l'Aïd</h2>
               <p>
-                Même en personnalisant selon une tradition religieuse spécifique, nos contes cultivent l'ouverture d'esprit et le respect des autres. Les histoires peuvent inclure des rencontres avec des personnages de différentes origines et croyances, enseignant à l'enfant que la diversité spirituelle enrichit notre monde.
-              </p>
-              <p>
-                Cette approche prépare les enfants à vivre dans une société plurielle tout en restant fidèles à leurs propres valeurs. Elle enseigne que l'on peut être profondément enraciné dans sa foi tout en respectant et en appréciant les autres traditions.
-              </p>
-
-              <h3 id="compassion-bienveillance">Compassion et bienveillance</h3>
-              <p>
-                Au cœur de toutes les grandes traditions spirituelles se trouvent des valeurs universelles : la compassion, la justice, la générosité, l'honnêteté et l'amour du prochain. Nos contes personnalisés mettent ces valeurs en action à travers des aventures captivantes où l'enfant apprend par l'expérience narrative.
-              </p>
-              <p>
-                Ces enseignements ne sont jamais présentés de manière moralisatrice, mais intégrés naturellement dans l'intrigue, permettant à l'enfant de découvrir par lui-même la beauté et la pertinence de ces principes spirituels.
-              </p>
-
-              <h2 id="conseils-pratiques">Conseils pratiques pour les parents</h2>
-              <p>
-                Pour maximiser l'impact éducatif et spirituel des contes personnalisés, voici quelques suggestions :
+                Le <strong>conte personnalisé Ramadan</strong> est l'un des plus demandés sur Contedia. L'IA crée une histoire où votre enfant :
               </p>
               <ul>
-                <li><strong>Dialogue ouvert</strong> : Utilisez l'histoire comme point de départ pour des conversations sur la foi</li>
-                <li><strong>Connexion personnelle</strong> : Reliez les aventures du conte aux expériences réelles de votre enfant</li>
-                <li><strong>Pratique régulière</strong> : Intégrez la lecture dans vos rituels familiaux spirituels</li>
-                <li><strong>Adaptation progressive</strong> : Ajustez le niveau de complexité religieuse selon la maturité de l'enfant</li>
+                <li>Découvre la beauté du partage pendant le mois sacré</li>
+                <li>Aide sa famille et ses voisins avec générosité</li>
+                <li>Apprend la patience et la gratitude à travers une aventure</li>
+                <li>Célèbre l'Aïd avec sa famille dans une fête joyeuse</li>
               </ul>
               <p>
-                Les contes personnalisés ne remplacent pas l'éducation religieuse traditionnelle, mais ils la complètent magnifiquement. Ils offrent un espace sûr et joyeux où votre enfant peut explorer sa spiritualité, poser des questions et développer une relation personnelle avec sa foi.
+                <strong>Exemple réel :</strong> Youssef a créé un conte pour sa fille Lina, 4 ans, intitulé « Lina et les étoiles du Ramadan ». Dans l'histoire, Lina découvre que chaque bonne action fait briller une étoile dans le ciel. À la fin du Ramadan, le ciel est rempli d'étoiles — toutes les bonnes actions de Lina. <em>« Ma fille était tellement fière de montrer SON livre à ses cousins pendant l'Aïd »</em>, raconte Youssef.
               </p>
+
+              <h2 id="noel">Contes personnalisés pour Noël chrétien</h2>
               <p>
-                En choisissant d'intégrer vos valeurs religieuses dans les histoires de votre enfant, vous lui offrez un cadeau précieux : la possibilité de grandir avec des racines spirituelles solides tout en développant son imagination et sa créativité. C'est là toute la magie des contes personnalisés respectueux de la foi.
+                Le thème <strong><Link to="/blog/conte-personnalise-noel-cadeau-amoureux-animaux">Noël</Link></strong> est le plus populaire en décembre. Pour les familles chrétiennes, l'IA peut intégrer les valeurs spirituelles de Noël :
+              </p>
+              <ul>
+                <li>L'esprit de don et de générosité</li>
+                <li>La lumière qui guide dans l'obscurité</li>
+                <li>L'amour familial et le partage</li>
+                <li>L'émerveillement et l'espérance</li>
+              </ul>
+              <p>
+                <strong>Exemple réel :</strong> « Timéo et le fruit enchanté de Noël » — Timéo, 4 ans, trouve un fruit lumineux dans le jardin de Mamie et part en aventure au Pôle Nord avec son chien Rex. L'histoire transmet les valeurs de générosité et d'amour familial propres à Noël. <em>« C'est devenu notre tradition : chaque Noël, on crée un nouveau conte »</em>, raconte Mamie Christine.
+              </p>
+
+              <h2 id="autres-fetes">Contes pour Pâques, Hanoukka, Diwali et autres fêtes</h2>
+              <p>
+                Contedia propose des contes adaptés à toutes les grandes <Link to="/blog/fetes-religieuses-conte-personnalise-noel-ramadan-paque-diwali">fêtes religieuses</Link> :
+              </p>
+              <ul>
+                <li><strong>Pâques</strong> — Renouveau, espérance, chasse aux œufs magique avec des valeurs de partage</li>
+                <li><strong>Hanoukka</strong> — La lumière qui triomphe, la persévérance, les miracles quotidiens</li>
+                <li><strong>Diwali</strong> — La victoire de la lumière sur l'obscurité, la joie, la famille</li>
+                <li><strong>Baptême / Communion</strong> — Un conte-souvenir pour célébrer un moment spirituel important</li>
+              </ul>
+              <p>
+                <em>Vous pouvez aussi décrire votre propre fête ou tradition et l'IA créera un conte sur mesure.</em>
               </p>
 
               <div className="article-cta">
-                <Link to="/story-form" className="cta-button">
-                  ✨ Créer un conte respectueux de nos croyances
+                <Link to="/create-story" className="cta-button">
+                  ✨ Choisissez votre fête ou vos valeurs — Premier conte offert
                 </Link>
               </div>
+
+              <h2 id="comment">Comment créer un conte avec des valeurs religieuses en 3 minutes</h2>
+              <ul>
+                <li><strong>1. Choisissez le thème</strong> — Ramadan, Noël, Pâques, anniversaire... ou décrivez votre propre occasion.</li>
+                <li><strong>2. Sélectionnez la religion</strong> — Islam, christianisme, judaïsme, bouddhisme, hindouisme, ou approche laïque. L'IA adapte automatiquement le vocabulaire et les valeurs.</li>
+                <li><strong>3. Personnalisez le héros</strong> — Prénom, âge, photo. Ajoutez la famille comme personnages secondaires.</li>
+                <li><strong>4. C'est prêt</strong> — En 5 minutes, un conte illustré qui transmet vos valeurs avec douceur. Lisez-le ensemble au coucher ou partagez-le avec la famille.</li>
+              </ul>
+              <p>
+                <strong>Premier livre 100% gratuit.</strong> Aucune carte bancaire. Juste vos valeurs et la magie de l'IA.
+              </p>
+
+              <h2 id="temoignages">Ce que les parents en disent</h2>
+              <ul>
+                <li><strong>Fatima, maman d'Adam (5 ans)</strong> — <em>« Pendant le Ramadan, Adam me demandait toujours "pourquoi on ne mange pas ?". J'ai créé un conte où Adam aide sa famille à préparer l'iftar et comprend la beauté du partage. Maintenant il dit "je fais comme dans mon livre !" »</em></li>
+                <li><strong>Marie, maman de Léa (4 ans)</strong> — <em>« Pour Noël, j'ai créé un conte chrétien pour Léa. L'histoire parle de la lumière qui guide et de la générosité. Léa l'a lu avec sa grand-mère le soir du réveillon. Un moment magique. »</em></li>
+                <li><strong>David, papa de Sarah (6 ans)</strong> — <em>« Pour Hanoukka, j'ai créé un conte où Sarah allume les bougies et découvre que chaque flamme représente une qualité. Sarah a adoré et m'a posé plein de questions sur notre tradition. C'est exactement ce que je voulais. »</em></li>
+              </ul>
+
+              <div className="article-cta">
+                <Link to="/create-story" className="cta-button">
+                  ✨ Rejoignez +500 familles — Un conte qui respecte votre foi
+                </Link>
+              </div>
+
+              <h2 id="faq">FAQ : Conte personnalisé et religion — Toutes les réponses</h2>
+
+              {faqQuestions.map((faq, i) => (
+                <React.Fragment key={i}>
+                  <h3>{faq.question}</h3>
+                  <p>{faq.answer}</p>
+                </React.Fragment>
+              ))}
+
+              <p>
+                <em>Découvrez aussi :</em>
+              </p>
+              <ul>
+                <li><Link to="/blog/fetes-religieuses-conte-personnalise-noel-ramadan-paque-diwali">Contes pour Noël, Ramadan, Pâques et Diwali</Link></li>
+                <li><Link to="/blog/transmettre-foi-histoires-contes-personnalises-spiritualite">Transmettre la foi à travers les histoires</Link></li>
+                <li><Link to="/blog/foi-tolerance-ouverture-respect-differentes-religions">Foi, tolérance et respect des différentes religions</Link></li>
+                <li><Link to="/blog/guide-livre-personnalise-enfant-2026">Le guide complet du livre personnalisé enfant</Link></li>
+                <li><Link to="/blog/conte-personnalise-rituel-coucher">Le conte personnalisé comme rituel du coucher</Link></li>
+              </ul>
             </div>
           </div>
 
@@ -195,10 +247,7 @@ const BlogArticle5: React.FC = () => {
               <ul>
                 {tableOfContents.map((item, index) => (
                   <li key={index}>
-                    <button 
-                      onClick={() => handleScrollToSection(item.id)}
-                      className="toc-link"
-                    >
+                    <button onClick={() => handleScrollToSection(item.id)} className="toc-link">
                       {item.title}
                     </button>
                   </li>
