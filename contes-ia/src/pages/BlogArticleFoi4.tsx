@@ -1,174 +1,236 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { PageLayout } from '../components/layout/PageLayout';
 import { SEOHead } from '../components/SEOHead';
-import { SchemaBreadcrumb } from '../components/SchemaMarkup';
-import { Helmet } from 'react-helmet-async';
+import { SchemaFAQ, SchemaBreadcrumb } from '../components/SchemaMarkup';
 import '../styles/BlogArticle.css';
 
 const BlogArticleFoi4: React.FC = () => {
   useEffect(() => {
-    document.title = 'Des héros de foi : inspirer les enfants à travers des personnages spirituels | Contes d\'IA';
-    
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', 'Découvrez comment intégrer des figures inspirantes de différentes traditions religieuses dans les contes personnalisés pour enfants. Des héros spirituels qui guident et inspirent.');
-    }
-
-    const metaKeywords = document.querySelector('meta[name="keywords"]') || document.createElement('meta');
-    metaKeywords.setAttribute('content', 'héros spirituels enfant, personnages religieux conte, figures inspirantes foi, modèles spirituels enfant, conte héros religieux personnalisé');
-    if (!document.querySelector('meta[name="keywords"]')) {
-      document.head.appendChild(metaKeywords);
-    }
+    document.title = 'Votre Enfant, Héros de Foi : Comment un Conte Personnalisé Inspire les Valeurs Spirituelles | Contedia';
   }, []);
 
   const tableOfContents = [
-    { title: "L'importance des modèles spirituels", id: "modeles-spirituels" },
-    { title: "Héros chrétiens : saints et figures bibliques", id: "heros-chretiens" },
-    { title: "Modèles islamiques : prophètes et compagnons", id: "modeles-islamiques" },
-    { title: "Figures juives : patriarches et sages", id: "figures-juives" },
-    { title: "Inspirations orientales : bouddhas et bodhisattvas", id: "inspirations-orientales" },
-    { title: "Adapter les héros à l'âge de l'enfant", id: "adapter-heros" },
-    { title: "Créer votre conte avec des héros spirituels", id: "creer-conte-heros" }
+    { title: "Pourquoi votre enfant a besoin d'être un héros de foi", id: "pourquoi" },
+    { title: "Les qualités héroïques dans chaque tradition", id: "qualites" },
+    { title: "Comment l'enfant-héros incarne les valeurs", id: "comment" },
+    { title: "Exemples de contes où l'enfant est un héros de foi", id: "exemples" },
+    { title: "Par âge : quelles valeurs héroïques ?", id: "par-age" },
+    { title: "Ce que les parents en disent", id: "temoignages" },
+    { title: "FAQ : Enfant héros de foi", id: "faq" },
   ];
 
   const handleScrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
-      element.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start'
-      });
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+  };
+
+  const faqQuestions = [
+    {
+      question: "Comment mon enfant peut-il être un 'héros de foi' dans un conte ?",
+      answer: "Sur Contedia, votre enfant est le personnage principal de l'histoire. L'IA crée un conte où il incarne les valeurs de votre foi : courage, partage, patience, gratitude. Il ne rencontre pas des figures religieuses — il EST le héros qui vit ces valeurs dans son aventure."
+    },
+    {
+      question: "Le conte met-il en scène des prophètes ou des saints ?",
+      answer: "Non. Par respect pour toutes les traditions, Contedia ne représente pas les figures religieuses comme personnages de conte. C'est votre ENFANT qui est le héros. Il incarne les qualités inspirées par sa foi : le courage de David, la patience d'Ayoub, la compassion du Bouddha — sans représenter ces figures directement."
+    },
+    {
+      question: "Quelles qualités héroïques peut incarner mon enfant ?",
+      answer: "Selon votre tradition : courage face aux difficultés, partage avec les démunis, patience dans l'épreuve, gratitude pour les bienfaits, pardon envers ceux qui l'ont blessé, honnêteté même quand c'est difficile. L'IA adapte les défis de l'histoire pour que ces qualités émergent naturellement."
+    },
+    {
+      question: "Est-ce que ça fonctionne sans religion ?",
+      answer: "Oui ! L'approche laïque propose les mêmes qualités héroïques (courage, empathie, honnêteté) sans référence religieuse. Votre enfant est un héros guidé par des valeurs morales universelles."
+    },
+    {
+      question: "À quel âge un enfant comprend-il l'héroïsme spirituel ?",
+      answer: "Dès 3 ans, l'enfant comprend 'j'ai partagé et c'était bien'. À 5-6 ans, il saisit 'j'ai été courageux même quand j'avais peur'. À 7-8 ans, il peut réfléchir sur 'j'ai pardonné même si c'était difficile'. L'IA adapte la complexité à chaque âge."
+    }
+  ];
+
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Votre Enfant, Héros de Foi : Comment un Conte Personnalisé Inspire les Valeurs Spirituelles",
+    "description": "Comment un conte personnalisé transforme votre enfant en héros de foi. Il incarne courage, partage et patience dans sa propre aventure. Premier livre gratuit.",
+    "image": "https://contedia.fr/images/blog/heros-spirituels-conte-enfant.jpg",
+    "author": { "@type": "Organization", "name": "Contedia", "url": "https://contedia.fr" },
+    "publisher": { "@type": "Organization", "name": "Contedia", "logo": { "@type": "ImageObject", "url": "https://contedia.fr/logo-conte-ia.png" } },
+    "datePublished": "2025-11-04",
+    "dateModified": "2026-03-22",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://contedia.fr/blog/heros-foi-inspirer-enfants-personnages-spirituels" }
   };
 
   return (
     <PageLayout>
       <SEOHead
-        title="Des Héros de Foi : Inspirer les Enfants avec des Personnages Spirituels | Contedia"
-        description="Découvrez comment des héros de foi : inspirer les enfants avec des personnages spirituels. Guide complet, conseils pratiques et premier livre gratuit sur Contedia."
+        title="Votre Enfant, Héros de Foi : Conte Personnalisé et Valeurs Spirituelles"
+        description="Votre enfant devient un héros de foi dans son conte personnalisé. Courage, partage, patience : il incarne vos valeurs dans son aventure. Gratuit."
         type="article"
       />
+      <SchemaFAQ questions={faqQuestions} />
       <SchemaBreadcrumb items={[
         { name: "Accueil", url: "https://contedia.fr/" },
         { name: "Blog", url: "https://contedia.fr/blog" },
-        { name: "Des Héros de Foi : Inspirer les Enfants avec des P", url: "https://contedia.fr/blog/heros-foi-inspirer-enfants-personnages-spirituels" }
+        { name: "Enfant héros de foi", url: "https://contedia.fr/blog/heros-foi-inspirer-enfants-personnages-spirituels" }
       ]} />
       <Helmet>
-        <script type="application/ld+json">{`{"@context":"https://schema.org","@type":"Article","headline":"Des Héros de Foi : Inspirer les Enfants avec des Personnages Spirituels","author":{"@type":"Organization","name":"Contedia"},"publisher":{"@type":"Organization","name":"Contedia"},"dateModified":"2026-03-22"}`}</script>
+        <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>
       </Helmet>
+
       <div className="article-container">
         <div className="article-breadcrumb">
-          <Link to="/blog">Blog</Link> / Des héros de foi : inspirer les enfants à travers des personnages spirituels
+          <Link to="/blog">Blog</Link> / Votre enfant, héros de foi
         </div>
 
         <div className="article-layout">
           <div className="article-main">
             <div className="article-header">
-              <h1>Des héros de foi : inspirer les enfants à travers des personnages spirituels dans leurs histoires personnalisées</h1>
+              <h1>Votre Enfant, Héros de Foi : Comment un Conte Personnalisé Inspire les Valeurs Spirituelles</h1>
               <div className="article-meta">
-                <span>Par l'équipe Contedia · Mis à jour le 22 mars 2026</span>
+                <span>Par l'équipe Contedia · Mis à jour le 22 mars 2026 · 8 min de lecture</span>
               </div>
             </div>
 
             <div className="article-image">
               <img
                 src="/images/blog/heros-spirituels-conte-enfant.jpg"
-                alt="Enfant découvrant des héros spirituels inspirants dans un livre personnalisé"
+                alt="Enfant courageux dans un conte personnalisé, incarnant les valeurs de foi et de partage"
                 loading="lazy"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.src = '/images/placeholder-blog.jpg';
-                }}
+                onError={(e) => { const target = e.target as HTMLImageElement; target.src = '/images/placeholder-blog.jpg'; }}
               />
             </div>
 
             <div className="article-content">
               <p className="article-intro">
-                Depuis toujours, les héros spirituels inspirent et guident l'humanité par leurs exemples de courage, de compassion et de sagesse. Comment transmettre cette richesse à nos enfants ? Les contes personnalisés permettent de faire rencontrer à votre enfant ces figures inspirantes de sa tradition, créant des liens profonds avec son héritage spirituel.
+                <strong>Adam, 5 ans, a partagé son goûter avec un enfant qui n'en avait pas.</strong> Sa maman lui a demandé pourquoi. Il a répondu : <em>« Parce que dans mon livre, Adam il partage et ça rend les gens heureux. »</em> C'est ça, un <strong>héros de foi</strong> : pas une figure religieuse lointaine, mais VOTRE enfant qui incarne les valeurs de votre tradition dans sa propre histoire. Sur <strong>Contedia</strong>, votre enfant ne rencontre pas des saints ou des prophètes — il DEVIENT le héros qui vit ces valeurs. Et le premier conte est gratuit.
               </p>
 
-              <h2 id="modeles-spirituels">L'importance des modèles spirituels</h2>
+              <h2 id="pourquoi">Pourquoi votre enfant a besoin d'être un héros de foi</h2>
               <p>
-                Les enfants apprennent naturellement par imitation et identification. Les héros spirituels offrent des modèles positifs qui incarnent les valeurs les plus nobles de chaque tradition. Dans un conte personnalisé, votre enfant peut rencontrer ces figures inspirantes, apprendre de leur sagesse et s'inspirer de leur exemple pour développer sa propre spiritualité.
+                Les enfants n'apprennent pas les valeurs par les discours. Ils apprennent par <strong>l'identification</strong>. Quand un enfant LIT que « le petit garçon était courageux », il pense « c'est un personnage ». Quand il lit que « <strong>Adam</strong> a rassemblé son courage et a traversé la forêt pour aider son ami », il pense « c'est MOI qui ai fait ça ».
               </p>
-              <p>
-                Ces modèles spirituels ne sont pas des figures lointaines et inaccessibles, mais des compagnons de route qui accompagnent l'enfant dans ses questionnements et ses découvertes. Ils montrent que la sainteté et la sagesse sont des chemins ouverts à tous, adaptés à chaque âge et chaque situation de vie.
-              </p>
-              <p>
-                L'identification à ces héros spirituels permet à l'enfant de développer sa confiance en ses propres capacités morales et spirituelles, comprenant qu'il peut, lui aussi, faire des choix nobles et contribuer positivement au monde qui l'entoure.
-              </p>
-
-              <h2 id="heros-chretiens">Héros chrétiens : saints et figures bibliques</h2>
-              <p>
-                La tradition chrétienne regorge de figures inspirantes parfaitement adaptées aux enfants. Saint François d'Assise et son amour inconditionnel des animaux et de la nature peuvent guider votre enfant dans des aventures écologiques où la protection de la création devient une mission sacrée.
-              </p>
-              <p>
-                Sainte Thérèse de Lisieux et sa "petite voie" d'amour et de simplicité montrent aux enfants que la sainteté se trouve dans les petits gestes quotidiens de bonté et de générosité. Les apôtres, avec leur courage face aux difficultés, inspirent des récits d'aventure où la foi triomphe des obstacles.
-              </p>
-              <p>
-                Ces personnages peuvent également inclure des figures bibliques comme David le berger devenu roi, montrant que Dieu choisit souvent les plus humbles pour accomplir de grandes choses, ou Daniel dans la fosse aux lions, illustrant la protection divine pour ceux qui restent fidèles à leurs convictions.
-              </p>
-
-              <h2 id="modeles-islamiques">Modèles islamiques : prophètes et compagnons</h2>
-              <p>
-                L'Islam offre une richesse extraordinaire de modèles de vertu adaptés aux contes pour enfants. La patience légendaire du prophète Ayoub (Job) face aux épreuves peut inspirer des histoires où votre enfant apprend à persévérer dans les difficultés avec foi et dignité.
-              </p>
-              <p>
-                La sagesse de Luqman, mentionnée dans le Coran, offre des enseignements précieux sur l'éducation, la gratitude et la relation avec Allah. Les compagnons du Prophète, comme Abu Bakr et sa loyauté indéfectible, ou Omar et sa justice exemplaire, peuvent guider votre enfant dans des aventures où les valeurs islamiques fondamentales prennent vie.
-              </p>
-              <p>
-                Ces récits peuvent également mettre en scène des figures féminines inspirantes comme Khadija, la première épouse du Prophète et femme d'affaires respectée, ou Aisha, reconnue pour son intelligence et son savoir, montrant aux enfants que l'Islam honore autant les hommes que les femmes dans leur quête spirituelle.
-              </p>
-
-              <h2 id="figures-juives">Figures juives : patriarches et sages</h2>
-              <p>
-                La tradition juive présente des héros d'une richesse narrative exceptionnelle. Abraham et sa foi inébranlable peuvent inspirer des contes sur la confiance en Dieu et l'hospitalité envers les étrangers. Moïse et son leadership lors de l'Exode offrent des récits sur le courage de défendre la justice et la liberté.
-              </p>
-              <p>
-                Les sages du Talmud, avec leurs débats respectueux et leur recherche constante de la vérité, peuvent guider votre enfant dans des aventures intellectuelles où l'étude et la réflexion deviennent des quêtes passionnantes. Rabbi Hillel et sa règle d'or, ou Rabbi Akiva et son amour de l'apprentissage, offrent des modèles de sagesse accessible aux jeunes esprits.
-              </p>
-              <p>
-                Ces personnages peuvent également inclure des figures comme Esther, qui sauva son peuple par son courage et sa sagesse, ou Ruth, dont la loyauté et la bonté transcendent les différences culturelles, enseignant aux enfants des valeurs universelles d'amour et de fidélité.
-              </p>
-
-              <h2 id="inspirations-orientales">Inspirations orientales : bouddhas et bodhisattvas</h2>
-              <p>
-                Les traditions orientales offrent des figures de compassion et de sagesse particulièrement inspirantes pour les enfants. Le Bouddha et son enseignement de la bienveillance universelle peuvent guider votre enfant dans des aventures où la méditation, la paix intérieure et la compassion envers tous les êtres vivants deviennent des super-pouvoirs spirituels.
-              </p>
-              <p>
-                Les bodhisattvas, ces êtres éveillés qui renoncent au nirvana pour aider tous les êtres à atteindre l'éveil, offrent des modèles extraordinaires de dévouement altruiste. Avalokiteshvara, le bodhisattva de la compassion, ou Manjushri, celui de la sagesse, peuvent accompagner votre enfant dans des quêtes où l'aide aux autres devient la plus noble des aventures.
-              </p>
-              <p>
-                Ces récits peuvent également intégrer des enseignements du taoïsme avec Lao Tseu et sa philosophie de l'harmonie naturelle, ou du confucianisme avec Confucius et ses valeurs de respect, d'éducation et de piété filiale.
-              </p>
-
-              <h2 id="adapter-heros">Adapter les héros à l'âge de l'enfant</h2>
-              <p>
-                Chaque âge nécessite une approche différente dans la présentation des héros spirituels. Les tout-petits de 3 à 5 ans apprécient les aspects bienveillants et protecteurs de ces figures : saint François parlant aux oiseaux, le Bouddha souriant aux enfants, ou Moïse guidant son peuple vers la liberté.
-              </p>
-              <p>
-                Les enfants de 6 à 9 ans peuvent comprendre des enseignements moraux plus complexes : les choix difficiles d'Esther pour sauver son peuple, la patience d'Ayoub face aux épreuves, ou le courage des apôtres face aux persécutions. Ces récits les aident à développer leur sens moral et leur capacité à faire des choix éthiques.
-              </p>
-              <p>
-                Les préadolescents de 10 à 12 ans sont prêts pour des histoires explorant les dimensions philosophiques et théologiques plus profondes : les questionnements spirituels du Bouddha, les débats des sages du Talmud, ou les mystiques chrétiens et leur quête de l'union divine.
-              </p>
-
-              <h2 id="creer-conte-heros">Créer votre conte avec des héros spirituels</h2>
-              <p>
-                Un conte personnalisé peut faire de votre enfant le compagnon d'aventure de ces héros spirituels, apprenant à leurs côtés et s'inspirant de leur exemple pour grandir dans la foi et la sagesse. Cette approche narrative transforme l'éducation religieuse en expérience vivante et mémorable.
-              </p>
-              <p>
-                L'enfant ne se contente pas d'entendre parler de ces figures inspirantes : il voyage avec elles, partage leurs défis, découvre leurs motivations profondes et comprend comment leurs enseignements peuvent s'appliquer à sa propre vie quotidienne.
-              </p>
-              <p>
-                Cette méthode respecte la curiosité naturelle de l'enfant tout en nourrissant son développement spirituel, créant des liens durables entre les valeurs traditionnelles et l'expérience contemporaine de la foi.</p>
+              <ul>
+                <li><strong>L'intériorisation</strong> — « J'ai partagé » vs « il faut partager ». La première phrase change un comportement. La deuxième est oubliée en 5 minutes.</li>
+                <li><strong>La fierté</strong> — L'enfant est FIER d'être le héros courageux de son histoire. Cette fierté le motive à reproduire ces comportements dans la vraie vie.</li>
+                <li><strong>La répétition</strong> — Il relit son conte 20 fois. Chaque relecture renforce les valeurs. Sans effort, sans résistance, sans leçon de morale.</li>
+                <li><strong>Le modèle interne</strong> — L'enfant construit une image de lui-même comme « quelqu'un de courageux et généreux ». Cette image guide ses choix futurs.</li>
+              </ul>
 
               <div className="article-cta">
                 <Link to="/create-story" className="cta-button">
-                  ⭐ Créer notre conte avec des héros spirituels
+                  ✨ Faites de votre enfant un héros de foi — Premier conte gratuit
                 </Link>
               </div>
+
+              <h2 id="qualites">Les qualités héroïques dans chaque tradition</h2>
+              <p>
+                Sur <Link to="/blog/integrer-valeurs-religieuses-contes-personnalises">Contedia</Link>, l'IA crée un conte où votre enfant incarne les qualités centrales de votre foi :
+              </p>
+
+              <h3>Tradition musulmane</h3>
+              <ul>
+                <li><strong>La patience (sabr)</strong> — L'enfant-héros attend avec confiance et découvre que la patience est récompensée</li>
+                <li><strong>La générosité (sadaqa)</strong> — L'enfant partage ce qu'il a et fait briller les cœurs autour de lui</li>
+                <li><strong>La gratitude (shukr)</strong> — L'enfant remercie pour chaque bienfait et voit la beauté partout</li>
+                <li><strong>La confiance en Allah (tawakkul)</strong> — L'enfant avance malgré la peur, sachant qu'il est guidé</li>
+              </ul>
+
+              <h3>Tradition chrétienne</h3>
+              <ul>
+                <li><strong>L'amour du prochain</strong> — L'enfant-héros aide un inconnu et découvre la joie du service</li>
+                <li><strong>Le pardon</strong> — L'enfant pardonne à celui qui l'a blessé et trouve la paix intérieure</li>
+                <li><strong>L'espérance</strong> — Même dans les moments sombres, l'enfant garde la lumière en lui</li>
+                <li><strong>L'humilité</strong> — L'enfant découvre que les plus petits gestes ont le plus grand impact</li>
+              </ul>
+
+              <h3>Tradition juive</h3>
+              <ul>
+                <li><strong>La justice (tsedek)</strong> — L'enfant-héros défend ce qui est juste, même quand c'est difficile</li>
+                <li><strong>La sagesse (hokhmah)</strong> — L'enfant réfléchit avant d'agir et trouve la meilleure solution</li>
+                <li><strong>La transmission</strong> — L'enfant reçoit un savoir précieux et le partage à son tour</li>
+              </ul>
+
+              <h3>Traditions bouddhiste, hindouiste et laïque</h3>
+              <ul>
+                <li><strong>Bouddhisme</strong> : compassion universelle, sérénité face aux difficultés, respect de tous les êtres</li>
+                <li><strong>Hindouisme</strong> : dharma (devoir), respect des anciens, joie de la célébration</li>
+                <li><strong>Laïque</strong> : courage, empathie, honnêteté, solidarité — sans référence religieuse</li>
+              </ul>
+
+              <h2 id="comment">Comment l'enfant-héros incarne les valeurs dans le conte</h2>
+              <p>
+                L'IA de Contedia ne fait pas de leçon de morale. Elle crée des <strong>situations narratives</strong> où les valeurs émergent naturellement :
+              </p>
+              <ul>
+                <li><strong>Le défi</strong> — L'enfant rencontre un obstacle qui nécessite du courage, du partage ou de la patience</li>
+                <li><strong>Le choix</strong> — L'enfant-héros fait le bon choix, non parce qu'on lui dit, mais parce que c'est ce que son cœur lui dicte</li>
+                <li><strong>La conséquence positive</strong> — Le choix courageux/généreux/patient mène à un résultat heureux pour tous</li>
+                <li><strong>L'écho</strong> — L'enfant peut relier l'aventure à sa propre vie (« c'est comme quand j'ai partagé mon goûter ! »)</li>
+              </ul>
+              <p>
+                Résultat : l'enfant ne retient pas « il faut être courageux ». Il retient « <strong>MOI j'ai été courageux et ça a sauvé la situation</strong> ».
+              </p>
+
+              <div className="article-cta">
+                <Link to="/create-story" className="cta-button">
+                  ✨ Quelles valeurs pour votre héros ? — Testez gratuitement
+                </Link>
+              </div>
+
+              <h2 id="exemples">Exemples de contes où l'enfant est un héros de foi</h2>
+              <ul>
+                <li><strong>« Lina et les étoiles du Ramadan »</strong> — Lina, 4 ans, découvre que chaque bonne action fait briller une étoile. Elle partage, aide, remercie — et à la fin du Ramadan, le ciel est rempli de SES étoiles. Valeurs : générosité, patience, gratitude. <Link to="/exemples">Lire l'exemple</Link>.</li>
+                <li><strong>« Noé et la lumière de Noël »</strong> — Noé, 6 ans, suit une lumière dorée qui le guide vers un enfant perdu et effrayé. Il le réconforte, le ramène chez lui, et comprend que la vraie lumière de Noël vient du cœur. Valeurs : amour, service, espérance.</li>
+                <li><strong>« Sarah et les bougies d'Hanoukka »</strong> — Sarah, 7 ans, allume les bougies et découvre que chaque flamme représente une qualité qu'elle possède déjà : courage, sagesse, bonté. Valeurs : persévérance, lumière intérieure, <Link to="/blog/conte-personnalise-confiance-imagination-enfant">confiance en soi</Link>.</li>
+                <li><strong>« Jade et le jardin de la patience »</strong> — Jade, 5 ans (approche laïque), plante une graine et apprend que les plus belles choses prennent du temps. Elle résiste à l'envie d'arracher la graine et découvre une fleur extraordinaire. Valeurs : patience, persévérance, émerveillement.</li>
+              </ul>
+
+              <h2 id="par-age">Par âge : quelles valeurs héroïques ?</h2>
+              <ul>
+                <li><strong>3-4 ans</strong> — <strong>Partager</strong> (donner un jouet, un gâteau) et <strong>remercier</strong> (dire merci pour la nature, la famille). Aventures simples, résolutions immédiates.</li>
+                <li><strong>5-6 ans</strong> — <strong>Le courage</strong> (aider quelqu'un malgré la peur) et <strong>la bonté</strong> (consoler un ami triste). L'enfant commence à comprendre que « faire le bien » demande parfois un effort.</li>
+                <li><strong>7-8 ans</strong> — <strong>Le pardon</strong> (laisser aller une blessure) et <strong>la justice</strong> (défendre ce qui est juste). L'enfant peut réfléchir à des dilemmes moraux adaptés à son âge.</li>
+              </ul>
+              <p>
+                Sur Contedia, sélectionnez la tranche d'âge et l'IA adapte automatiquement la complexité des défis moraux. Un enfant de 3 ans partage un gâteau. Un enfant de 8 ans pardonne à un ami qui l'a trahi.
+              </p>
+
+              <h2 id="temoignages">Ce que les parents en disent</h2>
+              <ul>
+                <li><strong>Khadija, maman d'Adam (5 ans)</strong> — <em>« Adam a partagé son goûter le lendemain de la lecture. Quand je lui ai demandé pourquoi, il a dit "parce que dans mon livre, Adam il partage". Le conte a fait en une soirée ce que mes explications n'ont pas réussi en un an. »</em></li>
+                <li><strong>Anne, maman d'Emma (7 ans)</strong> — <em>« Emma a eu un conflit avec sa meilleure amie. Le soir, on a lu son conte où Emma pardonne. Le lendemain, elle est allée voir son amie et a dit "je te pardonne". J'ai pleuré. »</em></li>
+                <li><strong>Rachid, papa de Youssef (6 ans)</strong> — <em>« Le conte de Ramadan a transformé le rapport de Youssef au jeûne. Avant, il voyait ça comme une privation. Maintenant il dit "je suis comme dans mon livre, je suis patient et ça rend les gens heureux". »</em></li>
+              </ul>
+
+              <div className="article-cta">
+                <Link to="/create-story" className="cta-button">
+                  ✨ Rejoignez +500 familles — Votre enfant, héros de ses valeurs
+                </Link>
+              </div>
+
+              <h2 id="faq">FAQ : Enfant héros de foi dans un conte personnalisé</h2>
+
+              {faqQuestions.map((faq, i) => (
+                <React.Fragment key={i}>
+                  <h3>{faq.question}</h3>
+                  <p>{faq.answer}</p>
+                </React.Fragment>
+              ))}
+
+              <p>
+                <em>Découvrez aussi :</em>
+              </p>
+              <ul>
+                <li><Link to="/blog/integrer-valeurs-religieuses-contes-personnalises">Comment personnaliser la religion dans un conte</Link></li>
+                <li><Link to="/blog/transmettre-foi-histoires-contes-personnalises-spiritualite">Transmettre la foi par les histoires : guide par âge</Link></li>
+                <li><Link to="/blog/personnaliser-foi-ia-adapte-valeurs-religieuses">Comment l'IA respecte votre religion</Link></li>
+                <li><Link to="/blog/foi-tolerance-ouverture-respect-differentes-religions">Foi, tolérance et respect des différences</Link></li>
+                <li><Link to="/blog/enfant-heros-propre-histoire">Pourquoi les enfants adorent être le héros</Link></li>
+              </ul>
             </div>
           </div>
 
@@ -178,10 +240,7 @@ const BlogArticleFoi4: React.FC = () => {
               <ul>
                 {tableOfContents.map((item, index) => (
                   <li key={index}>
-                    <button 
-                      onClick={() => handleScrollToSection(item.id)}
-                      className="toc-link"
-                    >
+                    <button onClick={() => handleScrollToSection(item.id)} className="toc-link">
                       {item.title}
                     </button>
                   </li>
