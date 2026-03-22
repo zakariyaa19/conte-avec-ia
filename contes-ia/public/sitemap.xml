@@ -112,6 +112,13 @@
     <priority>0.8</priority>
   </url>
 
+  <url>
+    <loc>https://contedia.fr/blog/livre-conte-personnalise-histoire-unique-enfant</loc>
+    <lastmod>2026-03-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
   <!-- ══════ BLOG — Articles animaux (cluster performant) ══════ -->
   <url>
     <loc>https://contedia.fr/blog/histoire-animal-compagnie-livre-personnalise</loc>

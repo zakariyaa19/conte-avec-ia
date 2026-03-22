@@ -58,6 +58,7 @@ import BlogArticleNouveau10 from './pages/BlogArticleNouveau10';
 import BlogArticleSEO1 from './pages/BlogArticleSEO1';
 import BlogArticleSEO2 from './pages/BlogArticleSEO2';
 import BlogArticleSEO3 from './pages/BlogArticleSEO3';
+import BlogArticleSEO4 from './pages/BlogArticleSEO4';
 import { MentionsLegalesPage } from './pages/MentionsLegalesPage';
 import { PolitiqueConfidentialitePage } from './pages/PolitiqueConfidentialitePage';
 import ScrollToTop from './components/utils/ScrollToTop';
@@ -149,6 +150,7 @@ function App() {
           <Route path="/blog/guide-livre-personnalise-enfant-2026" element={<BlogArticleSEO1 />} />
           <Route path="/blog/meilleurs-livres-personnalises-enfants-comparatif-2026" element={<BlogArticleSEO2 />} />
           <Route path="/blog/conteuse-personnalisable-alternative-numerique-2026" element={<BlogArticleSEO3 />} />
+          <Route path="/blog/livre-conte-personnalise-histoire-unique-enfant" element={<BlogArticleSEO4 />} />
           {/* Pages légales */}
           <Route path="/mentions-legales" element={<MentionsLegalesPage />} />
           <Route path="/politique-confidentialite" element={<PolitiqueConfidentialitePage />} />
