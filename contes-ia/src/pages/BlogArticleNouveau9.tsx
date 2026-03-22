@@ -24,7 +24,7 @@ const BlogArticleNouveau9: React.FC = () => {
     { title: "L'alliance entre technologie et créativité", id: "alliance-technologie" },
     { title: "Étape 1 : Collecte des informations personnelles", id: "collecte-informations" },
     { title: "Étape 2 : Analyse et traitement par l'IA", id: "analyse-traitement" },
-    { title: "Étape 3 : Génération créative de l'histoire", id: "generation-creative" },
+    { title: "Étape 3 : Génération créative de l'histoire", id: "génération-creative" },
     { title: "Étape 4 : Personnalisation visuelle et illustrations", id: "personnalisation-visuelle" },
     { title: "Étape 5 : Révision et optimisation", id: "revision-optimisation" },
     { title: "Contrôle qualité et validation finale", id: "controle-qualite" },
@@ -107,7 +107,7 @@ const BlogArticleNouveau9: React.FC = () => {
                 Le système prend également en compte l'âge de développement de l'enfant pour adapter le vocabulaire, la complexité narrative, et les thèmes abordés. Cette adaptation fine garantit que l'histoire sera parfaitement accessible et captivante pour le jeune lecteur.
               </p>
 
-              <h2 id="generation-creative">Étape 3 : Génération créative de l'histoire</h2>
+              <h2 id="génération-creative">Étape 3 : Génération créative de l'histoire</h2>
               <p>
                 L'étape de génération créative représente le cœur de notre processus. Notre IA créative, entraînée sur des milliers d'histoires pour enfants de qualité, génère un récit original qui intègre harmonieusement tous les éléments personnels de l'enfant. Cette génération ne consiste pas en un simple assemblage de templates, mais en une véritable création narrative adaptée.
               </p>

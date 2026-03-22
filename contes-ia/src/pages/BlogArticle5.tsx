@@ -62,7 +62,7 @@ const BlogArticle5: React.FC = () => {
 
             <div className="article-image">
               <img
-                src="/images/blog/religion-contes-personnalises.jpg"
+                src="/images/blog/religion-contes-personnalisés.jpg"
                 alt="Famille diverse lisant ensemble un livre personnalisé"
                 loading="lazy"
                 onError={(e) => {

@@ -20,7 +20,7 @@ const BlogArticle2: React.FC = () => {
   }, []);
 
   const tableOfContents = [
-    { title: "Créer des héros personnalisés uniques", id: "heros-personnalises" },
+    { title: "Créer des héros personnalisés uniques", id: "heros-personnalisés" },
     { title: "Les univers illustrés qui captivent", id: "univers-illustres" },
     { title: "Styles artistiques pour tous les goûts", id: "styles-artistiques" },
     { title: "Histoires adaptées aux adolescents", id: "histoires-ados" },
@@ -58,7 +58,7 @@ const BlogArticle2: React.FC = () => {
 
             <div className="article-image">
               <img
-                src="/images/blog/enfant-lecture-personnalisee.jpg"
+                src="/images/blog/enfant-lecture-personnalisée.jpg"
                 alt="Petite fille lisant un livre coloré personnalisé"
                 loading="lazy"
                 onError={(e) => {
@@ -73,7 +73,7 @@ const BlogArticle2: React.FC = () => {
                 L'univers des contes personnalisés évolue constamment pour offrir à vos enfants des expériences de lecture toujours plus captivantes. Découvrez comment créer des héros uniques, explorer des univers illustrés époustouflants et adapter vos histoires aux goûts des adolescents. Plongez dans un monde où chaque conte devient une aventure sur mesure inoubliable.
               </p>
 
-              <h2 id="heros-personnalises">Créer des héros personnalisés uniques</h2>
+              <h2 id="heros-personnalisés">Créer des héros personnalisés uniques</h2>
               <p>
                 Fini les héros génériques ! Aujourd'hui, votre enfant peut devenir le protagoniste principal d'une histoire conçue spécialement pour lui. Mais la personnalisation va bien au-delà du simple changement de nom. Nous créons des héros qui reflètent véritablement la personnalité, les passions et même l'apparence physique de votre enfant.
               </p>

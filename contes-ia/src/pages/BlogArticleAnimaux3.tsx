@@ -24,7 +24,7 @@ const BlogArticleAnimaux3: React.FC = () => {
     { title: "Comment l'IA analyse votre animal", id: "analyse-animal" },
     { title: "De la reconnaissance à la création", id: "reconnaissance-creation" },
     { title: "Les défis techniques surmontés", id: "defis-techniques" },
-    { title: "Personnaliser selon la personnalité", id: "personnaliser-personnalite" },
+    { title: "Personnalisér selon la personnalité", id: "personnaliser-personnalite" },
     { title: "Les styles artistiques disponibles", id: "styles-artistiques" },
     { title: "Optimiser vos photos pour de meilleurs résultats", id: "optimiser-photos" },
     { title: "L'avenir de la création personnalisée", id: "avenir-creation" }
@@ -108,7 +108,7 @@ const BlogArticleAnimaux3: React.FC = () => {
                 Le second défi porte sur l'expression émotionnelle. L'IA doit interpréter et adapter les expressions naturelles de votre animal aux émotions requises par l'histoire : joie, surprise, détermination, ou tendresse. Cette adaptation préserve la personnalité authentique de votre compagnon.
               </p>
 
-              <h3 id="personnaliser-personnalite">Personnaliser selon la personnalité</h3>
+              <h3 id="personnaliser-personnalite">Personnalisér selon la personnalité</h3>
               <p>
                 Au-delà de l'apparence physique, l'IA intègre des éléments de personnalité décrits par les propriétaires. Un chien joueur sera représenté avec des postures dynamiques et des expressions joyeuses, tandis qu'un chat indépendant adoptera des poses plus majestueuses et mystérieuses.
               </p>

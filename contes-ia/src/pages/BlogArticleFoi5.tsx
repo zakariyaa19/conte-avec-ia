@@ -23,7 +23,7 @@ const BlogArticleFoi5: React.FC = () => {
     { title: "L'importance de la tolérance religieuse", id: "importance-tolerance" },
     { title: "Enseigner le respect des différences", id: "enseigner-respect" },
     { title: "Découvrir la richesse des autres traditions", id: "richesse-traditions" },
-    { title: "Créer des ponts entre les communautés", id: "ponts-communautes" },
+    { title: "Créer des ponts entre les communautés", id: "ponts-communautés" },
     { title: "Développer l'empathie spirituelle", id: "empathie-spirituelle" },
     { title: "Célébrer l'unité dans la diversité", id: "unite-diversite" },
     { title: "Créer votre conte de tolérance", id: "conte-tolerance" }
@@ -105,7 +105,7 @@ const BlogArticleFoi5: React.FC = () => {
                 Les contes peuvent également explorer les arts, la musique, l'architecture et les traditions culinaires liées à chaque religion, montrant comment la foi inspire la créativité humaine sous toutes ses formes.
               </p>
 
-              <h2 id="ponts-communautes">Créer des ponts entre les communautés</h2>
+              <h2 id="ponts-communautés">Créer des ponts entre les communautés</h2>
               <p>
                 Les histoires ont le pouvoir unique de créer des liens entre les personnes et les communautés. Un conte personnalisé peut montrer votre enfant collaborant avec des amis de différentes confessions pour résoudre des défis communs, illustrant concrètement l'importance et la beauté de la coopération interreligieuse.
               </p>

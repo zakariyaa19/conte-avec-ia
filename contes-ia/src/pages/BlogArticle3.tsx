@@ -22,7 +22,7 @@ const BlogArticle3: React.FC = () => {
   const tableOfContents = [
     { title: "La magie éternelle des contes de fées", id: "magie-eternelle" },
     { title: "Pourquoi les enfants adorent les histoires magiques", id: "enfants-adorent-magie" },
-    { title: "Les aventures personnalisées : une nouvelle féerie", id: "aventures-personnalisees" },
+    { title: "Les aventures personnalisées : une nouvelle féerie", id: "aventures-personnalisées" },
     { title: "Créer des châteaux et des royaumes sur mesure", id: "chateaux-royaumes" },
     { title: "Votre enfant, prince ou princesse de son conte", id: "enfant-prince-princesse" },
     { title: "Les créatures magiques personnalisées", id: "creatures-magiques" },
@@ -93,7 +93,7 @@ const BlogArticle3: React.FC = () => {
                 Cette évasion vers le merveilleux stimule leur créativité et leur permet d'explorer des émotions complexes dans un cadre sécurisant. La magie devient un langage universel qui parle directement à leur cœur d'enfant.
               </p>
 
-              <h2 id="aventures-personnalisees">Les aventures personnalisées : une nouvelle féerie</h2>
+              <h2 id="aventures-personnalisées">Les aventures personnalisées : une nouvelle féerie</h2>
               <p>
                 Les contes de fées personnalisés révolutionnent l'expérience de lecture en plaçant votre enfant au centre de l'histoire. Imaginez sa surprise et sa joie lorsqu'il découvre qu'il est le prince ou la princesse du récit, avec son visage illustré dans chaque page !
               </p>

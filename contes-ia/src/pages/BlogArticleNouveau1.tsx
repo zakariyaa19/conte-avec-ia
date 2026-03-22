@@ -24,7 +24,7 @@ const BlogArticleNouveau1: React.FC = () => {
     { title: "Le livre personnalisé : révolution de la lecture enfantine", id: "revolution-lecture" },
     { title: "Les bienfaits uniques du livre personnalisé", id: "bienfaits-uniques" },
     { title: "Pourquoi 2026 est l'année du livre personnalisé", id: "annee-2026" },
-    { title: "Impact sur le développement cognitif et émotionnel", id: "impact-developpement" },
+    { title: "Impact sur le développement cognitif et émotionnel", id: "impact-développement" },
     { title: "Un cadeau qui grandit avec l'enfant", id: "cadeau-evolutif" },
     { title: "La personnalisation : bien plus qu'un simple nom", id: "personnalisation-complete" },
     { title: "Témoignages de parents et d'enfants", id: "témoignages" },
@@ -107,7 +107,7 @@ const BlogArticleNouveau1: React.FC = () => {
                 En 2026, nous assistons également à une évolution des attentes éducatives. Les parents ne cherchent plus seulement à divertir leurs enfants, mais à leur offrir des expériences enrichissantes qui contribuent à leur épanouissement personnel. Le livre personnalisé répond parfaitement à cette double exigence.
               </p>
 
-              <h2 id="impact-developpement">Impact sur le développement cognitif et émotionnel</h2>
+              <h2 id="impact-développement">Impact sur le développement cognitif et émotionnel</h2>
               <p>
                 L'impact du livre personnalisé sur le développement cognitif est remarquable. La personnalisation crée des connexions neuronales plus fortes car l'information est associée à des éléments familiers et significatifs pour l'enfant. Cette association facilite la mémorisation et améliore la rétention des apprentissages.
               </p>

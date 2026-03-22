@@ -5,7 +5,7 @@ import '../styles/BlogArticle.css';
 
 const BlogArticleFoi3: React.FC = () => {
   useEffect(() => {
-    document.title = 'Personnaliser la foi : quand l\'IA s\'adapte à vos valeurs religieuses | Contes d\'IA';
+    document.title = 'Personnalisér la foi : quand l\'IA s\'adapte à vos valeurs religieuses | Contes d\'IA';
     
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
@@ -26,7 +26,7 @@ const BlogArticleFoi3: React.FC = () => {
     { title: "Intégrer les valeurs familiales spécifiques", id: "valeurs-familiales" },
     { title: "Créer des personnages authentiques", id: "personnages-authentiques" },
     { title: "L'importance de la sensibilité culturelle", id: "sensibilite-culturelle" },
-    { title: "Personnaliser selon votre foi", id: "personnaliser-foi" }
+    { title: "Personnalisér selon votre foi", id: "personnaliser-foi" }
   ];
 
   const handleScrollToSection = (id: string) => {
@@ -43,13 +43,13 @@ const BlogArticleFoi3: React.FC = () => {
     <PageLayout>
       <div className="article-container">
         <div className="article-breadcrumb">
-          <Link to="/blog">Blog</Link> / Personnaliser la foi : quand l'IA s'adapte à vos valeurs religieuses
+          <Link to="/blog">Blog</Link> / Personnalisér la foi : quand l'IA s'adapte à vos valeurs religieuses
         </div>
 
         <div className="article-layout">
           <div className="article-main">
             <div className="article-header">
-              <h1>Personnaliser la foi : quand l'IA s'adapte à vos valeurs religieuses</h1>
+              <h1>Personnalisér la foi : quand l'IA s'adapte à vos valeurs religieuses</h1>
               <div className="article-meta">
                 <span>Dernière mise à jour le 04-11-2025</span>
               </div>
@@ -138,7 +138,7 @@ const BlogArticleFoi3: React.FC = () => {
                 Elle prend également en compte les contextes géographiques et historiques qui influencent l'expression de chaque foi, créant des récits qui résonnent avec l'expérience spirituelle contemporaine des familles.
               </p>
 
-              <h2 id="personnaliser-foi">Personnaliser selon votre foi</h2>
+              <h2 id="personnaliser-foi">Personnalisér selon votre foi</h2>
               <p>
                 Créer un conte spirituel personnalisé commence par un dialogue respectueux où vous partagez vos valeurs et traditions familiales. L'IA utilise ces informations précieuses pour tisser une histoire unique qui honore votre foi tout en captivant l'imagination de votre enfant.
               </p>

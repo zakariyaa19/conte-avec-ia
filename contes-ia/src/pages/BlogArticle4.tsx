@@ -21,16 +21,16 @@ const BlogArticle4: React.FC = () => {
   }, []);
 
   const tableOfContents = [
-    { title: "L'IA au service de la créativité narrative", id: "ia-creativite" },
-    { title: "Génération automatique d'histoires cohérentes", id: "generation-automatique" },
+    { title: "L'IA au service de la créativité narrative", id: "ia-créativité" },
+    { title: "Génération automatique d'histoires cohérentes", id: "génération-automatique" },
     { title: "Personnalisation intelligente du contenu", id: "personnalisation-intelligente" },
     { title: "Les technologies derrière la magie", id: "technologies-magie" },
     { title: "Traitement du langage naturel avancé", id: "traitement-langage" },
-    { title: "Génération d'images par IA", id: "generation-images" },
+    { title: "Génération d'images par IA", id: "génération-images" },
     { title: "Apprentissage automatique et adaptation", id: "apprentissage-adaptation" },
     { title: "Avantages de l'IA pour les jeunes lecteurs", id: "avantages-lecteurs" },
-    { title: "Accessibilité et inclusion", id: "accessibilite-inclusion" },
-    { title: "Créativité sans limites", id: "creativite-limites" },
+    { title: "Accessibilité et inclusion", id: "accessibilité-inclusion" },
+    { title: "Créativité sans limites", id: "créativité-limites" },
     { title: "L'humain et l'IA : une collaboration créative", id: "collaboration-creative" }
   ];
 
@@ -77,9 +77,9 @@ const BlogArticle4: React.FC = () => {
                 L'intelligence artificielle ne se contente plus d'automatiser des tâches répétitives - elle devient un partenaire créatif révolutionnaire dans la création d'histoires pour enfants. Cette technologie transforme radicalement la façon dont nous concevons, personnalisons et partageons les récits destinés aux jeunes lecteurs. Découvrez comment l'IA ouvre de nouveaux horizons créatifs infinis.
               </p>
 
-              <h2 id="ia-creativite">L'IA au service de la créativité narrative</h2>
+              <h2 id="ia-créativité">L'IA au service de la créativité narrative</h2>
               
-              <h3 id="generation-automatique">Génération automatique d'histoires cohérentes</h3>
+              <h3 id="génération-automatique">Génération automatique d'histoires cohérentes</h3>
               <p>
                 L'une des prouesses les plus remarquables de l'IA moderne est sa capacité à générer des histoires complètes, cohérentes et captivantes. Contrairement aux premiers systèmes qui produisaient des textes mécaniques et répétitifs, les IA actuelles comprennent les structures narratives complexes, les arcs dramatiques et les nuances émotionnelles nécessaires à une bonne histoire.
               </p>
@@ -115,7 +115,7 @@ const BlogArticle4: React.FC = () => {
                 <li><strong>La cohérence narrative</strong> : Le maintien de la logique tout au long de l'histoire</li>
               </ul>
 
-              <h3 id="generation-images">Génération d'images par IA</h3>
+              <h3 id="génération-images">Génération d'images par IA</h3>
               <p>
                 Parallèlement au texte, notre IA génère des illustrations personnalisées qui accompagnent parfaitement chaque histoire. Cette technologie de génération d'images analyse les descriptions textuelles et les photos fournies pour créer des illustrations cohérentes où l'enfant se reconnaît parfaitement.
               </p>
@@ -136,7 +136,7 @@ const BlogArticle4: React.FC = () => {
 
               <h2 id="avantages-lecteurs">Avantages de l'IA pour les jeunes lecteurs</h2>
 
-              <h3 id="accessibilite-inclusion">Accessibilité et inclusion</h3>
+              <h3 id="accessibilité-inclusion">Accessibilité et inclusion</h3>
               <p>
                 L'IA démocratise l'accès aux histoires personnalisées. Là où la création manuelle d'un livre personnalisé nécessitait des semaines de travail d'illustrateurs et d'auteurs professionnels, l'IA peut générer une histoire complète en quelques minutes.
               </p>
@@ -144,7 +144,7 @@ const BlogArticle4: React.FC = () => {
                 Cette accessibilité est particulièrement précieuse pour les familles qui n'avaient pas les moyens de commander des livres personnalisés traditionnels, ou pour les enfants avec des besoins spécifiques qui nécessitent des adaptations particulières.
               </p>
 
-              <h3 id="creativite-limites">Créativité sans limites</h3>
+              <h3 id="créativité-limites">Créativité sans limites</h3>
               <p>
                 L'IA n'est pas contrainte par les limitations humaines de temps, d'énergie ou d'inspiration. Elle peut :
               </p>

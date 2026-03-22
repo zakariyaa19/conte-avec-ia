@@ -21,12 +21,12 @@ const BlogArticleNouveau10: React.FC = () => {
   }, []);
 
   const tableOfContents = [
-    { title: "L'importance du développement émotionnel chez l'enfant", id: "importance-developpement" },
+    { title: "L'importance du développement émotionnel chez l'enfant", id: "importance-développement" },
     { title: "Comment la lecture personnalisée stimule les émotions", id: "stimule-emotions" },
-    { title: "Développer l'intelligence émotionnelle par l'identification", id: "intelligence-emotionnelle" },
+    { title: "Développer l'intelligence émotionnelle par l'identification", id: "intelligence-émotionnelle" },
     { title: "L'empathie renforcée par la personnalisation", id: "empathie-renforcee" },
     { title: "Gestion des émotions difficiles à travers l'histoire", id: "gestion-emotions" },
-    { title: "Construction de l'identité émotionnelle", id: "identite-emotionnelle" },
+    { title: "Construction de l'identité émotionnelle", id: "identité-émotionnelle" },
     { title: "Impact sur les relations sociales et familiales", id: "relations-sociales" },
     { title: "Créer des histoires qui nourrissent l'âme", id: "histoires-nourrissent" }
   ];
@@ -59,7 +59,7 @@ const BlogArticleNouveau10: React.FC = () => {
 
             <div className="article-image">
               <img
-                src="/images/blog/bienfaits-lecture-personnalisee-enfant.jpg"
+                src="/images/blog/bienfaits-lecture-personnalisée-enfant.jpg"
                 alt="Enfant exprimant ses émotions en lisant son livre personnalisé"
                 loading="lazy"
                 onError={(e) => {
@@ -74,7 +74,7 @@ const BlogArticleNouveau10: React.FC = () => {
                 Le développement émotionnel de l'enfant constitue l'un des piliers fondamentaux de son épanouissement futur. Dans ce processus complexe et délicat, la lecture personnalisée joue un rôle particulièrement puissant et bénéfique. En plaçant l'enfant au cœur d'histoires qui résonnent avec son vécu et ses émotions, les contes personnalisés offrent un terrain d'exploration émotionnelle sécurisé qui favorise la compréhension de soi, le développement de l'empathie, et l'acquisition d'outils pour gérer ses sentiments. Explorons ensemble ces bienfaits remarquables sur l'équilibre psychologique de l'enfant.
               </p>
 
-              <h2 id="importance-developpement">L'importance du développement émotionnel chez l'enfant</h2>
+              <h2 id="importance-développement">L'importance du développement émotionnel chez l'enfant</h2>
               <p>
                 Le développement émotionnel de l'enfant détermine largement sa capacité future à naviguer dans les relations humaines, à gérer le stress, et à maintenir un équilibre psychologique sain. Cette dimension du développement, longtemps négligée au profit des apprentissages cognitifs, est désormais reconnue comme fondamentale pour la réussite personnelle et professionnelle.
               </p>
@@ -96,7 +96,7 @@ const BlogArticleNouveau10: React.FC = () => {
                 La stimulation émotionnelle générée par la lecture personnalisée active les circuits neuronaux responsables du traitement des émotions, renforçant ainsi la capacité de l'enfant à reconnaître et comprendre ses propres sentiments. Cette gymnastique émotionnelle régulière développe sa maturité affective.
               </p>
 
-              <h3 id="intelligence-emotionnelle">Développer l'intelligence émotionnelle par l'identification</h3>
+              <h3 id="intelligence-émotionnelle">Développer l'intelligence émotionnelle par l'identification</h3>
               <p>
                 L'intelligence émotionnelle, définie comme la capacité à percevoir, comprendre et gérer ses émotions et celles d'autrui, se développe remarquablement à travers la lecture personnalisée. L'identification totale au personnage principal permet à l'enfant d'observer et d'analyser ses propres réactions émotionnelles dans différentes situations.
               </p>
@@ -129,7 +129,7 @@ const BlogArticleNouveau10: React.FC = () => {
                 La gestion des émotions difficiles à travers l'histoire personnalisée permet également de dédramatiser ces sentiments. L'enfant comprend que ressentir de la colère ou de la peur est normal et humain, et que l'important n'est pas d'éviter ces émotions mais d'apprendre à les gérer constructivement.
               </p>
 
-              <h2 id="identite-emotionnelle">Construction de l'identité émotionnelle</h2>
+              <h2 id="identité-émotionnelle">Construction de l'identité émotionnelle</h2>
               <p>
                 La lecture personnalisée contribue significativement à la construction de l'identité émotionnelle de l'enfant. En se voyant représenté comme un personnage capable de ressentir, d'exprimer et de gérer une large gamme d'émotions, l'enfant développe une image positive de sa vie affective et de ses capacités émotionnelles.
               </p>

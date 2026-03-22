@@ -25,8 +25,8 @@ const BlogArticleNouveau3: React.FC = () => {
     { title: "Avantages du livre personnalisé", id: "avantages-personnalise" },
     { title: "Les atouts indéniables du livre classique", id: "atouts-classique" },
     { title: "Impact sur l'apprentissage de la lecture", id: "impact-apprentissage" },
-    { title: "Développement de l'imagination : deux voies différentes", id: "developpement-imagination" },
-    { title: "L'aspect émotionnel et psychologique", id: "aspect-emotionnel" },
+    { title: "Développement de l'imagination : deux voies différentes", id: "développement-imagination" },
+    { title: "L'aspect émotionnel et psychologique", id: "aspect-émotionnel" },
     { title: "Quand choisir l'un ou l'autre ?", id: "quand-choisir" },
     { title: "La complémentarité : une approche équilibrée", id: "complementarite" }
   ];
@@ -118,7 +118,7 @@ const BlogArticleNouveau3: React.FC = () => {
                 Le livre classique, de son côté, enrichit le vocabulaire de manière plus systématique. Il expose l'enfant à un langage plus soutenu, à des structures syntaxiques variées, à un lexique étendu. Cette richesse linguistique, même si elle peut initialement représenter un défi, contribue significativement au développement des compétences langagières.
               </p>
 
-              <h3 id="developpement-imagination">Développement de l'imagination : deux voies différentes</h3>
+              <h3 id="développement-imagination">Développement de l'imagination : deux voies différentes</h3>
               <p>
                 Le développement de l'imagination emprunte des voies différentes selon le type de livre. Le livre personnalisé stimule l'imagination projective : l'enfant s'imagine dans différentes situations, anticipe ses réactions, explore ses possibilités. Cette forme d'imagination, centrée sur soi, développe la conscience de soi et la capacité d'introspection.
               </p>
@@ -129,7 +129,7 @@ const BlogArticleNouveau3: React.FC = () => {
                 Ces deux formes d'imagination sont complémentaires et nécessaires au développement harmonieux de l'enfant. L'imagination projective l'aide à se construire, l'imagination empathique l'aide à comprendre le monde et les autres.
               </p>
 
-              <h2 id="aspect-emotionnel">L'aspect émotionnel et psychologique</h2>
+              <h2 id="aspect-émotionnel">L'aspect émotionnel et psychologique</h2>
               <p>
                 L'impact émotionnel et psychologique varie considérablement entre ces deux approches. Le livre personnalisé génère des émotions intenses et immédiates. L'identification totale au héros amplifie toutes les émotions vécues dans l'histoire : joie, fierté, excitation, mais aussi peur ou tristesse si l'histoire en contient.
               </p>

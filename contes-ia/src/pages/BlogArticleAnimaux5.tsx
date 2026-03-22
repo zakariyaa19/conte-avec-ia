@@ -28,7 +28,7 @@ const BlogArticleAnimaux5: React.FC = () => {
     { title: "Voyage sous-marin extraordinaire", id: "voyage-sous-marin" },
     { title: "Quête dans le royaume des fées", id: "royaume-fees" },
     { title: "Adapter le thème à votre animal", id: "adapter-theme" },
-    { title: "Personnaliser selon l'âge de l'enfant", id: "personnaliser-age" },
+    { title: "Personnalisér selon l'âge de l'enfant", id: "personnaliser-age" },
     { title: "Créer votre propre thème unique", id: "theme-unique" }
   ];
 
@@ -159,7 +159,7 @@ const BlogArticleAnimaux5: React.FC = () => {
                 <li><strong>Poissons paisibles</strong> : Mondes aquatiques, jardins sous-marins, méditation zen</li>
               </ul>
 
-              <h3 id="personnaliser-age">Personnaliser selon l'âge de l'enfant</h3>
+              <h3 id="personnaliser-age">Personnalisér selon l'âge de l'enfant</h3>
               <p>
                 L'âge du lecteur influence le choix et le traitement du thème. Les 3-6 ans apprécient les univers colorés et rassurants comme le royaume des fées. Les 7-10 ans préfèrent l'action des enquêtes urbaines ou des aventures spatiales. Les plus grands aiment la complexité des forêts enchantées avec leurs multiples créatures.
               </p>

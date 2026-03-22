@@ -23,10 +23,10 @@ const BlogArticleNouveau4: React.FC = () => {
   const tableOfContents = [
     { title: "L'IA : une révolution dans la création littéraire", id: "revolution-creation" },
     { title: "Comment l'IA comprend et s'adapte à chaque enfant", id: "adaptation-enfant" },
-    { title: "La créativité artificielle au service de l'imagination", id: "creativite-artificielle" },
-    { title: "Personnalisation avancée : au-delà du simple prénom", id: "personnalisation-avancee" },
+    { title: "La créativité artificielle au service de l'imagination", id: "créativité-artificielle" },
+    { title: "Personnalisation avancée : au-delà du simple prénom", id: "personnalisation-avancée" },
     { title: "Qualité littéraire et intelligence artificielle", id: "qualite-litteraire" },
-    { title: "L'IA et l'évolution des besoins éducatifs", id: "evolution-educative" },
+    { title: "L'IA et l'évolution des besoins éducatifs", id: "evolution-éducative" },
     { title: "Éthique et responsabilité dans l'IA créative", id: "ethique-responsabilite" },
     { title: "L'avenir des histoires pour enfants avec l'IA", id: "avenir-histoires" }
   ];
@@ -71,7 +71,7 @@ const BlogArticleNouveau4: React.FC = () => {
 
             <div className="article-content">
               <p className="article-intro">
-                L'intelligence artificielle transforme radicalement notre approche de la création littéraire pour enfants. Cette technologie révolutionnaire ne se contente plus de reproduire des schémas existants, elle invente, personnalise et s'adapte pour créer des histoires uniques qui résonnent parfaitement avec chaque enfant. Découvrons ensemble comment l'IA révolutionne l'univers des contes personnalisés et ouvre de nouveaux horizons créatifs inimaginables il y a encore quelques années.
+                L'intelligence artificielle transforme radicalement notre approche de la création littéraire pour enfants. Cette technologie révolutionnaire ne se contente plus de reproduire des schémas existants, elle invente, personnalisé et s'adapte pour créer des histoires uniques qui résonnent parfaitement avec chaque enfant. Découvrons ensemble comment l'IA révolutionne l'univers des contes personnalisés et ouvre de nouveaux horizons créatifs inimaginables il y a encore quelques années.
               </p>
 
               <h2 id="revolution-creation">L'IA : une révolution dans la création littéraire</h2>
@@ -96,7 +96,7 @@ const BlogArticleNouveau4: React.FC = () => {
                 L'adaptation va au-delà du contenu pour toucher la forme même du récit. L'IA peut ajuster la longueur des phrases, la fréquence des dialogues, l'intensité dramatique, et même le style d'illustration suggéré. Cette personnalisation holistique garantit une expérience de lecture optimale pour chaque enfant.
               </p>
 
-              <h3 id="creativite-artificielle">La créativité artificielle au service de l'imagination</h3>
+              <h3 id="créativité-artificielle">La créativité artificielle au service de l'imagination</h3>
               <p>
                 La créativité artificielle représente l'un des aspects les plus fascinants de cette révolution technologique. L'IA moderne ne se contente pas de recombiner des éléments existants, elle génère de véritables innovations narratives. Elle peut inventer des personnages originaux, créer des univers inédits, et développer des intrigues surprenantes.
               </p>
@@ -107,7 +107,7 @@ const BlogArticleNouveau4: React.FC = () => {
                 L'IA excelle particulièrement dans la création de connexions inattendues entre différents éléments de l'histoire. Elle peut tisser des liens subtils entre les passions de l'enfant et l'intrigue principale, créant des moments de reconnaissance et d'émerveillement qui marquent durablement le jeune lecteur.
               </p>
 
-              <h2 id="personnalisation-avancee">Personnalisation avancée : au-delà du simple prénom</h2>
+              <h2 id="personnalisation-avancée">Personnalisation avancée : au-delà du simple prénom</h2>
               <p>
                 La personnalisation moderne va infiniment plus loin que la simple insertion du prénom de l'enfant dans une histoire préexistante. L'IA contemporaine peut adapter l'intégralité de la structure narrative aux caractéristiques uniques de chaque enfant. Cette personnalisation profonde transforme chaque histoire en œuvre véritablement unique.
               </p>
@@ -129,7 +129,7 @@ const BlogArticleNouveau4: React.FC = () => {
                 La qualité littéraire de l'IA s'améliore constamment grâce aux mécanismes d'apprentissage automatique. Chaque histoire créée, chaque retour d'expérience enrichit la base de connaissances de l'IA, affinant sa capacité à produire des textes de qualité croissante.
               </p>
 
-              <h2 id="evolution-educative">L'IA et l'évolution des besoins éducatifs</h2>
+              <h2 id="evolution-éducative">L'IA et l'évolution des besoins éducatifs</h2>
               <p>
                 L'intelligence artificielle répond parfaitement à l'évolution des besoins éducatifs contemporains. Dans un monde où l'individualisation de l'apprentissage devient une priorité, l'IA offre la possibilité de créer des contenus parfaitement adaptés au rythme et au style d'apprentissage de chaque enfant.
               </p>

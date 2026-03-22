@@ -26,7 +26,7 @@ const BlogArticleFoi2: React.FC = () => {
     { title: "Pâque : la liberté et la renaissance spirituelle", id: "paque-liberte" },
     { title: "Diwali : la lumière qui triomphe des ténèbres", id: "diwali-lumiere" },
     { title: "Adapter les récits selon l'âge de l'enfant", id: "adapter-recits" },
-    { title: "Personnaliser votre conte de fête religieuse", id: "personnaliser-conte" }
+    { title: "Personnalisér votre conte de fête religieuse", id: "personnaliser-conte" }
   ];
 
   const handleScrollToSection = (id: string) => {
@@ -57,7 +57,7 @@ const BlogArticleFoi2: React.FC = () => {
 
             <div className="article-image">
               <img
-                src="/images/blog/fetes-religieuses-conte-personnalise.jpg"
+                src="/images/blog/fetes-religieuses-conte-personnalisé.jpg"
                 alt="Enfants de différentes cultures célébrant leurs fêtes religieuses avec des livres personnalisés"
                 loading="lazy"
                 onError={(e) => {
@@ -138,7 +138,7 @@ const BlogArticleFoi2: React.FC = () => {
                 Les préadolescents de 10 à 12 ans sont prêts pour des contes abordant les dimensions historiques et spirituelles plus profondes des fêtes religieuses, les aidant à développer une compréhension mature de leur foi.
               </p>
 
-              <h2 id="personnaliser-conte">Personnaliser votre conte de fête religieuse</h2>
+              <h2 id="personnaliser-conte">Personnalisér votre conte de fête religieuse</h2>
               <p>
                 L'intelligence artificielle moderne permet de créer des histoires respectueuses de chaque tradition, adaptées aux valeurs familiales spécifiques et aux particularités culturelles de votre communauté. Le processus de personnalisation prend en compte non seulement la fête célébrée, mais aussi les traditions familiales uniques qui l'accompagnent.
               </p>

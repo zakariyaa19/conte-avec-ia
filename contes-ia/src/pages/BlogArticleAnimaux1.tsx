@@ -20,12 +20,12 @@ const BlogArticleAnimaux1: React.FC = () => {
   }, []);
 
   const tableOfContents = [
-    { title: "L'animal, catalyseur naturel de créativité", id: "catalyseur-creativite" },
-    { title: "Les bénéfices éducatifs des histoires avec animaux", id: "benefices-educatifs" },
+    { title: "L'animal, catalyseur naturel de créativité", id: "catalyseur-créativité" },
+    { title: "Les bénéfices éducatifs des histoires avec animaux", id: "bénéfices-éducatifs" },
     { title: "Comment l'animal devient héros de conte", id: "animal-heros" },
     { title: "Développer l'empathie grâce aux récits animaliers", id: "developper-empathie" },
-    { title: "Personnaliser l'histoire selon votre animal", id: "personnaliser-histoire" },
-    { title: "L'impact émotionnel des contes personnalisés", id: "impact-emotionnel" },
+    { title: "Personnalisér l'histoire selon votre animal", id: "personnaliser-histoire" },
+    { title: "L'impact émotionnel des contes personnalisés", id: "impact-émotionnel" },
     { title: "Créer des souvenirs durables avec votre compagnon", id: "souvenirs-durables" },
     { title: "Transformer votre animal en personnage de conte", id: "transformer-animal" }
   ];
@@ -73,7 +73,7 @@ const BlogArticleAnimaux1: React.FC = () => {
                 Votre chien, votre chat ou votre lapin n'est pas seulement un compagnon fidèle : il est une véritable source d'inspiration pour l'imagination débordante de votre enfant. Découvrez comment transformer cette relation unique en histoires personnalisées captivantes qui stimulent la créativité, renforcent les liens affectifs et créent des souvenirs magiques pour toute la famille.
               </p>
 
-              <h2 id="catalyseur-creativite">L'animal, catalyseur naturel de créativité</h2>
+              <h2 id="catalyseur-créativité">L'animal, catalyseur naturel de créativité</h2>
               <p>
                 Les animaux de compagnie possèdent cette capacité extraordinaire d'éveiller l'imagination des enfants de manière spontanée et naturelle. Contrairement aux jouets ou aux écrans, votre compagnon à quatre pattes est vivant, imprévisible et plein de personnalité. Cette authenticité stimule la créativité de votre enfant d'une façon unique.
               </p>
@@ -84,7 +84,7 @@ const BlogArticleAnimaux1: React.FC = () => {
                 Les enfants développent ainsi une capacité remarquable à créer des scénarios complexes autour de leur animal. Ils inventent des dialogues, imaginent des aventures et construisent des mondes fantastiques où leur compagnon joue le rôle principal. Cette créativité spontanée constitue la base idéale pour des contes personnalisés.
               </p>
 
-              <h2 id="benefices-educatifs">Les bénéfices éducatifs des histoires avec animaux</h2>
+              <h2 id="bénéfices-éducatifs">Les bénéfices éducatifs des histoires avec animaux</h2>
               <p>
                 Intégrer l'animal de compagnie dans des histoires personnalisées apporte des bénéfices éducatifs considérables. D'abord, cela renforce l'apprentissage de la lecture : votre enfant sera naturellement plus motivé à lire une histoire mettant en scène son compagnon préféré.
               </p>
@@ -108,7 +108,7 @@ const BlogArticleAnimaux1: React.FC = () => {
                 Ces histoires peuvent aborder des thèmes importants comme le respect de la nature, la responsabilité envers les animaux, ou encore l'importance des soins vétérinaires. Votre enfant intègre ainsi des valeurs essentielles de manière naturelle et divertissante.
               </p>
 
-              <h3 id="personnaliser-histoire">Personnaliser l'histoire selon votre animal</h3>
+              <h3 id="personnaliser-histoire">Personnalisér l'histoire selon votre animal</h3>
               <p>
                 Chaque animal a sa personnalité unique qui mérite d'être célébrée dans un conte personnalisé. Voici comment adapter l'histoire selon différents types de compagnons :
               </p>
@@ -120,7 +120,7 @@ const BlogArticleAnimaux1: React.FC = () => {
                 <li><strong>Poissons paisibles</strong> : Explorations aquatiques, rencontres sous-marines, jardins d'algues magiques</li>
               </ul>
 
-              <h2 id="impact-emotionnel">L'impact émotionnel des contes personnalisés</h2>
+              <h2 id="impact-émotionnel">L'impact émotionnel des contes personnalisés</h2>
               <p>
                 Un conte personnalisé mettant en scène l'animal de compagnie crée un impact émotionnel profond et durable. Votre enfant développe une fierté particulière envers son compagnon, renforçant leur lien affectif et sa responsabilité envers l'animal.
               </p>

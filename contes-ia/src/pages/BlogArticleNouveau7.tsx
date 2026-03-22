@@ -25,7 +25,7 @@ const BlogArticleNouveau7: React.FC = () => {
     { title: "Le pouvoir thérapeutique du livre personnalisé", id: "pouvoir-therapeutique" },
     { title: "Créer un héros courageux à son image", id: "heros-courageux" },
     { title: "Surmonter les peurs par l'identification", id: "surmonter-peurs" },
-    { title: "Développer les compétences sociales en douceur", id: "competences-sociales" },
+    { title: "Développer les compétences sociales en douceur", id: "compétences-sociales" },
     { title: "Renforcer l'estime de soi progressivement", id: "renforcer-estime" },
     { title: "Témoignages de parents et professionnels", id: "temoignages" },
     { title: "Créer le livre adapté aux besoins spécifiques", id: "livre-adapte" }
@@ -118,7 +118,7 @@ const BlogArticleNouveau7: React.FC = () => {
                 Cette approche par l'identification évite la résistance psychologique que peuvent générer les conseils directs. L'enfant ne se sent pas jugé ou poussé à changer, mais inspiré par les réussites de son alter ego narratif. Cette inspiration intrinsèque est bien plus puissante que toute motivation externe.
               </p>
 
-              <h3 id="competences-sociales">Développer les compétences sociales en douceur</h3>
+              <h3 id="compétences-sociales">Développer les compétences sociales en douceur</h3>
               <p>
                 Le livre personnalisé offre un terrain d'entraînement idéal pour développer les compétences sociales de l'enfant timide. À travers les interactions de son héros avec d'autres personnages, l'enfant observe et intériorise des modèles de communication positive, d'affirmation de soi respectueuse, et de gestion des conflits constructive.
               </p>

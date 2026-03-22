@@ -62,7 +62,7 @@ const BlogArticleSEO4: React.FC = () => {
       <SchemaBreadcrumb items={[
         { name: "Accueil", url: "https://contedia.fr/" },
         { name: "Blog", url: "https://contedia.fr/blog" },
-        { name: "Livre conte personnalisé", url: "https://contedia.fr/blog/livre-conte-personnalise-histoire-unique-enfant" }
+        { name: "Livre conte personnalisé", url: "https://contedia.fr/blog/livre-conte-personnalisé-histoire-unique-enfant" }
       ]} />
 
       <div className="article-container">
