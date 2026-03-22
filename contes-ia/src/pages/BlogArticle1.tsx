@@ -1,67 +1,111 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { PageLayout } from '../components/layout/PageLayout';
 import '../styles/BlogArticle.css';
 
 const BlogArticle1: React.FC = () => {
   useEffect(() => {
-    document.title = 'Créer un Livre Personnalisé avec votre Animal de Compagnie | Conte sur Mesure';
-    
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', 'Transformez votre chien, chat ou animal favori en héros d\'un conte personnalisé unique. Créez un livre magique où votre enfant et son compagnon vivent des aventures extraordinaires ensemble.');
-    }
-
-    // Ajouter les mots-clés SEO
-    const metaKeywords = document.querySelector('meta[name="keywords"]') || document.createElement('meta');
-    metaKeywords.setAttribute('name', 'keywords');
-    metaKeywords.setAttribute('content', 'livre personnalisé animal de compagnie, conte chien personnalisé, histoire chat personnalisée, livre enfant animal héros, cadeau original animal, conte sur mesure animaux, livre magique chien chat, histoire personnalisée famille animal');
-    if (!document.querySelector('meta[name="keywords"]')) {
-      document.head.appendChild(metaKeywords);
-    }
+    document.title = 'Livre Personnalisé Chien : Créez un Conte avec votre Animal | Conte d\'IA';
   }, []);
 
   const tableOfContents = [
-    { title: "Votre animal de compagnie, héros d'un conte unique", id: "animal-heros-conte" },
-    { title: "Pourquoi choisir un livre personnalisé avec votre animal", id: "pourquoi-choisir" }, 
-    { title: "Créer des souvenirs magiques en famille", id: "souvenirs-magiques" },
-    { title: "Comment transformer votre animal en personnage de livre", id: "transformer-animal" },
-    { title: "Les différents types d'aventures possibles", id: "types-aventures" },
-    { title: "Personnalisation complète selon votre animal", id: "personnalisation-complete" },
-    { title: "Un cadeau original qui marquera les esprits", id: "cadeau-original" },
-    { title: "Commencer votre projet de livre personnalisé", id: "commencer-projet" }
+    { title: "Pourquoi créer un livre personnalisé avec son chien", id: "pourquoi" },
+    { title: "Comment ça fonctionne sur Contedia", id: "comment" },
+    { title: "Les meilleurs thèmes pour un livre avec votre chien", id: "themes" },
+    { title: "Livre personnalisé chat, lapin, hamster...", id: "autres-animaux" },
+    { title: "Un cadeau original pour les enfants amoureux des animaux", id: "cadeau" },
+    { title: "Exemples de livres personnalisés avec animaux", id: "exemples" },
+    { title: "Créer des souvenirs inoubliables", id: "souvenirs" },
+    { title: "FAQ", id: "faq" },
   ];
 
   const handleScrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
-      element.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start'
-      });
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+  };
+
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Comment créer un livre personnalisé avec mon chien ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sur Contedia, ajoutez le nom et une photo de votre chien comme personnage secondaire. L'IA crée une histoire unique où votre enfant et son chien vivent une aventure ensemble, avec des illustrations qui ressemblent à votre animal."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Peut-on mettre un chat dans un livre personnalisé ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Oui ! Sur Contedia, vous pouvez ajouter n'importe quel animal de compagnie comme personnage : chien, chat, lapin, hamster, perroquet... L'animal devient un personnage important de l'histoire."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Combien coûte un livre personnalisé avec son animal ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Le premier livre est entièrement gratuit sur Contedia. Les livres suivants coûtent 3,99€. L'abonnement Club à 9,99€/mois inclut 4 livres par mois."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "L'animal ressemble-t-il vraiment au mien dans le livre ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "L'IA analyse la photo que vous fournissez pour reproduire les caractéristiques de votre animal (couleur du pelage, taille, race). Le résultat varie selon le style d'illustration choisi, mais l'animal est reconnaissable."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "C'est un bon cadeau pour un enfant qui aime les animaux ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "C'est le cadeau idéal ! L'enfant se voit comme héros aux côtés de son animal préféré. Les parents rapportent que ces livres deviennent les préférés des enfants, relus des dizaines de fois."
+        }
+      }
+    ]
   };
 
   return (
     <PageLayout>
+      <Helmet>
+        <meta name="description" content="Créez un livre personnalisé avec votre chien ou chat comme personnage. Votre enfant et son animal vivent une aventure unique. Premier livre gratuit !" />
+        <meta property="og:title" content="Livre Personnalisé Chien : Votre Animal Devient le Héros d'un Conte" />
+        <meta property="og:description" content="Transformez votre chien, chat ou animal en héros d'un conte personnalisé. Illustrations IA, histoire unique, premier livre gratuit." />
+        <meta property="og:image" content="https://contedia.fr/images/blog/conte-animal-compagnie.jpg" />
+        <meta property="og:url" content="https://contedia.fr/blog/histoire-animal-compagnie-livre-personnalise" />
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <link rel="canonical" href="https://contedia.fr/blog/histoire-animal-compagnie-livre-personnalise" />
+        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+      </Helmet>
+
       <div className="article-container">
         <div className="article-breadcrumb">
-          <Link to="/blog">Blog</Link> / Créer un Livre Personnalisé avec votre Animal de Compagnie
+          <Link to="/blog">Blog</Link> / Livre personnalisé chien et animal de compagnie
         </div>
 
         <div className="article-layout">
           <div className="article-main">
             <div className="article-header">
-              <h1>Créer un Livre Personnalisé avec votre Animal de Compagnie : Le Guide Complet</h1>
+              <h1>Livre Personnalisé Chien : Créez un Conte où votre Enfant et son Animal sont les Héros</h1>
               <div className="article-meta">
-                <span>Dernière mise à jour le 12-06-2025</span>
+                <span>Dernière mise à jour le 22-03-2026 · Temps de lecture : 7 min</span>
               </div>
             </div>
 
             <div className="article-image">
               <img
                 src="/images/blog/conte-animal-compagnie.jpg"
-                alt="Enfant avec son chien regardant un livre personnalisé"
+                alt="Enfant souriant lisant un livre personnalisé avec son chien à côté de lui"
                 loading="lazy"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
@@ -72,82 +116,150 @@ const BlogArticle1: React.FC = () => {
 
             <div className="article-content">
               <p className="article-intro">
-                Vous cherchez un cadeau original qui fera briller les yeux de votre enfant ? Découvrez comment transformer votre fidèle compagnon à quatre pattes en véritable héros de conte personnalisé. Chien, chat, lapin ou même hamster - chaque animal peut devenir le protagoniste d'une aventure sur mesure qui émerveillera toute la famille.
+                Votre enfant adore son chien ? Imaginez sa réaction en découvrant un <strong>livre personnalisé</strong> où il part à l'aventure avec son compagnon à quatre pattes. Sur <strong>Contedia</strong>, vous pouvez créer un <strong>livre personnalisé chien</strong>, chat ou tout autre animal de compagnie en quelques minutes. L'enfant est le héros, son animal est à ses côtés, et l'histoire est 100% unique. Le premier livre est gratuit.
               </p>
 
-              <h2 id="animal-heros-conte">Votre animal de compagnie, héros d'un conte unique</h2>
+              <h2 id="pourquoi">Pourquoi créer un livre personnalisé avec son chien ?</h2>
               <p>
-                Dans un monde où les écrans dominent, offrir à votre enfant un livre personnalisé mettant en scène son animal préféré représente bien plus qu'un simple cadeau. C'est créer un lien émotionnel profond entre la lecture et son quotidien. Imaginez la surprise et la joie de votre petit lorsqu'il découvre Rex, son golden retriever, partir à l'aventure dans une forêt enchantée, ou Mimi, sa chatte, résoudre des mystères dans un château magique.
-              </p>
-              <p>
-                Cette personnalisation pousse l'enfant à s'identifier complètement à l'histoire, transformant chaque page tournée en moment de complicité avec son compagnon favori.
-              </p>
-
-              <h2 id="pourquoi-choisir">Pourquoi choisir un livre personnalisé avec votre animal</h2>
-              <p>
-                Les avantages d'un conte personnalisé avec votre animal de compagnie sont multiples. D'abord, cela renforce le lien affectif entre l'enfant et son compagnon. Ensuite, cela stimule l'imagination en montrant que les héros peuvent ressembler à ceux qu'on aime au quotidien.
-              </p>
-              <p>
-                Contrairement aux livres traditionnels, votre conte sur mesure reflète la réalité de votre foyer. Votre enfant retrouve des éléments familiers : le nom de son animal, ses caractéristiques physiques uniques, ses petites manies. Cette familiarité crée une connexion émotionnelle immédiate qui encourage la lecture et développe l'amour des livres.
-              </p>
-
-              <h3 id="souvenirs-magiques">Créer des souvenirs magiques en famille</h3>
-              <p>
-                Un livre personnalisé devient rapidement un trésor familial. C'est l'histoire que votre enfant demandera encore et encore, celle qu'il voudra partager avec ses amis, ses grands-parents. Ces moments de lecture partagée créent des souvenirs durables et renforcent les liens familiaux.
-              </p>
-              <p>
-                De plus, si votre animal vieillit ou n'est plus là, le livre devient un magnifique hommage, une façon de perpétuer son souvenir et de continuer à en parler avec tendresse.
-              </p>
-
-              <h2 id="transformer-animal">Comment transformer votre animal en personnage de livre</h2>
-              <p>
-                Le processus de création est simple et amusant. Il suffit de quelques photos de qualité de votre animal sous différents angles. Notre technologie d'intelligence artificielle analyse ces images pour capturer l'essence unique de votre compagnon : couleur du pelage, forme des oreilles, expression du regard, taille, morphologie.
-              </p>
-              <p>
-                Ensuite, vous personnalisez l'aventure selon la personnalité de votre animal. Un chien énergique partira dans une quête sportive, un chat mystérieux résoudra des énigmes, un lapin curieux explorera de nouveaux territoires. Chaque histoire s'adapte au caractère réel de votre compagnon.
-              </p>
-
-              <h3 id="types-aventures">Les différents types d'aventures possibles</h3>
-              <p>
-                Nos contes personnalisés proposent une variété d'univers adaptés à tous les animaux :
+                Le <strong>livre personnalisé enfant chien</strong> n'est pas un simple gadget. C'est un outil éducatif et émotionnel puissant qui :
               </p>
               <ul>
-                <li><strong>Aventures forestières</strong> : Parfaites pour les chiens aventuriers qui aiment la nature</li>
-                <li><strong>Mystères urbains</strong> : Idéales pour les chats malins et observateurs</li>
-                <li><strong>Quêtes fantastiques</strong> : Pour tous les animaux qui rêvent de magie</li>
-                <li><strong>Explorations sous-marines</strong> : Surprenantes même pour les animaux terrestres</li>
-                <li><strong>Voyages dans l'espace</strong> : L'imagination n'a pas de limites !</li>
+                <li><strong>Renforce le lien enfant-animal</strong> : l'enfant voit son chien comme un vrai compagnon d'aventure, pas juste un animal à la maison. Cela développe l'empathie et le respect envers les animaux.</li>
+                <li><strong>Donne le goût de la lecture</strong> : quand Rex ou Luna est dans l'histoire, l'enfant VEUT lire. C'est le déclic lecture pour les enfants réticents.</li>
+                <li><strong>Crée un souvenir inoubliable</strong> : ce livre deviendra un trésor familial, surtout si l'animal vieillit ou n'est plus là un jour.</li>
+                <li><strong>Stimule l'imagination</strong> : l'enfant prolonge l'aventure dans ses jeux avec son chien, inventant la suite de l'histoire.</li>
+                <li><strong>Fait un cadeau unique</strong> : aucun autre enfant au monde n'a le même livre. C'est un cadeau que les parents et grands-parents adorent offrir.</li>
               </ul>
 
-              <h3 id="personnalisation-complete">Personnalisation complète selon votre animal</h3>
+              <div className="article-cta">
+                <Link to="/create-story" className="cta-button">
+                  ✨ Créez le livre de votre enfant et son chien — C'est gratuit
+                </Link>
+              </div>
+
+              <h2 id="comment">Comment créer un livre personnalisé avec son animal sur Contedia</h2>
               <p>
-                Chaque détail compte dans la création de votre conte sur mesure. Le nom de votre animal, ses couleurs exactes, ses accessoires favoris (collier, jouet, panier) peuvent tous être intégrés dans l'histoire. Même les autres membres de la famille, humains ou animaux, peuvent faire des apparitions dans le récit.
+                La création d'un <strong>livre personnalisé chien</strong> (ou tout animal) se fait en <strong>3 étapes simples</strong> :
               </p>
+              <ul>
+                <li><strong>Étape 1 : Personnalisez le héros</strong> — Entrez le prénom de votre enfant, son âge, et ajoutez une photo si vous le souhaitez. L'IA créera un personnage qui lui ressemble.</li>
+                <li><strong>Étape 2 : Ajoutez votre animal</strong> — Dans les personnages secondaires, ajoutez votre chien, chat ou autre animal. Donnez-lui son vrai nom, sa race, et décrivez-le brièvement (« golden retriever beige, grands yeux doux »).</li>
+                <li><strong>Étape 3 : Choisissez le thème</strong> — Aventure en forêt, chasse au trésor, Noël magique, voyage spatial... L'IA génère une histoire unique où votre enfant et son animal vivent cette aventure ensemble.</li>
+              </ul>
               <p>
-                Cette attention aux détails garantit que votre enfant reconnaîtra immédiatement son compagnon et se sentira véritablement impliqué dans l'aventure.
+                En 5 minutes, le livre numérique est prêt. Vous pouvez le lire immédiatement sur votre téléphone, tablette ou ordinateur. Et le partager avec toute la famille.
               </p>
 
-              <h2 id="cadeau-original">Un cadeau original qui marquera les esprits</h2>
+              <h2 id="themes">Les meilleurs thèmes pour un livre personnalisé avec votre chien</h2>
               <p>
-                À l'ère du numérique, offrir un livre physique personnalisé représente un geste fort et mémorable. C'est un cadeau qui se démarque lors des anniversaires, de Noël, ou pour célébrer l'arrivée d'un nouvel animal dans la famille.
+                Voici les thèmes les plus populaires pour les <strong>livres personnalisés avec animaux de compagnie</strong> :
               </p>
+              <ul>
+                <li><strong>L'aventure en forêt</strong> — Votre enfant et son chien explorent une forêt enchantée, rencontrent des créatures magiques et trouvent un trésor caché. Parfait pour les chiens aventuriers.</li>
+                <li><strong>Le Noël magique</strong> — Le chien aide le Père Noël à retrouver les cadeaux perdus. Un classique qui fonctionne à chaque fois, surtout en période de fêtes.</li>
+                <li><strong>Le super-héros et son fidèle compagnon</strong> — L'enfant a des super-pouvoirs et son chien l'aide à sauver le monde. Les 4-7 ans adorent ce thème.</li>
+                <li><strong>Le mystère du jardin</strong> — Le chat de la famille découvre un passage secret dans le jardin. Idéal pour les enfants curieux.</li>
+                <li><strong>Le voyage dans l'espace</strong> — L'enfant et son animal décollent pour une planète inconnue. L'imagination n'a pas de limites !</li>
+              </ul>
+
+              <div className="article-cta">
+                <Link to="/create-story" className="cta-button">
+                  ✨ Essayez gratuitement — Choisissez votre thème préféré
+                </Link>
+              </div>
+
+              <h2 id="autres-animaux">Livre personnalisé chat, lapin, hamster : ça marche pour tous les animaux</h2>
               <p>
-                Les enfants adorent montrer "leur" livre à leurs amis, raconter les aventures de leur animal héros. Cela développe leur confiance en eux et leurs compétences narratives, tout en créant des moments de fierté partagée.
+                Le <strong>livre personnalisé</strong> ne se limite pas aux chiens ! Sur Contedia, vous pouvez intégrer n'importe quel animal de compagnie :
+              </p>
+              <ul>
+                <li><strong>Chat</strong> — Les chats font d'excellents personnages mystérieux et malins. Parfait pour les histoires d'enquête ou de magie.</li>
+                <li><strong>Lapin</strong> — Idéal pour les histoires de Pâques ou les aventures dans un jardin enchanté.</li>
+                <li><strong>Hamster</strong> — Le petit compagnon qui surprend tout le monde par son courage. Les enfants adorent voir leur hamster devenir un héros.</li>
+                <li><strong>Perroquet</strong> — Un guide volant qui emmène l'enfant dans des pays lointains.</li>
+                <li><strong>Poisson</strong> — Oui, même un poisson ! L'enfant plonge sous l'eau pour vivre une aventure aquatique avec son poisson.</li>
+              </ul>
+              <p>
+                Chaque animal apporte sa propre personnalité à l'histoire. L'IA adapte le récit et les illustrations au type d'animal que vous ajoutez.
               </p>
 
-              <h2 id="commencer-projet">Commencer votre projet de livre personnalisé</h2>
+              <h2 id="cadeau">Un cadeau original pour les enfants amoureux des animaux</h2>
               <p>
-                Créer le conte personnalisé de votre animal de compagnie est plus simple que vous ne l'imaginez. En quelques étapes intuitives, vous pouvez concevoir une histoire unique qui célèbre la relation spéciale entre votre enfant et son compagnon.
+                Vous cherchez un <strong>cadeau original</strong> pour un enfant qui aime les animaux ? Le <strong>livre personnalisé avec son chien</strong> est le cadeau parfait pour :
               </p>
+              <ul>
+                <li><strong>Son anniversaire</strong> — Un cadeau unique qu'aucun autre enfant n'a</li>
+                <li><strong>Noël</strong> — Sous le sapin, à côté du chien qui dort</li>
+                <li><strong>L'arrivée d'un nouvel animal</strong> — Pour célébrer l'adoption d'un chiot ou chaton</li>
+                <li><strong>Un hommage</strong> — Si l'animal de la famille n'est plus là, le livre perpétue son souvenir avec douceur</li>
+                <li><strong>Juste pour le plaisir</strong> — Parce que voir la tête de son enfant quand il découvre son chien dans un livre, ça n'a pas de prix</li>
+              </ul>
+
+              <h2 id="exemples">Exemples de livres personnalisés avec animaux créés sur Contedia</h2>
               <p>
-                N'attendez plus pour offrir à votre famille ce cadeau exceptionnel. Chaque animal a une personnalité unique qui mérite d'être célébrée dans une aventure sur mesure. Commencez dès aujourd'hui et créez des souvenirs qui dureront toute une vie !
+                Voici quelques exemples de livres créés par des parents sur Contedia :
+              </p>
+              <ul>
+                <li><strong>« Rayan et le Dino de Pâques »</strong> — Rayan, 3 ans, part à la chasse aux œufs avec Luna, son bouledogue français. Luna flaire les œufs cachés et guide Rayan dans le jardin.</li>
+                <li><strong>« Enzo et les Coquillages Magiques »</strong> — Enzo, 4 ans, découvre des coquillages magiques sur la plage avec son chat Moustache. Chaque coquillage ouvre un portail vers un monde féerique.</li>
+                <li><strong>« Timéo et le fruit enchanté de Noël »</strong> — Timéo et Rex, son berger allemand, trouvent un fruit lumineux dans le jardin de Mamie. L'aventure les emmène au Pôle Nord.</li>
+              </ul>
+              <p>
+                Chaque livre est unique — généré par l'IA avec des illustrations qui ressemblent à l'enfant et à son animal. Vous pouvez <Link to="/exemples">découvrir nos exemples de livres</Link> pour voir le résultat.
               </p>
 
               <div className="article-cta">
-                <Link to="/story-form" className="cta-button">
-                  ✨ Créer le conte de mon animal de compagnie
+                <Link to="/create-story" className="cta-button">
+                  ✨ Créez votre premier livre gratuitement
                 </Link>
               </div>
+
+              <h2 id="souvenirs">Créer des souvenirs inoubliables entre votre enfant et son animal</h2>
+              <p>
+                Un <strong>livre personnalisé chien</strong> ou chat n'est pas un objet jetable. C'est un souvenir qui traverse le temps. Les parents nous racontent que leurs enfants relisent ces livres des dizaines de fois, les montrent à leurs amis, et les gardent précieusement dans leur bibliothèque.
+              </p>
+              <p>
+                Quand l'enfant grandit, ce livre devient un souvenir d'enfance précieux. Et si l'animal n'est plus là, le livre garde vivant le lien spécial qu'ils partageaient. C'est bien plus qu'un cadeau — c'est un héritage émotionnel.
+              </p>
+              <p>
+                Sur Contedia, le premier livre est <strong>entièrement gratuit</strong>. Vous n'avez rien à perdre à essayer. En 5 minutes, votre enfant et son animal vivent leur première aventure ensemble.
+              </p>
+
+              <h2 id="faq">Questions fréquentes sur les livres personnalisés avec animaux</h2>
+
+              <h3>Comment créer un livre personnalisé avec mon chien ?</h3>
+              <p>
+                Sur Contedia, ajoutez le nom et une photo de votre chien comme personnage secondaire. L'IA crée une histoire unique où votre enfant et son chien vivent une aventure ensemble, avec des illustrations qui ressemblent à votre animal.
+              </p>
+
+              <h3>Peut-on mettre un chat dans un livre personnalisé ?</h3>
+              <p>
+                Oui ! Sur Contedia, vous pouvez ajouter n'importe quel animal de compagnie comme personnage : chien, chat, lapin, hamster, perroquet... L'animal devient un personnage important de l'histoire.
+              </p>
+
+              <h3>Combien coûte un livre personnalisé avec son animal ?</h3>
+              <p>
+                Le premier livre est entièrement gratuit sur Contedia. Les livres suivants coûtent 3,99€. L'abonnement Club à 9,99€/mois inclut 4 livres par mois.
+              </p>
+
+              <h3>L'animal ressemble-t-il vraiment au mien dans le livre ?</h3>
+              <p>
+                L'IA analyse la photo que vous fournissez pour reproduire les caractéristiques de votre animal (couleur du pelage, taille, race). Le résultat varie selon le style d'illustration choisi, mais l'animal est reconnaissable.
+              </p>
+
+              <h3>C'est un bon cadeau pour un enfant qui aime les animaux ?</h3>
+              <p>
+                C'est le cadeau idéal ! L'enfant se voit comme héros aux côtés de son animal préféré. Les parents rapportent que ces livres deviennent les préférés des enfants, relus des dizaines de fois.
+              </p>
+
+              <p>
+                <em>Découvrez aussi :</em>
+              </p>
+              <ul>
+                <li><Link to="/blog/animal-compagnie-stimule-imagination-enfant">Pourquoi votre animal stimule l'imagination de votre enfant</Link></li>
+                <li><Link to="/blog/top-5-themes-histoires-animal-heros-conte">Top 5 des thèmes d'histoires avec votre animal en héros</Link></li>
+                <li><Link to="/blog/guide-livre-personnalise-enfant-2026">Le guide complet du livre personnalisé enfant en 2026</Link></li>
+              </ul>
             </div>
           </div>
 
@@ -157,7 +269,7 @@ const BlogArticle1: React.FC = () => {
               <ul>
                 {tableOfContents.map((item, index) => (
                   <li key={index}>
-                    <button 
+                    <button
                       onClick={() => handleScrollToSection(item.id)}
                       className="toc-link"
                     >
