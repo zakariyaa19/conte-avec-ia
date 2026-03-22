@@ -1,30 +1,31 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { PageLayout } from '../components/layout/PageLayout';
 import '../styles/BlogArticle.css';
 
 const BlogArticleSEO2: React.FC = () => {
   useEffect(() => {
-    document.title = 'Les 10 Meilleurs Livres Personnalises pour Enfants en 2026 (Comparatif) | Conte d\'IA';
-
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', 'Comparatif des 10 meilleurs livres personnalises pour enfants en 2026. Wonderbly, Hourra Heros, Contedia, Eponi... Prix, qualite, personnalisation : on a tout teste pour vous.');
-    }
-
-    const metaKeywords = document.querySelector('meta[name="keywords"]') || document.createElement('meta');
-    metaKeywords.setAttribute('name', 'keywords');
-    metaKeywords.setAttribute('content', 'meilleur livre personnalise enfant, comparatif livre personnalise, avis livre personnalise enfant, wonderbly avis, hourra heros avis, conte personnalise comparatif, livre personnalise pas cher, contedia avis');
-    if (!document.querySelector('meta[name="keywords"]')) {
-      document.head.appendChild(metaKeywords);
-    }
+    document.title = 'Les 10 Meilleurs Livres Personnalisés pour Enfants en 2026 (Comparatif) | Conte d\'IA';
   }, []);
 
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "Quel est le meilleur site de livre personnalisé en 2026 ?", "acceptedAnswer": { "@type": "Answer", "text": "Contedia arrive en tête grâce à son rapport qualité/prix imbattable (premier livre gratuit), sa personnalisation profonde (histoire unique + photo) et sa rapidité (livre prêt en 5 minutes)." } },
+      { "@type": "Question", "name": "Quelle est la différence entre un livre personnalisé classique et un livre IA ?", "acceptedAnswer": { "@type": "Answer", "text": "Un livre classique insère le prénom dans une histoire pré-écrite identique pour tous. Un livre IA génère une histoire 100% unique : texte, illustrations et couverture créés sur mesure." } },
+      { "@type": "Question", "name": "Peut-on intégrer la photo de l'enfant dans le livre ?", "acceptedAnswer": { "@type": "Answer", "text": "Oui, sur Contedia et quelques autres plateformes. Contedia utilise l'IA pour analyser la photo et créer des illustrations qui ressemblent à l'enfant." } },
+      { "@type": "Question", "name": "Combien coûte un livre personnalisé enfant ?", "acceptedAnswer": { "@type": "Answer", "text": "Les prix varient de 0€ (gratuit sur Contedia) à 40€ pour un livre imprimé haut de gamme. En moyenne, comptez 20-30€ pour un imprimé et 0-10€ pour un numérique." } },
+      { "@type": "Question", "name": "Le livre numérique est-il un bon cadeau ?", "acceptedAnswer": { "@type": "Answer", "text": "Oui ! Il se lit sur téléphone, tablette et ordinateur, peut être partagé instantanément avec toute la famille, et l'enfant peut le relire autant de fois qu'il veut." } }
+    ]
+  };
+
   const tableOfContents = [
-    { title: "Comment nous avons compare", id: "methodologie" },
-    { title: "1. Contedia (Meilleur rapport qualite/prix)", id: "contedia" },
+    { title: "Comment nous avons comparé", id: "methodologie" },
+    { title: "1. Contedia (Meilleur rapport qualité/prix)", id: "contedia" },
     { title: "2. Wonderbly", id: "wonderbly" },
-    { title: "3. Hourra Heros", id: "hourra-heros" },
+    { title: "3. Hourra Héros", id: "hourra-heros" },
     { title: "4. Eponi", id: "eponi" },
     { title: "5. Plume Malice", id: "plume-malice" },
     { title: "6. CreerMonLivre", id: "creermonlivre" },
@@ -46,17 +47,29 @@ const BlogArticleSEO2: React.FC = () => {
 
   return (
     <PageLayout>
+      <Helmet>
+        <meta name="description" content="Comparatif des 10 meilleurs livres personnalisés enfants en 2026. Prix, qualité, personnalisation : notre verdict honnête." />
+        <meta property="og:title" content="Les 10 Meilleurs Livres Personnalisés pour Enfants en 2026" />
+        <meta property="og:description" content="Comparatif complet : Contedia, Wonderbly, Hourra Héros, Eponi... On a tout testé pour vous." />
+        <meta property="og:image" content="https://contedia.fr/images/blog/meilleurs-livres-personnalises-comparatif.jpg" />
+        <meta property="og:url" content="https://contedia.fr/blog/meilleurs-livres-personnalises-enfants-comparatif-2026" />
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <link rel="canonical" href="https://contedia.fr/blog/meilleurs-livres-personnalises-enfants-comparatif-2026" />
+        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+      </Helmet>
+
       <div className="article-container">
         <div className="article-breadcrumb">
-          <Link to="/blog">Blog</Link> / Les 10 Meilleurs Livres Personnalises Enfants 2026
+          <Link to="/blog">Blog</Link> / Les 10 Meilleurs Livres Personnalisés Enfants 2026
         </div>
 
         <div className="article-layout">
           <div className="article-main">
             <div className="article-header">
-              <h1>Les 10 Meilleurs Livres Personnalises pour Enfants en 2026 (Comparatif)</h1>
+              <h1>Les 10 Meilleurs Livres Personnalisés pour Enfants en 2026 (Comparatif)</h1>
               <div className="article-meta">
-                <span>Derniere mise a jour le 20-03-2026</span>
+                <span>Dernière mise à jour le 22-03-2026 · Temps de lecture : 10 min</span>
               </div>
             </div>
 
@@ -74,18 +87,18 @@ const BlogArticleSEO2: React.FC = () => {
 
             <div className="article-content">
               <p className="article-intro">
-                Vous cherchez le <strong>meilleur livre personnalise pour votre enfant</strong> mais vous etes perdu face aux dizaines de plateformes disponibles ? On a teste et compare les 10 meilleures options du marche en 2026. Prix, qualite des illustrations, niveau de personnalisation, delai de livraison : voici notre classement honnete pour vous aider a faire le bon choix.
+                Vous cherchez le <strong>meilleur livre personnalise pour votre enfant</strong> mais vous etes perdu face aux dizaines de plateformes disponibles ? On à teste et compare les 10 meilleures options du marche en 2026. Prix, qualite des illustrations, niveau de personnalisation, delai de livraison : voici notre classement honnete pour vous aider à faire le bon choix.
               </p>
 
-              <h2 id="methodologie">Comment nous avons compare ces livres personnalises</h2>
+              <h2 id="methodologie">Comment nous avons comparé ces livres personnalisés</h2>
               <p>
-                Pour etablir ce comparatif, nous avons evalue chaque plateforme sur <strong>5 criteres cles</strong> :
+                Pour établir ce comparatif, nous avons evalue chaque plateforme sur <strong>5 criteres cles</strong> :
               </p>
               <ul>
                 <li><strong>Niveau de personnalisation</strong> (prenom seul, ou histoire + illustrations sur mesure ?)</li>
-                <li><strong>Qualite des illustrations</strong> (generiques ou adaptees a l'enfant ?)</li>
+                <li><strong>Qualite des illustrations</strong> (generiques ou adaptées à l'enfant ?)</li>
                 <li><strong>Prix</strong> (rapport qualite/prix, essai gratuit ?)</li>
-                <li><strong>Delai</strong> (disponibilite immediate ou livraison en plusieurs jours ?)</li>
+                <li><strong>Délai</strong> (disponibilite immédiate ou livraison en plusieurs jours ?)</li>
                 <li><strong>Experience utilisateur</strong> (facilite de creation, interface mobile)</li>
               </ul>
               <p>
@@ -97,17 +110,17 @@ const BlogArticleSEO2: React.FC = () => {
                 <strong>Note globale : 4.8/5</strong>
               </p>
               <p>
-                <strong>Contedia</strong> est la nouvelle generation du <strong>livre personnalise par IA</strong>. Contrairement aux plateformes classiques, l'intelligence artificielle cree une histoire 100% unique a chaque commande. Le texte, les illustrations et meme la couverture sont generes sur mesure a partir des informations fournies (prenom, age, photo, theme).
+                <strong>Contedia</strong> est la nouvelle génération du <strong>livre personnalise par IA</strong>. Contrairement aux plateformes classiques, l'intelligence artificielle cree une histoire 100% unique à chaque commande. Le texte, les illustrations et meme la couverture sont generes sur mesure à partir des informations fournies (prenom, age, photo, theme).
               </p>
               <ul>
-                <li><strong>Personnalisation</strong> : 5/5 — Histoire entierement unique, photo de l'enfant integree dans les illustrations, personnages secondaires personnalisables</li>
+                <li><strong>Personnalisation</strong> : 5/5 — Histoire entierement unique, photo de l'enfant intégrée dans les illustrations, personnages secondaires personnalisables</li>
                 <li><strong>Illustrations</strong> : 4.5/5 — Generees par IA (GPT Image), 9 styles differents (3D Pixar, manga, aquarelle, kawaii...)</li>
-                <li><strong>Prix</strong> : 5/5 — Premier livre gratuit, puis 3,99€. Abonnement Club a 9,99€/mois pour 4 livres</li>
-                <li><strong>Delai</strong> : 5/5 — Livre numerique pret en 5 minutes, lisible immediatement</li>
+                <li><strong>Prix</strong> : 5/5 — Premier livre gratuit, puis 3,99€. Abonnement Club à 9,99€/mois pour 4 livres</li>
+                <li><strong>Délai</strong> : 5/5 — Livre numerique pret en 5 minutes, lisible immédiatement</li>
                 <li><strong>UX</strong> : 5/5 — Interface intuitive sur mobile, creation en 3 etapes</li>
               </ul>
               <p>
-                <strong>Points forts</strong> : premier livre gratuit, histoire veritablement unique, photo de l'enfant dans les illustrations, pret en 5 minutes.
+                <strong>Points forts</strong> : premier livre gratuit, histoire véritablement unique, photo de l'enfant dans les illustrations, pret en 5 minutes.
               </p>
               <p>
                 <strong>Points faibles</strong> : uniquement au format numerique (pas d'impression physique pour l'instant).
@@ -124,13 +137,13 @@ const BlogArticleSEO2: React.FC = () => {
                 <strong>Note globale : 4.2/5</strong>
               </p>
               <p>
-                Wonderbly est l'un des pionniers du <strong>livre personnalise enfant</strong> avec son best-seller "Lost My Name". La plateforme propose une selection d'histoires pre-ecrites ou l'on insere le prenom de l'enfant.
+                Wonderbly est l'un des pionniers du <strong>livre personnalise enfant</strong> avec son best-seller "Lost My Name". La plateforme propose une selection d'histoires pré-écrites ou l'on insere le prenom de l'enfant.
               </p>
               <ul>
-                <li><strong>Personnalisation</strong> : 3/5 — Prenom et avatar (parmi des modeles predefinies)</li>
+                <li><strong>Personnalisation</strong> : 3/5 — Prenom et avatar (parmi des modeles prédéfinies)</li>
                 <li><strong>Illustrations</strong> : 5/5 — Dessinees par des illustrateurs professionnels, qualite exceptionnelle</li>
-                <li><strong>Prix</strong> : 3.5/5 — A partir de 25€ pour un livre imprime, pas d'essai gratuit</li>
-                <li><strong>Delai</strong> : 3/5 — Livraison en 5-7 jours ouvrables</li>
+                <li><strong>Prix</strong> : 3.5/5 — À partir de 25€ pour un livre imprime, pas d'essai gratuit</li>
+                <li><strong>Délai</strong> : 3/5 — Livraison en 5-7 jours ouvrables</li>
                 <li><strong>UX</strong> : 4.5/5 — Interface elegant et professionnel</li>
               </ul>
               <p>
@@ -140,25 +153,25 @@ const BlogArticleSEO2: React.FC = () => {
                 <strong>Points faibles</strong> : histoire generique (meme texte pour tout le monde, seul le prenom change), prix eleve, pas de photo de l'enfant.
               </p>
 
-              <h2 id="hourra-heros">3. Hourra Heros</h2>
+              <h2 id="hourra-heros">3. Hourra Héros</h2>
               <p>
                 <strong>Note globale : 4.0/5</strong>
               </p>
               <p>
-                Hourra Heros propose des livres ou l'enfant et sa famille sont les personnages principaux. L'originalite : on peut personnaliser plusieurs membres de la famille dans la meme histoire.
+                Hourra Héros propose des livres ou l'enfant et sa famille sont les personnages principaux. L'originalite : on peut personnaliser plusieurs membres de la famille dans la meme histoire.
               </p>
               <ul>
                 <li><strong>Personnalisation</strong> : 3.5/5 — Prenom + avatar familial personnalisable</li>
                 <li><strong>Illustrations</strong> : 4/5 — Style colore et joyeux, avatars mignons</li>
-                <li><strong>Prix</strong> : 3/5 — A partir de 30€, pas d'essai gratuit</li>
-                <li><strong>Delai</strong> : 3/5 — Livraison en 5-10 jours</li>
+                <li><strong>Prix</strong> : 3/5 — À partir de 30€, pas d'essai gratuit</li>
+                <li><strong>Délai</strong> : 3/5 — Livraison en 5-10 jours</li>
                 <li><strong>UX</strong> : 4/5 — Bon configurateur de personnages</li>
               </ul>
               <p>
                 <strong>Points forts</strong> : personnalisation familiale, bon choix de themes.
               </p>
               <p>
-                <strong>Points faibles</strong> : histoire pre-ecrite, pas de photo reelle, prix eleve.
+                <strong>Points faibles</strong> : histoire pré-écrite, pas de photo réelle, prix eleve.
               </p>
 
               <h2 id="eponi">4. Eponi</h2>
@@ -166,13 +179,13 @@ const BlogArticleSEO2: React.FC = () => {
                 <strong>Note globale : 3.8/5</strong>
               </p>
               <p>
-                Eponi est un site francais qui propose une curation de livres personnalises de differentes marques. C'est un excellent point de depart pour decouvrir les options disponibles, mais ce n'est pas un createur direct.
+                Eponi est un site francais qui propose une curation de livres personnalises de differentes marques. C'est un excellent point de depart pour découvrir les options disponibles, mais ce n'est pas un createur direct.
               </p>
               <ul>
-                <li><strong>Personnalisation</strong> : 3/5 — Depend de la marque selectionnee</li>
+                <li><strong>Personnalisation</strong> : 3/5 — Depend de la marque sélectionnée</li>
                 <li><strong>Illustrations</strong> : 4/5 — Selection de qualite</li>
                 <li><strong>Prix</strong> : 3.5/5 — Variable selon les produits (15-40€)</li>
-                <li><strong>Delai</strong> : 3/5 — Variable</li>
+                <li><strong>Délai</strong> : 3/5 — Variable</li>
                 <li><strong>UX</strong> : 4/5 — Bon blog avec guides d'achat utiles</li>
               </ul>
 
@@ -181,14 +194,14 @@ const BlogArticleSEO2: React.FC = () => {
                 <strong>Note globale : 3.7/5</strong>
               </p>
               <p>
-                Plume Malice mise sur le <strong>made in France</strong> et l'integration de photos reelles dans les illustrations. Le concept est seduisant mais le catalogue est limite.
+                Plume Malice mise sur le <strong>made in France</strong> et l'integration de photos réelles dans les illustrations. Le concept est séduisant mais le catalogue est limite.
               </p>
               <ul>
-                <li><strong>Personnalisation</strong> : 4/5 — Photo de l'enfant integree dans les illustrations</li>
+                <li><strong>Personnalisation</strong> : 4/5 — Photo de l'enfant intégrée dans les illustrations</li>
                 <li><strong>Illustrations</strong> : 3.5/5 — Integration photo parfois artificielle</li>
-                <li><strong>Prix</strong> : 3/5 — A partir de 30€</li>
-                <li><strong>Delai</strong> : 2.5/5 — Production et livraison en 7-14 jours</li>
-                <li><strong>UX</strong> : 3.5/5 — Interface correcte mais datee</li>
+                <li><strong>Prix</strong> : 3/5 — À partir de 30€</li>
+                <li><strong>Délai</strong> : 2.5/5 — Production et livraison en 7-14 jours</li>
+                <li><strong>UX</strong> : 3.5/5 — Interface correcte mais datée</li>
               </ul>
 
               <h2 id="creermonlivre">6. CreerMonLivre</h2>
@@ -196,13 +209,13 @@ const BlogArticleSEO2: React.FC = () => {
                 <strong>Note globale : 3.5/5</strong>
               </p>
               <p>
-                Present depuis plus de 17 ans, CreerMonLivre propose le plus grand catalogue de livres personnalises (de la naissance a 18 ans). Un choix massif, mais une personnalisation qui reste au niveau du prenom.
+                Present depuis plus de 17 ans, CreerMonLivre propose le plus grand catalogue de livres personnalises (de la naissance à 18 ans). Un choix massif, mais une personnalisation qui reste au niveau du prenom.
               </p>
               <ul>
                 <li><strong>Personnalisation</strong> : 2.5/5 — Principalement le prenom</li>
                 <li><strong>Illustrations</strong> : 3.5/5 — Variees mais generiques</li>
-                <li><strong>Prix</strong> : 4/5 — A partir de 15€, bon rapport qualite/prix pour l'imprime</li>
-                <li><strong>Delai</strong> : 3/5 — 5-7 jours</li>
+                <li><strong>Prix</strong> : 4/5 — À partir de 15€, bon rapport qualite/prix pour l'imprime</li>
+                <li><strong>Délai</strong> : 3/5 — 5-7 jours</li>
                 <li><strong>UX</strong> : 3/5 — Site vieillissant</li>
               </ul>
 
@@ -211,13 +224,13 @@ const BlogArticleSEO2: React.FC = () => {
                 <strong>Note globale : 3.5/5</strong>
               </p>
               <p>
-                Concurrent direct de Contedia dans la categorie IA. Livre Magique genere des histoires uniques avec des illustrations IA. Le concept est prometteur mais l'execution est encore en rodage.
+                Concurrent direct de Contedia dans la catégorie IA. Livre Magique genere des histoires uniques avec des illustrations IA. Le concept est prometteur mais l'execution est encore en rodage.
               </p>
               <ul>
                 <li><strong>Personnalisation</strong> : 4.5/5 — Histoire unique generee par IA</li>
-                <li><strong>Illustrations</strong> : 3.5/5 — Qualite variable selon les generations</li>
-                <li><strong>Prix</strong> : 3.5/5 — A partir de 9,99€</li>
-                <li><strong>Delai</strong> : 4.5/5 — Disponible rapidement</li>
+                <li><strong>Illustrations</strong> : 3.5/5 — Qualite variable selon les générations</li>
+                <li><strong>Prix</strong> : 3.5/5 — À partir de 9,99€</li>
+                <li><strong>Délai</strong> : 4.5/5 — Disponible rapidement</li>
                 <li><strong>UX</strong> : 3/5 — Interface basique</li>
               </ul>
 
@@ -226,13 +239,13 @@ const BlogArticleSEO2: React.FC = () => {
                 <strong>Note globale : 3.3/5</strong>
               </p>
               <p>
-                Base a Toulouse, Mon Livre Personnalisable mise sur la qualite d'impression francaise et l'integration de photos. Un bon choix pour un cadeau physique haut de gamme.
+                Base à Toulouse, Mon Livre Personnalisable mise sur la qualite d'impression francaise et l'integration de photos. Un bon choix pour un cadeau physique haut de gamme.
               </p>
               <ul>
                 <li><strong>Personnalisation</strong> : 3.5/5 — Photo + prenom</li>
                 <li><strong>Illustrations</strong> : 3.5/5 — Correctes</li>
-                <li><strong>Prix</strong> : 2.5/5 — A partir de 35€</li>
-                <li><strong>Delai</strong> : 2.5/5 — 7-14 jours</li>
+                <li><strong>Prix</strong> : 2.5/5 — À partir de 35€</li>
+                <li><strong>Délai</strong> : 2.5/5 — 7-14 jours</li>
                 <li><strong>UX</strong> : 3.5/5 — Correct</li>
               </ul>
 
@@ -246,8 +259,8 @@ const BlogArticleSEO2: React.FC = () => {
               <ul>
                 <li><strong>Personnalisation</strong> : 2.5/5 — Prenom uniquement</li>
                 <li><strong>Illustrations</strong> : 4/5 — Style classique tres soigne</li>
-                <li><strong>Prix</strong> : 3/5 — A partir de 25€</li>
-                <li><strong>Delai</strong> : 3/5 — 5-7 jours</li>
+                <li><strong>Prix</strong> : 3/5 — À partir de 25€</li>
+                <li><strong>Délai</strong> : 3/5 — 5-7 jours</li>
                 <li><strong>UX</strong> : 3/5 — Basique</li>
               </ul>
 
@@ -261,8 +274,8 @@ const BlogArticleSEO2: React.FC = () => {
               <ul>
                 <li><strong>Personnalisation</strong> : 4/5 — Visage de l'enfant dans les illustrations</li>
                 <li><strong>Illustrations</strong> : 3/5 — L'integration faciale peut sembler artificielle</li>
-                <li><strong>Prix</strong> : 3/5 — A partir de 20€</li>
-                <li><strong>Delai</strong> : 3.5/5 — Assez rapide</li>
+                <li><strong>Prix</strong> : 3/5 — À partir de 20€</li>
+                <li><strong>Délai</strong> : 3.5/5 — Assez rapide</li>
                 <li><strong>UX</strong> : 3/5 — Correct</li>
               </ul>
 
@@ -290,15 +303,15 @@ const BlogArticleSEO2: React.FC = () => {
                   <tbody>
                     {[
                       ['Contedia', '5/5', '4.5/5', 'Gratuit puis 3,99€', '4.8/5'],
-                      ['Wonderbly', '3/5', '5/5', 'A partir de 25€', '4.2/5'],
-                      ['Hourra Heros', '3.5/5', '4/5', 'A partir de 30€', '4.0/5'],
+                      ['Wonderbly', '3/5', '5/5', 'À partir de 25€', '4.2/5'],
+                      ['Hourra Héros', '3.5/5', '4/5', 'À partir de 30€', '4.0/5'],
                       ['Eponi', '3/5', '4/5', '15-40€', '3.8/5'],
-                      ['Plume Malice', '4/5', '3.5/5', 'A partir de 30€', '3.7/5'],
-                      ['CreerMonLivre', '2.5/5', '3.5/5', 'A partir de 15€', '3.5/5'],
-                      ['Livre Magique', '4.5/5', '3.5/5', 'A partir de 9,99€', '3.5/5'],
-                      ['Mon Livre Perso.', '3.5/5', '3.5/5', 'A partir de 35€', '3.3/5'],
-                      ['Les Enfants Roy', '2.5/5', '4/5', 'A partir de 25€', '3.2/5'],
-                      ['Storyfam', '4/5', '3/5', 'A partir de 20€', '3.0/5'],
+                      ['Plume Malice', '4/5', '3.5/5', 'À partir de 30€', '3.7/5'],
+                      ['CreerMonLivre', '2.5/5', '3.5/5', 'À partir de 15€', '3.5/5'],
+                      ['Livre Magique', '4.5/5', '3.5/5', 'À partir de 9,99€', '3.5/5'],
+                      ['Mon Livre Perso.', '3.5/5', '3.5/5', 'À partir de 35€', '3.3/5'],
+                      ['Les Enfants Roy', '2.5/5', '4/5', 'À partir de 25€', '3.2/5'],
+                      ['Storyfam', '4/5', '3/5', 'À partir de 20€', '3.0/5'],
                     ].map(([nom, perso, illus, prix, note], i) => (
                       <tr key={i} style={{ borderBottom: '1px solid var(--border-color)', background: i === 0 ? 'rgba(255,153,153,0.08)' : undefined }}>
                         <td style={{ padding: '8px 10px', fontWeight: i === 0 ? 700 : 400 }}>{nom}</td>
@@ -314,17 +327,17 @@ const BlogArticleSEO2: React.FC = () => {
 
               <h2 id="verdict">Notre verdict : quel livre personnalise choisir ?</h2>
               <p>
-                Le choix depend de vos priorites :
+                Le choix depend de vos priorités :
               </p>
               <ul>
                 <li><strong>Vous voulez tester gratuitement</strong> → <Link to="/create-story">Contedia</Link> (premier livre offert, pret en 5 min)</li>
                 <li><strong>Vous voulez un beau livre imprime</strong> → Wonderbly (qualite d'impression premium)</li>
-                <li><strong>Vous voulez personnaliser toute la famille</strong> → Hourra Heros (plusieurs personnages)</li>
+                <li><strong>Vous voulez personnaliser toute la famille</strong> → Hourra Héros (plusieurs personnages)</li>
                 <li><strong>Vous voulez une histoire 100% unique</strong> → <Link to="/create-story">Contedia</Link> (chaque histoire est generee par IA)</li>
                 <li><strong>Budget serre</strong> → <Link to="/create-story">Contedia</Link> (gratuit) ou CreerMonLivre (15€ imprime)</li>
               </ul>
               <p>
-                Pour nous, le <strong>meilleur choix en 2026</strong> est clairement Contedia pour les parents qui veulent une histoire veritablement unique, personnalisee en profondeur, et accessible immediatement. Le fait que le premier livre soit gratuit permet de tester sans risque.
+                Pour nous, le <strong>meilleur choix en 2026</strong> est clairement Contedia pour les parents qui veulent une histoire véritablement unique, personnalisee en profondeur, et accessible immédiatement. Le fait que le premier livre soit gratuit permet de tester sans risque.
               </p>
 
               <div className="article-cta">
@@ -337,22 +350,22 @@ const BlogArticleSEO2: React.FC = () => {
 
               <h3>Quel est le meilleur site de livre personnalise en 2026 ?</h3>
               <p>
-                Contedia arrive en tete de notre comparatif grace a son rapport qualite/prix imbattable (premier livre gratuit), sa personnalisation profonde (histoire unique + photo) et sa rapidite (livre pret en 5 minutes). Pour un livre imprime, Wonderbly offre la meilleure qualite.
+                Contedia arrive en tete de notre comparatif grace à son rapport qualite/prix imbattable (premier livre gratuit), sa personnalisation profonde (histoire unique + photo) et sa rapidite (livre pret en 5 minutes). Pour un livre imprime, Wonderbly offre la meilleure qualite.
               </p>
 
               <h3>Quelle est la difference entre un livre personnalise classique et un livre IA ?</h3>
               <p>
-                Un livre classique (Wonderbly, Hourra Heros) insere le prenom de l'enfant dans une histoire pre-ecrite identique pour tout le monde. Un livre IA (Contedia) genere une histoire 100% unique : texte, illustrations et couverture sont crees sur mesure. Deux enfants avec le meme prenom recevront deux histoires completement differentes.
+                Un livre classique (Wonderbly, Hourra Héros) insere le prenom de l'enfant dans une histoire pré-écrite identique pour tout le monde. Un livre IA (Contedia) genere une histoire 100% unique : texte, illustrations et couverture sont crees sur mesure. Deux enfants avec le meme prenom recevront deux histoires completement differentes.
               </p>
 
               <h3>Peut-on integrer la photo de l'enfant dans le livre ?</h3>
               <p>
-                Oui, sur Contedia et quelques autres plateformes. Contedia utilise l'IA pour analyser la photo et creer des illustrations qui ressemblent a l'enfant. Le resultat est une integration naturelle dans le style illustre du livre.
+                Oui, sur Contedia et quelques autres plateformes. Contedia utilise l'IA pour analyser la photo et creer des illustrations qui ressemblent à l'enfant. Le resultat est une integration naturelle dans le style illustre du livre.
               </p>
 
               <h3>Combien coute un livre personnalise enfant ?</h3>
               <p>
-                Les prix varient de 0€ (gratuit sur Contedia) a 40€ pour un livre imprime haut de gamme. En moyenne, comptez 20-30€ pour un livre imprime et 0-10€ pour un livre numerique.
+                Les prix varient de 0€ (gratuit sur Contedia) à 40€ pour un livre imprime haut de gamme. En moyenne, comptez 20-30€ pour un livre imprime et 0-10€ pour un livre numerique.
               </p>
 
               <h3>Le livre numerique est-il un bon cadeau ?</h3>
@@ -361,7 +374,7 @@ const BlogArticleSEO2: React.FC = () => {
               </p>
 
               <p>
-                <em>Decouvrez aussi :</em>
+                <em>Découvrez aussi :</em>
               </p>
               <ul>
                 <li><Link to="/blog/guide-livre-personnalise-enfant-2026">Livre personnalise enfant : le guide complet par age</Link></li>
