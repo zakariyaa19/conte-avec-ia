@@ -1,166 +1,241 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { PageLayout } from '../components/layout/PageLayout';
 import { SEOHead } from '../components/SEOHead';
-import { SchemaBreadcrumb } from '../components/SchemaMarkup';
-import { Helmet } from 'react-helmet-async';
+import { SchemaFAQ, SchemaBreadcrumb } from '../components/SchemaMarkup';
 import '../styles/BlogArticle.css';
 
 const BlogArticleFoi1: React.FC = () => {
   useEffect(() => {
-    document.title = 'Transmettre la foi à travers les histoires : comment les contes personnalisés éveillent la spiritualité | Contes d\'IA';
-    
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', 'Découvrez comment les contes personnalisés aident à transmettre la foi et les valeurs spirituelles aux enfants avec douceur et bienveillance. Une approche moderne de l\'éducation religieuse.');
-    }
-
-    const metaKeywords = document.querySelector('meta[name="keywords"]') || document.createElement('meta');
-    metaKeywords.setAttribute('content', 'transmettre la foi enfant, éducation religieuse enfant, conte personnalisé spiritualité, valeurs religieuses enfant, spiritualité enfant histoire, foi famille conte, transmission spirituelle');
-    if (!document.querySelector('meta[name="keywords"]')) {
-      document.head.appendChild(metaKeywords);
-    }
+    document.title = 'Transmettre la Foi à son Enfant par les Histoires : Le Guide par Âge | Contedia';
   }, []);
 
   const tableOfContents = [
-    { title: "La puissance narrative dans l'éveil spirituel", id: "puissance-narrative" },
-    { title: "Adapter les enseignements à l'âge de l'enfant", id: "adapter-enseignements" },
-    { title: "Créer des héros inspirants et bienveillants", id: "heros-inspirants" },
-    { title: "Intégrer les valeurs familiales dans le récit", id: "valeurs-familiales" },
-    { title: "Respecter le rythme spirituel de chaque enfant", id: "rythme-spirituel" },
-    { title: "Les bienfaits de la personnalisation religieuse", id: "bienfaits-personnalisation" },
-    { title: "Créer un dialogue ouvert sur la foi", id: "dialogue-ouvert" },
-    { title: "Commencer votre conte spirituel personnalisé", id: "commencer-conte" }
+    { title: "Pourquoi les histoires transmettent mieux que les leçons", id: "pourquoi" },
+    { title: "Par âge : adapter le message spirituel", id: "par-age" },
+    { title: "L'avantage du conte personnalisé pour la foi", id: "avantage" },
+    { title: "Créer un dialogue naturel sur la spiritualité", id: "dialogue" },
+    { title: "Exemples de contes spirituels créés sur Contedia", id: "exemples" },
+    { title: "Ce que les parents croyants en disent", id: "temoignages" },
+    { title: "FAQ : Foi et contes personnalisés", id: "faq" },
   ];
 
   const handleScrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
-      element.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start'
-      });
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+  };
+
+  const faqQuestions = [
+    {
+      question: "Les contes personnalisés peuvent-ils aider à transmettre la foi ?",
+      answer: "Oui ! Depuis des millénaires, les communautés de foi utilisent les histoires pour transmettre leurs valeurs. Un conte personnalisé va plus loin : votre enfant EST le héros qui incarne ces valeurs. Le message passe naturellement, sans leçon de morale."
+    },
+    {
+      question: "Comment adapter le message spirituel à l'âge de l'enfant ?",
+      answer: "Sur Contedia, l'IA adapte automatiquement. Pour les 0-3 ans : amour et douceur. Pour les 3-5 ans : gratitude et partage. Pour les 6-8 ans : patience, foi et courage moral. Le vocabulaire et la complexité s'ajustent à la tranche d'âge."
+    },
+    {
+      question: "Un conte personnalisé remplace-t-il l'éducation religieuse ?",
+      answer: "Non, et ce n'est pas l'objectif. Le conte complète l'éducation religieuse en rendant les valeurs concrètes et vivantes. C'est un support ludique qui ouvre la discussion en famille, pas un substitut à l'enseignement traditionnel."
+    },
+    {
+      question: "Quelles religions sont disponibles sur Contedia ?",
+      answer: "Islam, christianisme, judaïsme, bouddhisme, hindouisme, et approche laïque (valeurs universelles sans référence religieuse). L'IA adapte le vocabulaire, les valeurs et les thèmes à la tradition choisie."
+    },
+    {
+      question: "Mon enfant pose des questions sur Dieu. Un conte peut-il m'aider ?",
+      answer: "Absolument ! Le conte crée un cadre naturel pour aborder les questions spirituelles. Après la lecture, l'enfant pose des questions liées à l'histoire ('Pourquoi le héros a-t-il fait ça ?'), ce qui ouvre un dialogue spontané sur la foi, les valeurs et le sens."
+    },
+    {
+      question: "Combien coûte un conte avec des valeurs religieuses ?",
+      answer: "Le premier conte est 100% gratuit sur Contedia, y compris avec la personnalisation religieuse. Les suivants coûtent 3,99€. L'abonnement Club (9,99€/mois) inclut 4 livres."
+    }
+  ];
+
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Transmettre la Foi à son Enfant par les Histoires : Le Guide par Âge",
+    "description": "Comment les contes personnalisés aident à transmettre la foi aux enfants. Guide par âge, dialogue spirituel, exemples concrets. Premier livre gratuit.",
+    "image": "https://contedia.fr/images/blog/foi-spiritualite-enfant-conte.jpg",
+    "author": { "@type": "Organization", "name": "Contedia", "url": "https://contedia.fr" },
+    "publisher": { "@type": "Organization", "name": "Contedia", "logo": { "@type": "ImageObject", "url": "https://contedia.fr/logo-conte-ia.png" } },
+    "datePublished": "2025-11-04",
+    "dateModified": "2026-03-22",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://contedia.fr/blog/transmettre-foi-histoires-contes-personnalises-spiritualite" }
   };
 
   return (
     <PageLayout>
       <SEOHead
-        title="Transmettre la Foi à Travers les Contes Personnalisés | Contedia"
-        description="Découvrez comment transmettre la foi à travers les contes personnalisés. Guide complet, conseils pratiques et premier livre gratuit sur Contedia."
+        title="Transmettre la Foi à son Enfant par les Histoires : Le Guide par Âge"
+        description="Comment transmettre la foi à votre enfant grâce aux contes personnalisés. Guide par âge, dialogue spirituel, exemples. Premier livre gratuit."
         type="article"
       />
+      <SchemaFAQ questions={faqQuestions} />
       <SchemaBreadcrumb items={[
         { name: "Accueil", url: "https://contedia.fr/" },
         { name: "Blog", url: "https://contedia.fr/blog" },
-        { name: "Transmettre la Foi à Travers les Contes Personnali", url: "https://contedia.fr/blog/transmettre-foi-histoires-contes-personnalises-spiritualite" }
+        { name: "Transmettre la foi par les histoires", url: "https://contedia.fr/blog/transmettre-foi-histoires-contes-personnalises-spiritualite" }
       ]} />
       <Helmet>
-        <script type="application/ld+json">{`{"@context":"https://schema.org","@type":"Article","headline":"Transmettre la Foi à Travers les Contes Personnalisés","author":{"@type":"Organization","name":"Contedia"},"publisher":{"@type":"Organization","name":"Contedia"},"dateModified":"2026-03-22"}`}</script>
+        <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>
       </Helmet>
+
       <div className="article-container">
         <div className="article-breadcrumb">
-          <Link to="/blog">Blog</Link> / Transmettre la foi à travers les histoires : comment les contes personnalisés éveillent la spiritualité
+          <Link to="/blog">Blog</Link> / Transmettre la foi à son enfant par les histoires
         </div>
 
         <div className="article-layout">
           <div className="article-main">
             <div className="article-header">
-              <h1>Transmettre la foi à travers les histoires : comment les contes personnalisés éveillent la spiritualité des enfants</h1>
+              <h1>Transmettre la Foi à son Enfant par les Histoires : Le Guide Pratique par Âge</h1>
               <div className="article-meta">
-                <span>Par l'équipe Contedia · Mis à jour le 22 mars 2026</span>
+                <span>Par l'équipe Contedia · Mis à jour le 22 mars 2026 · 8 min de lecture</span>
               </div>
             </div>
 
             <div className="article-image">
               <img
                 src="/images/blog/foi-spiritualite-enfant-conte.jpg"
-                alt="Enfant écoutant paisiblement une histoire spirituelle dans un environnement serein"
+                alt="Parent lisant un conte spirituel personnalisé à son enfant dans une ambiance chaleureuse et sereine"
                 loading="lazy"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.src = '/images/placeholder-blog.jpg';
-                }}
+                onError={(e) => { const target = e.target as HTMLImageElement; target.src = '/images/placeholder-blog.jpg'; }}
               />
             </div>
 
             <div className="article-content">
               <p className="article-intro">
-                Transmettre la foi et les valeurs spirituelles à nos enfants représente l'un des défis les plus précieux de la parentalité. Comment partager cette richesse intérieure avec douceur et respect ? Les contes personnalisés offrent une approche moderne et bienveillante pour éveiller la spiritualité des enfants, en créant des histoires qui résonnent avec leur cœur et leur imagination.
+                <strong>« Maman, c'est quoi Dieu ? »</strong> — Cette question, tous les parents croyants l'entendent un jour. Et la réponse n'est jamais simple. Vous pouvez expliquer avec des mots abstraits... ou vous pouvez raconter une <strong>histoire</strong>. Depuis des millénaires, les paraboles, les récits coraniques et les légendes bouddhistes transmettent la foi mieux que n'importe quel cours. En 2026, les <strong>contes personnalisés</strong> permettent à VOTRE enfant de vivre ces valeurs spirituelles comme héros de sa propre histoire. Voici comment, âge par âge.
               </p>
 
-              <h2 id="puissance-narrative">La puissance narrative dans l'éveil spirituel</h2>
+              <h2 id="pourquoi">Pourquoi les histoires transmettent la foi mieux que les leçons</h2>
               <p>
-                Depuis la nuit des temps, les histoires constituent le véhicule privilégié de transmission des valeurs spirituelles. Les paraboles, les contes traditionnels et les récits sacrés touchent l'âme humaine d'une manière unique, créant des ponts entre le visible et l'invisible, entre le quotidien et le sacré.
+                Un enfant de 4 ans ne retient pas « il faut être généreux ». Mais il retient l'histoire où <strong>il</strong> a partagé son pain avec un voyageur affamé pendant le Ramadan, et comment le visage du voyageur s'est illuminé. La différence ? L'histoire rend la valeur <strong>concrète, émotionnelle et personnelle</strong>.
               </p>
-              <p>
-                Un conte personnalisé amplifie cette puissance en plaçant l'enfant au cœur du récit spirituel. Quand votre petit devient le héros d'une histoire empreinte de foi, il ne se contente pas d'écouter passivement : il vit l'expérience, ressent les émotions et intègre naturellement les enseignements proposés.
-              </p>
-              <p>
-                Cette approche narrative respecte le rythme naturel d'apprentissage de l'enfant. Plutôt que d'imposer des concepts abstraits, l'histoire personnalisée permet une découverte progressive et joyeuse des valeurs spirituelles, adaptée à sa compréhension et à sa sensibilité unique.
-              </p>
+              <ul>
+                <li><strong>Le vécu plutôt que le concept</strong> — « La patience est une vertu » → abstrait. « Adam a attendu patiemment et a découvert un trésor caché » → vécu. L'enfant intériorise par l'expérience narrative, pas par la théorie.</li>
+                <li><strong>L'identification au héros</strong> — Quand c'est SON prénom dans l'histoire, le message devient personnel. Ce n'est plus « les gens devraient partager » mais « MOI j'ai partagé et c'était bien ». <Link to="/blog/enfant-heros-propre-histoire">Le pouvoir d'être le héros</Link> est décuplé quand il s'agit de valeurs spirituelles.</li>
+                <li><strong>La répétition joyeuse</strong> — L'enfant veut relire son conte 20, 30, 50 fois. Chaque relecture renforce les valeurs. Sans effort. Sans résistance. C'est la puissance du <Link to="/blog/conte-personnalise-rituel-coucher">rituel du coucher</Link>.</li>
+                <li><strong>Le dialogue naturel</strong> — Après l'histoire, l'enfant pose des questions : « Pourquoi il a fait ça ? » — C'est le moment parfait pour parler de foi en famille, naturellement, sans forcer.</li>
+              </ul>
 
-              <h2 id="adapter-enseignements">Adapter les enseignements à l'âge de l'enfant</h2>
-              <p>
-                Chaque âge nécessite une approche différente dans la transmission spirituelle. Les tout-petits de 3 à 5 ans s'épanouissent dans des histoires simples mettant l'accent sur l'amour, la gratitude et la bienveillance. Leur conte personnalisé peut les montrer aidant les autres, découvrant la beauté de la création ou exprimant leur reconnaissance.
-              </p>
-              <p>
-                Les enfants de 6 à 9 ans sont prêts pour des récits plus élaborés explorant des concepts comme le pardon, la justice et la compassion. Leur histoire personnalisée peut les guider à travers des défis moraux adaptés à leur âge, les aidant à comprendre les choix éthiques dans un contexte narratif engageant.
-              </p>
+              <div className="article-cta">
+                <Link to="/create-story" className="cta-button">
+                  ✨ Créez un conte qui transmet vos valeurs — Premier livre gratuit
+                </Link>
+              </div>
 
-              <h3 id="heros-inspirants">Créer des héros inspirants et bienveillants</h3>
-              <p>
-                Dans un conte spirituel personnalisé, votre enfant devient un héros guidé par des valeurs nobles. Cette représentation positive renforce son estime de soi tout en lui montrant concrètement comment vivre selon ses convictions. Le récit peut l'accompagner dans des aventures où la foi, l'espoir et l'amour triomphent des difficultés.
-              </p>
-              <p>
-                Ces héros personnalisés ne sont jamais parfaits : ils apprennent, grandissent et parfois se trompent, comme tous les enfants. Cette humanité rend l'identification plus authentique et montre que la spiritualité est un chemin de croissance continue, non une destination figée.
-              </p>
+              <h2 id="par-age">Par âge : adapter le message spirituel</h2>
 
-              <h2 id="valeurs-familiales">Intégrer les valeurs familiales dans le récit</h2>
+              <h3>0-3 ans : amour, douceur et émerveillement</h3>
               <p>
-                Chaque famille porte des valeurs spirituelles uniques, influencées par sa tradition religieuse, sa culture et son histoire personnelle. Un conte personnalisé peut intégrer ces spécificités familiales, créant une continuité harmonieuse entre les enseignements reçus à la maison et l'aventure narrative.
+                À cet âge, l'enfant ne comprend pas les concepts théologiques. Mais il ressent l'<strong>amour</strong> et l'<strong>émerveillement</strong>. Le conte personnalisé peut :
               </p>
-              <p>
-                Cette personnalisation respecte la diversité des approches spirituelles. Qu'elle soit chrétienne, musulmane, juive, bouddhiste, hindoue ou inspirée d'autres traditions, chaque foi trouve sa place dans un récit adapté, créé avec respect et authenticité.
-              </p>
+              <ul>
+                <li>Montrer la beauté de la création (étoiles, animaux, fleurs) avec gratitude</li>
+                <li>Transmettre la douceur et la bienveillance à travers des gestes simples</li>
+                <li>Créer un sentiment de sécurité : « tu es aimé, tu es protégé »</li>
+              </ul>
+              <p><em>Le conte est court (6 pages), avec des illustrations très colorées et des phrases simples. Le prénom est répété à chaque page.</em></p>
 
-              <h3 id="rythme-spirituel">Respecter le rythme spirituel de chaque enfant</h3>
+              <h3>3-5 ans : gratitude, partage et bonté</h3>
               <p>
-                Certains enfants montrent une curiosité naturelle pour les questions spirituelles dès leur plus jeune âge, tandis que d'autres développent cet intérêt plus progressivement. Un conte personnalisé s'adapte à cette diversité, proposant des niveaux de profondeur spirituelle ajustés à la réceptivité de chaque enfant.
+                L'enfant commence à comprendre les notions de bien et de mal. C'est le moment d'introduire :
               </p>
-              <p>
-                Cette approche individualisée évite la pression et respecte le libre arbitre de l'enfant. L'histoire devient une invitation douce à explorer sa spiritualité, non une obligation ou un endoctrinement. Cette liberté favorise un développement spirituel authentique et durable.
-              </p>
+              <ul>
+                <li><strong>La gratitude</strong> — « Adam remercia pour ce beau repas » — l'enfant apprend à dire merci avec le cœur</li>
+                <li><strong>Le partage</strong> — Le héros donne quelque chose de précieux et découvre que le bonheur vient en donnant</li>
+                <li><strong>La bonté</strong> — Le héros aide quelqu'un en difficulté et reçoit de la joie en retour</li>
+              </ul>
+              <p><em>C'est l'âge où les contes de <Link to="/blog/fetes-religieuses-conte-personnalise-noel-ramadan-paque-diwali">Ramadan, Noël et Pâques</Link> ont le plus d'impact.</em></p>
 
-              <h2 id="bienfaits-personnalisation">Les bienfaits de la personnalisation religieuse</h2>
+              <h3>6-8 ans : patience, foi, courage moral</h3>
               <p>
-                Un conte spirituel personnalisé offre de nombreux bienfaits pour le développement de l'enfant. Il renforce son identité spirituelle en lui montrant qu'il a sa place dans la grande histoire de sa foi. Cette appartenance nourrit sa confiance et son sentiment de sécurité existentielle.
+                L'enfant est prêt pour des concepts plus profonds :
               </p>
-              <p>
-                L'histoire personnalisée développe également l'empathie et la compassion. En vivant des aventures où il aide les autres, partage ses biens ou console les affligés, l'enfant intègre naturellement ces comportements altruistes dans sa vie quotidienne.
-              </p>
+              <ul>
+                <li><strong>La patience</strong> — Le héros attend, persévère, et est récompensé. La foi comme confiance en l'avenir.</li>
+                <li><strong>Le courage moral</strong> — Le héros fait le choix difficile mais juste, même quand personne ne regarde.</li>
+                <li><strong>Le pardon</strong> — Le héros pardonne à quelqu'un qui l'a blessé et découvre la paix intérieure.</li>
+                <li><strong>La diversité</strong> — Le héros rencontre des enfants d'autres cultures et religions, et apprend le <Link to="/blog/foi-tolerance-ouverture-respect-differentes-religions">respect des différences</Link>.</li>
+              </ul>
 
-              <h3 id="dialogue-ouvert">Créer un dialogue ouvert sur la foi</h3>
+              <h2 id="avantage">L'avantage du conte personnalisé pour transmettre la foi</h2>
               <p>
-                Un conte spirituel personnalisé devient un excellent support pour ouvrir des conversations profondes avec votre enfant. Les situations vécues par le héros de l'histoire - qui est lui-même - créent des opportunités naturelles d'échange sur les questions de foi, de sens et de valeurs.
+                Un livre religieux classique raconte l'histoire d'un personnage fictif. Un <strong>conte personnalisé</strong> sur <Link to="/blog/integrer-valeurs-religieuses-contes-personnalises">Contedia</Link> place VOTRE enfant dans cette histoire. La différence est énorme :
               </p>
+              <ul>
+                <li><strong>Livre classique</strong> : « Un petit garçon a partagé son repas » → l'enfant écoute</li>
+                <li><strong>Conte personnalisé</strong> : « <strong>Adam</strong> a partagé son repas avec le voyageur et le voyageur lui a souri » → l'enfant VOIT et RESSENT</li>
+              </ul>
               <p>
-                Ces discussions, nourries par l'expérience narrative partagée, sont souvent plus riches et authentiques que les conversations abstraites. L'enfant peut exprimer ses questions, ses doutes ou ses découvertes en s'appuyant sur les événements de son histoire personnalisée.
-              </p>
-
-              <h2 id="commencer-conte">Commencer votre conte spirituel personnalisé</h2>
-              <p>
-                Créer un conte spirituel personnalisé pour votre enfant commence par une réflexion sur les valeurs que vous souhaitez transmettre et la manière dont elles peuvent s'incarner dans une aventure captivante. Pensez aux défis appropriés à son âge, aux leçons qu'il est prêt à recevoir, et aux héros spirituels qui peuvent l'inspirer.
-              </p>
-              <p>
-                L'intelligence artificielle moderne permet de créer ces histoires avec respect et sensibilité, en intégrant les spécificités de votre tradition spirituelle tout en préservant l'émerveillement et la joie propres aux contes pour enfants. Le résultat est une œuvre unique qui accompagnera votre enfant dans sa croissance spirituelle.
+                Sur Contedia, vous pouvez <Link to="/blog/integrer-valeurs-religieuses-contes-personnalises">choisir la religion de votre famille</Link> (islam, christianisme, judaïsme, bouddhisme, hindouisme, ou valeurs laïques). L'IA adapte le vocabulaire, les valeurs et le ton. Le premier livre est <strong>gratuit</strong>.
               </p>
 
               <div className="article-cta">
                 <Link to="/create-story" className="cta-button">
-                  🕊️ Créer notre conte spirituel personnalisé
+                  ✨ Choisissez vos valeurs — Premier conte spirituel offert
                 </Link>
               </div>
+
+              <h2 id="dialogue">Créer un dialogue naturel sur la spiritualité</h2>
+              <p>
+                Le conte personnalisé est un <strong>outil de dialogue</strong>, pas un substitut à l'éducation religieuse. Voici comment l'utiliser :
+              </p>
+              <ul>
+                <li><strong>Lisez ensemble</strong> — Le soir, au coucher. L'enfant blotti contre vous, l'animal à côté si vous en avez un. Créez un <Link to="/blog/lire-compagnon-quatre-pattes-rituel-lien-enfant-animal">rituel de lecture</Link>.</li>
+                <li><strong>Posez des questions ouvertes</strong> — « Pourquoi Adam a-t-il partagé son repas ? » « Comment tu te sentirais si tu faisais pareil ? » L'enfant réfléchit, exprime, intériorise.</li>
+                <li><strong>Reliez à la vie réelle</strong> — « Tu te souviens quand tu as partagé ton goûter avec Léo ? C'est comme dans ton histoire ! » Le pont entre le conte et la vie concrétise les valeurs.</li>
+                <li><strong>Laissez l'enfant mener</strong> — S'il pose une question sur Dieu, la prière ou la mort, le conte est un support parfait pour répondre en douceur, à son rythme.</li>
+              </ul>
+
+              <h2 id="exemples">Exemples de contes spirituels créés sur Contedia</h2>
+              <ul>
+                <li><strong>« Lina et les étoiles du Ramadan »</strong> — Lina, 4 ans, découvre que chaque bonne action fait briller une étoile. À la fin du Ramadan, le ciel est rempli de ses étoiles. Valeurs : générosité, patience, gratitude. Style Kawaii.</li>
+                <li><strong>« Timéo et la lumière de Noël »</strong> — Timéo, 4 ans, suit une lumière dorée qui le guide à travers la nuit. Il apprend que donner est plus beau que recevoir. Valeurs : générosité, espérance, amour familial. Style Aquarelle.</li>
+                <li><strong>« Sarah et la bougie d'Hanoukka »</strong> — Sarah, 6 ans, allume les bougies et découvre que chaque flamme représente une qualité : courage, sagesse, bonté... Valeurs : persévérance, lumière, transmission. Style Livre illustré classique.</li>
+              </ul>
+              <p>
+                Vous pouvez <Link to="/exemples">découvrir nos exemples de contes</Link> en lecture interactive.
+              </p>
+
+              <h2 id="temoignages">Ce que les parents croyants en disent</h2>
+              <ul>
+                <li><strong>Khadija, maman d'Adam (5 ans)</strong> — <em>« Le Ramadan, Adam me demandait toujours "pourquoi ?". Depuis qu'il a son conte où IL partage et fait briller les étoiles, il dit "je veux faire comme dans mon livre". C'est la plus belle façon de transmettre. »</em></li>
+                <li><strong>Philippe, papa de Noé (6 ans)</strong> — <em>« On est chrétiens mais je trouvais ça difficile de parler de foi avec un enfant de 6 ans sans être ennuyeux. Le conte personnalisé a ouvert le dialogue naturellement. Noé me pose des questions profondes maintenant, et on en discute en famille. »</em></li>
+                <li><strong>Rebecca, maman de Sarah (7 ans)</strong> — <em>« Pour Hanoukka, Sarah a eu son conte personnalisé. Elle l'a lu à ses cousins pendant le repas familial. Toute la famille était émue. C'est devenu notre tradition. »</em></li>
+              </ul>
+
+              <div className="article-cta">
+                <Link to="/create-story" className="cta-button">
+                  ✨ Rejoignez +500 familles — Un conte qui transmet vos valeurs
+                </Link>
+              </div>
+
+              <h2 id="faq">FAQ : Foi et contes personnalisés — Toutes les réponses</h2>
+
+              {faqQuestions.map((faq, i) => (
+                <React.Fragment key={i}>
+                  <h3>{faq.question}</h3>
+                  <p>{faq.answer}</p>
+                </React.Fragment>
+              ))}
+
+              <p>
+                <em>Découvrez aussi :</em>
+              </p>
+              <ul>
+                <li><Link to="/blog/integrer-valeurs-religieuses-contes-personnalises">Comment personnaliser la religion dans un conte (guide pratique)</Link></li>
+                <li><Link to="/blog/fetes-religieuses-conte-personnalise-noel-ramadan-paque-diwali">Contes pour Noël, Ramadan, Pâques et Diwali</Link></li>
+                <li><Link to="/blog/heros-foi-inspirer-enfants-personnages-spirituels">Des héros de foi pour inspirer les enfants</Link></li>
+                <li><Link to="/blog/foi-tolerance-ouverture-respect-differentes-religions">Foi, tolérance et respect des différences</Link></li>
+                <li><Link to="/blog/conte-personnalise-confiance-imagination-enfant">Comment le conte développe la confiance de l'enfant</Link></li>
+              </ul>
             </div>
           </div>
 
@@ -170,10 +245,7 @@ const BlogArticleFoi1: React.FC = () => {
               <ul>
                 {tableOfContents.map((item, index) => (
                   <li key={index}>
-                    <button 
-                      onClick={() => handleScrollToSection(item.id)}
-                      className="toc-link"
-                    >
+                    <button onClick={() => handleScrollToSection(item.id)} className="toc-link">
                       {item.title}
                     </button>
                   </li>
