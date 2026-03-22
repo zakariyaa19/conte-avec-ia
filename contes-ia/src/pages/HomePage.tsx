@@ -1226,7 +1226,7 @@ const slidesData = [
     label: 'Recevoir',
     stepLabel: 'Etape 2',
     title: 'C\'est 100% gratuit',
-    subtitle: 'Pas de carte bancaire. Entrez juste votre email et recevez votre livre personnalise en 5 minutes.',
+    subtitle: 'Pas de carte bancaire. Entrez juste votre email et recevez votre livre personnalisé en 5 minutes.',
     bgColor: `${theme.colors.accent.softPink}25`,
     illustrationId: 'order' as const
   },
@@ -1302,13 +1302,13 @@ const StepIllustration: React.FC<{ id: 'customize' | 'order' | 'receive'; size?:
 const faqItems = [
   {
     id: '1',
-    question: "Comment fonctionne la creation d'un conte personnalise ?",
-    answer: "Vous remplissez un formulaire en quelques etapes : choix du theme, du style d'illustration, informations sur le protagoniste et upload de photo. Notre equipe cree ensuite un conte unique avec des illustrations personnalisees."
+    question: "Comment fonctionne la création d'un conte personnalisé ?",
+    answer: "Vous remplissez un formulaire en 3 étapes : choix du thème, personnalisation du héros (prénom, photo), et choix du style d'illustration. L'IA génère ensuite un conte unique avec des illustrations personnalisées en 5 minutes."
   },
   {
     id: '2',
     question: "Combien de temps faut-il pour recevoir mon conte ?",
-    answer: "Le delai de creation est generalement de quelques jours ouvrables. Vous recevez une notification par email des que votre eBook est disponible dans votre bibliotheque."
+    answer: "Le livre personnalisé est prêt en 5 minutes ! L'IA génère le texte et les illustrations automatiquement. Vous recevez une notification par email dès que votre eBook est disponible dans votre bibliothèque."
   },
   {
     id: '3',
@@ -1317,23 +1317,23 @@ const faqItems = [
   },
   {
     id: '4',
-    question: "Comment fonctionne la bibliotheque personnelle ?",
-    answer: "Chaque conte commande est stocke dans votre espace personnel. Vous pouvez le consulter en ligne via notre visionneuse integree, le telecharger en PDF, et y acceder depuis n'importe quel appareil. C'est votre casier numerique de contes."
+    question: "Comment fonctionne la bibliothèque personnelle ?",
+    answer: "Chaque conte est stocké dans votre espace personnel. Vous pouvez le lire en ligne via notre visionneuse intégrée, le télécharger en PDF, le partager avec la famille, et y accéder depuis n'importe quel appareil."
   },
   {
     id: '5',
-    question: "Les contes sont-ils adaptes a tous les ages ?",
-    answer: "Oui ! Vous choisissez la tranche d'age lors de la commande (0-2 ans, 3-5 ans, 6-9 ans, 10+ ans) et le contenu s'adapte automatiquement au niveau de lecture et aux centres d'interet correspondants."
+    question: "Les contes sont-ils adaptés à tous les âges ?",
+    answer: "Oui ! Vous choisissez la tranche d'âge lors de la création (0-2 ans, 3-5 ans, 6-9 ans) et le contenu s'adapte automatiquement au niveau de lecture, au vocabulaire et aux centres d'intérêt correspondants."
   },
   {
     id: '6',
     question: "Que se passe-t-il si je ne suis pas satisfait ?",
-    answer: "Nous offrons une garantie satisfaction. Si le conte ne vous convient pas, nous le modifions gratuitement ou vous remboursons integralement. Votre satisfaction est notre priorite."
+    answer: "Nous offrons une garantie satisfaction. Si le conte ne vous convient pas, nous le modifions gratuitement ou vous remboursons intégralement. Votre satisfaction est notre priorité."
   },
   {
     id: '7',
     question: "Puis-je offrir un conte en cadeau ?",
-    answer: "Absolument ! Un conte personnalise fait un cadeau original et memorable pour un anniversaire, Noel ou toute autre occasion speciale. Il suffit de renseigner les informations de l'enfant a qui vous souhaitez l'offrir."
+    answer: "Absolument ! Un conte personnalisé fait un cadeau original et mémorable pour un anniversaire, Noël ou toute autre occasion spéciale. Il suffit de renseigner les informations de l'enfant à qui vous souhaitez l'offrir."
   }
 ];
 
@@ -1431,15 +1431,15 @@ const faqReveal = useScrollReveal();
   }, []);
 
   useEffect(() => {
-    document.title = "Creez un conte personnalise avec l'IA | Contes d'IA";
+    document.title = "Livre Personnalisé Enfant Gratuit — Conte sur Mesure par IA | Contedia";
 
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', "Offrez a votre enfant un livre unique et magique ! Creez facilement un conte personnalise avec l'intelligence artificielle. Rejoignez le Club pour 4 livres avec 2x plus de pages chaque mois.");
+      metaDescription.setAttribute('content', "Créez un livre personnalisé gratuit pour votre enfant. Histoire unique générée par IA avec illustrations sur mesure. Premier livre offert, prêt en 5 minutes.");
     } else {
       const meta = document.createElement('meta');
       meta.name = 'description';
-      meta.content = "Offrez a votre enfant un livre unique et magique ! Creez facilement un conte personnalise avec l'intelligence artificielle. Rejoignez le Club pour 4 livres avec 2x plus de pages chaque mois.";
+      meta.content = "Créez un livre personnalisé gratuit pour votre enfant. Histoire unique générée par IA avec illustrations sur mesure. Premier livre offert, prêt en 5 minutes.";
       document.head.appendChild(meta);
     }
   }, []);
@@ -1469,17 +1469,17 @@ const faqReveal = useScrollReveal();
             <HeroTextBlock>
               <HeroBadge>Rejoignez +500 familles</HeroBadge>
               <HeroTitle>
-                Votre enfant, <span>heros</span> de son propre conte personnalise
+                Créez un <span>livre personnalisé</span> gratuit pour votre enfant
               </HeroTitle>
               <HeroSubtitle>
-                Creez un livre personnalise unique grace a l'IA : prenom, photo, theme et message educatif sur mesure. Le premier est gratuit !
+                Votre enfant devient le héros d'un conte personnalisé unique. Prénom, photo, illustrations IA sur mesure. Premier livre offert, prêt en 5 minutes !
               </HeroSubtitle>
               <CTAButtons>
                 <Button variant="primary" size="lg" onClick={() => navigate('/create-story')}>
-                  Creer mon 1er livre GRATUIT
+                  Créer mon 1er livre GRATUIT
                 </Button>
                 <Button variant="outline" size="lg" onClick={() => navigate('/club')}>
-                  Decouvrir le Club des Histoires
+                  Découvrir le Club des Histoires
                 </Button>
               </CTAButtons>
               <TrustRow>
@@ -1540,7 +1540,7 @@ const faqReveal = useScrollReveal();
         <ShowcaseSection id="contes-exemples" ref={showcaseReveal.ref}>
           <Container>
             <SectionWrapper $visible={showcaseReveal.isVisible}>
-              <SectionTitle>Decouvrez nos contes personnalises</SectionTitle>
+              <SectionTitle>Découvrez nos contes personnalisés</SectionTitle>
               <Divider />
               <SectionSubtitle>
                 Chaque conte est une creation unique. Cliquez pour feuilleter directement dans votre navigateur.
@@ -1824,7 +1824,7 @@ const faqReveal = useScrollReveal();
         <FinalCTASection ref={ctaReveal.ref}>
           <Container>
             <SectionWrapper $visible={ctaReveal.isVisible}>
-              <FinalCTATitle>Creez la premiere histoire de votre enfant</FinalCTATitle>
+              <FinalCTATitle>Créez la première histoire de votre enfant</FinalCTATitle>
               <FinalCTAText>
                 1er livre GRATUIT — Pret en 5 minutes
               </FinalCTAText>
@@ -1835,7 +1835,7 @@ const faqReveal = useScrollReveal();
                 <GhostWhiteButton onClick={() => {
                   document.getElementById('tarifs')?.scrollIntoView({ behavior: 'smooth' });
                 }}>
-                  Decouvrir les tarifs
+                  Découvrir les tarifs
                 </GhostWhiteButton>
               </FinalCTAButtons>
             </SectionWrapper>
