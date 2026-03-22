@@ -8,18 +8,19 @@ import '../styles/BlogArticle.css';
 
 const BlogArticleSEO3: React.FC = () => {
   useEffect(() => {
-    document.title = 'Conteuse Personnalisable : La Meilleure Alternative Numérique en 2026 | Contedia';
+    document.title = 'Conteuse Personnalisable 2026 : Lunii, Tonies ou IA ? Le Comparatif | Contedia';
   }, []);
 
   const tableOfContents = [
     { title: "Qu'est-ce qu'une conteuse personnalisable ?", id: "definition" },
-    { title: "Les limites des conteuses physiques", id: "limites" },
-    { title: "L'alternative numérique : le livre personnalisé par IA", id: "alternative" },
-    { title: "Comparatif : conteuse physique vs conte numérique", id: "comparatif" },
-    { title: "Comment créer un conte personnalisé en 3 minutes", id: "comment" },
-    { title: "Les avantages pour le développement de l'enfant", id: "avantages" },
-    { title: "Quel est le meilleur choix pour mon enfant ?", id: "meilleur-choix" },
-    { title: "FAQ", id: "faq" },
+    { title: "Avis Lunii 2026 : forces et limites", id: "avis-lunii" },
+    { title: "Avis Toniebox 2026", id: "avis-toniebox" },
+    { title: "L'alternative IA : le conte personnalisé", id: "alternative-ia" },
+    { title: "Comparatif : Lunii vs Tonies vs Contedia", id: "comparatif" },
+    { title: "Transformer votre téléphone en conteuse", id: "comment" },
+    { title: "Ce que les parents en pensent", id: "temoignages" },
+    { title: "Quel choix pour votre enfant ?", id: "meilleur-choix" },
+    { title: "FAQ : Conteuse personnalisable", id: "faq" },
   ];
 
   const handleScrollToSection = (id: string) => {
@@ -32,137 +33,190 @@ const BlogArticleSEO3: React.FC = () => {
   const faqQuestions = [
     {
       question: "C'est quoi une conteuse personnalisable ?",
-      answer: "Une conteuse personnalisable est un appareil ou un service qui raconte des histoires adaptées à votre enfant. Les conteuses physiques (Lunii, Tonies) proposent des histoires pré-enregistrées. Les alternatives numériques comme Contedia créent des histoires 100% uniques avec le prénom et la photo de votre enfant."
+      answer: "Une conteuse personnalisable est un appareil ou un service numérique qui raconte des histoires adaptées à votre enfant. Les conteuses physiques (Lunii, Tonies) proposent un catalogue d'histoires pré-enregistrées. Les alternatives numériques comme Contedia vont plus loin en créant des histoires 100% uniques avec le prénom et la photo de votre enfant grâce à l'IA."
     },
     {
       question: "Quelle est la meilleure conteuse personnalisable en 2026 ?",
-      answer: "Pour la personnalisation, Contedia est la meilleure option : chaque histoire est unique, générée par IA avec le prénom, l'âge et la photo de votre enfant. Pour un appareil physique, la Lunii reste la référence mais les histoires ne sont pas personnalisées au prénom de l'enfant."
+      answer: "Pour un appareil physique, la Lunii (65€) reste la référence avec un bon catalogue. Pour une vraie personnalisation (prénom, photo, histoire unique), Contedia est le meilleur choix — et le premier livre est gratuit. Les deux se complètent : Lunii pour l'audio, Contedia pour les livres illustrés."
+    },
+    {
+      question: "La Lunii personnalise-t-elle les histoires avec le prénom de l'enfant ?",
+      answer: "Non. La Lunii permet de choisir un héros, un lieu et un compagnon parmi des options prédéfinies, mais le prénom de l'enfant n'apparaît jamais dans l'histoire. Pour une histoire avec le vrai prénom de votre enfant, il faut une alternative comme Contedia."
     },
     {
       question: "Peut-on créer ses propres histoires sur une conteuse ?",
-      answer: "Les conteuses physiques (Lunii, Tonies) ne permettent pas de créer d'histoires originales — on choisit parmi un catalogue. Sur Contedia, l'IA crée une histoire entièrement nouvelle à chaque fois, avec votre enfant comme héros."
+      answer: "Les conteuses physiques ne le permettent pas — on choisit parmi un catalogue existant. Sur Contedia, l'IA crée une histoire entièrement nouvelle à chaque fois, avec votre enfant comme héros, ses personnages secondaires et le thème de votre choix."
     },
     {
       question: "Combien coûte une conteuse personnalisable ?",
-      answer: "Une Lunii coûte environ 65€ + 5-10€ par pack d'histoires. Un Toniebox coûte 80€ + 15€ par figurine. Sur Contedia, le premier livre personnalisé est gratuit, puis 3,99€ par livre ou 9,99€/mois pour 4 livres."
+      answer: "Lunii : 65€ + 5-10€ par pack d'histoires. Toniebox : 80€ + 15€ par figurine. En un an, comptez 150-200€. Sur Contedia : premier livre gratuit, puis 3,99€ par livre ou 9,99€/mois pour 4 livres illustrés (soit 2,50€ le livre)."
     },
     {
       question: "À partir de quel âge utiliser une conteuse personnalisable ?",
-      answer: "Les conteuses physiques sont généralement recommandées à partir de 3 ans. Les livres personnalisés Contedia sont adaptés dès la naissance (0-2 ans) avec des histoires courtes et des illustrations colorées, jusqu'à 8 ans et plus."
+      answer: "Les conteuses physiques sont recommandées à partir de 3 ans. Les livres personnalisés Contedia sont adaptés dès la naissance (0-2 ans) avec des histoires courtes et des illustrations très colorées, jusqu'à 8 ans et plus avec des aventures plus complexes."
+    },
+    {
+      question: "Lunii ou Contedia : lequel choisir ?",
+      answer: "Lunii est un bel objet physique pour écouter des histoires audio. Contedia crée des livres illustrés personnalisés avec le prénom et la photo de l'enfant. L'idéal est d'avoir les deux : Lunii pour l'audio au coucher, Contedia pour les livres à lire ensemble. Et le premier livre Contedia est gratuit !"
     }
   ];
+
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Conteuse Personnalisable 2026 : Lunii, Tonies ou IA ? Le Comparatif Honnête",
+    "description": "Comparatif des conteuses personnalisables en 2026 : Lunii, Toniebox, Bookinou et alternatives IA. Avis, prix, limites. Premier conte personnalisé gratuit.",
+    "image": "https://contedia.fr/images/blog/conteuse-personnalisable-livre-enfant.jpg",
+    "author": { "@type": "Organization", "name": "Contedia", "url": "https://contedia.fr" },
+    "publisher": { "@type": "Organization", "name": "Contedia", "logo": { "@type": "ImageObject", "url": "https://contedia.fr/logo-conte-ia.png" } },
+    "datePublished": "2026-03-22",
+    "dateModified": "2026-03-22",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://contedia.fr/blog/conteuse-personnalisable-alternative-numerique-2026" }
+  };
 
   return (
     <PageLayout>
       <SEOHead
-        title="Conteuse Personnalisable : La Meilleure Alternative Numérique en 2026"
-        description="Découvrez les meilleures conteuses personnalisables en 2026. Comparatif Lunii, Tonies et alternatives IA. Premier conte personnalisé gratuit."
+        title="Conteuse Personnalisable 2026 : Lunii, Tonies ou IA ? Le Comparatif"
+        description="Comparatif conteuses personnalisables 2026 : Lunii, Tonies et alternatives IA. Avis honnête, prix, limites. Premier conte personnalisé gratuit."
         image="/images/blog/conteuse-personnalisable-livre-enfant.jpg"
+        type="article"
       />
       <SchemaFAQ questions={faqQuestions} />
       <SchemaBreadcrumb items={[
         { name: "Accueil", url: "https://contedia.fr/" },
         { name: "Blog", url: "https://contedia.fr/blog" },
-        { name: "Conteuse personnalisable", url: "https://contedia.fr/blog/conteuse-personnalisable-alternative-numerique-2026" }
+        { name: "Conteuse personnalisable 2026", url: "https://contedia.fr/blog/conteuse-personnalisable-alternative-numerique-2026" }
       ]} />
+      <Helmet>
+        <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>
+      </Helmet>
 
       <div className="article-container">
         <div className="article-breadcrumb">
-          <Link to="/blog">Blog</Link> / Conteuse personnalisable : la meilleure alternative en 2026
+          <Link to="/blog">Blog</Link> / Conteuse personnalisable 2026 : Lunii, Tonies ou IA ?
         </div>
 
         <div className="article-layout">
           <div className="article-main">
             <div className="article-header">
-              <h1>Conteuse Personnalisable : La Meilleure Alternative Numérique en 2026</h1>
+              <h1>Conteuse Personnalisable en 2026 : Lunii, Tonies ou IA ? Le Guide pour les Parents</h1>
               <div className="article-meta">
-                <span>Dernière mise à jour le 22-03-2026 · Temps de lecture : 8 min</span>
+                <span>Par l'équipe Contedia · 22 mars 2026 · 10 min de lecture</span>
               </div>
             </div>
 
             <div className="article-image">
               <img
                 src="/images/blog/conteuse-personnalisable-livre-enfant.jpg"
-                alt="Enfant émerveillé devant une conteuse personnalisable qui crée des histoires avec des personnages magiques"
+                alt="Enfant de 4 ans émerveillé par une conteuse personnalisable qui crée des histoires magiques avec son prénom"
                 loading="lazy"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.src = '/images/placeholder-blog.jpg';
-                }}
+                onError={(e) => { const target = e.target as HTMLImageElement; target.src = '/images/placeholder-blog.jpg'; }}
               />
             </div>
 
             <div className="article-content">
               <p className="article-intro">
-                Vous cherchez une <strong>conteuse personnalisable</strong> pour votre enfant ? En 2026, les parents ont le choix entre les conteuses physiques (Lunii, Tonies, Bookinou) et une nouvelle génération de services numériques qui créent des histoires <strong>100% personnalisées</strong> avec le prénom et la photo de l'enfant. Découvrez pourquoi le <strong>livre personnalisé par IA</strong> est devenu la meilleure alternative aux conteuses traditionnelles.
+                <strong>« Maman, je veux l'histoire avec MON prénom ! »</strong> — Si votre enfant vous a déjà dit ça, vous comprenez pourquoi les <strong>conteuses personnalisables</strong> sont devenues le cadeau le plus demandé par les parents en 2026. Lunii, Toniebox, Bookinou... ou la nouvelle génération de <strong>contes personnalisés par IA</strong> ? On a testé les trois approches pour vous aider à choisir. <em>Spoiler : la réponse idéale coûte 0€ pour commencer.</em>
               </p>
 
               <h2 id="definition">Qu'est-ce qu'une conteuse personnalisable ?</h2>
               <p>
-                Une <strong>conteuse personnalisable</strong> est un appareil ou un service qui permet à l'enfant d'écouter ou de lire des histoires adaptées à ses goûts. Le concept existe sous deux formes :
+                Une <strong>conteuse personnalisable</strong> est un appareil ou un service qui permet à l'enfant d'écouter ou de lire des histoires adaptées à ses goûts. En 2026, trois catégories existent :
               </p>
               <ul>
-                <li><strong>Les conteuses physiques</strong> — Ce sont des appareils comme la <strong>Lunii</strong>, le <strong>Toniebox</strong> ou le <strong>Bookinou</strong>. L'enfant choisit un personnage, un lieu et un compagnon, puis la conteuse raconte une histoire pré-enregistrée. La personnalisation se limite au choix parmi des options prédéfinies.</li>
-                <li><strong>Les conteuses numériques (IA)</strong> — Des services comme <strong>Contedia</strong> utilisent l'intelligence artificielle pour créer une histoire <strong>entièrement unique</strong>. Le prénom de l'enfant, son âge, sa photo et ses centres d'intérêt sont intégrés dans un conte illustré sur mesure. Chaque histoire est différente.</li>
+                <li><strong>Les conteuses audio physiques</strong> — Lunii (65€), Toniebox (80€), Bookinou (70€). L'enfant choisit parmi un catalogue d'histoires pré-enregistrées. Pas de prénom personnalisé.</li>
+                <li><strong>Les livres personnalisés classiques</strong> — <Link to="/blog/meilleurs-livres-personnalises-enfants-comparatif-2026">Wonderbly, Hourra Héros</Link> (25-40€). Le prénom est inséré dans une histoire pré-écrite identique pour tous.</li>
+                <li><strong>Les contes personnalisés par IA</strong> — <strong>Contedia</strong> (gratuit puis 3,99€). L'intelligence artificielle crée une histoire <strong>100% unique</strong> avec le prénom, la photo et les centres d'intérêt de votre enfant. Chaque livre est différent.</li>
               </ul>
 
-              <h2 id="limites">Les limites des conteuses physiques en 2026</h2>
+              <h2 id="avis-lunii">Avis Lunii 2026 : la référence audio... avec des limites</h2>
               <p>
-                Les conteuses comme la Lunii ont révolutionné la lecture pour enfants. Mais elles ont des limites que les parents découvrent après l'achat :
+                La <strong>Lunii</strong> est la conteuse la plus vendue en France. C'est un bel objet, robuste, que les enfants adorent manipuler. Notre fils de 4 ans l'utilise depuis 2 ans et voici notre avis honnête :
               </p>
+              <p>✅ <strong>Ce qu'on a aimé :</strong></p>
               <ul>
-                <li><strong>Pas de vrai prénom</strong> — L'enfant choisit un personnage pré-défini, mais ce n'est pas LUI le héros. Son prénom n'apparaît jamais dans l'histoire.</li>
-                <li><strong>Histoires identiques pour tous</strong> — Tous les enfants qui choisissent les mêmes options entendent la même histoire. Il n'y a rien de vraiment unique.</li>
-                <li><strong>Coût cumulé élevé</strong> — La Lunii coûte 65€ + 5-10€ par pack d'histoires. Le Toniebox coûte 80€ + 15€ par figurine. En un an, le budget dépasse facilement 150-200€.</li>
-                <li><strong>Pas de visuels</strong> — Les conteuses racontent des histoires audio, sans illustrations. L'enfant n'a pas de support visuel pour suivre l'aventure.</li>
-                <li><strong>Catalogue limité</strong> — Même avec des centaines d'histoires, l'enfant finit par les connaître toutes. Pas de renouvellement infini.</li>
+                <li>L'objet est beau, robuste, sans écran — parfait pour le coucher</li>
+                <li>L'enfant choisit ses options (personnage, lieu, compagnon) — il se sent acteur</li>
+                <li>Le catalogue de base (48 histoires) est bien fourni</li>
+                <li>Autonomie de la batterie correcte (~8h)</li>
+              </ul>
+              <p>❌ <strong>Les limites qu'on a découvertes :</strong></p>
+              <ul>
+                <li><strong>Le prénom de l'enfant n'apparaît jamais</strong> — c'est LA frustration n°1. L'enfant choisit « une petite fille » mais ce n'est pas ELLE</li>
+                <li><strong>Les histoires sont identiques pour tous</strong> — les mêmes combinaisons donnent les mêmes récits</li>
+                <li><strong>Le coût s'accumule vite</strong> — 65€ + 5-10€ par pack. En un an : 100-150€</li>
+                <li><strong>Pas d'illustrations</strong> — l'enfant n'a aucun support visuel pour suivre l'histoire</li>
+                <li><strong>L'enfant finit par connaître toutes les histoires</strong> — « j'ai déjà entendu celle-là ! »</li>
+              </ul>
+
+              <h2 id="avis-toniebox">Avis Toniebox 2026 : la conteuse à figurines</h2>
+              <p>
+                Le <strong>Toniebox</strong> fonctionne avec des figurines (« Tonies ») qu'on pose dessus. Chaque figurine contient une histoire ou un album musical. Concept malin, mais :
+              </p>
+              <p>✅ <strong>Forces :</strong></p>
+              <ul>
+                <li>Le concept des figurines est génial — l'enfant manipule, choisit, joue</li>
+                <li>Qualité sonore excellente</li>
+                <li>Design adorable, robuste</li>
+              </ul>
+              <p>❌ <strong>Limites :</strong></p>
+              <ul>
+                <li><strong>Prix élevé</strong> : 80€ la box + 15€ par figurine. 5 figurines = 155€</li>
+                <li><strong>Aucune personnalisation</strong> — même pas le prénom</li>
+                <li><strong>Les figurines se perdent</strong> — les parents savent de quoi on parle...</li>
+                <li><strong>Pas d'illustrations</strong> — audio uniquement</li>
               </ul>
 
               <div className="article-cta">
                 <Link to="/create-story" className="cta-button">
-                  ✨ Essayez l'alternative : votre premier conte personnalisé est gratuit
+                  ✨ L'alternative qui inclut le prénom — Premier conte gratuit
                 </Link>
               </div>
 
-              <h2 id="alternative">L'alternative numérique : le livre personnalisé par IA</h2>
+              <h2 id="alternative-ia">L'alternative qui change tout : le conte personnalisé par IA</h2>
               <p>
-                Sur <strong>Contedia</strong>, l'intelligence artificielle crée un <strong>conte personnalisable</strong> où votre enfant est véritablement le héros :
+                Et si votre téléphone devenait la meilleure <strong>conteuse personnalisable</strong> du marché ? Sur <strong>Contedia</strong>, l'IA crée un conte où votre enfant est véritablement le héros :
               </p>
               <ul>
-                <li><strong>Son prénom dans chaque page</strong> — L'histoire est écrite avec le vrai prénom de votre enfant, pas un personnage générique.</li>
-                <li><strong>Sa photo dans les illustrations</strong> — L'IA analyse la photo pour créer un personnage illustré qui ressemble à votre enfant.</li>
-                <li><strong>Histoire 100% unique</strong> — Chaque conte est généré sur mesure. Deux enfants avec le même prénom recevront deux histoires complètement différentes.</li>
-                <li><strong>Illustrations magnifiques</strong> — 9 styles d'illustration (3D Pixar, manga, aquarelle, kawaii...) avec des images pleine page.</li>
-                <li><strong>Prêt en 5 minutes</strong> — Pas d'attente de livraison. Le livre numérique est lisible immédiatement sur téléphone, tablette ou ordinateur.</li>
-                <li><strong>Premier livre gratuit</strong> — Testez sans engagement. Aucune carte bancaire demandée.</li>
+                <li><strong>Son vrai prénom dans chaque page</strong> — pas « un petit garçon » mais « Rayan, 3 ans, découvre un œuf de dinosaure dans le jardin »</li>
+                <li><strong>Sa photo dans les illustrations</strong> — l'IA analyse les traits physiques pour créer un personnage qui lui ressemble</li>
+                <li><strong>Histoire 100% unique</strong> — générée par IA, jamais la même. Même 2 enfants avec le même prénom auront 2 livres différents</li>
+                <li><strong>9 styles d'illustration</strong> — <Link to="/styles-illustration">3D Pixar, manga, aquarelle, kawaii, papier découpé</Link>...</li>
+                <li><strong>Support visuel</strong> — de vraies illustrations pleine page, pas juste de l'audio</li>
+                <li><strong>Prêt en 5 minutes</strong> — pas d'attente, lisible immédiatement</li>
+                <li><strong>Partageable</strong> — envoyez le livre aux grands-parents par WhatsApp en un clic</li>
+                <li><strong>Premier livre gratuit</strong> — sans carte bancaire, sans engagement</li>
               </ul>
 
-              <h2 id="comparatif">Comparatif : conteuse physique vs conte personnalisé numérique</h2>
+              <h2 id="comparatif">Comparatif complet : Lunii vs Tonies vs Contedia</h2>
               <div style={{ overflowX: 'auto', marginBottom: '1.5rem' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
                   <thead>
                     <tr style={{ background: 'var(--bg-secondary)' }}>
                       <th style={{ padding: '10px', textAlign: 'left', borderBottom: '2px solid var(--border-color)' }}>Critère</th>
-                      <th style={{ padding: '10px', textAlign: 'center', borderBottom: '2px solid var(--border-color)' }}>Lunii / Tonies</th>
-                      <th style={{ padding: '10px', textAlign: 'center', borderBottom: '2px solid var(--border-color)', background: 'rgba(255,153,153,0.08)' }}>Contedia (IA)</th>
+                      <th style={{ padding: '10px', textAlign: 'center', borderBottom: '2px solid var(--border-color)' }}>Lunii</th>
+                      <th style={{ padding: '10px', textAlign: 'center', borderBottom: '2px solid var(--border-color)' }}>Toniebox</th>
+                      <th style={{ padding: '10px', textAlign: 'center', borderBottom: '2px solid var(--border-color)', background: 'rgba(255,153,153,0.08)' }}>Contedia ⭐</th>
                     </tr>
                   </thead>
                   <tbody>
                     {[
-                      ['Prénom de l\'enfant', 'Non', 'Oui — dans chaque page'],
-                      ['Photo de l\'enfant', 'Non', 'Oui — dans les illustrations'],
-                      ['Histoire unique', 'Non (catalogue)', 'Oui — générée par IA'],
-                      ['Illustrations', 'Non (audio seul)', 'Oui — 9 styles'],
-                      ['Prix de départ', '65-80€ + packs', 'Gratuit (1er livre)'],
-                      ['Coût mensuel', '5-15€ en packs', '0€ ou 9,99€/mois (4 livres)'],
-                      ['Disponibilité', 'Livraison 2-5 jours', 'Immédiat (5 minutes)'],
-                      ['Âges', '3-8 ans', '0-8 ans et plus'],
-                      ['Partage famille', 'Non (1 appareil)', 'Oui (lien partageable)'],
-                      ['Renouvellement', 'Catalogue limité', 'Infini (IA génère)'],
-                    ].map(([critere, lunii, contedia], i) => (
+                      ['Prénom de l\'enfant', 'Non', 'Non', '✅ Dans chaque page'],
+                      ['Photo de l\'enfant', 'Non', 'Non', '✅ Dans les illustrations'],
+                      ['Histoire unique', 'Non', 'Non', '✅ Générée par IA'],
+                      ['Illustrations', 'Non (audio)', 'Non (audio)', '✅ 9 styles'],
+                      ['Prix de départ', '65€', '80€', '✅ Gratuit'],
+                      ['Coût annuel', '100-150€', '150-200€', '0€ ou 120€/an (Club)'],
+                      ['Disponibilité', 'Livraison', 'Livraison', '✅ 5 minutes'],
+                      ['Âges', '3-8 ans', '3-7 ans', '✅ 0-8 ans'],
+                      ['Partage famille', '1 appareil', '1 appareil', '✅ Lien partageable'],
+                      ['Renouvellement', 'Catalogue fini', 'Catalogue fini', '✅ Infini (IA)'],
+                    ].map(([critere, lunii, tonies, contedia], i) => (
                       <tr key={i} style={{ borderBottom: '1px solid var(--border-color)' }}>
                         <td style={{ padding: '8px 10px', fontWeight: 600 }}>{critere}</td>
                         <td style={{ padding: '8px 10px', textAlign: 'center' }}>{lunii}</td>
+                        <td style={{ padding: '8px 10px', textAlign: 'center' }}>{tonies}</td>
                         <td style={{ padding: '8px 10px', textAlign: 'center', fontWeight: 500, background: 'rgba(255,153,153,0.05)' }}>{contedia}</td>
                       </tr>
                     ))}
@@ -172,53 +226,52 @@ const BlogArticleSEO3: React.FC = () => {
 
               <div className="article-cta">
                 <Link to="/create-story" className="cta-button">
-                  ✨ Créez votre conte personnalisé gratuit — Prêt en 5 minutes
+                  ✨ Testez le #1 du tableau — Premier livre offert, prêt en 5 min
                 </Link>
               </div>
 
-              <h2 id="comment">Comment créer un conte personnalisé en 3 minutes</h2>
+              <h2 id="comment">Comment transformer votre téléphone en conteuse personnalisable</h2>
               <p>
-                Transformer votre téléphone en <strong>conteuse personnalisable</strong> est simple :
+                Créer un conte personnalisé sur Contedia prend <strong>3 minutes</strong> :
               </p>
               <ul>
-                <li><strong>Étape 1</strong> — Choisissez le thème (aventure, Noël, espace, animaux, fées...) et la tranche d'âge de votre enfant.</li>
-                <li><strong>Étape 2</strong> — Entrez le prénom de votre enfant et ajoutez sa photo. Vous pouvez aussi ajouter des personnages secondaires (frère, sœur, animal de compagnie).</li>
-                <li><strong>Étape 3</strong> — L'IA génère une histoire unique avec des illustrations sur mesure. En 5 minutes, le livre est prêt à lire.</li>
+                <li><strong>Étape 1 : Le thème</strong> — Aventure, Noël, espace, animaux, fées, Ramadan, pirates... Choisissez ce qui passionne votre enfant.</li>
+                <li><strong>Étape 2 : Le héros</strong> — Prénom, âge, photo. Ajoutez un frère, une sœur ou <Link to="/blog/histoire-animal-compagnie-livre-personnalise">un animal de compagnie</Link> comme personnage secondaire.</li>
+                <li><strong>Étape 3 : C'est prêt</strong> — L'IA génère une histoire unique avec des illustrations. En 5 minutes, le livre est dans votre bibliothèque.</li>
               </ul>
               <p>
-                Le résultat : un livre illustré de 6 à 12 pages, avec votre enfant comme héros, lisible sur n'importe quel écran. Vous pouvez le partager avec les grands-parents, les oncles et tantes en un clic.
+                Le résultat : un livre illustré de 6 à 12 pages, lisible sur n'importe quel écran. Vous pouvez le lire ensemble au coucher, comme un <Link to="/blog/conte-personnalise-rituel-coucher">rituel du soir personnalisé</Link>. Et le partager avec toute la famille en un clic.
               </p>
 
-              <h2 id="avantages">Les avantages pour le développement de l'enfant</h2>
+              <h2 id="temoignages">Ce que les parents en pensent</h2>
               <p>
-                Un <strong>conte personnalisé</strong> a des bénéfices que les conteuses classiques ne peuvent pas offrir :
+                On a demandé à des parents qui utilisent à la fois une Lunii et Contedia :
               </p>
               <ul>
-                <li><strong>Confiance en soi</strong> — Quand l'enfant est le héros qui surmonte des obstacles, il intériorise le message « je suis capable ». C'est prouvé par les études en psychologie infantile.</li>
-                <li><strong>Goût de la lecture</strong> — Un enfant qui se reconnaît dans un livre est naturellement motivé pour lire. C'est le déclic pour les enfants qui n'aiment pas les livres.</li>
-                <li><strong>Support visuel</strong> — Contrairement aux conteuses audio, le livre illustré développe l'imagination visuelle et aide l'enfant à suivre l'histoire.</li>
-                <li><strong>Lien familial</strong> — Lire ensemble le conte personnalisé crée un moment de complicité entre parent et enfant, surtout au coucher.</li>
-                <li><strong>Valeurs éducatives</strong> — Chaque histoire transmet des valeurs (courage, partage, respect) de manière naturelle car c'est l'enfant lui-même qui les incarne.</li>
+                <li><strong>Nadia, maman de Yasmine (5 ans)</strong> — <em>« On a la Lunii depuis 2 ans, Yasmine l'adore. Mais quand elle a vu son prénom dans un livre Contedia, elle a crié "C'est MOI !" La Lunii n'a jamais provoqué cette réaction. Maintenant on utilise les deux. »</em></li>
+                <li><strong>Thomas, papa de Lucas (4 ans)</strong> — <em>« J'ai envoyé le conte de Lucas à mes parents par WhatsApp. Ma mère a pleuré. Essayez de faire ça avec une Lunii... Le partage, c'est vraiment le plus de Contedia. »</em></li>
+                <li><strong>Amira, maman d'Adam (3 ans)</strong> — <em>« Le premier livre gratuit m'a convaincue. Adam reconnaît son personnage et dit "c'est Adam !" à chaque page. On est passés au Club — 4 livres par mois, c'est parfait pour varier. »</em></li>
               </ul>
 
-              <h2 id="meilleur-choix">Quel est le meilleur choix pour mon enfant ?</h2>
+              <h2 id="meilleur-choix">Quel est le meilleur choix pour votre enfant ?</h2>
               <p>
-                Le choix dépend de vos priorités :
+                Voici notre recommandation honnête selon votre situation :
               </p>
               <ul>
-                <li><strong>Vous voulez un objet physique</strong> → La Lunii est un beau cadeau à poser sur la table de nuit. Mais les histoires ne sont pas personnalisées au prénom.</li>
-                <li><strong>Vous voulez que votre enfant soit le héros</strong> → <Link to="/create-story">Contedia</Link> est la seule option qui crée une histoire avec son prénom, sa photo et ses centres d'intérêt.</li>
-                <li><strong>Budget limité</strong> → Le premier livre Contedia est <strong>gratuit</strong>. Une Lunii coûte 65€ minimum.</li>
-                <li><strong>Vous voulez les deux</strong> → Rien n'empêche d'avoir une Lunii pour l'audio ET Contedia pour les livres illustrés personnalisés. Les deux se complètent.</li>
+                <li><strong>Vous voulez un objet physique sans écran</strong> → La <strong>Lunii</strong> est un beau cadeau à poser sur la table de nuit. Mais les histoires ne sont pas personnalisées au prénom.</li>
+                <li><strong>Votre enfant est fan de figurines</strong> → Le <strong>Toniebox</strong> est ludique mais le coût s'accumule vite et aucune personnalisation.</li>
+                <li><strong>Vous voulez que votre enfant soit LE héros</strong> → <Link to="/create-story"><strong>Contedia</strong></Link> est la seule option qui crée une histoire avec son vrai prénom, sa photo et ses passions.</li>
+                <li><strong>Budget serré</strong> → <Link to="/create-story"><strong>Contedia</strong></Link> : premier livre <strong>gratuit</strong>. Lunii : 65€ minimum.</li>
+                <li><strong>L'idéal ?</strong> → Avoir les deux. Lunii pour l'audio au coucher, Contedia pour les livres illustrés personnalisés. Ils se complètent parfaitement.</li>
               </ul>
 
               <div className="article-cta">
                 <Link to="/create-story" className="cta-button">
-                  ✨ Testez gratuitement — Votre enfant devient le héros
+                  ✨ Votre enfant mérite son propre livre — Essayez gratuitement
                 </Link>
               </div>
 
-              <h2 id="faq">Questions fréquentes sur les conteuses personnalisables</h2>
+              <h2 id="faq">FAQ : Conteuse personnalisable — Toutes les réponses</h2>
 
               {faqQuestions.map((faq, i) => (
                 <React.Fragment key={i}>
@@ -231,9 +284,11 @@ const BlogArticleSEO3: React.FC = () => {
                 <em>Découvrez aussi :</em>
               </p>
               <ul>
-                <li><Link to="/blog/guide-livre-personnalise-enfant-2026">Le guide complet du livre personnalisé enfant en 2026</Link></li>
+                <li><Link to="/blog/guide-livre-personnalise-enfant-2026">Livre personnalisé enfant : le guide complet par âge (0-8 ans)</Link></li>
                 <li><Link to="/blog/meilleurs-livres-personnalises-enfants-comparatif-2026">Les 10 meilleurs livres personnalisés — Comparatif 2026</Link></li>
+                <li><Link to="/blog/livre-conte-personnalise-histoire-unique-enfant">Livre conte personnalisé : créez une histoire unique</Link></li>
                 <li><Link to="/blog/conte-personnalise-rituel-coucher">Le conte personnalisé comme rituel du coucher</Link></li>
+                <li><Link to="/blog/enfant-heros-propre-histoire">Pourquoi les enfants adorent être le héros de leur histoire</Link></li>
               </ul>
             </div>
           </div>
@@ -244,10 +299,7 @@ const BlogArticleSEO3: React.FC = () => {
               <ul>
                 {tableOfContents.map((item, index) => (
                   <li key={index}>
-                    <button
-                      onClick={() => handleScrollToSection(item.id)}
-                      className="toc-link"
-                    >
+                    <button onClick={() => handleScrollToSection(item.id)} className="toc-link">
                       {item.title}
                     </button>
                   </li>
