@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { PageLayout } from '../components/layout/PageLayout';
+import { SEOHead } from '../components/SEOHead';
+import { SchemaFAQ, SchemaBreadcrumb } from '../components/SchemaMarkup';
 import '../styles/BlogArticle.css';
 
 const BlogArticleNouveau5: React.FC = () => {
@@ -43,6 +45,23 @@ const BlogArticleNouveau5: React.FC = () => {
 
   return (
     <PageLayout>
+      <SEOHead
+        title="Pourquoi les Enfants Adorent Être le Héros de Leur Propre Histoire | Contedia"
+        description="Découvrez les raisons psychologiques pour lesquelles les enfants adorent être le héros de leur propre histoire. Confiance, lecture, imagination."
+        image="/images/blog/enfant-heros-propre-histoire.jpg"
+      />
+      <SchemaFAQ questions={[
+        { question: "Pourquoi les enfants aiment être le héros d'une histoire ?", answer: "Les études en psychologie infantile montrent que l'identification au héros renforce la confiance en soi, stimule l'imagination et aide l'enfant à développer l'empathie. Quand c'est SON prénom dans l'histoire, l'impact émotionnel est multiplié." },
+        { question: "À quel âge un enfant comprend-il qu'il est le héros ?", answer: "Dès 3 ans, l'enfant reconnaît son prénom dans une histoire et comprend qu'il en est le personnage principal. L'effet 'wahou' est maximal entre 3 et 6 ans." },
+        { question: "Un livre personnalisé aide-t-il les enfants timides ?", answer: "Oui ! En se voyant comme un héros courageux dans l'histoire, l'enfant timide intériorise le message qu'il est capable de surmonter des obstacles. C'est un outil recommandé par les psychologues." },
+        { question: "Comment créer une histoire où mon enfant est le héros ?", answer: "Sur Contedia, entrez le prénom et l'âge de votre enfant, ajoutez sa photo, choisissez un thème et l'IA génère un conte unique en 5 minutes. Le premier livre est gratuit." },
+        { question: "Les livres personnalisés donnent-ils le goût de la lecture ?", answer: "Oui, les études montrent que les enfants qui lisent des livres personnalisés sont 2,5 fois plus engagés dans la lecture. Quand l'histoire parle d'EUX, ils veulent la lire et la relire." }
+      ]} />
+      <SchemaBreadcrumb items={[
+        { name: "Accueil", url: "https://contedia.fr/" },
+        { name: "Blog", url: "https://contedia.fr/blog" },
+        { name: "Enfant héros de son histoire", url: "https://contedia.fr/blog/enfant-heros-propre-histoire" }
+      ]} />
       <div className="article-container">
         <div className="article-breadcrumb">
           <Link to="/blog">Blog</Link> / Pourquoi les enfants adorent être le héros de leur propre histoire

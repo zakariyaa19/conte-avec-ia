@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { PageLayout } from '../components/layout/PageLayout';
+import { SEOHead } from '../components/SEOHead';
+import { SchemaFAQ, SchemaBreadcrumb } from '../components/SchemaMarkup';
 import '../styles/BlogArticle.css';
 
 const BlogArticleAnimaux5: React.FC = () => {
@@ -42,6 +44,23 @@ const BlogArticleAnimaux5: React.FC = () => {
 
   return (
     <PageLayout>
+      <SEOHead
+        title="Top 5 des Thèmes d'Histoires pour votre Animal Héros de Conte | Contedia"
+        description="5 thèmes d'aventures captivants pour créer un conte personnalisé avec votre animal : forêt magique, voyage spatial, enquête urbaine. Inspiration garantie !"
+        image="/images/blog/themes-aventures-animaux.jpg"
+      />
+      <SchemaFAQ questions={[
+        { question: "Quel thème choisir pour un conte avec mon chien ?", answer: "Les thèmes les plus populaires pour les chiens sont l'aventure en forêt enchantée et la mission spatiale. Les chiens aventuriers adorent les quêtes en pleine nature, tandis que les chiens joueurs s'amuseront dans l'espace." },
+        { question: "Mon chat peut-il être le héros d'une enquête ?", answer: "Absolument ! Les chats sont parfaits pour les enquêtes mystérieuses en ville. Leur nature curieuse et observatrice en fait des détectives naturels dans les contes personnalisés." },
+        { question: "Est-ce que je peux créer un thème qui n'existe pas dans la liste ?", answer: "Oui ! Sur Contedia, vous pouvez choisir un thème personnalisé et décrire l'aventure que vous souhaitez. L'IA créera une histoire sur mesure adaptée à votre demande." },
+        { question: "Quel thème pour un enfant de 3 ans avec son animal ?", answer: "Pour les tout-petits, les thèmes doux comme la forêt enchantée ou le voyage sous-marin fonctionnent très bien. Les histoires sont courtes avec des illustrations colorées." },
+        { question: "Combien coûte un conte avec mon animal personnalisé ?", answer: "Le premier conte est entièrement gratuit sur Contedia. Les suivants coûtent 3,99€. L'abonnement Club à 9,99€/mois inclut 4 livres par mois." }
+      ]} />
+      <SchemaBreadcrumb items={[
+        { name: "Accueil", url: "https://contedia.fr/" },
+        { name: "Blog", url: "https://contedia.fr/blog" },
+        { name: "Top 5 thèmes histoires animal", url: "https://contedia.fr/blog/top-5-themes-histoires-animal-heros-conte" }
+      ]} />
       <div className="article-container">
         <div className="article-breadcrumb">
           <Link to="/blog">Blog</Link> / Top 5 des thèmes d'histoires pour transformer votre animal en héros de conte
