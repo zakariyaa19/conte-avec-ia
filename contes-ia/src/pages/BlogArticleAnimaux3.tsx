@@ -1,170 +1,231 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { PageLayout } from '../components/layout/PageLayout';
 import { SEOHead } from '../components/SEOHead';
-import { SchemaBreadcrumb } from '../components/SchemaMarkup';
-import { Helmet } from 'react-helmet-async';
+import { SchemaFAQ, SchemaBreadcrumb } from '../components/SchemaMarkup';
 import '../styles/BlogArticle.css';
 
 const BlogArticleAnimaux3: React.FC = () => {
   useEffect(() => {
-    document.title = 'De la photo au héros de conte : comment l\'IA transforme votre animal en personnage d\'aventure | Contes d\'IA';
-    
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', 'Découvrez la technologie révolutionnaire qui transforme les photos de votre animal en illustrations de conte personnalisé. L\'IA au service de la créativité et de l\'émotion.');
-    }
-
-    const metaKeywords = document.querySelector('meta[name="keywords"]') || document.createElement('meta');
-    metaKeywords.setAttribute('content', 'IA animal personnage conte, photo animal illustration, technologie conte personnalisé, intelligence artificielle animal, création personnage animal IA, transformation photo conte');
-    if (!document.querySelector('meta[name="keywords"]')) {
-      document.head.appendChild(metaKeywords);
-    }
+    document.title = 'Photo de votre Animal → Personnage de Conte : Comment l\'IA Crée les Illustrations | Contedia';
   }, []);
 
   const tableOfContents = [
-    { title: "La révolution de l'IA dans la création artistique", id: "revolution-ia" },
-    { title: "Comment l'IA analyse votre animal", id: "analyse-animal" },
-    { title: "De la reconnaissance à la création", id: "reconnaissance-creation" },
-    { title: "Les défis techniques surmontés", id: "defis-techniques" },
-    { title: "Personnalisér selon la personnalité", id: "personnaliser-personnalite" },
-    { title: "Les styles artistiques disponibles", id: "styles-artistiques" },
-    { title: "Optimiser vos photos pour de meilleurs résultats", id: "optimiser-photos" },
-    { title: "L'avenir de la création personnalisée", id: "avenir-creation" }
+    { title: "Comment ça marche concrètement", id: "comment" },
+    { title: "Étape par étape : de la photo au livre", id: "etapes" },
+    { title: "Quel animal fonctionne le mieux ?", id: "quel-animal" },
+    { title: "Les 9 styles pour illustrer votre animal", id: "styles" },
+    { title: "Conseils pour une bonne photo", id: "conseils-photo" },
+    { title: "Avant/après : exemples réels", id: "exemples" },
+    { title: "Ce que les parents en pensent", id: "temoignages" },
+    { title: "FAQ : Photo animal et conte personnalisé", id: "faq" },
   ];
 
   const handleScrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
-      element.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start'
-      });
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+  };
+
+  const faqQuestions = [
+    {
+      question: "Comment l'IA transforme la photo de mon animal en personnage de conte ?",
+      answer: "Vous ajoutez une photo de votre animal et décrivez-le brièvement (race, couleur). L'IA analyse les caractéristiques physiques et crée un personnage illustré qui lui ressemble dans le style choisi (3D Pixar, manga, kawaii...). Le personnage garde la même apparence sur toutes les pages."
+    },
+    {
+      question: "La photo de mon animal est-elle obligatoire ?",
+      answer: "Non ! La photo est optionnelle. Vous pouvez aussi simplement décrire votre animal (ex : « golden retriever beige ») et l'IA créera un personnage correspondant. La photo donne un résultat plus ressemblant, mais la description suffit."
+    },
+    {
+      question: "Quel type de photo donne le meilleur résultat ?",
+      answer: "Une photo de face, bien éclairée (lumière naturelle), avec l'animal de bonne humeur. Évitez les photos floues, trop sombres ou avec l'animal de dos. Un simple selfie avec votre animal fonctionne très bien !"
+    },
+    {
+      question: "Mon poisson ou mon hamster peut-il devenir un personnage ?",
+      answer: "Oui ! Tous les animaux fonctionnent : chien, chat, lapin, hamster, perroquet, tortue, poisson... L'IA adapte le rôle de l'animal au type choisi. Un poisson deviendra un guide sous-marin, un hamster un petit explorateur courageux."
+    },
+    {
+      question: "L'animal est-il présent sur toutes les pages du livre ?",
+      answer: "Oui ! L'animal accompagne votre enfant tout au long de l'histoire, sur chaque illustration. Il n'apparaît pas une seule fois en cameo — c'est un vrai personnage secondaire qui participe à l'aventure."
+    },
+    {
+      question: "Combien ça coûte de créer un livre avec la photo de mon animal ?",
+      answer: "Le premier livre est 100% gratuit, y compris avec la personnalisation animal. Les suivants coûtent 3,99€. L'abonnement Club (9,99€/mois) inclut 4 livres avec personnalisation avancée."
+    }
+  ];
+
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Photo de votre Animal → Personnage de Conte : Comment l'IA Crée les Illustrations",
+    "description": "Découvrez comment l'IA de Contedia transforme la photo de votre animal en personnage illustré dans un conte personnalisé. Étapes, conseils photo, exemples.",
+    "image": "https://contedia.fr/images/blog/ia-transformation-animal.jpg",
+    "author": { "@type": "Organization", "name": "Contedia", "url": "https://contedia.fr" },
+    "publisher": { "@type": "Organization", "name": "Contedia", "logo": { "@type": "ImageObject", "url": "https://contedia.fr/logo-conte-ia.png" } },
+    "datePublished": "2025-11-04",
+    "dateModified": "2026-03-22",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://contedia.fr/blog/photo-heros-conte-ia-transforme-animal-personnage" }
   };
 
   return (
     <PageLayout>
       <SEOHead
-        title="De la Photo au Héros : l'IA Transforme votre Animal en Personnage | Contedia"
-        description="Découvrez comment de la photo au héros : l'ia transforme votre animal en personnage. Guide complet, conseils pratiques et premier livre gratuit sur Contedia."
+        title="Photo Animal → Personnage de Conte : Comment l'IA Crée les Illustrations"
+        description="Comment l'IA transforme la photo de votre chien ou chat en personnage illustré de conte. Étapes, 9 styles, conseils photo. Premier livre gratuit."
         type="article"
       />
+      <SchemaFAQ questions={faqQuestions} />
       <SchemaBreadcrumb items={[
         { name: "Accueil", url: "https://contedia.fr/" },
         { name: "Blog", url: "https://contedia.fr/blog" },
-        { name: "De la Photo au Héros : l'IA Transforme votre Anima", url: "https://contedia.fr/blog/photo-heros-conte-ia-transforme-animal-personnage" }
+        { name: "Photo animal → personnage de conte", url: "https://contedia.fr/blog/photo-heros-conte-ia-transforme-animal-personnage" }
       ]} />
       <Helmet>
-        <script type="application/ld+json">{`{"@context":"https://schema.org","@type":"Article","headline":"De la Photo au Héros : l'IA Transforme votre Animal en Personnage","author":{"@type":"Organization","name":"Contedia"},"publisher":{"@type":"Organization","name":"Contedia"},"dateModified":"2026-03-22"}`}</script>
+        <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>
       </Helmet>
+
       <div className="article-container">
         <div className="article-breadcrumb">
-          <Link to="/blog">Blog</Link> / De la photo au héros de conte : comment l'IA transforme votre animal en personnage d'aventure
+          <Link to="/blog">Blog</Link> / Photo de votre animal → personnage de conte
         </div>
 
         <div className="article-layout">
           <div className="article-main">
             <div className="article-header">
-              <h1>De la photo au héros de conte : comment l'IA transforme votre animal en personnage d'aventure</h1>
+              <h1>Photo de votre Animal → Personnage de Conte : Comment l'IA Crée les Illustrations</h1>
               <div className="article-meta">
-                <span>Par l'équipe Contedia · Mis à jour le 22 mars 2026</span>
+                <span>Par l'équipe Contedia · Mis à jour le 22 mars 2026 · 7 min de lecture</span>
               </div>
             </div>
 
             <div className="article-image">
               <img
                 src="/images/blog/ia-transformation-animal.jpg"
-                alt="Transformation d'une photo de chien en illustration de conte par l'intelligence artificielle"
+                alt="Avant/après : photo d'un golden retriever transformée en personnage de conte illustré par l'IA"
                 loading="lazy"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.src = '/images/placeholder-blog.jpg';
-                }}
+                onError={(e) => { const target = e.target as HTMLImageElement; target.src = '/images/placeholder-blog.jpg'; }}
               />
             </div>
 
             <div className="article-content">
               <p className="article-intro">
-                Comment une simple photo de votre chien endormi sur le canapé peut-elle devenir une illustration épique d'un héros sauvant le royaume ? Grâce à l'intelligence artificielle, cette transformation magique est désormais réalité. Plongez dans les coulisses technologiques qui permettent de transformer votre animal de compagnie en véritable personnage de conte d'aventure.
+                <strong>Votre golden retriever endormi sur le canapé → un héros qui sauve un royaume enchanté.</strong> Comment c'est possible ? Grâce à l'intelligence artificielle de <strong>Contedia</strong>, une simple photo de votre animal se transforme en personnage illustré dans un <strong>conte personnalisé</strong>. Pas besoin d'être photographe pro — un selfie avec votre chien suffit. Voici comment ça marche, étape par étape.
               </p>
 
-              <h2 id="revolution-ia">La révolution de l'IA dans la création artistique</h2>
+              <h2 id="comment">Comment ça marche concrètement</h2>
               <p>
-                L'intelligence artificielle a révolutionné la création artistique en permettant de générer des illustrations personnalisées à partir de simples photographies. Cette technologie, impensable il y a quelques années, ouvre des possibilités créatives infinies pour transformer votre animal en héros de conte authentique.
+                En version simple : vous donnez une photo de votre animal + une description courte. L'IA fait le reste. En 5 minutes, votre chien/chat/lapin est un personnage illustré qui accompagne votre enfant dans une aventure de 6 à 12 pages.
               </p>
               <p>
-                Les algorithmes d'apprentissage profond analysent des millions d'images pour comprendre les caractéristiques physiques, les expressions et les postures des animaux. Cette base de données gigantesque permet à l'IA de recréer fidèlement votre compagnon dans des styles artistiques variés.
-              </p>
-              <p>
-                La prouesse technique réside dans la capacité de l'IA à maintenir l'essence de votre animal tout en l'adaptant au style narratif choisi. Votre chat conserve ses traits distinctifs même transformé en explorateur de jungle ou en magicien mystérieux.
-              </p>
-
-              <h2 id="analyse-animal">Comment l'IA analyse votre animal</h2>
-              <p>
-                Le processus commence par une analyse minutieuse des photos fournies. L'IA identifie d'abord l'espèce, la race, puis les caractéristiques physiques spécifiques : couleur du pelage, forme des oreilles, expression des yeux, posture habituelle. Cette reconnaissance précise garantit une représentation fidèle.
-              </p>
-              <p>
-                L'algorithme va plus loin en analysant les détails subtils qui rendent votre animal unique : une tache particulière, une oreille légèrement pliée, ou une expression caractéristique. Ces éléments distinctifs sont préservés dans toutes les illustrations générées.
-              </p>
-
-              <h3 id="reconnaissance-creation">De la reconnaissance à la création</h3>
-              <p>
-                Une fois l'analyse terminée, l'IA procède à la création artistique proprement dite. Elle adapte les caractéristiques identifiées au style choisi : cartoon coloré, illustration réaliste, aquarelle douce, ou art fantastique. Cette adaptation respecte l'anatomie et les proportions naturelles de l'animal.
-              </p>
-              <p>
-                Le système génère ensuite plusieurs variations pour chaque scène de l'histoire, permettant de choisir les illustrations les plus expressives et cohérentes avec le récit. Cette diversité garantit une narration visuelle riche et captivante.
-              </p>
-
-              <h2 id="defis-techniques">Les défis techniques surmontés</h2>
-              <p>
-                Transformer une photo statique en personnage dynamique d'histoire représente plusieurs défis techniques majeurs. Le premier concerne la cohérence : l'animal doit rester reconnaissable dans toutes les situations narratives, qu'il coure, saute, ou interagisse avec d'autres personnages.
-              </p>
-              <p>
-                Le second défi porte sur l'expression émotionnelle. L'IA doit interpréter et adapter les expressions naturelles de votre animal aux émotions requises par l'histoire : joie, surprise, détermination, ou tendresse. Cette adaptation préserve la personnalité authentique de votre compagnon.
-              </p>
-
-              <h3 id="personnaliser-personnalite">Personnalisér selon la personnalité</h3>
-              <p>
-                Au-delà de l'apparence physique, l'IA intègre des éléments de personnalité décrits par les propriétaires. Un chien joueur sera représenté avec des postures dynamiques et des expressions joyeuses, tandis qu'un chat indépendant adoptera des poses plus majestueuses et mystérieuses.
-              </p>
-              <p>
-                Cette personnalisation comportementale enrichit considérablement l'authenticité du personnage. Les lecteurs reconnaissent non seulement l'apparence de leur animal, mais aussi son caractère unique à travers les illustrations.
-              </p>
-
-              <h2 id="styles-artistiques">Les styles artistiques disponibles</h2>
-              <p>
-                L'IA maîtrise plusieurs styles artistiques adaptés aux différents goûts et âges des lecteurs :
-              </p>
-              <ul>
-                <li><strong>Style cartoon moderne</strong> : Couleurs vives, formes arrondies, parfait pour les jeunes enfants</li>
-                <li><strong>Illustration réaliste</strong> : Détails précis, textures authentiques, idéal pour les lecteurs plus âgés</li>
-                <li><strong>Art fantastique</strong> : Éléments magiques, atmosphères féeriques, pour les amateurs de merveilleux</li>
-                <li><strong>Aquarelle artistique</strong> : Douceur des couleurs, poésie visuelle, pour les histoires contemplatives</li>
-                <li><strong>Style aventure</strong> : Dynamisme, action, parfait pour les récits épiques</li>
-              </ul>
-
-              <h3 id="optimiser-photos">Optimiser vos photos pour de meilleurs résultats</h3>
-              <p>
-                Pour obtenir les meilleures illustrations possibles, quelques conseils simples optimisent le travail de l'IA. Privilégiez des photos nettes avec un bon éclairage naturel. Variez les angles et les expressions pour donner plus de matériel créatif à l'algorithme.
-              </p>
-              <p>
-                Incluez des photos de votre animal dans différentes situations : repos, jeu, interaction avec la famille. Cette diversité permet à l'IA de mieux comprendre sa personnalité et de créer des illustrations plus expressives et authentiques.
-              </p>
-
-              <h2 id="avenir-creation">L'avenir de la création personnalisée</h2>
-              <p>
-                Les technologies d'IA continuent d'évoluer rapidement, promettant des possibilités encore plus extraordinaires. Bientôt, il sera possible de créer des animations courtes, des livres interactifs, ou même des expériences de réalité augmentée mettant en scène votre animal.
-              </p>
-              <p>
-                Cette évolution technologique démocratise la création artistique personnalisée, permettant à chaque famille de posséder des œuvres uniques célébrant leur compagnon à quatre pattes. L'art devient accessible, personnel et profondément émouvant.
+                L'IA ne « colle » pas la photo dans les illustrations. Elle <strong>analyse</strong> les caractéristiques physiques de votre animal (couleur du pelage, forme des oreilles, taille, race) et <strong>recrée</strong> un personnage illustré qui lui ressemble dans le style choisi. C'est comme si un illustrateur professionnel dessinait votre animal — mais en 30 secondes.
               </p>
 
               <div className="article-cta">
                 <Link to="/create-story" className="cta-button">
-                  🤖 Transformer notre animal en héros de conte
+                  ✨ Testez avec votre animal — Premier livre gratuit
                 </Link>
               </div>
+
+              <h2 id="etapes">Étape par étape : de la photo au livre illustré</h2>
+              <ul>
+                <li><strong>Étape 1 : Créez le héros</strong> — Entrez le prénom de votre enfant et ajoutez sa photo (optionnel). C'est le personnage principal.</li>
+                <li><strong>Étape 2 : Ajoutez votre animal</strong> — Dans les personnages secondaires, ajoutez votre animal. Donnez-lui son vrai nom (« Rex », « Mimi », « Noisette ») et décrivez-le en quelques mots (« bouledogue français, beige et blanc, oreilles rondes »).</li>
+                <li><strong>Étape 3 : L'IA crée le personnage</strong> — À partir de votre description (et de la photo si fournie), l'IA génère un personnage animal illustré cohérent avec le <Link to="/blog/nouveaux-personnages-styles-aventures-ados">style choisi</Link>.</li>
+                <li><strong>Étape 4 : L'animal apparaît dans CHAQUE page</strong> — Ce n'est pas un cameo. Votre animal est un vrai personnage qui accompagne votre enfant tout au long de l'aventure. Il réagit, aide, protège, joue.</li>
+                <li><strong>Étape 5 : Le livre est prêt</strong> — En 5 minutes, votre enfant et son animal vivent une aventure illustrée unique. Lisez-la ensemble au coucher.</li>
+              </ul>
+
+              <h2 id="quel-animal">Quel animal fonctionne le mieux ?</h2>
+              <p>
+                <strong>Tous les animaux fonctionnent !</strong> Mais voici comment l'IA adapte le rôle selon le type :
+              </p>
+              <ul>
+                <li><strong>Chien</strong> — Le compagnon fidèle par excellence. Il court, protège, flaire les indices, guide l'enfant. Rex en chevalier loyal, Luna en exploratrice intrépide. Le plus populaire sur Contedia.</li>
+                <li><strong>Chat</strong> — Le mystérieux. Il se faufile dans les endroits secrets, résout des énigmes, a une sagesse cachée. Parfait pour les <Link to="/blog/evolution-livres-enfants-contes-fees-aventures-personnalisees">contes de fées</Link> et les histoires de mystère.</li>
+                <li><strong>Lapin</strong> — L'explorateur curieux. Il creuse des terriers magiques (clin d'œil à Alice !), découvre des jardins enchantés. Idéal pour Pâques et les histoires douces.</li>
+                <li><strong>Hamster</strong> — Le petit mais courageux. Il prouve que la taille ne compte pas. Les enfants adorent voir leur hamster devenir un héros intrépide.</li>
+                <li><strong>Perroquet</strong> — Le guide volant. Il emmène l'enfant vers des îles tropicales, transmet des messages secrets. Coloré et exotique.</li>
+                <li><strong>Poisson</strong> — Le gardien du monde sous-marin. L'enfant plonge avec son poisson pour explorer des royaumes de corail. Magique en style <Link to="/styles-illustration">Kawaii</Link>.</li>
+                <li><strong>Tortue</strong> — La sage. Elle connaît les secrets du passé et guide l'enfant avec patience et sagesse.</li>
+              </ul>
+
+              <h2 id="styles">Les 9 styles pour illustrer votre animal</h2>
+              <p>
+                Le style d'illustration change complètement l'ambiance de votre animal-personnage :
+              </p>
+              <ul>
+                <li><strong>Animation 3D (Pixar)</strong> — Votre chien ressemble à un personnage de film d'animation. Expressif, rond, adorable. Le favori des 3-7 ans.</li>
+                <li><strong>Manga</strong> — Votre chat avec des grands yeux expressifs, un style dynamique japonais. Les 5-8 ans adorent.</li>
+                <li><strong>Kawaii</strong> — Votre animal ultra mignon, joues roses, formes rondes. Parfait pour les tout-petits et les histoires douces.</li>
+                <li><strong>Aquarelle</strong> — Votre animal en peinture douce et poétique. Magnifique pour le <Link to="/blog/conte-personnalise-rituel-coucher">rituel du coucher</Link>.</li>
+                <li><strong>Et 5 autres styles</strong> — Papier découpé, Clay Animation, Géométrique, Livre illustré classique, Block World. <Link to="/styles-illustration">Voir tous les styles</Link>.</li>
+              </ul>
+
+              <div className="article-cta">
+                <Link to="/create-story" className="cta-button">
+                  ✨ Choisissez votre style — Votre animal en personnage de conte
+                </Link>
+              </div>
+
+              <h2 id="conseils-photo">Conseils pour une bonne photo de votre animal</h2>
+              <p>
+                Pas besoin d'être photographe professionnel. Voici les bases :
+              </p>
+              <ul>
+                <li><strong>De face ou de 3/4</strong> — L'IA a besoin de voir le visage. Évitez les photos de dos.</li>
+                <li><strong>Bonne lumière</strong> — Lumière naturelle (près d'une fenêtre ou dehors). Évitez le flash qui aplatit les couleurs.</li>
+                <li><strong>Net, pas flou</strong> — Si votre animal bouge beaucoup, utilisez le mode rafale de votre téléphone et choisissez la plus nette.</li>
+                <li><strong>Pas trop loin</strong> — L'animal doit occuper au moins la moitié de la photo. Un selfie avec lui fonctionne parfaitement.</li>
+                <li><strong>Animal détendu</strong> — L'expression naturelle (joueur, curieux, endormi) donne les meilleurs résultats. Pas besoin qu'il pose.</li>
+              </ul>
+              <p>
+                <strong>Pas de photo ?</strong> Pas de problème ! Vous pouvez simplement décrire votre animal : « golden retriever beige, grands yeux marrons, oreilles tombantes ». L'IA créera un personnage qui correspond.
+              </p>
+
+              <h2 id="exemples">Avant/après : exemples réels de livres Contedia</h2>
+              <p>
+                Voici des exemples de transformations réelles. Vous pouvez <Link to="/exemples">lire ces contes en lecture interactive</Link> :
+              </p>
+              <ul>
+                <li><strong>Rayan + Luna (bouledogue français)</strong> — Photo : Luna endormie sur le canapé. Résultat : Luna guide Rayan dans une chasse aux œufs de Pâques, flaire les œufs cachés, et découvre un œuf de dinosaure ! Style 3D Pixar.</li>
+                <li><strong>Timéo + Rex (berger allemand)</strong> — Description : « berger allemand noir et marron ». Résultat : Rex accompagne Timéo au Pôle Nord, le protège dans la tempête de neige, et aide le Père Noël. Style Kawaii.</li>
+                <li><strong>Enzo + Moustache (chat noir)</strong> — Photo : Moustache sur le rebord de la fenêtre. Résultat : Moustache découvre des coquillages magiques et ouvre des portails féeriques pour l'anniversaire d'Enzo. Style Manga.</li>
+              </ul>
+
+              <h2 id="temoignages">Ce que les parents en pensent</h2>
+              <ul>
+                <li><strong>Nadia, maman d'Inès (4 ans)</strong> — <em>« J'ai juste envoyé un selfie avec notre chat Moustache. Quand Inès a vu Moustache dans le livre en train de résoudre une enquête, elle a dit "Moustache il est trop fort !" Elle montre le livre à tout le monde. »</em></li>
+                <li><strong>Pierre, papa de Lucas (6 ans)</strong> — <em>« Notre hamster s'appelle Patate. Lucas rêvait de le voir en super-héros. L'IA a créé un conte où Patate sauve le village malgré sa petite taille. Lucas le relit tous les soirs. »</em></li>
+                <li><strong>Céline, maman de Jade (5 ans)</strong> — <em>« On n'avait pas de photo du poisson rouge. J'ai juste écrit "poisson rouge avec une tache noire". Le résultat est bluffant — Jade a reconnu Bubulle immédiatement dans l'illustration ! »</em></li>
+              </ul>
+
+              <div className="article-cta">
+                <Link to="/create-story" className="cta-button">
+                  ✨ Rejoignez +500 familles — Votre animal mérite son conte
+                </Link>
+              </div>
+
+              <h2 id="faq">FAQ : Photo animal et conte personnalisé</h2>
+
+              {faqQuestions.map((faq, i) => (
+                <React.Fragment key={i}>
+                  <h3>{faq.question}</h3>
+                  <p>{faq.answer}</p>
+                </React.Fragment>
+              ))}
+
+              <p>
+                <em>Découvrez aussi :</em>
+              </p>
+              <ul>
+                <li><Link to="/blog/histoire-animal-compagnie-livre-personnalise">Livre personnalisé chien : créez un conte avec votre animal</Link></li>
+                <li><Link to="/blog/animal-compagnie-stimule-imagination-enfant">Pourquoi votre animal stimule l'imagination de votre enfant</Link></li>
+                <li><Link to="/blog/top-5-themes-histoires-animal-heros-conte">Top 5 des thèmes d'histoires avec votre animal en héros</Link></li>
+                <li><Link to="/blog/ia-revolution-creation-histoires-enfants">Comment l'IA crée des histoires uniques pour enfants</Link></li>
+                <li><Link to="/blog/guide-livre-personnalise-enfant-2026">Le guide complet du livre personnalisé enfant</Link></li>
+              </ul>
             </div>
           </div>
 
@@ -174,10 +235,7 @@ const BlogArticleAnimaux3: React.FC = () => {
               <ul>
                 {tableOfContents.map((item, index) => (
                   <li key={index}>
-                    <button 
-                      onClick={() => handleScrollToSection(item.id)}
-                      className="toc-link"
-                    >
+                    <button onClick={() => handleScrollToSection(item.id)} className="toc-link">
                       {item.title}
                     </button>
                   </li>
