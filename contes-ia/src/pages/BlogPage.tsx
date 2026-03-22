@@ -6,6 +6,7 @@ import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
 import { useScrollReveal, useStaggerReveal } from '../hooks/useScrollReveal';
 import { SEOHead } from '../components/SEOHead';
+import { SchemaBreadcrumb } from '../components/SchemaMarkup';
 import { theme } from '../styles/theme';
 import {
   PageContainer,
@@ -233,6 +234,10 @@ const BlogPage: React.FC = () => {
           content="pourquoi offrir un livre personnalise a un enfant, les avantages des contes personnalises pour le developpement de l'enfant, top 10 des cadeaux personnalises pour enfants, comment choisir un conte adapte a l'age de son enfant, blog contes personnalises"
         />
       </Helmet>
+      <SchemaBreadcrumb items={[
+        { name: "Accueil", url: "https://contedia.fr/" },
+        { name: "Blog", url: "https://contedia.fr/blog" }
+      ]} />
 
       <Header />
 

@@ -6,6 +6,7 @@ import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
 import { useAuth } from '../contexts/AuthContext';
 import { SEOHead } from '../components/SEOHead';
+import { SchemaProduct } from '../components/SchemaMarkup';
 
 // ── Animations ──
 const fadeInUp = keyframes`
@@ -483,6 +484,11 @@ export const ClubPage: React.FC = () => {
       <SEOHead
         title="Club Contedia — 4 Livres Personnalisés par Mois | 9,99€"
         description="Rejoignez le Club Contedia : 4 livres personnalisés par mois, 12 pages illustrées, 9 styles d'illustration. Abonnement à 9,99€/mois."
+      />
+      <SchemaProduct
+        name="Club des Histoires Uniques — Abonnement mensuel"
+        description="4 livres personnalisés par mois, 12 pages illustrées, 9 styles d'illustration, personnages secondaires, multi-langues. Sans engagement."
+        price="9.99"
       />
       <Header />
       <main>

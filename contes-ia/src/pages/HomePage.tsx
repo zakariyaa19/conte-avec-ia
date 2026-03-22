@@ -13,6 +13,7 @@ import { StoryReader } from '../components/ui/StoryReader';
 import { ApiService } from '../config/api';
 import { useAuth } from '../contexts/AuthContext';
 import { SEOHead } from '../components/SEOHead';
+import { SchemaOrganization, SchemaWebSite, SchemaFAQ } from '../components/SchemaMarkup';
 
 // =============================================
 // ANIMATIONS
@@ -1449,6 +1450,9 @@ const faqReveal = useScrollReveal();
         title="Livre Personnalisé Enfant Gratuit — Conte sur Mesure par IA | Contedia"
         description="Créez un livre personnalisé gratuit pour votre enfant. Histoire unique générée par IA avec illustrations sur mesure. Premier livre offert, prêt en 5 minutes."
       />
+      <SchemaOrganization />
+      <SchemaWebSite />
+      <SchemaFAQ questions={faqItems.map(f => ({ question: f.question, answer: f.answer }))} />
       <Header />
       <main>
 
