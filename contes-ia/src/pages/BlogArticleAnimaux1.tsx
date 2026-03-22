@@ -1,170 +1,218 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { PageLayout } from '../components/layout/PageLayout';
 import { SEOHead } from '../components/SEOHead';
-import { SchemaBreadcrumb } from '../components/SchemaMarkup';
-import { Helmet } from 'react-helmet-async';
+import { SchemaFAQ, SchemaBreadcrumb } from '../components/SchemaMarkup';
 import '../styles/BlogArticle.css';
 
 const BlogArticleAnimaux1: React.FC = () => {
   useEffect(() => {
-    document.title = 'Pourquoi votre animal de compagnie stimule l\'imagination de votre enfant | Contes d\'IA';
-    
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', 'Découvrez comment votre animal de compagnie devient une source d\'inspiration magique pour l\'imagination de votre enfant. Créez des histoires personnalisées mettant en scène votre compagnon à quatre pattes.');
-    }
-
-    const metaKeywords = document.querySelector('meta[name="keywords"]') || document.createElement('meta');
-    metaKeywords.setAttribute('content', 'animal de compagnie enfant, imagination enfant animal, conte personnalisé animal, histoire avec animal domestique, livre personnalisé chien chat, développement imagination enfant, animal compagnon lecture');
-    if (!document.querySelector('meta[name="keywords"]')) {
-      document.head.appendChild(metaKeywords);
-    }
+    document.title = 'Animal de Compagnie et Imagination : Pourquoi Votre Enfant Invente des Histoires avec son Chien | Contedia';
   }, []);
 
   const tableOfContents = [
-    { title: "L'animal, catalyseur naturel de créativité", id: "catalyseur-créativité" },
-    { title: "Les bénéfices éducatifs des histoires avec animaux", id: "bénéfices-éducatifs" },
-    { title: "Comment l'animal devient héros de conte", id: "animal-heros" },
-    { title: "Développer l'empathie grâce aux récits animaliers", id: "developper-empathie" },
-    { title: "Personnalisér l'histoire selon votre animal", id: "personnaliser-histoire" },
-    { title: "L'impact émotionnel des contes personnalisés", id: "impact-émotionnel" },
-    { title: "Créer des souvenirs durables avec votre compagnon", id: "souvenirs-durables" },
-    { title: "Transformer votre animal en personnage de conte", id: "transformer-animal" }
+    { title: "Pourquoi les enfants inventent des histoires avec leurs animaux", id: "pourquoi" },
+    { title: "Les bienfaits éducatifs prouvés", id: "bienfaits" },
+    { title: "Transformer cette imagination en livre personnalisé", id: "transformer" },
+    { title: "5 types d'aventures selon l'animal", id: "aventures" },
+    { title: "L'animal dans le livre : un souvenir pour la vie", id: "souvenir" },
+    { title: "Ce que les parents en disent", id: "temoignages" },
+    { title: "FAQ : Animal de compagnie et conte personnalisé", id: "faq" },
   ];
 
   const handleScrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
-      element.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start'
-      });
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+  };
+
+  const faqQuestions = [
+    {
+      question: "Comment mon animal de compagnie peut-il apparaître dans un livre personnalisé ?",
+      answer: "Sur Contedia, ajoutez votre animal comme personnage secondaire. Donnez-lui son vrai nom et décrivez-le brièvement (race, couleur). L'IA intègre votre animal dans l'histoire et les illustrations. Il accompagne votre enfant tout au long de l'aventure."
+    },
+    {
+      question: "Mon chat peut-il être le héros d'un conte ?",
+      answer: "Oui ! Tous les animaux peuvent être intégrés : chien, chat, lapin, hamster, perroquet, poisson... L'IA adapte le rôle de l'animal au type choisi. Un chat sera mystérieux et malin, un chien sera aventurier et fidèle."
+    },
+    {
+      question: "Pourquoi les enfants adorent les histoires avec leurs animaux ?",
+      answer: "Les études montrent que les enfants qui ont un lien avec un animal sont plus empathiques et créatifs. Quand leur animal apparaît dans un livre, l'identification est totale. L'enfant vit l'aventure AVEC son compagnon, ce qui renforce leur lien affectif."
+    },
+    {
+      question: "L'animal ressemble-t-il vraiment au mien dans les illustrations ?",
+      answer: "L'IA s'adapte à la description que vous fournissez (race, couleur, taille). Le résultat varie selon le style d'illustration choisi mais l'animal est reconnaissable. En style 3D Pixar, le rendu est très réaliste."
+    },
+    {
+      question: "Peut-on créer un livre hommage si l'animal n'est plus là ?",
+      answer: "Oui, c'est l'une des utilisations les plus émouvantes. Beaucoup de parents créent un conte comme souvenir d'un animal disparu. L'enfant peut relire les aventures de son compagnon et garder vivant le lien spécial qu'ils partageaient."
+    },
+    {
+      question: "Combien coûte un livre personnalisé avec son animal ?",
+      answer: "Le premier livre est entièrement gratuit sur Contedia. Les suivants coûtent 3,99€. L'abonnement Club (9,99€/mois) inclut 4 livres par mois — parfait pour créer une aventure différente chaque semaine avec votre animal."
+    }
+  ];
+
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Animal de Compagnie et Imagination : Pourquoi Votre Enfant Invente des Histoires avec son Chien",
+    "description": "Découvrez pourquoi votre animal stimule l'imagination de votre enfant et comment transformer cette complicité en livre personnalisé. Premier livre gratuit.",
+    "image": "https://contedia.fr/images/blog/enfant-animal-lecture.jpg",
+    "author": { "@type": "Organization", "name": "Contedia", "url": "https://contedia.fr" },
+    "publisher": { "@type": "Organization", "name": "Contedia", "logo": { "@type": "ImageObject", "url": "https://contedia.fr/logo-conte-ia.png" } },
+    "datePublished": "2025-11-04",
+    "dateModified": "2026-03-22",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://contedia.fr/blog/animal-compagnie-stimule-imagination-enfant" }
   };
 
   return (
     <PageLayout>
       <SEOHead
-        title="Pourquoi votre Animal de Compagnie Stimule l'Imagination de votre Enfant | Contedia"
-        description="Découvrez comment pourquoi votre animal de compagnie stimule l'imagination de votre enfant. Guide complet, conseils pratiques et premier livre gratuit sur Contedia."
+        title="Animal de Compagnie et Imagination Enfant : Pourquoi il Invente des Histoires avec son Chien"
+        description="Pourquoi votre animal stimule l'imagination de votre enfant. Transformez cette complicité en livre personnalisé où ils vivent l'aventure ensemble. Gratuit."
         type="article"
       />
+      <SchemaFAQ questions={faqQuestions} />
       <SchemaBreadcrumb items={[
         { name: "Accueil", url: "https://contedia.fr/" },
         { name: "Blog", url: "https://contedia.fr/blog" },
-        { name: "Pourquoi votre Animal de Compagnie Stimule l'Imagi", url: "https://contedia.fr/blog/animal-compagnie-stimule-imagination-enfant" }
+        { name: "Animal et imagination enfant", url: "https://contedia.fr/blog/animal-compagnie-stimule-imagination-enfant" }
       ]} />
       <Helmet>
-        <script type="application/ld+json">{`{"@context":"https://schema.org","@type":"Article","headline":"Pourquoi votre Animal de Compagnie Stimule l'Imagination de votre Enfant","author":{"@type":"Organization","name":"Contedia"},"publisher":{"@type":"Organization","name":"Contedia"},"dateModified":"2026-03-22"}`}</script>
+        <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>
       </Helmet>
+
       <div className="article-container">
         <div className="article-breadcrumb">
-          <Link to="/blog">Blog</Link> / Pourquoi votre animal de compagnie stimule l'imagination de votre enfant
+          <Link to="/blog">Blog</Link> / Animal de compagnie et imagination de l'enfant
         </div>
 
         <div className="article-layout">
           <div className="article-main">
             <div className="article-header">
-              <h1>Pourquoi votre animal de compagnie stimule l'imagination de votre enfant : la magie des histoires personnalisées</h1>
+              <h1>Pourquoi Votre Enfant Invente des Histoires avec son Animal de Compagnie (et Comment en Faire un Livre)</h1>
               <div className="article-meta">
-                <span>Par l'équipe Contedia · Mis à jour le 22 mars 2026</span>
+                <span>Par l'équipe Contedia · Mis à jour le 22 mars 2026 · 8 min de lecture</span>
               </div>
             </div>
 
             <div className="article-image">
               <img
                 src="/images/blog/enfant-animal-lecture.jpg"
-                alt="Enfant lisant avec son chien, moment de complicité et d'imagination"
+                alt="Enfant de 5 ans lisant un livre personnalisé blotti contre son golden retriever"
                 loading="lazy"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.src = '/images/placeholder-blog.jpg';
-                }}
+                onError={(e) => { const target = e.target as HTMLImageElement; target.src = '/images/placeholder-blog.jpg'; }}
               />
             </div>
 
             <div className="article-content">
               <p className="article-intro">
-                Votre chien, votre chat ou votre lapin n'est pas seulement un compagnon fidèle : il est une véritable source d'inspiration pour l'imagination débordante de votre enfant. Découvrez comment transformer cette relation unique en histoires personnalisées captivantes qui stimulent la créativité, renforcent les liens affectifs et créent des souvenirs magiques pour toute la famille.
+                <strong>« Rex, on va sauver la princesse ! »</strong> — Vous avez déjà entendu votre enfant parler à son chien comme si c'était son meilleur compagnon d'aventure ? C'est normal. Les études en psychologie infantile montrent que les enfants qui grandissent avec un <strong>animal de compagnie</strong> sont plus créatifs, plus empathiques et développent une imagination plus riche. Et si on transformait ces aventures imaginaires en un <strong>vrai livre personnalisé</strong> où votre enfant ET son animal sont les héros ?
               </p>
 
-              <h2 id="catalyseur-créativité">L'animal, catalyseur naturel de créativité</h2>
+              <h2 id="pourquoi">Pourquoi les enfants inventent des histoires avec leurs animaux</h2>
               <p>
-                Les animaux de compagnie possèdent cette capacité extraordinaire d'éveiller l'imagination des enfants de manière spontanée et naturelle. Contrairement aux jouets ou aux écrans, votre compagnon à quatre pattes est vivant, imprévisible et plein de personnalité. Cette authenticité stimule la créativité de votre enfant d'une façon unique.
-              </p>
-              <p>
-                Chaque geste de votre animal devient une source d'inspiration : le chat qui bondit mystérieusement devient un ninja félin, le chien qui court dans le jardin se transforme en héros d'aventure, et le lapin qui grignote ses légumes devient un explorateur gourmand. Cette observation quotidienne nourrit naturellement l'imaginaire enfantin.
-              </p>
-              <p>
-                Les enfants développent ainsi une capacité remarquable à créer des scénarios complexes autour de leur animal. Ils inventent des dialogues, imaginent des aventures et construisent des mondes fantastiques où leur compagnon joue le rôle principal. Cette créativité spontanée constitue la base idéale pour des contes personnalisés.
-              </p>
-
-              <h2 id="bénéfices-éducatifs">Les bénéfices éducatifs des histoires avec animaux</h2>
-              <p>
-                Intégrer l'animal de compagnie dans des histoires personnalisées apporte des bénéfices éducatifs considérables. D'abord, cela renforce l'apprentissage de la lecture : votre enfant sera naturellement plus motivé à lire une histoire mettant en scène son compagnon préféré.
-              </p>
-              <p>
-                Ces récits développent également le vocabulaire spécialisé lié aux animaux, à leurs comportements et à leurs besoins. Votre enfant apprend ainsi de nouveaux mots tout en s'amusant, consolidant ses connaissances sur le monde animal de manière ludique et mémorable.
-              </p>
-
-              <h3 id="animal-heros">Comment l'animal devient héros de conte</h3>
-              <p>
-                Transformer votre animal en héros de conte nécessite d'observer ses caractéristiques uniques. Un chien énergique deviendra parfait pour des aventures sportives, tandis qu'un chat indépendant excellera dans des missions d'espionnage. Cette personnalisation rend l'histoire authentique et captivante.
-              </p>
-              <p>
-                L'intelligence artificielle permet aujourd'hui de créer des illustrations où votre animal apparaît réellement comme le héros principal. Votre enfant peut ainsi voir son compagnon vivre des aventures extraordinaires, créant un lien émotionnel fort entre la réalité et la fiction.
-              </p>
-
-              <h2 id="developper-empathie">Développer l'empathie grâce aux récits animaliers</h2>
-              <p>
-                Les contes mettant en scène des animaux de compagnie constituent un excellent moyen de développer l'empathie chez les enfants. En s'identifiant aux émotions et aux besoins de leur animal dans l'histoire, ils apprennent à comprendre et respecter les êtres vivants qui les entourent.
-              </p>
-              <p>
-                Ces histoires peuvent aborder des thèmes importants comme le respect de la nature, la responsabilité envers les animaux, ou encore l'importance des soins vétérinaires. Votre enfant intègre ainsi des valeurs essentielles de manière naturelle et divertissante.
-              </p>
-
-              <h3 id="personnaliser-histoire">Personnalisér l'histoire selon votre animal</h3>
-              <p>
-                Chaque animal a sa personnalité unique qui mérite d'être célébrée dans un conte personnalisé. Voici comment adapter l'histoire selon différents types de compagnons :
+                Votre enfant ne joue pas « juste » avec son chien ou son chat. Il fait quelque chose de profond :
               </p>
               <ul>
-                <li><strong>Chiens actifs</strong> : Aventures sportives, sauvetages héroïques, exploration de nouveaux territoires</li>
-                <li><strong>Chats mystérieux</strong> : Missions secrètes, voyages nocturnes, résolution d'énigmes</li>
-                <li><strong>Lapins curieux</strong> : Découvertes botaniques, aventures souterraines, quêtes gourmandes</li>
-                <li><strong>Oiseaux bavards</strong> : Voyages aériens, transmission de messages, concerts musicaux</li>
-                <li><strong>Poissons paisibles</strong> : Explorations aquatiques, rencontres sous-marines, jardins d'algues magiques</li>
+                <li><strong>L'animal est un compagnon sans jugement</strong> — Rex ne dit jamais « c'est pas comme ça qu'on fait ». L'enfant peut inventer librement, sans crainte d'être corrigé. C'est un espace de créativité pure.</li>
+                <li><strong>L'animal est imprévisible</strong> — Le chat qui bondit soudainement, le chien qui rapporte un bâton bizarre, le lapin qui creuse un trou. Chaque comportement inattendu déclenche un scénario dans la tête de l'enfant : « Et si le chat avait trouvé un passage secret ? »</li>
+                <li><strong>L'animal est un miroir émotionnel</strong> — L'enfant projette ses émotions sur son animal. « Rex est triste parce que je pars à l'école » — c'est l'enfant qui est triste, et l'animal l'aide à exprimer ce qu'il ressent.</li>
+                <li><strong>L'animal inspire les rôles</strong> — Le chien devient le chevalier fidèle. Le chat devient l'espion ninja. Le poisson devient le gardien d'un trésor sous-marin. L'enfant assigne naturellement des rôles héroïques à son compagnon.</li>
               </ul>
-
-              <h2 id="impact-émotionnel">L'impact émotionnel des contes personnalisés</h2>
-              <p>
-                Un conte personnalisé mettant en scène l'animal de compagnie crée un impact émotionnel profond et durable. Votre enfant développe une fierté particulière envers son compagnon, renforçant leur lien affectif et sa responsabilité envers l'animal.
-              </p>
-              <p>
-                Cette approche est particulièrement bénéfique pour les enfants timides ou ayant des difficultés relationnelles. Voir leur animal réussir des défis dans l'histoire leur donne confiance et les encourage à surmonter leurs propres obstacles.
-              </p>
-
-              <h3 id="souvenirs-durables">Créer des souvenirs durables avec votre compagnon</h3>
-              <p>
-                Un livre personnalisé devient un trésor familial qui immortalise la relation unique entre votre enfant et son animal. Ces souvenirs tangibles prennent une valeur inestimable, surtout lorsque l'animal vieillit ou n'est plus présent.
-              </p>
-              <p>
-                Les moments de lecture partagée autour de ces histoires créent des rituels familiaux précieux. Votre enfant associera pour toujours ces instants de bonheur à son compagnon, renforçant les liens familiaux et les souvenirs positifs.
-              </p>
-
-              <h2 id="transformer-animal">Transformer votre animal en personnage de conte</h2>
-              <p>
-                Créer un conte personnalisé avec votre animal de compagnie est désormais accessible grâce aux technologies d'intelligence artificielle. Il suffit de quelques photos de votre compagnon et de détails sur sa personnalité pour générer une histoire unique et des illustrations sur mesure.
-              </p>
-              <p>
-                Le processus de création devient lui-même un moment de complicité familiale. Discuter des aventures possibles, choisir le style d'illustration et imaginer les péripéties stimule l'imagination de toute la famille et renforce l'anticipation de découvrir le résultat final.
-              </p>
 
               <div className="article-cta">
                 <Link to="/create-story" className="cta-button">
-                  🐾 Créer un conte avec notre animal de compagnie
+                  ✨ Transformez ces aventures en livre — Premier livre gratuit
                 </Link>
               </div>
+
+              <h2 id="bienfaits">Les bienfaits éducatifs prouvés par la science</h2>
+              <p>
+                Ce n'est pas juste mignon — c'est éducatif. Les recherches en développement de l'enfant montrent que la relation enfant-animal :
+              </p>
+              <ul>
+                <li><strong>Développe l'empathie</strong> — Un enfant qui s'occupe d'un animal apprend à comprendre les besoins d'un être vivant différent de lui. Cette empathie se transfère ensuite aux relations humaines.</li>
+                <li><strong>Stimule le langage</strong> — Les enfants parlent à leurs animaux. Ils inventent des dialogues, racontent leur journée, expliquent des choses. C'est un entraînement linguistique quotidien et naturel.</li>
+                <li><strong>Réduit l'anxiété</strong> — La présence d'un animal a un effet apaisant documenté. Pour les <Link to="/blog/livre-personnalise-enfant-timide">enfants timides ou anxieux</Link>, l'animal est souvent le premier confident.</li>
+                <li><strong>Encourage la lecture</strong> — Un enfant qui lit une histoire avec SON animal dedans est naturellement plus motivé. C'est le même effet que le <Link to="/blog/enfant-heros-propre-histoire">livre personnalisé à son prénom</Link>, mais amplifié par la présence de son compagnon.</li>
+                <li><strong>Renforce la responsabilité</strong> — « C'est MOI qui donne à manger à Rex » — cette fierté se retrouve dans l'histoire : « C'est MOI qui sauve Rex du dragon ».</li>
+              </ul>
+
+              <h2 id="transformer">Transformer cette imagination en livre personnalisé</h2>
+              <p>
+                Votre enfant invente déjà des histoires avec son animal. Sur <strong>Contedia</strong>, vous pouvez transformer ces aventures imaginaires en un <strong>vrai livre illustré</strong> :
+              </p>
+              <ul>
+                <li><strong>Étape 1</strong> — Créez le héros : prénom de votre enfant, âge, photo (optionnel)</li>
+                <li><strong>Étape 2</strong> — Ajoutez l'animal comme personnage secondaire. Donnez-lui son vrai nom (Rex, Mimi, Noisette...) et décrivez-le (« golden retriever beige, grandes oreilles »)</li>
+                <li><strong>Étape 3</strong> — Choisissez le thème : aventure en forêt, chasse au trésor, Noël magique, voyage spatial...</li>
+                <li><strong>Étape 4</strong> — L'IA crée une histoire unique où votre enfant et son animal vivent l'aventure ENSEMBLE. Illustrations dans le <Link to="/blog/nouveaux-personnages-styles-aventures-ados">style de votre choix</Link> (3D Pixar, manga, kawaii...)</li>
+              </ul>
+              <p>
+                En 5 minutes, le livre est prêt. Le premier est <strong>gratuit</strong>. Imaginez la tête de votre enfant quand il ouvre le livre et voit Rex à ses côtés dans une forêt enchantée.
+              </p>
+
+              <h2 id="aventures">5 types d'aventures selon l'animal de votre enfant</h2>
+              <ul>
+                <li><strong>Chien aventurier</strong> — Exploration de forêts, sauvetage héroïque, course contre la montre. Le chien flaire les indices et guide l'enfant. Parfait en style Animation 3D.</li>
+                <li><strong>Chat mystérieux</strong> — Enquête nocturne, passage secret, mission d'espionnage. Le chat se faufile là où personne ne peut aller. Idéal en style Manga.</li>
+                <li><strong>Lapin curieux</strong> — Découverte d'un terrier magique (clin d'œil à Alice !), aventure dans un jardin enchanté. Parfait en style Kawaii pour les tout-petits.</li>
+                <li><strong>Perroquet guide</strong> — Voyage aérien vers des îles tropicales, le perroquet transmet des messages secrets. Coloré et exotique en style Aquarelle.</li>
+                <li><strong>Poisson gardien</strong> — L'enfant plonge sous l'eau avec son poisson pour explorer un royaume de corail. Magique en style Papier découpé.</li>
+              </ul>
+
+              <div className="article-cta">
+                <Link to="/create-story" className="cta-button">
+                  ✨ Quelle aventure pour votre animal ? — Essayez gratuitement
+                </Link>
+              </div>
+
+              <h2 id="souvenir">L'animal dans le livre : un souvenir pour la vie</h2>
+              <p>
+                Un <strong>livre personnalisé avec son animal</strong> est bien plus qu'un simple cadeau. C'est un souvenir qui traverse le temps :
+              </p>
+              <ul>
+                <li><strong>L'enfant le relit des dizaines de fois</strong> — Parce que c'est SON chien, SON chat dans l'histoire. Pas un animal fictif.</li>
+                <li><strong>Les grands-parents adorent</strong> — Envoyez le livre par WhatsApp. « Regardez, c'est Léa et Rex dans la forêt enchantée ! »</li>
+                <li><strong>Si l'animal vieillit ou disparaît</strong> — Le livre garde vivant le lien spécial. C'est un hommage magnifique et doux. Plusieurs parents nous ont dit que ce livre les a aidés à traverser la perte d'un animal avec leur enfant.</li>
+              </ul>
+
+              <h2 id="temoignages">Ce que les parents en disent</h2>
+              <ul>
+                <li><strong>Claire, maman de Léo (5 ans) et de Cannelle (golden retriever)</strong> — <em>« Léo parle à Cannelle toute la journée. Quand il a vu Cannelle dans son livre personnalisé, il a dit "Maman, Cannelle elle est dans le livre !" Il dort avec le téléphone ouvert sur la première page. »</em></li>
+                <li><strong>Mehdi, papa de Inès (4 ans) et de Moustache (chat)</strong> — <em>« Inès est persuadée que Moustache est un espion. On a créé un conte manga où Moustache résout une enquête. Elle le montre à tout le monde à l'école. »</em></li>
+                <li><strong>Valérie, maman de Tom (6 ans)</strong> — <em>« Notre chien Paco est décédé l'année dernière. On a créé un livre "Tom et Paco, l'aventure pour toujours". Tom le lit quand Paco lui manque. C'est devenu notre façon de se souvenir. »</em> 💛</li>
+              </ul>
+
+              <div className="article-cta">
+                <Link to="/create-story" className="cta-button">
+                  ✨ Rejoignez +500 familles — Votre enfant et son animal, héros d'un conte
+                </Link>
+              </div>
+
+              <h2 id="faq">FAQ : Animal de compagnie et conte personnalisé</h2>
+
+              {faqQuestions.map((faq, i) => (
+                <React.Fragment key={i}>
+                  <h3>{faq.question}</h3>
+                  <p>{faq.answer}</p>
+                </React.Fragment>
+              ))}
+
+              <p>
+                <em>Découvrez aussi :</em>
+              </p>
+              <ul>
+                <li><Link to="/blog/histoire-animal-compagnie-livre-personnalise">Livre personnalisé chien : créez un conte avec votre animal</Link></li>
+                <li><Link to="/blog/top-5-themes-histoires-animal-heros-conte">Top 5 des thèmes d'histoires avec votre animal en héros</Link></li>
+                <li><Link to="/blog/lire-compagnon-quatre-pattes-rituel-lien-enfant-animal">Lire avec son compagnon : un rituel qui renforce le lien</Link></li>
+                <li><Link to="/blog/photo-heros-conte-ia-transforme-animal-personnage">L'IA transforme votre animal en personnage de conte</Link></li>
+                <li><Link to="/blog/guide-livre-personnalise-enfant-2026">Le guide complet du livre personnalisé enfant</Link></li>
+              </ul>
             </div>
           </div>
 
@@ -174,10 +222,7 @@ const BlogArticleAnimaux1: React.FC = () => {
               <ul>
                 {tableOfContents.map((item, index) => (
                   <li key={index}>
-                    <button 
-                      onClick={() => handleScrollToSection(item.id)}
-                      className="toc-link"
-                    >
+                    <button onClick={() => handleScrollToSection(item.id)} className="toc-link">
                       {item.title}
                     </button>
                   </li>
