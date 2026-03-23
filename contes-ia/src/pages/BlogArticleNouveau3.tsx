@@ -1,194 +1,256 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { PageLayout } from '../components/layout/PageLayout';
 import { SEOHead } from '../components/SEOHead';
-import { SchemaBreadcrumb } from '../components/SchemaMarkup';
-import { Helmet } from 'react-helmet-async';
+import { SchemaFAQ, SchemaBreadcrumb } from '../components/SchemaMarkup';
 import '../styles/BlogArticle.css';
 
 const BlogArticleNouveau3: React.FC = () => {
   useEffect(() => {
-    document.title = 'Livre personnalisé ou livre classique : lequel est le plus bénéfique pour l\'enfant ? | Conte d\'IA';
-    
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', 'Comparaison détaillée entre livres personnalisés et livres classiques pour enfants. Avantages, inconvénients et impact sur le développement de l\'enfant.');
-    }
-
-    const metaKeywords = document.querySelector('meta[name="keywords"]') || document.createElement('meta');
-    metaKeywords.setAttribute('name', 'keywords');
-    metaKeywords.setAttribute('content', 'livre personnalisé vs livre classique, comparaison livre enfant, avantages livre personnalisé, livre traditionnel enfant, choix livre enfant, développement lecture enfant');
-    if (!document.querySelector('meta[name="keywords"]')) {
-      document.head.appendChild(metaKeywords);
-    }
+    document.title = 'Livre Personnalisé vs Livre Classique : Lequel Choisir pour votre Enfant ? | Contedia';
   }, []);
 
   const tableOfContents = [
-    { title: "Les fondements de chaque approche", id: "fondements-approche" },
-    { title: "Avantages du livre personnalisé", id: "avantages-personnalise" },
-    { title: "Les atouts indéniables du livre classique", id: "atouts-classique" },
-    { title: "Impact sur l'apprentissage de la lecture", id: "impact-apprentissage" },
-    { title: "Développement de l'imagination : deux voies différentes", id: "développement-imagination" },
-    { title: "L'aspect émotionnel et psychologique", id: "aspect-émotionnel" },
-    { title: "Quand choisir l'un ou l'autre ?", id: "quand-choisir" },
-    { title: "La complémentarité : une approche équilibrée", id: "complementarite" }
+    { title: "La vraie question que les parents se posent", id: "question" },
+    { title: "Tableau comparatif honnête", id: "comparatif" },
+    { title: "Les 5 avantages du livre personnalisé", id: "avantages-perso" },
+    { title: "Les 3 forces du livre classique", id: "forces-classique" },
+    { title: "Par situation : lequel choisir ?", id: "par-situation" },
+    { title: "La meilleure réponse : les deux ensemble", id: "les-deux" },
+    { title: "Ce que les parents en disent", id: "temoignages" },
+    { title: "FAQ : Livre personnalisé vs classique", id: "faq" },
   ];
 
   const handleScrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
-      element.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start'
-      });
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+  };
+
+  const faqQuestions = [
+    {
+      question: "Un livre personnalisé remplace-t-il les livres classiques ?",
+      answer: "Non, et ce n'est pas l'objectif. Les livres classiques (Petit Prince, contes de Perrault) transmettent un patrimoine littéraire universel. Le livre personnalisé apporte la motivation personnelle et la confiance en soi. L'idéal est d'avoir les deux dans la bibliothèque de l'enfant."
+    },
+    {
+      question: "Quel type de livre est meilleur pour donner le goût de la lecture ?",
+      answer: "Pour un enfant qui n'aime pas lire, le livre personnalisé est plus efficace — il est 2,5 fois plus engageant car l'enfant est le héros. Une fois le déclic fait, les livres classiques prennent le relais pour élargir son univers littéraire."
+    },
+    {
+      question: "Un livre personnalisé est-il aussi bien écrit qu'un livre classique ?",
+      answer: "Le style est différent. Un livre classique est écrit par un auteur avec un style littéraire personnel. Un livre IA comme Contedia génère un texte fluide, adapté à l'âge, mais au service de la personnalisation. Les deux ont leur valeur — ils ne visent pas le même objectif."
+    },
+    {
+      question: "Quel est le meilleur cadeau : livre personnalisé ou livre classique ?",
+      answer: "Pour un cadeau qui provoque un 'WAOUH', le livre personnalisé gagne : l'enfant se voit dedans et c'est unique au monde. Pour un classique intemporel qui se transmet de génération en génération, le livre classique gagne. Le combo parfait ? Les deux ensemble."
+    },
+    {
+      question: "Mon enfant a déjà beaucoup de livres classiques. Pourquoi ajouter un personnalisé ?",
+      answer: "Parce que dans aucun de ses livres classiques, il n'est le héros. Le livre personnalisé comble un manque émotionnel : l'enfant se reconnaît, se projette, s'identifie. C'est complémentaire, pas concurrent. Et le premier est gratuit sur Contedia."
+    },
+    {
+      question: "Combien coûte un livre personnalisé vs un livre classique ?",
+      answer: "Un livre classique enfant : 5-15€ en librairie. Un livre personnalisé classique (Wonderbly) : 25-40€. Un livre IA Contedia : gratuit pour le premier, puis 3,99€. Le rapport qualité/prix du personnalisé IA est imbattable."
+    }
+  ];
+
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Livre Personnalisé vs Livre Classique : Lequel Choisir pour votre Enfant ?",
+    "description": "Comparatif honnête livre personnalisé vs livre classique. Avantages de chaque approche, tableau comparatif, guide par situation. Premier livre gratuit.",
+    "image": "https://contedia.fr/images/blog/livre-personnalise-vs-livre-classique-enfant.jpg",
+    "author": { "@type": "Organization", "name": "Contedia", "url": "https://contedia.fr" },
+    "publisher": { "@type": "Organization", "name": "Contedia", "logo": { "@type": "ImageObject", "url": "https://contedia.fr/logo-conte-ia.png" } },
+    "datePublished": "2026-02-01",
+    "dateModified": "2026-03-23",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://contedia.fr/blog/livre-personnalise-vs-livre-classique-enfant" }
   };
 
   return (
     <PageLayout>
       <SEOHead
-        title="Livre Personnalisé vs Livre Classique : Lequel est le Plus Bénéfique ? | Contedia"
-        description="Découvrez comment livre personnalisé vs livre classique : lequel est le plus bénéfique ?. Guide complet, conseils pratiques et premier livre gratuit sur Contedia."
+        title="Livre Personnalisé vs Livre Classique : Lequel Choisir pour votre Enfant ?"
+        description="Comparatif honnête : livre personnalisé vs livre classique. 5 avantages de chaque, tableau, guide par situation. Premier livre personnalisé gratuit."
         type="article"
       />
+      <SchemaFAQ questions={faqQuestions} />
       <SchemaBreadcrumb items={[
         { name: "Accueil", url: "https://contedia.fr/" },
         { name: "Blog", url: "https://contedia.fr/blog" },
-        { name: "Livre Personnalisé vs Livre Classique : Lequel est", url: "https://contedia.fr/blog/livre-personnalise-vs-livre-classique-enfant" }
+        { name: "Livre personnalisé vs classique", url: "https://contedia.fr/blog/livre-personnalise-vs-livre-classique-enfant" }
       ]} />
       <Helmet>
-        <script type="application/ld+json">{`{"@context":"https://schema.org","@type":"Article","headline":"Livre Personnalisé vs Livre Classique : Lequel est le Plus Bénéfique ?","author":{"@type":"Organization","name":"Contedia"},"publisher":{"@type":"Organization","name":"Contedia"},"dateModified":"2026-03-22"}`}</script>
+        <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>
       </Helmet>
+
       <div className="article-container">
         <div className="article-breadcrumb">
-          <Link to="/blog">Blog</Link> / Livre personnalisé ou livre classique : lequel est le plus bénéfique pour l'enfant ?
+          <Link to="/blog">Blog</Link> / Livre personnalisé vs livre classique
         </div>
 
         <div className="article-layout">
           <div className="article-main">
             <div className="article-header">
-              <h1>Livre personnalisé ou livre classique : lequel est le plus bénéfique pour l'enfant ?</h1>
+              <h1>Livre Personnalisé vs Livre Classique : Lequel Choisir pour votre Enfant ?</h1>
               <div className="article-meta">
-                <span>Par l'équipe Contedia · Mis à jour le 22 mars 2026</span>
+                <span>Par l'équipe Contedia · Mis à jour le 23 mars 2026 · 8 min de lecture</span>
               </div>
             </div>
 
             <div className="article-image">
               <img
                 src="/images/blog/livre-personnalise-vs-livre-classique-enfant.jpg"
-                alt="Enfant hésitant entre un livre personnalisé et un livre classique"
+                alt="Deux livres côte à côte : un livre classique et un livre personnalisé avec le prénom de l'enfant"
                 loading="lazy"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.src = '/images/placeholder-blog.jpg';
-                }}
+                onError={(e) => { const target = e.target as HTMLImageElement; target.src = '/images/placeholder-blog.jpg'; }}
               />
             </div>
 
             <div className="article-content">
               <p className="article-intro">
-                Face aux rayons des librairies, de nombreux parents s'interrogent : faut-il privilégier les livres personnalisés ou rester fidèle aux classiques de la littérature jeunesse ? Cette question, loin d'être anodine, touche au cœur du développement de l'enfant et de sa relation à la lecture. Explorons ensemble les spécificités, avantages et limites de chaque approche pour vous aider à faire le choix le plus éclairé pour votre enfant.
+                <strong>« On a déjà une bibliothèque pleine. Pourquoi un livre personnalisé ? »</strong> — Question légitime. Vos étagères débordent de Petit Prince, d'albums Babar et de contes de Grimm. Et pourtant, dans AUCUN de ces livres, votre enfant n'est le héros. C'est la différence fondamentale. Pas « mieux » ou « moins bien » — <strong>différent</strong>. Voici un comparatif honnête pour savoir lequel choisir selon votre situation. <em>Spoiler : la meilleure réponse, c'est les deux.</em>
               </p>
 
-              <h2 id="fondements-approche">Les fondements de chaque approche</h2>
+              <h2 id="question">La vraie question que les parents se posent</h2>
               <p>
-                Le livre classique s'appuie sur des siècles de tradition littéraire. Il propose des histoires universelles, des archétypes intemporels et des valeurs transmises de génération en génération. Ces œuvres ont traversé le temps car elles touchent à l'essence même de l'expérience humaine, offrant des repères stables dans un monde en constante évolution.
+                La question n'est pas « livre personnalisé OU livre classique ». C'est : <strong>« qu'est-ce que chaque type apporte que l'autre ne peut pas ? »</strong>
               </p>
+              <ul>
+                <li><strong>Le livre classique</strong> apporte un patrimoine littéraire, des auteurs reconnus, des histoires intemporelles qui se transmettent de génération en génération. C'est irremplaçable.</li>
+                <li><strong>Le livre personnalisé</strong> apporte l'identification totale, la <Link to="/blog/conte-personnalise-confiance-imagination-enfant">confiance en soi</Link>, le déclic lecture, et un lien émotionnel unique. C'est aussi irremplaçable.</li>
+              </ul>
               <p>
-                Le livre personnalisé, quant à lui, révolutionne cette approche en plaçant l'enfant au centre de l'histoire. Il s'appuie sur les découvertes récentes en psychologie de l'enfant et en neurosciences, qui démontrent l'importance de l'identification personnelle dans les processus d'apprentissage et de développement.
-              </p>
-              <p>
-                Ces deux approches ne s'opposent pas nécessairement, mais répondent à des besoins différents dans le parcours de développement de l'enfant. Comprendre leurs spécificités permet d'optimiser leur utilisation selon les objectifs éducatifs et les besoins particuliers de chaque enfant.
-              </p>
-
-              <h2 id="avantages-personnalise">Avantages du livre personnalisé</h2>
-              <p>
-                Le livre personnalisé offre des avantages uniques qui en font un outil particulièrement puissant pour certains aspects du développement de l'enfant. Premier atout majeur : l'engagement immédiat. Quand un enfant découvre son nom sur la couverture et se reconnaît dans les illustrations, son attention est captivée instantanément.
-              </p>
-              <p>
-                Cette personnalisation génère une motivation intrinsèque exceptionnelle pour la lecture. L'enfant ne lit plus une histoire, il vit SA propre aventure. Cette appropriation personnelle transforme la lecture d'une activité parfois perçue comme contraignante en plaisir authentique et spontané.
-              </p>
-              <p>
-                Le livre personnalisé excelle également dans le renforcement de l'estime de soi. Voir ses propres qualités valorisées dans une histoire, surmonter des défis grâce à ses caractéristiques personnelles, être reconnu comme héros : ces expériences nourrissent profondément la confiance en soi de l'enfant.
-              </p>
-
-              <h3 id="atouts-classique">Les atouts indéniables du livre classique</h3>
-              <p>
-                Le livre classique possède des atouts irremplaçables qui justifient sa pérennité. Il offre d'abord une richesse culturelle incomparable. Les grands classiques de la littérature jeunesse constituent un patrimoine commun qui permet à l'enfant de partager des références avec d'autres générations et cultures.
-              </p>
-              <p>
-                La diversité des univers proposés par les livres classiques élargit considérablement l'horizon de l'enfant. Il découvre des mondes, des époques, des personnages qu'il n'aurait jamais imaginés. Cette ouverture sur l'altérité développe son empathie et sa compréhension du monde.
-              </p>
-              <p>
-                Les livres classiques offrent également une qualité littéraire souvent exceptionnelle. Écrits par des auteurs reconnus, illustrés par des artistes talentueux, ils exposent l'enfant à l'excellence artistique et développent son goût esthétique.
-              </p>
-
-              <h2 id="impact-apprentissage">Impact sur l'apprentissage de la lecture</h2>
-              <p>
-                L'impact sur l'apprentissage de la lecture diffère significativement entre ces deux approches. Le livre personnalisé facilite l'entrée dans la lecture grâce à la motivation qu'il génère. L'enfant est naturellement porté vers son livre, ce qui multiplie les occasions de pratique et accélère l'acquisition des compétences de base.
-              </p>
-              <p>
-                La familiarité des éléments personnalisés (prénom, environnement, caractéristiques physiques) facilite également la compréhension. L'enfant peut se concentrer sur le déchiffrage sans être perturbé par des éléments totalement inconnus, ce qui optimise ses ressources cognitives.
-              </p>
-              <p>
-                Le livre classique, de son côté, enrichit le vocabulaire de manière plus systématique. Il expose l'enfant à un langage plus soutenu, à des structures syntaxiques variées, à un lexique étendu. Cette richesse linguistique, même si elle peut initialement représenter un défi, contribue significativement au développement des compétences langagières.
-              </p>
-
-              <h3 id="développement-imagination">Développement de l'imagination : deux voies différentes</h3>
-              <p>
-                Le développement de l'imagination emprunte des voies différentes selon le type de livre. Le livre personnalisé stimule l'imagination projective : l'enfant s'imagine dans différentes situations, anticipe ses réactions, explore ses possibilités. Cette forme d'imagination, centrée sur soi, développe la conscience de soi et la capacité d'introspection.
-              </p>
-              <p>
-                Le livre classique développe plutôt l'imagination créatrice et empathique. L'enfant doit imaginer des personnages différents de lui, comprendre leurs motivations, visualiser des univers inconnus. Cette gymnastique mentale développe sa flexibilité cognitive et sa capacité à sortir de son propre référentiel.
-              </p>
-              <p>
-                Ces deux formes d'imagination sont complémentaires et nécessaires au développement harmonieux de l'enfant. L'imagination projective l'aide à se construire, l'imagination empathique l'aide à comprendre le monde et les autres.
-              </p>
-
-              <h2 id="aspect-émotionnel">L'aspect émotionnel et psychologique</h2>
-              <p>
-                L'impact émotionnel et psychologique varie considérablement entre ces deux approches. Le livre personnalisé génère des émotions intenses et immédiates. L'identification totale au héros amplifie toutes les émotions vécues dans l'histoire : joie, fierté, excitation, mais aussi peur ou tristesse si l'histoire en contient.
-              </p>
-              <p>
-                Cette intensité émotionnelle peut être particulièrement bénéfique pour des enfants ayant besoin de renforcer leur confiance en eux ou de surmonter certaines difficultés. L'expérience positive vécue à travers leur personnage peut avoir un effet thérapeutique réel.
-              </p>
-              <p>
-                Le livre classique offre une distance émotionnelle qui permet à l'enfant d'explorer des émotions complexes en sécurité. Il peut vivre par procuration des expériences difficiles, comprendre des sentiments nuancés, sans être directement impliqué. Cette distance facilite l'apprentissage émotionnel et le développement de la maturité affective.
-              </p>
-
-              <h3 id="quand-choisir">Quand choisir l'un ou l'autre ?</h3>
-              <p>
-                Le choix entre livre personnalisé et livre classique dépend de plusieurs facteurs : l'âge de l'enfant, sa personnalité, ses besoins spécifiques et les objectifs poursuivis. Pour un enfant réticent à la lecture, le livre personnalisé peut constituer un excellent déclencheur de motivation.
-              </p>
-              <p>
-                Pour un enfant manquant de confiance en lui, le livre personnalisé offre une expérience valorisante qui peut transformer sa perception de lui-même. Pour un enfant curieux du monde, les livres classiques ouvrent des horizons infinis et nourrissent sa soif de découverte.
-              </p>
-              <p>
-                L'âge joue également un rôle crucial. Les très jeunes enfants (3-5 ans) bénéficient particulièrement du livre personnalisé qui facilite leur entrée dans l'univers de la lecture. Les enfants plus grands (8-12 ans) peuvent davantage apprécier la richesse et la diversité des livres classiques.
-              </p>
-
-              <h2 id="complementarite">La complémentarité : une approche équilibrée</h2>
-              <p>
-                Plutôt que d'opposer ces deux approches, la sagesse consiste à les considérer comme complémentaires. Chacune apporte des bénéfices spécifiques qui, combinés, offrent à l'enfant une expérience de lecture riche et complète.
-              </p>
-              <p>
-                Une bibliothèque idéale pour enfant devrait contenir les deux types de livres. Le livre personnalisé pour nourrir sa confiance en lui, stimuler sa motivation et créer un lien affectif fort avec la lecture. Les livres classiques pour enrichir sa culture, développer son vocabulaire et ouvrir son esprit à la diversité du monde.
-              </p>
-              <p>
-                L'alternance entre ces deux types de lecture crée un équilibre bénéfique. L'enfant peut puiser dans son livre personnalisé la confiance et la motivation nécessaires pour aborder des livres classiques plus exigeants. Inversement, la richesse des livres classiques nourrit son imaginaire et enrichit ses futures histoires personnalisées.
-              </p>
-              <p>
-                Cette approche équilibrée respecte les différents besoins de l'enfant selon les moments et les étapes de son développement. Elle lui offre la possibilité de grandir avec la lecture, en trouvant toujours le livre adapté à ses besoins du moment.
-              </p>
-              <p>
-                Conte d'IA comprend cette complémentarité et propose des histoires personnalisées qui intègrent la richesse narrative des grands classiques tout en conservant les bénéfices uniques de la personnalisation. Une approche moderne qui réconcilie tradition et innovation au service du développement de l'enfant.
+                Un enfant a besoin des DEUX. Comme il a besoin de vitamines ET de protéines. Ce n'est pas un choix exclusif.
               </p>
 
               <div className="article-cta">
                 <Link to="/create-story" className="cta-button">
-                  📚 Découvrir nos contes personnalisés de qualité
+                  ✨ Ajoutez le livre qui manque à sa bibliothèque — Gratuit
                 </Link>
               </div>
+
+              <h2 id="comparatif">Tableau comparatif honnête</h2>
+              <div style={{ overflowX: 'auto', marginBottom: '1.5rem' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
+                  <thead>
+                    <tr style={{ background: 'var(--bg-secondary)' }}>
+                      <th style={{ padding: '10px', textAlign: 'left', borderBottom: '2px solid var(--border-color)' }}>Critère</th>
+                      <th style={{ padding: '10px', textAlign: 'center', borderBottom: '2px solid var(--border-color)' }}>Livre classique</th>
+                      <th style={{ padding: '10px', textAlign: 'center', borderBottom: '2px solid var(--border-color)', background: 'rgba(255,153,153,0.08)' }}>Livre personnalisé (Contedia)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      ['Enfant = héros ?', 'Non', '✅ Oui — son prénom, sa photo'],
+                      ['Histoire unique ?', 'Non (identique pour tous)', '✅ Oui — générée par IA'],
+                      ['Patrimoine littéraire', '✅ Oui (Perrault, Grimm...)', 'Non'],
+                      ['Déclic lecture', 'Variable', '✅ 2,5x plus engageant'],
+                      ['Confiance en soi', 'Indirect', '✅ Direct (enfant = héros)'],
+                      ['Qualité d\'écriture', '✅ Auteurs reconnus', 'IA adaptée à l\'âge'],
+                      ['Prix', '5-15€', '✅ Gratuit (1er) / 3,99€'],
+                      ['Disponibilité', 'Librairie / livraison', '✅ 5 minutes'],
+                      ['Partageable', 'Physique uniquement', '✅ WhatsApp / email'],
+                      ['Transmission', '✅ Se transmet aux générations', 'Souvenir personnel'],
+                    ].map(([critere, classique, perso], i) => (
+                      <tr key={i} style={{ borderBottom: '1px solid var(--border-color)' }}>
+                        <td style={{ padding: '8px 10px', fontWeight: 600 }}>{critere}</td>
+                        <td style={{ padding: '8px 10px', textAlign: 'center' }}>{classique}</td>
+                        <td style={{ padding: '8px 10px', textAlign: 'center', fontWeight: 500, background: 'rgba(255,153,153,0.05)' }}>{perso}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <p>
+                <em>Comme vous le voyez, chaque type a des forces que l'autre n'a pas. C'est pourquoi la meilleure réponse est : les deux.</em>
+              </p>
+
+              <h2 id="avantages-perso">Les 5 avantages du livre personnalisé que le classique ne peut pas offrir</h2>
+              <ul>
+                <li><strong>1. « C'est MOI ! »</strong> — La réaction immédiate de l'enfant quand il voit son prénom et sa photo. Aucun livre classique ne provoque cette émotion. Cette <Link to="/blog/enfant-heros-propre-histoire">identification totale</Link> est la force n°1 du personnalisé.</li>
+                <li><strong>2. Le déclic lecture</strong> — Pour les enfants qui boudent les livres, le personnalisé est souvent le déclencheur. Quand l'histoire parle de LUI, il veut lire. <Link to="/blog/lire-compagnon-quatre-pattes-rituel-lien-enfant-animal">Ajoutez l'animal de compagnie</Link> et c'est le combo gagnant.</li>
+                <li><strong>3. Confiance en soi</strong> — L'enfant-héros surmonte des obstacles → il intériorise « je suis capable ». Les <Link to="/blog/conte-personnalise-confiance-imagination-enfant">études le confirment</Link> : les enfants sont plus confiants après la lecture de livres personnalisés.</li>
+                <li><strong>4. Valeurs personnelles</strong> — Le conte peut intégrer les <Link to="/blog/integrer-valeurs-religieuses-contes-personnalises">valeurs religieuses</Link> de votre famille, ses traditions, ses fêtes. Un livre classique ne fait pas ça.</li>
+                <li><strong>5. Cadeau unique au monde</strong> — Aucun autre enfant n'a le même livre. C'est le cadeau le plus personnel qui existe. Et le premier est <strong>gratuit</strong>.</li>
+              </ul>
+
+              <h2 id="forces-classique">Les 3 forces du livre classique qu'il faut reconnaître</h2>
+              <p>
+                Soyons honnêtes — le livre classique a des atouts que le personnalisé ne peut pas remplacer :
+              </p>
+              <ul>
+                <li><strong>1. Le patrimoine littéraire</strong> — Perrault, Grimm, Andersen, Le Petit Prince, Harry Potter... Ces œuvres font partie de la culture commune. Votre enfant a besoin de les connaître pour partager des références avec ses amis et sa génération.</li>
+                <li><strong>2. La qualité d'écriture</strong> — Un livre écrit par un grand auteur a un style, un rythme, une poésie que l'IA ne peut pas encore égaler. Les mots choisis par un humain ont une saveur particulière.</li>
+                <li><strong>3. La transmission intergénérationnelle</strong> — « Mon grand-père me lisait Le Petit Prince, je le lis à ma fille, elle le lira à ses enfants. » Ce lien entre les générations est irremplaçable.</li>
+              </ul>
+
+              <div className="article-cta">
+                <Link to="/create-story" className="cta-button">
+                  ✨ Complétez sa bibliothèque — Premier livre personnalisé gratuit
+                </Link>
+              </div>
+
+              <h2 id="par-situation">Par situation : lequel choisir ?</h2>
+              <ul>
+                <li><strong>Votre enfant n'aime pas lire</strong> → <strong>Personnalisé d'abord</strong>. C'est le déclic. Une fois qu'il a pris goût avec « son » livre, introduisez les classiques progressivement.</li>
+                <li><strong>Votre enfant manque de confiance</strong> → <strong>Personnalisé</strong>. Se voir comme un héros courageux change la perception de soi. Les <Link to="/blog/livre-personnalise-enfant-timide">enfants timides</Link> en bénéficient particulièrement.</li>
+                <li><strong>Vous cherchez un cadeau original</strong> → <strong>Personnalisé</strong>. Unique au monde, instantané, émotion garantie. 0€ pour le premier.</li>
+                <li><strong>Vous voulez transmettre un patrimoine</strong> → <strong>Classique</strong>. Les grands classiques de la littérature enfantine traversent les générations.</li>
+                <li><strong>Votre enfant dévore déjà les livres</strong> → <strong>Les deux !</strong> Le personnalisé apporte une dimension émotionnelle que les classiques n'ont pas, et vice versa.</li>
+                <li><strong>Vous voulez intégrer vos valeurs (religion, culture)</strong> → <strong>Personnalisé</strong>. Contedia est le seul service qui <Link to="/blog/fetes-religieuses-conte-personnalise-noel-ramadan-paque-diwali">adapte les contes aux fêtes religieuses</Link>.</li>
+              </ul>
+
+              <h2 id="les-deux">La meilleure réponse : les deux ensemble</h2>
+              <p>
+                La bibliothèque idéale d'un enfant en 2026 contient :
+              </p>
+              <ul>
+                <li><strong>Des classiques</strong> — Pour le patrimoine, la qualité littéraire, les références communes</li>
+                <li><strong>Des livres personnalisés</strong> — Pour l'identification, la confiance, le déclic lecture, les valeurs familiales</li>
+                <li><strong>Des livres choisis par l'enfant</strong> — Pour développer son autonomie et ses goûts</li>
+              </ul>
+              <p>
+                Le <strong>livre personnalisé</strong> ne remplace pas les classiques — il comble un <strong>manque</strong>. Dans aucun de vos livres classiques, votre enfant n'est le héros. Le personnalisé fait ça. C'est complémentaire, pas concurrent.
+              </p>
+              <p>
+                Et puisque le premier est gratuit sur <strong>Contedia</strong>, vous n'avez rien à perdre à l'ajouter à la bibliothèque de votre enfant.
+              </p>
+
+              <h2 id="temoignages">Ce que les parents en disent</h2>
+              <ul>
+                <li><strong>Sophie, maman de Jade (5 ans)</strong> — <em>« Jade a 50 livres dans sa chambre. Mais son préféré, c'est celui où ELLE est la princesse. Elle le relit tous les soirs depuis 3 mois. Les autres livres sont sur l'étagère. Celui-là est sur son oreiller. »</em></li>
+                <li><strong>Marc, papa d'Ethan (7 ans)</strong> — <em>« Ethan lit Harry Potter ET son conte personnalisé. Il adore les deux pour des raisons différentes. Harry Potter pour l'aventure. Son conte perso pour la fierté de se voir en héros. Les deux se complètent parfaitement. »</em></li>
+                <li><strong>Mamie Françoise</strong> — <em>« Je lis le Petit Prince à mes petits-enfants depuis 30 ans. Mais quand j'ai offert un conte personnalisé à chacun d'eux pour Noël, c'est le cadeau qui a eu le plus de succès. Même le plus grand (8 ans) a dit "Mamie, c'est MOI dedans !" »</em></li>
+              </ul>
+
+              <div className="article-cta">
+                <Link to="/create-story" className="cta-button">
+                  ✨ Rejoignez +500 familles — Le livre qui manquait à sa bibliothèque
+                </Link>
+              </div>
+
+              <h2 id="faq">FAQ : Livre personnalisé vs livre classique</h2>
+
+              {faqQuestions.map((faq, i) => (
+                <React.Fragment key={i}>
+                  <h3>{faq.question}</h3>
+                  <p>{faq.answer}</p>
+                </React.Fragment>
+              ))}
+
+              <p>
+                <em>Découvrez aussi :</em>
+              </p>
+              <ul>
+                <li><Link to="/blog/guide-livre-personnalise-enfant-2026">Le guide complet du livre personnalisé enfant (0-8 ans)</Link></li>
+                <li><Link to="/blog/meilleurs-livres-personnalises-enfants-comparatif-2026">Les 10 meilleurs livres personnalisés — Comparatif 2026</Link></li>
+                <li><Link to="/blog/conte-personnalise-confiance-imagination-enfant">Comment le conte développe la confiance en soi</Link></li>
+                <li><Link to="/blog/enfant-heros-propre-histoire">Pourquoi les enfants adorent être le héros</Link></li>
+                <li><Link to="/blog/conteuse-personnalisable-alternative-numerique-2026">Conteuse personnalisable : Lunii, Tonies ou IA ?</Link></li>
+              </ul>
             </div>
           </div>
 
@@ -198,10 +260,7 @@ const BlogArticleNouveau3: React.FC = () => {
               <ul>
                 {tableOfContents.map((item, index) => (
                   <li key={index}>
-                    <button 
-                      onClick={() => handleScrollToSection(item.id)}
-                      className="toc-link"
-                    >
+                    <button onClick={() => handleScrollToSection(item.id)} className="toc-link">
                       {item.title}
                     </button>
                   </li>
