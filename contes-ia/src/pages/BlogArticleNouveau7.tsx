@@ -2,196 +2,251 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { PageLayout } from '../components/layout/PageLayout';
 import { SEOHead } from '../components/SEOHead';
-import { SchemaBreadcrumb } from '../components/SchemaMarkup';
+import { SchemaFAQ, SchemaBreadcrumb } from '../components/SchemaMarkup';
 import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticleNouveau7: React.FC = () => {
   useEffect(() => {
-    document.title = 'Comment un livre personnalisé peut aider un enfant timide ou anxieux | Conte d\'IA';
-    
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', 'Découvrez comment les livres personnalisés aident les enfants timides et anxieux à développer leur confiance en soi. Approche thérapeutique douce et bienveillante.');
-    }
-
-    const metaKeywords = document.querySelector('meta[name="keywords"]') || document.createElement('meta');
-    metaKeywords.setAttribute('name', 'keywords');
-    metaKeywords.setAttribute('content', 'enfant timide livre personnalisé, anxiété enfant conte, confiance en soi enfant timide, livre thérapeutique enfant, surmonter timidité enfant, développement social enfant');
-    if (!document.querySelector('meta[name="keywords"]')) {
-      document.head.appendChild(metaKeywords);
-    }
+    document.title = "Livre Personnalisé pour Enfant Timide ou Anxieux : Guide Complet | Contedia";
   }, []);
 
   const tableOfContents = [
-    { title: "Comprendre la timidité et l'anxiété chez l'enfant", id: "comprendre-timidite" },
-    { title: "Le pouvoir thérapeutique du livre personnalisé", id: "pouvoir-therapeutique" },
-    { title: "Créer un héros courageux à son image", id: "heros-courageux" },
-    { title: "Surmonter les peurs par l'identification", id: "surmonter-peurs" },
-    { title: "Développer les compétences sociales en douceur", id: "compétences-sociales" },
-    { title: "Renforcer l'estime de soi progressivement", id: "renforcer-estime" },
-    { title: "Témoignages de parents et professionnels", id: "temoignages" },
-    { title: "Créer le livre adapté aux besoins spécifiques", id: "livre-adapte" }
+    { title: "Pourquoi la timidité n'est pas un problème", id: "timidite-pas-probleme" },
+    { title: "Comment le conte personnalisé aide concrètement", id: "comment-ca-aide" },
+    { title: "Les 4 types de peurs et le conte adapté", id: "types-peurs" },
+    { title: "Scénarios concrets par situation", id: "scenarios" },
+    { title: "Le rituel de lecture qui change tout", id: "rituel" },
+    { title: "Ce que les parents observent", id: "temoignages" },
+    { title: "FAQ", id: "faq" },
   ];
 
   const handleScrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
-      element.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start'
-      });
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+  };
+
+  const faqQuestions = [
+    {
+      question: "Un livre personnalisé peut-il vraiment aider un enfant timide ?",
+      answer: "Oui. Le mécanisme est simple : l'enfant se voit comme un héros courageux dans l'histoire. Son cerveau enregistre cette image positive de lui-même. Avec les relectures, il intériorise progressivement l'idée qu'il est capable. Ce n'est pas magique — c'est de l'apprentissage par identification, un mécanisme bien documenté en psychologie de l'enfant."
+    },
+    {
+      question: "À partir de quel âge un conte personnalisé aide-t-il un enfant anxieux ?",
+      answer: "Dès 3 ans. À cet âge, l'enfant comprend que c'est lui le héros de l'histoire. L'effet est maximal entre 4 et 7 ans, période où l'identification est la plus forte et où les peurs sont les plus fréquentes."
+    },
+    {
+      question: "Quel thème choisir pour un enfant qui a peur de l'école ?",
+      answer: "Choisissez le thème 'courage' ou 'amitié'. L'IA créera un conte où votre enfant arrive dans un endroit nouveau, se fait un ami, et découvre que l'endroit est en fait formidable. Le message passe sans leçon de morale."
+    },
+    {
+      question: "Faut-il forcer un enfant timide à lire le conte ?",
+      answer: "Non, jamais. Proposez-le naturellement au moment du coucher ou d'un moment calme. La curiosité fera le reste — quand l'enfant voit son prénom sur la couverture, il veut savoir ce qui se passe dans l'histoire."
+    },
+    {
+      question: "Combien de lectures avant de voir un changement ?",
+      answer: "Chaque enfant est différent. Certains parents rapportent des changements après 2-3 lectures, d'autres après 2 semaines de lectures quotidiennes. La clé est la régularité et l'absence de pression."
+    },
+    {
+      question: "Le conte personnalisé remplace-t-il un suivi psychologique ?",
+      answer: "Non. Pour une anxiété sévère ou invalidante, consultez un professionnel. Le conte personnalisé est un complément — un outil doux qui soutient le travail fait avec un spécialiste, ou qui suffit pour les timidités et anxiétés légères à modérées."
+    }
+  ];
+
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Livre Personnalisé pour Enfant Timide ou Anxieux : Guide Complet",
+    "description": "Comment un livre personnalisé aide concrètement un enfant timide ou anxieux. 4 types de peurs, scénarios adaptés, rituel de lecture, témoignages parents.",
+    "image": "https://contedia.fr/images/blog/livre-personnalise-enfant-timide.jpg",
+    "author": { "@type": "Organization", "name": "Contedia", "url": "https://contedia.fr" },
+    "publisher": { "@type": "Organization", "name": "Contedia", "logo": { "@type": "ImageObject", "url": "https://contedia.fr/logo-conte-ia.png" } },
+    "datePublished": "2025-08-25",
+    "dateModified": "2026-03-23",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://contedia.fr/blog/livre-personnalise-enfant-timide" }
   };
 
   return (
     <PageLayout>
       <SEOHead
-        title="Comment un Livre Personnalisé Aide un Enfant Timide ou Anxieux | Contedia"
-        description="Découvrez comment comment un livre personnalisé aide un enfant timide ou anxieux. Guide complet, conseils pratiques et premier livre gratuit sur Contedia."
+        title="Livre Personnalisé pour Enfant Timide ou Anxieux : Guide Complet | Contedia"
+        description="Comment un livre personnalisé aide un enfant timide ou anxieux. 4 types de peurs, scénarios concrets, rituel de lecture. Premier livre gratuit."
         type="article"
       />
+      <SchemaFAQ questions={faqQuestions} />
       <SchemaBreadcrumb items={[
         { name: "Accueil", url: "https://contedia.fr/" },
         { name: "Blog", url: "https://contedia.fr/blog" },
-        { name: "Comment un Livre Personnalisé Aide un Enfant Timid", url: "https://contedia.fr/blog/livre-personnalise-enfant-timide" }
+        { name: "Livre personnalisé enfant timide", url: "https://contedia.fr/blog/livre-personnalise-enfant-timide" }
       ]} />
       <Helmet>
-        <script type="application/ld+json">{`{"@context":"https://schema.org","@type":"Article","headline":"Comment un Livre Personnalisé Aide un Enfant Timide ou Anxieux","author":{"@type":"Organization","name":"Contedia"},"publisher":{"@type":"Organization","name":"Contedia"},"dateModified":"2026-03-22"}`}</script>
+        <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>
       </Helmet>
+
       <div className="article-container">
         <div className="article-breadcrumb">
-          <Link to="/blog">Blog</Link> / Comment un livre personnalisé peut aider un enfant timide ou anxieux
+          <Link to="/blog">Blog</Link> / Livre personnalisé pour enfant timide ou anxieux
         </div>
 
         <div className="article-layout">
           <div className="article-main">
             <div className="article-header">
-              <h1>Comment un livre personnalisé peut aider un enfant timide ou anxieux</h1>
+              <h1>Livre Personnalisé pour Enfant Timide ou Anxieux : Comment Ça Aide Concrètement</h1>
               <div className="article-meta">
-                <span>Par l'équipe Contedia · Mis à jour le 22 mars 2026</span>
+                <span>Par l'équipe Contedia · Mis à jour le 23 mars 2026 · 8 min de lecture</span>
               </div>
             </div>
 
             <div className="article-image">
               <img
                 src="/images/blog/livre-personnalise-enfant-timide.jpg"
-                alt="Enfant timide découvrant avec émerveillement son livre personnalisé qui le montre courageux"
+                alt="Enfant timide lisant avec émerveillement un conte personnalisé où il est le héros courageux"
                 loading="lazy"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.src = '/images/placeholder-blog.jpg';
-                }}
+                onError={(e) => { const target = e.target as HTMLImageElement; target.src = '/images/placeholder-blog.jpg'; }}
               />
             </div>
 
             <div className="article-content">
               <p className="article-intro">
-                La timidité et l'anxiété touchent de nombreux enfants, créant parfois des obstacles dans leur développement social et émotionnel. Face à ces défis, les parents cherchent des moyens doux et bienveillants d'accompagner leur enfant vers plus de confiance en soi. Le livre personnalisé se révèle être un outil thérapeutique remarquable, offrant à l'enfant timide ou anxieux la possibilité de se voir sous un jour nouveau : courageux, capable et valorisé. Découvrons ensemble comment cette approche narrative peut transformer positivement la perception qu'un enfant a de lui-même.
+                <strong>« Maman, si Lucas-du-livre peut parler au dragon, moi je peux parler à la maîtresse. »</strong> — Lucas, 5 ans, n'osait pas lever la main en classe. Pas une seule fois en 3 mois. Sa mère lui a créé un <Link to="/blog/livre-personnalise-enfant-guide-complet">conte personnalisé</Link> où il sauvait une école d'un dragon — en parlant au dragon, pas en le combattant. Après 2 semaines de lecture chaque soir, Lucas a levé la main pour la première fois. Sa maîtresse a appelé sa mère, stupéfaite. Ce n'est pas un miracle. C'est un mécanisme psychologique bien connu — et le conte personnalisé l'active comme rien d'autre.
               </p>
 
-              <h2 id="comprendre-timidite">Comprendre la timidité et l'anxiété chez l'enfant</h2>
+              <h2 id="timidite-pas-probleme">Pourquoi la timidité n'est pas un problème (mais mérite de l'attention)</h2>
               <p>
-                La timidité chez l'enfant se manifeste par une tendance à éviter les situations sociales nouvelles, une réticence à prendre la parole en public, et parfois une inhibition comportementale face aux inconnus. Cette timidité, bien que normale dans une certaine mesure, peut devenir problématique si elle limite significativement les opportunités d'apprentissage et de développement social de l'enfant.
+                Commençons par l'essentiel : <strong>un enfant timide n'est pas un enfant « cassé »</strong>. La timidité est un trait de personnalité, pas un défaut. Les enfants timides sont souvent les plus observateurs, les plus empathiques, les plus réfléchis.
               </p>
               <p>
-                L'anxiété infantile, quant à elle, se caractérise par des inquiétudes excessives concernant des situations futures, des peurs irrationnelles, et parfois des symptômes physiques comme des maux de ventre ou des troubles du sommeil. Ces manifestations anxieuses peuvent considérablement impacter la qualité de vie de l'enfant et sa capacité à s'épanouir pleinement.
+                Le problème n'est pas la timidité elle-même — c'est quand elle <strong>empêche l'enfant de vivre ce qu'il veut vivre</strong> :
               </p>
+              <ul>
+                <li>Il VEUT jouer avec les autres mais n'ose pas s'approcher</li>
+                <li>Il SAIT la réponse mais ne lève pas la main</li>
+                <li>Il AIMERAIT aller à l'anniversaire mais pleure de peur</li>
+                <li>Il SE CACHE derrière votre jambe quand quelqu'un lui parle</li>
+              </ul>
               <p>
-                Il est crucial de comprendre que la timidité et l'anxiété ne sont pas des défauts de caractère, mais des traits de personnalité qui peuvent être accompagnés et transformés positivement. L'enfant timide ou anxieux possède souvent une grande sensibilité, une capacité d'observation fine, et une profondeur émotionnelle qui constituent de véritables atouts une fois canalisés positivement.
-              </p>
-
-              <h2 id="pouvoir-therapeutique">Le pouvoir thérapeutique du livre personnalisé</h2>
-              <p>
-                Le livre personnalisé possède un pouvoir thérapeutique unique pour les enfants timides ou anxieux. En se voyant représenté comme le héros courageux de sa propre histoire, l'enfant expérimente une transformation psychologique profonde. Cette expérience narrative lui permet d'explorer de nouvelles facettes de sa personnalité dans un environnement sécurisé et bienveillant.
-              </p>
-              <p>
-                L'approche thérapeutique par le livre personnalisé respecte le rythme de l'enfant et évite la confrontation directe qui pourrait accentuer son anxiété. Au lieu de forcer l'enfant à changer, l'histoire lui montre progressivement qu'il possède déjà en lui les ressources nécessaires pour surmonter ses difficultés.
-              </p>
-              <p>
-                Cette méthode thérapeutique douce s'appuie sur les mécanismes naturels d'apprentissage par l'identification et la projection. L'enfant intériorise progressivement les qualités héroïques de son personnage, développant ainsi une image plus positive et plus confiante de lui-même.
-              </p>
-
-              <h3 id="heros-courageux">Créer un héros courageux à son image</h3>
-              <p>
-                La création d'un héros courageux à l'image de l'enfant timide constitue l'élément central de l'approche thérapeutique. Ce héros possède les mêmes caractéristiques physiques que l'enfant, vit dans un environnement similaire, mais fait preuve d'un courage et d'une assurance que l'enfant aimerait développer.
-              </p>
-              <p>
-                Le héros personnalisé ne nie pas la sensibilité ou la prudence naturelle de l'enfant, mais les transforme en forces. Sa sensibilité devient empathie, sa prudence devient sagesse, sa réflexion devient intelligence stratégique. Cette revalorisation des traits de personnalité aide l'enfant à accepter et apprécier sa nature profonde.
-              </p>
-              <p>
-                L'évolution du héros dans l'histoire suit une progression réaliste et encourageante. Il commence parfois par éprouver des doutes ou des peurs, comme l'enfant, mais trouve progressivement les ressources pour les surmonter. Cette progression graduelle rend l'identification possible et l'inspiration accessible.
-              </p>
-
-              <h2 id="surmonter-peurs">Surmonter les peurs par l'identification</h2>
-              <p>
-                L'identification totale au héros personnalisé permet à l'enfant de vivre symboliquement l'expérience de surmonter ses peurs. Quand son personnage affronte avec succès une situation anxiogène, l'enfant ressent émotionnellement cette victoire comme si elle était sienne. Cette expérience positive nourrit sa confiance et sa capacité à affronter ses propres défis.
-              </p>
-              <p>
-                Le processus d'identification permet également à l'enfant de découvrir des stratégies concrètes pour gérer son anxiété. En observant comment son héros respire profondément avant de parler en public, demande de l'aide quand il en a besoin, ou transforme sa nervosité en énergie positive, l'enfant acquiert un répertoire de techniques applicables dans sa vraie vie.
-              </p>
-              <p>
-                Cette approche par l'identification évite la résistance psychologique que peuvent générer les conseils directs. L'enfant ne se sent pas jugé ou poussé à changer, mais inspiré par les réussites de son alter ego narratif. Cette inspiration intrinsèque est bien plus puissante que toute motivation externe.
-              </p>
-
-              <h3 id="compétences-sociales">Développer les compétences sociales en douceur</h3>
-              <p>
-                Le livre personnalisé offre un terrain d'entraînement idéal pour développer les compétences sociales de l'enfant timide. À travers les interactions de son héros avec d'autres personnages, l'enfant observe et intériorise des modèles de communication positive, d'affirmation de soi respectueuse, et de gestion des conflits constructive.
-              </p>
-              <p>
-                Ces apprentissages sociaux se font de manière naturelle et non menaçante. L'enfant n'est pas mis en situation d'échec ou de jugement, mais peut explorer différentes façons d'interagir à travers son personnage. Cette exploration sans risque lui permet de développer sa confiance sociale progressivement.
-              </p>
-              <p>
-                Les compétences sociales développées à travers l'histoire personnalisée se transfèrent naturellement vers la vie réelle. L'enfant qui a vu son héros réussir à se faire des amis, à exprimer ses besoins, ou à participer activement à des activités de groupe, se sent plus capable de reproduire ces comportements dans son quotidien.
-              </p>
-
-              <h2 id="renforcer-estime">Renforcer l'estime de soi progressivement</h2>
-              <p>
-                Le renforcement de l'estime de soi chez l'enfant timide ou anxieux nécessite une approche progressive et bienveillante. Le livre personnalisé offre cette progression en montrant le héros-enfant accomplir des réussites graduelles, adaptées à son niveau et à ses capacités réelles.
-              </p>
-              <p>
-                Chaque succès du héros dans l'histoire contribue à construire une image positive que l'enfant intériorise progressivement. Ces réussites narratives créent un socle de confiance sur lequel l'enfant peut s'appuyer pour affronter ses propres défis. L'accumulation de ces expériences positives transforme graduellement sa perception de lui-même.
-              </p>
-              <p>
-                L'estime de soi renforcée par l'expérience héroïque génère un cercle vertueux. L'enfant plus confiant ose davantage, réussit mieux, ce qui renforce encore sa confiance. Cette dynamique positive, initiée par l'histoire personnalisée, peut transformer durablement son développement personnel et social.
-              </p>
-
-              <h3 id="temoignages">Témoignages de parents et professionnels</h3>
-              <p>
-                Marie, maman de Lucas, 6 ans, témoigne : "Mon fils était très timide à l'école, il n'osait jamais lever la main. Depuis qu'il a reçu son livre personnalisé où il est un petit héros courageux, il a commencé à participer davantage en classe. Sa maîtresse a même remarqué le changement !"
-              </p>
-              <p>
-                Dr. Sophie Durand, psychologue pour enfants, confirme : "J'utilise régulièrement les livres personnalisés avec mes jeunes patients anxieux. C'est un outil thérapeutique remarquable qui permet aux enfants de développer leur confiance en douceur, à leur rythme. Les résultats sont souvent spectaculaires."
-              </p>
-              <p>
-                Thomas, papa d'Emma, 8 ans, raconte : "Ma fille avait peur de tout : du noir, des nouveaux endroits, de rencontrer de nouvelles personnes. Son livre personnalisé l'a aidée à comprendre qu'elle pouvait être courageuse. Maintenant, elle dit souvent : 'Comme dans mon histoire, je peux le faire !'"
-              </p>
-
-              <h2 id="livre-adapte">Créer le livre adapté aux besoins spécifiques</h2>
-              <p>
-                Pour maximiser l'impact thérapeutique du livre personnalisé, il est essentiel de l'adapter aux besoins spécifiques de chaque enfant timide ou anxieux. L'histoire doit aborder les défis particuliers de l'enfant tout en respectant sa sensibilité et son rythme de développement.
-              </p>
-              <p>
-                Les situations présentées dans l'histoire doivent être suffisamment proches de la réalité de l'enfant pour être pertinentes, mais suffisamment positives pour être inspirantes. Cette balance délicate entre réalisme et optimisme est cruciale pour l'efficacité thérapeutique du livre.
-              </p>
-              <p>
-                L'adaptation doit également tenir compte de l'âge de l'enfant et de son niveau de compréhension émotionnelle. Un enfant de 4 ans n'aura pas les mêmes besoins qu'un enfant de 10 ans, et l'histoire doit refléter cette différence développementale.
-              </p>
-              <p>
-                Il est important d'impliquer l'enfant dans le processus de création, en l'interrogeant sur ses préférences, ses peurs, et ses rêves. Cette participation active renforce son investissement dans l'histoire et maximise son identification au héros personnalisé.
-              </p>
-              <p>
-                Enfin, le livre doit être conçu comme un outil évolutif qui peut être relu et redécouvert à mesure que l'enfant grandit et progresse. Chaque relecture peut révéler de nouveaux aspects de l'histoire et continuer à nourrir le développement de sa confiance en soi.
-              </p>
-              <p>
-                Conte d'IA comprend parfaitement les besoins spécifiques des enfants timides et anxieux. Notre approche personnalisée permet de créer des histoires thérapeutiques sur mesure qui accompagnent chaque enfant dans son cheminement vers plus de confiance et d'épanouissement personnel.
+                C'est là que le conte personnalisé entre en jeu. Pas pour « corriger » l'enfant, mais pour lui montrer — à travers sa propre histoire — qu'il <strong>a déjà le courage en lui</strong>. Le conte ne dit pas « sois courageux ». Il MONTRE l'enfant en train d'être courageux. La différence est énorme.
               </p>
 
               <div className="article-cta">
                 <Link to="/create-story" className="cta-button">
-                  💝 Créer un livre qui révélera le courage de votre enfant
+                  ✨ Un conte qui révèle le courage de votre enfant — Gratuit
                 </Link>
               </div>
+
+              <h2 id="comment-ca-aide">Comment le conte personnalisé aide concrètement</h2>
+              <p>
+                Le mécanisme est simple et documenté en psychologie du développement :
+              </p>
+              <ol>
+                <li><strong>Identification</strong> — L'enfant voit SON prénom, SON âge, SES passions dans le héros. Il ne s'identifie pas au personnage — il EST le personnage.</li>
+                <li><strong>Exposition sécurisée</strong> — Le héros-enfant affronte une situation anxiogène (parler en public, se faire des amis, entrer dans un lieu nouveau) dans le cadre SÉCURISANT d'une histoire. Pas de risque réel, pas de jugement.</li>
+                <li><strong>Réussite vicariante</strong> — Le héros réussit. Le cerveau de l'enfant enregistre cette réussite comme semi-réelle. Il crée un <strong>précédent de réussite</strong> même s'il est fictif.</li>
+                <li><strong>Transfert</strong> — Lors de la prochaine situation similaire dans la vraie vie, l'enfant se souvient : « Dans mon livre, j'ai réussi. » Ce souvenir lui donne le petit coup de courage qui manquait.</li>
+              </ol>
+              <p>
+                C'est exactement ce qui s'est passé avec Lucas et le dragon. Le conte n'a pas « guéri » sa timidité. Il lui a donné un <strong>précédent de courage</strong> auquel se raccrocher.
+              </p>
+
+              <h2 id="types-peurs">Les 4 types de peurs et le conte adapté</h2>
+              <p>
+                Tous les enfants timides ne le sont pas de la même façon. Voici les 4 profils les plus courants et le type de conte qui les aide :
+              </p>
+
+              <h3>1. La peur du regard des autres</h3>
+              <p>
+                L'enfant a peur d'être jugé, moqué, observé. Il refuse de parler devant un groupe, rougit quand on lui pose une question, évite d'être au centre de l'attention.
+              </p>
+              <p>
+                <strong>Conte adapté :</strong> une histoire où le héros-enfant partage quelque chose (un talent, une découverte, un secret) avec un groupe — et est acclamé. Le message : « Ce que tu as à dire a de la valeur, et les autres VEULENT t'écouter. »
+              </p>
+
+              <h3>2. La peur de la nouveauté</h3>
+              <p>
+                L'enfant panique face à l'inconnu : nouvelle école, nouveau quartier, nouvelle activité, nouveau restaurant. Tout changement est source d'angoisse.
+              </p>
+              <p>
+                <strong>Conte adapté :</strong> une aventure où le héros arrive dans un lieu totalement inconnu — et découvre que c'est merveilleux. Il y trouve un ami, un trésor, une surprise. Le message : « L'inconnu peut être génial. »
+              </p>
+
+              <h3>3. La peur de la séparation</h3>
+              <p>
+                L'enfant ne supporte pas d'être loin de ses parents. L'école, les anniversaires, les colonies sont un cauchemar. Il pleure, s'accroche, refuse de partir.
+              </p>
+              <p>
+                <strong>Conte adapté :</strong> une histoire où le héros part en mission (aider un ami, sauver un animal) et revient avec fierté raconter son aventure à ses parents. Le message : « Tu peux partir ET revenir. Et tu auras plein de choses à raconter. »
+              </p>
+
+              <h3>4. La peur de l'échec</h3>
+              <p>
+                L'enfant refuse d'essayer par peur de se tromper. Il ne veut pas dessiner (« c'est moche »), pas jouer au foot (« je suis nul »), pas répondre (« j'ai peur de me tromper »).
+              </p>
+              <p>
+                <strong>Conte adapté :</strong> une aventure où le héros échoue d'abord — puis réussit en essayant autrement. Le message : « Se tromper, c'est apprendre. Les héros échouent avant de réussir. »
+              </p>
+
+              <div className="article-cta">
+                <Link to="/create-story" className="cta-button">
+                  ✨ Choisissez le thème adapté à votre enfant — Gratuit
+                </Link>
+              </div>
+
+              <h2 id="scenarios">Scénarios concrets : ce que l'IA crée pour chaque situation</h2>
+              <p>
+                Voici des exemples réels de contes créés sur <strong>Contedia</strong> pour des enfants timides :
+              </p>
+              <ul>
+                <li><strong>Nora, 4 ans, peur de l'école</strong> — Conte : Nora arrive dans une école enchantée où les objets parlent. Le tableau dit « Bonjour Nora ! », les crayons chantent son prénom. Elle aide le petit nouveau (un crayon perdu) à retrouver sa classe. Elle rentre à la maison en disant : « L'école, c'est pas si mal quand on aide les autres. »</li>
+                <li><strong>Théo, 6 ans, peur de parler aux adultes</strong> — Conte : Théo est le seul à pouvoir parler au vieux chêne du parc, qui connaît un secret important. Il doit transmettre le message au maire du village. Il hésite, prend son courage, et le maire le remercie chaleureusement.</li>
+                <li><strong>Léa, 5 ans, peur des anniversaires</strong> — Conte : Léa reçoit une invitation magique pour un anniversaire dans un château de bonbons. Elle y va seule (ses parents la déposent à la porte). Elle y rencontre un chat timide qu'elle aide à s'intégrer. À la fin, elle a 3 nouveaux amis et un chat qui ne la quitte plus.</li>
+                <li><strong>Samir, 7 ans, peur de l'échec</strong> — Conte : Samir participe à un concours d'inventions. Sa première machine tombe en morceaux devant tout le monde. Il est mortifié. Mais il remarque quelque chose dans les débris et construit une invention encore meilleure. Il gagne le prix de la créativité.</li>
+              </ul>
+
+              <h2 id="rituel">Le rituel de lecture qui amplifie l'effet</h2>
+              <p>
+                Le conte seul est puissant. Mais combiné avec un <Link to="/blog/conte-personnalise-rituel-coucher">rituel de lecture</Link>, l'effet est décuplé :
+              </p>
+              <ol>
+                <li><strong>Lisez chaque soir</strong> — La répétition ancre le message. L'enfant qui relit 10 fois que « Théo a parlé au maire » intériorise profondément l'idée qu'il peut parler aux adultes.</li>
+                <li><strong>Posez des questions après</strong> — « Comment Théo se sentait avant de parler au maire ? Et après ? Et toi, tu t'es déjà senti comme ça ? » Ces questions créent un pont entre la fiction et la réalité.</li>
+                <li><strong>Renforcez dans la vraie vie</strong> — Quand l'enfant fait face à une situation similaire, rappelez le conte : « Tu te souviens quand Théo a parlé au maire ? Tu peux faire pareil. » Le conte devient une référence de courage.</li>
+                <li><strong>Créez de nouveaux contes</strong> — Quand la première peur est surmontée, passez à la suivante avec un nouveau conte. Le <Link to="/blog/club-contedia-abonnement-livre-personnalise-enfant">Club Contedia</Link> (un conte par mois) est parfait pour ça.</li>
+              </ol>
+
+              <h2 id="temoignages">Ce que les parents observent</h2>
+              <ul>
+                <li><strong>Mélanie, maman de Jade (4 ans)</strong> — <em>« Jade pleurait tous les matins à l'école. On a créé un conte où elle devenait l'exploratrice de sa classe. Après 10 jours de lecture, elle est entrée en classe sans pleurer. Elle a dit à la maîtresse : "Aujourd'hui je suis une exploratrice." La maîtresse m'a envoyé un message avec des cœurs. »</em></li>
+                <li><strong>David, papa d'Ethan (6 ans)</strong> — <em>« Ethan refusait de dormir chez des amis. Son conte parlait d'un camping extraordinaire loin de la maison. Il l'a relu pendant 3 semaines. Puis il a DEMANDÉ à dormir chez son meilleur ami. C'est lui qui a fait la demande. J'en suis encore ému. »</em></li>
+                <li><strong>Sarah, maman de Lina (7 ans)</strong> — <em>« Lina est une enfant très sensible qui prenait tout comme un échec. Son conte montrait une héroïne qui échouait 3 fois avant de réussir. Maintenant quand Lina rate quelque chose, elle dit : "C'est normal, les héros ratent avant de réussir." Ce conte a changé sa façon de voir l'échec. »</em></li>
+              </ul>
+
+              <div className="article-cta">
+                <Link to="/create-story" className="cta-button">
+                  ✨ Un conte adapté à la peur de votre enfant — Gratuit
+                </Link>
+              </div>
+
+              <h2 id="faq">FAQ : Livre personnalisé et enfant timide</h2>
+
+              {faqQuestions.map((faq, i) => (
+                <React.Fragment key={i}>
+                  <h3>{faq.question}</h3>
+                  <p>{faq.answer}</p>
+                </React.Fragment>
+              ))}
+
+              <p>
+                <em>Découvrez aussi :</em>
+              </p>
+              <ul>
+                <li><Link to="/blog/enfant-heros-propre-histoire">Pourquoi les enfants adorent être le héros</Link></li>
+                <li><Link to="/blog/conte-personnalise-gestion-emotions-enfant">Conte personnalisé et gestion des émotions</Link></li>
+                <li><Link to="/blog/conte-personnalise-rituel-coucher">Le rituel du coucher avec un conte personnalisé</Link></li>
+                <li><Link to="/blog/conte-sommeil-enfant-personnalise-rituel-endormissement">Conte pour aider votre enfant à s'endormir</Link></li>
+                <li><Link to="/blog/livre-personnalise-enfant-guide-complet">Guide complet du livre personnalisé</Link></li>
+              </ul>
             </div>
           </div>
 
@@ -201,10 +256,7 @@ const BlogArticleNouveau7: React.FC = () => {
               <ul>
                 {tableOfContents.map((item, index) => (
                   <li key={index}>
-                    <button 
-                      onClick={() => handleScrollToSection(item.id)}
-                      className="toc-link"
-                    >
+                    <button onClick={() => handleScrollToSection(item.id)} className="toc-link">
                       {item.title}
                     </button>
                   </li>
