@@ -2,196 +2,259 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { PageLayout } from '../components/layout/PageLayout';
 import { SEOHead } from '../components/SEOHead';
-import { SchemaBreadcrumb } from '../components/SchemaMarkup';
+import { SchemaFAQ, SchemaBreadcrumb } from '../components/SchemaMarkup';
 import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticleNouveau6: React.FC = () => {
   useEffect(() => {
-    document.title = 'Lecture du soir : pourquoi le conte personnalisé améliore le rituel du coucher | Conte d\'IA';
-    
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', 'Découvrez comment les contes personnalisés transforment le rituel du coucher en moment magique. Bienfaits sur le sommeil et la relation parent-enfant.');
-    }
-
-    const metaKeywords = document.querySelector('meta[name="keywords"]') || document.createElement('meta');
-    metaKeywords.setAttribute('name', 'keywords');
-    metaKeywords.setAttribute('content', 'conte personnalisé coucher, rituel coucher enfant, lecture du soir enfant, histoire personnalisée sommeil, endormissement enfant, routine coucher');
-    if (!document.querySelector('meta[name="keywords"]')) {
-      document.head.appendChild(metaKeywords);
-    }
+    document.title = "Lecture du Soir : Le Guide du Rituel avec un Conte Personnalisé | Contedia";
   }, []);
 
   const tableOfContents = [
-    { title: "L'importance du rituel du coucher dans le développement", id: "importance-rituel" },
-    { title: "Comment le conte personnalisé transforme ce moment", id: "transformation-moment" },
-    { title: "L'apaisement par l'identification personnelle", id: "apaisement-identification" },
-    { title: "Créer des associations positives avec le sommeil", id: "associations-positives" },
-    { title: "Renforcer le lien parent-enfant", id: "lien-parent-enfant" },
-    { title: "Gérer les peurs et anxiétés nocturnes", id: "gerer-peurs" },
-    { title: "Adapter le conte selon l'âge et les besoins", id: "adapter-conte" },
-    { title: "Conseils pour optimiser votre rituel personnalisé", id: "conseils-optimisation" }
+    { title: "Pourquoi le rituel du coucher change tout", id: "pourquoi-rituel" },
+    { title: "Le rituel idéal en 4 étapes", id: "rituel-4-etapes" },
+    { title: "Conte personnalisé vs histoire classique", id: "personnalise-vs-classique" },
+    { title: "Adapter le rituel par âge", id: "par-age" },
+    { title: "Les erreurs qui sabotent le coucher", id: "erreurs" },
+    { title: "Ce que les parents observent", id: "temoignages" },
+    { title: "FAQ", id: "faq" },
   ];
 
   const handleScrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
-      element.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start'
-      });
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+  };
+
+  const faqQuestions = [
+    {
+      question: "Combien de temps doit durer la lecture du soir ?",
+      answer: "10 à 15 minutes pour les 3-5 ans, 15 à 20 minutes pour les 6-8 ans. L'essentiel est la régularité, pas la durée. Un conte court lu chaque soir est plus efficace qu'une longue histoire de temps en temps."
+    },
+    {
+      question: "Mon enfant veut toujours la même histoire. C'est normal ?",
+      answer: "Tout à fait ! La répétition est rassurante pour l'enfant. Un conte personnalisé qu'il connaît par cœur devient un ancrage émotionnel. Il sait ce qui va se passer, et c'est exactement ce qui l'apaise avant de dormir."
+    },
+    {
+      question: "À quelle heure commencer le rituel du coucher ?",
+      answer: "Idéalement 30 minutes avant l'heure d'endormissement souhaitée. Si vous visez un endormissement à 20h30, commencez le rituel (brossage de dents, pyjama, lecture) vers 20h. La régularité horaire est plus importante que l'heure exacte."
+    },
+    {
+      question: "Mon enfant de 3 ans ne tient pas en place pour écouter une histoire. Que faire ?",
+      answer: "Commencez par des contes très courts (3-5 minutes) avec beaucoup d'illustrations. Un conte personnalisé capte mieux l'attention car l'enfant reconnaît son prénom. La capacité d'écoute s'allonge naturellement avec l'habitude."
+    },
+    {
+      question: "Le conte du soir remplace-t-il les écrans avant le coucher ?",
+      answer: "Idéalement, oui. Les écrans émettent une lumière bleue qui retarde l'endormissement. Le conte papier ou PDF lu par un parent est infiniment meilleur pour la qualité du sommeil. Arrêtez les écrans 1h avant le coucher."
+    },
+    {
+      question: "Comment créer un conte personnalisé pour le rituel du soir ?",
+      answer: "Sur Contedia, choisissez un thème doux (amitié, nature, rêves) et entrez le prénom et l'âge de votre enfant. L'IA crée un conte adapté en 5 minutes. Le premier livre est gratuit — parfait pour tester le rituel."
+    }
+  ];
+
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Lecture du Soir : Le Guide du Rituel avec un Conte Personnalisé",
+    "description": "Guide pratique pour créer un rituel du coucher avec un conte personnalisé. Routine en 4 étapes, adaptation par âge, erreurs à éviter.",
+    "image": "https://contedia.fr/images/blog/conte-personnalise-rituel-coucher.jpg",
+    "author": { "@type": "Organization", "name": "Contedia", "url": "https://contedia.fr" },
+    "publisher": { "@type": "Organization", "name": "Contedia", "logo": { "@type": "ImageObject", "url": "https://contedia.fr/logo-conte-ia.png" } },
+    "datePublished": "2025-09-01",
+    "dateModified": "2026-03-23",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://contedia.fr/blog/conte-personnalise-rituel-coucher" }
   };
 
   return (
     <PageLayout>
       <SEOHead
-        title="Le Conte Personnalisé : Le Rituel du Coucher Idéal | Contedia"
-        description="Découvrez comment le conte personnalisé : le rituel du coucher idéal. Guide complet, conseils pratiques et premier livre gratuit sur Contedia."
+        title="Lecture du Soir : Le Guide du Rituel avec un Conte Personnalisé | Contedia"
+        description="Guide pratique pour créer le rituel du coucher idéal avec un conte personnalisé. 4 étapes, adaptation par âge, erreurs à éviter. Premier livre gratuit."
         type="article"
       />
+      <SchemaFAQ questions={faqQuestions} />
       <SchemaBreadcrumb items={[
         { name: "Accueil", url: "https://contedia.fr/" },
         { name: "Blog", url: "https://contedia.fr/blog" },
-        { name: "Le Conte Personnalisé : Le Rituel du Coucher Idéal", url: "https://contedia.fr/blog/conte-personnalise-rituel-coucher" }
+        { name: "Rituel du coucher et conte personnalisé", url: "https://contedia.fr/blog/conte-personnalise-rituel-coucher" }
       ]} />
       <Helmet>
-        <script type="application/ld+json">{`{"@context":"https://schema.org","@type":"Article","headline":"Le Conte Personnalisé : Le Rituel du Coucher Idéal","author":{"@type":"Organization","name":"Contedia"},"publisher":{"@type":"Organization","name":"Contedia"},"dateModified":"2026-03-22"}`}</script>
+        <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>
       </Helmet>
+
       <div className="article-container">
         <div className="article-breadcrumb">
-          <Link to="/blog">Blog</Link> / Lecture du soir : pourquoi le conte personnalisé améliore le rituel du coucher
+          <Link to="/blog">Blog</Link> / Rituel du coucher et conte personnalisé
         </div>
 
         <div className="article-layout">
           <div className="article-main">
             <div className="article-header">
-              <h1>Lecture du soir : pourquoi le conte personnalisé améliore le rituel du coucher</h1>
+              <h1>Lecture du Soir : Le Guide Complet du Rituel du Coucher avec un Conte Personnalisé</h1>
               <div className="article-meta">
-                <span>Par l'équipe Contedia · Mis à jour le 22 mars 2026</span>
+                <span>Par l'équipe Contedia · Mis à jour le 23 mars 2026 · 8 min de lecture</span>
               </div>
             </div>
 
             <div className="article-image">
               <img
                 src="/images/blog/conte-personnalise-rituel-coucher.jpg"
-                alt="Parent et enfant partageant un moment tendre avec un conte personnalisé au coucher"
+                alt="Parent lisant un conte personnalisé à son enfant dans un lit douillet, lumière tamisée"
                 loading="lazy"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.src = '/images/placeholder-blog.jpg';
-                }}
+                onError={(e) => { const target = e.target as HTMLImageElement; target.src = '/images/placeholder-blog.jpg'; }}
               />
             </div>
 
             <div className="article-content">
               <p className="article-intro">
-                Le rituel du coucher représente l'un des moments les plus précieux de la journée familiale. C'est un instant de transition douce entre l'agitation du jour et la sérénité de la nuit, un moment privilégié de connexion entre parent et enfant. Quand ce rituel intègre un conte personnalisé, il se transforme en expérience magique qui améliore non seulement la qualité du sommeil, mais renforce également les liens familiaux et contribue au développement émotionnel de l'enfant.
+                <strong>20h15. Le pyjama est mis. Les dents sont brossées. Et là, la phrase magique : « On lit mon histoire ? »</strong> — Quand votre enfant DEMANDE à aller au lit parce qu'il sait qu'un conte personnalisé l'attend, vous avez gagné. Fini les négociations, les « encore 5 minutes », les allers-retours. Le <strong>rituel du coucher avec un conte personnalisé</strong> est l'arme secrète des parents sereins. Voici comment le mettre en place — étape par étape.
               </p>
 
-              <h2 id="importance-rituel">L'importance du rituel du coucher dans le développement</h2>
+              <h2 id="pourquoi-rituel">Pourquoi le rituel du coucher change tout</h2>
               <p>
-                Le rituel du coucher joue un rôle fondamental dans le développement psychologique et physiologique de l'enfant. Il marque la transition entre l'éveil et le sommeil, aidant l'organisme à se préparer naturellement au repos. Cette routine prévisible sécurise l'enfant et facilite l'endormissement en créant des repères temporels rassurants.
+                Un enfant qui a un rituel du coucher stable s'endort <strong>en moyenne 20 minutes plus vite</strong> qu'un enfant sans routine. Pourquoi ? Parce que le cerveau fonctionne par associations. Quand les mêmes actions se répètent chaque soir dans le même ordre, le cerveau comprend : « C'est l'heure de dormir. »
               </p>
               <p>
-                Au-delà de ses bénéfices physiologiques, le rituel du coucher contribue significativement au développement émotionnel de l'enfant. C'est un moment d'intimité privilégié où il peut exprimer ses préoccupations, partager ses joies, et recevoir l'attention exclusive de ses parents. Cette connexion émotionnelle quotidienne nourrit son sentiment de sécurité affective.
+                Le rituel agit sur 3 niveaux :
               </p>
+              <ul>
+                <li><strong>Physiologique</strong> — La routine déclenche la production de mélatonine (l'hormone du sommeil). Le corps se prépare automatiquement.</li>
+                <li><strong>Émotionnel</strong> — Le moment de lecture crée un <strong>sas de décompression</strong> entre l'agitation de la journée et le calme de la nuit. L'enfant évacue ses tensions.</li>
+                <li><strong>Relationnel</strong> — C'est un moment d'<strong>attention exclusive</strong>. Pas de téléphone, pas de frère ou sœur qui interrompt. Juste parent + enfant + histoire. Ce lien nourrit la sécurité affective.</li>
+              </ul>
               <p>
-                Le rituel du coucher influence également la qualité du sommeil, élément crucial pour la croissance, la consolidation des apprentissages et l'équilibre émotionnel. Un rituel bien structuré et apaisant améliore la durée et la profondeur du sommeil, optimisant ainsi tous les processus de développement qui s'opèrent pendant la nuit.
-              </p>
-
-              <h2 id="transformation-moment">Comment le conte personnalisé transforme ce moment</h2>
-              <p>
-                L'intégration d'un conte personnalisé dans le rituel du coucher transforme radicalement la nature et l'impact de ce moment. Contrairement aux histoires traditionnelles, le conte personnalisé crée une connexion émotionnelle immédiate et intense qui capte totalement l'attention de l'enfant et facilite sa transition vers le sommeil.
-              </p>
-              <p>
-                Le conte personnalisé génère un niveau d'engagement exceptionnel qui maintient l'enfant concentré sur l'histoire plutôt que sur ses préoccupations ou ses résistances au coucher. Cette focalisation attentionnelle naturelle remplace avantageusement les négociations habituelles du coucher par un moment d'écoute passionnée.
-              </p>
-              <p>
-                La personnalisation crée également une anticipation positive du moment du coucher. L'enfant attend avec impatience de découvrir les nouvelles aventures de son personnage, transformant potentiellement le coucher d'un moment redouté en moment désiré. Cette transformation d'attitude facilite considérablement la routine familiale du soir.
-              </p>
-
-              <h3 id="apaisement-identification">L'apaisement par l'identification personnelle</h3>
-              <p>
-                L'identification totale de l'enfant à son personnage héroïque génère un apaisement particulièrement efficace. Quand l'enfant voit son alter ego narratif vivre des aventures positives et se reposer paisiblement à la fin de l'histoire, il intériorise naturellement cette sérénité et cette satisfaction.
-              </p>
-              <p>
-                Cette identification facilite également la gestion des émotions de fin de journée. Les frustrations, les excitations ou les inquiétudes accumulées pendant la journée peuvent être symboliquement résolues à travers les expériences du personnage personnalisé. L'enfant trouve ainsi un exutoire narratif à ses tensions émotionnelles.
-              </p>
-              <p>
-                L'apaisement généré par l'identification personnelle s'étend au-delà de la durée de l'histoire. L'enfant emporte avec lui l'image positive de son personnage endormi paisiblement, créant un modèle mental rassurant qui facilite son propre endormissement et améliore la qualité de son sommeil.
-              </p>
-
-              <h2 id="associations-positives">Créer des associations positives avec le sommeil</h2>
-              <p>
-                Le conte personnalisé du coucher crée des associations positives durables avec le moment du sommeil. Au lieu d'associer le coucher à la séparation, à l'ennui ou à la contrainte, l'enfant l'associe au plaisir, à l'aventure et à la connexion affective avec ses parents. Ces associations positives transforment fondamentalement son rapport au sommeil.
-              </p>
-              <p>
-                Ces associations positives se renforcent avec la répétition. Chaque soir, l'expérience agréable du conte personnalisé renforce l'attrait du moment du coucher. L'enfant développe progressivement une attitude positive envers le sommeil qui peut perdurer toute sa vie, contribuant à une hygiène de sommeil saine à long terme.
-              </p>
-              <p>
-                La création d'associations positives avec le sommeil a également des bénéfices immédiats sur la famille. Les parents n'ont plus à lutter contre les résistances au coucher, les négociations se transforment en moments de complicité, et l'atmosphère familiale du soir devient plus sereine et harmonieuse.
-              </p>
-
-              <h3 id="lien-parent-enfant">Renforcer le lien parent-enfant</h3>
-              <p>
-                Le partage d'un conte personnalisé au coucher renforce exceptionnellement le lien entre parent et enfant. Ce moment d'intimité exclusive, centré sur l'enfant et ses aventures personnalisées, crée une connexion émotionnelle profonde qui nourrit la relation familiale au quotidien.
-              </p>
-              <p>
-                La lecture partagée du conte personnalisé devient un rituel de complicité unique à chaque famille. L'enfant associe ce moment privilégié à l'amour et à l'attention de ses parents, renforçant son sentiment de sécurité affective et sa confiance dans la relation familiale.
-              </p>
-              <p>
-                Ce renforcement du lien parent-enfant a des effets bénéfiques qui dépassent largement le moment du coucher. Il améliore la communication familiale, renforce la coopération de l'enfant, et contribue à son développement socio-émotionnel en lui fournissant un modèle de relation affective saine et nourrissante.
-              </p>
-
-              <h2 id="gerer-peurs">Gérer les peurs et anxiétés nocturnes</h2>
-              <p>
-                Les peurs nocturnes constituent l'un des défis les plus fréquents du coucher enfantin. Le conte personnalisé offre un outil particulièrement efficace pour aborder et résoudre ces anxiétés. En montrant le personnage de l'enfant surmontant ses peurs avec courage et sérénité, l'histoire fournit un modèle comportemental rassurant.
-              </p>
-              <p>
-                Le conte personnalisé peut directement intégrer et traiter les peurs spécifiques de l'enfant. Peur du noir, des monstres, de la solitude : chaque anxiété peut être abordée à travers une aventure où le héros-enfant découvre des stratégies pour surmonter ces défis. Cette approche narrative est souvent plus efficace que les explications rationnelles.
-              </p>
-              <p>
-                La résolution symbolique des peurs dans l'histoire personnalisée génère un sentiment de maîtrise et de confiance qui se transfère à la réalité. L'enfant qui a vu son personnage triompher de ses peurs dans le conte se sent plus fort et plus capable de gérer ses propres anxiétés nocturnes.
-              </p>
-
-              <h3 id="adapter-conte">Adapter le conte selon l'âge et les besoins</h3>
-              <p>
-                L'efficacité du conte personnalisé du coucher dépend largement de son adaptation à l'âge et aux besoins spécifiques de l'enfant. Pour les tout-petits (2-4 ans), l'histoire doit être courte, simple, et centrée sur des routines familières comme se brosser les dents, mettre son pyjama, ou câliner son doudou.
-              </p>
-              <p>
-                Les enfants d'âge préscolaire (4-6 ans) apprécient des histoires légèrement plus élaborées qui peuvent intégrer des éléments fantastiques doux : animaux parlants, objets magiques bienveillants, ou aventures dans des mondes imaginaires sécurisants. L'accent reste mis sur la résolution positive et l'endormissement paisible.
-              </p>
-              <p>
-                Les enfants d'âge scolaire (6-10 ans) peuvent bénéficier de contes plus complexes qui intègrent les défis de leur quotidien : relations amicales, réussites scolaires, découvertes personnelles. Ces histoires peuvent aborder des thèmes plus matures tout en conservant une conclusion apaisante propice au sommeil.
-              </p>
-
-              <h2 id="conseils-optimisation">Conseils pour optimiser votre rituel personnalisé</h2>
-              <p>
-                Pour maximiser les bénéfices du conte personnalisé dans le rituel du coucher, plusieurs éléments sont essentiels. D'abord, la régularité : lire l'histoire à la même heure chaque soir crée des repères temporels qui facilitent l'endormissement. Cette constance rassure l'enfant et optimise l'efficacité du rituel.
-              </p>
-              <p>
-                L'environnement de lecture doit être soigneusement préparé : éclairage tamisé, température agréable, élimination des distractions. Cet environnement calme et confortable renforce l'effet apaisant de l'histoire et facilite la transition vers le sommeil.
-              </p>
-              <p>
-                La durée de lecture doit être adaptée à l'âge de l'enfant et à sa capacité d'attention en fin de journée. Généralement, 10 à 20 minutes suffisent pour créer l'effet désiré sans risquer de sur-stimuler l'enfant avant le coucher.
-              </p>
-              <p>
-                L'engagement émotionnel du parent dans la lecture amplifie considérablement l'impact du conte. Une lecture expressive, des intonations variées, et une présence attentive transforment la simple lecture en moment de connexion profonde qui nourrit l'enfant affectivement.
-              </p>
-              <p>
-                Enfin, il est important de laisser un temps de transition après la lecture pour que l'enfant puisse intégrer l'histoire et se préparer mentalement au sommeil. Ce moment de calme, éventuellement accompagné de quelques mots doux ou de caresses, complète parfaitement le rituel apaisant.
-              </p>
-              <p>
-                Conte d'IA comprend parfaitement l'importance de ces moments privilégiés et propose des histoires spécialement conçues pour le coucher. Nos contes personnalisés intègrent tous les éléments nécessaires pour transformer votre rituel du soir en moment magique qui favorise un sommeil réparateur et renforce les liens familiaux.
+                Et quand l'histoire est personnalisée ? L'effet est multiplié. L'enfant n'écoute pas UNE histoire — il écoute SON histoire. L'engagement émotionnel est total.
               </p>
 
               <div className="article-cta">
                 <Link to="/create-story" className="cta-button">
-                  🌙 Créer le conte parfait pour nos soirées
+                  ✨ Créez le conte du soir de votre enfant — Gratuit
                 </Link>
               </div>
+
+              <h2 id="rituel-4-etapes">Le rituel idéal en 4 étapes (testé par +500 familles)</h2>
+
+              <h3>Étape 1 : La préparation (5 min)</h3>
+              <p>
+                Brossage de dents, pyjama, pipi. Toujours dans le même ordre. L'enfant sait exactement ce qui vient après — et l'anticipation du conte le motive à coopérer.
+              </p>
+              <p>
+                <strong>Astuce :</strong> « Plus vite on se prépare, plus vite on lit l'histoire ! » fonctionne mieux que toutes les menaces du monde.
+              </p>
+
+              <h3>Étape 2 : L'installation (2 min)</h3>
+              <p>
+                Lumière tamisée (une veilleuse ou une lampe de chevet). Couette bien installée. L'enfant choisit sa position (contre le parent, en face, ou côte à côte). Le <Link to="/blog/enfant-heros-propre-histoire">livre personnalisé</Link> est prêt.
+              </p>
+              <p>
+                <strong>Important :</strong> pas d'écran dans la chambre. La lumière bleue des écrans bloque la mélatonine et retarde l'endormissement de 30 à 60 minutes.
+              </p>
+
+              <h3>Étape 3 : La lecture (10-15 min)</h3>
+              <p>
+                C'est le cœur du rituel. Lisez le conte personnalisé en prenant votre temps. Faites les voix, posez des questions (« À ton avis, qu'est-ce que [prénom] va faire ? »), laissez l'enfant tourner les pages.
+              </p>
+              <p>
+                <strong>Ce qui rend le conte personnalisé supérieur :</strong> l'enfant est captivé parce que c'est SON histoire. Il ne demande pas « encore un chapitre » par résistance au coucher — il est véritablement absorbé. Et à la fin de l'histoire, il est naturellement apaisé.
+              </p>
+
+              <h3>Étape 4 : La transition (3 min)</h3>
+              <p>
+                Après la dernière page, ne partez pas immédiatement. Posez une question douce : « Qu'est-ce que tu as préféré dans l'histoire ce soir ? » ou « De quoi tu vas rêver cette nuit ? ». Un câlin, un bisou, une phrase rituelle (« Bonne nuit mon héros/ma héroïne »), et vous quittez la chambre.
+              </p>
+              <p>
+                <strong>Durée totale : 20 minutes.</strong> C'est tout. Et ça transforme le coucher d'un champ de bataille en moment de tendresse.
+              </p>
+
+              <h2 id="personnalise-vs-classique">Pourquoi le conte personnalisé surpasse l'histoire classique</h2>
+              <p>
+                Les histoires classiques fonctionnent. Mais le conte personnalisé a 3 avantages décisifs pour le rituel du coucher :
+              </p>
+              <ul>
+                <li><strong>L'attention immédiate</strong> — Dès la première phrase (« Ce soir-là, [prénom] découvrit quelque chose d'extraordinaire… »), l'enfant est accroché. Pas de temps d'installation, pas de « c'est quoi cette histoire ? ».</li>
+                <li><strong>L'apaisement par identification</strong> — Quand le <Link to="/blog/enfant-heros-propre-histoire">héros qui porte son prénom</Link> s'endort paisiblement à la fin du conte, l'enfant intériorise : « Moi aussi, je peux m'endormir paisiblement. » C'est un ancrage émotionnel puissant.</li>
+                <li><strong>La demande spontanée</strong> — Un enfant qui a un conte classique dit « je veux pas dormir ». Un enfant qui a SON conte dit « on lit MON histoire ! ». La différence est énorme pour les parents.</li>
+              </ul>
+              <p>
+                Si votre enfant a des <Link to="/blog/conte-sommeil-enfant-personnalise-rituel-endormissement">difficultés d'endormissement spécifiques</Link> (peur du noir, cauchemars, anxiété de séparation), le conte personnalisé est encore plus puissant car il peut intégrer et résoudre ces peurs directement.
+              </p>
+
+              <div className="article-cta">
+                <Link to="/create-story" className="cta-button">
+                  ✨ Le conte du soir parfait — Prêt en 5 min, gratuit
+                </Link>
+              </div>
+
+              <h2 id="par-age">Adapter le rituel par âge</h2>
+
+              <h3>2-3 ans : le mini-rituel</h3>
+              <ul>
+                <li><strong>Durée totale :</strong> 10 minutes</li>
+                <li><strong>Conte :</strong> très court (3-5 pages), beaucoup d'illustrations</li>
+                <li><strong>Thèmes :</strong> doudou, animaux, câlins, « bonne nuit »</li>
+                <li><strong>Clé :</strong> la voix douce du parent compte plus que l'histoire elle-même</li>
+              </ul>
+
+              <h3>4-5 ans : le rituel classique</h3>
+              <ul>
+                <li><strong>Durée totale :</strong> 15-20 minutes</li>
+                <li><strong>Conte :</strong> 6-8 pages, une petite aventure avec résolution positive</li>
+                <li><strong>Thèmes :</strong> amitié, courage, <Link to="/blog/conte-personnalise-gestion-emotions-enfant">émotions</Link>, nature, animaux</li>
+                <li><strong>Clé :</strong> laissez l'enfant participer (tourner les pages, deviner la suite)</li>
+              </ul>
+
+              <h3>6-8 ans : le rituel enrichi</h3>
+              <ul>
+                <li><strong>Durée totale :</strong> 20-25 minutes</li>
+                <li><strong>Conte :</strong> 8-12 pages, intrigue plus complexe avec <Link to="/blog/intelligence-artificielle-histoires-enfants">personnalisation avancée</Link></li>
+                <li><strong>Thèmes :</strong> mystère, exploration, valeurs, découverte</li>
+                <li><strong>Clé :</strong> discutez de l'histoire ensemble après la lecture. « Qu'aurais-tu fait à la place du héros ? »</li>
+              </ul>
+
+              <h2 id="erreurs">Les 5 erreurs qui sabotent le rituel du coucher</h2>
+              <ol>
+                <li><strong>L'irrégularité</strong> — Un rituel un soir sur deux n'est pas un rituel. Le cerveau a besoin de constance pour créer l'association « routine → sommeil ». Visez 6 soirs sur 7 minimum.</li>
+                <li><strong>Les écrans juste avant</strong> — Même 10 minutes de tablette avant la lecture annulent une partie de l'effet apaisant. L'idéal : aucun écran dans l'heure qui précède le coucher.</li>
+                <li><strong>Un conte trop stimulant</strong> — Évitez les histoires avec des monstres effrayants ou trop d'action avant de dormir. Le conte du soir doit être doux, rassurant, avec une fin apaisante.</li>
+                <li><strong>Partir trop vite après la lecture</strong> — La transition est cruciale. Restez 2-3 minutes après la dernière page. C'est le moment où l'enfant intègre l'histoire et se sent en sécurité.</li>
+                <li><strong>Négocier la durée</strong> — « Encore une page ! Encore une ! » Si vous cédez, le rituel perd sa structure. Fixez le cadre à l'avance : « Ce soir on lit ce conte, et après c'est dodo. » Le conte personnalisé aide car il a une fin naturelle.</li>
+              </ol>
+
+              <h2 id="temoignages">Ce que les parents observent</h2>
+              <ul>
+                <li><strong>Amandine, maman de Rose (4 ans)</strong> — <em>« Avant le conte personnalisé, le coucher c'était 45 minutes de négociation. Rose pleurait, criait, réclamait de l'eau. Depuis qu'on a son conte à elle, elle se prépare TOUTE SEULE et m'appelle quand elle est prête pour la lecture. Le coucher dure 20 minutes. Je n'en reviens pas. »</em></li>
+                <li><strong>Julien, papa d'Arthur (6 ans)</strong> — <em>« Arthur connaît son conte par cœur. Il le récite en même temps que je lis. Et ça ne l'ennuie pas — au contraire, la familiarité l'apaise. Certains soirs, il s'endort avant la fin. La magie du rituel. »</em></li>
+                <li><strong>Nadia, maman de Lina (3 ans)</strong> — <em>« Lina dormait mal — réveils nocturnes, cauchemars. Depuis qu'on a instauré le conte personnalisé du soir, elle dort d'une traite. Je pense que le fait d'entendre SON histoire la sécurise. On est passées au Club pour avoir un nouveau conte chaque mois. »</em></li>
+              </ul>
+
+              <div className="article-cta">
+                <Link to="/create-story" className="cta-button">
+                  ✨ Testez le rituel — Premier conte gratuit
+                </Link>
+              </div>
+
+              <h2 id="faq">FAQ : Rituel du coucher et conte personnalisé</h2>
+
+              {faqQuestions.map((faq, i) => (
+                <React.Fragment key={i}>
+                  <h3>{faq.question}</h3>
+                  <p>{faq.answer}</p>
+                </React.Fragment>
+              ))}
+
+              <p>
+                <em>Découvrez aussi :</em>
+              </p>
+              <ul>
+                <li><Link to="/blog/conte-sommeil-enfant-personnalise-rituel-endormissement">Conte pour aider votre enfant à s'endormir</Link></li>
+                <li><Link to="/blog/enfant-heros-propre-histoire">Pourquoi les enfants adorent être le héros</Link></li>
+                <li><Link to="/blog/conte-personnalise-gestion-emotions-enfant">Conte personnalisé et gestion des émotions</Link></li>
+                <li><Link to="/blog/comment-donner-gout-lecture-enfant">Comment donner le goût de la lecture</Link></li>
+                <li><Link to="/blog/livre-personnalise-enfant-guide-complet">Guide complet du livre personnalisé</Link></li>
+              </ul>
             </div>
           </div>
 
@@ -201,10 +264,7 @@ const BlogArticleNouveau6: React.FC = () => {
               <ul>
                 {tableOfContents.map((item, index) => (
                   <li key={index}>
-                    <button 
-                      onClick={() => handleScrollToSection(item.id)}
-                      className="toc-link"
-                    >
+                    <button onClick={() => handleScrollToSection(item.id)} className="toc-link">
                       {item.title}
                     </button>
                   </li>
