@@ -2,196 +2,254 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { PageLayout } from '../components/layout/PageLayout';
 import { SEOHead } from '../components/SEOHead';
-import { SchemaBreadcrumb } from '../components/SchemaMarkup';
+import { SchemaFAQ, SchemaBreadcrumb } from '../components/SchemaMarkup';
 import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticleNouveau8: React.FC = () => {
   useEffect(() => {
-    document.title = 'Cadeau de naissance ou anniversaire : le livre personnalisé intemporel | Conte d\'IA';
-    
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', 'Découvrez pourquoi le livre personnalisé est le cadeau parfait pour une naissance ou un anniversaire. Un présent unique qui grandit avec l\'enfant et marque les esprits.');
-    }
-
-    const metaKeywords = document.querySelector('meta[name="keywords"]') || document.createElement('meta');
-    metaKeywords.setAttribute('name', 'keywords');
-    metaKeywords.setAttribute('content', 'cadeau naissance livre personnalisé, cadeau anniversaire enfant original, livre personnalisé cadeau unique, présent intemporel enfant, idée cadeau enfant personnalisé, livre cadeau naissance');
-    if (!document.querySelector('meta[name="keywords"]')) {
-      document.head.appendChild(metaKeywords);
-    }
+    document.title = "Livre Personnalisé : Le Cadeau de Naissance et Anniversaire Qui Marque | Contedia";
   }, []);
 
   const tableOfContents = [
-    { title: "Le cadeau qui traverse le temps", id: "cadeau-traverse-temps" },
-    { title: "Pourquoi choisir un livre personnalisé pour une naissance", id: "naissance-livre" },
-    { title: "L'anniversaire transformé en moment magique", id: "anniversaire-magique" },
-    { title: "Un cadeau qui grandit avec l'enfant", id: "grandit-avec-enfant" },
-    { title: "L'émotion des parents et de la famille", id: "emotion-famille" },
-    { title: "Se démarquer des cadeaux traditionnels", id: "demarquer-cadeaux" },
-    { title: "Occasions spéciales et personnalisation", id: "occasions-speciales" },
-    { title: "Comment choisir le livre personnalisé parfait", id: "choisir-livre-parfait" }
+    { title: "Pourquoi ce cadeau est différent", id: "pourquoi-different" },
+    { title: "Cadeau de naissance : le premier livre de sa vie", id: "cadeau-naissance" },
+    { title: "Cadeau d'anniversaire : la surprise qui éclipse tout", id: "cadeau-anniversaire" },
+    { title: "5 occasions parfaites", id: "occasions" },
+    { title: "Comment le créer en 5 minutes", id: "comment-creer" },
+    { title: "Ce que les parents en disent", id: "temoignages" },
+    { title: "FAQ", id: "faq" },
   ];
 
   const handleScrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
-      element.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start'
-      });
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+  };
+
+  const faqQuestions = [
+    {
+      question: "Un livre personnalisé est-il un bon cadeau de naissance ?",
+      answer: "Oui, et c'est souvent le cadeau que les parents gardent le plus longtemps. Un jouet casse, un vêtement devient trop petit. Le livre personnalisé, l'enfant le relira à 3 ans, 6 ans, 10 ans — et le gardera peut-être toute sa vie. C'est le cadeau qui traverse le temps."
+    },
+    {
+      question: "Peut-on offrir un livre personnalisé à un bébé de 0-1 an ?",
+      answer: "Oui ! Le bébé ne lira pas tout de suite, mais les parents pourront lui raconter l'histoire dès les premiers mois. Et quand il grandira, il découvrira qu'un livre a été écrit pour lui avant même qu'il sache parler. C'est un cadeau qui prend de la valeur avec le temps."
+    },
+    {
+      question: "Combien coûte un livre personnalisé comme cadeau ?",
+      answer: "Sur Contedia, le premier livre est gratuit. Pour offrir un livre en cadeau, les formules commencent à 6,99€. C'est le prix d'une carte de vœux — pour un cadeau infiniment plus marquant."
+    },
+    {
+      question: "Combien de temps faut-il pour recevoir le livre ?",
+      answer: "Le livre numérique (PDF) est prêt en 5 minutes et envoyé par email immédiatement. Vous pouvez l'imprimer vous-même ou l'offrir sur tablette. Parfait pour les cadeaux de dernière minute !"
+    },
+    {
+      question: "Peut-on offrir un livre personnalisé sans connaître l'enfant ?",
+      answer: "Il suffit de connaître le prénom et l'âge. L'IA crée une belle histoire avec ces deux informations. Mais plus vous ajoutez de détails (passions, amis, doudou), plus le livre sera unique et touchant."
+    },
+    {
+      question: "Le livre personnalisé fait-il un bon cadeau de groupe ?",
+      answer: "Excellent ! Plusieurs personnes peuvent se cotiser pour offrir un abonnement Club (un nouveau conte par mois). C'est original, utile, et l'enfant pense à vous chaque mois en recevant son nouveau livre."
+    }
+  ];
+
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Livre Personnalisé : Le Cadeau de Naissance et Anniversaire Qui Marque",
+    "description": "Pourquoi le livre personnalisé est le cadeau de naissance et anniversaire idéal. Guide par occasion, comment le créer, témoignages parents.",
+    "image": "https://contedia.fr/images/blog/cadeau-livre-personnalise-enfant.jpg",
+    "author": { "@type": "Organization", "name": "Contedia", "url": "https://contedia.fr" },
+    "publisher": { "@type": "Organization", "name": "Contedia", "logo": { "@type": "ImageObject", "url": "https://contedia.fr/logo-conte-ia.png" } },
+    "datePublished": "2025-09-10",
+    "dateModified": "2026-03-23",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://contedia.fr/blog/cadeau-livre-personnalise-enfant" }
   };
 
   return (
     <PageLayout>
       <SEOHead
-        title="Cadeau de Naissance ou Anniversaire : Le Livre Personnalisé Intemporel | Contedia"
-        description="Découvrez comment cadeau de naissance ou anniversaire : le livre personnalisé intemporel. Guide complet, conseils pratiques et premier livre gratuit sur Contedia."
+        title="Livre Personnalisé : Le Cadeau de Naissance et Anniversaire Qui Marque | Contedia"
+        description="Pourquoi le livre personnalisé est le cadeau de naissance et anniversaire idéal. Prêt en 5 min, premier livre gratuit. Guide complet par occasion."
         type="article"
       />
+      <SchemaFAQ questions={faqQuestions} />
       <SchemaBreadcrumb items={[
         { name: "Accueil", url: "https://contedia.fr/" },
         { name: "Blog", url: "https://contedia.fr/blog" },
-        { name: "Cadeau de Naissance ou Anniversaire : Le Livre Per", url: "https://contedia.fr/blog/cadeau-livre-personnalise-enfant" }
+        { name: "Cadeau livre personnalisé enfant", url: "https://contedia.fr/blog/cadeau-livre-personnalise-enfant" }
       ]} />
       <Helmet>
-        <script type="application/ld+json">{`{"@context":"https://schema.org","@type":"Article","headline":"Cadeau de Naissance ou Anniversaire : Le Livre Personnalisé Intemporel","author":{"@type":"Organization","name":"Contedia"},"publisher":{"@type":"Organization","name":"Contedia"},"dateModified":"2026-03-22"}`}</script>
+        <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>
       </Helmet>
+
       <div className="article-container">
         <div className="article-breadcrumb">
-          <Link to="/blog">Blog</Link> / Cadeau de naissance ou anniversaire : le livre personnalisé intemporel
+          <Link to="/blog">Blog</Link> / Cadeau livre personnalisé enfant
         </div>
 
         <div className="article-layout">
           <div className="article-main">
             <div className="article-header">
-              <h1>Cadeau de naissance ou anniversaire : le livre personnalisé intemporel</h1>
+              <h1>Livre Personnalisé : Le Cadeau de Naissance et d'Anniversaire Qui Marque les Esprits</h1>
               <div className="article-meta">
-                <span>Par l'équipe Contedia · Mis à jour le 22 mars 2026</span>
+                <span>Par l'équipe Contedia · Mis à jour le 23 mars 2026 · 7 min de lecture</span>
               </div>
             </div>
 
             <div className="article-image">
               <img
-                src="/images/blog/cadeau-livre-personnalisé-enfant.jpg"
-                alt="Enfant émerveillé découvrant son livre personnalisé comme cadeau d'anniversaire"
+                src="/images/blog/cadeau-livre-personnalise-enfant.jpg"
+                alt="Enfant émerveillé ouvrant un livre personnalisé comme cadeau d'anniversaire"
                 loading="lazy"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.src = '/images/placeholder-blog.jpg';
-                }}
+                onError={(e) => { const target = e.target as HTMLImageElement; target.src = '/images/placeholder-blog.jpg'; }}
               />
             </div>
 
             <div className="article-content">
               <p className="article-intro">
-                Dans un monde où les jouets s'accumulent et se cassent, où les gadgets deviennent rapidement obsolètes, le livre personnalisé se distingue comme le cadeau véritablement intemporel. Que ce soit pour célébrer une naissance ou marquer un anniversaire, offrir un livre où l'enfant est le héros de sa propre histoire crée un souvenir impérissable qui accompagnera sa croissance. Découvrons ensemble pourquoi ce présent unique transcende les modes et les âges pour devenir un trésor familial durable.
+                <strong>Samedi dernier, anniversaire de Mila, 5 ans. 12 cadeaux sur la table.</strong> Des poupées, des Lego, un déguisement. Et un livre. Quand Mila a ouvert le livre et vu son prénom sur la couverture, elle a lâché tous les autres cadeaux. <em>« C'est MON livre ! C'est MOI dedans ! »</em> — Elle l'a lu 3 fois pendant la fête. Les autres cadeaux ? Elle les a ouverts le lendemain. Le <strong>livre personnalisé</strong>, c'est le cadeau qui éclipse tout le reste. Voici pourquoi — et comment l'offrir.
               </p>
 
-              <h2 id="cadeau-traverse-temps">Le cadeau qui traverse le temps</h2>
+              <h2 id="pourquoi-different">Pourquoi ce cadeau est radicalement différent</h2>
               <p>
-                Le livre personnalisé possède cette qualité rare d'être un cadeau qui traverse le temps sans perdre de sa valeur. Contrairement aux jouets qui finissent oubliés dans un placard ou aux vêtements qui deviennent trop petits, le livre personnalisé accompagne l'enfant tout au long de sa croissance, révélant de nouvelles facettes à chaque étape de son développement.
+                Un jouet, un enfant en reçoit des dizaines. Un vêtement, il le porte et l'oublie. Mais un <Link to="/blog/livre-personnalise-enfant-guide-complet">livre où il est le héros</Link> ? C'est peut-être le seul cadeau qu'il gardera toute sa vie.
               </p>
               <p>
-                À 3 ans, l'enfant découvre les images et reconnaît son prénom avec émerveillement. À 6 ans, il commence à déchiffrer les mots de sa propre histoire. À 10 ans, il lit de manière autonome et comprend les nuances du récit. À 15 ans, il redécouvre son livre avec nostalgie et émotion. Cette évolution constante fait du livre personnalisé un investissement affectif durable.
+                Voici ce qui rend le livre personnalisé unique comme cadeau :
               </p>
-              <p>
-                Cette longévité exceptionnelle transforme le cadeau en héritage familial. Le livre personnalisé devient souvent l'un des objets les plus précieux de l'enfant, celui qu'il conservera toute sa vie et qu'il montrera peut-être un jour à ses propres enfants. Cette dimension transgénérationnelle ajoute une valeur inestimable au présent.
-              </p>
-
-              <h2 id="naissance-livre">Pourquoi choisir un livre personnalisé pour une naissance</h2>
-              <p>
-                La naissance d'un enfant marque le début d'une nouvelle histoire, et quoi de plus symbolique que d'offrir un livre où cette nouvelle vie devient immédiatement le héros de sa propre aventure ? Le livre personnalisé de naissance célèbre l'arrivée de l'enfant de manière unique et mémorable.
-              </p>
-              <p>
-                Pour les nouveaux parents, souvent submergés par les cadeaux pratiques mais impersonnels, recevoir un livre personnalisé pour leur bébé représente une attention particulièrement touchante. Ce cadeau reconnaît l'unicité de leur enfant dès ses premiers jours et témoigne d'une affection sincère pour la nouvelle famille.
-              </p>
-              <p>
-                Le livre personnalisé de naissance peut intégrer des éléments spécifiques à l'arrivée de l'enfant : date de naissance, poids, taille, premiers moments familiaux. Ces détails personnels transforment le livre en véritable livre de naissance narratif, bien plus engageant qu'un simple album photo traditionnel.
-              </p>
-
-              <h3 id="anniversaire-magique">L'anniversaire transformé en moment magique</h3>
-              <p>
-                L'anniversaire d'un enfant est déjà un moment spécial, mais l'ajout d'un livre personnalisé transforme cette célébration en expérience véritablement magique. Imaginez la surprise et la joie de l'enfant qui découvre qu'il est le héros de sa propre histoire d'anniversaire, vivant des aventures extraordinaires le jour de sa fête.
-              </p>
-              <p>
-                Le livre personnalisé d'anniversaire peut intégrer des éléments de la célébration : amis présents, gâteau préféré, activités prévues, souhaits d'anniversaire. Cette intégration crée une continuité magique entre la réalité de la fête et la fiction du livre, amplifiant l'émerveillement de l'enfant.
-              </p>
-              <p>
-                Ce cadeau se démarque immédiatement de tous les autres présents de la fête. Tandis que les autres cadeaux peuvent se ressembler ou être oubliés, le livre personnalisé marque les esprits de tous les invités et crée un moment de partage unique quand l'enfant découvre son histoire devant ses amis.
-              </p>
-
-              <h2 id="grandit-avec-enfant">Un cadeau qui grandit avec l'enfant</h2>
-              <p>
-                L'une des qualités les plus remarquables du livre personnalisé est sa capacité à grandir avec l'enfant. Chaque relecture révèle de nouveaux détails, de nouvelles compréhensions, de nouvelles émotions. Cette évolutivité constante maintient l'intérêt et la valeur du cadeau sur le long terme.
-              </p>
-              <p>
-                Les très jeunes enfants apprécient d'abord les aspects visuels : leur photo, leur nom, les couleurs vives. En grandissant, ils découvrent l'intrigue, comprennent les messages, s'identifient aux aventures. Adolescents, ils redécouvrent leur livre avec un regard nouveau, appréciant la créativité et l'attention qui ont présidé à sa création.
-              </p>
-              <p>
-                Cette capacité d'évolution fait du livre personnalisé un cadeau économiquement intelligent. Plutôt que d'acheter plusieurs cadeaux qui perdront rapidement leur attrait, le livre personnalisé offre des années de plaisir et de découverte, représentant un excellent investissement affectif et financier.
-              </p>
-
-              <h3 id="emotion-famille">L'émotion des parents et de la famille</h3>
-              <p>
-                L'impact émotionnel du livre personnalisé ne se limite pas à l'enfant, il touche profondément toute la famille. Les parents sont souvent émus aux larmes en découvrant leur enfant représenté comme un héros courageux et aimé. Cette émotion authentique témoigne de la puissance affective du cadeau.
-              </p>
-              <p>
-                Les grands-parents, oncles, tantes et amis proches apprécient particulièrement ce type de cadeau car il leur permet d'exprimer leur affection de manière créative et personnelle. Offrir un livre personnalisé témoigne d'une attention particulière et d'un investissement émotionnel qui touche profondément les parents.
-              </p>
-              <p>
-                Cette dimension émotionnelle transforme souvent la remise du cadeau en moment mémorable pour toute la famille. Les réactions spontanées, les sourires, les larmes de joie créent des souvenirs familiaux précieux qui s'ajoutent à la valeur du livre lui-même.
-              </p>
-
-              <h2 id="demarquer-cadeaux">Se démarquer des cadeaux traditionnels</h2>
-              <p>
-                Dans un contexte où les enfants reçoivent souvent de nombreux cadeaux similaires, le livre personnalisé se distingue immédiatement par son originalité et sa personnalisation. Il sort du lot des jouets en plastique et des gadgets électroniques pour offrir quelque chose de véritablement unique et significatif.
-              </p>
-              <p>
-                Cette originalité ne passe jamais inaperçue. Les autres invités remarquent immédiatement la créativité et l'attention du cadeau, générant souvent des commentaires positifs et de l'admiration. L'offreur du livre personnalisé est perçu comme quelqu'un de réfléchi et d'attentionné.
-              </p>
-              <p>
-                Le livre personnalisé évite également l'écueil des cadeaux en double. Il est par définition unique et ne peut pas être offert par quelqu'un d'autre. Cette unicité garantie rassure l'offreur et assure l'originalité du présent.
-              </p>
-
-              <h3 id="occasions-speciales">Occasions spéciales et personnalisation</h3>
-              <p>
-                Le livre personnalisé s'adapte parfaitement à toutes les occasions spéciales de l'enfance. Première communion, baptême, entrée à l'école, déménagement, arrivée d'un petit frère ou d'une petite sœur : chaque événement important peut être célébré et immortalisé dans une histoire personnalisée.
-              </p>
-              <p>
-                Cette adaptabilité permet de créer une collection de livres personnalisés qui racontent l'histoire de la croissance de l'enfant. Chaque livre marque une étape importante, créant une bibliothèque personnelle qui retrace son parcours de développement de manière narrative et engageante.
-              </p>
-              <p>
-                La personnalisation peut également intégrer des éléments saisonniers ou culturels spécifiques à la famille : traditions familiales, origines culturelles, langues parlées à la maison. Cette personnalisation culturelle enrichit l'histoire et renforce l'identité de l'enfant.
-              </p>
-
-              <h2 id="choisir-livre-parfait">Comment choisir le livre personnalisé parfait</h2>
-              <p>
-                Choisir le livre personnalisé parfait nécessite de considérer plusieurs éléments essentiels. D'abord, l'âge de l'enfant détermine le niveau de complexité approprié : histoires simples et visuelles pour les petits, récits plus élaborés pour les plus grands.
-              </p>
-              <p>
-                Les centres d'intérêt de l'enfant orientent le choix du thème : aventures spatiales pour les passionnés d'astronomie, histoires d'animaux pour les amoureux de la nature, contes de princesses pour les rêveurs. Cette personnalisation thématique maximise l'engagement et le plaisir.
-              </p>
-              <p>
-                La qualité de la personnalisation constitue un critère crucial. Le livre doit offrir une véritable adaptation à l'enfant, intégrant ses caractéristiques physiques, sa personnalité, et son environnement familial. Une personnalisation superficielle diminue considérablement l'impact du cadeau.
-              </p>
-              <p>
-                La qualité éditoriale ne doit pas être négligée : illustrations soignées, texte bien écrit, impression de qualité. Ces éléments contribuent à faire du livre un objet précieux que l'enfant conservera longtemps.
-              </p>
-              <p>
-                Enfin, le timing de la commande est important. Un livre personnalisé de qualité nécessite du temps de création et de production. Anticiper permet de recevoir le cadeau dans les délais souhaités sans compromettre la qualité.
-              </p>
-              <p>
-                Conte d'IA maîtrise parfaitement tous ces aspects pour créer le cadeau personnalisé idéal. Notre expertise technologique et éditoriale garantit un livre unique qui marquera positivement l'enfant et sa famille, créant des souvenirs précieux qui dureront toute une vie.
-              </p>
+              <ul>
+                <li><strong>Il n'existe qu'en un seul exemplaire</strong> — Impossible de l'avoir en double. Chaque livre est 100% unique, écrit par l'IA spécifiquement pour cet enfant.</li>
+                <li><strong>Il grandit avec l'enfant</strong> — À 3 ans, il regarde les images. À 6 ans, il lit les mots. À 10 ans, il comprend les messages. À 20 ans, il le retrouve avec émotion.</li>
+                <li><strong>Il touche les parents autant que l'enfant</strong> — Les parents qui voient leur enfant <Link to="/blog/enfant-heros-propre-histoire">héros d'un livre</Link> sont souvent plus émus que l'enfant lui-même.</li>
+                <li><strong>Il coûte moins qu'un jouet moyen</strong> — À partir de 6,99€ (et le premier est gratuit). Pour un cadeau qui dure des années vs un jouet qui dure des semaines.</li>
+              </ul>
 
               <div className="article-cta">
                 <Link to="/create-story" className="cta-button">
-                  🎁 Créer le cadeau parfait et intemporel
+                  ✨ Créez un cadeau inoubliable — Premier livre gratuit
                 </Link>
               </div>
+
+              <h2 id="cadeau-naissance">Cadeau de naissance : le premier livre de sa vie</h2>
+              <p>
+                Offrir un livre personnalisé à un nouveau-né, c'est lui offrir la première page de son histoire. Oui, le bébé ne lira pas tout de suite. Mais c'est exactement ce qui rend ce cadeau si spécial :
+              </p>
+              <ul>
+                <li><strong>Les parents lisent à voix haute</strong> — Dès les premières semaines, les parents peuvent raconter l'histoire du bébé-héros. Le son de leur voix est le plus beau bercement.</li>
+                <li><strong>Le bébé entend son prénom</strong> — Même à quelques semaines, un bébé réagit à son prénom. L'entendre dans une histoire crée un lien émotionnel précoce avec la lecture.</li>
+                <li><strong>C'est un souvenir pour toujours</strong> — « Voici le premier livre qui a été écrit pour toi, le jour de ta naissance. » Imaginez l'émotion quand l'enfant le redécouvrira à 10 ans.</li>
+              </ul>
+              <p>
+                <strong>Astuce cadeau :</strong> ajoutez un mot manuscrit sur la première page du PDF imprimé. « Pour [prénom], le jour où tu es arrivé dans nos vies. Avec tout notre amour, [signataire]. » Ce geste simple transforme un beau cadeau en trésor familial.
+              </p>
+              <p>
+                Comparé aux cadeaux de naissance classiques (doudous, bodys, jouets d'éveil), le livre personnalisé est celui que les parents garderont dans la boîte à souvenirs — pas dans le vide-grenier.
+              </p>
+
+              <h2 id="cadeau-anniversaire">Cadeau d'anniversaire : la surprise qui éclipse tout</h2>
+              <p>
+                À un anniversaire, le livre personnalisé a un avantage stratégique : <strong>il crée un moment</strong>. Les autres cadeaux sont ouverts, regardés 10 secondes, posés. Le livre personnalisé déclenche une réaction :
+              </p>
+              <ul>
+                <li><strong>Le moment « wahou »</strong> — L'enfant voit son prénom sur la couverture. Ses yeux s'écarquillent. Il montre à tout le monde. « Regardez, c'est MOI ! »</li>
+                <li><strong>La lecture partagée</strong> — Souvent, l'enfant demande qu'on lise le livre à voix haute devant tous les invités. Toute la fête s'arrête. Tout le monde écoute. C'est un moment magique.</li>
+                <li><strong>L'effet mémoire</strong> — 6 mois après, l'enfant a oublié qui lui a offert les Lego. Mais il sait exactement qui lui a offert SON livre.</li>
+              </ul>
+              <p>
+                <strong>Par âge, les réactions types :</strong>
+              </p>
+              <ul>
+                <li><strong>3-4 ans</strong> — « C'est mon nom ! C'est moi ! » Joie pure, émerveillement, le livre ne quitte pas ses mains de la journée.</li>
+                <li><strong>5-6 ans</strong> — « Lis-le ! Lis-le maintenant ! » L'enfant veut entendre l'histoire immédiatement. Il interrompt la fête pour ça.</li>
+                <li><strong>7-8 ans</strong> — « C'est trop cool, j'adore le passage où je… » L'enfant lit seul et raconte ses passages préférés. Fierté visible.</li>
+              </ul>
+
+              <div className="article-cta">
+                <Link to="/create-story" className="cta-button">
+                  ✨ Le cadeau d'anniversaire qui fait « wahou » — Gratuit
+                </Link>
+              </div>
+
+              <h2 id="occasions">5 occasions parfaites pour offrir un livre personnalisé</h2>
+              <ol>
+                <li>
+                  <strong>Naissance</strong> — Le premier livre de sa vie. Un souvenir éternel.<br />
+                  <em>Thèmes suggérés :</em> bienvenue au monde, premiers découvertes, famille.
+                </li>
+                <li>
+                  <strong>Anniversaire</strong> — Le cadeau qui éclipse les jouets.<br />
+                  <em>Thèmes suggérés :</em> aventure, passions de l'enfant, amitié.
+                </li>
+                <li>
+                  <strong>Noël</strong> — <Link to="/blog/fetes-religieuses-conte-personnalise-noel-ramadan-paque-diwali">Un conte de Noël personnalisé</Link> vaut mieux que 10 jouets.<br />
+                  <em>Thèmes suggérés :</em> magie de Noël, partage, famille.
+                </li>
+                <li>
+                  <strong>Rentrée scolaire</strong> — Pour un enfant qui <Link to="/blog/livre-personnalise-enfant-timide">appréhende la rentrée</Link>.<br />
+                  <em>Thèmes suggérés :</em> courage, nouveaux amis, découverte.
+                </li>
+                <li>
+                  <strong>Arrivée d'un petit frère ou d'une petite sœur</strong> — Pour rassurer l'aîné qu'il reste le héros.<br />
+                  <em>Thèmes suggérés :</em> famille qui grandit, rôle de grand frère/sœur, amour partagé.
+                </li>
+              </ol>
+              <p>
+                Pour encore plus d'idées, consultez notre article <Link to="/blog/idees-cadeaux-personnalises-enfant">20 idées cadeaux personnalisés pour enfant</Link>.
+              </p>
+
+              <h2 id="comment-creer">Comment créer le cadeau parfait en 5 minutes</h2>
+              <p>
+                C'est la beauté du livre personnalisé par <Link to="/blog/intelligence-artificielle-histoires-enfants">IA</Link> : pas besoin de semaines de préparation.
+              </p>
+              <ol>
+                <li><strong>Allez sur Contedia</strong> et cliquez « Créer un livre »</li>
+                <li><strong>Entrez les infos</strong> — Prénom, âge, passions de l'enfant (demandez discrètement aux parents !)</li>
+                <li><strong>Choisissez le thème</strong> — Adapté à l'occasion (anniversaire, naissance, etc.)</li>
+                <li><strong>Recevez le PDF par email</strong> en 5 minutes</li>
+                <li><strong>Offrez-le</strong> — Imprimé et relié (imprimeries en ligne dès 5€), sur tablette, ou par email</li>
+              </ol>
+              <p>
+                <strong>Budget total :</strong> Premier livre gratuit. Ensuite à partir de 6,99€. Ajoutez 5-10€ d'impression si vous voulez un livre physique. <strong>Total : moins de 20€ pour un cadeau inoubliable.</strong>
+              </p>
+              <p>
+                <strong>Cadeau de dernière minute ?</strong> Le PDF arrive en 5 minutes. Vous pouvez créer le cadeau 1 heure avant la fête. Personne ne le saura.
+              </p>
+
+              <h2 id="temoignages">Ce que les parents en disent</h2>
+              <ul>
+                <li><strong>Laura, marraine de Théo (3 ans)</strong> — <em>« J'ai offert le livre à la naissance de Théo. Sa mère m'a envoyé une vidéo 3 ans plus tard : Théo le lit tout seul maintenant et dit "c'est le livre de marraine Laura". Sur TOUS les cadeaux que j'ai offerts, c'est le seul dont il se souvient. »</em></li>
+                <li><strong>Marc, papa</strong> — <em>« À l'anniversaire de ma fille (6 ans), il y avait une montagne de cadeaux. Elle a ouvert le livre personnalisé en dernier. Et c'est le seul qu'elle a relu 5 fois pendant le week-end. Les Barbie sont toujours dans le carton. Le livre est sur sa table de nuit. »</em></li>
+                <li><strong>Samira, tante de Yasmine (4 ans)</strong> — <em>« Je ne savais jamais quoi offrir — les parents ont déjà tout. Le livre personnalisé a résolu mon problème pour toujours. C'est unique, c'est original, et ça fait pleurer la maman à chaque fois. Meilleur cadeau possible. »</em></li>
+              </ul>
+
+              <div className="article-cta">
+                <Link to="/create-story" className="cta-button">
+                  ✨ Offrez un cadeau inoubliable — Premier livre gratuit
+                </Link>
+              </div>
+
+              <h2 id="faq">FAQ : Livre personnalisé comme cadeau</h2>
+
+              {faqQuestions.map((faq, i) => (
+                <React.Fragment key={i}>
+                  <h3>{faq.question}</h3>
+                  <p>{faq.answer}</p>
+                </React.Fragment>
+              ))}
+
+              <p>
+                <em>Découvrez aussi :</em>
+              </p>
+              <ul>
+                <li><Link to="/blog/idees-cadeaux-personnalises-enfant">20 idées cadeaux personnalisés pour enfant</Link></li>
+                <li><Link to="/blog/livre-personnalise-enfant-guide-complet">Guide complet du livre personnalisé</Link></li>
+                <li><Link to="/blog/livre-personnalise-vs-livre-classique">Livre personnalisé vs livre classique</Link></li>
+                <li><Link to="/blog/enfant-heros-propre-histoire">Pourquoi les enfants adorent être le héros</Link></li>
+                <li><Link to="/blog/comment-donner-gout-lecture-enfant">Comment donner le goût de la lecture</Link></li>
+              </ul>
             </div>
           </div>
 
@@ -201,10 +259,7 @@ const BlogArticleNouveau8: React.FC = () => {
               <ul>
                 {tableOfContents.map((item, index) => (
                   <li key={index}>
-                    <button 
-                      onClick={() => handleScrollToSection(item.id)}
-                      className="toc-link"
-                    >
+                    <button onClick={() => handleScrollToSection(item.id)} className="toc-link">
                       {item.title}
                     </button>
                   </li>
