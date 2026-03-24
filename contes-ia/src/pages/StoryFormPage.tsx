@@ -4,7 +4,7 @@ import { StoryWizard } from '../components/wizard/StoryWizard';
 import { ApiService } from '../config/api';
 import { StoryFormData } from '../types/FormTypes';
 import { identifyUser, trackInitiateCheckout, trackViewContent } from '../utils/tiktokPixel';
-import { metaTrackViewContent, metaTrackInitiateCheckout } from '../utils/metaPixel';
+import { metaTrackViewContent, metaTrackInitiateCheckout, metaTrackLead } from '../utils/metaPixel';
 import { useAuth } from '../contexts/AuthContext';
 import { SEOHead } from '../components/SEOHead';
 
@@ -147,6 +147,8 @@ export const StoryFormPage: React.FC = () => {
     try {
       // Fire-and-forget : le tracking ne doit JAMAIS bloquer le paiement
       try {
+        // Lead au moment du submit (filet de sécurité si onBlur n'a pas tiré)
+        metaTrackLead(viewContentPrice);
         trackInitiateCheckout(submitData.productType, submitData.userEmail, viewContentPrice);
         metaTrackInitiateCheckout(submitData.productType, viewContentPrice);
         identifyUser(submitData.userEmail);
@@ -178,6 +180,18 @@ export const StoryFormPage: React.FC = () => {
 
       // Club gratuit ou premier livre gratuit : redirection directe vers le livre
       if (orderResponse.isClubFreeOrder || orderResponse.isFirstBookFree) {
+        // Meta Pixel: tracker Lead + Purchase pour le livre gratuit
+        try {
+          metaTrackLead(0, 'EUR');
+          // Purchase avec value 0€ pour nourrir l'algorithme Meta Ads
+          const { metaTrackPurchase } = await import('../utils/metaPixel');
+          await metaTrackPurchase(
+            orderResponse.isClubFreeOrder ? 'club' : 'ebook',
+            orderResponse.data.id,
+            0,
+            'EUR'
+          );
+        } catch { /* tracking failure must never block redirect */ }
         // Délai 500ms pour garantir localStorage persisté sur mobile Safari
         setTimeout(() => {
           window.location.href = `/dashboard/story/${orderResponse.data.id}`;
