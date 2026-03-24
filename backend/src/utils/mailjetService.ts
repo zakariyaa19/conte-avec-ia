@@ -31,7 +31,7 @@ export class MailjetService {
             {
               From: {
                 Email: process.env.MAILJET_FROM_EMAIL || 'contact@contedia.fr',
-                Name: 'Contes d\'IA'
+                Name: 'Contedia'
               },
               To: [
                 {
@@ -81,7 +81,7 @@ export class MailjetService {
                     <!-- Footer -->
                     <div style="text-align: center; margin-top: 30px; padding: 25px; background: linear-gradient(135deg, #FF9999, #87CEEB); border-radius: 15px; color: white;">
                       <h3 style="margin: 0 0 15px 0; font-size: 24px;">🙏 Merci de votre confiance !</h3>
-                      <p style="margin: 0 0 15px 0; font-size: 16px; opacity: 0.95;">L'équipe Contes d'IA met tout son cœur dans la création de votre histoire personnalisée</p>
+                      <p style="margin: 0 0 15px 0; font-size: 16px; opacity: 0.95;">L'equipe Contedia met tout son cœur dans la création de votre histoire personnalisée</p>
                       <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; margin-top: 20px;">
                         <p style="margin: 0; font-size: 14px;">💬 <strong>Une question ?</strong> Répondez simplement à cet email<br>
                         📧 Ou contactez-nous à : <strong>${process.env.MAILJET_FROM_EMAIL || 'contact@contedia.fr'}</strong></p>
@@ -116,10 +116,10 @@ export class MailjetService {
           Messages: [{
             From: {
               Email: process.env.MAILJET_FROM_EMAIL || 'contact@contedia.fr',
-              Name: 'Contes d\'IA'
+              Name: 'Contedia'
             },
             To: [{ Email: data.email, Name: data.firstName }],
-            Subject: 'Votre lien de connexion — Conte d\'IA',
+            Subject: 'Votre lien de connexion — Contedia',
             HTMLPart: `
               <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 500px; margin: 0 auto; padding: 40px 20px;">
                 <h1 style="color: #2D3748; font-size: 24px; text-align: center;">Connexion a votre compte</h1>
@@ -174,7 +174,7 @@ export class MailjetService {
             {
               From: {
                 Email: process.env.MAILJET_FROM_EMAIL || 'contact@contedia.fr',
-                Name: 'Contes d\'IA'
+                Name: 'Contedia'
               },
               To: [
                 {
@@ -238,7 +238,7 @@ export class MailjetService {
             {
               From: {
                 Email: process.env.MAILJET_FROM_EMAIL || 'contact@contedia.fr',
-                Name: 'Contes d\'IA'
+                Name: 'Contedia'
               },
               To: [
                 {
@@ -367,22 +367,23 @@ export class MailjetService {
 
     const templates: Record<string, { subject: string; html: string }> = {
       day1: {
-        subject: `${data.protagonistName} a adore son histoire ? Creez-en une nouvelle !`,
+        subject: `${data.protagonistName} a adore son histoire ? Imaginez avec 2x plus de pages...`,
         html: `
           <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 550px; margin: 0 auto; padding: 40px 20px;">
-            <h1 style="color: #2D3748; font-size: 22px; text-align: center;">Une nouvelle aventure pour ${data.protagonistName} ?</h1>
+            <h1 style="color: #2D3748; font-size: 22px; text-align: center;">Et si ${data.protagonistName} avait une histoire 2x plus longue ?</h1>
             <p style="color: #4A5568; font-size: 15px; text-align: center; line-height: 1.7;">
-              ${data.customerName}, le livre de ${data.protagonistName} est pret ! Avec le <strong>Club des Histoires</strong>, creez un nouveau livre chaque semaine.
+              ${data.customerName}, le livre gratuit de ${data.protagonistName} faisait 6 pages et 7 illustrations. Avec le <strong>Club Contedia</strong>, chaque livre passe a <strong>12 pages et 12+ illustrations</strong>. Deux fois plus d'aventure.
             </p>
             <div style="background: #FFF8F0; border-radius: 16px; padding: 24px; margin: 24px 0; text-align: center;">
-              <p style="font-size: 18px; font-weight: 700; color: #FF6B6B; margin: 0 0 8px;">Club des Histoires</p>
-              <p style="font-size: 14px; color: #666; margin: 0 0 4px;">1 livre/semaine + personnalisation avancee</p>
+              <p style="font-size: 18px; font-weight: 700; color: #FF6B6B; margin: 0 0 8px;">Club Contedia</p>
+              <p style="font-size: 14px; color: #666; margin: 0 0 4px;">4 livres/mois · 12 pages · 12+ illustrations · 9 styles</p>
               <p style="font-size: 24px; font-weight: 700; color: #333; margin: 8px 0;">9,99€/mois</p>
-              <p style="font-size: 12px; color: #999; margin: 0;">Sans engagement · annulable a tout moment</p>
+              <p style="font-size: 13px; color: #888; margin: 4px 0 0;">ou 6,67€/mois en annuel (79,99€/an — economisez 40€)</p>
+              <p style="font-size: 12px; color: #999; margin: 4px 0 0;">Sans engagement · annulable a tout moment</p>
             </div>
             <div style="text-align: center; margin: 24px 0;">
               <a href="${upgradeLink}" style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); color: white; padding: 14px 40px; border-radius: 30px; text-decoration: none; font-weight: 700; font-size: 15px; display: inline-block;">
-                Decouvrir le Club
+                Decouvrir le Club Contedia
               </a>
             </div>
             <p style="color: #A0AEC0; font-size: 12px; text-align: center;">
@@ -392,29 +393,37 @@ export class MailjetService {
         `
       },
       day3: {
-        subject: `Personnages secondaires, animaux, styles d'illustration... Decouvrez le Club`,
+        subject: `12 pages, 9 styles, 5 personnages... tout ce que le Club change`,
         html: `
           <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 550px; margin: 0 auto; padding: 40px 20px;">
-            <h1 style="color: #2D3748; font-size: 22px; text-align: center;">Le Club, c'est quoi de plus ?</h1>
+            <h1 style="color: #2D3748; font-size: 22px; text-align: center;">Livre gratuit vs Club : la difference</h1>
             <p style="color: #4A5568; font-size: 15px; text-align: center; line-height: 1.7;">
-              ${data.customerName}, voici ce que les membres du Club adorent :
+              ${data.customerName}, voici ce que le Club Contedia debloque :
             </p>
             <div style="background: #F7FAFC; border-radius: 16px; padding: 24px; margin: 24px 0;">
-              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
-                <span style="font-size: 24px;">&#x1F464;</span>
-                <div><strong>Personnages secondaires</strong><br><span style="color: #666; font-size: 13px;">Ajoutez freres, soeurs, amis dans l'histoire</span></div>
+              <div style="margin-bottom: 16px;">
+                <span style="font-size: 20px;">&#x1F4D6;</span>
+                <strong> 12 pages au lieu de 6</strong><br><span style="color: #666; font-size: 13px; margin-left: 28px;">Des histoires 2x plus riches et immersives</span>
               </div>
-              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
-                <span style="font-size: 24px;">&#x1F3A8;</span>
-                <div><strong>Styles d'illustration</strong><br><span style="color: #666; font-size: 13px;">Aquarelle, manga, Disney, pixel art...</span></div>
+              <div style="margin-bottom: 16px;">
+                <span style="font-size: 20px;">&#x1F3A8;</span>
+                <strong> 9 styles d'illustration</strong><br><span style="color: #666; font-size: 13px; margin-left: 28px;">Aquarelle, 3D, Papier decoupe, Kawaii, Manga, Clay...</span>
               </div>
-              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
-                <span style="font-size: 24px;">&#x1F4DA;</span>
-                <div><strong>Bibliotheque illimitee</strong><br><span style="color: #666; font-size: 13px;">Tous vos livres accessibles en ligne + PDF</span></div>
+              <div style="margin-bottom: 16px;">
+                <span style="font-size: 20px;">&#x1F464;</span>
+                <strong> Jusqu'a 5 personnages</strong><br><span style="color: #666; font-size: 13px; margin-left: 28px;">Freres, soeurs, meilleur ami, doudou, animal</span>
               </div>
-              <div style="display: flex; align-items: center; gap: 12px;">
-                <span style="font-size: 24px;">&#x1F4D6;</span>
-                <div><strong>1 nouveau livre/semaine</strong><br><span style="color: #666; font-size: 13px;">Credits cumulables si vous n'utilisez pas</span></div>
+              <div style="margin-bottom: 16px;">
+                <span style="font-size: 20px;">&#x1F389;</span>
+                <strong> Occasions speciales</strong><br><span style="color: #666; font-size: 13px; margin-left: 28px;">Noel, Ramadan, Paques, Anniversaire, Diwali...</span>
+              </div>
+              <div style="margin-bottom: 16px;">
+                <span style="font-size: 20px;">&#x1F436;</span>
+                <strong> Animal de compagnie</strong><br><span style="color: #666; font-size: 13px; margin-left: 28px;">Votre chat, chien ou hamster devient un personnage</span>
+              </div>
+              <div>
+                <span style="font-size: 20px;">&#x1F4DA;</span>
+                <strong> 4 livres par mois</strong><br><span style="color: #666; font-size: 13px; margin-left: 28px;">Credits cumulables + bibliotheque illimitee + PDF</span>
               </div>
             </div>
             <div style="text-align: center; margin: 24px 0;">
@@ -423,27 +432,36 @@ export class MailjetService {
               </a>
             </div>
             <p style="color: #A0AEC0; font-size: 12px; text-align: center;">
-              <a href="${magicLink}" style="color: #A0AEC0;">Acceder a ma bibliotheque</a>
+              Ou 6,67€/mois en annuel (79,99€/an) · <a href="${magicLink}" style="color: #A0AEC0;">Ma bibliotheque</a>
             </p>
           </div>
         `
       },
       day7: {
-        subject: `Dernier rappel : rejoignez le Club des Histoires`,
+        subject: `Dernier rappel : le Club Contedia a 6,67€/mois`,
         html: `
           <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 550px; margin: 0 auto; padding: 40px 20px;">
-            <h1 style="color: #2D3748; font-size: 22px; text-align: center;">Dernier rappel !</h1>
+            <h1 style="color: #2D3748; font-size: 22px; text-align: center;">${data.customerName}, une derniere chose...</h1>
             <p style="color: #4A5568; font-size: 15px; text-align: center; line-height: 1.7;">
-              ${data.customerName}, des centaines de parents creent deja de nouvelles histoires chaque semaine pour leurs enfants.
+              +500 parents creent deja des histoires chaque mois pour leurs enfants avec le Club Contedia.
             </p>
             <div style="background: linear-gradient(135deg, #FFF0E6, #FFE4D6); border-radius: 16px; padding: 24px; margin: 24px 0; text-align: center; border: 2px solid #FF6B6B30;">
-              <p style="font-size: 14px; color: #FF6B6B; font-weight: 600; margin: 0 0 8px;">Offre Club des Histoires</p>
-              <p style="font-size: 28px; font-weight: 700; color: #333; margin: 0;">9,99€/mois</p>
-              <p style="font-size: 13px; color: #666; margin: 8px 0 0;">1 livre/semaine · personnalisation avancee · sans engagement</p>
+              <p style="font-size: 14px; color: #FF6B6B; font-weight: 600; margin: 0 0 4px;">Club Contedia</p>
+              <p style="font-size: 13px; color: #666; margin: 0 0 12px;">4 livres/mois · 12 pages · 9 styles · 5 personnages</p>
+              <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                <div>
+                  <p style="font-size: 22px; font-weight: 700; color: #333; margin: 0;">9,99€/mois</p>
+                  <p style="font-size: 11px; color: #999; margin: 2px 0 0;">sans engagement</p>
+                </div>
+                <div style="border-left: 1px solid #ddd; padding-left: 20px;">
+                  <p style="font-size: 22px; font-weight: 700; color: #FF6B6B; margin: 0;">6,67€/mois</p>
+                  <p style="font-size: 11px; color: #999; margin: 2px 0 0;">annuel · -33%</p>
+                </div>
+              </div>
             </div>
             <div style="background: #F0FFF4; border-radius: 12px; padding: 16px; margin: 16px 0;">
               <p style="font-size: 13px; color: #333; margin: 0; font-style: italic; text-align: center;">
-                "Ma fille me demande une nouvelle histoire tous les soirs ! Le Club, c'est le cadeau parfait." — Marie, maman de Lola (5 ans)
+                "Mon fils a lu son premier livre gratuit 6 fois. Avec le Club, il en a un nouveau chaque semaine. C'est le seul abonnement qu'il me reclame !" — Aurelie, maman de Leo (5 ans)
               </p>
             </div>
             <div style="text-align: center; margin: 24px 0;">
@@ -469,7 +487,7 @@ export class MailjetService {
           Messages: [{
             From: {
               Email: process.env.MAILJET_FROM_EMAIL || 'contact@contedia.fr',
-              Name: 'Contes d\'IA'
+              Name: 'Contedia'
             },
             To: [{ Email: data.customerEmail, Name: data.customerName }],
             Subject: template.subject,
@@ -491,7 +509,7 @@ export class MailjetService {
           Messages: [{
             From: {
               Email: process.env.MAILJET_FROM_EMAIL || 'contact@contedia.fr',
-              Name: 'Contes d\'IA'
+              Name: 'Contedia'
             },
             To: [{ Email: data.email }],
             Subject: `${data.code} — Votre code de connexion`,
@@ -533,7 +551,7 @@ export class MailjetService {
             {
               From: {
                 Email: process.env.MAILJET_FROM_EMAIL || 'contact@contedia.fr',
-                Name: 'Contes d\'IA - Système'
+                Name: 'Contedia'
               },
               To: [
                 {
