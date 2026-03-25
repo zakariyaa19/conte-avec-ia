@@ -192,7 +192,10 @@ const StatusMsg = styled.div<{ $type: 'success' | 'error' }>`
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
   PENDING: { label: 'En attente', color: '#6B7280', bg: '#F3F4F6' },
-  PAID: { label: 'Payee - A traiter', color: '#D97706', bg: '#FEF3C7' },
+  UNPAID: { label: 'Non payee', color: '#9CA3AF', bg: '#F3F4F6' },
+  PAID: { label: 'Payee', color: '#D97706', bg: '#FEF3C7' },
+  GENERATING: { label: 'Generation...', color: '#2563EB', bg: '#DBEAFE' },
+  GENERATED: { label: 'Generee', color: '#7C3AED', bg: '#EDE9FE' },
   BLOCKED: { label: 'Bloquee', color: '#DC2626', bg: '#FEE2E2' },
   DELIVERED: { label: 'Livree', color: '#059669', bg: '#D1FAE5' },
 };
@@ -472,90 +475,114 @@ export const AdminClientDetailPage: React.FC<AdminClientDetailPageProps> = ({ to
         </Card>
       </CardsGrid>
 
-      {/* Bibliothèque — livres avec stats */}
-      <Card style={{ marginBottom: theme.spacing.lg }}>
-        <CardHeader>Bibliotheque ({client.orders?.filter((o: any) => ['PAID', 'GENERATING', 'GENERATED', 'DELIVERED'].includes(o.status)).length || 0} livres)</CardHeader>
-        {!client.orders || client.orders.length === 0 ? (
-          <EmptyState>Aucun livre</EmptyState>
-        ) : (
-          <div style={{ overflowX: 'auto' }}>
-            <Table>
-              <thead>
-                <tr>
-                  <Th>Date</Th>
-                  <Th>Couverture</Th>
-                  <Th>Protagoniste</Th>
-                  <Th>Statut</Th>
-                  <Th>Lectures</Th>
-                  <Th>Partages</Th>
-                  <Th>Vues publiques</Th>
-                  <Th>Derniere lecture</Th>
-                  <Th>Prix</Th>
-                  <Th>Actions</Th>
-                </tr>
-              </thead>
-              <tbody>
-                {client.orders.map((order: any) => {
-                  const statusCfg = STATUS_CONFIG[order.status] || { label: order.status, color: '#6B7280', bg: '#F3F4F6' };
-                  const frontendUrl = 'https://contedia.fr';
-                  const bookLink = order.status === 'DELIVERED' && order.shareToken
-                    ? `${frontendUrl}/story/${order.shareToken}`
-                    : null;
-                  return (
-                    <tr key={order.id}>
-                      <Td>{formatDate(order.createdAt)}</Td>
-                      <Td>
-                        {order.coverImageUrl ? (
-                          <img
-                            src={order.coverImageUrl}
-                            alt={order.protagonistName}
-                            style={{ width: 48, height: 64, objectFit: 'cover', borderRadius: 6, border: '1px solid #eee' }}
-                          />
-                        ) : (
-                          <span style={{ color: '#aaa', fontSize: 11 }}>—</span>
-                        )}
-                      </Td>
-                      <Td>
-                        <strong>{order.protagonistName || '-'}</strong>
-                        {order.coverTitle && <div style={{ fontSize: 11, color: '#888', marginTop: 2 }}>{order.coverTitle}</div>}
-                      </Td>
-                      <Td>
-                        <Badge $color={statusCfg.color} $bg={statusCfg.bg}>{statusCfg.label}</Badge>
-                        {order.purchaseType === 'CLUB' && <> <Badge $color="#7C3AED" $bg="#EDE9FE">Club</Badge></>}
-                      </Td>
-                      <Td style={{ textAlign: 'center', fontWeight: 700, color: (order.readCount || 0) > 0 ? '#059669' : '#aaa' }}>
-                        {order.readCount || 0}
-                      </Td>
-                      <Td style={{ textAlign: 'center', fontWeight: 700, color: (order.shareCount || 0) > 0 ? '#2563EB' : '#aaa' }}>
-                        {order.shareCount || 0}
-                      </Td>
-                      <Td style={{ textAlign: 'center', fontWeight: 700, color: (order.publicViewCount || 0) > 0 ? '#7C3AED' : '#aaa' }}>
-                        {order.publicViewCount || 0}
-                      </Td>
-                      <Td style={{ fontSize: 11, color: '#888' }}>
-                        {order.lastReadAt ? formatDate(order.lastReadAt) : '—'}
-                      </Td>
-                      <Td>{formatPrice(order.price)}</Td>
-                      <Td>
-                        <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
-                          <ActionBtn onClick={() => navigate(`/admin/order/${order.id}`)}>
-                            Detail
-                          </ActionBtn>
-                          {bookLink && (
-                            <ActionBtn $variant="primary" onClick={() => window.open(bookLink, '_blank')}>
-                              Lire
-                            </ActionBtn>
-                          )}
-                        </div>
-                      </Td>
+      {/* Bibliothèque — livres avec stats (uniquement les vrais livres, pas PENDING/UNPAID) */}
+      {(() => {
+        const books = (client.orders || []).filter((o: any) =>
+          ['PAID', 'GENERATING', 'GENERATED', 'DELIVERED'].includes(o.status)
+        );
+        const totalReads = books.reduce((sum: number, o: any) => sum + (o.readCount || 0), 0);
+        const totalShares = books.reduce((sum: number, o: any) => sum + (o.shareCount || 0), 0);
+        const totalViews = books.reduce((sum: number, o: any) => sum + (o.publicViewCount || 0), 0);
+
+        return (
+          <Card style={{ marginBottom: theme.spacing.lg }}>
+            <CardHeader>
+              Bibliotheque — {books.length} livre{books.length > 1 ? 's' : ''}
+              {books.length > 0 && (
+                <span style={{ fontWeight: 400, fontSize: 12, color: '#888', marginLeft: 12 }}>
+                  Total : {totalReads} lecture{totalReads > 1 ? 's' : ''} · {totalShares} partage{totalShares > 1 ? 's' : ''} · {totalViews} vue{totalViews > 1 ? 's' : ''} publique{totalViews > 1 ? 's' : ''}
+                </span>
+              )}
+            </CardHeader>
+            {books.length === 0 ? (
+              <EmptyState>Aucun livre cree</EmptyState>
+            ) : (
+              <div style={{ overflowX: 'auto' }}>
+                <Table>
+                  <thead>
+                    <tr>
+                      <Th>Date</Th>
+                      <Th>Couverture</Th>
+                      <Th>Protagoniste</Th>
+                      <Th>Statut</Th>
+                      <Th style={{ textAlign: 'center' }}>Lectures</Th>
+                      <Th style={{ textAlign: 'center' }}>Vues lien</Th>
+                      <Th>Derniere lecture</Th>
+                      <Th>Prix</Th>
+                      <Th>Actions</Th>
                     </tr>
-                  );
-                })}
-              </tbody>
-            </Table>
-          </div>
-        )}
-      </Card>
+                  </thead>
+                  <tbody>
+                    {books.map((order: any) => {
+                      const statusCfg = STATUS_CONFIG[order.status] || { label: order.status, color: '#6B7280', bg: '#F3F4F6' };
+                      return (
+                        <tr key={order.id}>
+                          <Td>{formatDate(order.createdAt)}</Td>
+                          <Td>
+                            {order.coverImageUrl ? (
+                              <img
+                                src={order.coverImageUrl}
+                                alt={order.protagonistName}
+                                style={{ width: 48, height: 64, objectFit: 'cover', borderRadius: 6, border: '1px solid #eee' }}
+                              />
+                            ) : (
+                              <span style={{ color: '#aaa', fontSize: 11 }}>—</span>
+                            )}
+                          </Td>
+                          <Td>
+                            <strong>{order.protagonistName || '-'}</strong>
+                            {order.coverTitle && <div style={{ fontSize: 11, color: '#888', marginTop: 2 }}>{order.coverTitle}</div>}
+                          </Td>
+                          <Td>
+                            <Badge $color={statusCfg.color} $bg={statusCfg.bg}>{statusCfg.label}</Badge>
+                            {order.purchaseType === 'CLUB' && <> <Badge $color="#7C3AED" $bg="#EDE9FE">Club</Badge></>}
+                          </Td>
+                          <Td style={{ textAlign: 'center', fontWeight: 700, color: (order.readCount || 0) > 0 ? '#059669' : '#aaa' }}>
+                            {order.readCount || 0}
+                          </Td>
+                          <Td style={{ textAlign: 'center', fontWeight: 700, color: (order.publicViewCount || 0) > 0 ? '#7C3AED' : '#aaa' }}>
+                            {order.publicViewCount || 0}
+                            {(order.shareCount || 0) > 0 && (
+                              <div style={{ fontSize: 10, color: '#2563EB', marginTop: 2 }}>
+                                {order.shareCount} partage{order.shareCount > 1 ? 's' : ''}
+                              </div>
+                            )}
+                          </Td>
+                          <Td style={{ fontSize: 11, color: '#888' }}>
+                            {order.lastReadAt ? formatDate(order.lastReadAt) : '—'}
+                          </Td>
+                          <Td>{formatPrice(order.price)}</Td>
+                          <Td>
+                            <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+                              <ActionBtn onClick={() => navigate(`/admin/order/${order.id}`)}>
+                                Detail
+                              </ActionBtn>
+                              {order.status === 'DELIVERED' && (
+                                <ActionBtn
+                                  $variant="primary"
+                                  onClick={() => {
+                                    if (order.shareToken) {
+                                      window.open(`https://contedia.fr/story/${order.shareToken}`, '_blank');
+                                    } else {
+                                      window.open(`https://contedia.fr/dashboard/story/${order.id}`, '_blank');
+                                    }
+                                  }}
+                                >
+                                  Lire
+                                </ActionBtn>
+                              )}
+                            </div>
+                          </Td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </Table>
+              </div>
+            )}
+          </Card>
+        );
+      })()}
 
       {/* Actions admin */}
       <Card>

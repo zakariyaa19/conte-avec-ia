@@ -103,12 +103,8 @@ export class PublicController {
         return res.status(404).json({ success: false, message: 'Conte non trouvé' });
       }
 
-      // If already has token, increment share count and return it
+      // If already has token, just return it (no increment — modal opens don't count as shares)
       if (order.shareToken) {
-        prisma.order.update({
-          where: { id: storyId },
-          data: { shareCount: { increment: 1 } }
-        }).catch(() => {});
         return res.json({ success: true, data: { shareToken: order.shareToken } });
       }
 

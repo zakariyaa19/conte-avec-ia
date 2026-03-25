@@ -580,12 +580,19 @@ export const StoryDetailPage: React.FC = () => {
 
   useEffect(() => {
     loadStory();
-    // Tracker la lecture (fire-and-forget)
-    const token = localStorage.getItem('userToken');
-    if (token && id) {
-      ApiService.trackRead(token, id);
-    }
   }, [id]);
+
+  // Tracker la lecture uniquement quand le livre est prêt — 1 fois par visite
+  const readTrackedRef = React.useRef(false);
+  useEffect(() => {
+    if (story?.storyStatus === 'DISPONIBLE' && !readTrackedRef.current) {
+      readTrackedRef.current = true;
+      const token = localStorage.getItem('userToken');
+      if (token && id) {
+        ApiService.trackRead(token, id);
+      }
+    }
+  }, [story?.storyStatus, id]);
 
   // Auto-refresh every 10s while story is generating
   useEffect(() => {
