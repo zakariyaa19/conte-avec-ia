@@ -472,47 +472,88 @@ export const AdminClientDetailPage: React.FC<AdminClientDetailPageProps> = ({ to
         </Card>
       </CardsGrid>
 
-      {/* Commandes */}
+      {/* Bibliothèque — livres avec stats */}
       <Card style={{ marginBottom: theme.spacing.lg }}>
-        <CardHeader>Commandes ({client.orders?.length || 0})</CardHeader>
+        <CardHeader>Bibliotheque ({client.orders?.filter((o: any) => ['PAID', 'GENERATING', 'GENERATED', 'DELIVERED'].includes(o.status)).length || 0} livres)</CardHeader>
         {!client.orders || client.orders.length === 0 ? (
-          <EmptyState>Aucune commande</EmptyState>
+          <EmptyState>Aucun livre</EmptyState>
         ) : (
-          <Table>
-            <thead>
-              <tr>
-                <Th>Date</Th>
-                <Th>Protagoniste</Th>
-                <Th>Type</Th>
-                <Th>Statut</Th>
-                <Th>Prix</Th>
-                <Th>Action</Th>
-              </tr>
-            </thead>
-            <tbody>
-              {client.orders.map((order: any) => {
-                const statusCfg = STATUS_CONFIG[order.status] || { label: order.status, color: '#6B7280', bg: '#F3F4F6' };
-                return (
-                  <tr key={order.id}>
-                    <Td>{formatDate(order.createdAt)}</Td>
-                    <Td>{order.protagonistName || '-'}</Td>
-                    <Td>
-                      <Badge $color="#6B7280" $bg="#F3F4F6">{order.productType}</Badge>
-                      {' '}
-                      {order.purchaseType === 'CLUB' && <Badge $color="#7C3AED" $bg="#EDE9FE">Club</Badge>}
-                    </Td>
-                    <Td><Badge $color={statusCfg.color} $bg={statusCfg.bg}>{statusCfg.label}</Badge></Td>
-                    <Td>{formatPrice(order.price)}</Td>
-                    <Td>
-                      <ActionBtn onClick={() => navigate(`/admin/order/${order.id}`)}>
-                        Voir
-                      </ActionBtn>
-                    </Td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </Table>
+          <div style={{ overflowX: 'auto' }}>
+            <Table>
+              <thead>
+                <tr>
+                  <Th>Date</Th>
+                  <Th>Couverture</Th>
+                  <Th>Protagoniste</Th>
+                  <Th>Statut</Th>
+                  <Th>Lectures</Th>
+                  <Th>Partages</Th>
+                  <Th>Vues publiques</Th>
+                  <Th>Derniere lecture</Th>
+                  <Th>Prix</Th>
+                  <Th>Actions</Th>
+                </tr>
+              </thead>
+              <tbody>
+                {client.orders.map((order: any) => {
+                  const statusCfg = STATUS_CONFIG[order.status] || { label: order.status, color: '#6B7280', bg: '#F3F4F6' };
+                  const frontendUrl = 'https://contedia.fr';
+                  const bookLink = order.status === 'DELIVERED' && order.shareToken
+                    ? `${frontendUrl}/story/${order.shareToken}`
+                    : null;
+                  return (
+                    <tr key={order.id}>
+                      <Td>{formatDate(order.createdAt)}</Td>
+                      <Td>
+                        {order.coverImageUrl ? (
+                          <img
+                            src={order.coverImageUrl}
+                            alt={order.protagonistName}
+                            style={{ width: 48, height: 64, objectFit: 'cover', borderRadius: 6, border: '1px solid #eee' }}
+                          />
+                        ) : (
+                          <span style={{ color: '#aaa', fontSize: 11 }}>—</span>
+                        )}
+                      </Td>
+                      <Td>
+                        <strong>{order.protagonistName || '-'}</strong>
+                        {order.coverTitle && <div style={{ fontSize: 11, color: '#888', marginTop: 2 }}>{order.coverTitle}</div>}
+                      </Td>
+                      <Td>
+                        <Badge $color={statusCfg.color} $bg={statusCfg.bg}>{statusCfg.label}</Badge>
+                        {order.purchaseType === 'CLUB' && <> <Badge $color="#7C3AED" $bg="#EDE9FE">Club</Badge></>}
+                      </Td>
+                      <Td style={{ textAlign: 'center', fontWeight: 700, color: (order.readCount || 0) > 0 ? '#059669' : '#aaa' }}>
+                        {order.readCount || 0}
+                      </Td>
+                      <Td style={{ textAlign: 'center', fontWeight: 700, color: (order.shareCount || 0) > 0 ? '#2563EB' : '#aaa' }}>
+                        {order.shareCount || 0}
+                      </Td>
+                      <Td style={{ textAlign: 'center', fontWeight: 700, color: (order.publicViewCount || 0) > 0 ? '#7C3AED' : '#aaa' }}>
+                        {order.publicViewCount || 0}
+                      </Td>
+                      <Td style={{ fontSize: 11, color: '#888' }}>
+                        {order.lastReadAt ? formatDate(order.lastReadAt) : '—'}
+                      </Td>
+                      <Td>{formatPrice(order.price)}</Td>
+                      <Td>
+                        <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+                          <ActionBtn onClick={() => navigate(`/admin/order/${order.id}`)}>
+                            Detail
+                          </ActionBtn>
+                          {bookLink && (
+                            <ActionBtn $variant="primary" onClick={() => window.open(bookLink, '_blank')}>
+                              Lire
+                            </ActionBtn>
+                          )}
+                        </div>
+                      </Td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </Table>
+          </div>
         )}
       </Card>
 

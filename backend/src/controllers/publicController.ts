@@ -34,6 +34,12 @@ export class PublicController {
         });
       }
 
+      // Incrémenter le compteur de vues publiques (fire-and-forget)
+      prisma.order.update({
+        where: { id: order.id },
+        data: { publicViewCount: { increment: 1 } }
+      }).catch(() => {});
+
       // Parse full story text (all paragraphs)
       let storyParagraphs: string[] = [];
       if (order.storyTextJson) {
@@ -97,16 +103,20 @@ export class PublicController {
         return res.status(404).json({ success: false, message: 'Conte non trouvé' });
       }
 
-      // If already has token, return it
+      // If already has token, increment share count and return it
       if (order.shareToken) {
+        prisma.order.update({
+          where: { id: storyId },
+          data: { shareCount: { increment: 1 } }
+        }).catch(() => {});
         return res.json({ success: true, data: { shareToken: order.shareToken } });
       }
 
-      // Generate new token
+      // Generate new token + increment share count
       const shareToken = crypto.randomBytes(16).toString('hex');
       await prisma.order.update({
         where: { id: storyId },
-        data: { shareToken }
+        data: { shareToken, shareCount: { increment: 1 } }
       });
 
       res.json({ success: true, data: { shareToken } });

@@ -453,6 +453,13 @@ export class ApiService {
     });
   }
 
+  static async trackRead(token: string, storyId: string): Promise<void> {
+    this.request(`/api/client/stories/${storyId}/read`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}` }
+    }).catch(() => {});
+  }
+
   static async getClientChildren(token: string): Promise<{ success: boolean; data: any[] }> {
     return this.request('/api/client/children', {
       headers: { 'Authorization': `Bearer ${token}` }

@@ -163,6 +163,12 @@ model Order {
   shareToken          String?  @unique
   childProfileId      String?
 
+  // Tracking lecture / partage / vues
+  readCount           Int      @default(0)
+  lastReadAt          DateTime?
+  shareCount          Int      @default(0)
+  publicViewCount     Int      @default(0)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

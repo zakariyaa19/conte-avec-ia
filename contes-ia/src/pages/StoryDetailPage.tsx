@@ -580,6 +580,11 @@ export const StoryDetailPage: React.FC = () => {
 
   useEffect(() => {
     loadStory();
+    // Tracker la lecture (fire-and-forget)
+    const token = localStorage.getItem('userToken');
+    if (token && id) {
+      ApiService.trackRead(token, id);
+    }
   }, [id]);
 
   // Auto-refresh every 10s while story is generating

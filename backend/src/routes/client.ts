@@ -13,6 +13,7 @@ router.get('/stories', ClientController.getStories);
 router.get('/stories/:id', ClientController.getStoryDetail);
 router.get('/stories/:id/pdf', ClientController.getStoryPdf);
 router.patch('/stories/:id/favorite', ClientController.toggleFavorite);
+router.post('/stories/:id/read', ClientController.trackRead);
 
 // Profils enfants
 router.get('/children', ClientController.getChildren);

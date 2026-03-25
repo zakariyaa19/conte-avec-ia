@@ -349,6 +349,35 @@ export class ClientController {
     }
   }
 
+  // Tracker une lecture (quand l'utilisateur ouvre son livre)
+  static async trackRead(req: ClientAuthRequest, res: Response) {
+    try {
+      const userId = req.clientUser!.id;
+      const { id } = req.params;
+
+      const order = await prisma.order.findFirst({
+        where: { id, userId }
+      });
+
+      if (!order) {
+        return res.status(404).json({ success: false, message: 'Conte non trouve' });
+      }
+
+      await prisma.order.update({
+        where: { id },
+        data: {
+          readCount: { increment: 1 },
+          lastReadAt: new Date()
+        }
+      });
+
+      res.json({ success: true, readCount: (order.readCount || 0) + 1 });
+    } catch (error) {
+      console.error('Erreur track read:', error);
+      res.status(500).json({ success: false, message: 'Erreur' });
+    }
+  }
+
   // Statut abonnement
   static async getSubscription(req: ClientAuthRequest, res: Response) {
     try {
