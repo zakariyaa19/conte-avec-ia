@@ -473,14 +473,14 @@ export const CustomInput = styled.input`
   width: 100%; max-width: 420px;
   padding: ${theme.spacing.md};
   border: 2px solid var(--border-input); border-radius: ${theme.borderRadius.md};
-  font-size: 16px; font-family: ${theme.fonts.body};
+  font-size: 16px; font-family: ${theme.fonts.body}, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   margin-top: ${theme.spacing.md}; transition: border-color 0.2s ease; box-sizing: border-box;
   animation: ${fadeIn} 0.3s ease;
   -webkit-appearance: none;
   background: var(--bg-input);
   color: var(--text-primary);
   &:focus { outline: none; border-color: ${theme.colors.accent.coral}; box-shadow: 0 0 0 3px ${theme.colors.accent.coral}15; }
-  &::placeholder { color: var(--text-light); }
+  &::placeholder { color: var(--text-light); font-family: inherit; }
   @media (min-width: ${theme.breakpoints.lg}) { max-width: 540px; }
 `;
 
@@ -488,13 +488,13 @@ export const TextArea = styled.textarea`
   width: 100%; max-width: 420px;
   padding: ${theme.spacing.md};
   border: 2px solid var(--border-input); border-radius: ${theme.borderRadius.md};
-  font-size: 16px; font-family: ${theme.fonts.body};
+  font-size: 16px; font-family: ${theme.fonts.body}, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   resize: vertical; min-height: 70px; transition: border-color 0.2s ease; box-sizing: border-box;
   -webkit-appearance: none;
   background: var(--bg-input);
   color: var(--text-primary);
   &:focus { outline: none; border-color: ${theme.colors.accent.coral}; box-shadow: 0 0 0 3px ${theme.colors.accent.coral}15; }
-  &::placeholder { color: var(--text-light); }
+  &::placeholder { color: var(--text-light); font-family: inherit; }
   @media (min-width: ${theme.breakpoints.lg}) { max-width: 540px; }
 `;
 

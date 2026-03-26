@@ -60,11 +60,11 @@ export const theme = {
     }
   },
 
-  // Typographie
+  // Typographie — system fonts en fallback pour compatibilité Android
   fonts: {
-    heading: '"Baloo 2", "Comic Neue", cursive',
-    body: '"Poppins", "Inter", sans-serif',
-    fallback: 'system-ui, -apple-system, sans-serif'
+    heading: '"Baloo 2", "Comic Neue", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif',
+    body: '"Poppins", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+    fallback: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
   },
 
   // Tailles de police
