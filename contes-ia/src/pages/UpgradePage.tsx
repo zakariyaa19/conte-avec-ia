@@ -330,32 +330,32 @@ export const UpgradePage: React.FC = () => {
           </ChecklistTitle>
 
           <CheckRow>
-            <CheckIcon $type="club">&#x2713;</CheckIcon>
+            <CheckIcon $type="club">&#10003;</CheckIcon>
             <CheckLabel><strong>Livres illimites</strong> — plus de limite a 3</CheckLabel>
             <CheckBadge>Club</CheckBadge>
           </CheckRow>
           <CheckRow>
-            <CheckIcon $type="club">&#x2713;</CheckIcon>
+            <CheckIcon $type="club">&#10003;</CheckIcon>
             <CheckLabel><strong>9 styles d'illustration</strong> — aquarelle, manga, Disney...</CheckLabel>
             <CheckBadge>Club</CheckBadge>
           </CheckRow>
           <CheckRow>
-            <CheckIcon $type="club">&#x2713;</CheckIcon>
+            <CheckIcon $type="club">&#10003;</CheckIcon>
             <CheckLabel><strong>Personnages secondaires</strong> — freres, amis, famille</CheckLabel>
             <CheckBadge>Club</CheckBadge>
           </CheckRow>
           <CheckRow>
-            <CheckIcon $type="club">&#x2713;</CheckIcon>
+            <CheckIcon $type="club">&#10003;</CheckIcon>
             <CheckLabel><strong>Animaux de compagnie</strong> dans l'histoire</CheckLabel>
             <CheckBadge>Club</CheckBadge>
           </CheckRow>
           <CheckRow>
-            <CheckIcon $type="club">&#x2713;</CheckIcon>
+            <CheckIcon $type="club">&#10003;</CheckIcon>
             <CheckLabel><strong>Occasions speciales</strong> — Noel, anniversaire...</CheckLabel>
             <CheckBadge>Club</CheckBadge>
           </CheckRow>
           <CheckRow>
-            <CheckIcon $type="club">&#x2713;</CheckIcon>
+            <CheckIcon $type="club">&#10003;</CheckIcon>
             <CheckLabel><strong>15+ langues</strong> disponibles</CheckLabel>
             <CheckBadge>Club</CheckBadge>
           </CheckRow>

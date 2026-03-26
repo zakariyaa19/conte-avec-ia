@@ -570,7 +570,7 @@ export const LoginPage: React.FC = () => {
                       autoComplete="one-time-code"
                       style={{
                         fontSize: 32, fontWeight: 700, textAlign: 'center',
-                        letterSpacing: 12, fontFamily: 'monospace',
+                        letterSpacing: 12, fontFamily: '"SF Mono", "Roboto Mono", "Courier New", monospace',
                         padding: '16px',
                       }}
                     />

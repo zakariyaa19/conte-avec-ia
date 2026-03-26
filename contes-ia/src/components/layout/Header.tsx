@@ -20,9 +20,9 @@ const HeaderContainer = styled.header<{ $scrolled: boolean }>`
   right: 0;
   z-index: 1000;
   height: 52px;
+  background: var(--header-glass, rgba(255,255,255,0.95));
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
-  background: var(--header-glass);
   border-bottom: 0.5px solid var(--border-color);
   transition: box-shadow 0.3s ease;
   box-shadow: ${p => p.$scrolled
@@ -199,8 +199,8 @@ const RightSection = styled.div`
 const IconBtn = styled.button`
   all: unset;
   cursor: pointer;
-  width: 32px;
-  height: 32px;
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -337,8 +337,8 @@ const BurgerBtn = styled.button`
   all: unset;
   display: none;
   cursor: pointer;
-  width: 32px;
-  height: 32px;
+  width: 44px;
+  height: 44px;
   align-items: center;
   justify-content: center;
   border-radius: 9999px;
