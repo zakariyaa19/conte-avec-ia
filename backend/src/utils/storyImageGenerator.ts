@@ -195,6 +195,45 @@ function getAgeDescription(ageRange: string | undefined, protagonistAge: string 
 }
 
 // ====================================================================
+// Nettoyage des paragraphes qui declenchent le safety filter d'OpenAI
+// ====================================================================
+
+function sanitizeParagraphForImage(paragraph: string): string {
+  // Mots/expressions qui declenchent souvent le safety filter pour les images d'enfants
+  const sensitivePatterns = [
+    /\b(nu|nue|nues|nus)\b/gi,
+    /\b(bain|baigner|baignoire|douche)\b/gi,
+    /\b(deshabill|deshabil|déshabill)\w*/gi,
+    /\b(pyjama|sous-vetement|culotte|slip)\b/gi,
+    /\b(lit|couche|coucher|dormir|endormi|endormie)\b/gi,
+    /\b(caress|câlin|calin|embrass|bisou|kiss)\w*/gi,
+    /\b(pleur|cri|hurle|sanglo)\w*/gi,
+    /\b(peur|terreur|terrifie|effraye|panique)\w*/gi,
+    /\b(sang|bless|mort|tue|tuer|mourir)\w*/gi,
+    /\b(frapp|taper|battre|coup|violence)\w*/gi,
+    /\b(seul|abandon|perdu|isole)\w*/gi,
+    /\b(noir|obscur|sombre|nuit noire)\b/gi,
+    /\b(monstre|demon|diable|fantome)\w*/gi,
+    /\b(arme|epee|couteau|fusil|pistolet)\w*/gi,
+    /\b(alcool|drogue|cigarette|fumer)\w*/gi,
+  ];
+
+  let cleaned = paragraph;
+  for (const pattern of sensitivePatterns) {
+    cleaned = cleaned.replace(pattern, '');
+  }
+  // Nettoyer les espaces multiples
+  cleaned = cleaned.replace(/\s{2,}/g, ' ').trim();
+
+  // Si le paragraphe est devenu trop court apres nettoyage, utiliser une description generique
+  if (cleaned.length < 20) {
+    return 'The character is in a beautiful, colorful environment, looking happy and confident.';
+  }
+
+  return cleaned;
+}
+
+// ====================================================================
 // Prompt pour chaque page interieure
 // ====================================================================
 
@@ -396,12 +435,30 @@ export async function generateStoryImages(
     const prompt = buildPageImagePrompt(params, visualBible, paragraphs[paragraphIndex], i + 1, indices.length, hasReferenceImage);
 
     let lastError: Error | null = null;
-    for (let attempt = 0; attempt < 3; attempt++) {
+    let currentPrompt = prompt;
+
+    for (let attempt = 0; attempt < 4; attempt++) {
       try {
         if (attempt > 0) {
           const delay = Math.pow(2, attempt) * 5000;
           console.log(`[StoryImageGenerator] Retry ${attempt} pour image ${i + 1}, attente ${delay}ms`);
           await new Promise(r => setTimeout(r, delay));
+        }
+
+        // Attempt 2: nettoyer le paragraphe des mots sensibles
+        if (attempt === 1 && lastError?.message?.includes('safety')) {
+          console.log(`[StoryImageGenerator] Safety reject — nettoyage prompt image ${i + 1}`);
+          currentPrompt = buildPageImagePrompt(
+            params, visualBible,
+            sanitizeParagraphForImage(paragraphs[paragraphIndex]),
+            i + 1, indices.length, hasReferenceImage
+          );
+        }
+
+        // Attempt 3: prompt ultra-simplifie (juste le personnage + style + scene generique)
+        if (attempt === 2 && lastError?.message?.includes('safety')) {
+          console.log(`[StoryImageGenerator] Safety reject x2 — prompt simplifie image ${i + 1}`);
+          currentPrompt = `${visualBible}\n\nCREATE A SCENE:\n${params.protagonistName} in a happy, colorful scene with warm lighting. The character is smiling and having a wonderful time.\n\nPortrait format (2:3 vertical), full illustration, no borders.\nCRITICAL: Absolutely NO text anywhere. Pure illustration only.`;
         }
 
         const openai = getOpenAI();
@@ -410,12 +467,11 @@ export async function generateStoryImages(
         const IMAGE_TIMEOUT = 120_000; // 2 minutes max par image
 
         if (referenceFile) {
-          // gpt-image-1 avec image de reference (edit mode)
           const response = await withTimeout(
             openai.images.edit({
               model: 'gpt-image-1',
               image: referenceFile,
-              prompt,
+              prompt: currentPrompt,
               n: 1,
               size: imageSize as any,
               quality: 'medium',
@@ -434,11 +490,10 @@ export async function generateStoryImages(
             break;
           }
         } else {
-          // Fallback sans reference : gpt-image-1 generate
           const response = await withTimeout(
             openai.images.generate({
               model: 'gpt-image-1',
-              prompt,
+              prompt: currentPrompt,
               n: 1,
               size: imageSize as any,
               quality: 'medium',
@@ -463,7 +518,7 @@ export async function generateStoryImages(
         }
 
         images.push(Buffer.from(imageData, 'base64'));
-        console.log(`[StoryImageGenerator] Image ${i + 1}/${totalImages} generee avec succes`);
+        console.log(`[StoryImageGenerator] Image ${i + 1}/${totalImages} generee avec succes${attempt > 0 ? ` (attempt ${attempt + 1})` : ''}`);
         lastError = null;
         break;
 
@@ -471,16 +526,28 @@ export async function generateStoryImages(
         lastError = error;
         console.error(`[StoryImageGenerator] Erreur image ${i + 1}, tentative ${attempt + 1}:`, error.message);
 
-        if (error.status === 429 || error.message?.includes('429')) {
+        const isSafety = error.status === 400 && (error.message?.includes('safety') || error.message?.includes('rejected'));
+        const isRateLimit = error.status === 429 || error.message?.includes('429');
+
+        if (isRateLimit) {
           const delay = Math.pow(2, attempt + 1) * 10000;
           console.log(`[StoryImageGenerator] Rate limit, attente ${delay}ms`);
           await new Promise(r => setTimeout(r, delay));
         }
+
+        // Marquer l'erreur comme safety pour les prochaines tentatives
+        if (isSafety) {
+          lastError = new Error(`safety: ${error.message}`);
+        }
       }
     }
 
+    // DERNIER RECOURS: si toutes les tentatives echouent, utiliser un placeholder
+    // plutot que de crasher toute la generation du livre
     if (lastError) {
-      throw new Error(`Echec generation image ${i + 1}/${totalImages}: ${lastError.message}`);
+      console.error(`[StoryImageGenerator] TOUTES les tentatives ont echoue pour image ${i + 1} — utilisation placeholder`);
+      images.push(generatePlaceholderImage(i + 1, totalImages));
+      // On continue la generation au lieu de throw
     }
 
     // Delai entre les images pour eviter les rate limits
