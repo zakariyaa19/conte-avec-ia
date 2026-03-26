@@ -304,11 +304,17 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
         is_ad_mode: isAdMode,
       });
     }
-    // Funnel tracking backend
+    // Funnel tracking backend — chaque étape a son propre event
     const funnelMap: Record<string, string> = {
-      age: 'wizard_age', theme: 'wizard_theme', occasion: 'wizard_theme',
-      style: 'wizard_theme', hero: 'wizard_character', appearance: 'wizard_character',
-      choice: 'wizard_character', extras1: 'wizard_character', extras2: 'wizard_character',
+      age: 'wizard_age',
+      theme: 'wizard_theme',
+      occasion: 'wizard_occasion',
+      style: 'wizard_style',
+      hero: 'wizard_character',
+      appearance: 'wizard_appearance',
+      choice: 'wizard_choice',
+      extras1: 'wizard_extras',
+      extras2: 'wizard_extras',
       preview: 'wizard_preview',
     };
     const funnelStep = funnelMap[stepName];

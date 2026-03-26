@@ -92,13 +92,16 @@ router.get('/funnel', authenticateAdmin, requireAdmin, async (req, res) => {
       _count: { id: true },
     });
 
-    // Ordre du funnel pour le frontend
+    // Ordre du funnel — correspond aux étapes réelles du wizard
     const funnelOrder = [
       'page_view',
       'wizard_age',
       'wizard_theme',
-      'wizard_subject',
+      'wizard_occasion',
+      'wizard_style',
       'wizard_character',
+      'wizard_appearance',
+      'wizard_choice',
       'wizard_preview',
       'email_entered',
       'form_submitted',
