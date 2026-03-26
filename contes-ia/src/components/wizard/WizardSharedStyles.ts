@@ -516,7 +516,14 @@ export const PhotoUploadZone = styled.div<{ $hasPhoto: boolean }>`
 export const PhotoIcon = styled.div`font-size: 2.5rem; margin-bottom: ${theme.spacing.sm};`;
 export const PhotoMainText = styled.p`font-size: ${theme.fontSizes.sm}; font-weight: 600; color: var(--text-primary); margin: 0 0 4px;`;
 export const PhotoSubText = styled.p`font-size: ${theme.fontSizes.xs}; color: var(--text-secondary); margin: 0; line-height: 1.4;`;
-export const HiddenFileInput = styled.input`display: none;`;
+export const HiddenFileInput = styled.input`
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
+`;
 
 /* ══════════════════════════════════════════════
    BUTTONS

@@ -835,7 +835,8 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
             <InputRow style={isSimplifiedMode ? { marginBottom: theme.spacing.md, maxWidth: 380 } : undefined}>
               <InputField>
                 <ValidatedInput label="Prénom de l'enfant" value={formData.protagonistName || ''}
-                  onChange={(v) => handleInputChange('protagonistName', v)} placeholder="Ex : Emma, Lucas..." required error={errors.protagonistName} />
+                  onChange={(v) => handleInputChange('protagonistName', v)} placeholder="Ex : Emma, Lucas..." required error={errors.protagonistName}
+                  autoComplete="given-name" />
               </InputField>
               {!isSimplifiedMode && (
                 <InputField>
@@ -1876,7 +1877,8 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                       <ValidatedInput label="Prénom" value={formData.firstName || ''}
                         onChange={(v) => { setGlobalError(''); onUpdate({ firstName: v }); if (errors.firstName) setErrors(p => ({ ...p, firstName: '' })); }}
                         placeholder="Votre prénom" required error={errors.firstName}
-                        onBlur={() => validateField('firstName', formData.firstName || '')} />
+                        onBlur={() => validateField('firstName', formData.firstName || '')}
+                        autoComplete="given-name" />
                     </FullWidthField>
                   </OrderInfoGrid>
                 </OrderInfoSection>

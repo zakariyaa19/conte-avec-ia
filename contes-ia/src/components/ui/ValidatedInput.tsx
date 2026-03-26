@@ -12,6 +12,8 @@ interface ValidatedInputProps {
   error?: string;
   onBlur?: () => void;
   disabled?: boolean;
+  autoComplete?: string;
+  inputMode?: 'text' | 'email' | 'tel' | 'numeric' | 'search' | 'none';
 }
 
 const InputContainer = styled.div`
@@ -38,6 +40,8 @@ const Input = styled.input<{ $hasError: boolean }>`
   box-sizing: border-box;
   min-width: 0;
   -webkit-appearance: none;
+  background: var(--bg-input, white);
+  color: var(--text-primary, #111);
 
   &:focus {
     border-color: ${props => props.$hasError ? '#e74c3c' : theme.colors.accent.coral};
@@ -46,6 +50,7 @@ const Input = styled.input<{ $hasError: boolean }>`
 
   &::placeholder {
     color: var(--text-light);
+    font-family: inherit;
   }
 
   &:disabled {
@@ -62,6 +67,16 @@ const ErrorMessage = styled.span`
   display: block;
 `;
 
+// Déduire autoComplete et inputMode depuis le type si non fournis
+const getDefaults = (type: string) => {
+  switch (type) {
+    case 'email': return { autoComplete: 'email', inputMode: 'email' as const };
+    case 'tel': return { autoComplete: 'tel', inputMode: 'tel' as const };
+    case 'password': return { autoComplete: 'current-password', inputMode: 'text' as const };
+    default: return { autoComplete: 'off', inputMode: 'text' as const };
+  }
+};
+
 export const ValidatedInput: React.FC<ValidatedInputProps> = ({
   type = 'text',
   value,
@@ -71,8 +86,12 @@ export const ValidatedInput: React.FC<ValidatedInputProps> = ({
   required = false,
   error,
   onBlur,
-  disabled = false
+  disabled = false,
+  autoComplete,
+  inputMode,
 }) => {
+  const defaults = getDefaults(type);
+
   return (
     <InputContainer>
       {label && (
@@ -88,6 +107,8 @@ export const ValidatedInput: React.FC<ValidatedInputProps> = ({
         $hasError={!!error}
         onBlur={onBlur}
         disabled={disabled}
+        autoComplete={autoComplete || defaults.autoComplete}
+        inputMode={inputMode || defaults.inputMode}
       />
       {error && <ErrorMessage>{error}</ErrorMessage>}
     </InputContainer>
