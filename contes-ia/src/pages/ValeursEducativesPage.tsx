@@ -16,66 +16,66 @@ import {
 
 const educationalValues = [
   {
-    title: "Respect et Tolerance",
-    description: "Apprendre a accepter les differences, respecter autrui et cultiver l'ouverture d'esprit des le plus jeune age.",
+    title: "Respect et Tolérance",
+    description: "Apprendre à accepter les différences, respecter autrui et cultiver l'ouverture d'esprit dès le plus jeune âge.",
     icon: "\uD83E\uDD1D",
-    themes: ["Diversite culturelle", "Acceptation des differences", "Vivre ensemble"],
+    themes: ["Diversité culturelle", "Acceptation des différences", "Vivre ensemble"],
     ageGroups: ["4-6 ans", "6-8 ans", "8-10 ans"],
     color: "#E8F5E8"
   },
   {
-    title: "Courage et Perseverance",
-    description: "Developper la bravoure face aux defis et la determination pour surmonter les obstacles de la vie.",
+    title: "Courage et Persévérance",
+    description: "Développer la bravoure face aux défis et la détermination pour surmonter les obstacles de la vie.",
     icon: "\uD83D\uDCAA",
-    themes: ["Heros et bravoure", "Defis personnels", "Depassement de soi"],
+    themes: ["Héros et bravoure", "Défis personnels", "Dépassement de soi"],
     ageGroups: ["5-8 ans", "8-10 ans", "10+ ans"],
     color: "#FFF0E6"
   },
   {
     title: "Empathie et Bienveillance",
-    description: "Cultiver la capacite a comprendre les emotions d'autrui et developper la compassion naturelle.",
+    description: "Cultiver la capacité à comprendre les émotions d'autrui et développer la compassion naturelle.",
     icon: "\u2764\uFE0F",
-    themes: ["Amitie et partage", "Emotions", "Relations humaines"],
+    themes: ["Amitié et partage", "Émotions", "Relations humaines"],
     ageGroups: ["3-6 ans", "6-8 ans", "8-12 ans"],
     color: "#FFE6F0"
   },
   {
-    title: "Curiosite et Apprentissage",
-    description: "Stimuler la soif de connaissances et l'amour de la decouverte pour un apprentissage joyeux.",
+    title: "Curiosité et Apprentissage",
+    description: "Stimuler la soif de connaissances et l'amour de la découverte pour un apprentissage joyeux.",
     icon: "\uD83D\uDD0D",
-    themes: ["Sciences et decouvertes", "Exploration", "Mysteres"],
+    themes: ["Sciences et découvertes", "Exploration", "Mystères"],
     ageGroups: ["4-8 ans", "8-10 ans", "10+ ans"],
     color: "#E6F3FF"
   },
   {
-    title: "Responsabilite Ecologique",
-    description: "Sensibiliser a la protection de l'environnement et developper une conscience ecologique forte.",
+    title: "Responsabilité Écologique",
+    description: "Sensibiliser à la protection de l'environnement et développer une conscience écologique forte.",
     icon: "\uD83C\uDF31",
-    themes: ["Nature et animaux", "Ecologie", "Environnement"],
+    themes: ["Nature et animaux", "Écologie", "Environnement"],
     ageGroups: ["5-8 ans", "8-10 ans", "10+ ans"],
     color: "#F0FFE6"
   },
   {
-    title: "Creativite et Expression",
-    description: "Encourager l'imagination creative et la libre expression artistique de la personnalite unique.",
+    title: "Créativité et Expression",
+    description: "Encourager l'imagination créative et la libre expression artistique de la personnalité unique.",
     icon: "\uD83C\uDFA8",
-    themes: ["Art et creativite", "Expression personnelle", "Imagination"],
+    themes: ["Art et créativité", "Expression personnelle", "Imagination"],
     ageGroups: ["3-6 ans", "6-8 ans", "8-12 ans"],
     color: "#F0E6FF"
   },
   {
-    title: "Justice et Equite",
-    description: "Comprendre l'importance de la fairness et developper un sens moral solide et equilibre.",
+    title: "Justice et Équité",
+    description: "Comprendre l'importance de la fairness et développer un sens moral solide et équilibré.",
     icon: "\u2696\uFE0F",
-    themes: ["Morale et ethique", "Droits et devoirs", "Citoyennete"],
+    themes: ["Morale et éthique", "Droits et devoirs", "Citoyenneté"],
     ageGroups: ["6-8 ans", "8-10 ans", "10+ ans"],
     color: "#E6FFE6"
   },
   {
     title: "Confiance en Soi",
-    description: "Renforcer l'estime personnelle et developper l'assurance necessaire pour s'epanouir pleinement.",
+    description: "Renforcer l'estime personnelle et développer l'assurance nécessaire pour s'épanouir pleinement.",
     icon: "\u2B50",
-    themes: ["Developpement personnel", "Estime de soi", "Reussite"],
+    themes: ["Développement personnel", "Estime de soi", "Réussite"],
     ageGroups: ["4-8 ans", "8-10 ans", "10+ ans"],
     color: "#FFFAE6"
   }
@@ -83,23 +83,23 @@ const educationalValues = [
 
 const implementationMethods = [
   {
-    title: "Integration Narrative Naturelle",
-    description: "Les valeurs sont tissees dans l'histoire de maniere organique, sans moralisation forcee.",
+    title: "Intégration Narrative Naturelle",
+    description: "Les valeurs sont tissées dans l'histoire de manière organique, sans moralisation forcée.",
     icon: "\uD83D\uDCD6"
   },
   {
     title: "Personnages Exemplaires",
-    description: "Des heros qui incarnent les valeurs et servent de modeles positifs pour l'enfant.",
+    description: "Des héros qui incarnent les valeurs et servent de modèles positifs pour l'enfant.",
     icon: "\uD83E\uDDB8"
   },
   {
-    title: "Situations Concretes",
-    description: "Des dilemmes et choix realistes qui permettent a l'enfant de reflechir aux consequences.",
+    title: "Situations Concrètes",
+    description: "Des dilemmes et choix réalistes qui permettent à l'enfant de réfléchir aux conséquences.",
     icon: "\uD83E\uDD14"
   },
   {
-    title: "Dialogue et Reflexion",
-    description: "Des moments d'echange qui encouragent la discussion entre parents et enfants.",
+    title: "Dialogue et Réflexion",
+    description: "Des moments d'échange qui encouragent la discussion entre parents et enfants.",
     icon: "\uD83D\uDCAC"
   }
 ];
@@ -107,24 +107,24 @@ const implementationMethods = [
 const ageSpecificApproach = [
   {
     age: "3-5 ans",
-    approach: "Decouverte Emotionnelle",
-    description: "Introduction douce aux emotions de base et aux relations interpersonnelles simples.",
+    approach: "Découverte Émotionnelle",
+    description: "Introduction douce aux émotions de base et aux relations interpersonnelles simples.",
     values: ["Partage", "Gentillesse", "Respect des autres", "Amour familial"],
-    method: "Histoires courtes avec repetitions rassurantes et personnages attachants."
+    method: "Histoires courtes avec répétitions rassurantes et personnages attachants."
   },
   {
     age: "6-8 ans",
     approach: "Apprentissage Social",
-    description: "Developpement de la conscience sociale et des premieres notions de bien et mal.",
-    values: ["Amitie", "Honnetete", "Courage", "Respect de la nature"],
-    method: "Aventures avec choix moraux clairs et consequences positives."
+    description: "Développement de la conscience sociale et des premières notions de bien et mal.",
+    values: ["Amitié", "Honnêteté", "Courage", "Respect de la nature"],
+    method: "Aventures avec choix moraux clairs et conséquences positives."
   },
   {
     age: "9-12 ans",
-    approach: "Reflexion Ethique",
-    description: "Exploration de concepts moraux plus complexes et developpement de l'esprit critique.",
-    values: ["Justice", "Responsabilite", "Tolerance", "Perseverance"],
-    method: "Recits nuances avec dilemmes moraux et reflexions approfondies."
+    approach: "Réflexion Éthique",
+    description: "Exploration de concepts moraux plus complexes et développement de l'esprit critique.",
+    values: ["Justice", "Responsabilité", "Tolérance", "Persévérance"],
+    method: "Récits nuancés avec dilemmes moraux et réflexions approfondies."
   }
 ];
 
@@ -141,9 +141,9 @@ const ValeursEducativesPage: React.FC = () => {
   return (
     <PageContainer>
       <Helmet>
-        <title>Contes Educatifs Personnalises | Valeurs et Developpement Emotionnel Enfant</title>
-        <meta name="description" content="Transmettez des valeurs importantes avec nos contes educatifs personnalises : respect, courage, empathie, confiance en soi. Developpement emotionnel optimal de votre enfant." />
-        <meta name="keywords" content="conte educatif personnalise, contes educatifs et developpement emotionnel, conte personnalise pour apprendre la confiance en soi, valeurs educatives conte, livre educatif personnalise pour enfant, developpement emotionnel enfant, conte moral personnalise" />
+        <title>Contes Éducatifs Personnalisés | Valeurs et Développement Émotionnel Enfant</title>
+        <meta name="description" content="Transmettez des valeurs importantes avec nos contes éducatifs personnalisés : respect, courage, empathie, confiance en soi. Développement émotionnel optimal de votre enfant." />
+        <meta name="keywords" content="conte éducatif personnalisé, contes éducatifs et développement émotionnel, conte personnalisé pour apprendre la confiance en soi, valeurs éducatives conte, livre éducatif personnalisé pour enfant, développement émotionnel enfant, conte moral personnalisé" />
       </Helmet>
       <Header />
 
@@ -152,12 +152,12 @@ const ValeursEducativesPage: React.FC = () => {
         <HeroDecoBlur $size={280} $top="60%" $left="85%" $color={theme.colors.accent.pastelBlue} $opacity={0.06} />
         <HeroDecoBlur $size={200} $top="30%" $left="50%" $color={theme.colors.accent.paleYellow} $opacity={0.07} />
         <HeroContent>
-          <HeroBadge>Valeurs educatives</HeroBadge>
-          <HeroTitle>Valeurs <span>Educatives</span></HeroTitle>
+          <HeroBadge>Valeurs éducatives</HeroBadge>
+          <HeroTitle>Valeurs <span>Éducatives</span></HeroTitle>
           <HeroDivider />
           <HeroSubtitle>
-            Chaque conte est une graine de sagesse plantee dans le coeur de votre enfant.
-            Transmettez des valeurs essentielles a travers des histoires personnalisees.
+            Chaque conte est une graine de sagesse plantée dans le cœur de votre enfant.
+            Transmettez des valeurs essentielles à travers des histoires personnalisées.
           </HeroSubtitle>
         </HeroContent>
       </HeroSection>
@@ -170,9 +170,9 @@ const ValeursEducativesPage: React.FC = () => {
             <SectionTitle>Notre Palette de Valeurs <span>Fondamentales</span></SectionTitle>
             <SectionDivider />
             <SectionSubtitle>
-              Nos contes personnalises integrent naturellement des valeurs universelles,
-              adaptees a chaque age et personnalite. Chaque livre devient un compagnon
-              de croissance morale et emotionnelle.
+              Nos contes personnalisés intègrent naturellement des valeurs universelles,
+              adaptées à chaque âge et personnalité. Chaque livre devient un compagnon
+              de croissance morale et émotionnelle.
             </SectionSubtitle>
           </SectionWrapper>
           <CardsGrid $columns={4} ref={valuesCardsReveal.ref}>
@@ -210,8 +210,8 @@ const ValeursEducativesPage: React.FC = () => {
             <SectionTitle>Comment Nous Transmettons Ces <span>Valeurs</span></SectionTitle>
             <SectionDivider />
             <SectionSubtitle>
-              Notre approche pedagogique integre les valeurs de maniere naturelle et engageante,
-              sans jamais tomber dans la lecon de morale.
+              Notre approche pédagogique intègre les valeurs de manière naturelle et engageante,
+              sans jamais tomber dans la leçon de morale.
             </SectionSubtitle>
           </SectionWrapper>
           <CardsGrid $columns={4} ref={methodsCardsReveal.ref}>
@@ -231,11 +231,11 @@ const ValeursEducativesPage: React.FC = () => {
         <SectionDeco $size={280} $top="-30px" $right="-60px" $color={theme.colors.accent.lightGreen} />
         <Container>
           <SectionWrapper $visible={ageReveal.isVisible}>
-            <SectionTitle>Adapte a chaque <span>Age</span></SectionTitle>
+            <SectionTitle>Adapté à chaque <span>Âge</span></SectionTitle>
             <SectionDivider />
             <SectionSubtitle>
-              Les valeurs sont transmises differemment selon l'age de l'enfant,
-              pour un impact maximal et une comprehension optimale.
+              Les valeurs sont transmises différemment selon l'âge de l'enfant,
+              pour un impact maximal et une compréhension optimale.
             </SectionSubtitle>
           </SectionWrapper>
           <CardsGrid $columns={3} ref={ageCardsReveal.ref}>
@@ -262,10 +262,10 @@ const ValeursEducativesPage: React.FC = () => {
           <FinalCTAContent>
             <FinalCTATitle>Semez les Graines d'un Avenir Bienveillant</FinalCTATitle>
             <FinalCTAText>
-              Creez un conte personnalise qui transmettra les valeurs qui vous tiennent a coeur.
-              Chaque histoire devient un cadeau precieux pour l'epanouissement de votre enfant.
+              Créez un conte personnalisé qui transmettra les valeurs qui vous tiennent à cœur.
+              Chaque histoire devient un cadeau précieux pour l'épanouissement de votre enfant.
             </FinalCTAText>
-            <WhiteButton onClick={() => navigate('/create-story')}>Creer mon conte</WhiteButton>
+            <WhiteButton onClick={() => navigate('/create-story')}>Créer mon conte</WhiteButton>
           </FinalCTAContent>
         </SectionWrapper>
       </FinalCTASection>

@@ -14,19 +14,19 @@ import {
 } from '../styles/DiscoverPageStyles';
 
 const illustrationStyles = [
-  { name: "Aquarelle Douce", description: "Des illustrations delicates aux couleurs pastel, parfaites pour les contes apaisants et poetiques. Style ideal pour les tout-petits.", characteristics: ["Couleurs douces", "Traits fluides", "Atmosphere tendre", "Effet apaisant"], ageGroup: "2-6 ans", mood: "Calme et rassurant", image: "🎨", color: "#E6F3FF" },
-  { name: "Cartoon Colore", description: "Un style vibrant et joyeux avec des personnages expressifs. Parfait pour captiver l'attention des jeunes lecteurs.", characteristics: ["Couleurs vives", "Personnages expressifs", "Traits marques", "Dynamisme"], ageGroup: "4-8 ans", mood: "Joyeux et energique", image: "🌈", color: "#FFE6CC" },
-  { name: "Realisme Fantastique", description: "Des illustrations detaillees qui melangent realisme et magie. Ideal pour les aventures epiques et les mondes imaginaires.", characteristics: ["Details fins", "Realisme magique", "Profondeur", "Immersion"], ageGroup: "6-10 ans", mood: "Aventureux et mysterieux", image: "✨", color: "#F0E6FF" },
-  { name: "Style Vintage", description: "Inspire des livres d'antan avec des teintes sepia et des ornements delicats. Pour une atmosphere nostalgique et chaleureuse.", characteristics: ["Teintes sepia", "Ornements classiques", "Elegance retro", "Charme d'antan"], ageGroup: "5-12 ans", mood: "Nostalgique et chaleureux", image: "📚", color: "#FFF0E6" },
-  { name: "Minimaliste Moderne", description: "Des illustrations epurees aux lignes nettes. Style contemporain qui met l'accent sur l'essentiel de l'histoire.", characteristics: ["Lignes epurees", "Couleurs selectionnees", "Simplicite elegante", "Focus narratif"], ageGroup: "6-12 ans", mood: "Moderne et sophistique", image: "⚡", color: "#E6FFE6" },
-  { name: "Collage Artistique", description: "Un melange creatif de textures et materiaux pour un rendu unique et original. Stimule la creativite artistique.", characteristics: ["Textures variees", "Materiaux mixtes", "Originalite", "Creativite"], ageGroup: "7-12 ans", mood: "Creatif et original", image: "🎭", color: "#FFE6F0" }
+  { name: "Aquarelle Douce", description: "Des illustrations délicates aux couleurs pastel, parfaites pour les contes apaisants et poétiques. Style idéal pour les tout-petits.", characteristics: ["Couleurs douces", "Traits fluides", "Atmosphère tendre", "Effet apaisant"], ageGroup: "2-6 ans", mood: "Calme et rassurant", image: "🎨", color: "#E6F3FF" },
+  { name: "Cartoon Coloré", description: "Un style vibrant et joyeux avec des personnages expressifs. Parfait pour captiver l'attention des jeunes lecteurs.", characteristics: ["Couleurs vives", "Personnages expressifs", "Traits marqués", "Dynamisme"], ageGroup: "4-8 ans", mood: "Joyeux et énergique", image: "🌈", color: "#FFE6CC" },
+  { name: "Réalisme Fantastique", description: "Des illustrations détaillées qui mélangent réalisme et magie. Idéal pour les aventures épiques et les mondes imaginaires.", characteristics: ["Détails fins", "Réalisme magique", "Profondeur", "Immersion"], ageGroup: "6-10 ans", mood: "Aventureux et mystérieux", image: "✨", color: "#F0E6FF" },
+  { name: "Style Vintage", description: "Inspiré des livres d'antan avec des teintes sépia et des ornements délicats. Pour une atmosphère nostalgique et chaleureuse.", characteristics: ["Teintes sépia", "Ornements classiques", "Élégance rétro", "Charme d'antan"], ageGroup: "5-12 ans", mood: "Nostalgique et chaleureux", image: "📚", color: "#FFF0E6" },
+  { name: "Minimaliste Moderne", description: "Des illustrations épurées aux lignes nettes. Style contemporain qui met l'accent sur l'essentiel de l'histoire.", characteristics: ["Lignes épurées", "Couleurs sélectionnées", "Simplicité élégante", "Focus narratif"], ageGroup: "6-12 ans", mood: "Moderne et sophistiqué", image: "⚡", color: "#E6FFE6" },
+  { name: "Collage Artistique", description: "Un mélange créatif de textures et matériaux pour un rendu unique et original. Stimule la créativité artistique.", characteristics: ["Textures variées", "Matériaux mixtes", "Originalité", "Créativité"], ageGroup: "7-12 ans", mood: "Créatif et original", image: "🎭", color: "#FFE6F0" }
 ];
 
 const customizationOptions = [
-  { title: "Palette de Couleurs", description: "Choisissez les couleurs dominantes selon les preferences de votre enfant", icon: "🎨" },
-  { title: "Niveau de Detail", description: "Adaptez la complexite visuelle a l'age et aux gouts de votre enfant", icon: "🔍" },
-  { title: "Ambiance Generale", description: "Definissez l'atmosphere : douce, aventureuse, mysterieuse ou joyeuse", icon: "🌟" },
-  { title: "Personnages Uniques", description: "Creez des personnages qui ressemblent a votre enfant ou a ses heros preferes", icon: "👤" }
+  { title: "Palette de Couleurs", description: "Choisissez les couleurs dominantes selon les préférences de votre enfant", icon: "🎨" },
+  { title: "Niveau de Détail", description: "Adaptez la complexité visuelle à l'âge et aux goûts de votre enfant", icon: "🔍" },
+  { title: "Ambiance Générale", description: "Définissez l'atmosphère : douce, aventureuse, mystérieuse ou joyeuse", icon: "🌟" },
+  { title: "Personnages Uniques", description: "Créez des personnages qui ressemblent à votre enfant ou à ses héros préférés", icon: "👤" }
 ];
 
 const StylesIllustrationPage: React.FC = () => {
@@ -40,9 +40,9 @@ const StylesIllustrationPage: React.FC = () => {
   return (
     <PageContainer>
       <Helmet>
-        <title>Styles d'Illustration Livre Personnalise | Conte Illustre sur Mesure</title>
-        <meta name="description" content="Choisissez le style parfait pour votre livre illustre personnalise : aquarelle douce, cartoon colore, realisme fantastique, vintage. Conte illustre sur mesure pour votre enfant." />
-        <meta name="keywords" content="livre illustre personnalise, conte illustre sur mesure, styles illustration livre enfant, livre personnalise aquarelle, conte cartoon personnalise, illustration sur mesure enfant, livre artistique personnalise" />
+        <title>Styles d'Illustration Livre Personnalisé | Conte Illustré sur Mesure</title>
+        <meta name="description" content="Choisissez le style parfait pour votre livre illustré personnalisé : aquarelle douce, cartoon coloré, réalisme fantastique, vintage. Conte illustré sur mesure pour votre enfant." />
+        <meta name="keywords" content="livre illustré personnalisé, conte illustré sur mesure, styles illustration livre enfant, livre personnalisé aquarelle, conte cartoon personnalisé, illustration sur mesure enfant, livre artistique personnalisé" />
       </Helmet>
       <Header />
 
@@ -55,8 +55,8 @@ const StylesIllustrationPage: React.FC = () => {
           <HeroTitle>Styles d'<span>Illustration</span></HeroTitle>
           <HeroDivider />
           <HeroSubtitle>
-            Chaque conte illustre merite un style visuel unique. Decouvrez notre palette artistique
-            pour creer un livre personnalise qui emerveillera votre enfant par sa beaute visuelle.
+            Chaque conte illustré mérite un style visuel unique. Découvrez notre palette artistique
+            pour créer un livre personnalisé qui émerveillera votre enfant par sa beauté visuelle.
           </HeroSubtitle>
         </HeroContent>
       </HeroSection>
@@ -69,8 +69,8 @@ const StylesIllustrationPage: React.FC = () => {
             <SectionTitle>Notre Galerie de Styles <span>Artistiques</span></SectionTitle>
             <SectionDivider />
             <SectionSubtitle>
-              Notre intelligence artificielle maitrise une variete de styles d'illustration pour s'adapter
-              parfaitement a l'age, aux gouts et a la personnalite de votre enfant.
+              Notre intelligence artificielle maîtrise une variété de styles d'illustration pour s'adapter
+              parfaitement à l'âge, aux goûts et à la personnalité de votre enfant.
             </SectionSubtitle>
           </SectionWrapper>
           <CardsGrid ref={stylesCardsReveal.ref}>
@@ -102,8 +102,8 @@ const StylesIllustrationPage: React.FC = () => {
             <SectionTitle>Personnalisation de Vos <span>Illustrations</span></SectionTitle>
             <SectionDivider />
             <SectionSubtitle>
-              Au-dela du style, personnalisez chaque aspect visuel de votre conte
-              pour creer une experience de lecture visuellement unique et captivante.
+              Au-delà du style, personnalisez chaque aspect visuel de votre conte
+              pour créer une expérience de lecture visuellement unique et captivante.
             </SectionSubtitle>
           </SectionWrapper>
           <CardsGrid $columns={4} ref={customCardsReveal.ref}>
@@ -122,12 +122,12 @@ const StylesIllustrationPage: React.FC = () => {
       <FinalCTASection ref={ctaReveal.ref}>
         <SectionWrapper $visible={ctaReveal.isVisible}>
           <FinalCTAContent>
-            <FinalCTATitle>Creez Votre Conte Illustre Unique</FinalCTATitle>
+            <FinalCTATitle>Créez Votre Conte Illustré Unique</FinalCTATitle>
             <FinalCTAText>
-              Transformez votre histoire en oeuvre d'art visuelle. Notre IA va creer des illustrations
-              personnalisees qui donneront vie a votre conte de la plus belle maniere.
+              Transformez votre histoire en œuvre d'art visuelle. Notre IA va créer des illustrations
+              personnalisées qui donneront vie à votre conte de la plus belle manière.
             </FinalCTAText>
-            <WhiteButton onClick={() => navigate('/create-story')}>Creer mon conte</WhiteButton>
+            <WhiteButton onClick={() => navigate('/create-story')}>Créer mon conte</WhiteButton>
           </FinalCTAContent>
         </SectionWrapper>
       </FinalCTASection>

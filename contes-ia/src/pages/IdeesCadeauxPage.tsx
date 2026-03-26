@@ -17,42 +17,42 @@ import {
 const giftOccasions = [
   {
     occasion: "Anniversaire",
-    description: "Le cadeau parfait pour marquer une annee de plus avec une histoire unique qui grandit avec l'enfant.",
+    description: "Le cadeau parfait pour marquer une année de plus avec une histoire unique qui grandit avec l'enfant.",
     icon: "\uD83C\uDF82",
     ageRecommendations: ["2-4 ans", "5-7 ans", "8-12 ans"],
-    personalizations: ["Nom de l'enfant heros", "Age dans l'histoire", "Amis comme personnages", "Lieux familiers"],
+    personalizations: ["Nom de l'enfant héros", "Âge dans l'histoire", "Amis comme personnages", "Lieux familiers"],
     color: "#FFE6F0"
   },
   {
-    occasion: "Noel",
-    description: "Un conte magique sous le sapin qui apportera emerveillement et joie pendant les fetes de fin d'annee.",
+    occasion: "Noël",
+    description: "Un conte magique sous le sapin qui apportera émerveillement et joie pendant les fêtes de fin d'année.",
     icon: "\uD83C\uDF84",
     ageRecommendations: ["3-6 ans", "6-10 ans", "10+ ans"],
-    personalizations: ["Theme hivernal", "Magie de Noel", "Valeurs de partage", "Traditions familiales"],
+    personalizations: ["Thème hivernal", "Magie de Noël", "Valeurs de partage", "Traditions familiales"],
     color: "#E6F3FF"
   },
   {
-    occasion: "Rentree Scolaire",
-    description: "Rassurer et motiver avec une histoire qui transforme l'apprehension en excitation pour cette nouvelle aventure.",
+    occasion: "Rentrée Scolaire",
+    description: "Rassurer et motiver avec une histoire qui transforme l'appréhension en excitation pour cette nouvelle aventure.",
     icon: "\uD83C\uDF92",
     ageRecommendations: ["4-6 ans", "6-8 ans", "8-10 ans"],
-    personalizations: ["Courage et confiance", "Nouvelles amities", "Apprentissages", "Adaptation"],
+    personalizations: ["Courage et confiance", "Nouvelles amitiés", "Apprentissages", "Adaptation"],
     color: "#FFF0E6"
   },
   {
-    occasion: "Fete des Meres/Peres",
-    description: "Celebrer l'amour familial avec un conte personnalise qui honore les liens precieux entre parents et enfants.",
+    occasion: "Fête des Mères/Pères",
+    description: "Célébrer l'amour familial avec un conte personnalisé qui honore les liens précieux entre parents et enfants.",
     icon: "\uD83D\uDC9D",
     ageRecommendations: ["3-8 ans", "8-12 ans"],
-    personalizations: ["Amour familial", "Moments partages", "Reconnaissance", "Tendresse"],
+    personalizations: ["Amour familial", "Moments partagés", "Reconnaissance", "Tendresse"],
     color: "#F0E6FF"
   },
   {
-    occasion: "Recompense",
-    description: "Feliciter un effort, un progres ou une reussite avec un cadeau enfant original qui valorise ses accomplissements.",
+    occasion: "Récompense",
+    description: "Féliciter un effort, un progrès ou une réussite avec un cadeau enfant original qui valorise ses accomplissements.",
     icon: "\uD83C\uDFC6",
     ageRecommendations: ["4-8 ans", "8-12 ans"],
-    personalizations: ["Fierte et reussite", "Perseverance", "Talents uniques", "Encouragements"],
+    personalizations: ["Fierté et réussite", "Persévérance", "Talents uniques", "Encouragements"],
     color: "#E6FFE6"
   },
   {
@@ -60,26 +60,26 @@ const giftOccasions = [
     description: "Apporter reconfort et espoir dans les moments difficiles avec une histoire douce et rassurante.",
     icon: "\uD83E\uDD17",
     ageRecommendations: ["3-6 ans", "6-10 ans", "10+ ans"],
-    personalizations: ["Resilience", "Espoir", "Soutien emotionnel", "Guerison"],
+    personalizations: ["Résilience", "Espoir", "Soutien émotionnel", "Guérison"],
     color: "#FFFAE6"
   }
 ];
 
 const giftFormats = [
   {
-    format: "eBook Numerique",
+    format: "eBook Numérique",
     price: "4,99€",
-    description: "Format digital immediat, parfait pour une surprise de derniere minute ou un cadeau eco-responsable.",
-    advantages: ["Livraison instantanee", "Ecologique", "Lecture sur tablette", "Prix accessible"],
-    bestFor: ["Cadeaux spontanes", "Familles nomades", "Lecture interactive", "Budget serre"],
+    description: "Format digital immédiat, parfait pour une surprise de dernière minute ou un cadeau éco-responsable.",
+    advantages: ["Livraison instantanée", "Écologique", "Lecture sur tablette", "Prix accessible"],
+    bestFor: ["Cadeaux spontanés", "Familles nomades", "Lecture interactive", "Budget serré"],
     icon: "\uD83D\uDCF1"
   },
   {
     format: "Club des Histoires",
     price: "9,99€/mois",
-    description: "L'abonnement ideal pour les familles : 4 livres avec 2x plus de pages par mois, 9 styles, personnages secondaires. Credits cumulables.",
+    description: "L'abonnement idéal pour les familles : 4 livres avec 2x plus de pages par mois, 9 styles, personnages secondaires. Crédits cumulables.",
     advantages: ["4 livres par mois", "2x plus de pages & illustrations", "Sans engagement", "Soit 2,50€ par livre"],
-    bestFor: ["Families passionnees", "Cadeaux reguliers", "Lecteurs assidus", "Budget maitrise"],
+    bestFor: ["Familles passionnées", "Cadeaux réguliers", "Lecteurs assidus", "Budget maîtrisé"],
     icon: "\u2B50"
   }
 ];
@@ -87,22 +87,22 @@ const giftFormats = [
 const personalizationIdeas = [
   {
     category: "Personnages",
-    ideas: ["L'enfant comme heros principal", "Freres et soeurs comme compagnons", "Animaux de compagnie", "Grands-parents sages", "Meilleurs amis"],
+    ideas: ["L'enfant comme héros principal", "Frères et sœurs comme compagnons", "Animaux de compagnie", "Grands-parents sages", "Meilleurs amis"],
     icon: "\uD83D\uDC65"
   },
   {
     category: "Lieux",
-    ideas: ["Maison familiale", "Ecole de l'enfant", "Ville natale", "Lieux de vacances", "Pays d'origine"],
+    ideas: ["Maison familiale", "École de l'enfant", "Ville natale", "Lieux de vacances", "Pays d'origine"],
     icon: "\uD83C\uDFE0"
   },
   {
     category: "Passions",
-    ideas: ["Sport favori", "Instrument de musique", "Animaux preferes", "Couleurs favorites", "Activites creatives"],
+    ideas: ["Sport favori", "Instrument de musique", "Animaux préférés", "Couleurs favorites", "Activités créatives"],
     icon: "\u26BD"
   },
   {
     category: "Valeurs",
-    ideas: ["Courage et bravoure", "Amitie et partage", "Respect de la nature", "Curiosite scientifique", "Creativite artistique"],
+    ideas: ["Courage et bravoure", "Amitié et partage", "Respect de la nature", "Curiosité scientifique", "Créativité artistique"],
     icon: "\uD83D\uDC8E"
   }
 ];
@@ -110,24 +110,24 @@ const personalizationIdeas = [
 const ageSpecificGifts = [
   {
     age: "2-4 ans",
-    title: "Premiers Emerveillements",
-    description: "Des histoires courtes et colorees pour eveiller l'imagination des tout-petits.",
-    giftIdeas: ["Premier conte personnalise", "Histoire du doudou magique", "Aventure avec papa/maman", "Conte des premieres fois"],
-    themes: ["Animaux familiers", "Routine quotidienne", "Decouverte des couleurs", "Premiers apprentissages"]
+    title: "Premiers Émerveillements",
+    description: "Des histoires courtes et colorées pour éveiller l'imagination des tout-petits.",
+    giftIdeas: ["Premier conte personnalisé", "Histoire du doudou magique", "Aventure avec papa/maman", "Conte des premières fois"],
+    themes: ["Animaux familiers", "Routine quotidienne", "Découverte des couleurs", "Premiers apprentissages"]
   },
   {
     age: "5-7 ans",
     title: "Aventuriers en Herbe",
-    description: "L'age parfait pour les grandes aventures et les amities magiques.",
-    giftIdeas: ["Heros de l'ecole", "Aventure avec les copains", "Mystere a resoudre", "Voyage fantastique"],
-    themes: ["Magie et feerie", "Amitie", "Courage", "Decouverte du monde"]
+    description: "L'âge parfait pour les grandes aventures et les amitiés magiques.",
+    giftIdeas: ["Héros de l'école", "Aventure avec les copains", "Mystère à résoudre", "Voyage fantastique"],
+    themes: ["Magie et féerie", "Amitié", "Courage", "Découverte du monde"]
   },
   {
     age: "8-12 ans",
-    title: "Explorateurs Confirmes",
-    description: "Des recits plus complexes qui nourrissent leur soif de connaissances et d'aventures.",
-    giftIdeas: ["Enquete scientifique", "Voyage dans le temps", "Mission ecologique", "Aventure culturelle"],
-    themes: ["Sciences", "Histoire", "Ecologie", "Cultures du monde"]
+    title: "Explorateurs Confirmés",
+    description: "Des récits plus complexes qui nourrissent leur soif de connaissances et d'aventures.",
+    giftIdeas: ["Enquête scientifique", "Voyage dans le temps", "Mission écologique", "Aventure culturelle"],
+    themes: ["Sciences", "Histoire", "Écologie", "Cultures du monde"]
   }
 ];
 
@@ -146,9 +146,9 @@ const IdeesCadeauxPage: React.FC = () => {
   return (
     <PageContainer>
       <Helmet>
-        <title>Idees Cadeaux Originaux pour Enfants | Livre Personnalise Anniversaire</title>
-        <meta name="description" content="Decouvrez le cadeau personnalise enfant parfait ! Livre personnalise pour anniversaire, Noel, rentree. Histoire personnalisee pour un anniversaire d'enfant unique et memorable." />
-        <meta name="keywords" content="cadeau personnalise enfant, histoire personnalisee pour un anniversaire d'enfant, idee cadeau original pour un enfant de 5 ans, livre personnalise anniversaire, cadeau enfant original, livre personnalise Noel, cadeau unique enfant, livre personnalise rentree" />
+        <title>Idées Cadeaux Originaux pour Enfants | Livre Personnalisé Anniversaire</title>
+        <meta name="description" content="Découvrez le cadeau personnalisé enfant parfait ! Livre personnalisé pour anniversaire, Noël, rentrée. Histoire personnalisée pour un anniversaire d'enfant unique et mémorable." />
+        <meta name="keywords" content="cadeau personnalisé enfant, histoire personnalisée pour un anniversaire d'enfant, idée cadeau original pour un enfant de 5 ans, livre personnalisé anniversaire, cadeau enfant original, livre personnalisé Noël, cadeau unique enfant, livre personnalisé rentrée" />
       </Helmet>
       <Header />
 
@@ -157,8 +157,8 @@ const IdeesCadeauxPage: React.FC = () => {
         <HeroDecoBlur $size={280} $top="60%" $left="85%" $color={theme.colors.accent.pastelBlue} $opacity={0.06} />
         <HeroDecoBlur $size={200} $top="30%" $left="50%" $color={theme.colors.accent.paleYellow} $opacity={0.07} />
         <HeroContent>
-          <HeroBadge>Idees cadeaux</HeroBadge>
-          <HeroTitle>Idees <span>Cadeaux</span></HeroTitle>
+          <HeroBadge>Idées cadeaux</HeroBadge>
+          <HeroTitle>Idées <span>Cadeaux</span></HeroTitle>
           <HeroDivider />
           <HeroSubtitle>
             Offrez bien plus qu'un simple livre ! Un conte personnalise ou votre enfant

@@ -14,18 +14,18 @@ import {
 } from '../styles/DiscoverPageStyles';
 
 const ageGroups = [
-  { age: "2-4 ans", title: "Premiers Emerveillements", description: "Des contes personnalises doux et colores, parfaits pour les tout-petits. Histoires courtes avec des mots simples et des illustrations captivantes.", features: ["Vocabulaire adapte", "Histoires courtes (5-8 pages)", "Illustrations grandes et colorees", "Repetitions rassurantes"], themes: ["Animaux familiers", "Routine quotidienne", "Couleurs et formes", "Premiers apprentissages"], icon: "👶", color: "#FFB6C1" },
-  { age: "4-6 ans", title: "Aventures Magiques", description: "L'age de l'imagination debordante ! Des contes educatifs qui stimulent la curiosite et developpent le langage de votre enfant.", features: ["Vocabulaire enrichi", "Histoires moyennes (8-12 pages)", "Dialogues simples", "Morale claire"], themes: ["Magie et feerie", "Amitie", "Decouverte du monde", "Emotions"], icon: "🧚", color: "#98FB98" },
-  { age: "6-8 ans", title: "Heros en Herbe", description: "Des recits plus complexes ou votre enfant devient le heros. Parfait pour developper la confiance en soi et l'autonomie.", features: ["Phrases plus longues", "Histoires etoffees (12-16 pages)", "Defis a resoudre", "Valeurs importantes"], themes: ["Aventures epiques", "Courage et bravoure", "Sciences amusantes", "Cultures du monde"], icon: "🦸", color: "#87CEEB" },
-  { age: "8-10 ans", title: "Explorateurs Curieux", description: "Des contes illustres riches en details et en enseignements. Ideal pour les jeunes lecteurs avides de decouvertes.", features: ["Vocabulaire avance", "Histoires longues (16-20 pages)", "Intrigues elaborees", "Reflexions profondes"], themes: ["Mysteres a elucider", "Histoire et geographie", "Ecologie", "Inventions"], icon: "🔍", color: "#DDA0DD" },
-  { age: "10+ ans", title: "Jeunes Penseurs", description: "Des histoires sophistiquees qui abordent des sujets complexes avec finesse. Un cadeau enfant original pour les preadolescents.", features: ["Langage nuance", "Recits approfondis (20+ pages)", "Personnages complexes", "Enjeux actuels"], themes: ["Philosophie accessible", "Relations humaines", "Defis societaux", "Futur et technologie"], icon: "🎓", color: "#F0E68C" }
+  { age: "2-4 ans", title: "Premiers Émerveillements", description: "Des contes personnalisés doux et colorés, parfaits pour les tout-petits. Histoires courtes avec des mots simples et des illustrations captivantes.", features: ["Vocabulaire adapté", "Histoires courtes (5-8 pages)", "Illustrations grandes et colorées", "Répétitions rassurantes"], themes: ["Animaux familiers", "Routine quotidienne", "Couleurs et formes", "Premiers apprentissages"], icon: "👶", color: "#FFB6C1" },
+  { age: "4-6 ans", title: "Aventures Magiques", description: "L'âge de l'imagination débordante ! Des contes éducatifs qui stimulent la curiosité et développent le langage de votre enfant.", features: ["Vocabulaire enrichi", "Histoires moyennes (8-12 pages)", "Dialogues simples", "Morale claire"], themes: ["Magie et féerie", "Amitié", "Découverte du monde", "Émotions"], icon: "🧚", color: "#98FB98" },
+  { age: "6-8 ans", title: "Héros en Herbe", description: "Des récits plus complexes où votre enfant devient le héros. Parfait pour développer la confiance en soi et l'autonomie.", features: ["Phrases plus longues", "Histoires étoffées (12-16 pages)", "Défis à résoudre", "Valeurs importantes"], themes: ["Aventures épiques", "Courage et bravoure", "Sciences amusantes", "Cultures du monde"], icon: "🦸", color: "#87CEEB" },
+  { age: "8-10 ans", title: "Explorateurs Curieux", description: "Des contes illustrés riches en détails et en enseignements. Idéal pour les jeunes lecteurs avides de découvertes.", features: ["Vocabulaire avancé", "Histoires longues (16-20 pages)", "Intrigues élaborées", "Réflexions profondes"], themes: ["Mystères à élucider", "Histoire et géographie", "Écologie", "Inventions"], icon: "🔍", color: "#DDA0DD" },
+  { age: "10+ ans", title: "Jeunes Penseurs", description: "Des histoires sophistiquées qui abordent des sujets complexes avec finesse. Un cadeau enfant original pour les préadolescents.", features: ["Langage nuancé", "Récits approfondis (20+ pages)", "Personnages complexes", "Enjeux actuels"], themes: ["Philosophie accessible", "Relations humaines", "Défis sociétaux", "Futur et technologie"], icon: "🎓", color: "#F0E68C" }
 ];
 
 const developmentBenefits = [
-  { title: "Developpement Linguistique", description: "Chaque conte personnalise enfant enrichit le vocabulaire et ameliore la comprehension ecrite selon l'age.", icon: "📚" },
-  { title: "Eveil Cognitif", description: "Stimulation de la memoire, de la logique et de la capacite d'analyse adaptee au developpement de l'enfant.", icon: "🧠" },
-  { title: "Intelligence Emotionnelle", description: "Apprentissage de la gestion des emotions et developpement de l'empathie a travers les personnages.", icon: "❤️" },
-  { title: "Creativite et Imagination", description: "Stimulation de l'imagination creative avec des histoires qui s'adaptent aux centres d'interet de chaque age.", icon: "🎨" }
+  { title: "Développement Linguistique", description: "Chaque conte personnalisé enfant enrichit le vocabulaire et améliore la compréhension écrite selon l'âge.", icon: "📚" },
+  { title: "Éveil Cognitif", description: "Stimulation de la mémoire, de la logique et de la capacité d'analyse adaptée au développement de l'enfant.", icon: "🧠" },
+  { title: "Intelligence Émotionnelle", description: "Apprentissage de la gestion des émotions et développement de l'empathie à travers les personnages.", icon: "❤️" },
+  { title: "Créativité et Imagination", description: "Stimulation de l'imagination créative avec des histoires qui s'adaptent aux centres d'intérêt de chaque âge.", icon: "🎨" }
 ];
 
 const ContesParAgePage: React.FC = () => {
@@ -39,9 +39,9 @@ const ContesParAgePage: React.FC = () => {
   return (
     <PageContainer>
       <Helmet>
-        <title>Contes Personnalises par Age | Livre pour Bebe et Enfant Adapte</title>
-        <meta name="description" content="Choisissez un conte adapte a l'age de votre enfant : livre pour bebe personnalise (2-4 ans), histoires magiques (4-6 ans), aventures (6-8 ans). Developpement optimal avec notre IA." />
-        <meta name="keywords" content="livre pour bebe personnalise, comment choisir un conte adapte a l'age de son enfant, conte personnalise 2 ans, livre personnalise 3 ans, histoire personnalisee 5 ans, conte educatif personnalise, livre adapte age enfant" />
+        <title>Contes Personnalisés par Âge | Livre pour Bébé et Enfant Adapté</title>
+        <meta name="description" content="Choisissez un conte adapté à l'âge de votre enfant : livre pour bébé personnalisé (2-4 ans), histoires magiques (4-6 ans), aventures (6-8 ans). Développement optimal avec notre IA." />
+        <meta name="keywords" content="livre pour bébé personnalisé, comment choisir un conte adapté à l'âge de son enfant, conte personnalisé 2 ans, livre personnalisé 3 ans, histoire personnalisée 5 ans, conte éducatif personnalisé, livre adapté âge enfant" />
       </Helmet>
       <Header />
 
@@ -50,12 +50,12 @@ const ContesParAgePage: React.FC = () => {
         <HeroDecoBlur $size={280} $top="60%" $left="85%" $color={theme.colors.accent.pastelBlue} $opacity={0.06} />
         <HeroDecoBlur $size={200} $top="30%" $left="50%" $color={theme.colors.accent.paleYellow} $opacity={0.07} />
         <HeroContent>
-          <HeroBadge>Par age</HeroBadge>
-          <HeroTitle>Contes par <span>Age</span></HeroTitle>
+          <HeroBadge>Par âge</HeroBadge>
+          <HeroTitle>Contes par <span>Âge</span></HeroTitle>
           <HeroDivider />
           <HeroSubtitle>
-            Chaque etape de l'enfance merite une histoire unique. Nos contes personnalises s'adaptent
-            parfaitement au developpement cognitif et emotionnel de votre enfant.
+            Chaque étape de l'enfance mérite une histoire unique. Nos contes personnalisés s'adaptent
+            parfaitement au développement cognitif et émotionnel de votre enfant.
           </HeroSubtitle>
         </HeroContent>
       </HeroSection>
@@ -68,8 +68,8 @@ const ContesParAgePage: React.FC = () => {
             <SectionTitle>Trouvez le Conte Parfait pour <span>Votre Enfant</span></SectionTitle>
             <SectionDivider />
             <SectionSubtitle>
-              Notre intelligence artificielle cree des histoires sur mesure, adaptees aux capacites de lecture,
-              aux centres d'interet et au niveau de developpement de chaque tranche d'age.
+              Notre intelligence artificielle crée des histoires sur mesure, adaptées aux capacités de lecture,
+              aux centres d'intérêt et au niveau de développement de chaque tranche d'âge.
             </SectionSubtitle>
           </SectionWrapper>
           <CardsGrid $columns={3} ref={ageCardsReveal.ref}>
@@ -102,11 +102,11 @@ const ContesParAgePage: React.FC = () => {
         <SectionDeco $size={250} $top="10%" $left="-80px" $color={theme.colors.accent.paleYellow} />
         <Container>
           <SectionWrapper $visible={benefitsReveal.isVisible}>
-            <SectionTitle>Les Bienfaits du <span>Developpement</span></SectionTitle>
+            <SectionTitle>Les Bienfaits du <span>Développement</span></SectionTitle>
             <SectionDivider />
             <SectionSubtitle>
-              Nos contes personnalises accompagnent le developpement de votre enfant
-              a chaque etape de sa croissance, stimulant ses capacites de maniere naturelle.
+              Nos contes personnalisés accompagnent le développement de votre enfant
+              à chaque étape de sa croissance, stimulant ses capacités de manière naturelle.
             </SectionSubtitle>
           </SectionWrapper>
           <CardsGrid $columns={4} ref={benefitsCardsReveal.ref}>
@@ -125,12 +125,12 @@ const ContesParAgePage: React.FC = () => {
       <FinalCTASection ref={ctaReveal.ref}>
         <SectionWrapper $visible={ctaReveal.isVisible}>
           <FinalCTAContent>
-            <FinalCTATitle>Creez le Conte Ideal pour Votre Enfant</FinalCTATitle>
+            <FinalCTATitle>Créez le Conte Idéal pour Votre Enfant</FinalCTATitle>
             <FinalCTAText>
-              Notre IA va creer une histoire parfaitement adaptee a l'age et a la personnalite
-              de votre enfant. Un conte illustre unique qui grandira avec lui dans ses souvenirs.
+              Notre IA va créer une histoire parfaitement adaptée à l'âge et à la personnalité
+              de votre enfant. Un conte illustré unique qui grandira avec lui dans ses souvenirs.
             </FinalCTAText>
-            <WhiteButton onClick={() => navigate('/create-story')}>Creer mon conte</WhiteButton>
+            <WhiteButton onClick={() => navigate('/create-story')}>Créer mon conte</WhiteButton>
           </FinalCTAContent>
         </SectionWrapper>
       </FinalCTASection>

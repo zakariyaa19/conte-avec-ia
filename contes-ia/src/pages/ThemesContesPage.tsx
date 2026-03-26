@@ -14,19 +14,19 @@ import {
 } from '../styles/DiscoverPageStyles';
 
 const themes = [
-  { title: "Aventures et Explorations", description: "Des contes personnalises qui emmenent votre enfant dans des voyages extraordinaires a travers des mondes fantastiques.", icon: "🗺️", keywords: ["aventure", "exploration", "voyage", "decouverte"] },
-  { title: "Animaux et Nature", description: "Des histoires touchantes avec des animaux attachants qui enseignent le respect de la nature et de l'environnement.", icon: "🦊", keywords: ["animaux", "nature", "foret", "ecologie"] },
-  { title: "Magie et Feerie", description: "L'univers enchante des fees, sorciers et creatures magiques pour stimuler l'imagination de votre enfant.", icon: "✨", keywords: ["magie", "fees", "sorciers", "enchantement"] },
-  { title: "Heros et Courage", description: "Des recits inspirants ou votre enfant devient le heros de sa propre histoire, developpant confiance et bravoure.", icon: "🦸", keywords: ["heros", "courage", "bravoure", "confiance"] },
-  { title: "Amitie et Partage", description: "Des contes emouvants sur l'importance de l'amitie, de l'entraide et des valeurs humaines essentielles.", icon: "🤝", keywords: ["amitie", "partage", "entraide", "solidarite"] },
-  { title: "Sciences et Decouvertes", description: "L'apprentissage devient magique avec des histoires qui eveillent la curiosite scientifique de votre enfant.", icon: "🔬", keywords: ["science", "decouverte", "apprentissage", "curiosite"] }
+  { title: "Aventures et Explorations", description: "Des contes personnalisés qui emmènent votre enfant dans des voyages extraordinaires à travers des mondes fantastiques.", icon: "🗺️", keywords: ["aventure", "exploration", "voyage", "découverte"] },
+  { title: "Animaux et Nature", description: "Des histoires touchantes avec des animaux attachants qui enseignent le respect de la nature et de l'environnement.", icon: "🦊", keywords: ["animaux", "nature", "forêt", "écologie"] },
+  { title: "Magie et Féerie", description: "L'univers enchanté des fées, sorciers et créatures magiques pour stimuler l'imagination de votre enfant.", icon: "✨", keywords: ["magie", "fées", "sorciers", "enchantement"] },
+  { title: "Héros et Courage", description: "Des récits inspirants où votre enfant devient le héros de sa propre histoire, développant confiance et bravoure.", icon: "🦸", keywords: ["héros", "courage", "bravoure", "confiance"] },
+  { title: "Amitié et Partage", description: "Des contes émouvants sur l'importance de l'amitié, de l'entraide et des valeurs humaines essentielles.", icon: "🤝", keywords: ["amitié", "partage", "entraide", "solidarité"] },
+  { title: "Sciences et Découvertes", description: "L'apprentissage devient magique avec des histoires qui éveillent la curiosité scientifique de votre enfant.", icon: "🔬", keywords: ["science", "découverte", "apprentissage", "curiosité"] }
 ];
 
 const educationalBenefits = [
-  { title: "Developpement Cognitif", description: "Chaque conte educatif stimule la reflexion, la logique et la resolution de problemes.", icon: "🧠" },
-  { title: "Imagination Creative", description: "Nos themes varies nourrissent la creativite et l'expression artistique de votre enfant.", icon: "💭" },
-  { title: "Intelligence Emotionnelle", description: "Les histoires developpent l'empathie, la gestion des emotions et les competences sociales.", icon: "❤️" },
-  { title: "Ouverture au Monde", description: "Decouverte de cultures, de valeurs et de perspectives enrichissantes pour grandir.", icon: "🌍" }
+  { title: "Développement Cognitif", description: "Chaque conte éducatif stimule la réflexion, la logique et la résolution de problèmes.", icon: "🧠" },
+  { title: "Imagination Créative", description: "Nos thèmes variés nourrissent la créativité et l'expression artistique de votre enfant.", icon: "💭" },
+  { title: "Intelligence Émotionnelle", description: "Les histoires développent l'empathie, la gestion des émotions et les compétences sociales.", icon: "❤️" },
+  { title: "Ouverture au Monde", description: "Découverte de cultures, de valeurs et de perspectives enrichissantes pour grandir.", icon: "🌍" }
 ];
 
 const ThemesContesPage: React.FC = () => {
@@ -40,9 +40,9 @@ const ThemesContesPage: React.FC = () => {
   return (
     <PageContainer>
       <Helmet>
-        <title>Themes de Contes Personnalises pour Enfants | Livre sur Mesure avec IA</title>
-        <meta name="description" content="Choisissez parmi nos themes de contes personnalises : aventure, magie, animaux, heros, amitie. Creez un livre enfant sur mesure adapte aux gouts de votre petit avec notre IA." />
-        <meta name="keywords" content="themes contes personnalises, livre enfant sur mesure, conte magique personnalise, histoire personnalisee aventure, conte personnalise animaux, livre personnalise heros, theme conte enfant, choix theme livre personnalise" />
+        <title>Thèmes de Contes Personnalisés pour Enfants | Livre sur Mesure avec IA</title>
+        <meta name="description" content="Choisissez parmi nos thèmes de contes personnalisés : aventure, magie, animaux, héros, amitié. Créez un livre enfant sur mesure adapté aux goûts de votre petit avec notre IA." />
+        <meta name="keywords" content="thèmes contes personnalisés, livre enfant sur mesure, conte magique personnalisé, histoire personnalisée aventure, conte personnalisé animaux, livre personnalisé héros, thème conte enfant, choix thème livre personnalisé" />
       </Helmet>
       <Header />
 
@@ -51,12 +51,12 @@ const ThemesContesPage: React.FC = () => {
         <HeroDecoBlur $size={280} $top="60%" $left="85%" $color={theme.colors.accent.pastelBlue} $opacity={0.06} />
         <HeroDecoBlur $size={200} $top="30%" $left="50%" $color={theme.colors.accent.paleYellow} $opacity={0.07} />
         <HeroContent>
-          <HeroBadge>Themes</HeroBadge>
-          <HeroTitle>Themes de <span>Contes</span></HeroTitle>
+          <HeroBadge>Thèmes</HeroBadge>
+          <HeroTitle>Thèmes de <span>Contes</span></HeroTitle>
           <HeroDivider />
           <HeroSubtitle>
-            Chaque enfant merite une histoire unique qui lui ressemble. Decouvrez notre collection
-            de themes magiques pour creer un conte personnalise qui eveillera son imagination.
+            Chaque enfant mérite une histoire unique qui lui ressemble. Découvrez notre collection
+            de thèmes magiques pour créer un conte personnalisé qui éveillera son imagination.
           </HeroSubtitle>
         </HeroContent>
       </HeroSection>
@@ -66,11 +66,11 @@ const ThemesContesPage: React.FC = () => {
         <SectionDeco $size={300} $top="-50px" $right="-100px" $color={theme.colors.accent.softPink} />
         <Container>
           <SectionWrapper $visible={themesReveal.isVisible}>
-            <SectionTitle>Explorez Nos Univers <span>Enchantes</span></SectionTitle>
+            <SectionTitle>Explorez Nos Univers <span>Enchantés</span></SectionTitle>
             <SectionDivider />
             <SectionSubtitle>
-              Nos themes de contes sont soigneusement concus pour offrir a votre enfant une experience
-              de lecture inoubliable. Chaque livre personnalise s'adapte a ses gouts et a sa personnalite.
+              Nos thèmes de contes sont soigneusement conçus pour offrir à votre enfant une expérience
+              de lecture inoubliable. Chaque livre personnalisé s'adapte à ses goûts et à sa personnalité.
             </SectionSubtitle>
           </SectionWrapper>
           <CardsGrid ref={themesCardsReveal.ref}>
@@ -95,10 +95,10 @@ const ThemesContesPage: React.FC = () => {
         <SectionDeco $size={250} $top="10%" $left="-80px" $color={theme.colors.accent.paleYellow} />
         <Container>
           <SectionWrapper $visible={benefitsReveal.isVisible}>
-            <SectionTitle>Les Bienfaits <span>Educatifs</span> de Nos Themes</SectionTitle>
+            <SectionTitle>Les Bienfaits <span>Éducatifs</span> de Nos Thèmes</SectionTitle>
             <SectionDivider />
             <SectionSubtitle>
-              Chaque theme est concu pour stimuler le developpement de votre enfant
+              Chaque thème est conçu pour stimuler le développement de votre enfant
               tout en lui offrant des moments de lecture captivants et enrichissants.
             </SectionSubtitle>
           </SectionWrapper>
@@ -118,12 +118,12 @@ const ThemesContesPage: React.FC = () => {
       <FinalCTASection ref={ctaReveal.ref}>
         <SectionWrapper $visible={ctaReveal.isVisible}>
           <FinalCTAContent>
-            <FinalCTATitle>Pret a Creer le Conte Parfait ?</FinalCTATitle>
+            <FinalCTATitle>Prêt à Créer le Conte Parfait ?</FinalCTATitle>
             <FinalCTAText>
-              Transformez l'un de ces themes magiques en une histoire unique pour votre enfant.
-              Notre IA creera un conte illustre personnalise qui deviendra son nouveau livre prefere.
+              Transformez l'un de ces thèmes magiques en une histoire unique pour votre enfant.
+              Notre IA créera un conte illustré personnalisé qui deviendra son nouveau livre préféré.
             </FinalCTAText>
-            <WhiteButton onClick={() => navigate('/create-story')}>Creer mon conte</WhiteButton>
+            <WhiteButton onClick={() => navigate('/create-story')}>Créer mon conte</WhiteButton>
           </FinalCTAContent>
         </SectionWrapper>
       </FinalCTASection>
