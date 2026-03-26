@@ -179,7 +179,7 @@ export const AccountPage: React.FC = () => {
 
   const handleChangePassword = async () => {
     if (newPassword.length < 8) {
-      setMessage({ text: 'Le mot de passe doit contenir au moins 8 caracteres', type: 'error' });
+      setMessage({ text: 'Le mot de passe doit contenir au moins 8 caractères', type: 'error' });
       return;
     }
     setLoading(true);
@@ -284,7 +284,7 @@ export const AccountPage: React.FC = () => {
                   <FormInput type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} />
                 </FormGroup>
                 <FormGroup>
-                  <FormLabel>Nouveau mot de passe (min 8 caracteres)</FormLabel>
+                  <FormLabel>Nouveau mot de passe (min 8 caractères)</FormLabel>
                   <FormInput type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
                 </FormGroup>
                 <ButtonRow>
@@ -376,10 +376,10 @@ export const AccountPage: React.FC = () => {
           <CardBody>
             <ButtonRow>
               <Button variant="outline" size="sm" onClick={() => navigate('/dashboard')}>
-                Ma bibliotheque
+                Ma bibliothèque
               </Button>
               <Button variant="outline" size="sm" onClick={() => { logout(); navigate('/'); }}>
-                Deconnexion
+                Déconnexion
               </Button>
             </ButtonRow>
           </CardBody>

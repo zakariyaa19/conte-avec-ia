@@ -1543,7 +1543,7 @@ const faqReveal = useScrollReveal();
               <SectionTitle>Découvrez nos contes personnalisés</SectionTitle>
               <Divider />
               <SectionSubtitle>
-                Chaque conte est une creation unique. Cliquez pour feuilleter directement dans votre navigateur.
+                Chaque conte est une création unique. Cliquez pour feuilleter directement dans votre navigateur.
               </SectionSubtitle>
             </SectionWrapper>
 
@@ -1691,7 +1691,7 @@ const faqReveal = useScrollReveal();
               <SectionTitle>Votre bibliothèque personnelle</SectionTitle>
               <Divider />
               <SectionSubtitle>
-                Tous vos contes au meme endroit. Consultez, relisez et telechargez a tout moment.
+                Tous vos contes au même endroit. Consultez, relisez et téléchargez à tout moment.
               </SectionSubtitle>
             </SectionWrapper>
 
@@ -1712,7 +1712,7 @@ const faqReveal = useScrollReveal();
                 </LibraryIcon>
                 <LibraryCardTitle>Téléchargement PDF</LibraryCardTitle>
                 <LibraryCardText>
-                  Telecharger vos eBooks en PDF haute qualite, a tout moment. Imprimez-les ou lisez-les hors ligne.
+                  Télécharger vos eBooks en PDF haute qualité, à tout moment. Imprimez-les ou lisez-les hors ligne.
                 </LibraryCardText>
               </LibraryCard>
 
@@ -1756,7 +1756,7 @@ const faqReveal = useScrollReveal();
                 </FeatureIcon>
                 <FeatureTitle>Personnalisation complète</FeatureTitle>
                 <FeatureDescription>
-                  Theme, personnages, style d'illustration, message educatif... chaque detail est choisi par vous pour creer un conte qui ressemble a votre enfant.
+                  Thème, personnages, style d'illustration, message éducatif... chaque détail est choisi par vous pour créer un conte qui ressemble à votre enfant.
                 </FeatureDescription>
               </FeatureCard>
 
@@ -1778,7 +1778,7 @@ const faqReveal = useScrollReveal();
                 </FeatureIcon>
                 <FeatureTitle>Qualité professionnelle</FeatureTitle>
                 <FeatureDescription>
-                  eBook haute qualite cree avec soin. Chaque conte est concu pour offrir une experience de lecture exceptionnelle.
+                  eBook haute qualité créé avec soin. Chaque conte est conçu pour offrir une expérience de lecture exceptionnelle.
                 </FeatureDescription>
               </FeatureCard>
 

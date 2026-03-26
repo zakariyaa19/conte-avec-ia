@@ -218,7 +218,7 @@ export const ChildProfilesPage: React.FC = () => {
     <PageContainer>
       <Header />
       <MainContent>
-        <BackLink onClick={() => navigate('/dashboard')}>&larr; Retour a ma bibliotheque</BackLink>
+        <BackLink onClick={() => navigate('/dashboard')}>&larr; Retour à ma bibliothèque</BackLink>
         <PageTitle>Profils enfants</PageTitle>
 
         <AddForm>

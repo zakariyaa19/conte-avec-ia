@@ -415,9 +415,9 @@ export const StoryFormStep3: React.FC<StoryFormStep3Props> = ({ formData, onUpda
             price="4,99€"
             features={[
               "Conte personnalise de 20-30 pages",
-              "Illustrations haute qualite",
-              "Format PDF optimise",
-              "Telechargement immediat",
+              "Illustrations haute qualité",
+              "Format PDF optimisé",
+              "Téléchargement immédiat",
               "Compatible tous appareils"
             ]}
             isPopular={formData.productType === 'ebook'}
