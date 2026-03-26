@@ -32,52 +32,52 @@ const languages = [
   {
     name: "Espagnol",
     flag: "\uD83C\uDDEA\uD83C\uDDF8",
-    description: "Decouvrez la chaleur de la culture hispanique a travers des contes colores et expressifs en espanol.",
-    benefits: ["Culture latine", "Sonorites musicales", "Expressions vivantes", "Diversite culturelle"],
+    description: "Découvrez la chaleur de la culture hispanique à travers des contes colorés et expressifs en espagnol.",
+    benefits: ["Culture latine", "Sonorités musicales", "Expressions vivantes", "Diversité culturelle"],
     level: "Immersion douce"
   },
   {
     name: "Italien",
     flag: "\uD83C\uDDEE\uD83C\uDDF9",
-    description: "L'art de vivre italien s'exprime dans des histoires pleines de passion et de creativite, bellissimo !",
-    benefits: ["Art de vivre", "Creativite", "Passion narrative", "Heritage culturel"],
-    level: "Decouverte artistique"
+    description: "L'art de vivre italien s'exprime dans des histoires pleines de passion et de créativité, bellissimo !",
+    benefits: ["Art de vivre", "Créativité", "Passion narrative", "Héritage culturel"],
+    level: "Découverte artistique"
   },
   {
     name: "Allemand",
     flag: "\uD83C\uDDE9\uD83C\uDDEA",
-    description: "Precision et imagination se rencontrent dans des contes structures qui revelent la richesse de la culture germanique.",
-    benefits: ["Precision linguistique", "Logique narrative", "Culture europeenne", "Tradition litteraire"],
-    level: "Apprentissage methodique"
+    description: "Précision et imagination se rencontrent dans des contes structurés qui révèlent la richesse de la culture germanique.",
+    benefits: ["Précision linguistique", "Logique narrative", "Culture européenne", "Tradition littéraire"],
+    level: "Apprentissage méthodique"
   },
   {
     name: "Arabe",
     flag: "\uD83C\uDDF8\uD83C\uDDE6",
-    description: "Plongez dans l'univers des Mille et Une Nuits avec des contes qui celebrent la richesse de la culture arabe.",
-    benefits: ["Heritage millenaire", "Poesie orientale", "Sagesse ancestrale", "Calligraphie artistique"],
-    level: "Decouverte culturelle"
+    description: "Plongez dans l'univers des Mille et Une Nuits avec des contes qui célèbrent la richesse de la culture arabe.",
+    benefits: ["Héritage millénaire", "Poésie orientale", "Sagesse ancestrale", "Calligraphie artistique"],
+    level: "Découverte culturelle"
   }
 ];
 
 const educationalBenefits = [
   {
-    title: "Developpement Linguistique",
+    title: "Développement Linguistique",
     description: "Acquisition naturelle du vocabulaire et des structures grammaticales dans un contexte narratif engageant.",
     icon: "\uD83D\uDDE3\uFE0F"
   },
   {
     title: "Ouverture Culturelle",
-    description: "Decouverte des traditions, valeurs et modes de pensee de differentes cultures a travers leurs histoires.",
+    description: "Découverte des traditions, valeurs et modes de pensée de différentes cultures à travers leurs histoires.",
     icon: "\uD83C\uDF0D"
   },
   {
-    title: "Flexibilite Cognitive",
-    description: "Stimulation de la plasticite cerebrale et amelioration des capacites d'adaptation mentale.",
+    title: "Flexibilité Cognitive",
+    description: "Stimulation de la plasticité cérébrale et amélioration des capacités d'adaptation mentale.",
     icon: "\uD83E\uDDE0"
   },
   {
     title: "Confiance Internationale",
-    description: "Preparation a un monde globalise et developpement de l'aisance dans les echanges interculturels.",
+    description: "Préparation à un monde globalisé et développement de l'aisance dans les échanges interculturels.",
     icon: "\uD83E\uDD1D"
   }
 ];
@@ -116,9 +116,9 @@ const ContesMultilinguesPage: React.FC = () => {
   return (
     <PageContainer>
       <Helmet>
-        <title>Livre Personnalise Multilingue pour Enfant | Apprentissage des Langues</title>
-        <meta name="description" content="Creez un livre personnalise multilingue pour enfant : francais, anglais, espagnol, italien, allemand, arabe. Apprentissage naturel des langues avec des histoires sur mesure." />
-        <meta name="keywords" content="livre personnalise multilingue pour enfant, conte personnalise anglais, livre personnalise espagnol, apprentissage langues enfant, conte bilingue personnalise, livre educatif multilingue, histoire personnalisee langues etrangeres" />
+        <title>Livre Personnalisé Multilingue pour Enfant | Apprentissage des Langues</title>
+        <meta name="description" content="Créez un livre personnalisé multilingue pour enfant : français, anglais, espagnol, italien, allemand, arabe. Apprentissage naturel des langues avec des histoires sur mesure." />
+        <meta name="keywords" content="livre personnalisé multilingue pour enfant, conte personnalisé anglais, livre personnalisé espagnol, apprentissage langues enfant, conte bilingue personnalisé, livre éducatif multilingue, histoire personnalisée langues étrangères" />
       </Helmet>
       <Header />
 
@@ -131,7 +131,7 @@ const ContesMultilinguesPage: React.FC = () => {
           <HeroTitle>Contes <span>Multilingues</span></HeroTitle>
           <HeroDivider />
           <HeroSubtitle>
-            Ouvrez les portes du monde a votre enfant avec des contes personnalises
+            Ouvrez les portes du monde à votre enfant avec des contes personnalisés
             dans 6 langues. L'apprentissage des langues devient une aventure magique.
           </HeroSubtitle>
         </HeroContent>
@@ -146,7 +146,7 @@ const ContesMultilinguesPage: React.FC = () => {
             <SectionDivider />
             <SectionSubtitle>
               Chaque langue porte en elle une vision unique du monde. Notre intelligence artificielle
-              cree des histoires authentiques qui respectent l'esprit et la culture de chaque langue.
+              crée des histoires authentiques qui respectent l'esprit et la culture de chaque langue.
             </SectionSubtitle>
           </SectionWrapper>
           <CardsGrid ref={languagesCardsReveal.ref}>
@@ -226,12 +226,12 @@ const ContesMultilinguesPage: React.FC = () => {
       <FinalCTASection ref={ctaReveal.ref}>
         <SectionWrapper $visible={ctaReveal.isVisible}>
           <FinalCTAContent>
-            <FinalCTATitle>Offrez le Monde a Votre Enfant</FinalCTATitle>
+            <FinalCTATitle>Offrez le Monde à Votre Enfant</FinalCTATitle>
             <FinalCTAText>
-              Creez un conte personnalise multilingue qui ouvrira ses horizons et developpera
-              ses competences linguistiques de maniere naturelle et joyeuse.
+              Créez un conte personnalisé multilingue qui ouvrira ses horizons et développera
+              ses compétences linguistiques de manière naturelle et joyeuse.
             </FinalCTAText>
-            <WhiteButton onClick={() => navigate('/create-story')}>Creer mon conte</WhiteButton>
+            <WhiteButton onClick={() => navigate('/create-story')}>Créer mon conte</WhiteButton>
           </FinalCTAContent>
         </SectionWrapper>
       </FinalCTASection>

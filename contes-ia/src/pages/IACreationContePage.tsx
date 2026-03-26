@@ -15,25 +15,25 @@ import {
 } from '../styles/DiscoverPageStyles';
 
 const aiCapabilities = [
-  { title: "Generation Narrative Intelligente", description: "Notre IA analyse les parametres fournis pour creer une trame narrative coherente et captivante, adaptee a l'age et aux preferences de l'enfant.", icon: "📝", technical: "Algorithmes de traitement du langage naturel (NLP) avances", benefits: ["Coherence narrative", "Adaptation automatique", "Creativite infinie", "Personnalisation fine"] },
-  { title: "Personnalisation Contextuelle", description: "L'intelligence artificielle integre naturellement les elements personnels dans l'histoire, creant une experience immersive unique.", icon: "🎯", technical: "Modeles de deep learning pour l'integration contextuelle", benefits: ["Integration naturelle", "Coherence personnelle", "Realisme emotionnel", "Identification forte"] },
-  { title: "Adaptation Linguistique", description: "Ajustement automatique du vocabulaire, de la complexite syntaxique et du style selon l'age et le niveau de developpement.", icon: "🗣️", technical: "Analyse psycholinguistique et adaptation developpementale", benefits: ["Vocabulaire adapte", "Complexite ajustee", "Style approprie", "Progression naturelle"] },
-  { title: "Generation d'Illustrations", description: "Creation d'images uniques qui completent parfaitement le recit, dans le style artistique choisi.", icon: "🎨", technical: "IA generative pour creation visuelle et coherence artistique", benefits: ["Illustrations uniques", "Coherence visuelle", "Style personnalise", "Qualite professionnelle"] }
+  { title: "Génération Narrative Intelligente", description: "Notre IA analyse les paramètres fournis pour créer une trame narrative cohérente et captivante, adaptée à l'âge et aux préférences de l'enfant.", icon: "📝", technical: "Algorithmes de traitement du langage naturel (NLP) avancés", benefits: ["Cohérence narrative", "Adaptation automatique", "Créativité infinie", "Personnalisation fine"] },
+  { title: "Personnalisation Contextuelle", description: "L'intelligence artificielle intègre naturellement les éléments personnels dans l'histoire, créant une expérience immersive unique.", icon: "🎯", technical: "Modèles de deep learning pour l'intégration contextuelle", benefits: ["Intégration naturelle", "Cohérence personnelle", "Réalisme émotionnel", "Identification forte"] },
+  { title: "Adaptation Linguistique", description: "Ajustement automatique du vocabulaire, de la complexité syntaxique et du style selon l'âge et le niveau de développement.", icon: "🗣️", technical: "Analyse psycholinguistique et adaptation développementale", benefits: ["Vocabulaire adapté", "Complexité ajustée", "Style approprié", "Progression naturelle"] },
+  { title: "Génération d'Illustrations", description: "Création d'images uniques qui complètent parfaitement le récit, dans le style artistique choisi.", icon: "🎨", technical: "IA générative pour création visuelle et cohérence artistique", benefits: ["Illustrations uniques", "Cohérence visuelle", "Style personnalisé", "Qualité professionnelle"] }
 ];
 
 const creationProcess = [
-  { step: 1, title: "Analyse des Parametres", description: "L'IA examine tous les elements fournis : age, preferences, personnalite, themes souhaites.", details: ["Profil psychologique de l'enfant", "Preferences thematiques", "Niveau de developpement cognitif", "Contexte familial et culturel"], duration: "< 1 seconde" },
-  { step: 2, title: "Construction Narrative", description: "Creation de la structure du conte avec personnages, intrigue et messages educatifs integres.", details: ["Developpement des personnages", "Architecture narrative", "Integration des valeurs educatives", "Equilibrage emotionnel"], duration: "2-3 secondes" },
-  { step: 3, title: "Redaction Adaptee", description: "Generation du texte final avec le style, vocabulaire et longueur appropries a l'enfant.", details: ["Adaptation linguistique", "Optimisation du rythme", "Integration des dialogues", "Revision automatique"], duration: "3-5 secondes" },
-  { step: 4, title: "Creation Visuelle", description: "Generation des illustrations personnalisees qui accompagnent et enrichissent l'histoire.", details: ["Analyse des scenes cles", "Generation artistique", "Coherence stylistique", "Optimisation qualite"], duration: "10-15 secondes" },
-  { step: 5, title: "Assemblage Final", description: "Mise en page professionnelle et creation du livre personnalise IA dans le format choisi.", details: ["Mise en page automatique", "Optimisation typographique", "Generation PDF/eBook", "Controle qualite final"], duration: "2-3 secondes" }
+  { step: 1, title: "Analyse des Paramètres", description: "L'IA examine tous les éléments fournis : âge, préférences, personnalité, thèmes souhaités.", details: ["Profil psychologique de l'enfant", "Préférences thématiques", "Niveau de développement cognitif", "Contexte familial et culturel"], duration: "< 1 seconde" },
+  { step: 2, title: "Construction Narrative", description: "Création de la structure du conte avec personnages, intrigue et messages éducatifs intégrés.", details: ["Développement des personnages", "Architecture narrative", "Intégration des valeurs éducatives", "Équilibrage émotionnel"], duration: "2-3 secondes" },
+  { step: 3, title: "Rédaction Adaptée", description: "Génération du texte final avec le style, vocabulaire et longueur appropriés à l'enfant.", details: ["Adaptation linguistique", "Optimisation du rythme", "Intégration des dialogues", "Révision automatique"], duration: "3-5 secondes" },
+  { step: 4, title: "Création Visuelle", description: "Génération des illustrations personnalisées qui accompagnent et enrichissent l'histoire.", details: ["Analyse des scènes clés", "Génération artistique", "Cohérence stylistique", "Optimisation qualité"], duration: "10-15 secondes" },
+  { step: 5, title: "Assemblage Final", description: "Mise en page professionnelle et création du livre personnalisé IA dans le format choisi.", details: ["Mise en page automatique", "Optimisation typographique", "Génération PDF/eBook", "Contrôle qualité final"], duration: "2-3 secondes" }
 ];
 
 const technicalInnovations = [
-  { innovation: "Modeles de Langage Specialises", description: "IA entrainee specifiquement sur la litterature jeunesse pour garantir un contenu approprie et engageant.", impact: "Qualite narrative exceptionnelle adaptee aux enfants" },
-  { innovation: "Psychologie Developpementale Integree", description: "Algorithmes bases sur les recherches en developpement cognitif et emotionnel de l'enfant.", impact: "Adaptation precise aux capacites et besoins de chaque age" },
-  { innovation: "Generation Artistique Coherente", description: "Systeme d'IA visuelle maintenant la coherence des personnages et du style a travers tout le livre.", impact: "Experience visuelle immersive et professionnelle" },
-  { innovation: "Apprentissage Continu", description: "L'IA s'ameliore constamment grace aux retours et aux nouvelles creations, affinant sa comprehension.", impact: "Qualite en amelioration permanente et innovation continue" }
+  { innovation: "Modèles de Langage Spécialisés", description: "IA entraînée spécifiquement sur la littérature jeunesse pour garantir un contenu approprié et engageant.", impact: "Qualité narrative exceptionnelle adaptée aux enfants" },
+  { innovation: "Psychologie Développementale Intégrée", description: "Algorithmes basés sur les recherches en développement cognitif et émotionnel de l'enfant.", impact: "Adaptation précise aux capacités et besoins de chaque âge" },
+  { innovation: "Génération Artistique Cohérente", description: "Système d'IA visuelle maintenant la cohérence des personnages et du style à travers tout le livre.", impact: "Expérience visuelle immersive et professionnelle" },
+  { innovation: "Apprentissage Continu", description: "L'IA s'améliore constamment grâce aux retours et aux nouvelles créations, affinant sa compréhension.", impact: "Qualité en amélioration permanente et innovation continue" }
 ];
 
 const IACreationContePage: React.FC = () => {
@@ -49,9 +49,9 @@ const IACreationContePage: React.FC = () => {
   return (
     <PageContainer>
       <Helmet>
-        <title>IA et Creativite : Creer des Histoires Uniques pour Enfants | Innovation</title>
-        <meta name="description" content="Decouvrez comment l'IA revolutionne les livres pour enfants. Creer un livre magique avec intelligence artificielle : generation narrative, personnalisation et illustrations uniques." />
-        <meta name="keywords" content="IA et creativite, creer des histoires uniques pour enfants, comment l'intelligence artificielle revolutionne les livres pour enfants, creer un livre magique avec intelligence artificielle, personnalisation et imagination chez l'enfant, technologie conte personnalise" />
+        <title>IA et Créativité : Créer des Histoires Uniques pour Enfants | Innovation</title>
+        <meta name="description" content="Découvrez comment l'IA révolutionne les livres pour enfants. Créer un livre magique avec intelligence artificielle : génération narrative, personnalisation et illustrations uniques." />
+        <meta name="keywords" content="IA et créativité, créer des histoires uniques pour enfants, comment l'intelligence artificielle révolutionne les livres pour enfants, créer un livre magique avec intelligence artificielle, personnalisation et imagination chez l'enfant, technologie conte personnalisé" />
       </Helmet>
       <Header />
 
@@ -64,8 +64,8 @@ const IACreationContePage: React.FC = () => {
           <HeroTitle>Comment fonctionne <span>l'IA</span> ?</HeroTitle>
           <HeroDivider />
           <HeroSubtitle>
-            Decouvrez comment notre intelligence artificielle transforme vos idees en contes
-            personnalises magiques, alliant creativite et precision technologique.
+            Découvrez comment notre intelligence artificielle transforme vos idées en contes
+            personnalisés magiques, alliant créativité et précision technologique.
           </HeroSubtitle>
         </HeroContent>
       </HeroSection>
@@ -75,11 +75,11 @@ const IACreationContePage: React.FC = () => {
         <SectionDeco $size={300} $top="-50px" $right="-100px" $color={theme.colors.accent.softPink} />
         <Container>
           <SectionWrapper $visible={capabilitiesReveal.isVisible}>
-            <SectionTitle>Les Super-Pouvoirs de Notre <span>IA Creative</span></SectionTitle>
+            <SectionTitle>Les Super-Pouvoirs de Notre <span>IA Créative</span></SectionTitle>
             <SectionDivider />
             <SectionSubtitle>
-              Notre intelligence artificielle maitrise l'art delicat de la creation litteraire pour enfants,
-              combinant analyse psychologique, creativite narrative et adaptation personnalisee.
+              Notre intelligence artificielle maîtrise l'art délicat de la création littéraire pour enfants,
+              combinant analyse psychologique, créativité narrative et adaptation personnalisée.
             </SectionSubtitle>
           </SectionWrapper>
           <CardsGrid $columns={2} ref={capabilitiesCardsReveal.ref}>
@@ -107,11 +107,11 @@ const IACreationContePage: React.FC = () => {
         <SectionDeco $size={250} $top="10%" $left="-80px" $color={theme.colors.accent.paleYellow} />
         <Container>
           <SectionWrapper $visible={processReveal.isVisible}>
-            <SectionTitle>Le Processus de Creation en <span>5 Etapes</span></SectionTitle>
+            <SectionTitle>Le Processus de Création en <span>5 Étapes</span></SectionTitle>
             <SectionDivider />
             <SectionSubtitle>
-              De votre idee au livre personnalise final, suivez le parcours fascinant
-              de creation d'un conte personnalise en moins de 30 secondes.
+              De votre idée au livre personnalisé final, suivez le parcours fascinant
+              de création d'un conte personnalisé en moins de 30 secondes.
             </SectionSubtitle>
           </SectionWrapper>
           <CardsGrid $columns={3} ref={processCardsReveal.ref}>
@@ -142,8 +142,8 @@ const IACreationContePage: React.FC = () => {
             <SectionTitle>Innovations <span>Technologiques</span></SectionTitle>
             <SectionDivider />
             <SectionSubtitle>
-              Notre technologie repose sur les dernieres avancees en intelligence artificielle,
-              specialement adaptees a la creation de contenus pour enfants.
+              Notre technologie repose sur les dernières avancées en intelligence artificielle,
+              spécialement adaptées à la création de contenus pour enfants.
             </SectionSubtitle>
           </SectionWrapper>
           <CardsGrid $columns={2} ref={innovationsCardsReveal.ref}>
@@ -164,12 +164,12 @@ const IACreationContePage: React.FC = () => {
       <FinalCTASection ref={ctaReveal.ref}>
         <SectionWrapper $visible={ctaReveal.isVisible}>
           <FinalCTAContent>
-            <FinalCTATitle>Decouvrez la Magie de l'IA en Action</FinalCTATitle>
+            <FinalCTATitle>Découvrez la Magie de l'IA en Action</FinalCTATitle>
             <FinalCTAText>
-              Pret a voir notre intelligence artificielle creer un conte personnalise unique ?
-              Lancez le processus et observez la technologie transformer vos idees en histoire magique.
+              Prêt à voir notre intelligence artificielle créer un conte personnalisé unique ?
+              Lancez le processus et observez la technologie transformer vos idées en histoire magique.
             </FinalCTAText>
-            <WhiteButton onClick={() => navigate('/create-story')}>Creer mon conte</WhiteButton>
+            <WhiteButton onClick={() => navigate('/create-story')}>Créer mon conte</WhiteButton>
           </FinalCTAContent>
         </SectionWrapper>
       </FinalCTASection>
