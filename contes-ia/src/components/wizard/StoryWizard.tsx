@@ -76,10 +76,10 @@ import {
    ══════════════════════════════════════════════ */
 
 const AGE_OPTIONS = [
-  { value: '0-2', label: '0-2 ans', imagePath: '/image/ageenfant/age-0-2.png' },
-  { value: '3-5', label: '3-5 ans', imagePath: '/image/ageenfant/age-3-5.png' },
-  { value: '6-9', label: '6-9 ans', imagePath: '/image/ageenfant/age-6-9.png' },
-  { value: '10+', label: '10+ ans', imagePath: '/image/ageenfant/age-10-plus.png' },
+  { value: '0-2', label: '0\uFE0E-2\uFE0E ans', imagePath: '/image/ageenfant/age-0-2.png' },
+  { value: '3-5', label: '3\uFE0E-5\uFE0E ans', imagePath: '/image/ageenfant/age-3-5.png' },
+  { value: '6-9', label: '6\uFE0E-9\uFE0E ans', imagePath: '/image/ageenfant/age-6-9.png' },
+  { value: '10+', label: '10\uFE0E+ ans', imagePath: '/image/ageenfant/age-10-plus.png' },
 ];
 
 const THEME_OPTIONS = [
@@ -583,9 +583,10 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                     background: 'linear-gradient(135deg, #4CAF50, #45a049)',
                     color: 'white', borderRadius: '14px', padding: '10px 18px',
                     marginBottom: theme.spacing.sm, textAlign: 'center',
+                    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                   }}>
                     <p style={{ fontSize: theme.fontSizes.lg, fontWeight: 800, margin: '0 0 1px', letterSpacing: '-0.02em' }}>
-                      Votre 1er livre est 100% GRATUIT
+                      Votre premier livre est GRATUIT
                     </p>
                     <p style={{ fontSize: '11px', margin: 0, opacity: 0.9 }}>
                       Aucune carte bancaire requise
@@ -1750,10 +1751,10 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
               ) : isFirstPurchase ? (
                 /* ── PREMIER LIVRE GRATUIT — pas de Club, juste le gratuit ── */
                 <TripwireHeroCard $isSelected={selectedOffer === 'single'} onClick={() => handlePreviewSelect('single')}>
-                  <TripwireHeroBadge>100% GRATUIT</TripwireHeroBadge>
+                  <TripwireHeroBadge>GRATUIT</TripwireHeroBadge>
                   {selectedOffer === 'single' && <PricingSelectedCheck>&#x2713;</PricingSelectedCheck>}
                   <PricingCardName>Votre Premier Livre</PricingCardName>
-                  <TripwireHeroOldPrice>3,99€</TripwireHeroOldPrice>
+                  <TripwireHeroOldPrice style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif' }}>3,99€</TripwireHeroOldPrice>
                   <TripwireHeroPrice>GRATUIT</TripwireHeroPrice>
                   <PricingCardSub>Juste votre email — pas de carte bancaire</PricingCardSub>
                   <PricingCardFeaturesList>
@@ -1918,8 +1919,8 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                 <TrustBadgesRow>
                   {(isFirstPurchase && !isClub) || isClubWithCredit ? (
                     <>
-                      <TrustBadge>&#x2705; {isClubWithCredit ? 'Inclus dans votre Club' : '100% gratuit'}</TrustBadge>
-                      <TrustBadge>&#x1F4E7; Recu par email</TrustBadge>
+                      <TrustBadge>{isClubWithCredit ? 'Inclus dans votre Club' : 'Totalement gratuit'}</TrustBadge>
+                      <TrustBadge>Recu par email</TrustBadge>
                       <TrustBadge>&#x26A1; Pret en 5 minutes</TrustBadge>
                     </>
                   ) : (

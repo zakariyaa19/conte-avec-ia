@@ -71,12 +71,14 @@ const AgeImage = styled.img`
 `;
 
 const Label = styled.div`
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   font-size: ${theme.fontSizes.xl};
   font-weight: 700;
   color: var(--text-primary);
   margin-bottom: ${theme.spacing.xs};
   text-align: center;
-  
+  font-variant-emoji: text;
+
   @media (max-width: ${theme.breakpoints.sm}) {
     font-size: ${theme.fontSizes.lg};
   }
