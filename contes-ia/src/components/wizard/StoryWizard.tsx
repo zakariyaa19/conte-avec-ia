@@ -12,7 +12,7 @@ import { validateEmail, validateRequired } from '../../utils/validation';
 import { metaTrackAddToCart, metaTrackLead } from '../../utils/metaPixel';
 import { trackFunnelStep } from '../../utils/funnelTracker';
 import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
-import { isInAppBrowser } from '../../utils/safeStorage';
+import { isInAppBrowser, safeLocalStorage } from '../../utils/safeStorage';
 import { ApiService } from '../../config/api';
 import { ILLUSTRATION_STYLES, LANGUAGES, StoryFormData } from '../../types/FormTypes';
 import { STEP_CONFIG, AGE_THEME_RECOMMENDATIONS, POPULAR_STYLES } from './choice-visuals';
@@ -1595,7 +1595,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                                 if (credentialResponse.credential) {
                                   ApiService.googleAuth(credentialResponse.credential).then(res => {
                                     if (res.success && res.data) {
-                                      if (res.data.token) localStorage.setItem('userToken', res.data.token);
+                                      if (res.data.token) safeLocalStorage.setItem('userToken', res.data.token);
                                       onUpdate({ userEmail: res.data.user?.email || '', firstName: res.data.user?.firstName || '' });
                                       googleAutoSubmitRef.current = true;
                                     }
@@ -1841,7 +1841,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                                 if (credentialResponse.credential) {
                                   ApiService.googleAuth(credentialResponse.credential).then(res => {
                                     if (res.success && res.data) {
-                                      if (res.data.token) localStorage.setItem('userToken', res.data.token);
+                                      if (res.data.token) safeLocalStorage.setItem('userToken', res.data.token);
                                       const googleEmail = res.data.user?.email || '';
                                       const googleFirstName = res.data.user?.firstName || '';
                                       // Update both fields in one call

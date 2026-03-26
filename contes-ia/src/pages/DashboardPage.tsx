@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { safeLocalStorage } from '../utils/safeStorage';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styled, { keyframes, css } from 'styled-components';
 import { theme } from '../styles/theme';
@@ -902,7 +903,7 @@ export const DashboardPage: React.FC = () => {
     const searchParams = new URLSearchParams(location.search);
     if (searchParams.get('subscription') !== 'success') return;
 
-    const token = localStorage.getItem('userToken');
+    const token = safeLocalStorage.getItem('userToken');
     if (!token) return;
 
     setSubscriptionActivating(true);
@@ -949,7 +950,7 @@ export const DashboardPage: React.FC = () => {
   useEffect(() => {
     loadStories();
     if (isClub) {
-      const token = localStorage.getItem('userToken');
+      const token = safeLocalStorage.getItem('userToken');
       if (token) {
         ApiService.getClubCredit(token)
           .then(res => { if (res.success) setClubCredit(res.data); })
@@ -968,7 +969,7 @@ export const DashboardPage: React.FC = () => {
   }, [clubCredit]);
 
   const loadStories = async () => {
-    const token = localStorage.getItem('userToken');
+    const token = safeLocalStorage.getItem('userToken');
     if (!token) return;
     try {
       const response = await ApiService.getClientStories(token);
@@ -982,7 +983,7 @@ export const DashboardPage: React.FC = () => {
 
   const handleToggleFavorite = async (e: React.MouseEvent, storyId: string) => {
     e.stopPropagation();
-    const token = localStorage.getItem('userToken');
+    const token = safeLocalStorage.getItem('userToken');
     if (!token) return;
     try {
       const response = await ApiService.toggleFavorite(token, storyId);
@@ -995,7 +996,7 @@ export const DashboardPage: React.FC = () => {
   };
 
   const handleManageSubscription = async () => {
-    const token = localStorage.getItem('userToken');
+    const token = safeLocalStorage.getItem('userToken');
     if (!token) return;
     try {
       const result = await ApiService.createCustomerPortal(token);
@@ -1007,7 +1008,7 @@ export const DashboardPage: React.FC = () => {
 
   const handleJoinClub = async () => {
     if (!isAuthenticated) { navigate('/login'); return; }
-    const token = localStorage.getItem('userToken');
+    const token = safeLocalStorage.getItem('userToken');
     if (!token) { navigate('/login'); return; }
     try {
       const result = await ApiService.createSubscriptionSession(token);

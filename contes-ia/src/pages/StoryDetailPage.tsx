@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { safeLocalStorage } from '../utils/safeStorage';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import { theme } from '../styles/theme';
@@ -549,7 +550,7 @@ export const StoryDetailPage: React.FC = () => {
     setPasswordSaving(true);
     setPasswordError('');
     try {
-      const token = localStorage.getItem('userToken');
+      const token = safeLocalStorage.getItem('userToken');
       if (!token) return;
       const res = await ApiService.changePassword(token, '', newPassword);
       if (res.success) {
@@ -568,7 +569,7 @@ export const StoryDetailPage: React.FC = () => {
     try {
       const res = await ApiService.googleAuth(credential);
       if (res.success) {
-        if (res.data?.token) localStorage.setItem('userToken', res.data.token);
+        if (res.data?.token) safeLocalStorage.setItem('userToken', res.data.token);
         setPasswordSaved(true);
         refreshProfile();
       }
@@ -587,7 +588,7 @@ export const StoryDetailPage: React.FC = () => {
   useEffect(() => {
     if (story?.storyStatus === 'DISPONIBLE' && !readTrackedRef.current) {
       readTrackedRef.current = true;
-      const token = localStorage.getItem('userToken');
+      const token = safeLocalStorage.getItem('userToken');
       if (token && id) {
         ApiService.trackRead(token, id);
       }
@@ -604,7 +605,7 @@ export const StoryDetailPage: React.FC = () => {
   }, [story?.storyStatus, id]);
 
   const loadStory = async () => {
-    const token = localStorage.getItem('userToken');
+    const token = safeLocalStorage.getItem('userToken');
     if (!token || !id) return;
 
     try {
@@ -620,7 +621,7 @@ export const StoryDetailPage: React.FC = () => {
   };
 
   const handleDownloadPdf = async () => {
-    const token = localStorage.getItem('userToken');
+    const token = safeLocalStorage.getItem('userToken');
     if (!token || !id) return;
 
     try {
@@ -639,7 +640,7 @@ export const StoryDetailPage: React.FC = () => {
   };
 
   const handleViewPdf = async () => {
-    const token = localStorage.getItem('userToken');
+    const token = safeLocalStorage.getItem('userToken');
     if (!token || !id) return;
 
     setPdfError(null);
@@ -660,7 +661,7 @@ export const StoryDetailPage: React.FC = () => {
   };
 
   const handleToggleFavorite = async () => {
-    const token = localStorage.getItem('userToken');
+    const token = safeLocalStorage.getItem('userToken');
     if (!token || !id) return;
 
     try {

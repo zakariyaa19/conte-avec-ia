@@ -8,6 +8,7 @@ import { metaTrackViewContent, metaTrackInitiateCheckout, metaTrackLead } from '
 import { useAuth } from '../contexts/AuthContext';
 import { SEOHead } from '../components/SEOHead';
 import { trackFunnelStep } from '../utils/funnelTracker';
+import { safeLocalStorage, safeSessionStorage } from '../utils/safeStorage';
 
 export const StoryFormPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -16,8 +17,8 @@ export const StoryFormPage: React.FC = () => {
   const isAdMode = useMemo(() => new URLSearchParams(location.search).get('from') === 'ad', [location.search]);
   const referralCode = useMemo(() => {
     const ref = new URLSearchParams(location.search).get('ref');
-    if (ref) localStorage.setItem('referralCode', ref);
-    return ref || localStorage.getItem('referralCode') || '';
+    if (ref) safeLocalStorage.setItem('referralCode', ref);
+    return ref || safeLocalStorage.getItem('referralCode') || '';
   }, [location.search]);
   const [clubCredit, setClubCredit] = useState<{ canSubmit: boolean; remaining: number; nextCreditDate?: string; totalEarned?: number } | null>(null);
 
@@ -57,7 +58,7 @@ export const StoryFormPage: React.FC = () => {
   // Charger le credit Club si l'utilisateur est Club
   useEffect(() => {
     if (isClub) {
-      const token = localStorage.getItem('userToken');
+      const token = safeLocalStorage.getItem('userToken');
       if (token) {
         ApiService.getClubCredit(token)
           .then(res => {
@@ -156,7 +157,7 @@ export const StoryFormPage: React.FC = () => {
         identifyUser(submitData.userEmail);
       } catch { /* tracking failure must never block payment */ }
 
-      const authToken = localStorage.getItem('userToken') || undefined;
+      const authToken = safeLocalStorage.getItem('userToken') || undefined;
 
       const orderResponse = await ApiService.createOrder({
         userEmail: submitData.userEmail,
@@ -174,9 +175,9 @@ export const StoryFormPage: React.FC = () => {
 
       if (orderResponse.token && orderResponse.user) {
         // Sauvegarder le token AVANT la redirection (synchrone)
-        localStorage.setItem('userToken', orderResponse.token);
+        safeLocalStorage.setItem('userToken', orderResponse.token);
         // Double-écriture pour garantir la persistance sur mobile Safari
-        try { sessionStorage.setItem('userToken_backup', orderResponse.token); } catch {}
+        try { safeSessionStorage.setItem('userToken_backup', orderResponse.token); } catch {}
         setTokenAndUser(orderResponse.token, orderResponse.user);
       }
 
@@ -230,7 +231,7 @@ export const StoryFormPage: React.FC = () => {
       if (!orderResponse.stripeUrl && !orderResponse.isFirstBookFree && !orderResponse.isClubFreeOrder) {
         // Commande payante sans Stripe URL : essayer le fallback
         if (formData.purchaseType === 'club' && !orderResponse.clubCreditExhausted) {
-          const token = localStorage.getItem('userToken');
+          const token = safeLocalStorage.getItem('userToken');
           if (!token) {
             throw new Error('Token d\'authentification manquant pour l\'abonnement Club');
           }
@@ -253,7 +254,7 @@ export const StoryFormPage: React.FC = () => {
 
       // Fallback: separate API call (legacy path)
       if (formData.purchaseType === 'club' && !orderResponse.clubCreditExhausted) {
-        const token = localStorage.getItem('userToken');
+        const token = safeLocalStorage.getItem('userToken');
         if (!token) {
           throw new Error('Token d\'authentification manquant pour l\'abonnement Club');
         }

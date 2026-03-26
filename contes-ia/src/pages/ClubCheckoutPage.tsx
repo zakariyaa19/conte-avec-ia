@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { safeLocalStorage } from '../utils/safeStorage';
 import { useNavigate } from 'react-router-dom';
 import styled, { keyframes, css } from 'styled-components';
 import { theme } from '../styles/theme';
@@ -224,7 +225,7 @@ export const ClubCheckoutPage: React.FC = () => {
     setLoading(true);
     setError('');
     try {
-      const token = localStorage.getItem('userToken') || '';
+      const token = safeLocalStorage.getItem('userToken') || '';
       const response = await ApiService.createSubscriptionSession(token, undefined, plan);
       if (response.url) {
         window.location.href = response.url;

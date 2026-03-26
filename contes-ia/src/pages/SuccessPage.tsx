@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { safeLocalStorage } from '../utils/safeStorage';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import { theme } from '../styles/theme';
@@ -310,7 +311,7 @@ export const SuccessPage: React.FC = () => {
     if (isClubFree) {
       setPaymentConfirmed(true);
       setIsVerifying(false);
-      if (localStorage.getItem('userToken')) {
+      if (safeLocalStorage.getItem('userToken')) {
         refreshProfile();
       }
       if (orderId) {
@@ -323,7 +324,7 @@ export const SuccessPage: React.FC = () => {
     if (isFirstBookFree) {
       setPaymentConfirmed(true);
       setIsVerifying(false);
-      if (localStorage.getItem('userToken')) {
+      if (safeLocalStorage.getItem('userToken')) {
         refreshProfile();
       }
       // Tracker Lead (pas Purchase) pour le livre gratuit
@@ -347,7 +348,7 @@ export const SuccessPage: React.FC = () => {
               setTokenAndUser(data.token, data.user);
             }
 
-            if (localStorage.getItem('userToken')) {
+            if (safeLocalStorage.getItem('userToken')) {
               await refreshProfile();
             }
 

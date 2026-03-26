@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { safeLocalStorage } from '../utils/safeStorage';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled, { keyframes, css } from 'styled-components';
 import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
@@ -388,7 +389,7 @@ export const LoginPage: React.FC = () => {
     setStripeRedirect(true);
     setStripeError('');
     try {
-      const token = localStorage.getItem('userToken');
+      const token = safeLocalStorage.getItem('userToken');
       if (!token) throw new Error('Token manquant');
       const session = await ApiService.createSubscriptionSession(token, undefined, stripePlan);
       if (session.url) {

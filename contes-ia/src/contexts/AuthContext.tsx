@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { ApiService } from '../config/api';
+import { safeLocalStorage, safeSessionStorage } from '../utils/safeStorage';
 
 interface User {
   id: string;
@@ -43,36 +44,36 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const isAdmin = !!adminToken;
 
   const setTokenAndUser = useCallback((token: string, userData: User) => {
-    localStorage.setItem('userToken', token);
+    safeLocalStorage.setItem('userToken', token);
     setUser(userData);
   }, []);
 
   const refreshProfile = useCallback(async () => {
     // Check admin token first
-    const savedAdminToken = localStorage.getItem('adminToken');
+    const savedAdminToken = safeLocalStorage.getItem('adminToken');
     if (savedAdminToken) {
       try {
         const tokenPayload = JSON.parse(atob(savedAdminToken.split('.')[1]));
         if (tokenPayload.exp && tokenPayload.exp > Date.now() / 1000) {
           setAdminToken(savedAdminToken);
         } else {
-          localStorage.removeItem('adminToken');
+          safeLocalStorage.removeItem('adminToken');
           setAdminToken(null);
         }
       } catch {
-        localStorage.removeItem('adminToken');
+        safeLocalStorage.removeItem('adminToken');
         setAdminToken(null);
       }
     }
 
     // Check client token (localStorage + backup sessionStorage)
-    let token = localStorage.getItem('userToken');
+    let token = safeLocalStorage.getItem('userToken');
     if (!token) {
       // Fallback: récupérer depuis sessionStorage (backup mobile Safari)
-      const backup = sessionStorage.getItem('userToken_backup');
+      const backup = safeSessionStorage.getItem('userToken_backup');
       if (backup) {
         token = backup;
-        localStorage.setItem('userToken', token);
+        safeLocalStorage.setItem('userToken', token);
       }
     }
     if (!token) {
@@ -86,8 +87,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (response.success) {
         setUser(response.data);
       } else {
-        localStorage.removeItem('userToken');
-        sessionStorage.removeItem('userToken_backup');
+        safeLocalStorage.removeItem('userToken');
+        safeSessionStorage.removeItem('userToken_backup');
         setUser(null);
       }
     } catch (error) {
@@ -105,14 +106,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             isFirstPurchase: undefined, // sera résolu au prochain refreshProfile
           } as any);
         } else {
-          localStorage.removeItem('userToken');
-          sessionStorage.removeItem('userToken_backup');
+          safeLocalStorage.removeItem('userToken');
+          safeSessionStorage.removeItem('userToken_backup');
           setUser(null);
         }
       } catch {
         // Token corrompu → déconnecter
-        localStorage.removeItem('userToken');
-        sessionStorage.removeItem('userToken_backup');
+        safeLocalStorage.removeItem('userToken');
+        safeSessionStorage.removeItem('userToken_backup');
         setUser(null);
       }
     } finally {
@@ -138,10 +139,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const { token, userType, user: userData } = response.data;
 
         if (userType === 'admin') {
-          localStorage.setItem('adminToken', token);
+          safeLocalStorage.setItem('adminToken', token);
           setAdminToken(token);
         } else {
-          localStorage.setItem('userToken', token);
+          safeLocalStorage.setItem('userToken', token);
           setUser(userData);
         }
 
@@ -157,7 +158,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const response = await ApiService.clientRegister(email, password, firstName, lastName);
       if (response.success) {
-        localStorage.setItem('userToken', response.data.token);
+        safeLocalStorage.setItem('userToken', response.data.token);
         setUser(response.data.user);
         return { success: true };
       }
@@ -171,7 +172,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const response = await ApiService.googleAuth(credential);
       if (response.success) {
-        localStorage.setItem('userToken', response.data.token);
+        safeLocalStorage.setItem('userToken', response.data.token);
         setUser(response.data.user);
         return { success: true };
       }
@@ -182,8 +183,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = () => {
-    localStorage.removeItem('userToken');
-    localStorage.removeItem('adminToken');
+    safeLocalStorage.removeItem('userToken');
+    safeLocalStorage.removeItem('adminToken');
     setUser(null);
     setAdminToken(null);
   };
