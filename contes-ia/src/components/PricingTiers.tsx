@@ -200,14 +200,14 @@ export const PricingTiers: React.FC<PricingTiersProps> = ({ onSelectPlan }) => {
           </PriceBlock>
           <Divider />
           <Features>
-            <Feature><FeatureIcon>&#x2705;</FeatureIcon>1er livre offert</Feature>
-            <Feature><FeatureIcon>&#x2705;</FeatureIcon>Bibliotheque limitee a 3 livres</Feature>
-            <Feature><FeatureIcon>&#x2705;</FeatureIcon>7 illustrations par livre</Feature>
-            <Feature><FeatureIcon>&#x2705;</FeatureIcon>Bibliotheque en ligne</Feature>
-            <Feature><FeatureIcon>&#x2705;</FeatureIcon>Lecture + telechargement</Feature>
-            <Feature><FeatureIcon>&#x2705;</FeatureIcon>1 personnage secondaire</Feature>
-            <Feature $disabled><FeatureIcon>&#x2014;</FeatureIcon>Styles d'illustration</Feature>
-            <Feature $disabled><FeatureIcon>&#x2014;</FeatureIcon>Occasions speciales</Feature>
+            <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>Premier livre offert</Feature>
+            <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>Bibliotheque limitee a 3 livres</Feature>
+            <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>7 illustrations par livre</Feature>
+            <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>Bibliotheque en ligne</Feature>
+            <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>Lecture + telechargement</Feature>
+            <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>1 personnage secondaire</Feature>
+            <Feature $disabled><FeatureIcon>—</FeatureIcon>Styles d'illustration</Feature>
+            <Feature $disabled><FeatureIcon>—</FeatureIcon>Occasions speciales</Feature>
           </Features>
           <Button variant="outline" size="lg" onClick={() => onSelectPlan('single')} fullWidth>
             Commencer gratuitement
@@ -224,14 +224,14 @@ export const PricingTiers: React.FC<PricingTiersProps> = ({ onSelectPlan }) => {
           </PriceBlock>
           <Divider />
           <Features>
-            <Feature $premium><FeatureIcon>&#x1F4D6;</FeatureIcon>4 livres/mois · 2x plus de pages</Feature>
-            <Feature $premium><FeatureIcon>&#x1F3A8;</FeatureIcon>9 styles d'illustration</Feature>
-            <Feature $premium><FeatureIcon>&#x1F464;</FeatureIcon>5 personnages secondaires</Feature>
-            <Feature $premium><FeatureIcon>&#x1F436;</FeatureIcon>Animal de compagnie</Feature>
-            <Feature $premium><FeatureIcon>&#x1F381;</FeatureIcon>Noel, anniversaire, fetes...</Feature>
-            <Feature><FeatureIcon>&#x1F4DA;</FeatureIcon>Bibliotheque illimitee + PDF</Feature>
-            <Feature><FeatureIcon>&#x267B;&#xFE0F;</FeatureIcon>Credits cumulables</Feature>
-            <Feature><FeatureIcon>&#x274C;</FeatureIcon>Annulable en 1 clic</Feature>
+            <Feature $premium><FeatureIcon style={{ color: '#8B5CF6' }}>&#10003;</FeatureIcon>4 livres/mois · 2x plus de pages</Feature>
+            <Feature $premium><FeatureIcon style={{ color: '#8B5CF6' }}>&#10003;</FeatureIcon>9 styles d'illustration</Feature>
+            <Feature $premium><FeatureIcon style={{ color: '#8B5CF6' }}>&#10003;</FeatureIcon>5 personnages secondaires</Feature>
+            <Feature $premium><FeatureIcon style={{ color: '#8B5CF6' }}>&#10003;</FeatureIcon>Animal de compagnie</Feature>
+            <Feature $premium><FeatureIcon style={{ color: '#8B5CF6' }}>&#10003;</FeatureIcon>Noel, anniversaire, fetes...</Feature>
+            <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>Bibliotheque illimitee + PDF</Feature>
+            <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>Credits cumulables</Feature>
+            <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>Annulable en 1 clic</Feature>
           </Features>
           <Button variant="primary" size="lg" onClick={() => onSelectPlan(showAnnual ? 'annual' : 'monthly')} fullWidth>
             Rejoindre le Club

@@ -414,7 +414,7 @@ export const SuccessPage: React.FC = () => {
 
           {paymentConfirmed && (
             <ConfirmedBadge>
-              &#x2713; {isFirstBookFree ? 'Livre gratuit confirme' : 'Commande confirmee'}
+              &#10003; {isFirstBookFree ? 'Livre gratuit confirme' : 'Commande confirmee'}
             </ConfirmedBadge>
           )}
 

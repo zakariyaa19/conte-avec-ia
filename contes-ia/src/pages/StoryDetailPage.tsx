@@ -718,7 +718,7 @@ export const StoryDetailPage: React.FC = () => {
             <GenSparkle $left="78%" $top="70%" $delay={0.3} $size={3} />
             <GenSparkle $left="45%" $top="8%" $delay={1.5} $size={4} />
             <GenInner>
-              <GenBook>&#x1F4D6;</GenBook>
+              <GenBook>&#9733;</GenBook>
               <GenTitle>{displayTitle}</GenTitle>
               <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 14, margin: '0 0 24px' }}>
                 L'histoire de {story.protagonistName} est en cours de creation.<br/>

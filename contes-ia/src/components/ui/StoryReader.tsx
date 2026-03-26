@@ -481,7 +481,7 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
                 <Sparkle $left="40%" $top="85%" $delay={2} $size={3} />
                 <Sparkle $left="90%" $top="45%" $delay={0.3} $size={4} />
                 <EndContent>
-                  <EndEmoji>&#x2728;</EndEmoji>
+                  <EndEmoji>&#9733;</EndEmoji>
                   <EndTitle>Fin de l'histoire</EndTitle>
                   <EndSubtitle>{protagonistName} a vecu une belle aventure !</EndSubtitle>
 

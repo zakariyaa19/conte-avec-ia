@@ -325,7 +325,7 @@ export const UpgradePage: React.FC = () => {
         {/* Checklist — ce que le Club déverrouille */}
         <ChecklistCard>
           <ChecklistTitle>
-            <span style={{ fontSize: 18 }}>&#x1F513;</span>
+            <span style={{ fontSize: 18 }}>+</span>
             Le Club deverrouille
           </ChecklistTitle>
 
@@ -393,14 +393,14 @@ export const UpgradePage: React.FC = () => {
 
         {/* Guarantees */}
         <GuaranteesRow>
-          <Guarantee>&#x1F512; Paiement securise</Guarantee>
-          <Guarantee>&#x274C; Sans engagement</Guarantee>
-          <Guarantee>&#x26A1; Acces immediat</Guarantee>
+          <Guarantee>Paiement securise</Guarantee>
+          <Guarantee>Sans engagement</Guarantee>
+          <Guarantee>Acces immediat</Guarantee>
         </GuaranteesRow>
 
         {/* Testimonial */}
         <TestimonialCard>
-          <div style={{ color: '#FFD700', fontSize: 16, marginBottom: 8, letterSpacing: 2 }}>&#x2B50;&#x2B50;&#x2B50;&#x2B50;&#x2B50;</div>
+          <div style={{ color: '#FFD700', fontSize: 16, marginBottom: 8, letterSpacing: 2 }}>&#9733;&#9733;&#9733;&#9733;&#9733;</div>
           <p style={{ fontSize: 14, color: 'var(--text-secondary)', fontStyle: 'italic', lineHeight: 1.7, margin: '0 0 6px' }}>
             "Ma fille me demande une nouvelle histoire tous les soirs !"
           </p>

@@ -538,7 +538,7 @@ export const LoginPage: React.FC = () => {
               {loginMethod === 'otp_verify' ? (
                 /* Code OTP envoyé — saisie du code */
                 <div style={{ textAlign: 'center' }}>
-                  <div style={{ fontSize: 40, marginBottom: 12 }}>&#x1F4E7;</div>
+                  <div style={{ fontSize: 28, marginBottom: 12, fontWeight: 700 }}>Code envoye</div>
                   <p style={{ fontWeight: 700, fontSize: theme.fontSizes.lg, color: 'var(--text-primary)', marginBottom: 4 }}>
                     Code envoye !
                   </p>

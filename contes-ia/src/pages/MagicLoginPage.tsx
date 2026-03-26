@@ -93,14 +93,14 @@ export const MagicLoginPage: React.FC = () => {
         )}
         {status === 'success' && (
           <>
-            <div style={{ fontSize: 48, marginBottom: 12 }}>&#x2705;</div>
+            <div style={{ fontSize: 48, marginBottom: 12 }}>&#10003;</div>
             <Title>Connecte !</Title>
             <Message>Redirection vers votre bibliotheque...</Message>
           </>
         )}
         {status === 'error' && (
           <>
-            <div style={{ fontSize: 48, marginBottom: 12 }}>&#x274C;</div>
+            <div style={{ fontSize: 48, marginBottom: 12 }}>&#10007;</div>
             <Title>Lien expire</Title>
             <Message>{errorMsg}</Message>
             <Message style={{ marginTop: 16 }}>
