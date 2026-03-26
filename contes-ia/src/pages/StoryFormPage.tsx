@@ -7,6 +7,7 @@ import { identifyUser, trackInitiateCheckout, trackViewContent } from '../utils/
 import { metaTrackViewContent, metaTrackInitiateCheckout, metaTrackLead } from '../utils/metaPixel';
 import { useAuth } from '../contexts/AuthContext';
 import { SEOHead } from '../components/SEOHead';
+import { trackFunnelStep } from '../utils/funnelTracker';
 
 export const StoryFormPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -26,6 +27,7 @@ export const StoryFormPage: React.FC = () => {
 
   // Track ViewContent au chargement de la page
   useEffect(() => {
+    trackFunnelStep('page_view');
     trackViewContent(
       'product_story_creation',
       'Création de conte personnalisé',
@@ -147,7 +149,7 @@ export const StoryFormPage: React.FC = () => {
     try {
       // Fire-and-forget : le tracking ne doit JAMAIS bloquer le paiement
       try {
-        // Lead au moment du submit (filet de sécurité si onBlur n'a pas tiré)
+        trackFunnelStep('form_submitted');
         metaTrackLead(viewContentPrice);
         trackInitiateCheckout(submitData.productType, submitData.userEmail, viewContentPrice);
         metaTrackInitiateCheckout(submitData.productType, viewContentPrice);

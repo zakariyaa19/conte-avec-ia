@@ -3,6 +3,7 @@ import { AdminController } from '../controllers/adminController';
 import { StoryGenerationController } from '../controllers/storyGenerationController';
 import { authenticateAdmin, requireAdmin } from '../middleware/auth';
 import { upload, uploadPdf } from '../middleware/upload';
+import { prisma } from '../utils/database';
 
 const router = Router();
 
@@ -50,5 +51,85 @@ router.post('/generation/orders/:id/validate', authenticateAdmin, requireAdmin, 
 router.post('/generation/orders/:id/delete-generation', authenticateAdmin, requireAdmin, StoryGenerationController.deleteGeneration);
 router.post('/generation/orders/:id/replace-pdf', authenticateAdmin, requireAdmin, uploadPdf.single('pdf'), StoryGenerationController.replacePdf);
 router.get('/generation/orders/:id/logs', authenticateAdmin, requireAdmin, StoryGenerationController.getGenerationLogs);
+
+// Funnel analytics
+router.get('/funnel', authenticateAdmin, requireAdmin, async (req, res) => {
+  try {
+    const { days = '7' } = req.query;
+    const since = new Date();
+    since.setDate(since.getDate() - Number(days));
+
+    // Compter les événements par étape
+    const steps = await prisma.funnelEvent.groupBy({
+      by: ['step'],
+      where: { createdAt: { gte: since } },
+      _count: { id: true },
+    });
+
+    // Sessions uniques par étape
+    const sessionsPerStep = await prisma.$queryRawUnsafe<{ step: string; sessions: bigint }[]>(
+      `SELECT step, COUNT(DISTINCT "sessionId") as sessions FROM funnel_events WHERE "createdAt" >= $1 GROUP BY step ORDER BY sessions DESC`,
+      since
+    );
+
+    // Total sessions uniques
+    const totalSessions = await prisma.$queryRawUnsafe<{ count: bigint }[]>(
+      `SELECT COUNT(DISTINCT "sessionId") as count FROM funnel_events WHERE "createdAt" >= $1`,
+      since
+    );
+
+    // Par source
+    const bySource = await prisma.funnelEvent.groupBy({
+      by: ['source'],
+      where: { createdAt: { gte: since }, step: 'page_view' },
+      _count: { id: true },
+    });
+
+    // Par device
+    const byDevice = await prisma.funnelEvent.groupBy({
+      by: ['device'],
+      where: { createdAt: { gte: since }, step: 'page_view' },
+      _count: { id: true },
+    });
+
+    // Ordre du funnel pour le frontend
+    const funnelOrder = [
+      'page_view',
+      'wizard_age',
+      'wizard_theme',
+      'wizard_subject',
+      'wizard_character',
+      'wizard_preview',
+      'email_entered',
+      'form_submitted',
+    ];
+
+    const total = Number(totalSessions[0]?.count || 0);
+
+    const funnel = funnelOrder.map(step => {
+      const found = sessionsPerStep.find(s => s.step === step);
+      const sessions = Number(found?.sessions || 0);
+      return {
+        step,
+        sessions,
+        percentage: total > 0 ? Math.round((sessions / total) * 100) : 0,
+      };
+    });
+
+    res.json({
+      success: true,
+      data: {
+        period: `${days} derniers jours`,
+        totalSessions: total,
+        funnel,
+        bySource: bySource.map(s => ({ source: s.source || 'direct', count: s._count.id })),
+        byDevice: byDevice.map(d => ({ device: d.device || 'unknown', count: d._count.id })),
+      }
+    });
+  } catch (error) {
+    console.error('Erreur funnel analytics:', error);
+    res.status(500).json({ success: false, message: 'Erreur' });
+  }
+});
 
 export default router;

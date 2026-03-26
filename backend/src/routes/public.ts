@@ -76,4 +76,27 @@ router.get('/examples', async (req, res) => {
   }
 });
 
+// Funnel tracking (anonyme, pas besoin d'auth)
+router.post('/funnel', async (req, res) => {
+  try {
+    const { sessionId, step, source, device } = req.body;
+    if (!sessionId || !step) {
+      return res.status(400).json({ success: false });
+    }
+    // Fire-and-forget — ne jamais bloquer le frontend
+    await prisma.funnelEvent.create({
+      data: {
+        sessionId: String(sessionId).slice(0, 64),
+        step: String(step).slice(0, 50),
+        source: source ? String(source).slice(0, 20) : null,
+        device: device ? String(device).slice(0, 20) : null,
+      }
+    });
+    res.json({ success: true });
+  } catch (error) {
+    // Silent — le tracking ne doit jamais retourner d'erreur au client
+    res.json({ success: true });
+  }
+});
+
 export default router;

@@ -246,6 +246,21 @@ enum StoryStatus {
   GENERATION_FAILED
 }
 
+// Tracking funnel visiteurs (anonyme, par session)
+model FunnelEvent {
+  id        String   @id @default(cuid())
+  sessionId String   // ID unique par session visiteur
+  step      String   // page_view, wizard_age, wizard_theme, wizard_character, wizard_preview, email_entered, form_submitted
+  source    String?  // ad, organic, direct
+  device    String?  // mobile, desktop
+  createdAt DateTime @default(now())
+
+  @@index([sessionId])
+  @@index([step])
+  @@index([createdAt])
+  @@map("funnel_events")
+}
+
 enum AdminRole {
   SUPER_ADMIN
   ADMIN

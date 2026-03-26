@@ -10,6 +10,7 @@ import { useFirstIllustration } from '../../hooks/useFirstIllustration';
 import { useWizardPersistence } from '../../hooks/useWizardPersistence';
 import { validateEmail, validateRequired } from '../../utils/validation';
 import { metaTrackAddToCart, metaTrackLead } from '../../utils/metaPixel';
+import { trackFunnelStep } from '../../utils/funnelTracker';
 import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
 import { isInAppBrowser } from '../../utils/safeStorage';
 import { ApiService } from '../../config/api';
@@ -303,6 +304,15 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
         is_ad_mode: isAdMode,
       });
     }
+    // Funnel tracking backend
+    const funnelMap: Record<string, string> = {
+      age: 'wizard_age', theme: 'wizard_theme', occasion: 'wizard_theme',
+      style: 'wizard_theme', hero: 'wizard_character', appearance: 'wizard_character',
+      choice: 'wizard_character', extras1: 'wizard_character', extras2: 'wizard_character',
+      preview: 'wizard_preview',
+    };
+    const funnelStep = funnelMap[stepName];
+    if (funnelStep) trackFunnelStep(funnelStep);
     // TikTok Pixel : même tracking
     if (typeof window !== 'undefined' && (window as any).ttq) {
       (window as any).ttq.track('ViewContent', {
@@ -430,6 +440,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
     const ev = validateEmail(formData.userEmail);
     if (!ev.isValid) return;
     metaTrackLead(isClub ? 3.99 : singlePrice);
+    trackFunnelStep('email_entered');
     try {
       const res = await ApiService.checkEmail(formData.userEmail);
       if (res.success) setEmailStatus({ exists: res.exists, hasPassword: !!res.hasPassword, isFirstPurchase: res.isFirstPurchase });
