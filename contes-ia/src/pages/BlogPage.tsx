@@ -233,7 +233,7 @@ const BlogPage: React.FC = () => {
       <Helmet>
         <meta
           name="keywords"
-          content="pourquoi offrir un livre personnalise a un enfant, les avantages des contes personnalises pour le developpement de l'enfant, top 10 des cadeaux personnalises pour enfants, comment choisir un conte adapte a l'age de son enfant, blog contes personnalises"
+          content="pourquoi offrir un livre personnalisé à un enfant, les avantages des contes personnalisés pour le développement de l'enfant, top 10 des cadeaux personnalisés pour enfants, comment choisir un conte adapté à l'âge de son enfant, blog contes personnalisés"
         />
       </Helmet>
       <SchemaBreadcrumb items={[
