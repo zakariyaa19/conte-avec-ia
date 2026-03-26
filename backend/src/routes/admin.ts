@@ -92,16 +92,13 @@ router.get('/funnel', authenticateAdmin, requireAdmin, async (req, res) => {
       _count: { id: true },
     });
 
-    // Ordre du funnel — correspond aux étapes réelles du wizard
+    // Funnel GRATUIT uniquement (mode simplifié : age → theme → hero → preview → email → submit)
+    // Les étapes occasion, style, appearance, choice, extras sont CLUB only
     const funnelOrder = [
       'page_view',
       'wizard_age',
       'wizard_theme',
-      'wizard_occasion',
-      'wizard_style',
       'wizard_character',
-      'wizard_appearance',
-      'wizard_choice',
       'wizard_preview',
       'email_entered',
       'form_submitted',

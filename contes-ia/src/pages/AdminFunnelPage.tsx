@@ -1,158 +1,381 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
-import { theme } from '../styles/theme';
+import styled, { keyframes } from 'styled-components';
 import { AdminLayout } from '../components/admin/AdminLayout';
 
 const API_BASE = process.env.REACT_APP_API_URL || 'https://conte-avec-ia-backend.onrender.com';
 
-const PageTitle = styled.h1`
-  font-size: ${theme.fontSizes['2xl']};
+// ═══════════════════════════════════════════════
+// ANIMATIONS
+// ═══════════════════════════════════════════════
+
+const fadeIn = keyframes`
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+`;
+
+const growWidth = keyframes`
+  from { width: 0%; }
+`;
+
+// ═══════════════════════════════════════════════
+// LAYOUT
+// ═══════════════════════════════════════════════
+
+const Page = styled.div`
+  animation: ${fadeIn} 0.3s ease;
+`;
+
+const Header = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+  gap: 16px;
+`;
+
+const HeaderLeft = styled.div``;
+
+const Title = styled.h1`
+  font-size: 22px;
   font-weight: 700;
-  color: ${theme.colors.text.primary};
-  margin: 0 0 ${theme.spacing.lg};
+  color: #111827;
+  margin: 0 0 4px;
+  letter-spacing: -0.02em;
 `;
 
-const Card = styled.div`
-  background: white;
-  border-radius: ${theme.borderRadius.lg};
-  border: 1px solid ${theme.colors.admin.cardBorder};
-  overflow: hidden;
-  margin-bottom: ${theme.spacing.lg};
+const Subtitle = styled.p`
+  font-size: 13px;
+  color: #6B7280;
+  margin: 0;
 `;
 
-const CardHeader = styled.div`
-  padding: ${theme.spacing.md} ${theme.spacing.lg};
-  border-bottom: 1px solid ${theme.colors.admin.cardBorder};
+const PeriodPicker = styled.div`
+  display: flex;
+  background: #F3F4F6;
+  border-radius: 10px;
+  padding: 3px;
+  gap: 2px;
+`;
+
+const PeriodBtn = styled.button<{ $active: boolean }>`
+  padding: 6px 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 12px;
   font-weight: 600;
-  font-size: ${theme.fontSizes.base};
-  color: ${theme.colors.text.primary};
-  background: ${theme.colors.admin.contentBg};
+  cursor: pointer;
+  transition: all 0.2s;
+  background: ${p => p.$active ? 'white' : 'transparent'};
+  color: ${p => p.$active ? '#111827' : '#6B7280'};
+  box-shadow: ${p => p.$active ? '0 1px 3px rgba(0,0,0,0.08)' : 'none'};
+  &:hover { color: #111827; }
+`;
+
+// ═══════════════════════════════════════════════
+// KPI CARDS
+// ═══════════════════════════════════════════════
+
+const KpiGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+  @media (max-width: 640px) { grid-template-columns: 1fr; }
+`;
+
+const KpiCard = styled.div<{ $accent?: string }>`
+  background: white;
+  border: 1px solid #E5E7EB;
+  border-radius: 14px;
+  padding: 20px 22px;
+  animation: ${fadeIn} 0.4s ease both;
+  ${p => p.$accent && `border-left: 3px solid ${p.$accent};`}
+`;
+
+const KpiLabel = styled.div`
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #9CA3AF;
+  margin-bottom: 6px;
+`;
+
+const KpiValue = styled.div<{ $color?: string }>`
+  font-size: 28px;
+  font-weight: 800;
+  color: ${p => p.$color || '#111827'};
+  letter-spacing: -0.03em;
+  line-height: 1;
+`;
+
+const KpiSub = styled.div`
+  font-size: 12px;
+  color: #6B7280;
+  margin-top: 4px;
+`;
+
+// ═══════════════════════════════════════════════
+// FUNNEL CARD
+// ═══════════════════════════════════════════════
+
+const FunnelCard = styled.div`
+  background: white;
+  border: 1px solid #E5E7EB;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 24px;
+  animation: ${fadeIn} 0.5s ease both;
+`;
+
+const FunnelHeader = styled.div`
+  padding: 18px 24px;
+  border-bottom: 1px solid #F3F4F6;
   display: flex;
   justify-content: space-between;
   align-items: center;
 `;
 
-const CardBody = styled.div`
-  padding: ${theme.spacing.lg};
+const FunnelTitle = styled.h2`
+  font-size: 15px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
 `;
 
-const FunnelRow = styled.div`
-  display: flex;
+const FunnelBody = styled.div`
+  padding: 24px;
+`;
+
+// Step row
+const StepRow = styled.div<{ $delay: number }>`
+  display: grid;
+  grid-template-columns: 140px 1fr 80px;
   align-items: center;
-  gap: ${theme.spacing.md};
-  margin-bottom: ${theme.spacing.sm};
+  gap: 16px;
+  padding: 10px 0;
+  animation: ${fadeIn} 0.4s ease both;
+  animation-delay: ${p => p.$delay * 0.06}s;
+  @media (max-width: 640px) {
+    grid-template-columns: 100px 1fr 60px;
+    gap: 10px;
+  }
 `;
 
-const FunnelLabel = styled.div`
-  width: 160px;
-  font-size: ${theme.fontSizes.sm};
+const StepLabel = styled.div`
+  font-size: 13px;
   font-weight: 500;
-  color: ${theme.colors.text.primary};
-  flex-shrink: 0;
+  color: #374151;
 `;
 
-const FunnelBarBg = styled.div`
-  flex: 1;
-  background: #F3F4F6;
+const StepBarContainer = styled.div`
+  height: 28px;
+  background: #F9FAFB;
   border-radius: 8px;
-  height: 32px;
   overflow: hidden;
   position: relative;
 `;
 
-const FunnelBarFill = styled.div<{ $pct: number; $color: string }>`
+const StepBarFill = styled.div<{ $pct: number; $color: string; $delay: number }>`
   height: 100%;
   border-radius: 8px;
-  background: ${props => props.$color};
-  width: ${props => props.$pct}%;
+  background: ${p => p.$color};
+  width: ${p => p.$pct}%;
+  animation: ${growWidth} 0.8s ease both;
+  animation-delay: ${p => p.$delay * 0.06 + 0.2}s;
   transition: width 0.5s ease;
   display: flex;
   align-items: center;
-  padding-left: 10px;
-  min-width: ${props => props.$pct > 0 ? '40px' : '0'};
+  justify-content: flex-end;
+  padding-right: 8px;
+  min-width: ${p => p.$pct > 0 ? '32px' : '0'};
 `;
 
-const FunnelBarText = styled.span`
-  font-size: 12px;
+const StepBarPct = styled.span`
+  font-size: 11px;
   font-weight: 700;
   color: white;
   white-space: nowrap;
 `;
 
-const FunnelStats = styled.div`
-  width: 100px;
+const StepCount = styled.div<{ $highlight?: boolean }>`
   text-align: right;
-  font-size: ${theme.fontSizes.sm};
-  color: ${theme.colors.text.light};
+  font-size: 14px;
+  font-weight: 700;
+  color: ${p => p.$highlight ? '#059669' : '#111827'};
+`;
+
+// Drop-off indicator
+const DropOffRow = styled.div<{ $severity: 'critical' | 'warning' | 'ok'; $delay: number }>`
+  display: grid;
+  grid-template-columns: 140px 1fr 80px;
+  gap: 16px;
+  padding: 0 0 4px;
+  animation: ${fadeIn} 0.3s ease both;
+  animation-delay: ${p => p.$delay * 0.06 + 0.1}s;
+  @media (max-width: 640px) {
+    grid-template-columns: 100px 1fr 60px;
+    gap: 10px;
+  }
+`;
+
+const DropOffIndicator = styled.div<{ $severity: 'critical' | 'warning' | 'ok' }>`
+  grid-column: 2;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: ${p => p.$severity === 'critical' ? '#DC2626' : p.$severity === 'warning' ? '#D97706' : '#6B7280'};
+`;
+
+const DropDot = styled.span<{ $severity: 'critical' | 'warning' | 'ok' }>`
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: ${p => p.$severity === 'critical' ? '#DC2626' : p.$severity === 'warning' ? '#D97706' : '#6B7280'};
   flex-shrink: 0;
 `;
 
-const DropOff = styled.div`
-  margin-left: 172px;
-  font-size: 11px;
-  color: #EF4444;
-  margin-bottom: ${theme.spacing.sm};
+// ═══════════════════════════════════════════════
+// FRICTION ALERT
+// ═══════════════════════════════════════════════
+
+const FrictionAlert = styled.div`
+  background: linear-gradient(135deg, #FEF2F2, #FFF7ED);
+  border: 1px solid #FECACA;
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  animation: ${fadeIn} 0.5s ease both;
+  animation-delay: 0.3s;
 `;
+
+const FrictionTitle = styled.div`
+  font-size: 13px;
+  font-weight: 700;
+  color: #991B1B;
+  margin-bottom: 4px;
+`;
+
+const FrictionText = styled.div`
+  font-size: 12px;
+  color: #7F1D1D;
+  line-height: 1.5;
+`;
+
+// ═══════════════════════════════════════════════
+// INSIGHT SUMMARY
+// ═══════════════════════════════════════════════
+
+const InsightCard = styled.div`
+  background: #F9FAFB;
+  border: 1px solid #E5E7EB;
+  border-radius: 14px;
+  padding: 20px 24px;
+  margin-bottom: 24px;
+  animation: ${fadeIn} 0.5s ease both;
+  animation-delay: 0.4s;
+`;
+
+const InsightTitle = styled.h3`
+  font-size: 13px;
+  font-weight: 700;
+  color: #374151;
+  margin: 0 0 10px;
+`;
+
+const InsightItem = styled.div`
+  font-size: 12px;
+  color: #4B5563;
+  line-height: 1.6;
+  padding: 3px 0;
+`;
+
+// ═══════════════════════════════════════════════
+// META ROW (source + device)
+// ═══════════════════════════════════════════════
 
 const MetaGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: ${theme.spacing.lg};
-  @media (max-width: 768px) { grid-template-columns: 1fr; }
+  gap: 16px;
+  @media (max-width: 640px) { grid-template-columns: 1fr; }
 `;
 
-const MetaItem = styled.div`
+const MetaCard = styled.div`
+  background: white;
+  border: 1px solid #E5E7EB;
+  border-radius: 14px;
+  overflow: hidden;
+  animation: ${fadeIn} 0.5s ease both;
+  animation-delay: 0.5s;
+`;
+
+const MetaHeader = styled.div`
+  padding: 14px 20px;
+  border-bottom: 1px solid #F3F4F6;
+  font-size: 13px;
+  font-weight: 700;
+  color: #374151;
+`;
+
+const MetaBody = styled.div`
+  padding: 16px 20px;
+`;
+
+const MetaRow = styled.div`
   display: flex;
   justify-content: space-between;
-  padding: ${theme.spacing.xs} 0;
-  border-bottom: 1px solid ${theme.colors.admin.cardBorder}40;
-  font-size: ${theme.fontSizes.sm};
-  &:last-child { border-bottom: none; }
+  align-items: center;
+  padding: 6px 0;
+  &:not(:last-child) { border-bottom: 1px solid #F9FAFB; }
 `;
 
-const PeriodSelect = styled.select`
-  padding: 4px 8px;
-  border: 1px solid ${theme.colors.admin.cardBorder};
-  border-radius: ${theme.borderRadius.sm};
-  font-size: ${theme.fontSizes.sm};
+const MetaLabel = styled.span`
+  font-size: 13px;
+  color: #374151;
+`;
+
+const MetaValue = styled.span`
+  font-size: 13px;
+  font-weight: 700;
+  color: #111827;
 `;
 
 const EmptyState = styled.div`
   text-align: center;
-  padding: ${theme.spacing['2xl']};
-  color: ${theme.colors.text.light};
+  padding: 60px 20px;
+  color: #9CA3AF;
+  font-size: 14px;
 `;
 
-const STEP_LABELS: Record<string, string> = {
-  page_view: 'Page formulaire',
-  wizard_age: 'Age selectionne',
-  wizard_theme: 'Theme general',
-  wizard_occasion: 'Occasion / sujet',
-  wizard_style: 'Style illustration',
-  wizard_character: 'Prenom + infos heros',
-  wizard_appearance: 'Apparence / photo',
-  wizard_choice: 'Choix options',
-  wizard_extras: 'Personnages secondaires',
-  wizard_preview: 'Preview du livre',
-  email_entered: 'Email entre',
-  form_submitted: 'Formulaire soumis',
+// ═══════════════════════════════════════════════
+// STEP CONFIG — formulaire gratuit uniquement
+// ═══════════════════════════════════════════════
+
+const STEPS: { key: string; label: string; color: string }[] = [
+  { key: 'page_view',       label: 'Page formulaire',   color: '#6366F1' },
+  { key: 'wizard_age',      label: 'Age selectionne',   color: '#8B5CF6' },
+  { key: 'wizard_theme',    label: 'Theme choisi',      color: '#A78BFA' },
+  { key: 'wizard_character', label: 'Infos du heros',   color: '#F59E0B' },
+  { key: 'wizard_preview',  label: 'Preview du livre',  color: '#3B82F6' },
+  { key: 'email_entered',   label: 'Email saisi',       color: '#10B981' },
+  { key: 'form_submitted',  label: 'Livre cree',        color: '#059669' },
+];
+
+const SOURCE_LABELS: Record<string, string> = {
+  ad: 'Meta Ads',
+  google: 'Google (SEO)',
+  social: 'Reseaux sociaux',
+  referral: 'Lien externe',
+  direct: 'Acces direct',
 };
 
-const STEP_COLORS: Record<string, string> = {
-  page_view: '#6366F1',
-  wizard_age: '#8B5CF6',
-  wizard_theme: '#A78BFA',
-  wizard_occasion: '#C084FC',
-  wizard_style: '#9333EA',
-  wizard_character: '#F59E0B',
-  wizard_appearance: '#F97316',
-  wizard_choice: '#EAB308',
-  wizard_extras: '#D97706',
-  wizard_preview: '#3B82F6',
-  email_entered: '#10B981',
-  form_submitted: '#059669',
-};
+// ═══════════════════════════════════════════════
+// COMPONENT
+// ═══════════════════════════════════════════════
 
 interface FunnelData {
   period: string;
@@ -162,145 +385,225 @@ interface FunnelData {
   byDevice: { device: string; count: number }[];
 }
 
-interface AdminFunnelPageProps {
-  token: string;
-}
+interface Props { token: string; }
 
-export const AdminFunnelPage: React.FC<AdminFunnelPageProps> = ({ token }) => {
+export const AdminFunnelPage: React.FC<Props> = ({ token }) => {
   const [data, setData] = useState<FunnelData | null>(null);
   const [loading, setLoading] = useState(true);
   const [days, setDays] = useState(7);
 
-  const loadFunnel = async () => {
+  useEffect(() => {
     setLoading(true);
-    try {
-      const adminToken = localStorage.getItem('adminToken') || token;
-      const res = await fetch(`${API_BASE}/api/admin/funnel?days=${days}`, {
-        headers: { 'Authorization': `Bearer ${adminToken}` }
-      });
-      const json = await res.json();
-      if (json.success) setData(json.data);
-    } catch (error) {
-      console.error('Erreur chargement funnel:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => { loadFunnel(); }, [days]);
+    const adminToken = localStorage.getItem('adminToken') || token;
+    fetch(`${API_BASE}/api/admin/funnel?days=${days}`, {
+      headers: { 'Authorization': `Bearer ${adminToken}` }
+    })
+      .then(r => r.json())
+      .then(json => { if (json.success) setData(json.data); })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, [days, token]);
 
   if (loading) return <AdminLayout><EmptyState>Chargement...</EmptyState></AdminLayout>;
   if (!data) return <AdminLayout><EmptyState>Aucune donnee disponible</EmptyState></AdminLayout>;
 
-  // Calculer les drop-off entre chaque étape
-  const funnelWithDropOff = data.funnel.map((step, i) => {
-    const prev = i > 0 ? data.funnel[i - 1] : null;
-    const dropOff = prev && prev.sessions > 0
-      ? Math.round(((prev.sessions - step.sessions) / prev.sessions) * 100)
-      : 0;
-    return { ...step, dropOff };
+  // ── Build funnel with drop-off ──
+  const funnel = STEPS.map((s, i) => {
+    const found = data.funnel.find(f => f.step === s.key);
+    const sessions = found?.sessions || 0;
+    const pct = found?.percentage || 0;
+    const prev = i > 0 ? (data.funnel.find(f => f.step === STEPS[i - 1].key)?.sessions || 0) : sessions;
+    const dropPct = i > 0 && prev > 0 ? Math.round(((prev - sessions) / prev) * 100) : 0;
+    const severity: 'critical' | 'warning' | 'ok' = dropPct >= 70 ? 'critical' : dropPct >= 40 ? 'warning' : 'ok';
+    return { ...s, sessions, pct, dropPct, severity };
   });
 
-  const conversionRate = data.funnel.length > 1 && data.funnel[0].sessions > 0
-    ? ((data.funnel[data.funnel.length - 1].sessions / data.funnel[0].sessions) * 100).toFixed(1)
-    : '0';
+  const visitors = funnel[0]?.sessions || 0;
+  const conversions = funnel[funnel.length - 1]?.sessions || 0;
+  const convRate = visitors > 0 ? ((conversions / visitors) * 100).toFixed(1) : '0';
+
+  // Find biggest friction point (highest dropPct, excluding first step)
+  const frictionStep = funnel.slice(1).reduce((max, s) => s.dropPct > max.dropPct ? s : max, funnel[1]);
+
+  const periods = [
+    { value: 1, label: "Aujourd'hui" },
+    { value: 3, label: '3j' },
+    { value: 7, label: '7j' },
+    { value: 14, label: '14j' },
+    { value: 30, label: '30j' },
+  ];
 
   return (
     <AdminLayout>
-      <PageTitle>Funnel de conversion</PageTitle>
+      <Page>
+        {/* ── HEADER ── */}
+        <Header>
+          <HeaderLeft>
+            <Title>Funnel de conversion</Title>
+            <Subtitle>Parcours formulaire gratuit uniquement</Subtitle>
+          </HeaderLeft>
+          <PeriodPicker>
+            {periods.map(p => (
+              <PeriodBtn key={p.value} $active={days === p.value} onClick={() => setDays(p.value)}>
+                {p.label}
+              </PeriodBtn>
+            ))}
+          </PeriodPicker>
+        </Header>
 
-      {/* Entonnoir principal */}
-      <Card>
-        <CardHeader>
-          <span>Parcours utilisateur — {data.totalSessions} session{data.totalSessions > 1 ? 's' : ''} uniques</span>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ fontSize: 12, color: '#888' }}>Periode :</span>
-            <PeriodSelect value={days} onChange={e => setDays(Number(e.target.value))}>
-              <option value={1}>Aujourd'hui</option>
-              <option value={3}>3 jours</option>
-              <option value={7}>7 jours</option>
-              <option value={14}>14 jours</option>
-              <option value={30}>30 jours</option>
-            </PeriodSelect>
-          </div>
-        </CardHeader>
-        <CardBody>
-          {data.totalSessions === 0 ? (
-            <EmptyState>Aucune visite sur cette periode. Les donnees apparaitront quand des visiteurs arriveront sur le formulaire.</EmptyState>
-          ) : (
-            <>
-              {funnelWithDropOff.map((step, i) => (
-                <React.Fragment key={step.step}>
-                  <FunnelRow>
-                    <FunnelLabel>{STEP_LABELS[step.step] || step.step}</FunnelLabel>
-                    <FunnelBarBg>
-                      <FunnelBarFill $pct={step.percentage} $color={STEP_COLORS[step.step] || '#6B7280'}>
-                        {step.percentage > 8 && (
-                          <FunnelBarText>{step.percentage}%</FunnelBarText>
-                        )}
-                      </FunnelBarFill>
-                    </FunnelBarBg>
-                    <FunnelStats>
-                      <strong>{step.sessions}</strong> ({step.percentage}%)
-                    </FunnelStats>
-                  </FunnelRow>
-                  {i > 0 && step.dropOff > 0 && (
-                    <DropOff>-{step.dropOff}% abandonnent ici</DropOff>
+        {data.totalSessions === 0 ? (
+          <EmptyState>
+            Aucune visite sur cette periode.<br />
+            Les donnees apparaitront quand des visiteurs arriveront sur le formulaire.
+          </EmptyState>
+        ) : (
+          <>
+            {/* ── KPI CARDS ── */}
+            <KpiGrid>
+              <KpiCard $accent="#6366F1">
+                <KpiLabel>Visiteurs</KpiLabel>
+                <KpiValue>{visitors}</KpiValue>
+                <KpiSub>sessions uniques</KpiSub>
+              </KpiCard>
+              <KpiCard $accent="#059669">
+                <KpiLabel>Conversion</KpiLabel>
+                <KpiValue $color={Number(convRate) >= 3 ? '#059669' : Number(convRate) >= 1 ? '#D97706' : '#DC2626'}>
+                  {convRate}%
+                </KpiValue>
+                <KpiSub>{conversions} livre{conversions > 1 ? 's' : ''} cree{conversions > 1 ? 's' : ''}</KpiSub>
+              </KpiCard>
+              <KpiCard $accent="#DC2626">
+                <KpiLabel>Point de friction</KpiLabel>
+                <KpiValue $color="#DC2626" style={{ fontSize: 18 }}>
+                  {frictionStep?.label || '-'}
+                </KpiValue>
+                <KpiSub>{frictionStep ? `-${frictionStep.dropPct}% d'abandon` : '-'}</KpiSub>
+              </KpiCard>
+            </KpiGrid>
+
+            {/* ── FRICTION ALERT ── */}
+            {frictionStep && frictionStep.dropPct >= 50 && (
+              <FrictionAlert>
+                <FrictionTitle>
+                  Point de friction principal : {frictionStep.label} (-{frictionStep.dropPct}%)
+                </FrictionTitle>
+                <FrictionText>
+                  {frictionStep.dropPct >= 80
+                    ? `La majorite des visiteurs quittent a cette etape. C'est le probleme prioritaire a resoudre.`
+                    : `Un abandon significatif se produit ici. Verifiez l'experience utilisateur sur cette etape.`
+                  }
+                </FrictionText>
+              </FrictionAlert>
+            )}
+
+            {/* ── FUNNEL ── */}
+            <FunnelCard>
+              <FunnelHeader>
+                <FunnelTitle>Parcours etape par etape</FunnelTitle>
+                <span style={{ fontSize: 12, color: '#9CA3AF' }}>{visitors} visiteurs</span>
+              </FunnelHeader>
+              <FunnelBody>
+                {funnel.map((step, i) => (
+                  <React.Fragment key={step.key}>
+                    <StepRow $delay={i}>
+                      <StepLabel>{step.label}</StepLabel>
+                      <StepBarContainer>
+                        <StepBarFill $pct={step.pct} $color={step.color} $delay={i}>
+                          {step.pct >= 12 && <StepBarPct>{step.pct}%</StepBarPct>}
+                        </StepBarFill>
+                      </StepBarContainer>
+                      <StepCount $highlight={i === funnel.length - 1}>
+                        {step.sessions}
+                      </StepCount>
+                    </StepRow>
+                    {i > 0 && step.dropPct > 0 && (
+                      <DropOffRow $severity={step.severity} $delay={i}>
+                        <DropOffIndicator $severity={step.severity}>
+                          <DropDot $severity={step.severity} />
+                          -{step.dropPct}% abandon{step.dropPct > 1 ? 'nent' : 'ne'}
+                          {step.severity === 'critical' && ' — critique'}
+                          {step.severity === 'warning' && ' — a surveiller'}
+                        </DropOffIndicator>
+                      </DropOffRow>
+                    )}
+                  </React.Fragment>
+                ))}
+              </FunnelBody>
+            </FunnelCard>
+
+            {/* ── INSIGHT SUMMARY ── */}
+            <InsightCard>
+              <InsightTitle>Resume</InsightTitle>
+              {funnel[1] && funnel[1].pct < 50 && (
+                <InsightItem>
+                  Seulement <strong>{funnel[1].pct}%</strong> des visiteurs selectionnent un age. Beaucoup quittent sans interagir.
+                </InsightItem>
+              )}
+              {funnel[2] && funnel[2].dropPct >= 50 && (
+                <InsightItem>
+                  <strong>{funnel[2].dropPct}%</strong> abandonnent au choix du theme. L'etape est peut-etre confuse ou trop longue.
+                </InsightItem>
+              )}
+              {funnel.find(s => s.key === 'email_entered') && funnel.find(s => s.key === 'wizard_preview') && (
+                (() => {
+                  const preview = funnel.find(s => s.key === 'wizard_preview')!;
+                  const email = funnel.find(s => s.key === 'email_entered')!;
+                  if (preview.sessions > 0 && email.sessions > 0) {
+                    const previewToEmail = Math.round((email.sessions / preview.sessions) * 100);
+                    return previewToEmail >= 50 ? (
+                      <InsightItem>
+                        <strong>{previewToEmail}%</strong> des visiteurs qui voient la preview saisissent leur email. Bonne conversion.
+                      </InsightItem>
+                    ) : (
+                      <InsightItem>
+                        Seulement <strong>{previewToEmail}%</strong> saisissent leur email apres la preview. La preview ne convainc pas assez.
+                      </InsightItem>
+                    );
+                  }
+                  return null;
+                })()
+              )}
+              <InsightItem>
+                Taux de conversion global : <strong>{convRate}%</strong> ({conversions} sur {visitors} visiteurs)
+              </InsightItem>
+            </InsightCard>
+
+            {/* ── SOURCE + DEVICE ── */}
+            <MetaGrid>
+              <MetaCard>
+                <MetaHeader>Source du trafic</MetaHeader>
+                <MetaBody>
+                  {data.bySource.length === 0 ? (
+                    <EmptyState style={{ padding: 20 }}>Aucune donnee</EmptyState>
+                  ) : (
+                    data.bySource.sort((a, b) => b.count - a.count).map(s => (
+                      <MetaRow key={s.source}>
+                        <MetaLabel>{SOURCE_LABELS[s.source] || s.source}</MetaLabel>
+                        <MetaValue>{s.count}</MetaValue>
+                      </MetaRow>
+                    ))
                   )}
-                </React.Fragment>
-              ))}
-              <div style={{ marginTop: 16, padding: '12px 16px', background: '#F0FDF4', borderRadius: 8, fontSize: 14 }}>
-                <strong style={{ color: '#059669' }}>Taux de conversion global : {conversionRate}%</strong>
-                <span style={{ color: '#666', marginLeft: 8 }}>
-                  ({data.funnel[data.funnel.length - 1]?.sessions || 0} formulaires soumis sur {data.funnel[0]?.sessions || 0} visiteurs)
-                </span>
-              </div>
-            </>
-          )}
-        </CardBody>
-      </Card>
-
-      {/* Source + Device */}
-      <MetaGrid>
-        <Card>
-          <CardHeader>Source du trafic</CardHeader>
-          <CardBody>
-            {data.bySource.length === 0 ? (
-              <EmptyState>Aucune donnee</EmptyState>
-            ) : (
-              data.bySource
-                .sort((a, b) => b.count - a.count)
-                .map(s => (
-                  <MetaItem key={s.source}>
-                    <span style={{ fontWeight: 500 }}>
-                      {s.source === 'ad' ? 'Meta Ads' : s.source === 'google' ? 'Google (SEO)' : s.source === 'social' ? 'Reseaux sociaux' : s.source === 'referral' ? 'Lien externe' : 'Direct'}
-                    </span>
-                    <strong>{s.count} visite{s.count > 1 ? 's' : ''}</strong>
-                  </MetaItem>
-                ))
-            )}
-          </CardBody>
-        </Card>
-        <Card>
-          <CardHeader>Appareil</CardHeader>
-          <CardBody>
-            {data.byDevice.length === 0 ? (
-              <EmptyState>Aucune donnee</EmptyState>
-            ) : (
-              data.byDevice
-                .sort((a, b) => b.count - a.count)
-                .map(d => (
-                  <MetaItem key={d.device}>
-                    <span style={{ fontWeight: 500 }}>
-                      {d.device === 'mobile' ? 'Mobile' : d.device === 'desktop' ? 'Desktop' : d.device}
-                    </span>
-                    <strong>{d.count} visite{d.count > 1 ? 's' : ''}</strong>
-                  </MetaItem>
-                ))
-            )}
-          </CardBody>
-        </Card>
-      </MetaGrid>
+                </MetaBody>
+              </MetaCard>
+              <MetaCard>
+                <MetaHeader>Appareil</MetaHeader>
+                <MetaBody>
+                  {data.byDevice.length === 0 ? (
+                    <EmptyState style={{ padding: 20 }}>Aucune donnee</EmptyState>
+                  ) : (
+                    data.byDevice.sort((a, b) => b.count - a.count).map(d => (
+                      <MetaRow key={d.device}>
+                        <MetaLabel>{d.device === 'mobile' ? 'Mobile' : d.device === 'desktop' ? 'Desktop' : d.device}</MetaLabel>
+                        <MetaValue>{d.count}</MetaValue>
+                      </MetaRow>
+                    ))
+                  )}
+                </MetaBody>
+              </MetaCard>
+            </MetaGrid>
+          </>
+        )}
+      </Page>
     </AdminLayout>
   );
 };
