@@ -1036,9 +1036,9 @@ export const DashboardPage: React.FC = () => {
   const getStatusLabel = (story: any) => {
     if (story.isFavorite && story.storyStatus === 'DISPONIBLE') return 'Favori';
     if (story.storyStatus === 'DISPONIBLE') return 'Disponible';
-    if (story.storyStatus === 'EN_COURS' && story.firstIllustrationUrl) return 'En preparation';
+    if (story.storyStatus === 'EN_COURS' && story.firstIllustrationUrl) return 'En préparation';
     if (story.storyStatus === 'EN_COURS') return 'En cours';
-    if (['GENERATING_TEXT', 'GENERATING_IMAGES', 'ASSEMBLING_PDF'].includes(story.storyStatus)) return 'Generation...';
+    if (['GENERATING_TEXT', 'GENERATING_IMAGES', 'ASSEMBLING_PDF'].includes(story.storyStatus)) return 'Génération...';
     return story.storyStatus;
   };
 
@@ -1063,7 +1063,7 @@ export const DashboardPage: React.FC = () => {
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 2 }}>
               <h1 style={{ fontFamily: theme.fonts.heading, fontSize: 20, fontWeight: 700, margin: 0, color: 'var(--text-primary)' }}>
-                Ma Bibliotheque
+                Ma Bibliothèque
               </h1>
               <span style={{
                 fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 10,
@@ -1104,7 +1104,7 @@ export const DashboardPage: React.FC = () => {
               fontSize: 13, fontWeight: 600, cursor: 'pointer',
               display: 'flex', alignItems: 'center', gap: 6,
             }}>
-              <span style={{ fontSize: 16 }}>+</span> Creer
+              <span style={{ fontSize: 16 }}>+</span> Créer
             </button>
           </div>
         </div>
@@ -1144,7 +1144,7 @@ export const DashboardPage: React.FC = () => {
                 padding: '7px 14px', borderRadius: 10, border: 'none',
                 background: 'linear-gradient(135deg, #667eea, #764ba2)', color: 'white',
                 fontSize: 12, fontWeight: 600, cursor: 'pointer',
-              }}>Creer</button>
+              }}>Créer</button>
             ) : (
               <button onClick={() => navigate('/create-story')} style={{
                 padding: '7px 14px', borderRadius: 10, border: '1px solid #ddd',
@@ -1174,7 +1174,7 @@ export const DashboardPage: React.FC = () => {
                   {stories.length}/3
                 </span>
                 <span style={{ fontSize: 13, fontWeight: 700, color: 'white' }}>
-                  {stories.length >= 3 ? 'Bibliotheque pleine' : 'Passer au Club'}
+                  {stories.length >= 3 ? 'Bibliothèque pleine' : 'Passer au Club'}
                 </span>
               </div>
               <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.7)', margin: 0 }}>

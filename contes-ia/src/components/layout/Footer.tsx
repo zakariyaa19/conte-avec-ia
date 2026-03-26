@@ -133,8 +133,8 @@ export const Footer: React.FC = () => {
           <FooterSection>
             <h4>Contes d'IA</h4>
             <FooterDescription>
-              Creez des contes personnalises et magiques pour vos enfants grace a l'intelligence artificielle.
-              Chaque histoire est unique et adaptee a votre petit lecteur.
+              Créez des contes personnalisés et magiques pour vos enfants grâce à l'intelligence artificielle.
+              Chaque histoire est unique et adaptée à votre petit lecteur.
             </FooterDescription>
           </FooterSection>
 
@@ -144,7 +144,7 @@ export const Footer: React.FC = () => {
               <FooterLink href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/'); }}>Accueil</FooterLink>
               <FooterLink href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/exemples'); }}>Exemples de contes</FooterLink>
               <FooterLink href="#" onClick={(e) => { e.preventDefault(); handleNavigation('#tarifs'); }}>Nos tarifs</FooterLink>
-              <FooterLink href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/create-story'); }}>Creer un conte</FooterLink>
+              <FooterLink href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/create-story'); }}>Créer un conte</FooterLink>
             </FooterLinks>
           </FooterSection>
 
@@ -152,22 +152,22 @@ export const Footer: React.FC = () => {
             <h4>Support</h4>
             <FooterLinks>
               <FooterLink href="#" onClick={(e) => { e.preventDefault(); handleNavigation('mailto:contact@contedia.fr'); }}>Nous contacter</FooterLink>
-              <FooterLink href="#" onClick={(e) => { e.preventDefault(); handleNavigation('tel:+33780777110'); }}>Support telephonique</FooterLink>
+              <FooterLink href="#" onClick={(e) => { e.preventDefault(); handleNavigation('tel:+33780777110'); }}>Support téléphonique</FooterLink>
             </FooterLinks>
           </FooterSection>
 
           <FooterSection>
-            <h4>Legal</h4>
+            <h4>Légal</h4>
             <FooterLinks>
-              <FooterLink href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/mentions-legales'); }}>Mentions legales</FooterLink>
-              <FooterLink href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/conditions-generales-de-vente'); }}>Conditions generales de vente</FooterLink>
-              <FooterLink href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/politique-confidentialite'); }}>Politique de confidentialite</FooterLink>
+              <FooterLink href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/mentions-legales'); }}>Mentions légales</FooterLink>
+              <FooterLink href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/conditions-generales-de-vente'); }}>Conditions générales de vente</FooterLink>
+              <FooterLink href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/politique-confidentialite'); }}>Politique de confidentialité</FooterLink>
             </FooterLinks>
           </FooterSection>
         </FooterGrid>
 
         <FooterBottom>
-          <Copyright>&copy; 2025 Contes d'IA. Tous droits reserves.</Copyright>
+          <Copyright>&copy; 2025 Contes d'IA. Tous droits réservés.</Copyright>
           <LegalInfo>
             SIRET: 99282930900010 | TVA non applicable, art. 293 B du CGI | contact@contedia.fr
           </LegalInfo>

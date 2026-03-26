@@ -445,11 +445,11 @@ export const ClubPage: React.FC = () => {
     { name: 'Aquarelle', img: '/images/illustration-styles/aquarelle.jpg' },
     { name: 'Animation 3D', img: '/images/illustration-styles/animation-3d.jpg' },
     { name: 'Monde des blocs', img: '/images/illustration-styles/monde-des-blocs.jpg' },
-    { name: 'Papier decoupo', img: '/images/illustration-styles/papier-decoupe.jpg' },
+    { name: 'Papier découpé', img: '/images/illustration-styles/papier-decoupe.jpg' },
     { name: 'Clay-animation', img: '/images/illustration-styles/clay-animation.jpg' },
     { name: 'Kawaii', img: '/images/illustration-styles/kawaii.jpg' },
-    { name: 'Geometrique', img: '/images/illustration-styles/geometrique.jpg' },
-    { name: 'Livre illustre', img: '/images/illustration-styles/livre-illustre.jpg' },
+    { name: 'Géométrique', img: '/images/illustration-styles/geometrique.jpg' },
+    { name: 'Livre illustré', img: '/images/illustration-styles/livre-illustre.jpg' },
     { name: 'Manga', img: '/images/illustration-styles/dessin-japonais-manga.jpg' },
   ];
 
@@ -637,7 +637,7 @@ export const ClubPage: React.FC = () => {
                 et reconnaître sa famille dans les illustrations !"
               </p>
               <p style={{ fontSize: theme.fontSizes.sm, color: 'var(--text-light)', margin: 0 }}>
-                — Sarah, maman de Lea (4 ans)
+                — Sarah, maman de Léa (4 ans)
               </p>
             </TestimonialCard>
           </Inner>

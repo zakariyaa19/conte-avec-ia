@@ -354,7 +354,7 @@ export const PublicStoryPage: React.FC = () => {
         {story.storyParagraphs && story.storyParagraphs.length > 0 && (
           <div style={{ textAlign: 'center', marginBottom: theme.spacing.lg }}>
             <Button variant="primary" size="lg" onClick={() => setReaderOpen(true)}>
-              Lire en plein ecran
+              Lire en plein écran
             </Button>
           </div>
         )}
@@ -393,7 +393,7 @@ export const PublicStoryPage: React.FC = () => {
               </IllustrationWrapper>
             )}
             <StoryPreviewContent>
-              <StoryPreviewTitle>Premiere page</StoryPreviewTitle>
+              <StoryPreviewTitle>Première page</StoryPreviewTitle>
               <StoryParagraph>{story.firstParagraph}</StoryParagraph>
             </StoryPreviewContent>
           </StoryPreviewCard>
@@ -401,13 +401,13 @@ export const PublicStoryPage: React.FC = () => {
 
         {/* CTA — gros appel a l'action */}
         <CTASection>
-          <CTATitle>Creez le livre de votre enfant gratuitement</CTATitle>
+          <CTATitle>Créez le livre de votre enfant gratuitement</CTATitle>
           <CTAText>
-            Votre enfant aussi peut devenir le heros de sa propre aventure personnalisee.
-            Le premier livre est <strong>100% gratuit</strong> — pret en 5 minutes !
+            Votre enfant aussi peut devenir le héros de sa propre aventure personnalisée.
+            Le premier livre est <strong>100% gratuit</strong> — prêt en 5 minutes !
           </CTAText>
           <Button variant="primary" size="lg" onClick={() => navigate('/create-story')}>
-            Creer mon livre gratuit maintenant
+            Créer mon livre gratuit maintenant
           </Button>
           <p style={{ fontSize: '13px', color: 'var(--text-light)', marginTop: '12px' }}>
             Pas de carte bancaire requise

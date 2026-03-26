@@ -483,12 +483,12 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
                 <EndContent>
                   <EndEmoji>&#9733;</EndEmoji>
                   <EndTitle>Fin de l'histoire</EndTitle>
-                  <EndSubtitle>{protagonistName} a vecu une belle aventure !</EndSubtitle>
+                  <EndSubtitle>{protagonistName} a vécu une belle aventure !</EndSubtitle>
 
                   {isShared ? (
                     <>
                       <EndButton $primary onClick={() => window.location.href = '/create-story'} style={{ maxWidth: 300, marginBottom: 16 }}>
-                        Vous aussi, creez votre livre gratuitement
+                        Vous aussi, créez votre livre gratuitement
                       </EndButton>
                       <div
                         onClick={() => window.location.href = '/club/checkout'}
@@ -518,7 +518,7 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
                     <>
                       {onShare && (
                         <EndButton $primary onClick={onShare} style={{ marginBottom: 12 }}>
-                          Envoyer a un proche
+                          Envoyer à un proche
                         </EndButton>
                       )}
 
@@ -569,14 +569,14 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
 
                       {onCreateAnother && (
                         <EndButton onClick={onCreateAnother} style={{ opacity: 0.7 }}>
-                          Creer une nouvelle histoire
+                          Créer une nouvelle histoire
                         </EndButton>
                       )}
                     </>
                   )}
 
                   <p style={{ color: 'rgba(255,255,255,0.25)', fontSize: 11, marginTop: 24 }}>
-                    Cree avec Contes d'IA
+                    Créé avec Contes d'IA
                   </p>
                 </EndContent>
               </EndSlide>

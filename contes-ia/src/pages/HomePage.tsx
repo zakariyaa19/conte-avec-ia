@@ -1208,23 +1208,23 @@ const STYLE_COLORS: Record<string, string> = {
   'Animation 3D': '#6C5CE7',
   'Manga': '#D63031',
   'Kawaii': '#E84393',
-  'Papier Decoupe': '#E17055',
+  'Papier Découpé': '#E17055',
   'Aquarelle': '#00B894',
-  'Geometrique': '#0984E3',
+  'Géométrique': '#0984E3',
 };
 
 const slidesData = [
   {
     label: 'Personnaliser',
-    stepLabel: 'Etape 1',
+    stepLabel: 'Étape 1',
     title: 'Personnalisez votre conte',
-    subtitle: 'Choisissez le theme, ajoutez le prenom et la photo de votre enfant. Chaque detail rend l\'histoire unique.',
+    subtitle: 'Choisissez le thème, ajoutez le prénom et la photo de votre enfant. Chaque détail rend l\'histoire unique.',
     bgColor: `${theme.colors.accent.paleYellow}35`,
     illustrationId: 'customize' as const
   },
   {
     label: 'Recevoir',
-    stepLabel: 'Etape 2',
+    stepLabel: 'Étape 2',
     title: 'C\'est 100% gratuit',
     subtitle: 'Pas de carte bancaire. Entrez juste votre email et recevez votre livre personnalisé en 5 minutes.',
     bgColor: `${theme.colors.accent.softPink}25`,
@@ -1232,8 +1232,8 @@ const slidesData = [
   },
   {
     label: 'Lire',
-    stepLabel: 'Etape 3',
-    title: 'Lisez-le dans votre bibliotheque',
+    stepLabel: 'Étape 3',
+    title: 'Lisez-le dans votre bibliothèque',
     subtitle: 'Retrouvez votre livre dans votre espace personnel. Lisez-le en ligne, partagez-le avec vos proches.',
     bgColor: `${theme.colors.accent.pastelBlue}25`,
     illustrationId: 'receive' as const
@@ -1487,7 +1487,7 @@ const faqReveal = useScrollReveal();
                   <span>&#10003;</span> 1er livre gratuit
                 </TrustItem>
                 <TrustItem>
-                  <span>&#10003;</span> Pret en 5 minutes
+                  <span>&#10003;</span> Prêt en 5 minutes
                 </TrustItem>
                 <TrustItem>
                   <span>&#10003;</span> Sans carte bancaire
@@ -1590,7 +1590,7 @@ const faqReveal = useScrollReveal();
 
             <ShowcaseFooter>
               <Button variant="primary" size="lg" onClick={() => navigate('/create-story')}>
-                Creer mon propre conte
+                Créer mon propre conte
               </Button>
             </ShowcaseFooter>
           </Container>
@@ -1600,7 +1600,7 @@ const faqReveal = useScrollReveal();
         <StepsSection ref={stepsReveal.ref}>
           <Container>
             <SectionWrapper $visible={stepsReveal.isVisible}>
-              <SectionTitle>Comment ca marche ?</SectionTitle>
+              <SectionTitle>Comment ça marche ?</SectionTitle>
               <Divider />
             </SectionWrapper>
 
@@ -1688,7 +1688,7 @@ const faqReveal = useScrollReveal();
         <LibrarySection ref={libraryReveal.ref}>
           <Container>
             <SectionWrapper $visible={libraryReveal.isVisible}>
-              <SectionTitle>Votre bibliotheque personnelle</SectionTitle>
+              <SectionTitle>Votre bibliothèque personnelle</SectionTitle>
               <Divider />
               <SectionSubtitle>
                 Tous vos contes au meme endroit. Consultez, relisez et telechargez a tout moment.
@@ -1710,7 +1710,7 @@ const faqReveal = useScrollReveal();
                 <LibraryIcon style={{ background: `linear-gradient(135deg, ${theme.colors.accent.lightGreen}, #8FE6A0)` }}>
                   📥
                 </LibraryIcon>
-                <LibraryCardTitle>Telechargement PDF</LibraryCardTitle>
+                <LibraryCardTitle>Téléchargement PDF</LibraryCardTitle>
                 <LibraryCardText>
                   Telecharger vos eBooks en PDF haute qualite, a tout moment. Imprimez-les ou lisez-les hors ligne.
                 </LibraryCardText>
@@ -1722,7 +1722,7 @@ const faqReveal = useScrollReveal();
                 </LibraryIcon>
                 <LibraryCardTitle>Notification par email</LibraryCardTitle>
                 <LibraryCardText>
-                  Recevez un email avec votre eBook en piece jointe des qu'il est disponible, ainsi qu'un lien direct vers votre bibliotheque.
+                  Recevez un email avec votre eBook en pièce jointe dès qu'il est disponible, ainsi qu'un lien direct vers votre bibliothèque.
                 </LibraryCardText>
               </LibraryCard>
             </LibraryGrid>
@@ -1742,7 +1742,7 @@ const faqReveal = useScrollReveal();
                 <FeatureIcon>
                   <FeatureImage
                     src="/images/homepage/feature-personnalisation.jpg"
-                    alt="Personnalisation complete"
+                    alt="Personnalisation complète"
                     width="766"
                     height="511"
                     loading="lazy"
@@ -1754,7 +1754,7 @@ const faqReveal = useScrollReveal();
                   />
                   <FeatureIconFallback style={{display: 'none'}}>🎨</FeatureIconFallback>
                 </FeatureIcon>
-                <FeatureTitle>Personnalisation complete</FeatureTitle>
+                <FeatureTitle>Personnalisation complète</FeatureTitle>
                 <FeatureDescription>
                   Theme, personnages, style d'illustration, message educatif... chaque detail est choisi par vous pour creer un conte qui ressemble a votre enfant.
                 </FeatureDescription>
@@ -1764,7 +1764,7 @@ const faqReveal = useScrollReveal();
                 <FeatureIcon>
                   <FeatureImage
                     src="/images/homepage/feature-qualite.jpg"
-                    alt="Qualite professionnelle"
+                    alt="Qualité professionnelle"
                     width="1024"
                     height="683"
                     loading="lazy"
@@ -1776,7 +1776,7 @@ const faqReveal = useScrollReveal();
                   />
                   <FeatureIconFallback style={{display: 'none'}}>📚</FeatureIconFallback>
                 </FeatureIcon>
-                <FeatureTitle>Qualite professionnelle</FeatureTitle>
+                <FeatureTitle>Qualité professionnelle</FeatureTitle>
                 <FeatureDescription>
                   eBook haute qualite cree avec soin. Chaque conte est concu pour offrir une experience de lecture exceptionnelle.
                 </FeatureDescription>
@@ -1798,9 +1798,9 @@ const faqReveal = useScrollReveal();
                   />
                   <FeatureIconFallback style={{display: 'none'}}>⚡</FeatureIconFallback>
                 </FeatureIcon>
-                <FeatureTitle>Livraison instantanee</FeatureTitle>
+                <FeatureTitle>Livraison instantanée</FeatureTitle>
                 <FeatureDescription>
-                  Votre conte est disponible dans votre bibliotheque et par email des qu'il est pret. Telechargez-le immediatement en PDF.
+                  Votre conte est disponible dans votre bibliothèque et par email dès qu'il est prêt. Téléchargez-le immédiatement en PDF.
                 </FeatureDescription>
               </FeatureCard>
             </FeaturesGrid>
@@ -1811,7 +1811,7 @@ const faqReveal = useScrollReveal();
         <FAQSection ref={faqReveal.ref}>
           <Container>
             <SectionWrapper $visible={faqReveal.isVisible}>
-              <SectionTitle>Questions frequentes</SectionTitle>
+              <SectionTitle>Questions fréquentes</SectionTitle>
               <Divider />
             </SectionWrapper>
             <SectionWrapper $visible={faqReveal.isVisible} $delay="200ms">
@@ -1826,11 +1826,11 @@ const faqReveal = useScrollReveal();
             <SectionWrapper $visible={ctaReveal.isVisible}>
               <FinalCTATitle>Créez la première histoire de votre enfant</FinalCTATitle>
               <FinalCTAText>
-                1er livre GRATUIT — Pret en 5 minutes
+                1er livre GRATUIT — Prêt en 5 minutes
               </FinalCTAText>
               <FinalCTAButtons>
                 <WhiteButton onClick={() => navigate('/create-story')}>
-                  Creer l'histoire de mon enfant
+                  Créer l'histoire de mon enfant
                 </WhiteButton>
                 <GhostWhiteButton onClick={() => {
                   document.getElementById('tarifs')?.scrollIntoView({ behavior: 'smooth' });

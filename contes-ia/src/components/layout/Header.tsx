@@ -532,15 +532,15 @@ export const Header: React.FC = () => {
                 $active={['/contes-multilingues','/valeurs-educatives','/idees-cadeaux','/ia-creation-conte','/themes-de-contes','/contes-par-age','/styles-illustration'].includes(path)}
                 onClick={() => setDropdown(dropdown === 'd' ? null : 'd')}
               >
-                Decouvrir
+                Découvrir
               </NavPillDropdown>
               <DropdownPanel $open={dropdown === 'd'}>
-                <DropdownItem onClick={() => go('/themes-de-contes')}>Themes de contes</DropdownItem>
-                <DropdownItem onClick={() => go('/contes-par-age')}>Contes par age</DropdownItem>
+                <DropdownItem onClick={() => go('/themes-de-contes')}>Thèmes de contes</DropdownItem>
+                <DropdownItem onClick={() => go('/contes-par-age')}>Contes par âge</DropdownItem>
                 <DropdownItem onClick={() => go('/styles-illustration')}>Styles d'illustration</DropdownItem>
                 <DropdownItem onClick={() => go('/contes-multilingues')}>Contes multilingues</DropdownItem>
-                <DropdownItem onClick={() => go('/valeurs-educatives')}>Valeurs educatives</DropdownItem>
-                <DropdownItem onClick={() => go('/idees-cadeaux')}>Idees cadeaux</DropdownItem>
+                <DropdownItem onClick={() => go('/valeurs-educatives')}>Valeurs éducatives</DropdownItem>
+                <DropdownItem onClick={() => go('/idees-cadeaux')}>Idées cadeaux</DropdownItem>
                 <DropdownItem onClick={() => go('/ia-creation-conte')}>Comment fonctionne l'IA ?</DropdownItem>
               </DropdownPanel>
             </DropdownContainer>
@@ -566,7 +566,7 @@ export const Header: React.FC = () => {
             {/* CTA */}
             <Button variant="primary" size="sm" onClick={() => go('/create-story')}
               style={{ fontSize: '0.8125rem', padding: '6px 16px', borderRadius: '9999px', height: '32px' }}>
-              Creer
+              Créer
             </Button>
 
             {/* User / Connexion */}
@@ -585,10 +585,10 @@ export const Header: React.FC = () => {
                   {user?.firstName || 'Compte'}
                 </UserChipMobile>
                 <UserDropdownDesktop $open={userMenu}>
-                  <UserDropdownItem onClick={() => go('/dashboard')}>Ma bibliotheque</UserDropdownItem>
+                  <UserDropdownItem onClick={() => go('/dashboard')}>Ma bibliothèque</UserDropdownItem>
                   <UserDropdownItem onClick={() => go('/dashboard/account')}>Mon compte</UserDropdownItem>
                   <Divider />
-                  <UserDropdownItem $danger onClick={() => { logout(); go('/'); }}>Deconnexion</UserDropdownItem>
+                  <UserDropdownItem $danger onClick={() => { logout(); go('/'); }}>Déconnexion</UserDropdownItem>
                 </UserDropdownDesktop>
               </div>
             ) : (
@@ -628,29 +628,29 @@ export const Header: React.FC = () => {
         </DrawerSection>
 
         <DrawerSection>
-          <DrawerLabel>Decouvrir</DrawerLabel>
-          <DrawerItem onClick={() => go('/themes-de-contes')}>Themes de contes</DrawerItem>
-          <DrawerItem onClick={() => go('/contes-par-age')}>Contes par age</DrawerItem>
+          <DrawerLabel>Découvrir</DrawerLabel>
+          <DrawerItem onClick={() => go('/themes-de-contes')}>Thèmes de contes</DrawerItem>
+          <DrawerItem onClick={() => go('/contes-par-age')}>Contes par âge</DrawerItem>
           <DrawerItem onClick={() => go('/styles-illustration')}>Styles d'illustration</DrawerItem>
           <DrawerItem onClick={() => go('/contes-multilingues')}>Contes multilingues</DrawerItem>
-          <DrawerItem onClick={() => go('/valeurs-educatives')}>Valeurs educatives</DrawerItem>
-          <DrawerItem onClick={() => go('/idees-cadeaux')}>Idees cadeaux</DrawerItem>
-          <DrawerItem onClick={() => go('/ia-creation-conte')}>IA & creation</DrawerItem>
+          <DrawerItem onClick={() => go('/valeurs-educatives')}>Valeurs éducatives</DrawerItem>
+          <DrawerItem onClick={() => go('/idees-cadeaux')}>Idées cadeaux</DrawerItem>
+          <DrawerItem onClick={() => go('/ia-creation-conte')}>IA & création</DrawerItem>
         </DrawerSection>
 
         {isAuthenticated && (
           <DrawerSection>
             <DrawerLabel>Mon compte</DrawerLabel>
-            <DrawerItem onClick={() => go('/dashboard')}>Ma bibliotheque</DrawerItem>
-            <DrawerItem onClick={() => go('/dashboard/account')}>Parametres</DrawerItem>
-            <DrawerItem onClick={() => { logout(); go('/'); }}>Deconnexion</DrawerItem>
+            <DrawerItem onClick={() => go('/dashboard')}>Ma bibliothèque</DrawerItem>
+            <DrawerItem onClick={() => go('/dashboard/account')}>Paramètres</DrawerItem>
+            <DrawerItem onClick={() => { logout(); go('/'); }}>Déconnexion</DrawerItem>
           </DrawerSection>
         )}
 
         <div style={{ marginTop: 'auto', paddingTop: 20 }}>
           <Button variant="primary" size="lg" fullWidth onClick={() => go('/create-story')}
             style={{ borderRadius: '14px' }}>
-            Creer un livre
+            Créer un livre
           </Button>
           {!isAuthenticated && (
             <Button variant="ghost" size="lg" fullWidth onClick={() => go('/login')}

@@ -72,11 +72,11 @@ export const MagicLoginPage: React.FC = () => {
           setTimeout(() => navigate('/dashboard'), 1000);
         } else {
           setStatus('error');
-          setErrorMsg(response.message || 'Lien invalide ou expire.');
+          setErrorMsg(response.message || 'Lien invalide ou expiré.');
         }
       } catch (err: any) {
         setStatus('error');
-        setErrorMsg(err?.message || 'Lien invalide ou expire.');
+        setErrorMsg(err?.message || 'Lien invalide ou expiré.');
       }
     })();
   }, [searchParams, navigate, setTokenAndUser]);
@@ -88,27 +88,27 @@ export const MagicLoginPage: React.FC = () => {
           <>
             <Spinner />
             <Title>Connexion en cours...</Title>
-            <Message>Verification de votre lien...</Message>
+            <Message>Vérification de votre lien...</Message>
           </>
         )}
         {status === 'success' && (
           <>
             <div style={{ fontSize: 48, marginBottom: 12 }}>&#10003;</div>
-            <Title>Connecte !</Title>
-            <Message>Redirection vers votre bibliotheque...</Message>
+            <Title>Connecté !</Title>
+            <Message>Redirection vers votre bibliothèque...</Message>
           </>
         )}
         {status === 'error' && (
           <>
             <div style={{ fontSize: 48, marginBottom: 12 }}>&#10007;</div>
-            <Title>Lien expire</Title>
+            <Title>Lien expiré</Title>
             <Message>{errorMsg}</Message>
             <Message style={{ marginTop: 16 }}>
               <span
                 style={{ color: theme.colors.accent.coral, cursor: 'pointer', fontWeight: 600 }}
                 onClick={() => navigate('/login')}
               >
-                Retour a la connexion
+                Retour à la connexion
               </span>
             </Message>
           </>

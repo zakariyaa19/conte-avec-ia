@@ -288,7 +288,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
     setTimeout(() => setCopied(false), 2500);
   };
 
-  const shareText = `Regarde le conte personnalise de ${protagonistName} ! Une histoire magique creee rien que pour lui. Viens la decouvrir :`;
+  const shareText = `Regarde le conte personnalisé de ${protagonistName} ! Une histoire magique créée rien que pour lui. Viens la découvrir :`;
   const title = coverTitle || `Le conte de ${protagonistName}`;
 
   const handleNativeShare = async () => {
@@ -323,7 +323,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
         <HeroSection>
           <HeroEmoji>📖</HeroEmoji>
           <HeroTitle>Partagez le conte de {protagonistName}</HeroTitle>
-          <HeroSubtitle>Faites decouvrir cette histoire magique a vos proches</HeroSubtitle>
+          <HeroSubtitle>Faites découvrir cette histoire magique à vos proches</HeroSubtitle>
         </HeroSection>
 
         {/* Aperçu du message qui sera envoyé */}
@@ -340,7 +340,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
               <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
               <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
             </svg>
-            Envoyer a mes proches
+            Envoyer à mes proches
           </NativeShareButton>
         )}
 
@@ -378,7 +378,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                 </svg>
               )}
             </ShareIcon>
-            <ShareLabel>{copied ? 'Copie !' : 'Copier'}</ShareLabel>
+            <ShareLabel>{copied ? 'Copié !' : 'Copier'}</ShareLabel>
           </ShareButton>
         </ShareGrid>
 
@@ -387,14 +387,14 @@ export const ShareModal: React.FC<ShareModalProps> = ({
           <CopyLinkRow>
             <LinkText>{shareUrl}</LinkText>
             <CopyButton $copied={copied} onClick={handleCopy}>
-              {copied ? 'Copie !' : 'Copier'}
+              {copied ? 'Copié !' : 'Copier'}
             </CopyButton>
           </CopyLinkRow>
         )}
 
         {loading && (
           <CopyLinkRow>
-            <LinkText>Generation du lien de partage...</LinkText>
+            <LinkText>Génération du lien de partage...</LinkText>
           </CopyLinkRow>
         )}
 

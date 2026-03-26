@@ -201,13 +201,13 @@ export const PricingTiers: React.FC<PricingTiersProps> = ({ onSelectPlan }) => {
           <Divider />
           <Features>
             <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>Premier livre offert</Feature>
-            <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>Bibliotheque limitee a 3 livres</Feature>
+            <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>Bibliothèque limitée à 3 livres</Feature>
             <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>7 illustrations par livre</Feature>
-            <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>Bibliotheque en ligne</Feature>
-            <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>Lecture + telechargement</Feature>
+            <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>Bibliothèque en ligne</Feature>
+            <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>Lecture + téléchargement</Feature>
             <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>1 personnage secondaire</Feature>
             <Feature $disabled><FeatureIcon>—</FeatureIcon>Styles d'illustration</Feature>
-            <Feature $disabled><FeatureIcon>—</FeatureIcon>Occasions speciales</Feature>
+            <Feature $disabled><FeatureIcon>—</FeatureIcon>Occasions spéciales</Feature>
           </Features>
           <Button variant="outline" size="lg" onClick={() => onSelectPlan('single')} fullWidth>
             Commencer gratuitement
@@ -216,11 +216,11 @@ export const PricingTiers: React.FC<PricingTiersProps> = ({ onSelectPlan }) => {
 
         {/* Club */}
         <Card $highlighted>
-          <Badge>Recommande</Badge>
+          <Badge>Recommandé</Badge>
           <CardTitle>Club des Histoires</CardTitle>
           <PriceBlock>
             <PriceValue>{showAnnual ? '6,67€' : '9,99€'}<span style={{ fontSize: '16px', fontWeight: 400, color: 'var(--text-light)' }}>/mois</span></PriceValue>
-            <PriceNote>{showAnnual ? '79,99€/an — economisez 40€' : 'Sans engagement'}</PriceNote>
+            <PriceNote>{showAnnual ? '79,99€/an — économisez 40€' : 'Sans engagement'}</PriceNote>
           </PriceBlock>
           <Divider />
           <Features>
@@ -228,9 +228,9 @@ export const PricingTiers: React.FC<PricingTiersProps> = ({ onSelectPlan }) => {
             <Feature $premium><FeatureIcon style={{ color: '#8B5CF6' }}>&#10003;</FeatureIcon>9 styles d'illustration</Feature>
             <Feature $premium><FeatureIcon style={{ color: '#8B5CF6' }}>&#10003;</FeatureIcon>5 personnages secondaires</Feature>
             <Feature $premium><FeatureIcon style={{ color: '#8B5CF6' }}>&#10003;</FeatureIcon>Animal de compagnie</Feature>
-            <Feature $premium><FeatureIcon style={{ color: '#8B5CF6' }}>&#10003;</FeatureIcon>Noel, anniversaire, fetes...</Feature>
-            <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>Bibliotheque illimitee + PDF</Feature>
-            <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>Credits cumulables</Feature>
+            <Feature $premium><FeatureIcon style={{ color: '#8B5CF6' }}>&#10003;</FeatureIcon>Noël, anniversaire, fêtes...</Feature>
+            <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>Bibliothèque illimitée + PDF</Feature>
+            <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>Crédits cumulables</Feature>
             <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>Annulable en 1 clic</Feature>
           </Features>
           <Button variant="primary" size="lg" onClick={() => onSelectPlan(showAnnual ? 'annual' : 'monthly')} fullWidth>

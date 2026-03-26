@@ -40,14 +40,14 @@ const STYLE_LABELS: Record<string, string> = {
   '3d-animation': 'Animation 3D',
   'japanese-manga': 'Manga',
   'kawaii': 'Kawaii',
-  'paper-cut': 'Papier Decoupage',
+  'paper-cut': 'Papier Découpé',
   'watercolor': 'Aquarelle',
-  'geometric': 'Geometrique',
+  'geometric': 'Géométrique',
 };
 
 const THEME_LABELS: Record<string, string> = {
-  'fairy-tales': 'Contes de fees',
-  'custom': 'Personnalise',
+  'fairy-tales': 'Contes de fées',
+  'custom': 'Personnalisé',
   'adventure': 'Aventure',
 };
 
@@ -57,7 +57,7 @@ const MESSAGE_LABELS: Record<string, string> = {
   'respect': 'Respect',
   'courage': 'Courage',
   'non spécifié': 'Aventure',
-  '': 'Decouverte',
+  '': 'Découverte',
 };
 
 const PageContainer = styled.div`
@@ -291,7 +291,7 @@ export const ExemplesPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    document.title = "Exemples de Contes Personnalises | Contes d'IA";
+    document.title = "Exemples de Contes Personnalisés | Contes d'IA";
   }, []);
 
   return (
@@ -304,10 +304,10 @@ export const ExemplesPage: React.FC = () => {
       <main>
         <ShowcaseSection ref={showcaseReveal.ref}>
           <Container>
-            <SectionTitle>Decouvrez nos contes personnalises</SectionTitle>
+            <SectionTitle>Découvrez nos contes personnalisés</SectionTitle>
             <Divider />
             <SectionSubtitle>
-              Chaque conte est une creation unique. Cliquez pour feuilleter directement dans votre navigateur.
+              Chaque conte est une création unique. Cliquez pour feuilleter directement dans votre navigateur.
             </SectionSubtitle>
 
             {loading ? (
@@ -318,7 +318,7 @@ export const ExemplesPage: React.FC = () => {
                   const styleColor = STYLE_COLORS[story.illustrationStyle] || theme.colors.accent.coral;
                   const styleLabel = STYLE_LABELS[story.illustrationStyle] || story.illustrationStyle;
                   const themeLabel = THEME_LABELS[story.generalTheme] || story.generalTheme;
-                  const messageLabel = MESSAGE_LABELS[story.centralMessage] || story.centralMessage || 'Decouverte';
+                  const messageLabel = MESSAGE_LABELS[story.centralMessage] || story.centralMessage || 'Découverte';
                   return (
                     <ShowcaseCard
                       key={story.id}
@@ -359,7 +359,7 @@ export const ExemplesPage: React.FC = () => {
 
             <ShowcaseFooter>
               <Button variant="primary" size="lg" onClick={() => navigate('/create-story')}>
-                Creer mon propre conte
+                Créer mon propre conte
               </Button>
             </ShowcaseFooter>
           </Container>

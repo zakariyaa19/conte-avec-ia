@@ -544,7 +544,7 @@ export const StoryDetailPage: React.FC = () => {
 
   const handleSetPassword = async () => {
     if (newPassword.length < 8) {
-      setPasswordError('Minimum 8 caracteres');
+      setPasswordError('Minimum 8 caractères');
       return;
     }
     setPasswordSaving(true);
@@ -635,7 +635,7 @@ export const StoryDetailPage: React.FC = () => {
       URL.revokeObjectURL(blobUrl);
     } catch (error) {
       console.error('Erreur telechargement:', error);
-      setPdfError('Erreur lors du telechargement. Reessayez.');
+      setPdfError('Erreur lors du téléchargement. Réessayez.');
     }
   };
 
@@ -654,7 +654,7 @@ export const StoryDetailPage: React.FC = () => {
       setViewerOpen(true);
     } catch (error) {
       console.error('Erreur lecture PDF:', error);
-      setPdfError('Impossible de charger le PDF. Verifiez votre connexion et reessayez.');
+      setPdfError('Impossible de charger le PDF. Vérifiez votre connexion et réessayez.');
     } finally {
       setPdfLoading(false);
     }
@@ -689,7 +689,7 @@ export const StoryDetailPage: React.FC = () => {
       <PageContainer>
         <Header />
         <MainContent>
-          <p>Conte non trouve.</p>
+          <p>Conte non trouvé.</p>
           <Button variant="primary" onClick={() => navigate('/dashboard')}>Retour</Button>
         </MainContent>
         <Footer />
@@ -709,7 +709,7 @@ export const StoryDetailPage: React.FC = () => {
         <Header />
         <MainContent>
           <BackLink onClick={() => navigate('/dashboard')}>
-            &larr; Ma bibliotheque
+            &larr; Ma bibliothèque
           </BackLink>
 
           <GeneratingCard>
@@ -722,25 +722,25 @@ export const StoryDetailPage: React.FC = () => {
               <GenBook>&#9733;</GenBook>
               <GenTitle>{displayTitle}</GenTitle>
               <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 14, margin: '0 0 24px' }}>
-                L'histoire de {story.protagonistName} est en cours de creation.<br/>
-                Elle sera prete dans quelques minutes !
+                L'histoire de {story.protagonistName} est en cours de création.<br/>
+                Elle sera prête dans quelques minutes !
               </p>
               <GenProgressTrack>
                 <GenProgressBar $progress={story.generationProgress || 15} />
               </GenProgressTrack>
               <GenStep>
                 {story.generationProgress
-                  ? story.generationProgress < 10 ? 'Redaction de l\'histoire...'
-                    : story.generationProgress < 90 ? 'Creation des illustrations...'
+                  ? story.generationProgress < 10 ? 'Rédaction de l\'histoire...'
+                    : story.generationProgress < 90 ? 'Création des illustrations...'
                     : 'Assemblage du livre...'
-                  : 'Demarrage...'}
+                  : 'Démarrage...'}
               </GenStep>
             </GenInner>
           </GeneratingCard>
 
           <div style={{ textAlign: 'center', marginTop: theme.spacing.lg }}>
             <p style={{ fontSize: 13, color: 'var(--text-light)' }}>
-              Cette page se met a jour automatiquement
+              Cette page se met à jour automatiquement
             </p>
           </div>
         </MainContent>
@@ -764,7 +764,7 @@ export const StoryDetailPage: React.FC = () => {
       <Header />
       <MainContent>
         <BackLink onClick={() => navigate('/dashboard')}>
-          &larr; Ma bibliotheque
+          &larr; Ma bibliothèque
         </BackLink>
 
         {/* ─── Hero : couverture + infos ─── */}
@@ -866,7 +866,7 @@ export const StoryDetailPage: React.FC = () => {
                   </svg>
                 </ActionIconCircle>
                 <ActionTextBlock>
-                  <ActionLabel>Envoyer a un proche</ActionLabel>
+                  <ActionLabel>Envoyer à un proche</ActionLabel>
                   <ActionDesc $variant="secondary">Partagez cette histoire avec votre famille</ActionDesc>
                 </ActionTextBlock>
               </ActionCard>
@@ -874,20 +874,20 @@ export const StoryDetailPage: React.FC = () => {
           </ActionsCard>
         ) : null}
 
-        {/* ─── Details du conte ─── */}
+        {/* ─── Détails du conte ─── */}
         <DetailsCard style={{ marginTop: theme.spacing.lg }}>
-          <DetailsTitle>Details du conte</DetailsTitle>
+          <DetailsTitle>Détails du conte</DetailsTitle>
           <InfoGrid>
             <InfoItem>
               <label>Personnage</label>
               <span>{story.protagonistName}</span>
             </InfoItem>
             <InfoItem>
-              <label>Age</label>
+              <label>Âge</label>
               <span>{story.ageRange} ans</span>
             </InfoItem>
             <InfoItem>
-              <label>Theme</label>
+              <label>Thème</label>
               <span>{translateTheme(story.generalTheme)}</span>
             </InfoItem>
             <InfoItem>
@@ -910,7 +910,7 @@ export const StoryDetailPage: React.FC = () => {
             )}
             <InfoItem>
               <label>Format</label>
-              <span>eBook numerique</span>
+              <span>eBook numérique</span>
             </InfoItem>
           </InfoGrid>
         </DetailsCard>

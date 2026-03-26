@@ -400,7 +400,7 @@ export const LoginPage: React.FC = () => {
     } catch (err: any) {
       setStripeRedirect(false);
       setStripeError(
-        'Votre compte a ete cree avec succes. La redirection vers le paiement a echoue. ' +
+        'Votre compte a été créé avec succès. La redirection vers le paiement a échoué. ' +
         'Vous pouvez souscrire au Club depuis votre espace client.'
       );
     }
@@ -437,7 +437,7 @@ export const LoginPage: React.FC = () => {
     }
 
     if (mode === 'register' && password.length < 8) {
-      setError('Le mot de passe doit contenir au moins 8 caracteres');
+      setError('Le mot de passe doit contenir au moins 8 caractères');
       return;
     }
 
@@ -487,9 +487,9 @@ export const LoginPage: React.FC = () => {
           <LoginCard>
             <RedirectOverlay>
               <Spinner />
-              <RedirectTitle>Compte cree avec succes !</RedirectTitle>
+              <RedirectTitle>Compte créé avec succès !</RedirectTitle>
               <RedirectText>
-                Redirection vers le paiement securise...
+                Redirection vers le paiement sécurisé...
               </RedirectText>
             </RedirectOverlay>
           </LoginCard>
@@ -511,11 +511,11 @@ export const LoginPage: React.FC = () => {
       <Header />
       <LoginContainer>
         <LoginCard $wide={isRegister}>
-          <Title>{isRegister ? 'Creer mon compte' : 'Connexion'}</Title>
+          <Title>{isRegister ? 'Créer mon compte' : 'Connexion'}</Title>
           <Subtitle>
             {isRegister
-              ? 'Creez votre compte pour retrouver vos livres'
-              : 'Accedez a votre bibliotheque de livres'}
+              ? 'Créez votre compte pour retrouver vos livres'
+              : 'Accédez à votre bibliothèque de livres'}
           </Subtitle>
 
           {error && <ErrorMsg>{error}</ErrorMsg>}
@@ -528,7 +528,7 @@ export const LoginPage: React.FC = () => {
                 style={{ color: theme.colors.accent.coral, cursor: 'pointer', fontWeight: 600, marginTop: 8, display: 'inline-block' }}
                 onClick={() => navigate('/dashboard')}
               >
-                Aller a mon espace client &rarr;
+                Aller à mon espace client &rarr;
               </span>
             </RedirectError>
           )}
@@ -539,16 +539,16 @@ export const LoginPage: React.FC = () => {
               {loginMethod === 'otp_verify' ? (
                 /* Code OTP envoyé — saisie du code */
                 <div style={{ textAlign: 'center' }}>
-                  <div style={{ fontSize: 28, marginBottom: 12, fontWeight: 700 }}>Code envoye</div>
+                  <div style={{ fontSize: 28, marginBottom: 12, fontWeight: 700 }}>Code envoyé</div>
                   <p style={{ fontWeight: 700, fontSize: theme.fontSizes.lg, color: 'var(--text-primary)', marginBottom: 4 }}>
-                    Code envoye !
+                    Code envoyé !
                   </p>
                   <p style={{ color: 'var(--text-secondary)', fontSize: theme.fontSizes.sm, marginBottom: 20 }}>
-                    Entrez le code a 6 chiffres envoye a <strong>{email}</strong>
+                    Entrez le code à 6 chiffres envoyé à <strong>{email}</strong>
                   </p>
                   <Form onSubmit={async (e) => {
                     e.preventDefault();
-                    if (!password || password.length !== 6) { setError('Entrez le code a 6 chiffres'); return; }
+                    if (!password || password.length !== 6) { setError('Entrez le code à 6 chiffres'); return; }
                     setError('');
                     setIsLoading(true);
                     try {
@@ -559,7 +559,7 @@ export const LoginPage: React.FC = () => {
                       } else {
                         setError(res.message || 'Code incorrect');
                       }
-                    } catch { setError('Erreur de verification'); }
+                    } catch { setError('Erreur de vérification'); }
                     setIsLoading(false);
                   }}>
                     <Input
@@ -576,11 +576,11 @@ export const LoginPage: React.FC = () => {
                       }}
                     />
                     <Button variant="primary" size="lg" type="submit" disabled={isLoading} fullWidth>
-                      {isLoading ? 'Verification...' : 'Se connecter'}
+                      {isLoading ? 'Vérification...' : 'Se connecter'}
                     </Button>
                   </Form>
                   <p style={{ color: 'var(--text-light)', fontSize: theme.fontSizes.xs, marginTop: 16 }}>
-                    Pas recu ?{' '}
+                    Pas reçu ?{' '}
                     <span style={{ color: theme.colors.accent.coral, cursor: 'pointer', fontWeight: 600 }}
                       onClick={async () => {
                         setIsLoading(true);
@@ -667,9 +667,9 @@ export const LoginPage: React.FC = () => {
 
               <Form onSubmit={handleSubmit}>
                 <InputField>
-                  <InputLabel>Prenom</InputLabel>
+                  <InputLabel>Prénom</InputLabel>
                   <Input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)}
-                    placeholder="Votre prenom" autoComplete="given-name" style={{ fontSize: 16 }} />
+                    placeholder="Votre prénom" autoComplete="given-name" style={{ fontSize: 16 }} />
                 </InputField>
                 <InputField>
                   <InputLabel>Email</InputLabel>
@@ -679,8 +679,8 @@ export const LoginPage: React.FC = () => {
                 <InputField>
                   <InputLabel>Mot de passe</InputLabel>
                   <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Minimum 8 caracteres" autoComplete="new-password" style={{ fontSize: 16 }} />
-                  <PasswordHint>Minimum 8 caracteres</PasswordHint>
+                    placeholder="Minimum 8 caractères" autoComplete="new-password" style={{ fontSize: 16 }} />
+                  <PasswordHint>Minimum 8 caractères</PasswordHint>
                 </InputField>
 
                 {/* Plan Selector */}
@@ -697,7 +697,7 @@ export const LoginPage: React.FC = () => {
                       </PlanCardHeader>
                       <PlanFeatures>
                         <PlanFeature>Premier livre 100% gratuit</PlanFeature>
-                        <PlanFeature>Bibliotheque personnelle</PlanFeature>
+                        <PlanFeature>Bibliothèque personnelle</PlanFeature>
                       </PlanFeatures>
                     </PlanCard>
                     <PlanCard type="button" $selected={selectedPlan === 'club'} $isPro onClick={() => setSelectedPlan('club')}>
@@ -720,7 +720,7 @@ export const LoginPage: React.FC = () => {
                 </div>
 
                 <Button variant="primary" size="lg" type="submit" disabled={isLoading} fullWidth>
-                  {isLoading ? 'Inscription...' : selectedPlan === 'club' ? 'Creer mon compte & rejoindre le Club' : 'Creer mon compte'}
+                  {isLoading ? 'Inscription...' : selectedPlan === 'club' ? 'Créer mon compte & rejoindre le Club' : 'Créer mon compte'}
                 </Button>
               </Form>
             </>

@@ -301,10 +301,10 @@ export const UpgradePage: React.FC = () => {
         <Header />
         <Content>
           <Hero>
-            <HeroTitle>Vous etes deja membre !</HeroTitle>
-            <HeroSub>Profitez de vos avantages depuis votre bibliotheque.</HeroSub>
+            <HeroTitle>Vous êtes déjà membre !</HeroTitle>
+            <HeroSub>Profitez de vos avantages depuis votre bibliothèque.</HeroSub>
             <div style={{ marginTop: 16 }}>
-              <Button variant="primary" size="lg" onClick={() => navigate('/dashboard')}>Ma bibliotheque</Button>
+              <Button variant="primary" size="lg" onClick={() => navigate('/dashboard')}>Ma bibliothèque</Button>
             </div>
           </Hero>
         </Content>
@@ -319,19 +319,19 @@ export const UpgradePage: React.FC = () => {
       <Content>
         <Hero>
           <HeroTitle>Passez au Club</HeroTitle>
-          <HeroSub>Deverrouillez tout le potentiel de Contes d'IA</HeroSub>
+          <HeroSub>Déverrouillez tout le potentiel de Contes d'IA</HeroSub>
         </Hero>
 
         {/* Checklist — ce que le Club déverrouille */}
         <ChecklistCard>
           <ChecklistTitle>
             <span style={{ fontSize: 18 }}>+</span>
-            Le Club deverrouille
+            Le Club déverrouille
           </ChecklistTitle>
 
           <CheckRow>
             <CheckIcon $type="club">&#10003;</CheckIcon>
-            <CheckLabel><strong>Livres illimites</strong> — plus de limite a 3</CheckLabel>
+            <CheckLabel><strong>Livres illimités</strong> — plus de limite à 3</CheckLabel>
             <CheckBadge>Club</CheckBadge>
           </CheckRow>
           <CheckRow>
@@ -341,7 +341,7 @@ export const UpgradePage: React.FC = () => {
           </CheckRow>
           <CheckRow>
             <CheckIcon $type="club">&#10003;</CheckIcon>
-            <CheckLabel><strong>Personnages secondaires</strong> — freres, amis, famille</CheckLabel>
+            <CheckLabel><strong>Personnages secondaires</strong> — frères, amis, famille</CheckLabel>
             <CheckBadge>Club</CheckBadge>
           </CheckRow>
           <CheckRow>
@@ -351,7 +351,7 @@ export const UpgradePage: React.FC = () => {
           </CheckRow>
           <CheckRow>
             <CheckIcon $type="club">&#10003;</CheckIcon>
-            <CheckLabel><strong>Occasions speciales</strong> — Noel, anniversaire...</CheckLabel>
+            <CheckLabel><strong>Occasions spéciales</strong> — Noël, anniversaire...</CheckLabel>
             <CheckBadge>Club</CheckBadge>
           </CheckRow>
           <CheckRow>
@@ -361,7 +361,7 @@ export const UpgradePage: React.FC = () => {
           </CheckRow>
 
           <div style={{ marginTop: 12, padding: '10px 12px', background: 'var(--bg-secondary)', borderRadius: 12, fontSize: 12, color: 'var(--text-light)', textAlign: 'center' }}>
-            + PDF telechargeables · Credits cumulables · Annulable en 1 clic
+            + PDF téléchargeables · Crédits cumulables · Annulable en 1 clic
           </div>
         </ChecklistCard>
 
@@ -382,7 +382,7 @@ export const UpgradePage: React.FC = () => {
               <PriceUnit>€/mois</PriceUnit>
             </div>
             <PriceSub>
-              {billing === 'monthly' ? 'Sans engagement' : '79,99€/an — economisez 40€'}
+              {billing === 'monthly' ? 'Sans engagement' : '79,99€/an — économisez 40€'}
             </PriceSub>
 
             <CTAButton onClick={handleSubscribe} disabled={loading}>
@@ -393,9 +393,9 @@ export const UpgradePage: React.FC = () => {
 
         {/* Guarantees */}
         <GuaranteesRow>
-          <Guarantee>Paiement securise</Guarantee>
+          <Guarantee>Paiement sécurisé</Guarantee>
           <Guarantee>Sans engagement</Guarantee>
-          <Guarantee>Acces immediat</Guarantee>
+          <Guarantee>Accès immédiat</Guarantee>
         </GuaranteesRow>
 
         {/* Testimonial */}

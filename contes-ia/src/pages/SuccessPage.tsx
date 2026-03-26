@@ -295,19 +295,19 @@ export const SuccessPage: React.FC = () => {
   const isFirstBookFree = searchParams.get('free') === 'true';
 
   useEffect(() => {
-    document.title = 'Commande Confirmee | Votre Livre Personnalise est en Preparation';
+    document.title = 'Commande Confirmée | Votre Livre Personnalisé est en Préparation';
 
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', 'Felicitations ! Votre conte personnalise est confirme. Votre eBook personnalise sera bientot pret.');
+      metaDescription.setAttribute('content', 'Félicitations ! Votre conte personnalisé est confirmé. Votre eBook personnalisé sera bientôt prêt.');
     } else {
       const newMetaDescription = document.createElement('meta');
       newMetaDescription.name = 'description';
-      newMetaDescription.content = 'Felicitations ! Votre conte personnalise est confirme. Votre eBook personnalise sera bientot pret.';
+      newMetaDescription.content = 'Félicitations ! Votre conte personnalisé est confirmé. Votre eBook personnalisé sera bientôt prêt.';
       document.head.appendChild(newMetaDescription);
     }
 
-    // Commande Club gratuite : pas besoin de verifier Stripe
+    // Commande Club gratuite : pas besoin de vérifier Stripe
     if (isClubFree) {
       setPaymentConfirmed(true);
       setIsVerifying(false);
@@ -320,7 +320,7 @@ export const SuccessPage: React.FC = () => {
       return;
     }
 
-    // Premier livre gratuit : pas besoin de verifier Stripe
+    // Premier livre gratuit : pas besoin de vérifier Stripe
     if (isFirstBookFree) {
       setPaymentConfirmed(true);
       setIsVerifying(false);
@@ -364,7 +364,7 @@ export const SuccessPage: React.FC = () => {
             }
           }
         } catch (error) {
-          console.error('Erreur lors de la verification du paiement:', error);
+          console.error('Erreur lors de la vérification du paiement:', error);
         }
       }
       setIsVerifying(false);
@@ -390,9 +390,9 @@ export const SuccessPage: React.FC = () => {
             <LoadingIconContainer>
               <SpinningEmoji>⏳</SpinningEmoji>
             </LoadingIconContainer>
-            <Title>Verification du paiement...</Title>
+            <Title>Vérification du paiement...</Title>
             <Message>
-              Nous verifions votre paiement et preparons votre commande.
+              Nous vérifions votre paiement et préparons votre commande.
               Cela ne prend que quelques instants.
             </Message>
           </SuccessCard>
@@ -411,19 +411,19 @@ export const SuccessPage: React.FC = () => {
             <IconEmoji>✅</IconEmoji>
           </SuccessIconContainer>
 
-          <Title>{isFirstBookFree ? 'Votre livre gratuit est en cours de creation !' : 'Votre conte est en cours de creation !'}</Title>
+          <Title>{isFirstBookFree ? 'Votre livre gratuit est en cours de création !' : 'Votre conte est en cours de création !'}</Title>
 
           {paymentConfirmed && (
             <ConfirmedBadge>
-              &#10003; {isFirstBookFree ? 'Livre gratuit confirme' : 'Commande confirmee'}
+              &#10003; {isFirstBookFree ? 'Livre gratuit confirmé' : 'Commande confirmée'}
             </ConfirmedBadge>
           )}
 
           <Message>
             {isFirstBookFree ? (
-              <>Notre IA cree votre livre en ce moment ! Il sera disponible dans votre <strong>bibliotheque en ligne</strong> dans environ <strong>5 minutes</strong>.</>
+              <>Notre IA crée votre livre en ce moment ! Il sera disponible dans votre <strong>bibliothèque en ligne</strong> dans environ <strong>5 minutes</strong>.</>
             ) : (
-              <>Notre IA genere votre livre personnalise en ce moment meme.<br />Il sera pret dans environ <strong>5 minutes</strong>.</>
+              <>Notre IA génère votre livre personnalisé en ce moment même.<br />Il sera prêt dans environ <strong>5 minutes</strong>.</>
             )}
           </Message>
 
@@ -431,15 +431,15 @@ export const SuccessPage: React.FC = () => {
             <StepItem>
               <StepNumber $highlighted>1</StepNumber>
               <StepText>
-                <strong>Generation en cours</strong>
-                <span>Notre IA redige l'histoire et illustre chaque page de votre conte</span>
+                <strong>Génération en cours</strong>
+                <span>Notre IA rédige l'histoire et illustre chaque page de votre conte</span>
               </StepText>
             </StepItem>
             <StepItem>
               <StepNumber>2</StepNumber>
               <StepText>
-                <strong>Consultez-le dans votre bibliotheque</strong>
-                <span>Lisez votre livre directement sur le site dans votre espace personnel. Vous recevrez aussi un email quand il sera pret</span>
+                <strong>Consultez-le dans votre bibliothèque</strong>
+                <span>Lisez votre livre directement sur le site dans votre espace personnel. Vous recevrez aussi un email quand il sera prêt</span>
               </StepText>
             </StepItem>
           </StepsContainer>
@@ -451,7 +451,7 @@ export const SuccessPage: React.FC = () => {
               onClick={() => navigate('/dashboard')}
               fullWidth
             >
-              Retrouver mon livre dans ma bibliotheque
+              Retrouver mon livre dans ma bibliothèque
             </Button>
             <div style={{ marginTop: theme.spacing.sm }}>
               <Button
@@ -460,7 +460,7 @@ export const SuccessPage: React.FC = () => {
                 onClick={handleCreateAnother}
                 fullWidth
               >
-                Creer un autre conte
+                Créer un autre conte
               </Button>
             </div>
           </ButtonContainer>
@@ -485,7 +485,7 @@ export const SuccessPage: React.FC = () => {
               onClick={() => navigate('/club/checkout')}
               fullWidth
             >
-              Decouvrir le Club — 9,99€/mois
+              Découvrir le Club — 9,99€/mois
             </Button>
           </UpsellCard>
         )}
