@@ -161,8 +161,8 @@ const IdeesCadeauxPage: React.FC = () => {
           <HeroTitle>Idées <span>Cadeaux</span></HeroTitle>
           <HeroDivider />
           <HeroSubtitle>
-            Offrez bien plus qu'un simple livre ! Un conte personnalise ou votre enfant
-            devient le heros de sa propre histoire magique, le cadeau original parfait.
+            Offrez bien plus qu'un simple livre ! Un conte personnalisé où votre enfant
+            devient le héros de sa propre histoire magique, le cadeau original parfait.
           </HeroSubtitle>
         </HeroContent>
       </HeroSection>
@@ -175,8 +175,8 @@ const IdeesCadeauxPage: React.FC = () => {
             <SectionTitle>Le Cadeau Parfait pour Chaque <span>Occasion</span></SectionTitle>
             <SectionDivider />
             <SectionSubtitle>
-              Que ce soit pour celebrer, recompenser, consoler ou simplement faire plaisir,
-              nos contes personnalises s'adaptent a tous les moments importants.
+              Que ce soit pour célébrer, récompenser, consoler ou simplement faire plaisir,
+              nos contes personnalisés s'adaptent à tous les moments importants.
             </SectionSubtitle>
           </SectionWrapper>
           <CardsGrid ref={occasionsCardsReveal.ref}>
@@ -209,7 +209,7 @@ const IdeesCadeauxPage: React.FC = () => {
             <SectionTitle>Choisissez le Format <span>Parfait</span></SectionTitle>
             <SectionDivider />
             <SectionSubtitle>
-              Deux formats disponibles pour s'adapter a toutes les envies et tous les budgets.
+              Deux formats disponibles pour s'adapter à toutes les envies et tous les budgets.
             </SectionSubtitle>
           </SectionWrapper>
           <TwoColumnGrid ref={formatsCardsReveal.ref}>
@@ -247,11 +247,11 @@ const IdeesCadeauxPage: React.FC = () => {
         <SectionDeco $size={280} $top="-30px" $right="-60px" $color={theme.colors.accent.lightGreen} />
         <Container>
           <SectionWrapper $visible={personalizationReveal.isVisible}>
-            <SectionTitle>Idees de <span>Personnalisation</span></SectionTitle>
+            <SectionTitle>Idées de <span>Personnalisation</span></SectionTitle>
             <SectionDivider />
             <SectionSubtitle>
-              Rendez chaque conte unique en integrant les elements de la vie de votre enfant
-              pour une experience de lecture vraiment personnelle.
+              Rendez chaque conte unique en intégrant les éléments de la vie de votre enfant
+              pour une expérience de lecture vraiment personnelle.
             </SectionSubtitle>
           </SectionWrapper>
           <CardsGrid $columns={4} ref={personalizationCardsReveal.ref}>
@@ -275,11 +275,11 @@ const IdeesCadeauxPage: React.FC = () => {
         <SectionDeco $size={260} $top="5%" $left="-70px" $color={theme.colors.accent.softPeach} />
         <Container>
           <SectionWrapper $visible={ageReveal.isVisible}>
-            <SectionTitle>Cadeaux par <span>Age</span></SectionTitle>
+            <SectionTitle>Cadeaux par <span>Âge</span></SectionTitle>
             <SectionDivider />
             <SectionSubtitle>
-              Chaque tranche d'age merite un conte adapte a ses centres d'interet
-              et a son niveau de comprehension.
+              Chaque tranche d'âge mérite un conte adapté à ses centres d'intérêt
+              et à son niveau de compréhension.
             </SectionSubtitle>
           </SectionWrapper>
           <CardsGrid $columns={3} ref={ageCardsReveal.ref}>
@@ -308,12 +308,12 @@ const IdeesCadeauxPage: React.FC = () => {
       <FinalCTASection ref={ctaReveal.ref}>
         <SectionWrapper $visible={ctaReveal.isVisible}>
           <FinalCTAContent>
-            <FinalCTATitle>Creez le Cadeau Enfant Original Parfait</FinalCTATitle>
+            <FinalCTATitle>Créez le Cadeau Enfant Original Parfait</FinalCTATitle>
             <FinalCTAText>
-              Ne cherchez plus le cadeau ideal : creez-le ! Un conte personnalise unique
-              qui celebrera sa personnalite et nourrira son imagination.
+              Ne cherchez plus le cadeau idéal : créez-le ! Un conte personnalisé unique
+              qui célébrera sa personnalité et nourrira son imagination.
             </FinalCTAText>
-            <WhiteButton onClick={() => navigate('/create-story')}>Creer mon conte</WhiteButton>
+            <WhiteButton onClick={() => navigate('/create-story')}>Créer mon conte</WhiteButton>
           </FinalCTAContent>
         </SectionWrapper>
       </FinalCTASection>
