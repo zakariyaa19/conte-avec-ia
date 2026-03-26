@@ -1759,7 +1759,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                   <TripwireHeroPrice>GRATUIT</TripwireHeroPrice>
                   <PricingCardSub>Juste votre email — pas de carte bancaire</PricingCardSub>
                   <PricingCardFeaturesList>
-                    <PricingCardFeatureItem $highlight>1 livre personnalise pour {heroName}</PricingCardFeatureItem>
+                    <PricingCardFeatureItem $highlight>1 livre personnalisé pour {heroName}</PricingCardFeatureItem>
                     <PricingCardFeatureItem>7 illustrations HD uniques</PricingCardFeatureItem>
                     <PricingCardFeatureItem>Bibliothèque en ligne pour lire et télécharger</PricingCardFeatureItem>
                     <PricingCardFeatureItem>Prêt en 5 minutes par email</PricingCardFeatureItem>
