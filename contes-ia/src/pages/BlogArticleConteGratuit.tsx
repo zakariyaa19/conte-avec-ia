@@ -60,7 +60,7 @@ const BlogArticleConteGratuit: React.FC = () => {
     "@type": "Article",
     "headline": "Conte Personnalisé Gratuit pour Enfant — Créez le Vôtre en 2 Minutes",
     "description": "Guide complet pour créer un conte personnalisé gratuit pour votre enfant. Ce que vous recevez, comment ça marche, pourquoi c'est gratuit. Premier livre offert.",
-    "image": "https://contedia.fr/images/blog/conte-personnalise-gratuit.jpg",
+    "image": "https://res.cloudinary.com/ddcfqlkrd/image/upload/v1774005307/conte-ia/covers/cover-1774005306089-669886729.png",
     "author": { "@type": "Organization", "name": "Contedia", "url": "https://contedia.fr" },
     "publisher": { "@type": "Organization", "name": "Contedia", "logo": { "@type": "ImageObject", "url": "https://contedia.fr/logo-conte-ia.png" } },
     "datePublished": "2026-03-30",
@@ -101,8 +101,8 @@ const BlogArticleConteGratuit: React.FC = () => {
 
             <div className="article-image">
               <img
-                src="/images/blog/conte-personnalise-gratuit.jpg"
-                alt="Enfant émerveillé découvrant son conte personnalisé gratuit"
+                src="https://res.cloudinary.com/ddcfqlkrd/image/upload/v1774005307/conte-ia/covers/cover-1774005306089-669886729.png"
+                alt="Conte personnalisé gratuit pour enfant — exemple de livre illustré par IA"
                 loading="lazy"
                 onError={(e) => { const target = e.target as HTMLImageElement; target.src = '/images/placeholder-blog.jpg'; }}
               />
