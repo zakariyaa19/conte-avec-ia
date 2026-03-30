@@ -83,6 +83,14 @@
     <priority>0.7</priority>
   </url>
 
+  <!-- ══════ ARTICLE TRANSACTIONNEL PRIORITAIRE ══════ -->
+  <url>
+    <loc>https://contedia.fr/blog/conte-personnalise-gratuit</loc>
+    <lastmod>2026-03-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
   <!-- ══════ LANDING PAGE TRANSACTIONNELLE ══════ -->
   <url>
     <loc>https://contedia.fr/livre-personnalise-enfant</loc>

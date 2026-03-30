@@ -447,7 +447,7 @@ export const AdminClientDetailPage: React.FC<AdminClientDetailPageProps> = ({ to
                     </button>
                     <button
                       onClick={async () => {
-                        if (!confirm('Remettre les crédits utilisés à 0 ?')) return;
+                        if (!window.confirm('Remettre les crédits utilisés à 0 ?')) return;
                         const token = localStorage.getItem('adminToken') || '';
                         try {
                           const res = await ApiService.updateAdminClientCredits(token, client.id, 'set', 0);
