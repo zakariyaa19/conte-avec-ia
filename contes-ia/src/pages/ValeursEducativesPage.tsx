@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
 import { useScrollReveal, useStaggerReveal } from '../hooks/useScrollReveal';
+import { SEOHead } from '../components/SEOHead';
 import { theme } from '../styles/theme';
 import {
   PageContainer, HeroSection, HeroDecoBlur, HeroContent, HeroBadge,
@@ -140,6 +141,10 @@ const ValeursEducativesPage: React.FC = () => {
 
   return (
     <PageContainer>
+      <SEOHead
+        title="Contes Éducatifs Personnalisés | Valeurs et Développement Émotionnel Enfant"
+        description="Transmettez des valeurs importantes avec nos contes éducatifs personnalisés : respect, courage, empathie, confiance en soi. Développement émotionnel optimal de votre enfant."
+      />
       <Helmet>
         <title>Contes Éducatifs Personnalisés | Valeurs et Développement Émotionnel Enfant</title>
         <meta name="description" content="Transmettez des valeurs importantes avec nos contes éducatifs personnalisés : respect, courage, empathie, confiance en soi. Développement émotionnel optimal de votre enfant." />

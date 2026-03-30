@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
 import { useScrollReveal, useStaggerReveal } from '../hooks/useScrollReveal';
+import { SEOHead } from '../components/SEOHead';
 import { theme } from '../styles/theme';
 import {
   PageContainer, HeroSection, HeroDecoBlur, HeroContent, HeroBadge,
@@ -115,6 +116,10 @@ const ContesMultilinguesPage: React.FC = () => {
 
   return (
     <PageContainer>
+      <SEOHead
+        title="Livre Personnalisé Multilingue pour Enfant | Apprentissage des Langues"
+        description="Créez un livre personnalisé multilingue pour enfant : français, anglais, espagnol, italien, allemand, arabe. Apprentissage naturel des langues avec des histoires sur mesure."
+      />
       <Helmet>
         <title>Livre Personnalisé Multilingue pour Enfant | Apprentissage des Langues</title>
         <meta name="description" content="Créez un livre personnalisé multilingue pour enfant : français, anglais, espagnol, italien, allemand, arabe. Apprentissage naturel des langues avec des histoires sur mesure." />

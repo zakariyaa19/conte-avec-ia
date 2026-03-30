@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
 import { useScrollReveal, useStaggerReveal } from '../hooks/useScrollReveal';
+import { SEOHead } from '../components/SEOHead';
 import { theme } from '../styles/theme';
 import {
   PageContainer, HeroSection, HeroDecoBlur, HeroContent, HeroBadge,
@@ -39,6 +40,10 @@ const ThemesContesPage: React.FC = () => {
 
   return (
     <PageContainer>
+      <SEOHead
+        title="Thèmes de Contes Personnalisés pour Enfants | Livre sur Mesure avec IA"
+        description="Choisissez parmi nos thèmes de contes personnalisés : aventure, magie, animaux, héros, amitié. Créez un livre enfant sur mesure adapté aux goûts de votre petit avec notre IA."
+      />
       <Helmet>
         <title>Thèmes de Contes Personnalisés pour Enfants | Livre sur Mesure avec IA</title>
         <meta name="description" content="Choisissez parmi nos thèmes de contes personnalisés : aventure, magie, animaux, héros, amitié. Créez un livre enfant sur mesure adapté aux goûts de votre petit avec notre IA." />

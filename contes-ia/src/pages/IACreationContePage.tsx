@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
 import { useScrollReveal, useStaggerReveal } from '../hooks/useScrollReveal';
+import { SEOHead } from '../components/SEOHead';
 import { theme } from '../styles/theme';
 import {
   PageContainer, HeroSection, HeroDecoBlur, HeroContent, HeroBadge,
@@ -48,6 +49,10 @@ const IACreationContePage: React.FC = () => {
 
   return (
     <PageContainer>
+      <SEOHead
+        title="IA et Créativité : Créer des Histoires Uniques pour Enfants | Innovation"
+        description="Découvrez comment l'IA révolutionne les livres pour enfants. Créer un livre magique avec intelligence artificielle : génération narrative, personnalisation et illustrations uniques."
+      />
       <Helmet>
         <title>IA et Créativité : Créer des Histoires Uniques pour Enfants | Innovation</title>
         <meta name="description" content="Découvrez comment l'IA révolutionne les livres pour enfants. Créer un livre magique avec intelligence artificielle : génération narrative, personnalisation et illustrations uniques." />

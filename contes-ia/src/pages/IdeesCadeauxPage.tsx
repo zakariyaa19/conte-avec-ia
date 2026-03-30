@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
 import { useScrollReveal, useStaggerReveal } from '../hooks/useScrollReveal';
+import { SEOHead } from '../components/SEOHead';
 import { theme } from '../styles/theme';
 import {
   PageContainer, HeroSection, HeroDecoBlur, HeroContent, HeroBadge,
@@ -145,6 +146,10 @@ const IdeesCadeauxPage: React.FC = () => {
 
   return (
     <PageContainer>
+      <SEOHead
+        title="Idées Cadeaux Originaux pour Enfants | Livre Personnalisé Anniversaire"
+        description="Découvrez le cadeau personnalisé enfant parfait ! Livre personnalisé pour anniversaire, Noël, rentrée. Histoire personnalisée pour un anniversaire d'enfant unique et mémorable."
+      />
       <Helmet>
         <title>Idées Cadeaux Originaux pour Enfants | Livre Personnalisé Anniversaire</title>
         <meta name="description" content="Découvrez le cadeau personnalisé enfant parfait ! Livre personnalisé pour anniversaire, Noël, rentrée. Histoire personnalisée pour un anniversaire d'enfant unique et mémorable." />

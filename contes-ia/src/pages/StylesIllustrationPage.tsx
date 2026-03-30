@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
 import { useScrollReveal, useStaggerReveal } from '../hooks/useScrollReveal';
+import { SEOHead } from '../components/SEOHead';
 import { theme } from '../styles/theme';
 import {
   PageContainer, HeroSection, HeroDecoBlur, HeroContent, HeroBadge,
@@ -39,6 +40,10 @@ const StylesIllustrationPage: React.FC = () => {
 
   return (
     <PageContainer>
+      <SEOHead
+        title="Styles d'Illustration Livre Personnalisé | Conte Illustré sur Mesure"
+        description="Choisissez le style parfait pour votre livre illustré personnalisé : aquarelle douce, cartoon coloré, réalisme fantastique, vintage. Conte illustré sur mesure pour votre enfant."
+      />
       <Helmet>
         <title>Styles d'Illustration Livre Personnalisé | Conte Illustré sur Mesure</title>
         <meta name="description" content="Choisissez le style parfait pour votre livre illustré personnalisé : aquarelle douce, cartoon coloré, réalisme fantastique, vintage. Conte illustré sur mesure pour votre enfant." />
