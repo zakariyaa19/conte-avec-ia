@@ -29,6 +29,7 @@ import ContesMultilinguesPage from './pages/ContesMultilinguesPage';
 import ValeursEducativesPage from './pages/ValeursEducativesPage';
 import IdeesCadeauxPage from './pages/IdeesCadeauxPage';
 import IACreationContePage from './pages/IACreationContePage';
+import LivrePersonnaliseEnfantPage from './pages/LivrePersonnaliseEnfantPage';
 import BlogPage from './pages/BlogPage';
 import BlogArticle1 from './pages/BlogArticle1';
 import BlogArticle2 from './pages/BlogArticle2';
@@ -117,6 +118,7 @@ function App() {
           <Route path="/valeurs-educatives" element={<ValeursEducativesPage />} />
           <Route path="/idees-cadeaux" element={<IdeesCadeauxPage />} />
           <Route path="/ia-creation-conte" element={<IACreationContePage />} />
+          <Route path="/livre-personnalise-enfant" element={<LivrePersonnaliseEnfantPage />} />
           <Route path="/blog" element={<BlogPage />} />
           {/* Articles de blog */}
           <Route path="/blog/histoire-animal-compagnie-livre-personnalise" element={<BlogArticle1 />} />
