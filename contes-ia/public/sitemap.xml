@@ -91,6 +91,14 @@
     <priority>0.8</priority>
   </url>
 
+  <!-- ══════ ARTICLE SEO — LIVRE BÉBÉ ══════ -->
+  <url>
+    <loc>https://contedia.fr/blog/livre-personnalise-bebe-premier-livre</loc>
+    <lastmod>2026-03-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
   <!-- ══════ LANDING PAGE TRANSACTIONNELLE ══════ -->
   <url>
     <loc>https://contedia.fr/livre-personnalise-enfant</loc>
