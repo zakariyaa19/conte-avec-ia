@@ -144,10 +144,18 @@ export const createSubscriptionSession = async (req: ClientAuthRequest, res: Res
       return res.status(500).json({ error: 'Stripe Price ID non configure pour ce plan' });
     }
 
+    // Appliquer le coupon "1er mois à 1,99€" pour les nouveaux abonnés mensuels
+    const firstMonthCouponId = process.env.STRIPE_FIRST_MONTH_COUPON_ID;
+    const isNewSubscriber = !user.subscriptionId && !user.subscriptionStatus;
+    const applyFirstMonthDiscount = plan !== 'annual' && isNewSubscriber && firstMonthCouponId;
+
     const session = await stripe.checkout.sessions.create({
       customer: stripeCustomerId,
       line_items: [{ price: priceId, quantity: 1 }],
       mode: 'subscription',
+      ...(applyFirstMonthDiscount && {
+        discounts: [{ coupon: firstMonthCouponId }],
+      }),
       success_url: `${process.env.FRONTEND_URL}/dashboard?subscription=success`,
       cancel_url: `${process.env.FRONTEND_URL}/cancel?type=subscription`,
       metadata: {

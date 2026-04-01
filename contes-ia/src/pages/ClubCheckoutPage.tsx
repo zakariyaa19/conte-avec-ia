@@ -205,10 +205,11 @@ export const ClubCheckoutPage: React.FC = () => {
     if (isClub) navigate('/dashboard');
   }, [isClub, navigate]);
 
-  const price = plan === 'monthly' ? '9,99' : '6,67';
+  const price = plan === 'monthly' ? '1,99' : '6,67';
+  const fullPrice = '9,99';
   const perLabel = plan === 'monthly' ? '/mois' : '/mois';
   const billingDetail = plan === 'monthly'
-    ? 'Prélèvement mensuel de 9,99€'
+    ? '1,99€ le 1er mois puis 9,99€/mois. Annulable à tout moment'
     : 'Prélèvement annuel de 79,99€ (soit 6,67€/mois)';
 
   const handlePay = async () => {
@@ -288,8 +289,25 @@ export const ClubCheckoutPage: React.FC = () => {
 
           {/* Price */}
           <PriceBlock>
+            {plan === 'monthly' && (
+              <p style={{
+                fontSize: '12px', color: 'var(--text-secondary)',
+                margin: '0 0 4px', textDecoration: 'line-through', opacity: 0.6,
+              }}>
+                {fullPrice}€/mois
+              </p>
+            )}
             <PriceAmount>{price}€</PriceAmount>
             <PricePer>{perLabel}</PricePer>
+            {plan === 'monthly' && (
+              <p style={{
+                fontSize: '12px', fontWeight: 700, margin: '6px 0 0',
+                color: '#fff', background: 'linear-gradient(135deg, #e74c8a, #a855f7)',
+                display: 'inline-block', padding: '3px 12px', borderRadius: '20px',
+              }}>
+                -80% le 1er mois
+              </p>
+            )}
             {plan === 'annual' && (
               <p style={{ fontSize: '12px', color: '#4CAF50', fontWeight: 600, margin: '4px 0 0' }}>
                 Économisez 40€/an
@@ -302,8 +320,8 @@ export const ClubCheckoutPage: React.FC = () => {
             {loading
               ? 'Redirection...'
               : isAuthenticated
-                ? 'Rejoindre le Club →'
-                : 'Créer mon compte Club →'}
+                ? plan === 'monthly' ? 'Commencer pour 1,99€ →' : 'Rejoindre le Club →'
+                : plan === 'monthly' ? 'Commencer pour 1,99€ →' : 'Créer mon compte Club →'}
           </CTA>
 
           {error && <ErrorMsg>{error}</ErrorMsg>}

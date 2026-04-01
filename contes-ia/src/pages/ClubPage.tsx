@@ -476,14 +476,14 @@ export const ClubPage: React.FC = () => {
   const ctaLabel = isClub
     ? 'Accéder à ma bibliothèque'
     : isAuthenticated
-      ? 'Rejoindre le Club'
-      : 'Commencer maintenant';
+      ? 'Essayer pour 1,99€/mois →'
+      : 'Essayer pour 1,99€/mois →';
 
   return (
     <Page>
       <SEOHead
-        title="Club Contedia — 4 Livres Personnalisés par Mois | 9,99€"
-        description="Rejoignez le Club Contedia : 4 livres personnalisés par mois, 12 pages illustrées, 9 styles d'illustration. Abonnement à 9,99€/mois."
+        title="Club Contedia — 4 Livres Personnalisés par Mois | 1,99€ le 1er mois"
+        description="Rejoignez le Club Contedia : 4 livres personnalisés par mois, 12 pages illustrées, 9 styles d'illustration. 1,99€ le premier mois puis 9,99€/mois."
       />
       <SchemaProduct
         name="Club des Histoires Uniques — Abonnement mensuel"

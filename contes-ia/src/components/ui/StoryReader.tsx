@@ -562,14 +562,15 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
                             boxShadow: '0 2px 12px rgba(167,139,250,0.4)',
                             letterSpacing: '-0.2px',
                           }}>
-                            Rejoindre le Club &rarr;
+                            Essayer pour 1,99 &euro; &rarr;
                           </div>
 
                           <p style={{
                             color: 'rgba(255,255,255,0.35)', fontSize: '10px',
                             margin: '8px 0 0', fontWeight: 500,
                           }}>
-                            9,99 &euro;/mois &middot; Sans engagement
+                            <span style={{ textDecoration: 'line-through', opacity: 0.6 }}>9,99&euro;</span>
+                            {' '}1,99 &euro; le 1er mois &middot; Sans engagement
                           </p>
                         </div>
                       )}

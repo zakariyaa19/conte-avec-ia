@@ -219,8 +219,11 @@ export const PricingTiers: React.FC<PricingTiersProps> = ({ onSelectPlan }) => {
           <Badge>Recommandé</Badge>
           <CardTitle>Club des Histoires</CardTitle>
           <PriceBlock>
-            <PriceValue>{showAnnual ? '6,67€' : '9,99€'}<span style={{ fontSize: '16px', fontWeight: 400, color: 'var(--text-light)' }}>/mois</span></PriceValue>
-            <PriceNote>{showAnnual ? '79,99€/an — économisez 40€' : 'Sans engagement'}</PriceNote>
+            {!showAnnual && (
+              <p style={{ fontSize: '13px', textDecoration: 'line-through', color: 'var(--text-light)', margin: '0 0 2px', opacity: 0.5 }}>9,99€/mois</p>
+            )}
+            <PriceValue>{showAnnual ? '6,67€' : '1,99€'}<span style={{ fontSize: '16px', fontWeight: 400, color: 'var(--text-light)' }}>/mois</span></PriceValue>
+            <PriceNote>{showAnnual ? '79,99€/an — économisez 40€' : '1er mois, puis 9,99€/mois · Sans engagement'}</PriceNote>
           </PriceBlock>
           <Divider />
           <Features>
