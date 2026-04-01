@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect, useCallback, useLayoutEffect } from
 import styled, { keyframes, css } from 'styled-components';
 import { theme } from '../../styles/theme';
 import { getImageUrl } from '../../config/constants';
-import { generateStoryCard } from '../../utils/generateStoryCard';
+
 
 /* ═══════════════════════════════════════════
    STORY READER — Dual layout: portrait + landscape
@@ -305,44 +305,7 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
   const [visibleSlides, setVisibleSlides] = useState<Set<number>>(new Set([0]));
   const [showIndicator, setShowIndicator] = useState(true);
   const [nightMode, setNightMode] = useState(true);
-  const [sharingStory, setSharingStory] = useState(false);
   const indicatorTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  // Share story card (generates image then uses native share or download)
-  const handleShareStory = useCallback(async () => {
-    if (!coverImageUrl || sharingStory) return;
-    setSharingStory(true);
-    try {
-      const blob = await generateStoryCard(
-        resolveUrl(coverImageUrl) || '',
-        coverTitle,
-        protagonistName
-      );
-      const file = new File([blob], `${protagonistName}-contedia.png`, { type: 'image/png' });
-
-      // Try native share (mobile — opens Instagram, WhatsApp, etc.)
-      if (navigator.share && navigator.canShare?.({ files: [file] })) {
-        await navigator.share({
-          files: [file],
-          title: coverTitle,
-          text: `📖 ${protagonistName} a son propre livre ! Clique pour lire son histoire ✨`,
-        });
-      } else {
-        // Fallback: download the image
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${protagonistName}-contedia.png`;
-        a.click();
-        URL.revokeObjectURL(url);
-      }
-    } catch (err) {
-      // User cancelled share — not an error
-      console.log('Share cancelled or failed:', err);
-    } finally {
-      setSharingStory(false);
-    }
-  }, [coverImageUrl, coverTitle, protagonistName, sharingStory]);
 
   const resolveUrl = useCallback((url: string | null) => {
     if (!url) return '';
@@ -516,57 +479,102 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
                     </>
                   ) : (
                     <>
+                      {/* 1. Envoyer à un proche — bouton principal */}
                       {onShare && (
-                        <EndButton $primary onClick={onShare} style={{ marginBottom: 12 }}>
+                        <EndButton $primary onClick={onShare} style={{ marginBottom: 16 }}>
                           Envoyer à un proche
                         </EndButton>
                       )}
 
-                      {/* Share as Story — generates image card for Instagram/TikTok */}
-                      <button
-                        onClick={handleShareStory}
-                        disabled={sharingStory}
-                        style={{
-                          appearance: 'none', border: 'none', cursor: 'pointer',
-                          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-                          width: '100%', maxWidth: 300, padding: '12px 20px',
-                          borderRadius: '12px', marginBottom: 16,
-                          background: 'linear-gradient(135deg, #E1306C, #833AB4, #405DE6)',
-                          color: 'white', fontSize: '14px', fontWeight: 700,
-                          transition: 'transform 0.2s, opacity 0.2s',
-                          opacity: sharingStory ? 0.7 : 1,
-                        }}
-                      >
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
-                          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
-                        </svg>
-                        {sharingStory ? 'Création...' : 'Partager dans votre Story'}
-                      </button>
-
+                      {/* 2. Section Club premium — upsell visuel */}
                       {!isClub && (
-                        <div onClick={() => window.location.href = '/club/checkout'}
+                        <div
+                          onClick={() => window.location.href = '/club/checkout'}
                           style={{
                             width: '100%', maxWidth: 320, cursor: 'pointer',
-                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 40%, #f093fb 100%)',
-                            borderRadius: '16px', padding: '16px',
-                            textAlign: 'center', marginBottom: 14,
-                            boxShadow: '0 4px 24px rgba(118,75,162,0.4)',
-                            border: '1px solid rgba(255,255,255,0.15)',
+                            background: 'linear-gradient(135deg, #1a1040 0%, #2d1b69 50%, #1a1040 100%)',
+                            borderRadius: '20px', padding: '20px 18px',
+                            textAlign: 'center', marginBottom: 16,
+                            boxShadow: '0 4px 32px rgba(118,75,162,0.5), inset 0 1px 0 rgba(255,255,255,0.1)',
+                            border: '1px solid rgba(167,139,250,0.3)',
+                            position: 'relative',
+                            overflow: 'hidden',
+                          }}
+                        >
+                          {/* Decorative glow */}
+                          <div style={{
+                            position: 'absolute', top: '-30px', right: '-30px',
+                            width: '80px', height: '80px', borderRadius: '50%',
+                            background: 'radial-gradient(circle, rgba(167,139,250,0.3) 0%, transparent 70%)',
+                            pointerEvents: 'none',
+                          }} />
+                          <div style={{
+                            position: 'absolute', bottom: '-20px', left: '-20px',
+                            width: '60px', height: '60px', borderRadius: '50%',
+                            background: 'radial-gradient(circle, rgba(240,147,251,0.2) 0%, transparent 70%)',
+                            pointerEvents: 'none',
+                          }} />
+
+                          <p style={{
+                            color: '#f0e6ff', fontWeight: 800, fontSize: '15px',
+                            margin: '0 0 12px', letterSpacing: '-0.3px',
                           }}>
-                          <p style={{ color: 'white', fontWeight: 700, fontSize: '14px', margin: '0 0 8px' }}>
-                            Envie de plus de pages ? ✨
+                            Passez au niveau suivant
                           </p>
-                          <span style={{
-                            display: 'inline-block', fontSize: '12px', fontWeight: 600,
-                            color: 'rgba(255,255,255,0.9)', padding: '6px 16px',
-                            borderRadius: '20px', background: 'rgba(255,255,255,0.15)',
-                            backdropFilter: 'blur(4px)',
+
+                          <div style={{
+                            display: 'flex', flexDirection: 'column', gap: '6px',
+                            marginBottom: '14px',
                           }}>
-                            Découvrir le Club &rarr;
-                          </span>
+                            {[
+                              { icon: '2x', text: 'plus de pages par histoire' },
+                              { icon: '5', text: 'personnages secondaires' },
+                              { icon: '9', text: "styles d'illustration" },
+                              { icon: '4', text: 'livres par mois inclus' },
+                            ].map((item, i) => (
+                              <div key={i} style={{
+                                display: 'flex', alignItems: 'center', gap: '10px',
+                                textAlign: 'left',
+                              }}>
+                                <span style={{
+                                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                                  minWidth: '28px', height: '22px',
+                                  borderRadius: '6px', fontSize: '11px', fontWeight: 800,
+                                  background: 'linear-gradient(135deg, #a78bfa, #f093fb)',
+                                  color: '#1a1040',
+                                }}>
+                                  {item.icon}
+                                </span>
+                                <span style={{
+                                  color: 'rgba(255,255,255,0.85)', fontSize: '12px', fontWeight: 500,
+                                }}>
+                                  {item.text}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+
+                          <div style={{
+                            display: 'inline-block', fontSize: '13px', fontWeight: 700,
+                            color: 'white', padding: '10px 24px',
+                            borderRadius: '12px',
+                            background: 'linear-gradient(135deg, #a78bfa 0%, #f093fb 100%)',
+                            boxShadow: '0 2px 12px rgba(167,139,250,0.4)',
+                            letterSpacing: '-0.2px',
+                          }}>
+                            Rejoindre le Club &rarr;
+                          </div>
+
+                          <p style={{
+                            color: 'rgba(255,255,255,0.35)', fontSize: '10px',
+                            margin: '8px 0 0', fontWeight: 500,
+                          }}>
+                            9,99 &euro;/mois &middot; Sans engagement
+                          </p>
                         </div>
                       )}
 
+                      {/* 3. Créer une nouvelle histoire */}
                       {onCreateAnother && (
                         <EndButton onClick={onCreateAnother} style={{ opacity: 0.7 }}>
                           Créer une nouvelle histoire
