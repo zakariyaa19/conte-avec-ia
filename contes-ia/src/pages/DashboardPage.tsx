@@ -1157,35 +1157,77 @@ export const DashboardPage: React.FC = () => {
 
         {/* old Club section removed — replaced by compact banner above */}
 
-        {/* ══════ 2B. JOIN CLUB (Basic) — compact banner ══════ */}
+        {/* ══════ 2B. JOIN CLUB (Basic) — premium upsell card ══════ */}
         {!loading && !isClub && !subscriptionActivating && (
-          <div onClick={() => navigate('/club/checkout')} style={{
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            borderRadius: '16px', padding: '16px 18px', marginBottom: '16px',
-            position: 'relative', overflow: 'hidden', cursor: 'pointer',
-            display: 'flex', alignItems: 'center', gap: 14,
-          }}>
-            <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
-              <div style={{ position: 'absolute', width: 80, height: 80, borderRadius: '50%', background: 'rgba(255,255,255,0.08)', top: -20, right: -10 }} />
-            </div>
-            <div style={{ position: 'relative', zIndex: 2, flex: 1 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
-                <span style={{ fontSize: 11, background: 'rgba(255,255,255,0.2)', color: 'white', padding: '2px 8px', borderRadius: 8, fontWeight: 600 }}>
-                  {stories.length}/3
+          <div
+            onClick={() => navigate('/club/checkout')}
+            style={{
+              background: 'linear-gradient(145deg, #1a1040 0%, #2d1b69 45%, #1e1250 100%)',
+              borderRadius: '20px', padding: '18px 16px 16px', marginBottom: '16px',
+              position: 'relative', overflow: 'hidden', cursor: 'pointer',
+              border: '1px solid rgba(167,139,250,0.25)',
+              boxShadow: '0 4px 24px rgba(45,27,105,0.4)',
+            }}
+          >
+            {/* Decorative elements */}
+            <div style={{ position: 'absolute', top: -25, right: -15, width: 70, height: 70, borderRadius: '50%', background: 'radial-gradient(circle, rgba(167,139,250,0.2) 0%, transparent 70%)', pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', bottom: -15, left: -10, width: 50, height: 50, borderRadius: '50%', background: 'radial-gradient(circle, rgba(240,147,251,0.15) 0%, transparent 70%)', pointerEvents: 'none' }} />
+
+            {/* Header row */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12, position: 'relative', zIndex: 2 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ fontSize: 11, background: 'rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.7)', padding: '3px 8px', borderRadius: 8, fontWeight: 600 }}>
+                  {stories.length}/3 livres
                 </span>
-                <span style={{ fontSize: 13, fontWeight: 700, color: 'white' }}>
-                  {stories.length >= 3 ? 'Bibliothèque pleine' : 'Passer au Club'}
+                <span style={{ fontSize: 13, fontWeight: 800, color: '#f0e6ff', letterSpacing: '-0.3px' }}>
+                  Club des Histoires
                 </span>
               </div>
-              <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.7)', margin: 0 }}>
-                4 livres/mois, 2x plus de pages, 9 styles...
-              </p>
+              <span style={{
+                fontSize: 10, fontWeight: 700, color: '#1a1040',
+                background: 'linear-gradient(135deg, #a78bfa, #f093fb)',
+                padding: '3px 10px', borderRadius: 20,
+              }}>
+                -80%
+              </span>
             </div>
+
+            {/* Features grid — 2 columns compact */}
             <div style={{
-              background: 'white', color: '#764ba2', borderRadius: 12,
-              padding: '8px 14px', fontSize: 12, fontWeight: 700, flexShrink: 0,
+              display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px 10px',
+              marginBottom: 14, position: 'relative', zIndex: 2,
             }}>
-              Voir &rarr;
+              {[
+                { icon: '📚', text: '4 livres/mois' },
+                { icon: '📖', text: '2x plus de pages' },
+                { icon: '🎨', text: '9 styles uniques' },
+                { icon: '👥', text: '5 personnages' },
+              ].map(f => (
+                <div key={f.text} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <span style={{ fontSize: 13 }}>{f.icon}</span>
+                  <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.75)', fontWeight: 500 }}>{f.text}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* CTA row */}
+            <div style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              position: 'relative', zIndex: 2,
+            }}>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
+                <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', textDecoration: 'line-through' }}>9,99&euro;</span>
+                <span style={{ fontSize: 18, fontWeight: 800, color: 'white' }}>1,99&euro;</span>
+                <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)', fontWeight: 500 }}>/1er mois</span>
+              </div>
+              <div style={{
+                background: 'linear-gradient(135deg, #a78bfa 0%, #f093fb 100%)',
+                color: 'white', borderRadius: 12,
+                padding: '9px 18px', fontSize: 12, fontWeight: 700,
+                boxShadow: '0 2px 12px rgba(167,139,250,0.4)',
+              }}>
+                Essayer &rarr;
+              </div>
             </div>
           </div>
         )}
