@@ -452,6 +452,55 @@ ${order.secondaryCharacterAge ? `📝 Type/Âge: ${escapeHtml(order.secondaryCha
   }
 
   /**
+   * Notification NOUVEL ABONNE CLUB — message premium qui sort du lot
+   * Ne lance JAMAIS d'exception
+   */
+  static async sendNewClubMemberAlert(data: {
+    customerName: string;
+    customerEmail: string;
+    plan: string;
+    amount: string;
+  }): Promise<void> {
+    try {
+      if (!this.BOT_TOKEN || !this.CHAT_ID) return;
+
+      const planLabel = data.plan === 'annual'
+        ? '📅 Annuel (79,99€/an)'
+        : '📅 Mensuel (1,99€ → 9,99€/mois)';
+
+      const message = `
+
+💎💎💎💎💎💎💎💎💎💎💎💎💎💎
+
+🎉🎉🎉 <b>NOUVEL ABONNÉ CLUB !</b> 🎉🎉🎉
+
+💰💰💰 <b>CA-CHING ! REVENUE !</b> 💰💰💰
+
+💎💎💎💎💎💎💎💎💎💎💎💎💎💎
+
+👤 <b>${escapeHtml(data.customerName)}</b>
+📧 ${escapeHtml(data.customerEmail)}
+${planLabel}
+💳 Premier paiement : <b>${escapeHtml(data.amount)}€</b>
+
+🚀 <b>Un client gratuit vient de passer premium !</b>
+📈 Le Club grandit, la machine tourne.
+
+💎💎💎💎💎💎💎💎💎💎💎💎💎💎`;
+
+      await axios.post(`${this.API_URL}/sendMessage`, {
+        chat_id: this.CHAT_ID,
+        text: message,
+        parse_mode: 'HTML'
+      });
+
+      console.log('[TELEGRAM] Alerte NOUVEL ABONNE CLUB envoyee pour:', data.customerEmail);
+    } catch (error: any) {
+      console.error('[TELEGRAM] Erreur alerte Club (non bloquant):', error.message);
+    }
+  }
+
+  /**
    * Envoyer un message de test
    */
   static async sendTestMessage(): Promise<void> {
