@@ -358,122 +358,252 @@ export class MailjetService {
     customerName: string;
     customerEmail: string;
     protagonistName: string;
-    step: 'day1' | 'day3' | 'day7';
+    step: 'day0' | 'day1' | 'day3' | 'day7';
     userId: string;
   }): Promise<void> {
     const magicLink = this.generateMagicDashboardLink(data.userId, data.customerEmail);
     const frontendUrl = process.env.FRONTEND_URL || 'https://contedia.fr';
-    const upgradeLink = `${frontendUrl}/upgrade`;
+    const clubLink = `${frontendUrl}/club/checkout`;
+
+    // Design system commun
+    const wrapper = (content: string) => `
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 550px; margin: 0 auto; background: #ffffff;">
+        <!-- Header Contedia -->
+        <div style="background: linear-gradient(135deg, #1a1040, #2d1b69); padding: 24px 20px; text-align: center;">
+          <img src="${frontendUrl}/logo-conte-ia.png" alt="Contedia" style="height: 32px; margin-bottom: 4px;" />
+          <p style="color: rgba(255,255,255,0.5); font-size: 11px; margin: 0;">Contes personnalises par IA</p>
+        </div>
+        <!-- Content -->
+        <div style="padding: 32px 24px;">
+          ${content}
+        </div>
+        <!-- Footer -->
+        <div style="padding: 20px 24px; text-align: center; border-top: 1px solid #f0f0f0;">
+          <p style="color: #a0a0a0; font-size: 11px; margin: 0 0 8px;">
+            <a href="${magicLink}" style="color: #a78bfa; text-decoration: none;">Ma bibliotheque</a>
+            &nbsp;&middot;&nbsp;
+            <a href="${frontendUrl}" style="color: #a0a0a0; text-decoration: none;">contedia.fr</a>
+          </p>
+          <p style="color: #c0c0c0; font-size: 10px; margin: 0;">
+            Cet email est envoye par Contedia (PAUSIA). Repondez directement pour nous contacter.
+          </p>
+        </div>
+      </div>
+    `;
+
+    // Badge prix commun
+    const priceBadge = `
+      <div style="background: linear-gradient(145deg, #1a1040, #2d1b69); border-radius: 16px; padding: 20px; margin: 24px 0; text-align: center; border: 1px solid rgba(167,139,250,0.3);">
+        <p style="font-size: 11px; font-weight: 700; color: #a78bfa; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 10px;">Offre de lancement</p>
+        <p style="font-size: 14px; color: rgba(255,255,255,0.4); text-decoration: line-through; margin: 0;">9,99&euro;/mois</p>
+        <p style="font-size: 32px; font-weight: 800; color: white; margin: 4px 0;">1,99&euro;</p>
+        <p style="font-size: 12px; color: rgba(255,255,255,0.6); margin: 0 0 16px;">le 1er mois &middot; puis 9,99&euro;/mois &middot; sans engagement</p>
+        <a href="${clubLink}" style="background: linear-gradient(135deg, #a78bfa, #f093fb); color: white; padding: 14px 36px; border-radius: 30px; text-decoration: none; font-weight: 700; font-size: 15px; display: inline-block; box-shadow: 0 4px 16px rgba(167,139,250,0.4);">
+          Essayer le Club pour 1,99&euro; &rarr;
+        </a>
+      </div>
+    `;
 
     const templates: Record<string, { subject: string; html: string }> = {
+      // ═══════════════════════════════════════════════════
+      // J+0 — Email immédiat après livraison du livre gratuit
+      // Angle : émotion + découverte du livre + teaser Club
+      // ═══════════════════════════════════════════════════
+      day0: {
+        subject: `Le livre de ${data.protagonistName} est pret ! Decouvrez-le`,
+        html: wrapper(`
+          <h1 style="color: #1a1040; font-size: 24px; text-align: center; margin: 0 0 8px; font-weight: 800;">
+            Le livre de ${data.protagonistName} vous attend
+          </h1>
+          <p style="color: #888; font-size: 14px; text-align: center; margin: 0 0 28px;">
+            ${data.customerName}, votre conte personnalise est pret a etre lu.
+          </p>
+
+          <div style="text-align: center; margin: 0 0 28px;">
+            <a href="${magicLink}" style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); color: white; padding: 16px 40px; border-radius: 30px; text-decoration: none; font-weight: 700; font-size: 16px; display: inline-block; box-shadow: 0 4px 16px rgba(255,107,107,0.3);">
+              Lire le livre de ${data.protagonistName}
+            </a>
+          </div>
+
+          <div style="background: #f9f7ff; border-radius: 12px; padding: 20px; margin: 24px 0;">
+            <p style="font-size: 14px; color: #555; margin: 0 0 12px; text-align: center; font-weight: 600;">
+              Ce que contient votre livre :
+            </p>
+            <table style="width: 100%; font-size: 13px; color: #666;">
+              <tr><td style="padding: 4px 0;">&#x2728; Histoire unique avec le prenom de ${data.protagonistName}</td></tr>
+              <tr><td style="padding: 4px 0;">&#x1F3A8; 7 illustrations generees par IA</td></tr>
+              <tr><td style="padding: 4px 0;">&#x1F4D6; 6 pages illustrees</td></tr>
+              <tr><td style="padding: 4px 0;">&#x2B07;&#xFE0F; PDF telechargeable</td></tr>
+            </table>
+          </div>
+
+          <div style="background: #f0f9ff; border-left: 4px solid #a78bfa; padding: 16px; border-radius: 0 12px 12px 0; margin: 24px 0;">
+            <p style="font-size: 13px; color: #555; margin: 0;">
+              <strong>Le saviez-vous ?</strong> Avec le Club, chaque livre passe a <strong>12 pages</strong>, <strong>12+ illustrations</strong>, et vous pouvez ajouter jusqu'a <strong>5 personnages</strong> (freres, soeurs, animal de compagnie...).
+            </p>
+          </div>
+
+          ${priceBadge}
+        `)
+      },
+
+      // ═══════════════════════════════════════════════════
+      // J+1 — 24h après
+      // Angle : émotion parentale + valeur du Club concrète
+      // ═══════════════════════════════════════════════════
       day1: {
-        subject: `${data.protagonistName} a adore son histoire ? Imaginez avec 2x plus de pages...`,
-        html: `
-          <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 550px; margin: 0 auto; padding: 40px 20px;">
-            <h1 style="color: #2D3748; font-size: 22px; text-align: center;">Et si ${data.protagonistName} avait une histoire 2x plus longue ?</h1>
-            <p style="color: #4A5568; font-size: 15px; text-align: center; line-height: 1.7;">
-              ${data.customerName}, le livre gratuit de ${data.protagonistName} faisait 6 pages et 7 illustrations. Avec le <strong>Club Contedia</strong>, chaque livre passe a <strong>12 pages et 12+ illustrations</strong>. Deux fois plus d'aventure.
-            </p>
-            <div style="background: #FFF8F0; border-radius: 16px; padding: 24px; margin: 24px 0; text-align: center;">
-              <p style="font-size: 18px; font-weight: 700; color: #FF6B6B; margin: 0 0 8px;">Club Contedia</p>
-              <p style="font-size: 14px; color: #666; margin: 0 0 4px;">4 livres/mois · 12 pages · 12+ illustrations · 9 styles</p>
-              <p style="font-size: 24px; font-weight: 700; color: #333; margin: 8px 0;">9,99€/mois</p>
-              <p style="font-size: 13px; color: #888; margin: 4px 0 0;">ou 6,67€/mois en annuel (79,99€/an — economisez 40€)</p>
-              <p style="font-size: 12px; color: #999; margin: 4px 0 0;">Sans engagement · annulable a tout moment</p>
-            </div>
-            <div style="text-align: center; margin: 24px 0;">
-              <a href="${upgradeLink}" style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); color: white; padding: 14px 40px; border-radius: 30px; text-decoration: none; font-weight: 700; font-size: 15px; display: inline-block;">
-                Decouvrir le Club Contedia
-              </a>
-            </div>
-            <p style="color: #A0AEC0; font-size: 12px; text-align: center;">
-              <a href="${magicLink}" style="color: #A0AEC0;">Acceder a ma bibliotheque</a>
-            </p>
+        subject: `${data.protagonistName} a adore ? Imaginez avec 2x plus de pages...`,
+        html: wrapper(`
+          <h1 style="color: #1a1040; font-size: 22px; text-align: center; margin: 0 0 8px; font-weight: 800;">
+            Et si ${data.protagonistName} avait une histoire 2x plus longue ?
+          </h1>
+          <p style="color: #666; font-size: 14px; text-align: center; line-height: 1.7; margin: 0 0 24px;">
+            ${data.customerName}, le livre gratuit de ${data.protagonistName} contenait 6 pages et 7 illustrations.<br>
+            Avec le <strong style="color: #a78bfa;">Club Contedia</strong>, chaque livre passe a :
+          </p>
+
+          <div style="background: #f9f7ff; border-radius: 16px; padding: 20px; margin: 0 0 24px;">
+            <table style="width: 100%; border-collapse: collapse;">
+              <tr>
+                <td style="padding: 10px 0; border-bottom: 1px solid #eee; font-size: 13px;">
+                  <span style="color: #999;">Gratuit</span>
+                </td>
+                <td style="padding: 10px 0; border-bottom: 1px solid #eee; font-size: 13px; text-align: right;">
+                  <strong style="color: #a78bfa;">Club</strong>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; font-size: 13px; color: #888;">6 pages</td>
+                <td style="padding: 8px 0; font-size: 13px; text-align: right; font-weight: 700; color: #333;">12 pages</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; font-size: 13px; color: #888;">7 illustrations</td>
+                <td style="padding: 8px 0; font-size: 13px; text-align: right; font-weight: 700; color: #333;">12+ illustrations</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; font-size: 13px; color: #888;">1 style</td>
+                <td style="padding: 8px 0; font-size: 13px; text-align: right; font-weight: 700; color: #333;">9 styles au choix</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; font-size: 13px; color: #888;">1 personnage</td>
+                <td style="padding: 8px 0; font-size: 13px; text-align: right; font-weight: 700; color: #333;">5 personnages</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; font-size: 13px; color: #888;">1 livre</td>
+                <td style="padding: 8px 0; font-size: 13px; text-align: right; font-weight: 700; color: #333;">4 livres/mois</td>
+              </tr>
+            </table>
           </div>
-        `
+
+          ${priceBadge}
+        `)
       },
+
+      // ═══════════════════════════════════════════════════
+      // J+3 — 72h après
+      // Angle : features détaillées + cas d'usage concrets
+      // ═══════════════════════════════════════════════════
       day3: {
-        subject: `12 pages, 9 styles, 5 personnages... tout ce que le Club change`,
-        html: `
-          <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 550px; margin: 0 auto; padding: 40px 20px;">
-            <h1 style="color: #2D3748; font-size: 22px; text-align: center;">Livre gratuit vs Club : la difference</h1>
-            <p style="color: #4A5568; font-size: 15px; text-align: center; line-height: 1.7;">
-              ${data.customerName}, voici ce que le Club Contedia debloque :
-            </p>
-            <div style="background: #F7FAFC; border-radius: 16px; padding: 24px; margin: 24px 0;">
-              <div style="margin-bottom: 16px;">
-                <span style="font-size: 20px;">&#x1F4D6;</span>
-                <strong> 12 pages au lieu de 6</strong><br><span style="color: #666; font-size: 13px; margin-left: 28px;">Des histoires 2x plus riches et immersives</span>
-              </div>
-              <div style="margin-bottom: 16px;">
-                <span style="font-size: 20px;">&#x1F3A8;</span>
-                <strong> 9 styles d'illustration</strong><br><span style="color: #666; font-size: 13px; margin-left: 28px;">Aquarelle, 3D, Papier decoupe, Kawaii, Manga, Clay...</span>
-              </div>
-              <div style="margin-bottom: 16px;">
-                <span style="font-size: 20px;">&#x1F464;</span>
-                <strong> Jusqu'a 5 personnages</strong><br><span style="color: #666; font-size: 13px; margin-left: 28px;">Freres, soeurs, meilleur ami, doudou, animal</span>
-              </div>
-              <div style="margin-bottom: 16px;">
-                <span style="font-size: 20px;">&#x1F389;</span>
-                <strong> Occasions speciales</strong><br><span style="color: #666; font-size: 13px; margin-left: 28px;">Noel, Ramadan, Paques, Anniversaire, Diwali...</span>
-              </div>
-              <div style="margin-bottom: 16px;">
-                <span style="font-size: 20px;">&#x1F436;</span>
-                <strong> Animal de compagnie</strong><br><span style="color: #666; font-size: 13px; margin-left: 28px;">Votre chat, chien ou hamster devient un personnage</span>
-              </div>
+        subject: `5 personnages, 9 styles, Noel, Ramadan... tout ce que le Club debloque`,
+        html: wrapper(`
+          <h1 style="color: #1a1040; font-size: 22px; text-align: center; margin: 0 0 8px; font-weight: 800;">
+            Tout ce que le Club change
+          </h1>
+          <p style="color: #666; font-size: 14px; text-align: center; line-height: 1.7; margin: 0 0 24px;">
+            ${data.customerName}, voici tout ce que les membres du Club creent :
+          </p>
+
+          <div style="margin: 0 0 24px;">
+            <div style="background: #f9f7ff; border-radius: 12px; padding: 14px 16px; margin-bottom: 8px; display: flex; align-items: flex-start;">
+              <span style="font-size: 22px; margin-right: 12px; line-height: 1;">&#x1F3A8;</span>
               <div>
-                <span style="font-size: 20px;">&#x1F4DA;</span>
-                <strong> 4 livres par mois</strong><br><span style="color: #666; font-size: 13px; margin-left: 28px;">Credits cumulables + bibliotheque illimitee + PDF</span>
+                <strong style="font-size: 14px; color: #333;">9 styles d'illustration</strong>
+                <p style="font-size: 12px; color: #888; margin: 2px 0 0;">Aquarelle, 3D Pixar, Papier decoupe, Kawaii, Manga, Argile, Geometrique...</p>
               </div>
             </div>
-            <div style="text-align: center; margin: 24px 0;">
-              <a href="${upgradeLink}" style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); color: white; padding: 14px 40px; border-radius: 30px; text-decoration: none; font-weight: 700; font-size: 15px; display: inline-block;">
-                Rejoindre le Club — 9,99€/mois
-              </a>
+            <div style="background: #f9f7ff; border-radius: 12px; padding: 14px 16px; margin-bottom: 8px; display: flex; align-items: flex-start;">
+              <span style="font-size: 22px; margin-right: 12px; line-height: 1;">&#x1F46A;</span>
+              <div>
+                <strong style="font-size: 14px; color: #333;">5 personnages dans chaque histoire</strong>
+                <p style="font-size: 12px; color: #888; margin: 2px 0 0;">Grand frere, petite soeur, meilleur ami, doudou, animal de compagnie</p>
+              </div>
             </div>
-            <p style="color: #A0AEC0; font-size: 12px; text-align: center;">
-              Ou 6,67€/mois en annuel (79,99€/an) · <a href="${magicLink}" style="color: #A0AEC0;">Ma bibliotheque</a>
-            </p>
+            <div style="background: #f9f7ff; border-radius: 12px; padding: 14px 16px; margin-bottom: 8px; display: flex; align-items: flex-start;">
+              <span style="font-size: 22px; margin-right: 12px; line-height: 1;">&#x1F389;</span>
+              <div>
+                <strong style="font-size: 14px; color: #333;">Toutes les occasions</strong>
+                <p style="font-size: 12px; color: #888; margin: 2px 0 0;">Noel, Ramadan, Paques, Anniversaire, Aid, Diwali, fete des meres...</p>
+              </div>
+            </div>
+            <div style="background: #f9f7ff; border-radius: 12px; padding: 14px 16px; margin-bottom: 8px; display: flex; align-items: flex-start;">
+              <span style="font-size: 22px; margin-right: 12px; line-height: 1;">&#x1F436;</span>
+              <div>
+                <strong style="font-size: 14px; color: #333;">Animal de compagnie</strong>
+                <p style="font-size: 12px; color: #888; margin: 2px 0 0;">Votre chat, chien ou hamster devient un personnage de l'histoire</p>
+              </div>
+            </div>
+            <div style="background: #f9f7ff; border-radius: 12px; padding: 14px 16px; display: flex; align-items: flex-start;">
+              <span style="font-size: 22px; margin-right: 12px; line-height: 1;">&#x1F30D;</span>
+              <div>
+                <strong style="font-size: 14px; color: #333;">10 langues disponibles</strong>
+                <p style="font-size: 12px; color: #888; margin: 2px 0 0;">Francais, anglais, arabe, espagnol, allemand, japonais, italien...</p>
+              </div>
+            </div>
           </div>
-        `
+
+          ${priceBadge}
+        `)
       },
+
+      // ═══════════════════════════════════════════════════
+      // J+7 — Dernier email
+      // Angle : urgence douce + témoignage + dernière chance
+      // ═══════════════════════════════════════════════════
       day7: {
-        subject: `Dernier rappel : le Club Contedia a 6,67€/mois`,
-        html: `
-          <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 550px; margin: 0 auto; padding: 40px 20px;">
-            <h1 style="color: #2D3748; font-size: 22px; text-align: center;">${data.customerName}, une derniere chose...</h1>
-            <p style="color: #4A5568; font-size: 15px; text-align: center; line-height: 1.7;">
-              +500 parents creent deja des histoires chaque mois pour leurs enfants avec le Club Contedia.
+        subject: `Dernier jour : le Club a 1,99\u20AC au lieu de 9,99\u20AC`,
+        html: wrapper(`
+          <h1 style="color: #1a1040; font-size: 22px; text-align: center; margin: 0 0 8px; font-weight: 800;">
+            ${data.customerName}, c'est notre derniere relance
+          </h1>
+          <p style="color: #666; font-size: 14px; text-align: center; line-height: 1.7; margin: 0 0 24px;">
+            On ne vous enverra plus d'email a ce sujet apres celui-ci.
+            Mais avant, on voulait vous partager ce message :
+          </p>
+
+          <div style="background: #f0fdf4; border-radius: 16px; padding: 20px; margin: 0 0 24px; border: 1px solid #bbf7d0;">
+            <p style="font-size: 14px; color: #333; margin: 0; font-style: italic; line-height: 1.7; text-align: center;">
+              &laquo; Mon fils a lu son premier livre gratuit 6 fois.<br>
+              Avec le Club, il en a un nouveau chaque semaine.<br>
+              C'est le seul abonnement qu'il me reclame ! &raquo;
             </p>
-            <div style="background: linear-gradient(135deg, #FFF0E6, #FFE4D6); border-radius: 16px; padding: 24px; margin: 24px 0; text-align: center; border: 2px solid #FF6B6B30;">
-              <p style="font-size: 14px; color: #FF6B6B; font-weight: 600; margin: 0 0 4px;">Club Contedia</p>
-              <p style="font-size: 13px; color: #666; margin: 0 0 12px;">4 livres/mois · 12 pages · 9 styles · 5 personnages</p>
-              <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
-                <div>
-                  <p style="font-size: 22px; font-weight: 700; color: #333; margin: 0;">9,99€/mois</p>
-                  <p style="font-size: 11px; color: #999; margin: 2px 0 0;">sans engagement</p>
-                </div>
-                <div style="border-left: 1px solid #ddd; padding-left: 20px;">
-                  <p style="font-size: 22px; font-weight: 700; color: #FF6B6B; margin: 0;">6,67€/mois</p>
-                  <p style="font-size: 11px; color: #999; margin: 2px 0 0;">annuel · -33%</p>
-                </div>
-              </div>
-            </div>
-            <div style="background: #F0FFF4; border-radius: 12px; padding: 16px; margin: 16px 0;">
-              <p style="font-size: 13px; color: #333; margin: 0; font-style: italic; text-align: center;">
-                "Mon fils a lu son premier livre gratuit 6 fois. Avec le Club, il en a un nouveau chaque semaine. C'est le seul abonnement qu'il me reclame !" — Aurelie, maman de Leo (5 ans)
-              </p>
-            </div>
-            <div style="text-align: center; margin: 24px 0;">
-              <a href="${upgradeLink}" style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); color: white; padding: 14px 40px; border-radius: 30px; text-decoration: none; font-weight: 700; font-size: 15px; display: inline-block;">
-                Rejoindre le Club maintenant
-              </a>
-            </div>
-            <p style="color: #A0AEC0; font-size: 12px; text-align: center;">
-              <a href="${magicLink}" style="color: #A0AEC0;">Acceder a ma bibliotheque</a>
+            <p style="font-size: 12px; color: #888; margin: 10px 0 0; text-align: center; font-weight: 600;">
+              Aurelie, maman de Leo (5 ans)
             </p>
           </div>
-        `
+
+          <div style="background: #fffbeb; border-radius: 12px; padding: 16px; margin: 0 0 24px; border: 1px solid #fde68a;">
+            <p style="font-size: 13px; color: #92400e; margin: 0; text-align: center; font-weight: 600;">
+              L'offre de lancement a 1,99&euro; le 1er mois est toujours disponible.<br>
+              Sans engagement, annulable en 1 clic.
+            </p>
+          </div>
+
+          <div style="text-align: center; margin: 0 0 16px;">
+            <p style="font-size: 14px; color: #999; text-decoration: line-through; margin: 0;">9,99&euro;/mois</p>
+            <p style="font-size: 36px; font-weight: 800; color: #1a1040; margin: 4px 0;">1,99&euro;</p>
+            <p style="font-size: 12px; color: #888; margin: 0;">le 1er mois &middot; puis 9,99&euro;/mois</p>
+          </div>
+
+          <div style="text-align: center; margin: 0 0 8px;">
+            <a href="${clubLink}" style="background: linear-gradient(135deg, #a78bfa, #f093fb); color: white; padding: 16px 40px; border-radius: 30px; text-decoration: none; font-weight: 700; font-size: 16px; display: inline-block; box-shadow: 0 4px 16px rgba(167,139,250,0.4);">
+              Derniere chance &mdash; Essayer pour 1,99&euro;
+            </a>
+          </div>
+
+          <p style="color: #ccc; font-size: 11px; text-align: center; margin: 16px 0 0;">
+            4 livres/mois &middot; 12 pages &middot; 9 styles &middot; 5 personnages &middot; sans engagement
+          </p>
+        `)
       }
     };
 
@@ -494,9 +624,9 @@ export class MailjetService {
             HTMLPart: template.html
           }]
         });
-      console.log(`Email relance ${data.step} envoye a:`, data.customerEmail);
+      console.log(`[EmailSequence] ${data.step} envoye a: ${data.customerEmail}`);
     } catch (error) {
-      console.error(`Erreur envoi email relance ${data.step}:`, error);
+      console.error(`[EmailSequence] Erreur ${data.step}:`, error);
     }
   }
 
