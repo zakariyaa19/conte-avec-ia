@@ -984,11 +984,54 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
     }
   };
 
+  const [photoLoading, setPhotoLoading] = useState(false);
+  const [photoError, setPhotoError] = useState('');
+
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file) {
-      onUpdate({ photo: file });
+    if (!file) return;
+
+    setPhotoError('');
+
+    // Validation taille (max 15MB)
+    if (file.size > 15 * 1024 * 1024) {
+      setPhotoError('Photo trop volumineuse (max 15 Mo). Essayez avec une photo plus petite.');
+      event.target.value = '';
+      return;
     }
+
+    // Validation type
+    if (!file.type.startsWith('image/')) {
+      setPhotoError('Ce fichier n\'est pas une image. Veuillez sélectionner une photo.');
+      event.target.value = '';
+      return;
+    }
+
+    // HEIC detection (iPhone) — avertir l'utilisateur
+    const isHeic = file.name.toLowerCase().endsWith('.heic') || file.name.toLowerCase().endsWith('.heif') || file.type === 'image/heic' || file.type === 'image/heif';
+    if (isHeic) {
+      // Sur la plupart des navigateurs modernes, HEIC est converti automatiquement
+      // Mais sur certains navigateurs in-app, ça peut échouer silencieusement
+      console.warn('[Photo] Fichier HEIC détecté, tentative de conversion...');
+    }
+
+    setPhotoLoading(true);
+
+    // Créer un aperçu pour confirmer visuellement que la photo fonctionne
+    const testUrl = URL.createObjectURL(file);
+    const testImg = new Image();
+    testImg.onload = () => {
+      URL.revokeObjectURL(testUrl);
+      setPhotoLoading(false);
+      onUpdate({ photo: file });
+    };
+    testImg.onerror = () => {
+      URL.revokeObjectURL(testUrl);
+      setPhotoLoading(false);
+      setPhotoError('Impossible de lire cette photo. Essayez un autre format (JPG, PNG) ou prenez une nouvelle photo.');
+      event.target.value = '';
+    };
+    testImg.src = testUrl;
   };
 
   const handleProductSelection = (purchaseType: 'single' | 'club') => {
@@ -1320,25 +1363,45 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
             <OptionTitle>Photo de votre enfant</OptionTitle>
             <ProminentPhotoUpload
               $hasPhoto={!!formData.photo}
-              onClick={() => fileInputRef.current?.click()}
+              onClick={() => !photoLoading && fileInputRef.current?.click()}
+              style={{ opacity: photoLoading ? 0.6 : 1, pointerEvents: photoLoading ? 'none' : 'auto' }}
             >
-              <PhotoIcon>{formData.photo ? '\u2705' : '\uD83D\uDCF7'}</PhotoIcon>
+              <PhotoIcon>
+                {photoLoading ? '\u23F3' : formData.photo ? '\u2705' : '\uD83D\uDCF7'}
+              </PhotoIcon>
               <PhotoMainText>
-                {formData.photo ? formData.photo.name : 'Ajoutez une photo pour que le personnage lui ressemble'}
+                {photoLoading
+                  ? 'Chargement de la photo...'
+                  : formData.photo
+                    ? formData.photo.name
+                    : 'Ajoutez une photo pour que le personnage lui ressemble'
+                }
               </PhotoMainText>
               <PhotoSubText>
-                {formData.photo
-                  ? 'Cliquez pour changer la photo'
-                  : 'Notre IA adaptera le personnage du conte pour qu\'il ressemble à votre enfant (optionnel)'
+                {photoLoading
+                  ? 'Vérification en cours, veuillez patienter'
+                  : formData.photo
+                    ? 'Appuyez pour changer la photo'
+                    : 'JPG, PNG ou photo directe. Notre IA adaptera le personnage pour qu\'il ressemble à votre enfant (optionnel)'
                 }
               </PhotoSubText>
               <HiddenFileInput
                 ref={fileInputRef}
                 type="file"
-                accept="image/*"
+                accept="image/jpeg,image/png,image/webp,image/heic,image/heif,image/*"
                 onChange={handleFileUpload}
               />
             </ProminentPhotoUpload>
+            {photoError && (
+              <p style={{
+                color: '#ef4444', fontSize: '13px', fontWeight: 500,
+                margin: '-8px 0 12px', padding: '8px 12px',
+                background: 'rgba(239,68,68,0.08)', borderRadius: '8px',
+                border: '1px solid rgba(239,68,68,0.2)',
+              }}>
+                {photoError}
+              </p>
+            )}
           </FormSection>
 
           {/* -- Separateur optionnel -- */}

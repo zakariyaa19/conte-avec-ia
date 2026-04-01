@@ -585,11 +585,11 @@ export class ApiService {
   // Timeout 10s pour ne jamais bloquer sur appareil lent
   private static compressPhoto(file: File, maxSize = 800, quality = 0.7): Promise<File> {
     return new Promise((resolve) => {
-      // Timeout de sécurité : si compression prend > 10s, envoyer l'original
+      // Timeout de sécurité : 15s sur mobile, les gros fichiers HEIC sont lents
       const timeout = setTimeout(() => {
-        console.warn('[Photo] Compression timeout, envoi original');
+        console.warn('[Photo] Compression timeout, envoi original (' + (file.size / 1024).toFixed(0) + 'KB)');
         resolve(file);
-      }, 10000);
+      }, 15000);
 
       const objectUrl = URL.createObjectURL(file);
       const img = new Image();
@@ -597,31 +597,45 @@ export class ApiService {
         try {
           const canvas = document.createElement('canvas');
           let { width, height } = img;
+
+          // Adapter maxSize selon la taille originale pour éviter les problèmes mémoire
+          const effectiveMax = (width * height > 8000000) ? 600 : maxSize; // >8MP → resize plus agressif
+
           if (width > height) {
-            if (width > maxSize) { height = Math.round(height * maxSize / width); width = maxSize; }
+            if (width > effectiveMax) { height = Math.round(height * effectiveMax / width); width = effectiveMax; }
           } else {
-            if (height > maxSize) { width = Math.round(width * maxSize / height); height = maxSize; }
+            if (height > effectiveMax) { width = Math.round(width * effectiveMax / height); height = effectiveMax; }
           }
           canvas.width = width;
           canvas.height = height;
           const ctx = canvas.getContext('2d');
           if (!ctx) { clearTimeout(timeout); URL.revokeObjectURL(objectUrl); resolve(file); return; }
           ctx.drawImage(img, 0, 0, width, height);
+
+          // Adapter la qualité si le fichier est très gros
+          const effectiveQuality = file.size > 5 * 1024 * 1024 ? 0.6 : quality;
+
           canvas.toBlob(blob => {
             clearTimeout(timeout);
             URL.revokeObjectURL(objectUrl);
             if (!blob) { resolve(file); return; }
             const compressed = new File([blob], file.name.replace(/\.\w+$/, '.jpg'), { type: 'image/jpeg' });
-            console.log(`[Photo] Compressée: ${(file.size/1024).toFixed(0)}KB → ${(compressed.size/1024).toFixed(0)}KB`);
+            console.log(`[Photo] Compressée: ${(file.size/1024).toFixed(0)}KB → ${(compressed.size/1024).toFixed(0)}KB (${width}x${height}, q=${effectiveQuality})`);
             resolve(compressed);
-          }, 'image/jpeg', quality);
-        } catch {
+          }, 'image/jpeg', effectiveQuality);
+        } catch (e) {
           clearTimeout(timeout);
           URL.revokeObjectURL(objectUrl);
+          console.warn('[Photo] Erreur compression:', e);
           resolve(file);
         }
       };
-      img.onerror = () => { clearTimeout(timeout); URL.revokeObjectURL(objectUrl); resolve(file); };
+      img.onerror = () => {
+        clearTimeout(timeout);
+        URL.revokeObjectURL(objectUrl);
+        console.warn('[Photo] Impossible de charger l\'image pour compression, envoi original');
+        resolve(file);
+      };
       img.src = objectUrl;
     });
   }
