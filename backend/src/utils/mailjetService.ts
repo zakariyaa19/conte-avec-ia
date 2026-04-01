@@ -204,8 +204,22 @@ export class MailjetService {
                         </a>
                       </div>
                     </div>
-                    <div style="text-align: center; margin-top: 30px; padding: 25px; background: linear-gradient(135deg, #FF9999, #87CEEB); border-radius: 15px; color: white;">
-                      <p style="margin: 0; font-size: 14px;">Une question ? Repondez simplement a cet email<br>
+
+                    <!-- Teaser Club -->
+                    <div style="background: linear-gradient(145deg, #1a1040, #2d1b69); border-radius: 15px; padding: 24px; margin-top: 25px; text-align: center; border: 1px solid rgba(167,139,250,0.25);">
+                      <p style="color: #a78bfa; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 8px;">Le saviez-vous ?</p>
+                      <p style="color: rgba(255,255,255,0.85); font-size: 14px; margin: 0 0 12px; line-height: 1.5;">
+                        Avec le <strong style="color: white;">Club Contedia</strong>, chaque livre passe a <strong style="color: white;">12 pages</strong>, <strong style="color: white;">9 styles</strong> et <strong style="color: white;">5 personnages</strong>.
+                      </p>
+                      <p style="color: rgba(255,255,255,0.4); font-size: 12px; text-decoration: line-through; margin: 0;">9,99&euro;/mois</p>
+                      <p style="color: white; font-size: 22px; font-weight: 800; margin: 2px 0 4px;">1,99&euro; le 1er mois</p>
+                      <a href="${process.env.FRONTEND_URL || 'https://contedia.fr'}/club/checkout" style="display: inline-block; background: linear-gradient(135deg, #a78bfa, #f093fb); color: white; padding: 10px 28px; border-radius: 25px; text-decoration: none; font-weight: 700; font-size: 13px; margin-top: 8px;">
+                        Decouvrir le Club &rarr;
+                      </a>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 20px; padding: 20px;">
+                      <p style="margin: 0; font-size: 12px; color: #999;">Une question ? Repondez simplement a cet email<br>
                       ${process.env.MAILJET_FROM_EMAIL || 'contact@contedia.fr'}</p>
                     </div>
                   </div>

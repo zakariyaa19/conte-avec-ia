@@ -51,23 +51,11 @@ export async function processEmailSequence(): Promise<{ sent: number; errors: nu
     const protagonistName = order.protagonistName || 'votre enfant';
 
     try {
-      // J+0 (1h) — email immédiat après livraison
-      if (hoursSincePaid >= 1 && !emailsSent.includes('day0')) {
-        await MailjetService.sendClubRelanceEmail({
-          customerName,
-          customerEmail: user.email,
-          protagonistName,
-          step: 'day0',
-          userId: user.id
-        });
-        await prisma.order.update({
-          where: { id: order.id },
-          data: { emailSequenceSent: emailsSent + 'day0,' }
-        });
-        sent++;
-      }
+      // J+0 est géré par sendStoryDeliveryEmail dans deliverStory (adminController)
+      // La séquence de relance Club commence à J+1
+
       // J+1 (24h) — comparatif gratuit vs Club
-      else if (hoursSincePaid >= 24 && emailsSent.includes('day0') && !emailsSent.includes('day1')) {
+      if (hoursSincePaid >= 24 && !emailsSent.includes('day1')) {
         await MailjetService.sendClubRelanceEmail({
           customerName,
           customerEmail: user.email,
