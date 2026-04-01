@@ -630,6 +630,21 @@ export const handleStripeWebhook = async (req: Request, res: Response) => {
             });
             console.log('[WEBHOOK] User mis a jour en CLUB:', updatedUser.id, 'role:', updatedUser.role);
 
+            // Notification Telegram — NOUVEL ABONNE CLUB
+            try {
+              const { TelegramService } = await import('../utils/telegramService');
+              const plan = session.metadata?.plan || 'monthly';
+              const amount = plan === 'annual' ? '79.99' : '1.99';
+              await TelegramService.sendNewClubMemberAlert({
+                customerName: updatedUser.firstName || updatedUser.email,
+                customerEmail: updatedUser.email,
+                plan,
+                amount,
+              });
+            } catch (notifError) {
+              console.error('[WEBHOOK] Erreur notification Telegram Club:', notifError);
+            }
+
             // Finaliser la commande liee a la souscription (eBook inclus dans l'abonnement)
             if (orderId) {
               try {
