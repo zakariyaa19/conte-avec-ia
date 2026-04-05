@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Conte-IA - Rapport des coûts SaaS</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #f8f9fa;
+    color: #1a1a2e;
+    padding: 40px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  @media print {
+    body { padding: 20px; background: white; }
+    .page-break { page-break-before: always; }
+  }
+
+  .header {
+    text-align: center;
+    padding: 30px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    border-radius: 16px;
+    color: white;
+    margin-bottom: 30px;
+  }
+  .header h1 { font-size: 28px; font-weight: 700; margin-bottom: 5px; }
+  .header p { font-size: 14px; opacity: 0.85; }
+  .header .date { margin-top: 10px; font-size: 12px; opacity: 0.7; }
+
+  .section { margin-bottom: 25px; }
+  .section-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #6366f1;
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  thead { background: #f1f5f9; }
+  th {
+    text-align: left;
+    padding: 12px 14px;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #64748b;
+    letter-spacing: 0.5px;
+  }
+  td {
+    padding: 12px 14px;
+    border-top: 1px solid #f1f5f9;
+    vertical-align: top;
+  }
+  tr:hover { background: #fafbfc; }
+
+  .price { font-weight: 600; white-space: nowrap; }
+  .free { color: #10b981; font-weight: 600; }
+  .paid { color: #ef4444; }
+  .variable { color: #f59e0b; }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .badge-free { background: #d1fae5; color: #065f46; }
+  .badge-paid { background: #fee2e2; color: #991b1b; }
+  .badge-variable { background: #fef3c7; color: #92400e; }
+
+  .summary-box {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+  }
+  .summary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 15px;
+  }
+  .summary-card {
+    text-align: center;
+    padding: 15px;
+    border-radius: 10px;
+    background: #f8f9fa;
+  }
+  .summary-card .label { font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
+  .summary-card .value { font-size: 24px; font-weight: 700; }
+  .summary-card .value.green { color: #10b981; }
+  .summary-card .value.orange { color: #f59e0b; }
+  .summary-card .value.red { color: #ef4444; }
+  .summary-card .detail { font-size: 11px; color: #94a3b8; margin-top: 3px; }
+
+  .cost-breakdown {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  .cost-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 13px;
+  }
+  .cost-row:last-child { border-bottom: none; }
+  .cost-row .label { color: #64748b; }
+  .cost-row .value { font-weight: 600; }
+  .cost-row.total {
+    border-top: 2px solid #6366f1;
+    margin-top: 8px;
+    padding-top: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #6366f1;
+  }
+
+  .note {
+    background: #eff6ff;
+    border-left: 3px solid #6366f1;
+    padding: 12px 16px;
+    border-radius: 0 8px 8px 0;
+    font-size: 12px;
+    color: #475569;
+    margin-top: 12px;
+    line-height: 1.6;
+  }
+
+  .footer {
+    text-align: center;
+    margin-top: 30px;
+    padding: 15px;
+    font-size: 11px;
+    color: #94a3b8;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Conte-IA (contedia.fr)</h1>
+  <p>Rapport complet des outils & couts SaaS</p>
+  <div class="date">Genere le 10 mars 2026</div>
+</div>
+
+<!-- ============ RESUME ============ -->
+<div class="section">
+  <div class="section-title">Resume des couts mensuels</div>
+  <div class="summary-grid">
+    <div class="summary-card">
+      <div class="label">Couts fixes / mois</div>
+      <div class="value red">~40 EUR</div>
+      <div class="detail">Abonnements mensuels</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">Cout variable / conte</div>
+      <div class="value orange">~0.35 EUR</div>
+      <div class="detail">API OpenAI par generation</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">Outils gratuits</div>
+      <div class="value green">8</div>
+      <div class="detail">Services sans frais</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ OUTILS PAYANTS ============ -->
+<div class="section">
+  <div class="section-title">Outils payants (couts fixes)</div>
+  <table>
+    <thead>
+      <tr>
+        <th>Outil</th>
+        <th>Utilisation</th>
+        <th>Plan actuel</th>
+        <th>Cout / mois</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Claude (Anthropic)</strong></td>
+        <td>Assistant IA, analyse Meta Ads, code, optimisation</td>
+        <td>Claude Pro</td>
+        <td class="price paid">~18.50 EUR ($20)</td>
+      </tr>
+      <tr>
+        <td><strong>Render</strong></td>
+        <td>Hebergement backend Node.js + PostgreSQL</td>
+        <td>Starter</td>
+        <td class="price paid">~7 EUR ($7)</td>
+      </tr>
+      <tr>
+        <td><strong>Vercel</strong></td>
+        <td>Hebergement frontend React</td>
+        <td>Hobby (gratuit) ou Pro</td>
+        <td class="price paid">0 - 18.50 EUR</td>
+      </tr>
+      <tr>
+        <td><strong>Domaine contedia.fr</strong></td>
+        <td>Nom de domaine</td>
+        <td>Renouvellement annuel</td>
+        <td class="price paid">~1 EUR (~12 EUR/an)</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="note">
+    <strong>Total fixe estime :</strong> Entre 26.50 EUR et 45 EUR/mois selon ton plan Vercel.
+  </div>
+</div>
+
+<!-- ============ OUTILS VARIABLES ============ -->
+<div class="section">
+  <div class="section-title">Outils payants (couts variables / a l'usage)</div>
+  <table>
+    <thead>
+      <tr>
+        <th>Outil</th>
+        <th>Utilisation</th>
+        <th>Tarification</th>
+        <th>Cout estime</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>OpenAI API</strong></td>
+        <td>Generation texte (GPT-4o-mini) + images (gpt-image-1)</td>
+        <td>Pay-per-use</td>
+        <td class="price variable">~0.35 EUR / conte</td>
+      </tr>
+      <tr>
+        <td><strong>Stripe</strong></td>
+        <td>Paiement en ligne</td>
+        <td>1.4% + 0.25 EUR (cartes EU)</td>
+        <td class="price variable">~0.35 EUR / vente a 6.99 EUR</td>
+      </tr>
+      <tr>
+        <td><strong>Cloudinary</strong></td>
+        <td>Stockage images/PDF des livres</td>
+        <td>Free tier: 25 credits/mois</td>
+        <td class="price free">Gratuit*</td>
+      </tr>
+      <tr>
+        <td><strong>Mailjet</strong></td>
+        <td>Emails transactionnels (confirmations, livraisons)</td>
+        <td>Free tier: 200 emails/jour</td>
+        <td class="price free">Gratuit*</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="note">
+    * Cloudinary et Mailjet sont gratuits tant que tu restes dans les limites du free tier. Si tu depasses 200 emails/jour ou 25 credits Cloudinary/mois, il faudra passer au plan payant (Mailjet: ~25 EUR/mois, Cloudinary: ~89$/mois).
+  </div>
+</div>
+
+<!-- ============ DETAIL OPENAI ============ -->
+<div class="section page-break">
+  <div class="section-title">Detail du cout OpenAI par conte genere</div>
+  <div class="cost-breakdown">
+    <h3 style="font-size: 14px; color: #64748b; margin-bottom: 12px;">Phase Preview (avant achat)</h3>
+    <div class="cost-row">
+      <span class="label">2x GPT-4o-mini (generation prompt couverture)</span>
+      <span class="value">~0.005 EUR</span>
+    </div>
+    <div class="cost-row">
+      <span class="label">1x gpt-image-1 couverture preview (1024x1536, medium)</span>
+      <span class="value">~0.058 EUR</span>
+    </div>
+    <div class="cost-row">
+      <span class="label">1x GPT-4o-mini (texte preview)</span>
+      <span class="value">~0.003 EUR</span>
+    </div>
+
+    <h3 style="font-size: 14px; color: #64748b; margin: 16px 0 12px;">Phase Generation (apres achat)</h3>
+    <div class="cost-row">
+      <span class="label">1x GPT-4o-mini (generation texte complet - 12 paragraphes)</span>
+      <span class="value">~0.010 EUR</span>
+    </div>
+    <div class="cost-row">
+      <span class="label">6x gpt-image-1 illustrations interieures (1024x1024, medium)</span>
+      <span class="value">~0.232 EUR</span>
+    </div>
+
+    <div class="cost-row total">
+      <span class="label">TOTAL par conte genere</span>
+      <span class="value" style="color: #ef4444;">~0.31 EUR (~$0.34)</span>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>Attention :</strong> La phase Preview est generee AVANT l'achat. Si un visiteur lance le preview mais n'achete pas, tu paies quand meme ~0.066 EUR pour rien. Avec un taux de conversion preview &rarr; achat de ~30%, le cout reel par conte vendu est plutot de <strong>~0.50 EUR</strong> (en comptant les previews non convertis).
+  </div>
+</div>
+
+<!-- ============ OUTILS GRATUITS ============ -->
+<div class="section">
+  <div class="section-title">Outils gratuits</div>
+  <table>
+    <thead>
+      <tr>
+        <th>Outil</th>
+        <th>Utilisation</th>
+        <th>Cout</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Meta Pixel</strong></td>
+        <td>Tracking conversions pour Meta Ads (ViewContent, Purchase, etc.)</td>
+        <td><span class="badge badge-free">GRATUIT</span></td>
+      </tr>
+      <tr>
+        <td><strong>TikTok Pixel</strong></td>
+        <td>Tracking conversions pour TikTok Ads</td>
+        <td><span class="badge badge-free">GRATUIT</span></td>
+      </tr>
+      <tr>
+        <td><strong>Google OAuth 2.0</strong></td>
+        <td>Authentification utilisateurs via Google</td>
+        <td><span class="badge badge-free">GRATUIT</span></td>
+      </tr>
+      <tr>
+        <td><strong>Telegram Bot API</strong></td>
+        <td>Notifications admin en temps reel (nouvelles commandes)</td>
+        <td><span class="badge badge-free">GRATUIT</span></td>
+      </tr>
+      <tr>
+        <td><strong>Vercel Analytics</strong></td>
+        <td>Analytics et Speed Insights du frontend</td>
+        <td><span class="badge badge-free">GRATUIT</span></td>
+      </tr>
+      <tr>
+        <td><strong>Google Fonts</strong></td>
+        <td>Polices Baloo 2 et Poppins</td>
+        <td><span class="badge badge-free">GRATUIT</span></td>
+      </tr>
+      <tr>
+        <td><strong>Prisma ORM</strong></td>
+        <td>Couche d'abstraction base de donnees</td>
+        <td><span class="badge badge-free">GRATUIT</span></td>
+      </tr>
+      <tr>
+        <td><strong>PostgreSQL</strong></td>
+        <td>Base de donnees (inclus dans Render)</td>
+        <td><span class="badge badge-free">INCLUS</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ============ SIMULATION ============ -->
+<div class="section">
+  <div class="section-title">Simulation : rentabilite par conte vendu</div>
+  <div class="cost-breakdown">
+    <h3 style="font-size: 14px; color: #64748b; margin-bottom: 12px;">Pour 1 conte vendu a 6.99 EUR</h3>
+    <div class="cost-row">
+      <span class="label">Prix de vente</span>
+      <span class="value" style="color: #10b981;">+6.99 EUR</span>
+    </div>
+    <div class="cost-row">
+      <span class="label">Commission Stripe (1.4% + 0.25 EUR)</span>
+      <span class="value" style="color: #ef4444;">-0.35 EUR</span>
+    </div>
+    <div class="cost-row">
+      <span class="label">Cout OpenAI (generation + previews non convertis)</span>
+      <span class="value" style="color: #ef4444;">-0.50 EUR</span>
+    </div>
+    <div class="cost-row">
+      <span class="label">Cout pub Meta (estime a ~1.00 EUR/achat)</span>
+      <span class="value" style="color: #ef4444;">-1.00 EUR</span>
+    </div>
+    <div class="cost-row total">
+      <span class="label">MARGE NETTE par conte (hors couts fixes)</span>
+      <span class="value" style="color: #10b981;">~5.14 EUR</span>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>Seuil de rentabilite des couts fixes :</strong> Avec ~40 EUR/mois de couts fixes, il te faut vendre <strong>8 contes/mois minimum</strong> pour etre rentable. Au-dela, c'est du profit pur a ~5 EUR/conte.
+  </div>
+</div>
+
+<!-- ============ TABLEAU RECAPITULATIF ============ -->
+<div class="section">
+  <div class="section-title">Tableau recapitulatif complet</div>
+  <table>
+    <thead>
+      <tr>
+        <th>Outil</th>
+        <th>Type</th>
+        <th>Cout</th>
+        <th>Statut</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Claude (Anthropic)</td><td>Assistant IA</td><td>~18.50 EUR/mois</td><td><span class="badge badge-paid">FIXE</span></td></tr>
+      <tr><td>Render</td><td>Backend hosting</td><td>~7 EUR/mois</td><td><span class="badge badge-paid">FIXE</span></td></tr>
+      <tr><td>Vercel</td><td>Frontend hosting</td><td>0 - 18.50 EUR/mois</td><td><span class="badge badge-paid">FIXE</span></td></tr>
+      <tr><td>Domaine contedia.fr</td><td>DNS</td><td>~1 EUR/mois</td><td><span class="badge badge-paid">FIXE</span></td></tr>
+      <tr><td>OpenAI API</td><td>Generation IA</td><td>~0.35 EUR/conte</td><td><span class="badge badge-variable">VARIABLE</span></td></tr>
+      <tr><td>Stripe</td><td>Paiement</td><td>~0.35 EUR/vente</td><td><span class="badge badge-variable">VARIABLE</span></td></tr>
+      <tr><td>Cloudinary</td><td>Stockage media</td><td>Gratuit*</td><td><span class="badge badge-free">GRATUIT</span></td></tr>
+      <tr><td>Mailjet</td><td>Emails</td><td>Gratuit*</td><td><span class="badge badge-free">GRATUIT</span></td></tr>
+      <tr><td>Meta Pixel</td><td>Analytics pub</td><td>Gratuit</td><td><span class="badge badge-free">GRATUIT</span></td></tr>
+      <tr><td>TikTok Pixel</td><td>Analytics pub</td><td>Gratuit</td><td><span class="badge badge-free">GRATUIT</span></td></tr>
+      <tr><td>Google OAuth</td><td>Authentification</td><td>Gratuit</td><td><span class="badge badge-free">GRATUIT</span></td></tr>
+      <tr><td>Telegram Bot</td><td>Notifications</td><td>Gratuit</td><td><span class="badge badge-free">GRATUIT</span></td></tr>
+      <tr><td>Vercel Analytics</td><td>Performance</td><td>Gratuit</td><td><span class="badge badge-free">GRATUIT</span></td></tr>
+      <tr><td>Google Fonts</td><td>Typographie</td><td>Gratuit</td><td><span class="badge badge-free">GRATUIT</span></td></tr>
+      <tr><td>Prisma ORM</td><td>Base de donnees</td><td>Gratuit</td><td><span class="badge badge-free">GRATUIT</span></td></tr>
+      <tr><td>PostgreSQL</td><td>Base de donnees</td><td>Inclus (Render)</td><td><span class="badge badge-free">INCLUS</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="footer">
+  Conte-IA (contedia.fr) &mdash; Rapport genere automatiquement par Claude &mdash; 10 mars 2026
+</div>
+
+</body>
+</html>

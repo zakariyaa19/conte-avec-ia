@@ -1,0 +1,4 @@
+#!/bin/bash
+export META_ACCESS_TOKEN="EAAdZB3FUimyoBQ6dX3demUl7AetUTvyNZAZBZB0tsnMEzpMWMuPWT6O9ULgjCbWbdmvtcPqO6Jl6GGMtOdiXoZAcEkyUkiHVPTZAoMxhBZBjRCK60zbRSFpYZBYdqD2cLwVu1nZAprWv8SB6NyqlNKc1i8AxyGTLqAbPGSpRzhdvJM3jSePZCBgZAF9xUsTORu3FkVK"
+export META_AD_ACCOUNT_ID="act_1607538810566573"
+exec node /Users/kovsky/Documents/conte-ia-V2/meta-ads-mcp/server.js

@@ -1171,7 +1171,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
               <ImageThemeCard
                 value="custom"
                 label="Personnalisé"
-                imagePath="/image/themes/personnalise.png"
+                imagePath="/image/themes/personnalise.webp"
                 isSelected={formData.generalTheme === 'custom'}
                 onClick={(value) => handleSelection('generalTheme', value)}
               />
@@ -1203,7 +1203,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
               <ImageOccasionCard
                 value="custom"
                 label="Personnalisée"
-                imagePath="/image/occasions/personnalise.png"
+                imagePath="/image/occasions/personnalise.webp"
                 isSelected={formData.specificSubject === 'custom'}
                 onClick={(value) => handleSelection('specificSubject', value)}
               />
@@ -1430,7 +1430,7 @@ export const UnifiedStoryForm: React.FC<UnifiedStoryFormProps> = ({
               <ImageMessageCard
                 value="custom"
                 label="Personnalisé"
-                imagePath="/image/messages/personnalise.png"
+                imagePath="/image/messages/personnalise.webp"
                 isSelected={formData.centralMessage === 'custom'}
                 onClick={(value) => handleInputChange('centralMessage', value)}
               />
