@@ -311,9 +311,16 @@ export class OrderController {
               });
             }
           }
-        } catch (stripeError) {
-          console.error('Erreur creation session Stripe inline:', stripeError);
-          // Don't fail — frontend will fallback to separate API call
+        } catch (stripeError: any) {
+          console.error('[ORDER] ECHEC creation session Stripe inline:', stripeError?.message || stripeError);
+          console.error('[ORDER] Order ID:', order.id, 'Price:', price, 'Type:', purchaseType);
+          // Retourner une erreur explicite au frontend au lieu d'echouer silencieusement
+          return res.status(500).json({
+            success: false,
+            message: 'Impossible de creer la session de paiement. Merci de reessayer dans quelques instants.',
+            error: 'STRIPE_SESSION_FAILED',
+            orderId: order.id
+          });
         }
       }
 

@@ -43,6 +43,41 @@ export const StoryFormPage: React.FC = () => {
     );
   }, [viewContentPrice]);
 
+  // ── PRELOAD des images du wizard — critique pour la conversion mobile ──
+  // Charge toutes les images WebP des étapes suivantes pendant que l'utilisateur
+  // est sur l'étape "âge", pour qu'elles soient instantanées aux étapes suivantes.
+  useEffect(() => {
+    const imagesToPreload = [
+      // Thèmes (étape 2)
+      '/image/themes/educatif.webp',
+      '/image/themes/contes-de-fees.webp',
+      '/image/themes/activites.webp',
+      '/image/themes/histoires.webp',
+      '/image/themes/fetes.webp',
+      '/image/themes/famille.webp',
+      '/image/themes/personnalise.webp',
+      // Âges (étape 1 — première vue)
+      '/image/ageenfant/age-0-2.webp',
+      '/image/ageenfant/age-3-5.webp',
+      '/image/ageenfant/age-6-9.webp',
+      '/image/ageenfant/age-10-plus.webp',
+      // Occasions (étape 3)
+      '/image/occasions/anniversaire.webp',
+      '/image/occasions/noel.webp',
+      '/image/occasions/paques.webp',
+      '/image/occasions/aid.webp',
+      // Messages (étape 4)
+      '/image/messages/amour.webp',
+      '/image/messages/courage.webp',
+      '/image/messages/amitie.webp',
+    ];
+
+    imagesToPreload.forEach(src => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
+
   // Pre-remplir les donnees si l'utilisateur est connecte
   useEffect(() => {
     if (isAuthenticated && user) {

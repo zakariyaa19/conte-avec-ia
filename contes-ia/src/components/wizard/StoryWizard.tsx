@@ -76,42 +76,42 @@ import {
    ══════════════════════════════════════════════ */
 
 const AGE_OPTIONS = [
-  { value: '0-2', label: '0\uFE0E-2\uFE0E ans', imagePath: '/image/ageenfant/age-0-2.png' },
-  { value: '3-5', label: '3\uFE0E-5\uFE0E ans', imagePath: '/image/ageenfant/age-3-5.png' },
-  { value: '6-9', label: '6\uFE0E-9\uFE0E ans', imagePath: '/image/ageenfant/age-6-9.png' },
-  { value: '10+', label: '10\uFE0E+ ans', imagePath: '/image/ageenfant/age-10-plus.png' },
+  { value: '0-2', label: '0\uFE0E-2\uFE0E ans', imagePath: '/image/ageenfant/age-0-2.webp' },
+  { value: '3-5', label: '3\uFE0E-5\uFE0E ans', imagePath: '/image/ageenfant/age-3-5.webp' },
+  { value: '6-9', label: '6\uFE0E-9\uFE0E ans', imagePath: '/image/ageenfant/age-6-9.webp' },
+  { value: '10+', label: '10\uFE0E+ ans', imagePath: '/image/ageenfant/age-10-plus.webp' },
 ];
 
 const THEME_OPTIONS = [
-  { value: 'educational',  label: 'Éducatif',       imagePath: '/image/themes/educatif.png' },
-  { value: 'fairy-tales',  label: 'Contes de fées', imagePath: '/image/themes/contes-de-fees.png' },
-  { value: 'activities',   label: 'Activités',      imagePath: '/image/themes/activites.png' },
-  { value: 'stories',      label: 'Histoires',      imagePath: '/image/themes/histoires.png' },
-  { value: 'celebrations', label: 'Fêtes',          imagePath: '/image/themes/fetes.png' },
-  { value: 'family',       label: 'Famille',        imagePath: '/image/themes/famille.png' },
-  { value: 'custom',       label: 'Personnalisé',   imagePath: '/image/themes/personnalise.png' },
+  { value: 'educational',  label: 'Éducatif',       imagePath: '/image/themes/educatif.webp' },
+  { value: 'fairy-tales',  label: 'Contes de fées', imagePath: '/image/themes/contes-de-fees.webp' },
+  { value: 'activities',   label: 'Activités',      imagePath: '/image/themes/activites.webp' },
+  { value: 'stories',      label: 'Histoires',      imagePath: '/image/themes/histoires.webp' },
+  { value: 'celebrations', label: 'Fêtes',          imagePath: '/image/themes/fetes.webp' },
+  { value: 'family',       label: 'Famille',        imagePath: '/image/themes/famille.webp' },
+  { value: 'custom',       label: 'Personnalisé',   imagePath: '/image/themes/personnalise.webp' },
 ];
 
 const OCCASION_OPTIONS = [
-  { value: 'birthday',    label: 'Anniversaire',      imagePath: '/image/occasions/anniversaire.png' },
-  { value: 'christmas',   label: 'Noël',              imagePath: '/image/occasions/noel.png' },
-  { value: 'new-year',    label: 'Nouvel An',         imagePath: '/image/occasions/nouvel-an.png' },
-  { value: 'easter',      label: 'Pâques',            imagePath: '/image/occasions/paques.png' },
-  { value: 'eid',         label: 'Aïd el-Fitr',      imagePath: '/image/occasions/aid.png' },
-  { value: 'mothers-day', label: 'Fête des mères',    imagePath: '/image/occasions/fete-meres.png' },
-  { value: 'fathers-day', label: 'Fête des pères',    imagePath: '/image/occasions/fete-peres.png' },
-  { value: 'custom',      label: 'Autre',             imagePath: '/image/occasions/personnalise.png' },
+  { value: 'birthday',    label: 'Anniversaire',      imagePath: '/image/occasions/anniversaire.webp' },
+  { value: 'christmas',   label: 'Noël',              imagePath: '/image/occasions/noel.webp' },
+  { value: 'new-year',    label: 'Nouvel An',         imagePath: '/image/occasions/nouvel-an.webp' },
+  { value: 'easter',      label: 'Pâques',            imagePath: '/image/occasions/paques.webp' },
+  { value: 'eid',         label: 'Aïd el-Fitr',      imagePath: '/image/occasions/aid.webp' },
+  { value: 'mothers-day', label: 'Fête des mères',    imagePath: '/image/occasions/fete-meres.webp' },
+  { value: 'fathers-day', label: 'Fête des pères',    imagePath: '/image/occasions/fete-peres.webp' },
+  { value: 'custom',      label: 'Autre',             imagePath: '/image/occasions/personnalise.webp' },
 ];
 
 const MESSAGE_OPTIONS = [
-  { value: 'friendship',   label: 'Amitié',        imagePath: '/image/messages/amitie.png' },
-  { value: 'courage',      label: 'Courage',       imagePath: '/image/messages/courage.png' },
-  { value: 'love',         label: 'Amour',         imagePath: '/image/messages/amour.png' },
-  { value: 'perseverance', label: 'Persévérance',  imagePath: '/image/messages/perseverance.png' },
-  { value: 'sharing',      label: 'Partage',       imagePath: '/image/messages/partage.png' },
-  { value: 'honesty',      label: 'Honnêteté',     imagePath: '/image/messages/honnetete.png' },
-  { value: 'respect',      label: 'Respect',       imagePath: '/image/messages/respect.png' },
-  { value: 'custom',       label: 'Autre',         imagePath: '/image/messages/personnalise.png' },
+  { value: 'friendship',   label: 'Amitié',        imagePath: '/image/messages/amitie.webp' },
+  { value: 'courage',      label: 'Courage',       imagePath: '/image/messages/courage.webp' },
+  { value: 'love',         label: 'Amour',         imagePath: '/image/messages/amour.webp' },
+  { value: 'perseverance', label: 'Persévérance',  imagePath: '/image/messages/perseverance.webp' },
+  { value: 'sharing',      label: 'Partage',       imagePath: '/image/messages/partage.webp' },
+  { value: 'honesty',      label: 'Honnêteté',     imagePath: '/image/messages/honnetete.webp' },
+  { value: 'respect',      label: 'Respect',       imagePath: '/image/messages/respect.webp' },
+  { value: 'custom',       label: 'Autre',         imagePath: '/image/messages/personnalise.webp' },
 ];
 
 const GENDER_OPTIONS = [
@@ -603,7 +603,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
               </div>
             ) : (
               <BookPreviewBanner>
-                <BookPreviewCover $src="/image/themes/contes-de-fees.png" />
+                <BookPreviewCover $src="/image/themes/contes-de-fees.webp" />
                 <BookPreviewText>Ton enfant devient le héros de son propre livre</BookPreviewText>
               </BookPreviewBanner>
             )}
@@ -702,7 +702,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                       width: isCustomSelected ? '40px' : '56px',
                       height: isCustomSelected ? '40px' : '56px',
                       borderRadius: '12px',
-                      backgroundImage: 'url(/image/themes/personnalise.png)',
+                      backgroundImage: 'url(/image/themes/personnalise.webp)',
                       backgroundSize: 'cover',
                       backgroundPosition: 'center',
                       flexShrink: 0,
