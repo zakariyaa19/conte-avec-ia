@@ -452,6 +452,52 @@ ${order.secondaryCharacterAge ? `📝 Type/Âge: ${escapeHtml(order.secondaryCha
   }
 
   /**
+   * Notification LIVRE COMPLET PAYÉ (2,99€) — le client a payé pour finir son histoire
+   * Ne lance JAMAIS d'exception
+   */
+  static async sendCompletionPaidAlert(data: {
+    customerName: string;
+    customerEmail: string;
+    protagonistName: string;
+    amount: number;
+    orderNumber: string;
+  }): Promise<void> {
+    try {
+      if (!this.BOT_TOKEN || !this.CHAT_ID) return;
+
+      const message = `
+💵💵💵💵💵💵💵💵💵💵💵💵💵💵
+
+📖 <b>LIVRE COMPLET PAYÉ !</b> 📖
+
+💵 <b>+${data.amount}€ !!!</b> 💵
+
+💵💵💵💵💵💵💵💵💵💵💵💵💵💵
+
+👤 <b>${escapeHtml(data.customerName)}</b>
+📧 ${escapeHtml(data.customerEmail)}
+📖 Livre de : <b>${escapeHtml(data.protagonistName)}</b>
+📋 Commande : #${escapeHtml(data.orderNumber)}
+💳 Montant : <b>${data.amount}€</b>
+
+✅ <b>Le client a payé pour finir l'histoire !</b>
+📖 Génération du livre complet (12 pages) en cours...
+
+💵💵💵💵💵💵💵💵💵💵💵💵💵💵`;
+
+      await axios.post(`${this.API_URL}/sendMessage`, {
+        chat_id: this.CHAT_ID,
+        text: message,
+        parse_mode: 'HTML'
+      });
+
+      console.log('[TELEGRAM] Alerte COMPLETION PAYEE envoyee pour:', data.customerEmail);
+    } catch (error: any) {
+      console.error('[TELEGRAM] Erreur alerte completion (non bloquant):', error.message);
+    }
+  }
+
+  /**
    * Notification NOUVEL ABONNE CLUB — message premium qui sort du lot
    * Ne lance JAMAIS d'exception
    */
@@ -464,29 +510,33 @@ ${order.secondaryCharacterAge ? `📝 Type/Âge: ${escapeHtml(order.secondaryCha
     try {
       if (!this.BOT_TOKEN || !this.CHAT_ID) return;
 
-      const planLabel = data.plan === 'annual'
+      const isAnnual = data.plan === 'annual';
+      const planLabel = isAnnual
         ? '📅 Annuel (79,99€/an)'
         : '📅 Mensuel (1,99€ → 9,99€/mois)';
+      const nextMonth = isAnnual ? '' : '\n\n📆 <b>Mois prochain : 9,99€ de revenue récurrent !</b>';
 
       const message = `
+💎💎💎💎💎💎💎💎💎💎💎💎💎💎💎💎
 
-💎💎💎💎💎💎💎💎💎💎💎💎💎💎
+🎉🎉🎉 <b>NOUVEL ABONNÉ CLUB !!!</b> 🎉🎉🎉
 
-🎉🎉🎉 <b>NOUVEL ABONNÉ CLUB !</b> 🎉🎉🎉
+💰💰💰 <b>+${escapeHtml(data.amount)}€ ENCAISSÉ !</b> 💰💰💰
 
-💰💰💰 <b>CA-CHING ! REVENUE !</b> 💰💰💰
+🔥🔥🔥 <b>REVENUE RÉCURRENT !</b> 🔥🔥🔥
 
-💎💎💎💎💎💎💎💎💎💎💎💎💎💎
+💎💎💎💎💎💎💎💎💎💎💎💎💎💎💎💎
 
 👤 <b>${escapeHtml(data.customerName)}</b>
 📧 ${escapeHtml(data.customerEmail)}
 ${planLabel}
-💳 Premier paiement : <b>${escapeHtml(data.amount)}€</b>
+💳 Paiement aujourd'hui : <b>${escapeHtml(data.amount)}€</b>${nextMonth}
 
-🚀 <b>Un client gratuit vient de passer premium !</b>
-📈 Le Club grandit, la machine tourne.
+🚀 <b>Un client gratuit vient de passer PREMIUM !</b>
+📈 Chaque abonné = revenue mensuel automatique.
+🏆 Le Club grandit, la machine tourne.
 
-💎💎💎💎💎💎💎💎💎💎💎💎💎💎`;
+💎💎💎💎💎💎💎💎💎💎💎💎💎💎💎💎`;
 
       await axios.post(`${this.API_URL}/sendMessage`, {
         chat_id: this.CHAT_ID,

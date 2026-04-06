@@ -182,7 +182,7 @@ export class MailjetService {
                   Name: data.customerName
                 }
               ],
-              Subject: `L'aventure de ${data.protagonistName} a commence ! Decouvrez les premieres pages`,
+              Subject: `Le premier chapitre de ${data.protagonistName} est pret ! Que va-t-il se passer ensuite ?`,
               HTMLPart: (() => {
                 const dl = data.userId ? MailjetService.generateMagicDashboardLink(data.userId, data.customerEmail) : (process.env.FRONTEND_URL + '/dashboard');
                 const cl = (process.env.FRONTEND_URL || 'https://contedia.fr') + '/club/checkout';
@@ -194,70 +194,62 @@ export class MailjetService {
 
                   <!-- HEADER -->
                   <div style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); padding: 32px 24px; text-align: center; color: white;">
-                    <p style="font-size: 36px; margin: 0 0 8px;">&#x1F4D6;</p>
-                    <h1 style="margin: 0; font-size: 24px; font-weight: 800;">L'aventure de ${sp} a commence !</h1>
-                    <p style="margin: 10px 0 0; font-size: 14px; opacity: 0.9;">${sn}, les 5 premieres pages vous attendent.</p>
+                    <p style="font-size: 36px; margin: 0 0 8px;">&#x1F4D6;&#x2728;</p>
+                    <h1 style="margin: 0; font-size: 22px; font-weight: 800; line-height: 1.3;">Le premier chapitre de ${sp} est pret !</h1>
+                    <p style="margin: 10px 0 0; font-size: 14px; opacity: 0.9;">${sn}, 5 pages illustrees vous attendent.</p>
                   </div>
 
                   <div style="padding: 32px 24px;">
 
-                    <!-- CTA PRINCIPAL — GROS BOUTON -->
-                    <div style="text-align: center; margin: 0 0 32px;">
-                      <a href="${dl}" style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); color: white; text-decoration: none; padding: 18px 48px; border-radius: 14px; font-weight: 800; font-size: 17px; display: inline-block; box-shadow: 0 4px 16px rgba(255,107,107,0.4);">
-                        Decouvrir l'histoire de ${sp}
+                    <!-- CTA 1 — Lire le chapitre -->
+                    <div style="text-align: center; margin: 0 0 24px;">
+                      <a href="${dl}" style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); color: white; text-decoration: none; padding: 16px 40px; border-radius: 14px; font-weight: 800; font-size: 16px; display: inline-block; box-shadow: 0 4px 16px rgba(255,107,107,0.4);">
+                        Lire le premier chapitre de ${sp}
                       </a>
-                      <p style="font-size: 12px; color: #999; margin: 10px 0 0;">Connexion automatique — 1 clic</p>
+                      <p style="font-size: 11px; color: #999; margin: 8px 0 0;">Connexion automatique — 1 clic</p>
                     </div>
 
-                    <!-- TEASER EMOTIONNEL -->
-                    <div style="background: #f9fafb; border-radius: 12px; padding: 20px; margin: 0 0 24px; border-left: 4px solid #FF6B6B;">
-                      <p style="font-size: 14px; color: #555; margin: 0; line-height: 1.6;">
-                        &#x2728; ${sp} est le heros de sa propre histoire. 5 pages illustrees vous attendent... mais <strong>l'aventure ne fait que commencer</strong>. Decouvrez la suite pour seulement 2,99&euro;.
+                    <!-- CLIFFHANGER TEASER -->
+                    <div style="background: #fffbeb; border-radius: 12px; padding: 18px; margin: 0 0 24px; border: 1px solid #fde68a;">
+                      <p style="font-size: 15px; color: #92400e; margin: 0; text-align: center; font-weight: 700; line-height: 1.5;">
+                        &#x26A0;&#xFE0F; L'histoire s'arrete au meilleur moment...<br>
+                        <span style="font-weight: 400; font-size: 13px;">Que va decouvrir ${sp} ? La suite est a portee de clic.</span>
                       </p>
                     </div>
 
+                    <!-- CTA 2 — FINIR L'HISTOIRE (2.99€) — CTA PRINCIPAL DE CONVERSION -->
+                    <div style="background: linear-gradient(145deg, #1a1040, #2d1b69); border-radius: 16px; padding: 24px 20px; text-align: center; border: 1px solid rgba(167,139,250,0.3); margin: 0 0 20px;">
+                      <p style="font-size: 16px; font-weight: 800; color: white; margin: 0 0 8px; line-height: 1.3;">
+                        Decouvrez la fin de l'histoire
+                      </p>
+                      <p style="font-size: 12px; color: rgba(255,255,255,0.6); margin: 0 0 16px;">
+                        12 pages illustrees + PDF telechargeable
+                      </p>
+                      <a href="${dl}" style="display: inline-block; background: linear-gradient(135deg, #FF6B6B, #FF8E53); color: white; padding: 14px 36px; border-radius: 30px; text-decoration: none; font-weight: 800; font-size: 16px; box-shadow: 0 4px 16px rgba(255,107,107,0.4);">
+                        Finir l'histoire &mdash; 2,99&euro;
+                      </a>
+                      <p style="font-size: 10px; color: rgba(255,255,255,0.3); margin: 8px 0 0;">Paiement securise Stripe</p>
+                    </div>
+
+                    <!-- OU CLUB -->
+                    <div style="text-align: center; margin: 0 0 20px;">
+                      <p style="font-size: 12px; color: #999; margin: 0 0 8px;">ou</p>
+                      <a href="${cl}" style="display: inline-block; background: linear-gradient(135deg, #a78bfa, #f093fb); color: white; padding: 10px 28px; border-radius: 25px; text-decoration: none; font-weight: 700; font-size: 13px;">
+                        Club : cette histoire + 4 livres/mois &mdash; 1,99&euro;
+                      </a>
+                      <p style="font-size: 10px; color: #bbb; margin: 6px 0 0;">Sans engagement &middot; Annulable en 1 clic</p>
+                    </div>
+
                     <!-- PREUVE SOCIALE -->
-                    <div style="text-align: center; margin: 0 0 28px;">
+                    <div style="text-align: center; margin: 0 0 16px; padding-top: 16px; border-top: 1px solid #f0f0f0;">
                       <p style="font-size: 12px; color: #999; font-style: italic; margin: 0 0 4px;">
-                        &laquo; Mon fils a lu son livre 6 fois le premier soir. Il me reclame une nouvelle histoire chaque semaine ! &raquo;
+                        &laquo; Mon fils me reclame la suite de son histoire tous les soirs ! &raquo;
                       </p>
                       <p style="font-size: 11px; color: #bbb; margin: 0;">Aurelie, maman de Leo (5 ans)</p>
                     </div>
 
-                    <!-- SEPARATION -->
-                    <div style="height: 1px; background: #eee; margin: 0 0 28px;"></div>
-
-                    <!-- OFFRE CLUB — URGENCE 48H -->
-                    <div style="background: linear-gradient(145deg, #1a1040, #2d1b69); border-radius: 16px; padding: 24px 20px; text-align: center; border: 1px solid rgba(167,139,250,0.3); position: relative; overflow: hidden;">
-                      <!-- Glow -->
-                      <div style="position: absolute; top: -20px; right: -20px; width: 60px; height: 60px; border-radius: 50%; background: radial-gradient(circle, rgba(167,139,250,0.2) 0%, transparent 70%);"></div>
-
-                      <p style="font-size: 10px; font-weight: 800; color: #fbbf24; text-transform: uppercase; letter-spacing: 1.5px; margin: 0 0 6px;">&#x23F0; Offre de bienvenue &mdash; 48h</p>
-
-                      <p style="font-size: 15px; font-weight: 700; color: #f0e6ff; margin: 0 0 14px; line-height: 1.4;">
-                        Decouvrez la suite de l'histoire<br><strong style="color: white;">+ 4 livres complets chaque mois</strong>
-                      </p>
-
-                      <!-- Features compact -->
-                      <table style="margin: 0 auto 14px; text-align: left;">
-                        <tr><td style="padding: 3px 8px; font-size: 12px; color: rgba(255,255,255,0.7);">&#x1F4DA; 4 livres par mois</td><td style="padding: 3px 8px; font-size: 12px; color: rgba(255,255,255,0.7);">&#x1F3A8; 9 styles</td></tr>
-                        <tr><td style="padding: 3px 8px; font-size: 12px; color: rgba(255,255,255,0.7);">&#x1F4D6; 2x plus de pages</td><td style="padding: 3px 8px; font-size: 12px; color: rgba(255,255,255,0.7);">&#x1F46A; 5 personnages</td></tr>
-                      </table>
-
-                      <!-- Prix -->
-                      <p style="color: rgba(255,255,255,0.35); font-size: 13px; text-decoration: line-through; margin: 0;">9,99&euro;/mois</p>
-                      <p style="color: white; font-size: 28px; font-weight: 800; margin: 2px 0 4px;">1,99&euro;</p>
-                      <p style="color: rgba(255,255,255,0.5); font-size: 11px; margin: 0 0 14px;">le 1er mois &middot; puis 9,99&euro; &middot; sans engagement</p>
-
-                      <a href="${cl}" style="display: inline-block; background: linear-gradient(135deg, #a78bfa, #f093fb); color: white; padding: 14px 36px; border-radius: 30px; text-decoration: none; font-weight: 800; font-size: 15px; box-shadow: 0 4px 16px rgba(167,139,250,0.5);">
-                        Essayer le Club pour 1,99&euro; &rarr;
-                      </a>
-
-                      <p style="color: rgba(255,255,255,0.3); font-size: 10px; margin: 10px 0 0;">Sans carte avant le paiement &middot; Annulable en 1 clic</p>
-                    </div>
-
                     <!-- FOOTER -->
-                    <div style="text-align: center; margin-top: 24px; padding: 16px 0; border-top: 1px solid #f0f0f0;">
+                    <div style="text-align: center; padding: 12px 0;">
                       <p style="font-size: 11px; color: #bbb; margin: 0;">Une question ? Repondez directement a cet email.</p>
                       <p style="font-size: 10px; color: #ddd; margin: 6px 0 0;">Contedia (PAUSIA) &middot; contedia.fr</p>
                     </div>
@@ -524,9 +516,14 @@ export class MailjetService {
             </div>
           </div>
 
-          <p style="font-size: 14px; color: #555; text-align: center; margin: 0 0 8px;">
-            Tout ca, c'est le <strong>Club Contedia</strong>.<br>Et il est a <strong style="color: #8B5CF6;">1,99&euro;</strong> pour les 24 prochaines heures.
-          </p>
+          <!-- CTA Complétion rapide -->
+          <div style="text-align: center; margin: 0 0 16px;">
+            <a href="${magicLink}" style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); color: white; padding: 14px 36px; border-radius: 30px; text-decoration: none; font-weight: 800; font-size: 15px; display: inline-block; box-shadow: 0 4px 16px rgba(255,107,107,0.4);">
+              Finir l'histoire de ${data.protagonistName} &mdash; 2,99&euro;
+            </a>
+          </div>
+
+          <p style="font-size: 13px; color: #999; text-align: center; margin: 0 0 8px;">ou accedez a tout avec le Club :</p>
 
           ${priceBadge('Plus que 24h pour cette offre')}
         `)
@@ -558,20 +555,19 @@ export class MailjetService {
             </p>
           </div>
 
-          <p style="font-size: 14px; color: #555; text-align: center; margin: 0 0 16px; line-height: 1.6;">
-            Si vous voulez essayer, l'offre a <strong>1,99&euro;</strong> est toujours la.<br>
-            Sans engagement. Sans piege. Annulable en 1 clic.
-          </p>
-
+          <!-- CTA 1 — Complétion -->
           <div style="text-align: center; margin: 0 0 16px;">
-            <p style="font-size: 14px; color: #bbb; text-decoration: line-through; margin: 0;">9,99&euro;/mois</p>
-            <p style="font-size: 36px; font-weight: 800; color: #1a1040; margin: 4px 0;">1,99&euro;</p>
-            <p style="font-size: 12px; color: #888; margin: 0;">le 1er mois &middot; puis 9,99&euro; &middot; sans engagement</p>
+            <p style="font-size: 14px; color: #555; margin: 0 0 12px;">L'histoire de ${data.protagonistName} n'est pas finie...</p>
+            <a href="${magicLink}" style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); color: white; padding: 14px 36px; border-radius: 30px; text-decoration: none; font-weight: 800; font-size: 16px; display: inline-block; box-shadow: 0 4px 16px rgba(255,107,107,0.4);">
+              Finir l'histoire &mdash; 2,99&euro;
+            </a>
           </div>
 
+          <!-- CTA 2 — Club -->
           <div style="text-align: center; margin: 0 0 24px;">
-            <a href="${clubLink}" style="background: linear-gradient(135deg, #a78bfa, #f093fb); color: white; padding: 16px 40px; border-radius: 30px; text-decoration: none; font-weight: 800; font-size: 16px; display: inline-block; box-shadow: 0 4px 16px rgba(167,139,250,0.5);">
-              Essayer le Club pour 1,99&euro;
+            <p style="font-size: 12px; color: #999; margin: 0 0 8px;">ou le Club (cette histoire + 4 livres/mois) :</p>
+            <a href="${clubLink}" style="background: linear-gradient(135deg, #a78bfa, #f093fb); color: white; padding: 12px 32px; border-radius: 30px; text-decoration: none; font-weight: 700; font-size: 14px; display: inline-block;">
+              Club &mdash; 1,99&euro; le 1er mois
             </a>
           </div>
 
