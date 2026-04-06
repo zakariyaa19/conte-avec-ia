@@ -1674,7 +1674,7 @@ const faqReveal = useScrollReveal();
               <SectionTitle>Gratuit ou Club ?</SectionTitle>
               <Divider />
               <SectionSubtitle>
-                Votre premier livre est gratuit. Le Club deverrouille tout le potentiel.
+                Votre premier chapitre est gratuit. Le Club déverrouille l'histoire complète.
               </SectionSubtitle>
             </SectionWrapper>
 

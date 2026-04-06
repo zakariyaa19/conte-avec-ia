@@ -332,7 +332,7 @@ export const StoryFormPage: React.FC = () => {
     <>
       <SEOHead
         title="Créer un Livre Personnalisé pour Enfant | Conte sur Mesure avec IA"
-        description="Créez facilement un conte personnalisé pour votre enfant en 3 étapes simples. Premier livre gratuit, prêt en 5 minutes."
+        description="Créez facilement un conte personnalisé pour votre enfant en 3 étapes simples. Premier chapitre gratuit, prêt en 5 minutes."
         noindex={false}
       />
       <StoryWizard

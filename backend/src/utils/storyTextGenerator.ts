@@ -356,9 +356,14 @@ Pas de titre, pas de commentaire, JUSTE le JSON array.`;
 
       const continuationParagraphs = JSON.parse(jsonStr);
 
-      if (!Array.isArray(continuationParagraphs) || continuationParagraphs.length < 5) {
+      if (!Array.isArray(continuationParagraphs) || continuationParagraphs.length < 7) {
         if (attempt === 0) continue;
-        throw new Error(`Continuation: ${continuationParagraphs?.length || 0} paragraphes au lieu de 7`);
+        // Tolérance: si GPT retourne 5-6 au lieu de 7, on complète
+        if (Array.isArray(continuationParagraphs) && continuationParagraphs.length >= 5) {
+          while (continuationParagraphs.length < 7) continuationParagraphs.push(continuationParagraphs[continuationParagraphs.length - 1]);
+        } else {
+          throw new Error(`Continuation: ${continuationParagraphs?.length || 0} paragraphes au lieu de 7`);
+        }
       }
 
       // Assembler l'histoire complete : 5 premiers + 7 nouveaux = 12 paragraphes
