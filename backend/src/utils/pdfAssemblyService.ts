@@ -17,9 +17,9 @@ interface AccentColors {
 export interface PdfAssemblyParams {
   title: string;
   creatorName: string;
-  paragraphs: string[]; // 6 paragraphs (or more for legacy)
+  paragraphs: string[]; // 5 paragraphs (free/cliffhanger) or 12 (club/completed)
   coverImage: Buffer;   // Cover image (portrait, from order's coverImageData)
-  images: Buffer[];     // 6 interior images (mapped to IMAGE_PARAGRAPH_INDICES)
+  images: Buffer[];     // 5 images (free) or 12 images (club/completed)
 }
 
 interface PdfFonts {
@@ -677,8 +677,6 @@ async function buildPdfDocument(
 // --- Main assembly (with automatic font fallback) ---
 
 export async function assemblePdf(params: PdfAssemblyParams): Promise<Buffer> {
-  const expectedImages = IMAGE_PARAGRAPH_INDICES.length; // 6
-
   if (params.paragraphs.length < 4 || params.paragraphs.length > 12) {
     throw new Error(`Attendu 4-12 paragraphes, recu ${params.paragraphs.length}`);
   }

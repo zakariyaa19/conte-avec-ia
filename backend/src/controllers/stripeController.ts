@@ -124,10 +124,20 @@ export const createCompletionSession = async (req: Request, res: Response) => {
     }
 
     // Seules les commandes gratuites DELIVERED peuvent etre completees
-    if (order.status !== 'DELIVERED' || (order.price && Number(order.price) > 0)) {
+    const isFreeOrder = !order.price || Number(order.price) === 0;
+    if (order.status !== 'DELIVERED' || !isFreeOrder) {
       return res.status(400).json({
         success: false,
         message: 'Cette commande ne peut pas etre completee (doit etre un livre gratuit livre)'
+      });
+    }
+
+    // Si l'utilisateur est Club, il n'a pas besoin de payer — la completion est incluse
+    if (order.user?.role === 'CLUB') {
+      return res.status(400).json({
+        success: false,
+        message: 'En tant que membre Club, vous pouvez creer des livres complets directement. Creez une nouvelle histoire depuis votre bibliotheque !',
+        isClub: true
       });
     }
 
@@ -140,7 +150,7 @@ export const createCompletionSession = async (req: Request, res: Response) => {
       ? order.user.email
       : undefined;
 
-    const protagonistName = order.protagonistName || 'votre enfant';
+    const protagonistName = (order.protagonistName || 'votre enfant').replace(/[<>"'&]/g, '');
 
     const session = await stripe.checkout.sessions.create({
       customer_email: customerEmail,
@@ -797,14 +807,21 @@ export const handleStripeWebhook = async (req: Request, res: Response) => {
             // ═══ COMPLETION — L'utilisateur a payé 2.99€ pour compléter son histoire ═══
             console.log('[WEBHOOK] Completion payment confirmed for order:', orderId);
 
+            // Idempotence: vérifier que la complétion n'a pas déjà été traitée
+            const existingOrder = await prisma.order.findUnique({ where: { id: orderId } });
+            if (existingOrder && Number(existingOrder.price || 0) > 0) {
+              console.log('[WEBHOOK] Completion already processed for order:', orderId, '— skipping');
+              break;
+            }
+
             try {
               // Marquer la commande comme "completion payée"
+              const { PRODUCT_PRICES } = await import('../utils/pricing');
               await prisma.order.update({
                 where: { id: orderId },
                 data: {
-                  price: 2.99,
+                  price: PRODUCT_PRICES.EBOOK_COMPLETE,
                   purchaseType: 'SINGLE',
-                  // On ne change pas le status (reste DELIVERED) — la regeneration va le changer
                 }
               });
 
