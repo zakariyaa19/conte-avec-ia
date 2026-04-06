@@ -202,7 +202,7 @@ export const PricingTiers: React.FC<PricingTiersProps> = ({ onSelectPlan }) => {
           <Features>
             <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>Premier chapitre offert (5 pages)</Feature>
             <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>Bibliothèque limitée à 3 livres</Feature>
-            <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>7 illustrations par livre</Feature>
+            <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>5 illustrations par chapitre</Feature>
             <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>Bibliothèque en ligne</Feature>
             <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>Lecture + téléchargement</Feature>
             <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>1 personnage secondaire</Feature>

@@ -465,8 +465,8 @@ export const ClubPage: React.FC = () => {
 
   const comparison = [
     { feature: 'Livres/mois', free: '1', club: '4' },
-    { feature: 'Pages/livre', free: '6', club: '2x plus' },
-    { feature: 'Illustrations/livre', free: '6', club: '2x plus' },
+    { feature: 'Pages/livre', free: '5', club: '12' },
+    { feature: 'Illustrations/livre', free: '5', club: '12' },
     { feature: "Styles d'illustration", free: '1', club: '9' },
     { feature: 'Personnages secondaires', free: '1', club: '5' },
     { feature: 'Multi-langues', free: '✘', club: '✔' },
