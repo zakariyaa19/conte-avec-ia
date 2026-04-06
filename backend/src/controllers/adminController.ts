@@ -708,6 +708,76 @@ export class AdminController {
     }
   }
 
+  // Modifier le role d'un client (passage gratuit → Club ou inversement)
+  static async updateClientRole(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const { role } = req.body;
+
+      if (!role || !['USER', 'CLUB'].includes(role)) {
+        return res.status(400).json({ success: false, message: 'Role invalide. Valeurs acceptees: USER, CLUB' });
+      }
+
+      const user = await prisma.user.findUnique({ where: { id } });
+      if (!user) {
+        return res.status(404).json({ success: false, message: 'Client non trouve' });
+      }
+
+      if (user.role === role) {
+        return res.json({ success: true, message: `Le client est deja en role ${role}` });
+      }
+
+      if (role === 'CLUB') {
+        // Passage en Club : activer le role + initialiser les credits
+        const periodEnd = new Date();
+        periodEnd.setFullYear(periodEnd.getFullYear() + 1); // 1 an par defaut pour les manuels
+
+        await prisma.user.update({
+          where: { id },
+          data: {
+            role: 'CLUB',
+            subscriptionStatus: 'active',
+            subscriptionPeriodEnd: periodEnd,
+            weeklySubmissionCount: 0,
+            weeklySubmissionReset: new Date(),
+          }
+        });
+
+        console.log(`[ADMIN] Client ${user.email} passe en CLUB manuellement`);
+
+        // Notification Telegram
+        try {
+          const { TelegramService } = await import('../utils/telegramService');
+          await TelegramService.sendNewClubMemberAlert({
+            customerName: user.firstName || user.email,
+            customerEmail: user.email,
+            plan: 'manual',
+            amount: '0 (manuel admin)',
+          });
+        } catch { /* non bloquant */ }
+
+        res.json({ success: true, message: `${user.email} est maintenant membre Club (actif pour 1 an)` });
+      } else {
+        // Retour en gratuit : desactiver le Club
+        await prisma.user.update({
+          where: { id },
+          data: {
+            role: 'USER',
+            subscriptionStatus: null,
+            subscriptionPeriodEnd: null,
+            weeklySubmissionCount: 0,
+          }
+        });
+
+        console.log(`[ADMIN] Client ${user.email} repasse en USER manuellement`);
+        res.json({ success: true, message: `${user.email} est redevenu un compte gratuit` });
+      }
+    } catch (error) {
+      console.error('Erreur modification role:', error);
+      res.status(500).json({ success: false, message: 'Erreur lors de la modification du role' });
+    }
+  }
+
   // Stats etendues
   static async getDashboardStatsExtended(req: Request, res: Response) {
     try {

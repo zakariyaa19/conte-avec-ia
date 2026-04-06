@@ -349,6 +349,17 @@ export class ApiService {
     });
   }
 
+  static async updateAdminClientRole(token: string, clientId: string, role: 'USER' | 'CLUB'): Promise<{ success: boolean; message: string }> {
+    return this.request(`/api/admin/clients/${clientId}/role`, {
+      method: 'PATCH',
+      body: JSON.stringify({ role }),
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+  }
+
   // ========== Retention ==========
   static async applyRetentionDiscount(token: string): Promise<{ success: boolean; message: string }> {
     return this.request('/api/stripe/apply-retention-discount', {
