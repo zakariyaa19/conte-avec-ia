@@ -1118,7 +1118,6 @@ export async function autoCompleteStory(orderId: string): Promise<void> {
 
     // Build params from order data
     const { generateStoryContinuation } = await import('../utils/storyTextGenerator');
-    const { generateStoryImages, IMAGE_PARAGRAPH_INDICES, CLUB_IMAGE_PARAGRAPH_INDICES } = await import('../utils/storyImageGenerator');
 
     const storyParams = {
       protagonistName: order.protagonistName,
@@ -1157,11 +1156,36 @@ export async function autoCompleteStory(orderId: string): Promise<void> {
       }
     });
 
-    // 2. Generate images for ALL 12 paragraphs (full story)
-    const imageResult = await generateStoryImages(
+    // 2. Récupérer les 5 images existantes + générer les 7 nouvelles
+    // On NE régénère PAS les 5 premières images — le client les a déjà vues
+    let existingImages: Buffer[] = [];
+    try {
+      if (order.illustrationUrlsJson) {
+        const illustrationUrls: string[] = JSON.parse(order.illustrationUrlsJson as string);
+        const axios = (await import('axios')).default;
+        for (const url of illustrationUrls) {
+          try {
+            const resp = await axios.get(url, { responseType: 'arraybuffer', timeout: 15000 });
+            existingImages.push(Buffer.from(resp.data));
+          } catch {
+            console.warn(`[Completion] Failed to download existing image: ${url}`);
+          }
+        }
+      }
+    } catch {
+      console.warn(`[Completion] Failed to parse existing illustration URLs`);
+    }
+
+    console.log(`[Completion] Retrieved ${existingImages.length} existing images, generating ${12 - existingImages.length} new ones`);
+
+    // Générer les images SEULEMENT pour les nouveaux paragraphes (6-12)
+    const newParagraphs = fullStory.paragraphs.slice(existingImages.length);
+    const { generateStoryImages } = await import('../utils/storyImageGenerator');
+
+    const newImageResult = await generateStoryImages(
       storyParams as any,
       fullStory.title,
-      fullStory.paragraphs,
+      newParagraphs,
       (progress: number) => {
         prisma.order.update({
           where: { id: orderId },
@@ -1169,6 +1193,10 @@ export async function autoCompleteStory(orderId: string): Promise<void> {
         }).catch(() => {});
       }
     );
+
+    // Assembler : 5 images existantes + 7 nouvelles images
+    const allImages = [...existingImages, ...newImageResult.images];
+    const imageResult = { images: allImages };
 
     await prisma.order.update({
       where: { id: orderId },
