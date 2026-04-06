@@ -683,7 +683,7 @@ async function runGenerationPipeline(orderId: string, order: any, genLogId: stri
     const title = order.coverTitle || await generateBookTitle(titleParams);
 
     const isClubOrder = order.purchaseType === 'CLUB';
-    console.log(`[Generation] Order type: ${isClubOrder ? 'CLUB (12 pages, premium)' : 'FREE/SINGLE (6 pages)'}`);
+    console.log(`[Generation] Order type: ${isClubOrder ? 'CLUB (12 pages, premium)' : 'FREE/SINGLE (5 pages, cliffhanger)'}`);
 
     const textParams: StoryTextParams = {
       protagonistName: order.protagonistName,
