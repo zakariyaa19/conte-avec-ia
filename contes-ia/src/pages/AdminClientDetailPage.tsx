@@ -381,6 +381,64 @@ export const AdminClientDetailPage: React.FC<AdminClientDetailPageProps> = ({ to
               <InfoValue>{client.weeklySubmissionCount || 0}</InfoValue>
             </InfoRow>
 
+            {/* Upgrade / Downgrade role */}
+            <div style={{
+              marginTop: '12px', padding: '14px',
+              background: client.role === 'CLUB'
+                ? 'linear-gradient(135deg, rgba(5,150,105,0.08), rgba(5,150,105,0.04))'
+                : 'linear-gradient(135deg, rgba(139,92,246,0.08), rgba(139,92,246,0.04))',
+              borderRadius: '12px',
+              border: `1px solid ${client.role === 'CLUB' ? 'rgba(5,150,105,0.2)' : 'rgba(139,92,246,0.2)'}`,
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
+                <div>
+                  <p style={{ fontSize: '13px', fontWeight: 700, margin: '0 0 2px', color: 'var(--text-primary)' }}>
+                    {client.role === 'CLUB' ? 'Membre Club actif' : 'Compte gratuit'}
+                  </p>
+                  <p style={{ fontSize: '11px', color: 'var(--text-secondary)', margin: 0 }}>
+                    {client.role === 'CLUB'
+                      ? 'Ce client a un accès Club. Vous pouvez le repasser en gratuit.'
+                      : 'Ce client est en version gratuite. Vous pouvez le passer en Club manuellement (1 an).'
+                    }
+                  </p>
+                </div>
+                <button
+                  onClick={async () => {
+                    const targetRole = client.role === 'CLUB' ? 'USER' : 'CLUB';
+                    const confirmMsg = targetRole === 'CLUB'
+                      ? `Passer ${client.email} en membre CLUB ?\n\nCela lui donne :\n• Accès Club pour 1 an\n• 4 livres/mois\n• 9 styles, 5 personnages\n• Crédits initialisés à 0`
+                      : `Repasser ${client.email} en compte GRATUIT ?\n\nCela retire :\n• Accès Club\n• Crédits réinitialisés`;
+                    if (!window.confirm(confirmMsg)) return;
+                    const token = localStorage.getItem('adminToken') || '';
+                    try {
+                      const res = await ApiService.updateAdminClientRole(token, client.id, targetRole as 'USER' | 'CLUB');
+                      if (res.success) {
+                        setMessage({ type: 'success', text: res.message });
+                        setTimeout(() => window.location.reload(), 1000);
+                      } else {
+                        setMessage({ type: 'error', text: res.message || 'Erreur' });
+                      }
+                    } catch {
+                      setMessage({ type: 'error', text: 'Erreur réseau' });
+                    }
+                  }}
+                  style={{
+                    padding: '8px 18px', borderRadius: '10px', border: 'none',
+                    background: client.role === 'CLUB'
+                      ? 'linear-gradient(135deg, #EF4444, #DC2626)'
+                      : 'linear-gradient(135deg, #8B5CF6, #7C3AED)',
+                    color: 'white', fontSize: '12px', fontWeight: 700,
+                    cursor: 'pointer', whiteSpace: 'nowrap',
+                    boxShadow: client.role === 'CLUB'
+                      ? '0 2px 8px rgba(239,68,68,0.3)'
+                      : '0 2px 8px rgba(139,92,246,0.3)',
+                  }}
+                >
+                  {client.role === 'CLUB' ? 'Repasser en gratuit' : 'Passer en Club'}
+                </button>
+              </div>
+            </div>
+
             {/* Credits management for Club members */}
             {client.role === 'CLUB' && (() => {
               const startDate = client.weeklySubmissionReset ? new Date(client.weeklySubmissionReset) : null;
