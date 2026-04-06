@@ -1152,7 +1152,7 @@ export async function autoCompleteStory(orderId: string): Promise<void> {
       data: {
         storyStatus: 'GENERATING_IMAGES',
         generationProgress: 30,
-        storyTextJson: JSON.stringify({ title: fullStory.title, paragraphs: fullStory.paragraphs }),
+        storyTextJson: JSON.stringify(fullStory.paragraphs), // Même format que la génération initiale (array)
       }
     });
 
