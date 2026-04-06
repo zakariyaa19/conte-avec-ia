@@ -1063,6 +1063,193 @@ export async function autoGenerateAndDeliver(orderId: string): Promise<void> {
     });
 }
 
+/**
+ * Complete a cliffhanger story after payment (2.99€)
+ * Takes existing 5 paragraphs + 5 images, generates 7 more paragraphs + 7 more images,
+ * assembles new 12-page PDF, delivers to user.
+ */
+export async function autoCompleteStory(orderId: string): Promise<void> {
+  if (activeGenerations.has(orderId)) {
+    console.log(`[Completion] Skipped ${orderId} — already active`);
+    return;
+  }
+
+  const order = await prisma.order.findUnique({
+    where: { id: orderId },
+    include: { user: true },
+  });
+
+  if (!order) {
+    console.error(`[Completion] Order ${orderId} not found`);
+    return;
+  }
+
+  // Parse existing story text
+  let existingParagraphs: string[] = [];
+  try {
+    if (order.storyTextJson) {
+      const parsed = JSON.parse(order.storyTextJson as string);
+      existingParagraphs = parsed.paragraphs || parsed;
+    }
+  } catch {
+    console.error(`[Completion] Cannot parse existing storyTextJson for ${orderId}`);
+    return;
+  }
+
+  if (existingParagraphs.length < 3) {
+    console.error(`[Completion] Not enough existing paragraphs (${existingParagraphs.length}) for ${orderId}`);
+    return;
+  }
+
+  console.log(`[Completion] Starting story completion for ${orderId} — ${existingParagraphs.length} existing paragraphs`);
+
+  activeGenerations.add(orderId);
+
+  try {
+    await prisma.order.update({
+      where: { id: orderId },
+      data: {
+        status: 'GENERATING',
+        storyStatus: 'GENERATING_TEXT',
+        generationProgress: 10,
+        generationStartedAt: new Date(),
+      }
+    });
+
+    // Build params from order data
+    const { generateStoryContinuation } = await import('../utils/storyTextGenerator');
+    const { generateStoryImages, IMAGE_PARAGRAPH_INDICES, CLUB_IMAGE_PARAGRAPH_INDICES } = await import('../utils/storyImageGenerator');
+
+    const storyParams = {
+      protagonistName: order.protagonistName,
+      protagonistAge: order.protagonistAge || undefined,
+      protagonistGender: order.protagonistGender || undefined,
+      ageRange: order.ageRange,
+      generalTheme: order.generalTheme,
+      customTheme: order.customTheme || undefined,
+      specificSubject: order.specificSubject || '',
+      customSubject: order.customSubject || undefined,
+      centralMessage: order.centralMessage || '',
+      customMessage: order.customMessage || undefined,
+      hobbies: order.hobbies || undefined,
+      favoriteDish: order.favoriteDish || undefined,
+      specialEvents: order.specialEvents || undefined,
+      religion: order.religion || undefined,
+      customReligion: order.customReligion || undefined,
+      language: order.language || 'francais',
+      secondaryCharactersJson: order.secondaryCharactersJson || undefined,
+      creatorName: order.creatorName || undefined,
+      narratedBy: order.narratedBy || undefined,
+      illustrationStyle: order.illustrationStyle || '',
+      isClub: true, // Generate as full/premium since they paid
+    };
+
+    // 1. Generate continuation text (paragraphs 6-12)
+    const title = order.coverTitle || `Le conte de ${order.protagonistName}`;
+    const fullStory = await generateStoryContinuation(storyParams, title, existingParagraphs);
+
+    await prisma.order.update({
+      where: { id: orderId },
+      data: {
+        storyStatus: 'GENERATING_IMAGES',
+        generationProgress: 30,
+        storyTextJson: JSON.stringify({ title: fullStory.title, paragraphs: fullStory.paragraphs }),
+      }
+    });
+
+    // 2. Generate images for ALL 12 paragraphs (full story)
+    const imageResult = await generateStoryImages(
+      storyParams as any,
+      fullStory.title,
+      fullStory.paragraphs,
+      (progress: number) => {
+        prisma.order.update({
+          where: { id: orderId },
+          data: { generationProgress: 30 + Math.round(progress * 0.5) }
+        }).catch(() => {});
+      }
+    );
+
+    await prisma.order.update({
+      where: { id: orderId },
+      data: {
+        storyStatus: 'ASSEMBLING_PDF',
+        generationProgress: 85,
+      }
+    });
+
+    // 3. Get cover image for PDF assembly
+    let coverImageBuffer: Buffer;
+    if (order.coverImageUrl) {
+      try {
+        const axios = (await import('axios')).default;
+        const coverResp = await axios.get(order.coverImageUrl, { responseType: 'arraybuffer', timeout: 15000 });
+        coverImageBuffer = Buffer.from(coverResp.data);
+      } catch {
+        // Fallback: create a simple placeholder
+        coverImageBuffer = Buffer.alloc(0);
+      }
+    } else {
+      coverImageBuffer = Buffer.alloc(0);
+    }
+
+    // 4. Assemble complete PDF
+    const { assemblePdf } = await import('../utils/pdfAssemblyService');
+    const pdfBuffer = await assemblePdf({
+      title: fullStory.title,
+      creatorName: order.creatorName || '',
+      paragraphs: fullStory.paragraphs,
+      coverImage: coverImageBuffer,
+      images: imageResult.images,
+    });
+
+    // 4. Upload PDF to Cloudinary
+    const { uploadPdfToCloudinary } = await import('../utils/cloudinaryService');
+    const pdfUrl = await uploadPdfToCloudinary(pdfBuffer, `story-complete-${orderId}`);
+
+    // 5. Update order — mark as complete
+    await prisma.order.update({
+      where: { id: orderId },
+      data: {
+        status: 'DELIVERED',
+        storyStatus: 'DISPONIBLE',
+        pdfUrl,
+        generationProgress: 100,
+        deliveredAt: new Date(),
+      }
+    });
+
+    console.log(`[Completion] Story ${orderId} completed and delivered!`);
+
+    // 6. Send delivery email
+    try {
+      const { MailjetService } = await import('../utils/mailjetService');
+      if (order.user?.email) {
+        await MailjetService.sendStoryDeliveryEmail({
+          customerName: order.user.firstName || order.creatorName || 'Client',
+          customerEmail: order.user.email,
+          orderNumber: order.id.slice(-8),
+          protagonistName: order.protagonistName,
+          userId: order.user.id,
+        });
+      }
+    } catch { /* non bloquant */ }
+
+  } catch (error: any) {
+    console.error(`[Completion] Failed for ${orderId}:`, error.message);
+    await prisma.order.update({
+      where: { id: orderId },
+      data: {
+        status: 'DELIVERED', // Remettre en DELIVERED (le livre gratuit reste lisible)
+        storyStatus: 'GENERATION_FAILED',
+        generationError: error.message?.slice(0, 500),
+      }
+    }).catch(() => {});
+  } finally {
+    activeGenerations.delete(orderId);
+  }
+}
+
 async function updateProgress(orderId: string, status: string, progress: number) {
   try {
     await prisma.order.update({

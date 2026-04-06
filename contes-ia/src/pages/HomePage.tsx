@@ -1225,8 +1225,8 @@ const slidesData = [
   {
     label: 'Recevoir',
     stepLabel: 'Étape 2',
-    title: 'C\'est 100% gratuit',
-    subtitle: 'Pas de carte bancaire. Entrez juste votre email et recevez votre livre personnalisé en 5 minutes.',
+    title: 'Recevez votre aperçu gratuit',
+    subtitle: 'Pas de carte bancaire. Entrez votre email et recevez les 5 premières pages de votre conte en quelques minutes.',
     bgColor: `${theme.colors.accent.softPink}25`,
     illustrationId: 'order' as const
   },
@@ -1313,7 +1313,7 @@ const faqItems = [
   {
     id: '3',
     question: "Qu'est-ce que le Club des Histoires Uniques ?",
-    answer: "Votre premier livre est 100% gratuit ! Le Club des Histoires à 9,99€/mois vous donne 4 livres avec 2x plus de pages et d'illustrations chaque mois (soit 2,50€ le livre). Personnalisation avancée : 9 styles d'illustration, personnages secondaires, multi-langues et bien plus. Crédits cumulables, sans engagement. Offre annuelle à 79,99€/an (-33%)."
+    answer: "Votre premier chapitre (5 pages illustrées) est 100% gratuit ! Pour découvrir la suite complète (12 pages), deux options : achat unique à 2,99€ ou le Club des Histoires à 1,99€ le premier mois (puis 9,99€/mois) qui inclut 4 livres complets par mois, 9 styles d'illustration, 5 personnages secondaires et bien plus. Sans engagement."
   },
   {
     id: '4',
@@ -1435,11 +1435,11 @@ const faqReveal = useScrollReveal();
 
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', "Créez un livre personnalisé gratuit pour votre enfant. Histoire unique générée par IA avec illustrations sur mesure. Premier livre offert, prêt en 5 minutes.");
+      metaDescription.setAttribute('content', "Créez un livre personnalisé gratuit pour votre enfant. Histoire unique générée par IA avec illustrations sur mesure. Commencez gratuitement, prêt en 5 minutes.");
     } else {
       const meta = document.createElement('meta');
       meta.name = 'description';
-      meta.content = "Créez un livre personnalisé gratuit pour votre enfant. Histoire unique générée par IA avec illustrations sur mesure. Premier livre offert, prêt en 5 minutes.";
+      meta.content = "Créez un livre personnalisé gratuit pour votre enfant. Histoire unique générée par IA avec illustrations sur mesure. Commencez gratuitement, prêt en 5 minutes.";
       document.head.appendChild(meta);
     }
   }, []);
@@ -1448,7 +1448,7 @@ const faqReveal = useScrollReveal();
     <PageContainer>
       <SEOHead
         title="Livre Personnalisé Enfant Gratuit — Conte sur Mesure par IA | Contedia"
-        description="Créez un livre personnalisé gratuit pour votre enfant. Histoire unique générée par IA avec illustrations sur mesure. Premier livre offert, prêt en 5 minutes."
+        description="Créez un livre personnalisé gratuit pour votre enfant. Histoire unique générée par IA avec illustrations sur mesure. Commencez gratuitement, prêt en 5 minutes."
       />
       <SchemaOrganization />
       <SchemaWebSite />
@@ -1472,11 +1472,11 @@ const faqReveal = useScrollReveal();
                 Créez un <span>livre personnalisé</span> gratuit pour votre enfant
               </HeroTitle>
               <HeroSubtitle>
-                Votre enfant devient le héros d'un conte personnalisé unique. Prénom, photo, illustrations IA sur mesure. Premier livre offert, prêt en 5 minutes !
+                Votre enfant devient le héros d'un conte personnalisé unique. Prénom, photo, illustrations IA sur mesure. Commencez gratuitement, prêt en 5 minutes !
               </HeroSubtitle>
               <CTAButtons>
                 <Button variant="primary" size="lg" onClick={() => navigate('/create-story')}>
-                  Créer mon 1er livre GRATUIT
+                  Créer mon 1er chapitre GRATUIT
                 </Button>
                 <Button variant="outline" size="lg" onClick={() => navigate('/club')}>
                   Découvrir le Club des Histoires
@@ -1484,7 +1484,7 @@ const faqReveal = useScrollReveal();
               </CTAButtons>
               <TrustRow>
                 <TrustItem>
-                  <span>&#10003;</span> 1er livre gratuit
+                  <span>&#10003;</span> 1er chapitre gratuit
                 </TrustItem>
                 <TrustItem>
                   <span>&#10003;</span> Prêt en 5 minutes
@@ -1826,7 +1826,7 @@ const faqReveal = useScrollReveal();
             <SectionWrapper $visible={ctaReveal.isVisible}>
               <FinalCTATitle>Créez la première histoire de votre enfant</FinalCTATitle>
               <FinalCTAText>
-                1er livre GRATUIT — Prêt en 5 minutes
+                1er chapitre GRATUIT — Prêt en 5 minutes
               </FinalCTAText>
               <FinalCTAButtons>
                 <WhiteButton onClick={() => navigate('/create-story')}>

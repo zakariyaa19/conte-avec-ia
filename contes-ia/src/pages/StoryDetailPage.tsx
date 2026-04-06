@@ -941,6 +941,8 @@ export const StoryDetailPage: React.FC = () => {
             onShare={() => { setReaderOpen(false); setShareOpen(true); }}
             onCreateAnother={() => navigate('/create-story')}
             isClub={isClub}
+            isCliffhanger={!isClub && Number(story.price || 0) === 0 && (paragraphs?.length || 0) <= 6}
+            orderId={story.id}
           />
         );
       })()}

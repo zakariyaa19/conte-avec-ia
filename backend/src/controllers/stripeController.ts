@@ -104,6 +104,76 @@ export const createPaymentSession = async (req: Request, res: Response) => {
   }
 };
 
+// Creer une session Stripe pour completer une histoire (cliffhanger → histoire complete, 2.99€)
+export const createCompletionSession = async (req: Request, res: Response) => {
+  try {
+    const { orderId } = req.body;
+
+    if (!orderId) {
+      return res.status(400).json({ success: false, message: 'orderId requis' });
+    }
+
+    const order = await prisma.order.findUnique({
+      where: { id: orderId },
+      omit: { coverImageData: true, pdfData: true },
+      include: { user: true }
+    });
+
+    if (!order) {
+      return res.status(404).json({ success: false, message: 'Commande non trouvee' });
+    }
+
+    // Seules les commandes gratuites DELIVERED peuvent etre completees
+    if (order.status !== 'DELIVERED' || (order.price && Number(order.price) > 0)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Cette commande ne peut pas etre completee (doit etre un livre gratuit livre)'
+      });
+    }
+
+    const { PRODUCT_PRICES } = await import('../utils/pricing');
+    const completionPrice = PRODUCT_PRICES.EBOOK_COMPLETE; // 2.99€
+    const unitAmount = Math.round(completionPrice * 100);
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const customerEmail = order.user?.email && emailRegex.test(order.user.email)
+      ? order.user.email
+      : undefined;
+
+    const session = await stripe.checkout.sessions.create({
+      customer_email: customerEmail,
+      line_items: [{
+        price_data: {
+          currency: 'eur',
+          product_data: {
+            name: `Suite du conte de ${order.protagonistName || 'votre enfant'}`,
+            description: 'Histoire complete (12 pages illustrees + PDF)',
+          },
+          unit_amount: unitAmount,
+        },
+        quantity: 1,
+      }],
+      mode: 'payment',
+      success_url: `${process.env.FRONTEND_URL}/dashboard/story/${order.id}?completed=true`,
+      cancel_url: `${process.env.FRONTEND_URL}/dashboard/story/${order.id}?cancelled=true`,
+      metadata: {
+        orderId: order.id,
+        type: 'completion', // Pour distinguer dans le webhook
+      },
+    });
+
+    console.log(`[Stripe] Completion session created for order ${order.id} (${completionPrice}€) — ${order.protagonistName}`);
+
+    res.json({ success: true, sessionId: session.id, url: session.url });
+  } catch (error) {
+    console.error('[Stripe] Erreur creation session completion:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Erreur lors de la creation de la session de paiement'
+    });
+  }
+};
+
 // Creer une session d'abonnement Club
 export const createSubscriptionSession = async (req: ClientAuthRequest, res: Response) => {
   try {
@@ -712,9 +782,52 @@ export const handleStripeWebhook = async (req: Request, res: Response) => {
             }
           }
         } else if (session.mode === 'payment') {
-          // Achat unique eBook
           const orderId = session.metadata?.orderId;
-          if (orderId) {
+          const isCompletion = session.metadata?.type === 'completion';
+
+          if (orderId && isCompletion) {
+            // ═══ COMPLETION — L'utilisateur a payé 2.99€ pour compléter son histoire ═══
+            console.log('[WEBHOOK] Completion payment confirmed for order:', orderId);
+
+            try {
+              // Marquer la commande comme "completion payée"
+              await prisma.order.update({
+                where: { id: orderId },
+                data: {
+                  price: 2.99,
+                  purchaseType: 'SINGLE',
+                  // On ne change pas le status (reste DELIVERED) — la regeneration va le changer
+                }
+              });
+
+              // Lancer la régénération complète (12 pages) de l'histoire
+              const { autoCompleteStory } = await import('./storyGenerationController');
+              autoCompleteStory(orderId).catch(err =>
+                console.error('[WEBHOOK] autoCompleteStory error (non-blocking):', err)
+              );
+
+              // Notification Telegram
+              const order = await prisma.order.findUnique({ where: { id: orderId }, include: { user: true } });
+              if (order) {
+                try {
+                  const { TelegramService } = await import('../utils/telegramService');
+                  await TelegramService.sendOrderNotification({
+                    customerName: order.user?.firstName || 'Client',
+                    customerEmail: order.user?.email || 'inconnu',
+                    orderNumber: order.id.slice(-8),
+                    amount: 2.99,
+                    orderDate: new Date(),
+                    productType: order.productType,
+                    purchaseType: 'COMPLETION',
+                    orderDetails: order
+                  });
+                } catch { /* non bloquant */ }
+              }
+            } catch (compErr) {
+              console.error('[WEBHOOK] Erreur completion:', compErr);
+            }
+          } else if (orderId) {
+            // ═══ ACHAT UNIQUE CLASSIQUE (3.99€) ═══
             const order = await prisma.order.findUnique({
               where: { id: orderId },
               omit: { coverImageData: true, pdfData: true },
