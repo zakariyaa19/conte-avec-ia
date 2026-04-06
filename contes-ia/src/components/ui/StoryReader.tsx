@@ -25,6 +25,8 @@ interface StoryReaderProps {
   shareUrl?: string;
   isCliffhanger?: boolean; // true si l'histoire est un aperçu gratuit non terminé
   orderId?: string;        // pour le paiement de complétion
+  isGenerating?: boolean;  // true si la complétion est en cours de génération
+  generationProgress?: number; // 0-100 progression de la génération
 }
 
 /* ═══════════ ANIMATIONS ═══════════ */
@@ -302,12 +304,16 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
   creatorName, narratedBy, protagonistName, onClose, onShare, onCreateAnother,
   isShared = false, isClub = false, shareUrl,
   isCliffhanger = false, orderId,
+  isGenerating = false, generationProgress = 0,
 }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [visibleSlides, setVisibleSlides] = useState<Set<number>>(new Set([0]));
   const [showIndicator, setShowIndicator] = useState(true);
   const [nightMode, setNightMode] = useState(true);
+  const [showClubRecap, setShowClubRecap] = useState(false);
+  const [completionLoading, setCompletionLoading] = useState(false);
+  const [completionProgress, setCompletionProgress] = useState(0);
   const indicatorTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const resolveUrl = useCallback((url: string | null) => {
@@ -437,6 +443,46 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
 
           /* ── End slide — CLIFFHANGER or COMPLETE ── */
           if (slide.type === 'end') {
+            // ═══ GENERATION EN COURS — slide de progression ═══
+            if (isGenerating) {
+              return (
+                <EndSlide key="end" data-slide-index={idx}>
+                  <EndContent>
+                    <p style={{ fontSize: '3rem', margin: '0 0 16px' }}>&#x2728;&#x1F4D6;&#x2728;</p>
+                    <EndTitle style={{ fontSize: '1.3rem', lineHeight: 1.4 }}>
+                      La suite de l'aventure{protagonistName ? ` de ${protagonistName}` : ''} arrive...
+                    </EndTitle>
+                    <EndSubtitle style={{ fontSize: '0.85rem', opacity: 0.6, marginBottom: 28 }}>
+                      Notre IA écrit et illustre les 7 prochaines pages
+                    </EndSubtitle>
+
+                    {/* Barre de progression */}
+                    <div style={{
+                      width: '100%', maxWidth: 280, height: 8, borderRadius: 4,
+                      background: 'rgba(255,255,255,0.1)', overflow: 'hidden',
+                      margin: '0 auto 12px',
+                    }}>
+                      <div style={{
+                        width: `${Math.max(generationProgress, 5)}%`, height: '100%',
+                        borderRadius: 4,
+                        background: 'linear-gradient(90deg, #a78bfa, #f093fb)',
+                        transition: 'width 1s ease-out',
+                      }} />
+                    </div>
+                    <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12, margin: '0 0 8px' }}>
+                      {generationProgress < 30 ? 'Écriture de la suite...' :
+                       generationProgress < 80 ? 'Illustration des nouvelles pages...' :
+                       generationProgress < 95 ? 'Assemblage du livre complet...' :
+                       'Presque terminé...'}
+                    </p>
+                    <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: 11, margin: 0 }}>
+                      {generationProgress}% — environ 2 minutes
+                    </p>
+                  </EndContent>
+                </EndSlide>
+              );
+            }
+
             // ═══ CLIFFHANGER — L'histoire n'est pas finie, proposer de payer ═══
             if (isCliffhanger && !isShared) {
               return (
@@ -492,10 +538,10 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
                       12 pages complètes + PDF téléchargeable
                     </p>
 
-                    {/* Option B — Club (1.99€/mois) — RECOMMANDÉ */}
-                    {!isClub && (
+                    {/* Option B — Club (1.99€/mois) — Ouvre le récap d'abord */}
+                    {!isClub && !showClubRecap && (
                       <div
-                        onClick={() => window.location.href = '/club/checkout'}
+                        onClick={() => setShowClubRecap(true)}
                         style={{
                           width: '100%', maxWidth: 320, cursor: 'pointer',
                           background: 'linear-gradient(145deg, #1a1040, #2d1b69)',
@@ -508,16 +554,11 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
                       >
                         <div style={{ position: 'absolute', top: -20, right: -15, width: 50, height: 50, borderRadius: '50%', background: 'radial-gradient(circle, rgba(167,139,250,0.2) 0%, transparent 70%)', pointerEvents: 'none' }} />
                         <p style={{ fontSize: 10, fontWeight: 800, color: '#fbbf24', textTransform: 'uppercase', letterSpacing: '1.5px', margin: '0 0 6px' }}>
-                          Recommandé
+                          Recommand&eacute;
                         </p>
                         <p style={{ fontSize: 14, fontWeight: 800, color: '#f0e6ff', margin: '0 0 8px', lineHeight: 1.3 }}>
                           Cette histoire + 4 livres/mois
                         </p>
-                        <div style={{ display: 'flex', justifyContent: 'center', gap: 10, marginBottom: 10, flexWrap: 'wrap' }}>
-                          {['12 pages', '9 styles', '5 persos'].map(f => (
-                            <span key={f} style={{ fontSize: 10, color: 'rgba(255,255,255,0.6)', background: 'rgba(255,255,255,0.08)', padding: '2px 8px', borderRadius: 6 }}>{f}</span>
-                          ))}
-                        </div>
                         <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 6, marginBottom: 8 }}>
                           <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', textDecoration: 'line-through' }}>9,99&euro;</span>
                           <span style={{ fontSize: 22, fontWeight: 800, color: 'white' }}>1,99&euro;</span>
@@ -529,16 +570,93 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
                           background: 'linear-gradient(135deg, #a78bfa, #f093fb)',
                           boxShadow: '0 2px 10px rgba(167,139,250,0.4)',
                         }}>
-                          Rejoindre le Club &rarr;
+                          D&eacute;couvrir le Club &rarr;
                         </div>
-                        <p style={{ fontSize: 9, color: 'rgba(255,255,255,0.25)', margin: '6px 0 0' }}>Sans engagement · Annulable en 1 clic</p>
+                      </div>
+                    )}
+
+                    {/* Récap Club détaillé — s'affiche quand on clique */}
+                    {!isClub && showClubRecap && (
+                      <div style={{
+                        width: '100%', maxWidth: 340,
+                        background: 'linear-gradient(145deg, #1a1040 0%, #2d1b69 50%, #1a1040 100%)',
+                        borderRadius: '20px', padding: '22px 18px',
+                        textAlign: 'center', marginBottom: 16,
+                        border: '1px solid rgba(167,139,250,0.3)',
+                        boxShadow: '0 8px 32px rgba(45,27,105,0.6)',
+                      }}>
+                        <p style={{ fontSize: 11, fontWeight: 800, color: '#fbbf24', textTransform: 'uppercase', letterSpacing: '1.5px', margin: '0 0 10px' }}>
+                          Club des Histoires
+                        </p>
+                        <p style={{ fontSize: 15, fontWeight: 800, color: 'white', margin: '0 0 16px', lineHeight: 1.4 }}>
+                          Tout ce que vous d&eacute;bloquez
+                        </p>
+
+                        {/* Features list */}
+                        <div style={{ textAlign: 'left', marginBottom: 16 }}>
+                          {[
+                            { icon: '\u2705', text: 'La suite de cette histoire (12 pages)' },
+                            { icon: '\uD83D\uDCDA', text: '4 livres complets par mois' },
+                            { icon: '\uD83D\uDCD6', text: '2x plus de pages par livre' },
+                            { icon: '\uD83C\uDFA8', text: '9 styles d\'illustration' },
+                            { icon: '\uD83D\uDC6A', text: '5 personnages secondaires' },
+                            { icon: '\uD83D\uDC36', text: 'Animal de compagnie' },
+                            { icon: '\uD83C\uDF84', text: 'No\u00ebl, anniversaire, f\u00eates...' },
+                            { icon: '\uD83C\uDF0D', text: '10 langues' },
+                            { icon: '\u2B07\uFE0F', text: 'PDF t\u00e9l\u00e9chargeables illimit\u00e9s' },
+                          ].map((f, i) => (
+                            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 7 }}>
+                              <span style={{ fontSize: 14, width: 20, textAlign: 'center', flexShrink: 0 }}>{f.icon}</span>
+                              <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.8)', fontWeight: 500 }}>{f.text}</span>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Prix */}
+                        <div style={{ marginBottom: 14 }}>
+                          <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.35)', textDecoration: 'line-through' }}>9,99&euro;/mois</span>
+                          <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 4, margin: '4px 0' }}>
+                            <span style={{ fontSize: 28, fontWeight: 800, color: 'white' }}>1,99&euro;</span>
+                            <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)' }}>le 1er mois</span>
+                          </div>
+                          <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)', margin: 0 }}>puis 9,99&euro;/mois &middot; sans engagement</p>
+                        </div>
+
+                        {/* CTA vers Stripe */}
+                        <div
+                          onClick={() => { window.location.href = '/club/checkout'; }}
+                          style={{
+                            display: 'inline-block', fontSize: 14, fontWeight: 800,
+                            color: 'white', padding: '12px 32px', borderRadius: 14,
+                            background: 'linear-gradient(135deg, #a78bfa, #f093fb)',
+                            boxShadow: '0 4px 16px rgba(167,139,250,0.5)',
+                            cursor: 'pointer',
+                          }}
+                        >
+                          Continuer vers le paiement &rarr;
+                        </div>
+                        <p style={{ fontSize: 9, color: 'rgba(255,255,255,0.25)', margin: '8px 0 0' }}>
+                          Paiement s&eacute;curis&eacute; Stripe &middot; Annulable en 1 clic
+                        </p>
+
+                        {/* Retour */}
+                        <button
+                          onClick={() => setShowClubRecap(false)}
+                          style={{
+                            background: 'none', border: 'none', color: 'rgba(255,255,255,0.3)',
+                            fontSize: 11, cursor: 'pointer', marginTop: 10,
+                            textDecoration: 'underline',
+                          }}
+                        >
+                          Retour
+                        </button>
                       </div>
                     )}
 
                     {/* Partager */}
-                    {onShare && (
+                    {onShare && !showClubRecap && (
                       <EndButton onClick={onShare} style={{ opacity: 0.5, maxWidth: 320 }}>
-                        Envoyer l'aperçu à un proche
+                        Envoyer l'aper&ccedil;u &agrave; un proche
                       </EndButton>
                     )}
 

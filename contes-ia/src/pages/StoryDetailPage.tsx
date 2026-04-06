@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { safeLocalStorage } from '../utils/safeStorage';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import { theme } from '../styles/theme';
 import { Header } from '../components/layout/Header';
@@ -525,7 +525,9 @@ const LoadingText = styled.div`
 export const StoryDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, refreshProfile, isClub } = useAuth();
+  const isCompletionReturn = useMemo(() => new URLSearchParams(location.search).get('completed') === 'true', [location.search]);
   const [story, setStory] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
@@ -582,6 +584,13 @@ export const StoryDetailPage: React.FC = () => {
   useEffect(() => {
     loadStory();
   }, [id]);
+
+  // Auto-ouvrir le reader si retour de Stripe (complétion payée)
+  useEffect(() => {
+    if (isCompletionReturn && story) {
+      setReaderOpen(true);
+    }
+  }, [isCompletionReturn, story]);
 
   // Tracker la lecture uniquement quand le livre est prêt — 1 fois par visite
   const readTrackedRef = React.useRef(false);
@@ -943,6 +952,8 @@ export const StoryDetailPage: React.FC = () => {
             isClub={isClub}
             isCliffhanger={!isClub && Number(story.price || 0) === 0 && (paragraphs?.length || 0) <= 8}
             orderId={story.id}
+            isGenerating={['GENERATING', 'GENERATING_TEXT', 'GENERATING_IMAGES', 'ASSEMBLING_PDF'].includes(story.storyStatus || '') && isCompletionReturn}
+            generationProgress={story.generationProgress || 0}
           />
         );
       })()}
