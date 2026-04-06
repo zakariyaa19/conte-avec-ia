@@ -831,20 +831,17 @@ export const handleStripeWebhook = async (req: Request, res: Response) => {
                 console.error('[WEBHOOK] autoCompleteStory error (non-blocking):', err)
               );
 
-              // Notification Telegram
+              // Notification Telegram — LIVRE COMPLET PAYÉ
               const order = await prisma.order.findUnique({ where: { id: orderId }, include: { user: true } });
               if (order) {
                 try {
                   const { TelegramService } = await import('../utils/telegramService');
-                  await TelegramService.sendOrderNotification({
+                  await TelegramService.sendCompletionPaidAlert({
                     customerName: order.user?.firstName || 'Client',
                     customerEmail: order.user?.email || 'inconnu',
+                    protagonistName: order.protagonistName || 'Enfant',
+                    amount: PRODUCT_PRICES.EBOOK_COMPLETE,
                     orderNumber: order.id.slice(-8),
-                    amount: 2.99,
-                    orderDate: new Date(),
-                    productType: order.productType,
-                    purchaseType: 'COMPLETION',
-                    orderDetails: order
                   });
                 } catch { /* non bloquant */ }
               }
