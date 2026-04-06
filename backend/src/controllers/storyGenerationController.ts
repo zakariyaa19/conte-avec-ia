@@ -1209,11 +1209,29 @@ export async function autoCompleteStory(orderId: string): Promise<void> {
 
     console.log(`[Completion] Final image count: ${imageResult.images.length} (${existingImages.length} kept + ${imageResult.images.length - existingImages.length} new)`);
 
+    // 2b. Upload les nouvelles images sur Cloudinary et sauvegarder les URLs
+    console.log(`[Completion] Uploading ${imageResult.images.length} illustrations to Cloudinary...`);
+    const { uploadCoverToCloudinary } = await import('../utils/cloudinaryService');
+
+    // Upload TOUTES les images (existantes + nouvelles) pour avoir des URLs fraîches
+    const uploadResults = await Promise.allSettled(
+      imageResult.images.map((buf, i) =>
+        uploadCoverToCloudinary(buf, `illust-complete-${orderId}-${i}-${Date.now()}`)
+      )
+    );
+    const illustrationUrls = uploadResults
+      .map(r => r.status === 'fulfilled' ? r.value : null)
+      .filter(Boolean) as string[];
+
+    console.log(`[Completion] Uploaded ${illustrationUrls.length}/${imageResult.images.length} illustrations to Cloudinary`);
+
+    // Sauvegarder les URLs des illustrations dans la commande
     await prisma.order.update({
       where: { id: orderId },
       data: {
         storyStatus: 'ASSEMBLING_PDF',
         generationProgress: 85,
+        illustrationUrlsJson: JSON.stringify(illustrationUrls),
       }
     });
 
