@@ -140,14 +140,17 @@ export const createCompletionSession = async (req: Request, res: Response) => {
       ? order.user.email
       : undefined;
 
+    const protagonistName = order.protagonistName || 'votre enfant';
+
     const session = await stripe.checkout.sessions.create({
       customer_email: customerEmail,
       line_items: [{
         price_data: {
           currency: 'eur',
           product_data: {
-            name: `Suite du conte de ${order.protagonistName || 'votre enfant'}`,
-            description: 'Histoire complete (12 pages illustrees + PDF)',
+            name: `Suite du conte de ${protagonistName}`,
+            description: 'Histoire complete (12 pages illustrees + PDF telechargeagle)',
+            images: order.coverImageUrl ? [order.coverImageUrl] : [],
           },
           unit_amount: unitAmount,
         },
@@ -158,7 +161,12 @@ export const createCompletionSession = async (req: Request, res: Response) => {
       cancel_url: `${process.env.FRONTEND_URL}/dashboard/story/${order.id}?cancelled=true`,
       metadata: {
         orderId: order.id,
-        type: 'completion', // Pour distinguer dans le webhook
+        type: 'completion',
+      },
+      custom_text: {
+        submit: {
+          message: `L'histoire de ${protagonistName} sera completee en quelques minutes apres le paiement. Vous retrouverez le livre complet (12 pages) dans votre bibliotheque.`,
+        },
       },
     });
 

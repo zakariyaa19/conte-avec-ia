@@ -532,7 +532,7 @@ export const StoryDetailPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [viewerOpen, setViewerOpen] = useState(false);
-  const [readerOpen, setReaderOpen] = useState(false);
+  const [readerOpen, setReaderOpen] = useState(isCompletionReturn);
   const [pdfLoading, setPdfLoading] = useState(false);
   const [pdfError, setPdfError] = useState<string | null>(null);
   const [coverError, setCoverError] = useState(false);
@@ -604,14 +604,15 @@ export const StoryDetailPage: React.FC = () => {
     }
   }, [story?.storyStatus, id]);
 
-  // Auto-refresh every 10s while story is generating
+  // Auto-refresh while story is generating (5s si retour paiement, 10s sinon)
   useEffect(() => {
     if (!story || story.storyStatus === 'DISPONIBLE') return;
+    const delay = isCompletionReturn ? 5000 : 10000;
     const interval = setInterval(() => {
       loadStory();
-    }, 10000);
+    }, delay);
     return () => clearInterval(interval);
-  }, [story?.storyStatus, id]);
+  }, [story?.storyStatus, id, isCompletionReturn]);
 
   const loadStory = async () => {
     const token = safeLocalStorage.getItem('userToken');
@@ -950,9 +951,18 @@ export const StoryDetailPage: React.FC = () => {
             onShare={() => { setReaderOpen(false); setShareOpen(true); }}
             onCreateAnother={() => navigate('/create-story')}
             isClub={isClub}
-            isCliffhanger={!isClub && Number(story.price || 0) === 0 && (paragraphs?.length || 0) <= 8}
+            isCliffhanger={
+              !isClub
+              && Number(story.price || 0) === 0
+              && (paragraphs?.length || 0) <= 8
+              && !isCompletionReturn // Jamais cliffhanger si on revient de paiement
+              && story.storyStatus !== 'DISPONIBLE' // Jamais cliffhanger si l'histoire est complète
+            }
             orderId={story.id}
-            isGenerating={['GENERATING', 'GENERATING_TEXT', 'GENERATING_IMAGES', 'ASSEMBLING_PDF'].includes(story.storyStatus || '') && isCompletionReturn}
+            isGenerating={
+              isCompletionReturn
+              && ['GENERATING', 'GENERATING_TEXT', 'GENERATING_IMAGES', 'ASSEMBLING_PDF', 'EN_COURS'].includes(story.storyStatus || '')
+            }
             generationProgress={story.generationProgress || 0}
           />
         );
