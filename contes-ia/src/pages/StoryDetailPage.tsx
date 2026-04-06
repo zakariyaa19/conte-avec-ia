@@ -840,7 +840,7 @@ export const StoryDetailPage: React.FC = () => {
                 $variant="primary"
                 onClick={() => {
                   // Use StoryReader if we have text+illustrations, fallback to PDF
-                  const paragraphs = story.storyTextJson ? (() => { try { return JSON.parse(story.storyTextJson); } catch { return []; } })() : [];
+                  const paragraphs = story.storyTextJson ? (() => { try { const parsed = JSON.parse(story.storyTextJson); return Array.isArray(parsed) ? parsed : (parsed.paragraphs || []); } catch { return []; } })() : [];
                   const illustrations = story.illustrationUrlsJson ? (() => { try { return JSON.parse(story.illustrationUrlsJson); } catch { return []; } })() : [];
                   if (paragraphs.length > 0) {
                     setReaderOpen(true);
@@ -936,7 +936,7 @@ export const StoryDetailPage: React.FC = () => {
       />
 
       {readerOpen && story && (() => {
-        const paragraphs = story.storyTextJson ? (() => { try { return JSON.parse(story.storyTextJson); } catch { return []; } })() : [];
+        const paragraphs = story.storyTextJson ? (() => { try { const parsed = JSON.parse(story.storyTextJson); return Array.isArray(parsed) ? parsed : (parsed.paragraphs || []); } catch { return []; } })() : [];
         const illustrations = story.illustrationUrlsJson ? (() => { try { return JSON.parse(story.illustrationUrlsJson); } catch { return []; } })() : [];
         return (
           <StoryReader
