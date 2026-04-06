@@ -49,7 +49,7 @@ export interface ImageGenerationResult {
 }
 
 // Indices des paragraphes qui recoivent une illustration (1 image par paragraphe)
-export const IMAGE_PARAGRAPH_INDICES = [0, 1, 2, 3, 4, 5];
+export const IMAGE_PARAGRAPH_INDICES = [0, 1, 2, 3, 4]; // 5 pages pour le gratuit (cliffhanger)
 export const CLUB_IMAGE_PARAGRAPH_INDICES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
 type ProgressCallback = (imageIndex: number, total: number) => void;

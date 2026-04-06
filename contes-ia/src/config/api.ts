@@ -211,6 +211,14 @@ export class ApiService {
     }
   }
 
+  // Créer une session Stripe pour compléter une histoire (cliffhanger → complète, 2.99€)
+  static async createCompletionSession(orderId: string): Promise<{ success: boolean; sessionId?: string; url?: string; message?: string }> {
+    return this.request('/api/stripe/create-completion-session', {
+      method: 'POST',
+      body: JSON.stringify({ orderId }),
+    });
+  }
+
   // Sauvegarder le cover image d'une commande
   static async saveCoverImage(orderId: string, coverImageBase64: string, coverTitle?: string): Promise<{ success: boolean; coverImageUrl?: string }> {
     return this.request(`/api/orders/${orderId}/cover`, {

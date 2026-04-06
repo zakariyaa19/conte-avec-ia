@@ -3,7 +3,8 @@
 export const PRODUCT_PRICES = {
   EBOOK: 3.99,
   EBOOK_FIRST: 1.99,
-  EBOOK_FREE: 0
+  EBOOK_FREE: 0,
+  EBOOK_COMPLETE: 2.99, // Compléter une histoire gratuite (cliffhanger → histoire complète)
 } as const;
 
 export const FREE_BOOK_LIMIT = 3;

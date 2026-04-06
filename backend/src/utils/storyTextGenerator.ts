@@ -108,7 +108,10 @@ function buildStoryPrompt(params: StoryTextParams): string {
 
   const religionNote = params.customReligion || params.religion || '';
 
-  return `Tu es un auteur de livres pour enfants reconnu. Ecris un conte en ${language} de 6 paragraphes.
+  return `Tu es un auteur de livres pour enfants reconnu. Ecris le DEBUT d'un conte en ${language} de EXACTEMENT 5 paragraphes.
+
+IMPORTANT — STRUCTURE CLIFFHANGER :
+Ce texte est le DEBUT d'une histoire. Il ne doit PAS avoir de fin. L'histoire doit se COUPER au moment le plus palpitant, le plus intense, pour donner envie de lire la suite.
 
 PROTAGONISTE :
 - Prenom : ${name}
@@ -125,22 +128,29 @@ ${message ? `MESSAGE CENTRAL : ${message} — ce message doit etre le fil conduc
 ${religionNote ? `CONTEXTE RELIGIEUX/SPIRITUEL : ${religionNote} (integrer avec respect et delicatesse)` : ''}
 ${params.specialEvents ? `EVENEMENT SPECIAL : ${params.specialEvents} — integrer cet evenement comme element important de l'histoire` : ''}
 
+STRUCTURE NARRATIVE OBLIGATOIRE (5 paragraphes) :
+- Paragraphe 1 : INTRODUCTION — Presenter ${name}, son univers, poser le decor de maniere enchantee
+- Paragraphe 2 : MISE EN PLACE — Un element declencheur lance l'aventure
+- Paragraphe 3 : DEVELOPPEMENT — ${name} avance dans l'aventure, decouvre, explore
+- Paragraphe 4 : MONTEE EN TENSION — Un defi, un mystere, une decouverte importante
+- Paragraphe 5 : CLIFFHANGER — Le moment le plus intense de l'histoire. ${name} est sur le point de decouvrir quelque chose d'incroyable, de resoudre le mystere, d'affronter le defi... mais le texte SE COUPE ICI. La derniere phrase doit creer un suspense irresistible (une porte qui s'ouvre, une lumiere qui brille, un bruit mysterieux, un personnage qui apparait...). NE PAS resoudre la situation.
+
 EXIGENCES :
-1. Arc narratif lineaire : debut (presentation), developpement (aventure/defi), climax, resolution, conclusion
+1. PAS DE FIN. PAS DE RESOLUTION. PAS DE MORALE. L'histoire est INACHEVEE.
 2. Vocabulaire adapte a un enfant de ${ageForVocab} ans
 3. Le prenom "${name}" doit apparaitre regulierement
-4. La morale doit etre organique, integree a l'histoire (pas de lecon explicite a la fin)
-5. Chaque paragraphe fait 2 a 3 phrases MAXIMUM (tres court, aere, optimise pour lecture mobile plein ecran)
-${params.hobbies ? `6. Les passions de ${name} (${params.hobbies}) doivent etre integrees naturellement dans l'histoire` : '6. Integrer des details personnels pour rendre l\'histoire unique'}
-${params.favoriteDish ? `7. Mentionner le plat favori (${params.favoriteDish}) a un moment de l'histoire` : ''}
-8. ${secondaryChars ? `CRUCIAL : Chaque personnage secondaire doit apparaitre dans PLUSIEURS paragraphes, avec des actions concretes et des dialogues. Ils sont essentiels a l'histoire, pas de la figuration.` : 'L\'histoire doit etre captivante, magique et positive'}
-9. Ecris en ${language}
-${!hasSpecificAge ? `10. IMPORTANT : Ne mentionne JAMAIS un age precis pour ${name} dans le texte. Ne dis pas "avait X ans" ou "agee de X ans". Utilise des expressions comme "petit(e)", "jeune" si necessaire.` : ''}
+4. Chaque paragraphe fait 2 a 3 phrases MAXIMUM (tres court, aere, optimise pour lecture mobile plein ecran)
+${params.hobbies ? `5. Les passions de ${name} (${params.hobbies}) doivent etre integrees naturellement dans l'histoire` : '5. Integrer des details personnels pour rendre l\'histoire unique'}
+${params.favoriteDish ? `6. Mentionner le plat favori (${params.favoriteDish}) a un moment de l'histoire` : ''}
+7. ${secondaryChars ? `CRUCIAL : Chaque personnage secondaire doit apparaitre avec des actions concretes et des dialogues.` : 'L\'histoire doit etre captivante, magique et positive'}
+8. Ecris en ${language}
+${!hasSpecificAge ? `9. IMPORTANT : Ne mentionne JAMAIS un age precis pour ${name} dans le texte.` : ''}
+10. Le dernier paragraphe DOIT finir sur des points de suspension (...) pour marquer le suspense
 
 FORMAT DE REPONSE :
-Reponds UNIQUEMENT avec un JSON array de exactement 6 strings (chaque string = 1 paragraphe).
+Reponds UNIQUEMENT avec un JSON array de EXACTEMENT 5 strings (chaque string = 1 paragraphe).
 Pas de titre, pas de commentaire, JUSTE le JSON array.
-Exemple : ["Premier paragraphe...", "Deuxieme paragraphe...", ...]`;
+Exemple : ["Premier paragraphe...", "Deuxieme paragraphe...", ..., "Cinquieme paragraphe avec cliffhanger..."]`;
 }
 
 // --- Club Premium prompt (12 paragraphs, rich narrative) ---
@@ -230,7 +240,7 @@ Exemple : ["Premier paragraphe...", "Deuxieme...", ..., "Douzieme paragraphe..."
 export async function generateStoryText(params: StoryTextParams, title: string): Promise<StoryTextResult> {
   const openai = getOpenAI();
   const isClub = params.isClub === true;
-  const targetParagraphs = isClub ? 12 : 6;
+  const targetParagraphs = isClub ? 12 : 5;
   const prompt = isClub ? buildClubStoryPrompt(params) : buildStoryPrompt(params);
 
   console.log(`[StoryTextGenerator] Generating ${targetParagraphs} paragraphs (${isClub ? 'CLUB' : 'FREE'}) for:`, params.protagonistName);
@@ -279,6 +289,92 @@ export async function generateStoryText(params: StoryTextParams, title: string):
   }
 
   throw new Error('Echec generation texte apres 2 tentatives');
+}
+
+// --- Complete a cliffhanger story (generate pages 6-12 continuation) ---
+
+export async function generateStoryContinuation(
+  params: StoryTextParams,
+  title: string,
+  existingParagraphs: string[]
+): Promise<StoryTextResult> {
+  const openai = getOpenAI();
+  const name = params.protagonistName || 'Enfant';
+  const language = params.language || 'francais';
+  const message = params.customMessage || MESSAGE_LABELS[params.centralMessage] || params.centralMessage || '';
+  const ageForVocab = params.protagonistAge || (params.ageRange === '0-2' ? '2' : params.ageRange === '3-5' ? '4' : params.ageRange === '10+' ? '11' : '7');
+
+  const existingText = existingParagraphs.map((p, i) => `Paragraphe ${i + 1}: ${p}`).join('\n');
+
+  const continuationPrompt = `Tu es un auteur de livres pour enfants reconnu. Tu dois ecrire la SUITE et la FIN d'une histoire deja commencee.
+
+TITRE DE L'HISTOIRE : ${title}
+
+VOICI LE DEBUT DE L'HISTOIRE (5 paragraphes deja ecrits) :
+${existingText}
+
+L'histoire s'etait arretee sur un cliffhanger. Tu dois maintenant ecrire EXACTEMENT 7 paragraphes pour TERMINER cette histoire.
+
+STRUCTURE DE LA SUITE (7 paragraphes) :
+- Paragraphe 6 : REVELATION — La suite immediate du cliffhanger. Ce que ${name} decouvre.
+- Paragraphe 7 : AVENTURE — L'aventure continue, explorations, interactions
+- Paragraphe 8 : OBSTACLE — Un defi majeur se presente
+- Paragraphe 9 : DETERMINATION — ${name} puise dans son courage et ses qualites
+- Paragraphe 10 : RESOLUTION — ${name} surmonte le defi grace a ses qualites et l'aide de ses proches
+- Paragraphe 11 : CELEBRATION — Retour au calme, joie, reconnaissance
+- Paragraphe 12 : CONCLUSION — Morale douce et ouverture${message ? `. Le message central (${message}) doit transparaitre dans la resolution et la conclusion.` : ''}
+
+EXIGENCES :
+1. La suite doit etre COHERENTE avec les 5 premiers paragraphes (memes personnages, meme univers, meme ton)
+2. Vocabulaire adapte a un enfant de ${ageForVocab} ans
+3. Chaque paragraphe fait 3 a 4 phrases (un peu plus riche car c'est la version complete)
+4. Le prenom "${name}" doit apparaitre regulierement
+5. La fin doit etre satisfaisante, positive et emouvante
+6. Ecris en ${language}
+
+FORMAT DE REPONSE :
+Reponds UNIQUEMENT avec un JSON array de EXACTEMENT 7 strings (paragraphes 6 a 12).
+Pas de titre, pas de commentaire, JUSTE le JSON array.`;
+
+  console.log(`[StoryTextGenerator] Generating continuation (7 paragraphs) for: ${name}`);
+
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const response = await openai.chat.completions.create({
+        model: 'gpt-4o-mini',
+        messages: [{ role: 'user', content: continuationPrompt }],
+        max_tokens: 6000,
+        temperature: 0.85,
+      });
+
+      const content = response.choices[0]?.message?.content?.trim();
+      if (!content) throw new Error('Reponse GPT vide pour continuation');
+
+      let jsonStr = content;
+      const jsonMatch = content.match(/\[[\s\S]*\]/);
+      if (jsonMatch) jsonStr = jsonMatch[0];
+
+      const continuationParagraphs = JSON.parse(jsonStr);
+
+      if (!Array.isArray(continuationParagraphs) || continuationParagraphs.length < 5) {
+        if (attempt === 0) continue;
+        throw new Error(`Continuation: ${continuationParagraphs?.length || 0} paragraphes au lieu de 7`);
+      }
+
+      // Assembler l'histoire complete : 5 premiers + 7 nouveaux = 12 paragraphes
+      const validContinuation = continuationParagraphs.map((p: any) => String(p));
+      const fullParagraphs = [...existingParagraphs, ...validContinuation].slice(0, 12);
+
+      console.log(`[StoryTextGenerator] Continuation generated: ${validContinuation.length} new paragraphs, total: ${fullParagraphs.length}`);
+      return { title, paragraphs: fullParagraphs };
+
+    } catch (error) {
+      console.error(`[StoryTextGenerator] Continuation attempt ${attempt + 1} failed:`, error);
+      if (attempt === 1) throw error;
+    }
+  }
+
+  throw new Error('Echec generation continuation apres 2 tentatives');
 }
 
 // --- Story Preview (3 opening paragraphs) ---
