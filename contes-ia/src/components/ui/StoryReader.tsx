@@ -23,6 +23,8 @@ interface StoryReaderProps {
   isShared?: boolean;
   isClub?: boolean;
   shareUrl?: string;
+  isCliffhanger?: boolean; // true si l'histoire est un aperçu gratuit non terminé
+  orderId?: string;        // pour le paiement de complétion
 }
 
 /* ═══════════ ANIMATIONS ═══════════ */
@@ -299,6 +301,7 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
   coverImageUrl, coverTitle, paragraphs, illustrationUrls,
   creatorName, narratedBy, protagonistName, onClose, onShare, onCreateAnother,
   isShared = false, isClub = false, shareUrl,
+  isCliffhanger = false, orderId,
 }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -432,8 +435,122 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
             );
           }
 
-          /* ── End slide ── */
+          /* ── End slide — CLIFFHANGER or COMPLETE ── */
           if (slide.type === 'end') {
+            // ═══ CLIFFHANGER — L'histoire n'est pas finie, proposer de payer ═══
+            if (isCliffhanger && !isShared) {
+              return (
+                <EndSlide key="end" data-slide-index={idx}>
+                  <Sparkle $left="15%" $top="20%" $delay={0} $size={4} />
+                  <Sparkle $left="80%" $top="15%" $delay={0.5} $size={3} />
+                  <Sparkle $left="50%" $top="10%" $delay={0.8} $size={4} />
+                  <Sparkle $left="75%" $top="75%" $delay={1.5} $size={3} />
+                  <EndContent>
+                    <EndEmoji style={{ fontSize: '3rem' }}>&#x2728;</EndEmoji>
+                    <EndTitle style={{ fontSize: '1.4rem', lineHeight: 1.3 }}>
+                      L'aventure de {protagonistName} continue...
+                    </EndTitle>
+                    <EndSubtitle style={{ fontSize: '0.85rem', opacity: 0.7, marginBottom: 20 }}>
+                      Que va-t-il se passer ensuite ? Découvrez la suite !
+                    </EndSubtitle>
+
+                    {/* Aperçu flouté — 3 "pages" grises */}
+                    <div style={{
+                      display: 'flex', gap: 8, justifyContent: 'center', marginBottom: 24,
+                      filter: 'blur(2px)', opacity: 0.25, pointerEvents: 'none',
+                    }}>
+                      {[1,2,3].map(n => (
+                        <div key={n} style={{
+                          width: 55, height: 75, borderRadius: 6,
+                          background: 'linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05))',
+                          border: '1px solid rgba(255,255,255,0.1)',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          fontSize: 10, color: 'rgba(255,255,255,0.3)',
+                        }}>
+                          p.{5 + n}
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Option A — Finir l'histoire (single 2.99€) */}
+                    <EndButton
+                      $primary
+                      onClick={async () => {
+                        if (!orderId) return;
+                        try {
+                          const { ApiService } = await import('../../config/api');
+                          const res = await ApiService.createCompletionSession(orderId);
+                          if (res.url) window.location.href = res.url;
+                          else alert(res.message || 'Erreur');
+                        } catch { alert('Erreur de connexion'); }
+                      }}
+                      style={{ marginBottom: 10, maxWidth: 320 }}
+                    >
+                      Découvrir la suite — 2,99€
+                    </EndButton>
+                    <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 11, margin: '0 0 20px' }}>
+                      12 pages complètes + PDF téléchargeable
+                    </p>
+
+                    {/* Option B — Club (1.99€/mois) — RECOMMANDÉ */}
+                    {!isClub && (
+                      <div
+                        onClick={() => window.location.href = '/club/checkout'}
+                        style={{
+                          width: '100%', maxWidth: 320, cursor: 'pointer',
+                          background: 'linear-gradient(145deg, #1a1040, #2d1b69)',
+                          borderRadius: '16px', padding: '16px 14px',
+                          textAlign: 'center', marginBottom: 16,
+                          border: '1px solid rgba(167,139,250,0.3)',
+                          boxShadow: '0 4px 20px rgba(45,27,105,0.5)',
+                          position: 'relative', overflow: 'hidden',
+                        }}
+                      >
+                        <div style={{ position: 'absolute', top: -20, right: -15, width: 50, height: 50, borderRadius: '50%', background: 'radial-gradient(circle, rgba(167,139,250,0.2) 0%, transparent 70%)', pointerEvents: 'none' }} />
+                        <p style={{ fontSize: 10, fontWeight: 800, color: '#fbbf24', textTransform: 'uppercase', letterSpacing: '1.5px', margin: '0 0 6px' }}>
+                          Recommandé
+                        </p>
+                        <p style={{ fontSize: 14, fontWeight: 800, color: '#f0e6ff', margin: '0 0 8px', lineHeight: 1.3 }}>
+                          Cette histoire + 4 livres/mois
+                        </p>
+                        <div style={{ display: 'flex', justifyContent: 'center', gap: 10, marginBottom: 10, flexWrap: 'wrap' }}>
+                          {['12 pages', '9 styles', '5 persos'].map(f => (
+                            <span key={f} style={{ fontSize: 10, color: 'rgba(255,255,255,0.6)', background: 'rgba(255,255,255,0.08)', padding: '2px 8px', borderRadius: 6 }}>{f}</span>
+                          ))}
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 6, marginBottom: 8 }}>
+                          <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', textDecoration: 'line-through' }}>9,99&euro;</span>
+                          <span style={{ fontSize: 22, fontWeight: 800, color: 'white' }}>1,99&euro;</span>
+                          <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)' }}>/1er mois</span>
+                        </div>
+                        <div style={{
+                          display: 'inline-block', fontSize: 12, fontWeight: 700,
+                          color: 'white', padding: '8px 22px', borderRadius: 10,
+                          background: 'linear-gradient(135deg, #a78bfa, #f093fb)',
+                          boxShadow: '0 2px 10px rgba(167,139,250,0.4)',
+                        }}>
+                          Rejoindre le Club &rarr;
+                        </div>
+                        <p style={{ fontSize: 9, color: 'rgba(255,255,255,0.25)', margin: '6px 0 0' }}>Sans engagement · Annulable en 1 clic</p>
+                      </div>
+                    )}
+
+                    {/* Partager */}
+                    {onShare && (
+                      <EndButton onClick={onShare} style={{ opacity: 0.5, maxWidth: 320 }}>
+                        Envoyer l'aperçu à un proche
+                      </EndButton>
+                    )}
+
+                    <p style={{ color: 'rgba(255,255,255,0.2)', fontSize: 10, marginTop: 20 }}>
+                      Créé avec Contes d'IA
+                    </p>
+                  </EndContent>
+                </EndSlide>
+              );
+            }
+
+            // ═══ FIN NORMALE — L'histoire est complète ═══
             return (
               <EndSlide key="end" data-slide-index={idx}>
                 <Sparkle $left="15%" $top="20%" $delay={0} $size={4} />

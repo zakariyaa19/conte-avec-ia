@@ -182,7 +182,7 @@ export class MailjetService {
                   Name: data.customerName
                 }
               ],
-              Subject: `Le livre de ${data.protagonistName} est pret ! Ouvrez-le`,
+              Subject: `L'aventure de ${data.protagonistName} a commence ! Decouvrez les premieres pages`,
               HTMLPart: (() => {
                 const dl = data.userId ? MailjetService.generateMagicDashboardLink(data.userId, data.customerEmail) : (process.env.FRONTEND_URL + '/dashboard');
                 const cl = (process.env.FRONTEND_URL || 'https://contedia.fr') + '/club/checkout';
@@ -195,8 +195,8 @@ export class MailjetService {
                   <!-- HEADER -->
                   <div style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); padding: 32px 24px; text-align: center; color: white;">
                     <p style="font-size: 36px; margin: 0 0 8px;">&#x1F4D6;</p>
-                    <h1 style="margin: 0; font-size: 24px; font-weight: 800;">Le livre de ${sp} est pret !</h1>
-                    <p style="margin: 10px 0 0; font-size: 14px; opacity: 0.9;">${sn}, votre conte personnalise vous attend.</p>
+                    <h1 style="margin: 0; font-size: 24px; font-weight: 800;">L'aventure de ${sp} a commence !</h1>
+                    <p style="margin: 10px 0 0; font-size: 14px; opacity: 0.9;">${sn}, les 5 premieres pages vous attendent.</p>
                   </div>
 
                   <div style="padding: 32px 24px;">
@@ -204,7 +204,7 @@ export class MailjetService {
                     <!-- CTA PRINCIPAL — GROS BOUTON -->
                     <div style="text-align: center; margin: 0 0 32px;">
                       <a href="${dl}" style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); color: white; text-decoration: none; padding: 18px 48px; border-radius: 14px; font-weight: 800; font-size: 17px; display: inline-block; box-shadow: 0 4px 16px rgba(255,107,107,0.4);">
-                        Lire le livre de ${sp}
+                        Decouvrir l'histoire de ${sp}
                       </a>
                       <p style="font-size: 12px; color: #999; margin: 10px 0 0;">Connexion automatique — 1 clic</p>
                     </div>
@@ -212,7 +212,7 @@ export class MailjetService {
                     <!-- TEASER EMOTIONNEL -->
                     <div style="background: #f9fafb; border-radius: 12px; padding: 20px; margin: 0 0 24px; border-left: 4px solid #FF6B6B;">
                       <p style="font-size: 14px; color: #555; margin: 0; line-height: 1.6;">
-                        &#x2728; ${sp} est le heros de sa propre histoire. Des illustrations uniques, un recit rien que pour lui. <strong>Lisez-le ensemble ce soir.</strong>
+                        &#x2728; ${sp} est le heros de sa propre histoire. 5 pages illustrees vous attendent... mais <strong>l'aventure ne fait que commencer</strong>. Decouvrez la suite pour seulement 2,99&euro;.
                       </p>
                     </div>
 
@@ -235,7 +235,7 @@ export class MailjetService {
                       <p style="font-size: 10px; font-weight: 800; color: #fbbf24; text-transform: uppercase; letter-spacing: 1.5px; margin: 0 0 6px;">&#x23F0; Offre de bienvenue &mdash; 48h</p>
 
                       <p style="font-size: 15px; font-weight: 700; color: #f0e6ff; margin: 0 0 14px; line-height: 1.4;">
-                        Et si ${sp} avait une histoire<br><strong style="color: white;">2x plus longue, chaque mois ?</strong>
+                        Decouvrez la suite de l'histoire<br><strong style="color: white;">+ 4 livres complets chaque mois</strong>
                       </p>
 
                       <!-- Features compact -->
@@ -465,28 +465,28 @@ export class MailjetService {
       // Objet qui intrigue, 1 question, Club en secondaire.
       // ═══════════════════════════════════════════════════
       day1: {
-        subject: `${data.customerName}, comment ${data.protagonistName} a reagi en decouvrant son livre ?`,
+        subject: `${data.customerName}, ${data.protagonistName} attend la suite de son histoire...`,
         html: wrapper(`
           <p style="font-size: 28px; text-align: center; margin: 0 0 16px;">&#x1F4D6;&#x2728;</p>
           <h1 style="color: #1a1040; font-size: 20px; text-align: center; margin: 0 0 20px; font-weight: 800; line-height: 1.4;">
-            Est-ce que ${data.protagonistName} a souri<br>en voyant son nom dans l'histoire ?
+            L'histoire de ${data.protagonistName}<br>s'est arretee au meilleur moment...
           </h1>
 
           <p style="color: #555; font-size: 14px; line-height: 1.8; margin: 0 0 20px; text-align: center;">
-            La premiere fois qu'un enfant decouvre un livre avec <strong>son prenom</strong>, il se passe quelque chose de magique. Ses yeux s'illuminent. Il pointe les illustrations. Il veut qu'on le relise. Encore. Et encore.
+            Vous avez lu les 5 premieres pages. ${data.protagonistName} etait sur le point de decouvrir quelque chose d'incroyable... Que va-t-il se passer ensuite ? <strong>Decouvrez la suite pour seulement 2,99&euro;</strong> ou rejoignez le Club.
           </p>
 
           <div style="text-align: center; margin: 0 0 24px;">
             <a href="${magicLink}" style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); color: white; padding: 14px 36px; border-radius: 30px; text-decoration: none; font-weight: 700; font-size: 15px; display: inline-block; box-shadow: 0 4px 16px rgba(255,107,107,0.3);">
-              Relire le livre de ${data.protagonistName}
+              Decouvrir la suite — 2,99&euro;
             </a>
           </div>
 
           <!-- Teaser Club subtil, pas agressif -->
           <div style="background: #f9fafb; border-radius: 12px; padding: 16px; margin: 0 0 8px;">
             <p style="font-size: 13px; color: #777; margin: 0; text-align: center; line-height: 1.6;">
-              Vous aimeriez creer une nouvelle aventure pour ${data.protagonistName} ?<br>
-              Le Club donne acces a <strong>4 livres par mois</strong> avec <strong>2x plus de pages</strong>.
+              Avec le Club, decouvrez la suite de cette histoire<br>
+              <strong>+ 4 livres complets par mois</strong> avec <strong>12 pages</strong> chacun.
             </p>
           </div>
 
