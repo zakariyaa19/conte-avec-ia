@@ -1156,12 +1156,13 @@ export async function autoCompleteStory(orderId: string): Promise<void> {
       }
     });
 
-    // 2. Récupérer les 5 images existantes + générer les 7 nouvelles
-    // On NE régénère PAS les 5 premières images — le client les a déjà vues
+    // 2. Récupérer les 5 images existantes depuis Cloudinary
     let existingImages: Buffer[] = [];
+    let existingCount = 0;
     try {
       if (order.illustrationUrlsJson) {
         const illustrationUrls: string[] = JSON.parse(order.illustrationUrlsJson as string);
+        existingCount = illustrationUrls.length;
         const axios = (await import('axios')).default;
         for (const url of illustrationUrls) {
           try {
@@ -1176,16 +1177,17 @@ export async function autoCompleteStory(orderId: string): Promise<void> {
       console.warn(`[Completion] Failed to parse existing illustration URLs`);
     }
 
-    console.log(`[Completion] Retrieved ${existingImages.length} existing images, generating ${12 - existingImages.length} new ones`);
+    console.log(`[Completion] Retrieved ${existingImages.length}/${existingCount} existing images`);
 
-    // Générer les images SEULEMENT pour les nouveaux paragraphes (6-12)
-    const newParagraphs = fullStory.paragraphs.slice(existingImages.length);
+    // 3. Générer les 12 images complètes (avec isClub=true pour utiliser CLUB_IMAGE_PARAGRAPH_INDICES)
+    // On passe TOUS les 12 paragraphes pour que le visual bible soit cohérent sur toute l'histoire.
+    // Puis on garde les 5 images existantes + les 7 nouvelles (indices 5-11).
     const { generateStoryImages } = await import('../utils/storyImageGenerator');
 
-    const newImageResult = await generateStoryImages(
-      storyParams as any,
+    const fullImageResult = await generateStoryImages(
+      { ...storyParams, isClub: true } as any, // isClub=true → utilise les 12 indices
       fullStory.title,
-      newParagraphs,
+      fullStory.paragraphs, // Les 12 paragraphes complets
       (progress: number) => {
         prisma.order.update({
           where: { id: orderId },
@@ -1194,9 +1196,18 @@ export async function autoCompleteStory(orderId: string): Promise<void> {
       }
     );
 
-    // Assembler : 5 images existantes + 7 nouvelles images
-    const allImages = [...existingImages, ...newImageResult.images];
-    const imageResult = { images: allImages };
+    // Assembler : garder les 5 premières images existantes + prendre les 7 nouvelles (indices 5-11)
+    let allImages: Buffer[];
+    if (existingImages.length >= existingCount && existingCount > 0) {
+      // On a bien récupéré les images existantes : les garder + prendre les nouvelles
+      allImages = [...existingImages, ...fullImageResult.images.slice(existingCount)];
+    } else {
+      // Fallback : si les images existantes n'ont pas pu être récupérées, utiliser toutes les nouvelles
+      allImages = fullImageResult.images;
+    }
+    const imageResult = { images: allImages.slice(0, 12) }; // Sécurité: max 12
+
+    console.log(`[Completion] Final image count: ${imageResult.images.length} (${existingImages.length} kept + ${imageResult.images.length - existingImages.length} new)`);
 
     await prisma.order.update({
       where: { id: orderId },

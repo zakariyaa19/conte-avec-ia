@@ -954,9 +954,8 @@ export const StoryDetailPage: React.FC = () => {
             isCliffhanger={
               !isClub
               && Number(story.price || 0) === 0
-              && (paragraphs?.length || 0) <= 8
+              && (paragraphs?.length || 0) <= 5 // Exactement 5 paragraphes = cliffhanger (old stories ont 6+, completed ont 12)
               && !isCompletionReturn // Jamais cliffhanger si on revient de paiement
-              && story.storyStatus !== 'DISPONIBLE' // Jamais cliffhanger si l'histoire est complète
             }
             orderId={story.id}
             isGenerating={
