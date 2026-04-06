@@ -182,49 +182,88 @@ export class MailjetService {
                   Name: data.customerName
                 }
               ],
-              Subject: `Votre conte est pret ! #${data.orderNumber}`,
-              HTMLPart: `
-                <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 650px; margin: 0 auto; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); border-radius: 20px; overflow: hidden;">
-                  <div style="background: linear-gradient(135deg, #FF9999, #87CEEB); padding: 40px 30px; text-align: center; color: white;">
-                    <h1 style="margin: 0; font-size: 32px; font-weight: 700;">Le conte de ${data.protagonistName} est pret !</h1>
-                    <p style="margin: 15px 0 0 0; font-size: 18px; opacity: 0.95;">Commande #${data.orderNumber}</p>
-                  </div>
-                  <div style="padding: 40px 30px;">
-                    <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 25px;">
-                      <h2 style="color: #333; margin: 0 0 20px 0; font-size: 24px;">Bonjour ${data.customerName} !</h2>
-                      <p style="color: #555; font-size: 16px; line-height: 1.6;">
-                        Votre conte personnalise est maintenant disponible dans votre espace <strong style="color: #FF9999;">Ma Bibliotheque</strong>.
-                      </p>
-                      <p style="color: #555; font-size: 16px; line-height: 1.6;">
-                        Cliquez sur le bouton ci-dessous pour le consulter et le telecharger.
-                      </p>
-                      <div style="text-align: center; margin-top: 25px;">
-                        <a href="${data.userId ? this.generateMagicDashboardLink(data.userId, data.customerEmail) : (process.env.FRONTEND_URL + '/dashboard')}" style="background: linear-gradient(135deg, #FF9999, #FF7F7F); color: white; text-decoration: none; padding: 14px 32px; border-radius: 10px; font-weight: 600; font-size: 16px; display: inline-block;">
-                          Acceder a ma bibliotheque
-                        </a>
-                      </div>
-                    </div>
+              Subject: `Le livre de ${data.protagonistName} est pret ! Ouvrez-le`,
+              HTMLPart: (() => {
+                const dl = data.userId ? MailjetService.generateMagicDashboardLink(data.userId, data.customerEmail) : (process.env.FRONTEND_URL + '/dashboard');
+                const cl = (process.env.FRONTEND_URL || 'https://contedia.fr') + '/club/checkout';
+                const sn = data.customerName.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+                const sp = data.protagonistName.replace(/&/g, '&amp;').replace(/</g, '&lt;');
 
-                    <!-- Teaser Club -->
-                    <div style="background: linear-gradient(145deg, #1a1040, #2d1b69); border-radius: 15px; padding: 24px; margin-top: 25px; text-align: center; border: 1px solid rgba(167,139,250,0.25);">
-                      <p style="color: #a78bfa; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 8px;">Le saviez-vous ?</p>
-                      <p style="color: rgba(255,255,255,0.85); font-size: 14px; margin: 0 0 12px; line-height: 1.5;">
-                        Avec le <strong style="color: white;">Club Contedia</strong>, chaque livre passe a <strong style="color: white;">12 pages</strong>, <strong style="color: white;">9 styles</strong> et <strong style="color: white;">5 personnages</strong>.
-                      </p>
-                      <p style="color: rgba(255,255,255,0.4); font-size: 12px; text-decoration: line-through; margin: 0;">9,99&euro;/mois</p>
-                      <p style="color: white; font-size: 22px; font-weight: 800; margin: 2px 0 4px;">1,99&euro; le 1er mois</p>
-                      <a href="${process.env.FRONTEND_URL || 'https://contedia.fr'}/club/checkout" style="display: inline-block; background: linear-gradient(135deg, #a78bfa, #f093fb); color: white; padding: 10px 28px; border-radius: 25px; text-decoration: none; font-weight: 700; font-size: 13px; margin-top: 8px;">
-                        Decouvrir le Club &rarr;
+                return `
+                <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 580px; margin: 0 auto; background: #ffffff;">
+
+                  <!-- HEADER -->
+                  <div style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); padding: 32px 24px; text-align: center; color: white;">
+                    <p style="font-size: 36px; margin: 0 0 8px;">&#x1F4D6;</p>
+                    <h1 style="margin: 0; font-size: 24px; font-weight: 800;">Le livre de ${sp} est pret !</h1>
+                    <p style="margin: 10px 0 0; font-size: 14px; opacity: 0.9;">${sn}, votre conte personnalise vous attend.</p>
+                  </div>
+
+                  <div style="padding: 32px 24px;">
+
+                    <!-- CTA PRINCIPAL — GROS BOUTON -->
+                    <div style="text-align: center; margin: 0 0 32px;">
+                      <a href="${dl}" style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); color: white; text-decoration: none; padding: 18px 48px; border-radius: 14px; font-weight: 800; font-size: 17px; display: inline-block; box-shadow: 0 4px 16px rgba(255,107,107,0.4);">
+                        Lire le livre de ${sp}
                       </a>
+                      <p style="font-size: 12px; color: #999; margin: 10px 0 0;">Connexion automatique — 1 clic</p>
                     </div>
 
-                    <div style="text-align: center; margin-top: 20px; padding: 20px;">
-                      <p style="margin: 0; font-size: 12px; color: #999;">Une question ? Repondez simplement a cet email<br>
-                      ${process.env.MAILJET_FROM_EMAIL || 'contact@contedia.fr'}</p>
+                    <!-- TEASER EMOTIONNEL -->
+                    <div style="background: #f9fafb; border-radius: 12px; padding: 20px; margin: 0 0 24px; border-left: 4px solid #FF6B6B;">
+                      <p style="font-size: 14px; color: #555; margin: 0; line-height: 1.6;">
+                        &#x2728; ${sp} est le heros de sa propre histoire. Des illustrations uniques, un recit rien que pour lui. <strong>Lisez-le ensemble ce soir.</strong>
+                      </p>
+                    </div>
+
+                    <!-- PREUVE SOCIALE -->
+                    <div style="text-align: center; margin: 0 0 28px;">
+                      <p style="font-size: 12px; color: #999; font-style: italic; margin: 0 0 4px;">
+                        &laquo; Mon fils a lu son livre 6 fois le premier soir. Il me reclame une nouvelle histoire chaque semaine ! &raquo;
+                      </p>
+                      <p style="font-size: 11px; color: #bbb; margin: 0;">Aurelie, maman de Leo (5 ans)</p>
+                    </div>
+
+                    <!-- SEPARATION -->
+                    <div style="height: 1px; background: #eee; margin: 0 0 28px;"></div>
+
+                    <!-- OFFRE CLUB — URGENCE 48H -->
+                    <div style="background: linear-gradient(145deg, #1a1040, #2d1b69); border-radius: 16px; padding: 24px 20px; text-align: center; border: 1px solid rgba(167,139,250,0.3); position: relative; overflow: hidden;">
+                      <!-- Glow -->
+                      <div style="position: absolute; top: -20px; right: -20px; width: 60px; height: 60px; border-radius: 50%; background: radial-gradient(circle, rgba(167,139,250,0.2) 0%, transparent 70%);"></div>
+
+                      <p style="font-size: 10px; font-weight: 800; color: #fbbf24; text-transform: uppercase; letter-spacing: 1.5px; margin: 0 0 6px;">&#x23F0; Offre de bienvenue &mdash; 48h</p>
+
+                      <p style="font-size: 15px; font-weight: 700; color: #f0e6ff; margin: 0 0 14px; line-height: 1.4;">
+                        Et si ${sp} avait une histoire<br><strong style="color: white;">2x plus longue, chaque mois ?</strong>
+                      </p>
+
+                      <!-- Features compact -->
+                      <table style="margin: 0 auto 14px; text-align: left;">
+                        <tr><td style="padding: 3px 8px; font-size: 12px; color: rgba(255,255,255,0.7);">&#x1F4DA; 4 livres par mois</td><td style="padding: 3px 8px; font-size: 12px; color: rgba(255,255,255,0.7);">&#x1F3A8; 9 styles</td></tr>
+                        <tr><td style="padding: 3px 8px; font-size: 12px; color: rgba(255,255,255,0.7);">&#x1F4D6; 2x plus de pages</td><td style="padding: 3px 8px; font-size: 12px; color: rgba(255,255,255,0.7);">&#x1F46A; 5 personnages</td></tr>
+                      </table>
+
+                      <!-- Prix -->
+                      <p style="color: rgba(255,255,255,0.35); font-size: 13px; text-decoration: line-through; margin: 0;">9,99&euro;/mois</p>
+                      <p style="color: white; font-size: 28px; font-weight: 800; margin: 2px 0 4px;">1,99&euro;</p>
+                      <p style="color: rgba(255,255,255,0.5); font-size: 11px; margin: 0 0 14px;">le 1er mois &middot; puis 9,99&euro; &middot; sans engagement</p>
+
+                      <a href="${cl}" style="display: inline-block; background: linear-gradient(135deg, #a78bfa, #f093fb); color: white; padding: 14px 36px; border-radius: 30px; text-decoration: none; font-weight: 800; font-size: 15px; box-shadow: 0 4px 16px rgba(167,139,250,0.5);">
+                        Essayer le Club pour 1,99&euro; &rarr;
+                      </a>
+
+                      <p style="color: rgba(255,255,255,0.3); font-size: 10px; margin: 10px 0 0;">Sans carte avant le paiement &middot; Annulable en 1 clic</p>
+                    </div>
+
+                    <!-- FOOTER -->
+                    <div style="text-align: center; margin-top: 24px; padding: 16px 0; border-top: 1px solid #f0f0f0;">
+                      <p style="font-size: 11px; color: #bbb; margin: 0;">Une question ? Repondez directement a cet email.</p>
+                      <p style="font-size: 10px; color: #ddd; margin: 6px 0 0;">Contedia (PAUSIA) &middot; contedia.fr</p>
                     </div>
                   </div>
-                </div>
-              `
+                </div>`;
+              })()
             }
           ]
         });
@@ -372,7 +411,7 @@ export class MailjetService {
     customerName: string;
     customerEmail: string;
     protagonistName: string;
-    step: 'day0' | 'day1' | 'day3' | 'day7';
+    step: 'day1' | 'day3' | 'day7';
     userId: string;
   }): Promise<void> {
     const magicLink = this.generateMagicDashboardLink(data.userId, data.customerEmail);
@@ -405,217 +444,140 @@ export class MailjetService {
       </div>
     `;
 
-    // Badge prix commun
-    const priceBadge = `
+    // Badge prix commun avec urgence
+    const priceBadge = (urgency: string) => `
       <div style="background: linear-gradient(145deg, #1a1040, #2d1b69); border-radius: 16px; padding: 20px; margin: 24px 0; text-align: center; border: 1px solid rgba(167,139,250,0.3);">
-        <p style="font-size: 11px; font-weight: 700; color: #a78bfa; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 10px;">Offre de lancement</p>
+        <p style="font-size: 10px; font-weight: 800; color: #fbbf24; text-transform: uppercase; letter-spacing: 1.5px; margin: 0 0 8px;">&#x23F0; ${urgency}</p>
         <p style="font-size: 14px; color: rgba(255,255,255,0.4); text-decoration: line-through; margin: 0;">9,99&euro;/mois</p>
         <p style="font-size: 32px; font-weight: 800; color: white; margin: 4px 0;">1,99&euro;</p>
         <p style="font-size: 12px; color: rgba(255,255,255,0.6); margin: 0 0 16px;">le 1er mois &middot; puis 9,99&euro;/mois &middot; sans engagement</p>
-        <a href="${clubLink}" style="background: linear-gradient(135deg, #a78bfa, #f093fb); color: white; padding: 14px 36px; border-radius: 30px; text-decoration: none; font-weight: 700; font-size: 15px; display: inline-block; box-shadow: 0 4px 16px rgba(167,139,250,0.4);">
+        <a href="${clubLink}" style="background: linear-gradient(135deg, #a78bfa, #f093fb); color: white; padding: 14px 36px; border-radius: 30px; text-decoration: none; font-weight: 800; font-size: 15px; display: inline-block; box-shadow: 0 4px 16px rgba(167,139,250,0.5);">
           Essayer le Club pour 1,99&euro; &rarr;
         </a>
+        <p style="font-size: 10px; color: rgba(255,255,255,0.3); margin: 10px 0 0;">Sans engagement &middot; Annulable en 1 clic</p>
       </div>
     `;
 
     const templates: Record<string, { subject: string; html: string }> = {
       // ═══════════════════════════════════════════════════
-      // J+0 — Email immédiat après livraison du livre gratuit
-      // Angle : émotion + découverte du livre + teaser Club
+      // J+1 — 24h apres
+      // Angle : EMOTIONNEL + personnel. Pas commercial.
+      // Objet qui intrigue, 1 question, Club en secondaire.
       // ═══════════════════════════════════════════════════
-      day0: {
-        subject: `Le livre de ${data.protagonistName} est pret ! Decouvrez-le`,
+      day1: {
+        subject: `${data.customerName}, comment ${data.protagonistName} a reagi en decouvrant son livre ?`,
         html: wrapper(`
-          <h1 style="color: #1a1040; font-size: 24px; text-align: center; margin: 0 0 8px; font-weight: 800;">
-            Le livre de ${data.protagonistName} vous attend
+          <p style="font-size: 28px; text-align: center; margin: 0 0 16px;">&#x1F4D6;&#x2728;</p>
+          <h1 style="color: #1a1040; font-size: 20px; text-align: center; margin: 0 0 20px; font-weight: 800; line-height: 1.4;">
+            Est-ce que ${data.protagonistName} a souri<br>en voyant son nom dans l'histoire ?
           </h1>
-          <p style="color: #888; font-size: 14px; text-align: center; margin: 0 0 28px;">
-            ${data.customerName}, votre conte personnalise est pret a etre lu.
+
+          <p style="color: #555; font-size: 14px; line-height: 1.8; margin: 0 0 20px; text-align: center;">
+            La premiere fois qu'un enfant decouvre un livre avec <strong>son prenom</strong>, il se passe quelque chose de magique. Ses yeux s'illuminent. Il pointe les illustrations. Il veut qu'on le relise. Encore. Et encore.
           </p>
 
-          <div style="text-align: center; margin: 0 0 28px;">
-            <a href="${magicLink}" style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); color: white; padding: 16px 40px; border-radius: 30px; text-decoration: none; font-weight: 700; font-size: 16px; display: inline-block; box-shadow: 0 4px 16px rgba(255,107,107,0.3);">
-              Lire le livre de ${data.protagonistName}
+          <div style="text-align: center; margin: 0 0 24px;">
+            <a href="${magicLink}" style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); color: white; padding: 14px 36px; border-radius: 30px; text-decoration: none; font-weight: 700; font-size: 15px; display: inline-block; box-shadow: 0 4px 16px rgba(255,107,107,0.3);">
+              Relire le livre de ${data.protagonistName}
             </a>
           </div>
 
-          <div style="background: #f9f7ff; border-radius: 12px; padding: 20px; margin: 24px 0;">
-            <p style="font-size: 14px; color: #555; margin: 0 0 12px; text-align: center; font-weight: 600;">
-              Ce que contient votre livre :
-            </p>
-            <table style="width: 100%; font-size: 13px; color: #666;">
-              <tr><td style="padding: 4px 0;">&#x2728; Histoire unique avec le prenom de ${data.protagonistName}</td></tr>
-              <tr><td style="padding: 4px 0;">&#x1F3A8; 7 illustrations generees par IA</td></tr>
-              <tr><td style="padding: 4px 0;">&#x1F4D6; 6 pages illustrees</td></tr>
-              <tr><td style="padding: 4px 0;">&#x2B07;&#xFE0F; PDF telechargeable</td></tr>
-            </table>
-          </div>
-
-          <div style="background: #f0f9ff; border-left: 4px solid #a78bfa; padding: 16px; border-radius: 0 12px 12px 0; margin: 24px 0;">
-            <p style="font-size: 13px; color: #555; margin: 0;">
-              <strong>Le saviez-vous ?</strong> Avec le Club, chaque livre passe a <strong>12 pages</strong>, <strong>12+ illustrations</strong>, et vous pouvez ajouter jusqu'a <strong>5 personnages</strong> (freres, soeurs, animal de compagnie...).
+          <!-- Teaser Club subtil, pas agressif -->
+          <div style="background: #f9fafb; border-radius: 12px; padding: 16px; margin: 0 0 8px;">
+            <p style="font-size: 13px; color: #777; margin: 0; text-align: center; line-height: 1.6;">
+              Vous aimeriez creer une nouvelle aventure pour ${data.protagonistName} ?<br>
+              Le Club donne acces a <strong>4 livres par mois</strong> avec <strong>2x plus de pages</strong>.
             </p>
           </div>
 
-          ${priceBadge}
+          ${priceBadge('Votre offre de bienvenue expire dans 48h')}
         `)
       },
 
       // ═══════════════════════════════════════════════════
-      // J+1 — 24h après
-      // Angle : émotion parentale + valeur du Club concrète
-      // ═══════════════════════════════════════════════════
-      day1: {
-        subject: `${data.protagonistName} a adore ? Imaginez avec 2x plus de pages...`,
-        html: wrapper(`
-          <h1 style="color: #1a1040; font-size: 22px; text-align: center; margin: 0 0 8px; font-weight: 800;">
-            Et si ${data.protagonistName} avait une histoire 2x plus longue ?
-          </h1>
-          <p style="color: #666; font-size: 14px; text-align: center; line-height: 1.7; margin: 0 0 24px;">
-            ${data.customerName}, le livre gratuit de ${data.protagonistName} contenait 6 pages et 7 illustrations.<br>
-            Avec le <strong style="color: #a78bfa;">Club Contedia</strong>, chaque livre passe a :
-          </p>
-
-          <div style="background: #f9f7ff; border-radius: 16px; padding: 20px; margin: 0 0 24px;">
-            <table style="width: 100%; border-collapse: collapse;">
-              <tr>
-                <td style="padding: 10px 0; border-bottom: 1px solid #eee; font-size: 13px;">
-                  <span style="color: #999;">Gratuit</span>
-                </td>
-                <td style="padding: 10px 0; border-bottom: 1px solid #eee; font-size: 13px; text-align: right;">
-                  <strong style="color: #a78bfa;">Club</strong>
-                </td>
-              </tr>
-              <tr>
-                <td style="padding: 8px 0; font-size: 13px; color: #888;">6 pages</td>
-                <td style="padding: 8px 0; font-size: 13px; text-align: right; font-weight: 700; color: #333;">12 pages</td>
-              </tr>
-              <tr>
-                <td style="padding: 8px 0; font-size: 13px; color: #888;">7 illustrations</td>
-                <td style="padding: 8px 0; font-size: 13px; text-align: right; font-weight: 700; color: #333;">12+ illustrations</td>
-              </tr>
-              <tr>
-                <td style="padding: 8px 0; font-size: 13px; color: #888;">1 style</td>
-                <td style="padding: 8px 0; font-size: 13px; text-align: right; font-weight: 700; color: #333;">9 styles au choix</td>
-              </tr>
-              <tr>
-                <td style="padding: 8px 0; font-size: 13px; color: #888;">1 personnage</td>
-                <td style="padding: 8px 0; font-size: 13px; text-align: right; font-weight: 700; color: #333;">5 personnages</td>
-              </tr>
-              <tr>
-                <td style="padding: 8px 0; font-size: 13px; color: #888;">1 livre</td>
-                <td style="padding: 8px 0; font-size: 13px; text-align: right; font-weight: 700; color: #333;">4 livres/mois</td>
-              </tr>
-            </table>
-          </div>
-
-          ${priceBadge}
-        `)
-      },
-
-      // ═══════════════════════════════════════════════════
-      // J+3 — 72h après
-      // Angle : features détaillées + cas d'usage concrets
+      // J+3 — 72h apres
+      // Angle : concret + projection. Montrer ce qu'ils RATENT.
       // ═══════════════════════════════════════════════════
       day3: {
-        subject: `5 personnages, 9 styles, Noel, Ramadan... tout ce que le Club debloque`,
+        subject: `${data.protagonistName} avec son chat, en aquarelle, pour Noel... imaginez`,
         html: wrapper(`
-          <h1 style="color: #1a1040; font-size: 22px; text-align: center; margin: 0 0 8px; font-weight: 800;">
-            Tout ce que le Club change
+          <h1 style="color: #1a1040; font-size: 20px; text-align: center; margin: 0 0 8px; font-weight: 800; line-height: 1.4;">
+            Imaginez ${data.protagonistName}...
           </h1>
-          <p style="color: #666; font-size: 14px; text-align: center; line-height: 1.7; margin: 0 0 24px;">
-            ${data.customerName}, voici tout ce que les membres du Club creent :
-          </p>
 
-          <div style="margin: 0 0 24px;">
-            <div style="background: #f9f7ff; border-radius: 12px; padding: 14px 16px; margin-bottom: 8px; display: flex; align-items: flex-start;">
-              <span style="font-size: 22px; margin-right: 12px; line-height: 1;">&#x1F3A8;</span>
-              <div>
-                <strong style="font-size: 14px; color: #333;">9 styles d'illustration</strong>
-                <p style="font-size: 12px; color: #888; margin: 2px 0 0;">Aquarelle, 3D Pixar, Papier decoupe, Kawaii, Manga, Argile, Geometrique...</p>
-              </div>
+          <div style="margin: 20px 0 24px;">
+            <div style="background: #f9f7ff; border-radius: 12px; padding: 14px 16px; margin-bottom: 8px;">
+              <p style="font-size: 14px; color: #333; margin: 0;">&#x1F3A8; ...dans une histoire en <strong>aquarelle</strong>, en <strong>manga</strong>, ou en <strong>3D Pixar</strong></p>
+              <p style="font-size: 12px; color: #999; margin: 4px 0 0;">9 styles differents. Chaque livre est unique.</p>
             </div>
-            <div style="background: #f9f7ff; border-radius: 12px; padding: 14px 16px; margin-bottom: 8px; display: flex; align-items: flex-start;">
-              <span style="font-size: 22px; margin-right: 12px; line-height: 1;">&#x1F46A;</span>
-              <div>
-                <strong style="font-size: 14px; color: #333;">5 personnages dans chaque histoire</strong>
-                <p style="font-size: 12px; color: #888; margin: 2px 0 0;">Grand frere, petite soeur, meilleur ami, doudou, animal de compagnie</p>
-              </div>
+            <div style="background: #f9f7ff; border-radius: 12px; padding: 14px 16px; margin-bottom: 8px;">
+              <p style="font-size: 14px; color: #333; margin: 0;">&#x1F436; ...avec son <strong>chat</strong>, son <strong>doudou</strong> et sa <strong>grande soeur</strong> dans l'aventure</p>
+              <p style="font-size: 12px; color: #999; margin: 4px 0 0;">Jusqu'a 5 personnages par histoire.</p>
             </div>
-            <div style="background: #f9f7ff; border-radius: 12px; padding: 14px 16px; margin-bottom: 8px; display: flex; align-items: flex-start;">
-              <span style="font-size: 22px; margin-right: 12px; line-height: 1;">&#x1F389;</span>
-              <div>
-                <strong style="font-size: 14px; color: #333;">Toutes les occasions</strong>
-                <p style="font-size: 12px; color: #888; margin: 2px 0 0;">Noel, Ramadan, Paques, Anniversaire, Aid, Diwali, fete des meres...</p>
-              </div>
+            <div style="background: #f9f7ff; border-radius: 12px; padding: 14px 16px; margin-bottom: 8px;">
+              <p style="font-size: 14px; color: #333; margin: 0;">&#x1F384; ...dans une histoire de <strong>Noel</strong>, d'<strong>anniversaire</strong>, de <strong>Ramadan</strong>...</p>
+              <p style="font-size: 12px; color: #999; margin: 4px 0 0;">Chaque occasion merite une histoire.</p>
             </div>
-            <div style="background: #f9f7ff; border-radius: 12px; padding: 14px 16px; margin-bottom: 8px; display: flex; align-items: flex-start;">
-              <span style="font-size: 22px; margin-right: 12px; line-height: 1;">&#x1F436;</span>
-              <div>
-                <strong style="font-size: 14px; color: #333;">Animal de compagnie</strong>
-                <p style="font-size: 12px; color: #888; margin: 2px 0 0;">Votre chat, chien ou hamster devient un personnage de l'histoire</p>
-              </div>
-            </div>
-            <div style="background: #f9f7ff; border-radius: 12px; padding: 14px 16px; display: flex; align-items: flex-start;">
-              <span style="font-size: 22px; margin-right: 12px; line-height: 1;">&#x1F30D;</span>
-              <div>
-                <strong style="font-size: 14px; color: #333;">10 langues disponibles</strong>
-                <p style="font-size: 12px; color: #888; margin: 2px 0 0;">Francais, anglais, arabe, espagnol, allemand, japonais, italien...</p>
-              </div>
+            <div style="background: #f9f7ff; border-radius: 12px; padding: 14px 16px;">
+              <p style="font-size: 14px; color: #333; margin: 0;">&#x1F4D6; ...dans un livre de <strong>12 pages</strong> au lieu de 6</p>
+              <p style="font-size: 12px; color: #999; margin: 4px 0 0;">2x plus long. 2x plus d'illustrations. 2x plus de magie.</p>
             </div>
           </div>
 
-          ${priceBadge}
+          <p style="font-size: 14px; color: #555; text-align: center; margin: 0 0 8px;">
+            Tout ca, c'est le <strong>Club Contedia</strong>.<br>Et il est a <strong style="color: #8B5CF6;">1,99&euro;</strong> pour les 24 prochaines heures.
+          </p>
+
+          ${priceBadge('Plus que 24h pour cette offre')}
         `)
       },
 
       // ═══════════════════════════════════════════════════
       // J+7 — Dernier email
-      // Angle : urgence douce + témoignage + dernière chance
+      // Angle : honnete + derniere chance + temoignage
+      // ZERO relance apres celui-ci.
       // ═══════════════════════════════════════════════════
       day7: {
-        subject: `Dernier jour : le Club a 1,99\u20AC au lieu de 9,99\u20AC`,
+        subject: `${data.customerName}, on ne vous ecrira plus apres ca`,
         html: wrapper(`
-          <h1 style="color: #1a1040; font-size: 22px; text-align: center; margin: 0 0 8px; font-weight: 800;">
-            ${data.customerName}, c'est notre derniere relance
+          <h1 style="color: #1a1040; font-size: 20px; text-align: center; margin: 0 0 20px; font-weight: 800; line-height: 1.4;">
+            Dernier email. Promis.
           </h1>
-          <p style="color: #666; font-size: 14px; text-align: center; line-height: 1.7; margin: 0 0 24px;">
-            On ne vous enverra plus d'email a ce sujet apres celui-ci.
-            Mais avant, on voulait vous partager ce message :
+
+          <p style="color: #555; font-size: 14px; line-height: 1.8; margin: 0 0 24px; text-align: center;">
+            ${data.customerName}, on ne va pas vous harceler. Si le Club ne vous interesse pas, on comprend et on ne vous enverra plus d'email a ce sujet.<br><br>
+            Mais avant, on voulait juste vous montrer ce qu'une maman nous a ecrit :
           </p>
 
-          <div style="background: #f0fdf4; border-radius: 16px; padding: 20px; margin: 0 0 24px; border: 1px solid #bbf7d0;">
-            <p style="font-size: 14px; color: #333; margin: 0; font-style: italic; line-height: 1.7; text-align: center;">
-              &laquo; Mon fils a lu son premier livre gratuit 6 fois.<br>
-              Avec le Club, il en a un nouveau chaque semaine.<br>
-              C'est le seul abonnement qu'il me reclame ! &raquo;
+          <div style="background: #f0fdf4; border-radius: 16px; padding: 24px; margin: 0 0 24px; border: 1px solid #bbf7d0;">
+            <p style="font-size: 15px; color: #333; margin: 0; font-style: italic; line-height: 1.7; text-align: center;">
+              &laquo; Mon fils me reclame "son livre" chaque soir avant de dormir. Depuis qu'on est au Club, il en a un nouveau chaque semaine. C'est devenu notre rituel. &raquo;
             </p>
-            <p style="font-size: 12px; color: #888; margin: 10px 0 0; text-align: center; font-weight: 600;">
+            <p style="font-size: 12px; color: #888; margin: 12px 0 0; text-align: center; font-weight: 600;">
               Aurelie, maman de Leo (5 ans)
             </p>
           </div>
 
-          <div style="background: #fffbeb; border-radius: 12px; padding: 16px; margin: 0 0 24px; border: 1px solid #fde68a;">
-            <p style="font-size: 13px; color: #92400e; margin: 0; text-align: center; font-weight: 600;">
-              L'offre de lancement a 1,99&euro; le 1er mois est toujours disponible.<br>
-              Sans engagement, annulable en 1 clic.
-            </p>
-          </div>
+          <p style="font-size: 14px; color: #555; text-align: center; margin: 0 0 16px; line-height: 1.6;">
+            Si vous voulez essayer, l'offre a <strong>1,99&euro;</strong> est toujours la.<br>
+            Sans engagement. Sans piege. Annulable en 1 clic.
+          </p>
 
           <div style="text-align: center; margin: 0 0 16px;">
-            <p style="font-size: 14px; color: #999; text-decoration: line-through; margin: 0;">9,99&euro;/mois</p>
+            <p style="font-size: 14px; color: #bbb; text-decoration: line-through; margin: 0;">9,99&euro;/mois</p>
             <p style="font-size: 36px; font-weight: 800; color: #1a1040; margin: 4px 0;">1,99&euro;</p>
-            <p style="font-size: 12px; color: #888; margin: 0;">le 1er mois &middot; puis 9,99&euro;/mois</p>
+            <p style="font-size: 12px; color: #888; margin: 0;">le 1er mois &middot; puis 9,99&euro; &middot; sans engagement</p>
           </div>
 
-          <div style="text-align: center; margin: 0 0 8px;">
-            <a href="${clubLink}" style="background: linear-gradient(135deg, #a78bfa, #f093fb); color: white; padding: 16px 40px; border-radius: 30px; text-decoration: none; font-weight: 700; font-size: 16px; display: inline-block; box-shadow: 0 4px 16px rgba(167,139,250,0.4);">
-              Derniere chance &mdash; Essayer pour 1,99&euro;
+          <div style="text-align: center; margin: 0 0 24px;">
+            <a href="${clubLink}" style="background: linear-gradient(135deg, #a78bfa, #f093fb); color: white; padding: 16px 40px; border-radius: 30px; text-decoration: none; font-weight: 800; font-size: 16px; display: inline-block; box-shadow: 0 4px 16px rgba(167,139,250,0.5);">
+              Essayer le Club pour 1,99&euro;
             </a>
           </div>
 
-          <p style="color: #ccc; font-size: 11px; text-align: center; margin: 16px 0 0;">
-            4 livres/mois &middot; 12 pages &middot; 9 styles &middot; 5 personnages &middot; sans engagement
+          <p style="color: #ccc; font-size: 11px; text-align: center; margin: 0;">
+            Merci d'avoir essaye Contedia. &#x2764;&#xFE0F;<br>
+            On espere que ${data.protagonistName} a aime son histoire.
           </p>
         `)
       }
