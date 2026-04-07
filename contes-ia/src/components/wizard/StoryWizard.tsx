@@ -1731,31 +1731,30 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
               </PreviewSectionTitle>
 
               {isClub ? (
-                /* ── CLUB MEMBER WITHOUT CREDIT: single purchase at full price (3.99€) ── */
+                /* ── CLUB MEMBER WITHOUT CREDIT: wait or continue ── */
                 <TripwireHeroCard $isSelected={selectedOffer === 'single'} onClick={() => handlePreviewSelect('single')}>
                   <TripwireHeroBadge>Membre Club</TripwireHeroBadge>
                   {selectedOffer === 'single' && <PricingSelectedCheck>&#10003;</PricingSelectedCheck>}
-                  <PricingCardName>Livre supplémentaire</PricingCardName>
-                  <TripwireHeroPrice>3,99€</TripwireHeroPrice>
+                  <PricingCardName>Livre complet inclus</PricingCardName>
+                  <TripwireHeroPrice>INCLUS</TripwireHeroPrice>
                   <PricingCardSub>
                     {clubCredit?.nextCreditDate
                       ? `Prochains crédits le ${new Date(clubCredit.nextCreditDate).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}`
                       : 'Vos crédits mensuels ont été utilisés'}
                   </PricingCardSub>
                   <PricingCardFeaturesList>
-                    <PricingCardFeatureItem $highlight>1 livre personnalisé pour {heroName}</PricingCardFeatureItem>
-                    <PricingCardFeatureItem>7 illustrations HD uniques</PricingCardFeatureItem>
+                    <PricingCardFeatureItem $highlight>1 livre complet (12 pages) pour {heroName}</PricingCardFeatureItem>
+                    <PricingCardFeatureItem>12 illustrations HD uniques</PricingCardFeatureItem>
                     <PricingCardFeatureItem>PDF téléchargeable et imprimable</PricingCardFeatureItem>
                   </PricingCardFeaturesList>
-                  <TripwireHeroCTA>{selectedOffer === 'single' ? 'Sélectionné !' : 'Obtenir pour 3,99€'}</TripwireHeroCTA>
+                  <TripwireHeroCTA>{selectedOffer === 'single' ? 'Sélectionné !' : 'Créer mon livre'}</TripwireHeroCTA>
                 </TripwireHeroCard>
               ) : isFirstPurchase ? (
                 /* ── PREMIER LIVRE GRATUIT — pas de Club, juste le gratuit ── */
                 <TripwireHeroCard $isSelected={selectedOffer === 'single'} onClick={() => handlePreviewSelect('single')}>
                   <TripwireHeroBadge>GRATUIT</TripwireHeroBadge>
                   {selectedOffer === 'single' && <PricingSelectedCheck>&#10003;</PricingSelectedCheck>}
-                  <PricingCardName>Votre Premier Livre</PricingCardName>
-                  <TripwireHeroOldPrice style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif' }}>3,99€</TripwireHeroOldPrice>
+                  <PricingCardName>Votre Premier Chapitre</PricingCardName>
                   <TripwireHeroPrice>GRATUIT</TripwireHeroPrice>
                   <PricingCardSub>Juste votre email — pas de carte bancaire</PricingCardSub>
                   <PricingCardFeaturesList>
@@ -1903,7 +1902,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                       fontSize: theme.fontSizes.xs, color: 'var(--text-secondary)',
                       margin: 0, lineHeight: 1.4,
                     }}>
-                      Votre livre gratuit a déjà été utilisé. Le prochain livre coûte 3,99€.
+                      Un compte existe avec cet email. Connectez-vous pour accéder à vos chapitres gratuits.
                     </p>
                   </div>
                 )}
@@ -1915,7 +1914,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                       ? 'Préparation de la couverture...'
                     : (formData.purchaseType === 'club' && isClub && clubCredit?.canSubmit) || (isFirstPurchase && !isClub && formData.purchaseType !== 'club')
                       ? 'Recevoir mon livre GRATUIT'
-                        : `Payer ${isClub && !clubCredit?.canSubmit ? '3,99€' : singlePriceLabel} — Recevoir mon livre`}
+                        : `Recevoir mon chapitre GRATUIT`}
                 </PayButton>
 
                 <TrustBadgesRow>
