@@ -300,37 +300,72 @@ export async function generateStoryContinuation(
 ): Promise<StoryTextResult> {
   const openai = getOpenAI();
   const name = params.protagonistName || 'Enfant';
+  const genderWord = params.protagonistGender === 'girl' ? 'fille' : 'garcon';
   const language = params.language || 'francais';
+  const theme = params.customTheme || THEME_LABELS[params.generalTheme] || params.generalTheme || '';
+  const occasion = params.customSubject || OCCASION_LABELS[params.specificSubject] || params.specificSubject || '';
   const message = params.customMessage || MESSAGE_LABELS[params.centralMessage] || params.centralMessage || '';
   const ageForVocab = params.protagonistAge || (params.ageRange === '0-2' ? '2' : params.ageRange === '3-5' ? '4' : params.ageRange === '10+' ? '11' : '7');
 
+  // Parse secondary characters
+  let secondaryChars = '';
+  if (params.secondaryCharactersJson) {
+    try {
+      const chars = JSON.parse(params.secondaryCharactersJson);
+      if (Array.isArray(chars) && chars.length > 0) {
+        secondaryChars = chars.map((c: any) => {
+          const kindLabel = c.kind === 'animal' ? 'Animal' : 'Humain';
+          const parts = [`- ${c.name || 'Ami(e)'} (${kindLabel})`];
+          if (c.ageOrType) parts.push(c.ageOrType);
+          if (c.physical) parts.push(`description : ${c.physical}`);
+          return parts.join(' — ');
+        }).join('\n');
+      }
+    } catch { /* ignore */ }
+  }
+
+  const religionNote = params.customReligion || params.religion || '';
   const existingText = existingParagraphs.map((p, i) => `Paragraphe ${i + 1}: ${p}`).join('\n');
 
   const continuationPrompt = `Tu es un auteur de livres pour enfants reconnu. Tu dois ecrire la SUITE et la FIN d'une histoire deja commencee.
 
 TITRE DE L'HISTOIRE : ${title}
 
+CONTEXTE ORIGINAL DE L'HISTOIRE (A RESPECTER IMPERATIVEMENT) :
+- Protagoniste : ${name} (${genderWord}, ${params.ageRange || '6-9'} ans)
+- Theme : ${theme}
+${occasion ? `- Occasion : ${occasion}` : ''}
+${message ? `- Message central : ${message}` : ''}
+${params.hobbies ? `- Passions/Hobbies de ${name} : ${params.hobbies}` : ''}
+${params.favoriteDish ? `- Plat favori : ${params.favoriteDish}` : ''}
+${secondaryChars ? `- Personnages secondaires :\n${secondaryChars}` : ''}
+${religionNote ? `- Contexte spirituel : ${religionNote}` : ''}
+${params.specialEvents ? `- Evenement special : ${params.specialEvents}` : ''}
+
 VOICI LE DEBUT DE L'HISTOIRE (5 paragraphes deja ecrits) :
 ${existingText}
 
-L'histoire s'etait arretee sur un cliffhanger. Tu dois maintenant ecrire EXACTEMENT 7 paragraphes pour TERMINER cette histoire.
+REGLE ABSOLUE : La suite DOIT se derouler dans le MEME UNIVERS, avec les MEMES personnages, le MEME theme (${theme}) et le MEME ton que les 5 premiers paragraphes ci-dessus. Tu ne dois PAS changer d'univers, pas introduire de nouveaux themes, pas inventer un decor different. Tu continues EXACTEMENT la meme histoire.
+
+Tu dois maintenant ecrire EXACTEMENT 7 paragraphes pour TERMINER cette histoire.
 
 STRUCTURE DE LA SUITE (7 paragraphes) :
-- Paragraphe 6 : REVELATION — La suite immediate du cliffhanger. Ce que ${name} decouvre.
-- Paragraphe 7 : AVENTURE — L'aventure continue, explorations, interactions
-- Paragraphe 8 : OBSTACLE — Un defi majeur se presente
-- Paragraphe 9 : DETERMINATION — ${name} puise dans son courage et ses qualites
+- Paragraphe 6 : REVELATION — La suite immediate du cliffhanger. Ce que ${name} decouvre. MEME LIEU, MEME UNIVERS.
+- Paragraphe 7 : AVENTURE — L'aventure continue dans le meme univers (${theme})
+- Paragraphe 8 : OBSTACLE — Un defi majeur se presente, en lien avec le theme "${theme}"
+- Paragraphe 9 : DETERMINATION — ${name} puise dans son courage et ses qualites${params.hobbies ? ` (ses passions : ${params.hobbies})` : ''}
 - Paragraphe 10 : RESOLUTION — ${name} surmonte le defi grace a ses qualites et l'aide de ses proches
 - Paragraphe 11 : CELEBRATION — Retour au calme, joie, reconnaissance
 - Paragraphe 12 : CONCLUSION — Morale douce et ouverture${message ? `. Le message central (${message}) doit transparaitre dans la resolution et la conclusion.` : ''}
 
 EXIGENCES :
-1. La suite doit etre COHERENTE avec les 5 premiers paragraphes (memes personnages, meme univers, meme ton)
-2. Vocabulaire adapte a un enfant de ${ageForVocab} ans
-3. Chaque paragraphe fait 3 a 4 phrases (un peu plus riche car c'est la version complete)
-4. Le prenom "${name}" doit apparaitre regulierement
-5. La fin doit etre satisfaisante, positive et emouvante
-6. Ecris en ${language}
+1. COHERENCE ABSOLUE avec les 5 premiers paragraphes : memes personnages, meme univers (${theme}), meme ton, meme decor
+2. ${secondaryChars ? `Les personnages secondaires doivent reapparaitre dans la suite avec des actions concretes` : 'Garder les memes personnages que dans le debut'}
+3. Vocabulaire adapte a un enfant de ${ageForVocab} ans
+4. Chaque paragraphe fait 3 a 4 phrases (riche mais aere)
+5. Le prenom "${name}" doit apparaitre regulierement
+6. La fin doit etre satisfaisante, positive et emouvante
+7. Ecris UNIQUEMENT en ${language}
 
 FORMAT DE REPONSE :
 Reponds UNIQUEMENT avec un JSON array de EXACTEMENT 7 strings (paragraphes 6 a 12).
