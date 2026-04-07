@@ -55,15 +55,25 @@ const COLORS_NIGHT = [
 
 /* ═══════════ LAYOUT ═══════════ */
 const Overlay = styled.div`
-  position: fixed; inset: 0; z-index: 10000;
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 10000;
   background: #000; animation: ${fadeIn} 0.3s ease;
-  touch-action: pan-y; /* block pinch-zoom, allow vertical scroll only */
+  touch-action: pan-y;
   user-select: none;
   -webkit-user-select: none;
+  /* Forcer le plein écran sur TOUS les navigateurs mobiles */
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  height: -webkit-fill-available;
+  overflow: hidden;
 `;
 
 const ScrollContainer = styled.div`
-  width: 100%; height: 100dvh;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  height: -webkit-fill-available;
   overflow-y: scroll; overflow-x: hidden;
   scroll-snap-type: y mandatory;
   -webkit-overflow-scrolling: touch;
@@ -111,7 +121,10 @@ const PageIndicator = styled.div<{ $visible: boolean }>`
 
 /* ═══════════ SLIDE BASE ═══════════ */
 const Slide = styled.div`
-  height: 100dvh; width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  height: -webkit-fill-available;
+  width: 100%;
   scroll-snap-align: start; scroll-snap-stop: always;
   position: relative; overflow: hidden;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -360,11 +373,32 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
     indicatorTimeout.current = setTimeout(() => setShowIndicator(false), 2000);
   }, [currentSlide]);
 
-  // Lock body scroll + escape key
+  // Lock body scroll + force scroll to top + escape key
   useEffect(() => {
     const prev = document.body.style.overflow;
+    const prevPosition = document.body.style.position;
+    const prevTop = document.body.style.top;
+    const prevWidth = document.body.style.width;
+    const scrollY = window.scrollY;
+
+    // Bloquer le body scroll complètement (iOS fix)
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.width = '100%';
     document.body.style.overflow = 'hidden';
-    return () => { document.body.style.overflow = prev; };
+
+    // Forcer le scroll du reader au top
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = 0;
+    }
+
+    return () => {
+      document.body.style.position = prevPosition;
+      document.body.style.top = prevTop;
+      document.body.style.width = prevWidth;
+      document.body.style.overflow = prev;
+      window.scrollTo(0, scrollY);
+    };
   }, []);
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
