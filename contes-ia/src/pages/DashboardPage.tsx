@@ -1092,7 +1092,7 @@ export const DashboardPage: React.FC = () => {
             </button>
             <button onClick={() => {
               if (!isClub && stories.length >= 3) {
-                if (window.confirm('Votre bibliothèque gratuite est limitée à 3 livres.\n\nRejoignez le Club pour créer des livres illimités !')) {
+                if (window.confirm('Vous avez utilisé vos 3 chapitres gratuits.\n\nRejoignez le Club pour créer des livres complets illimités !')) {
                   navigate('/club/checkout');
                 }
                 return;
@@ -1177,7 +1177,7 @@ export const DashboardPage: React.FC = () => {
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12, position: 'relative', zIndex: 2 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <span style={{ fontSize: 11, background: 'rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.7)', padding: '3px 8px', borderRadius: 8, fontWeight: 600 }}>
-                  {stories.length}/3 livres
+                  {stories.length}/3 chapitres
                 </span>
                 <span style={{ fontSize: 13, fontWeight: 800, color: '#f0e6ff', letterSpacing: '-0.3px' }}>
                   Club des Histoires
