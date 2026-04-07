@@ -227,8 +227,8 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
     return emailStatus.isFirstPurchase === true;
   })();
   const isClubWithCredit = isClub && clubCredit?.canSubmit;
-  const singlePrice = isFirstPurchase || isClubWithCredit ? 0 : 3.99;
-  const singlePriceLabel = isFirstPurchase || isClubWithCredit ? 'GRATUIT' : '3,99€';
+  const singlePrice = 0; // Tous les chapitres sont gratuits (max 3, vérifié côté backend)
+  const singlePriceLabel = 'GRATUIT';
 
   const { load: loadDraft, clear: clearDraft, autoSave, hasDraft } = useWizardPersistence();
 

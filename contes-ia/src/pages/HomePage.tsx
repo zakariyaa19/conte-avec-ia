@@ -1313,7 +1313,7 @@ const faqItems = [
   {
     id: '3',
     question: "Qu'est-ce que le Club des Histoires Uniques ?",
-    answer: "Votre premier chapitre (5 pages illustrées) est 100% gratuit ! Pour découvrir la suite complète (12 pages), deux options : achat unique à 2,99€ ou le Club des Histoires à 1,99€ le premier mois (puis 9,99€/mois) qui inclut 4 livres complets par mois, 9 styles d'illustration, 5 personnages secondaires et bien plus. Sans engagement."
+    answer: "Vous pouvez créer jusqu'à 3 premiers chapitres gratuitement (5 pages illustrées chacun). Pour découvrir la suite complète d'un livre (12 pages), c'est seulement 2,99€. Ou rejoignez le Club des Histoires à 1,99€ le premier mois (puis 9,99€/mois) pour des livres complets illimités, 9 styles d'illustration, 5 personnages secondaires et bien plus. Sans engagement."
   },
   {
     id: '4',
@@ -1484,7 +1484,7 @@ const faqReveal = useScrollReveal();
               </CTAButtons>
               <TrustRow>
                 <TrustItem>
-                  <span>&#10003;</span> 1er chapitre gratuit
+                  <span>&#10003;</span> 3 chapitres gratuits
                 </TrustItem>
                 <TrustItem>
                   <span>&#10003;</span> Prêt en 5 minutes
@@ -1674,7 +1674,7 @@ const faqReveal = useScrollReveal();
               <SectionTitle>Gratuit ou Club ?</SectionTitle>
               <Divider />
               <SectionSubtitle>
-                Votre premier chapitre est gratuit. Le Club déverrouille l'histoire complète.
+                3 chapitres gratuits. Le Club déverrouille les histoires complètes.
               </SectionSubtitle>
             </SectionWrapper>
 

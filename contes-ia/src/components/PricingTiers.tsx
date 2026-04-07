@@ -200,13 +200,13 @@ export const PricingTiers: React.FC<PricingTiersProps> = ({ onSelectPlan }) => {
           </PriceBlock>
           <Divider />
           <Features>
-            <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>Premier chapitre offert (5 pages)</Feature>
-            <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>Bibliothèque limitée à 3 livres</Feature>
+            <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>3 premiers chapitres gratuits (5 pages)</Feature>
+            <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>Livre complet à 2,99€</Feature>
             <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>5 illustrations par chapitre</Feature>
             <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>Bibliothèque en ligne</Feature>
-            <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>Lecture + téléchargement</Feature>
-            <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>1 personnage secondaire</Feature>
-            <Feature $disabled><FeatureIcon>—</FeatureIcon>Styles d'illustration</Feature>
+            <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>Lecture + téléchargement PDF</Feature>
+            <Feature $disabled><FeatureIcon>—</FeatureIcon>9 styles d'illustration</Feature>
+            <Feature $disabled><FeatureIcon>—</FeatureIcon>5 personnages secondaires</Feature>
             <Feature $disabled><FeatureIcon>—</FeatureIcon>Occasions spéciales</Feature>
           </Features>
           <Button variant="outline" size="lg" onClick={() => onSelectPlan('single')} fullWidth>

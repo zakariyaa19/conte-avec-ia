@@ -464,13 +464,13 @@ export const ClubPage: React.FC = () => {
   ];
 
   const comparison = [
-    { feature: 'Livres/mois', free: '1', club: '4' },
-    { feature: 'Pages/livre', free: '5', club: '12' },
-    { feature: 'Illustrations/livre', free: '5', club: '12' },
+    { feature: 'Chapitres gratuits', free: '3', club: 'Illimité' },
+    { feature: 'Pages/livre', free: '5 (chapitre)', club: '12 (complet)' },
+    { feature: 'Illustrations', free: '5', club: '12' },
+    { feature: 'Livre complet', free: '2,99€/livre', club: 'Inclus' },
     { feature: "Styles d'illustration", free: '1', club: '9' },
     { feature: 'Personnages secondaires', free: '1', club: '5' },
     { feature: 'Multi-langues', free: '✘', club: '✔' },
-    { feature: 'PDF téléchargeable', free: '✔', club: '✔' },
   ];
 
   const ctaLabel = isClub

@@ -265,10 +265,10 @@ export class AuthController {
 
       console.log('[AUTH] getProfile:', user.id, 'role:', user.role, 'subStatus:', user.subscriptionStatus);
 
-      // Vérifier si l'utilisateur a déjà un achat payé (pour le tripwire 1,99€)
-      const hasPaidOrder = user.orders?.some((o: any) =>
+      // Compter les chapitres gratuits utilisés (max 3)
+      const freeChaptersUsed = user.orders?.filter((o: any) =>
         ['PAID', 'GENERATING', 'GENERATED', 'DELIVERED'].includes(o.status)
-      ) || false;
+      ).length || 0;
 
       res.json({
         success: true,
@@ -284,7 +284,9 @@ export class AuthController {
           weeklySubmissionReset: user.weeklySubmissionReset,
           orders: user.orders,
           children: user.childProfiles,
-          isFirstPurchase: !hasPaidOrder,
+          isFirstPurchase: freeChaptersUsed < 3, // Rétro-compatibilité frontend
+          freeChaptersUsed,
+          freeChaptersRemaining: Math.max(0, 3 - freeChaptersUsed),
           hasPassword: !!user.password,
           hasGoogle: !!user.googleId
         }
@@ -322,16 +324,17 @@ export class AuthController {
         });
       }
 
-      // Vérifier si l'utilisateur a déjà eu un livre (gratuit ou payé)
-      const hasPaidOrder = user.orders?.some((o: any) =>
+      const freeChaptersUsed2 = user.orders?.filter((o: any) =>
         ['PAID', 'GENERATING', 'GENERATED', 'DELIVERED'].includes(o.status)
-      ) || false;
+      ).length || 0;
 
       res.json({
         success: true,
         exists: true,
         hasPassword: !!user.password,
-        isFirstPurchase: !hasPaidOrder
+        isFirstPurchase: freeChaptersUsed2 < 3,
+        freeChaptersUsed: freeChaptersUsed2,
+        freeChaptersRemaining: Math.max(0, 3 - freeChaptersUsed2)
       });
     } catch (error) {
       console.error('Erreur check email:', error);

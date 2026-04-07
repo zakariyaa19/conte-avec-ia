@@ -22,9 +22,8 @@ export const StoryFormPage: React.FC = () => {
   }, [location.search]);
   const [clubCredit, setClubCredit] = useState<{ canSubmit: boolean; remaining: number; nextCreditDate?: string; totalEarned?: number } | null>(null);
 
-  // Premier livre gratuit, sinon 3,99€ (club members toujours 3,99€)
-  const isFirstPurchase = isAuthenticated ? user?.isFirstPurchase !== false : true;
-  const viewContentPrice = isClub ? 3.99 : (isFirstPurchase ? 0 : 3.99);
+  // Chapitres gratuits pour tous les non-Club (max 3). Club = livres complets.
+  const viewContentPrice = isClub ? 0 : 0; // Tracking: tous les chapitres sont gratuits
 
   // Track ViewContent au chargement de la page
   useEffect(() => {
@@ -332,7 +331,7 @@ export const StoryFormPage: React.FC = () => {
     <>
       <SEOHead
         title="Créer un Livre Personnalisé pour Enfant | Conte sur Mesure avec IA"
-        description="Créez facilement un conte personnalisé pour votre enfant en 3 étapes simples. Premier chapitre gratuit, prêt en 5 minutes."
+        description="Créez facilement un conte personnalisé pour votre enfant en 3 étapes simples. 3 premiers chapitres gratuits, prêt en 5 minutes."
         noindex={false}
       />
       <StoryWizard

@@ -1,13 +1,11 @@
 // Logique de calcul des prix
 
 export const PRODUCT_PRICES = {
-  EBOOK: 3.99,
-  EBOOK_FIRST: 1.99,
-  EBOOK_FREE: 0,
-  EBOOK_COMPLETE: 2.99, // Compléter une histoire gratuite (cliffhanger → histoire complète)
+  EBOOK_FREE: 0,          // Chapitre gratuit (5 pages + cliffhanger)
+  EBOOK_COMPLETE: 2.99,   // Compléter un chapitre (cliffhanger → 12 pages)
 } as const;
 
-export const FREE_BOOK_LIMIT = 3;
+export const FREE_CHAPTER_LIMIT = 3; // Max 3 chapitres gratuits par compte
 
 export const CLUB_PRICES = {
   CLUB_MONTHLY: 9.99,

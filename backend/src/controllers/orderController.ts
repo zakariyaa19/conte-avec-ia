@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import Stripe from 'stripe';
 import * as bcrypt from 'bcryptjs';
-import { calculatePrice, PRODUCT_PRICES, isFirstPurchase, FREE_BOOK_LIMIT } from '../utils/pricing';
+import { PRODUCT_PRICES, FREE_CHAPTER_LIMIT } from '../utils/pricing';
 import { StoryFormData, ApiResponse } from '../types';
 import { prisma } from '../utils/database';
 import { stringifySecondaryCharacters } from '../utils/formatters';
@@ -43,8 +43,8 @@ export class OrderController {
         });
       }
 
-      // Calcul du prix (sera ajusté après résolution du user pour le tripwire)
-      let price = calculatePrice(formData.productType?.toUpperCase() as keyof typeof PRODUCT_PRICES) || 4.99;
+      // Prix par défaut : 0€ (chapitre gratuit). Sera ajusté si Club/crédits épuisés.
+      let price = 0;
 
       let user = null;
       let photoUrl = null;
@@ -105,52 +105,39 @@ export class OrderController {
         }
       }
 
-      // --- Logique Premier Livre Gratuit ---
-      // Si achat SINGLE, utilisateur non-Club et jamais acheté → GRATUIT (pas de Stripe)
-      // Les membres Club ne bénéficient JAMAIS du gratuit (ils ont déjà un abonnement)
+      // --- Logique chapitres gratuits (modèle cliffhanger) ---
+      // Tout utilisateur non-Club peut créer jusqu'à 3 chapitres gratuits (5 pages + cliffhanger)
+      // Les membres Club créent des livres complets directement (12 pages, pas de cliffhanger)
       const isExistingClubMember = user && user.role === 'CLUB' && user.subscriptionStatus === 'active';
       let isFirstBookFree = false;
 
       if (purchaseType === 'SINGLE' && userEmail && !isExistingClubMember) {
-        const firstPurchase = await isFirstPurchase(userEmail, prisma);
-        if (firstPurchase) {
-          price = PRODUCT_PRICES.EBOOK_FREE;
-          isFirstBookFree = true;
-          console.log('🎁 Premier livre GRATUIT pour', userEmail);
-        } else {
-          // Vérifier si l'utilisateur a des crédits de parrainage
-          const existingUser = await prisma.user.findUnique({ where: { email: userEmail } });
-          if (existingUser && (existingUser.referralCredits || 0) > 0) {
-            price = PRODUCT_PRICES.EBOOK_FREE;
-            isFirstBookFree = true;
-            // Décrémenter le crédit de parrainage
-            await prisma.user.update({
-              where: { id: existingUser.id },
-              data: { referralCredits: { decrement: 1 } }
-            });
-            console.log('🎁 Livre GRATUIT via crédit parrainage pour', userEmail, '- crédits restants:', (existingUser.referralCredits || 1) - 1);
-          } else {
-          // Vérifier la limite de bibliothèque (3 livres max pour les non-Club)
-          const deliveredCount = await prisma.order.count({
-            where: {
-              user: { email: userEmail },
-              status: { in: ['PAID', 'GENERATING', 'GENERATED', 'DELIVERED'] }
-            }
-          });
-          if (deliveredCount >= FREE_BOOK_LIMIT) {
-            return res.status(403).json({
-              success: false,
-              message: `Votre bibliotheque est limitee a ${FREE_BOOK_LIMIT} livres. Passez au Club pour continuer !`,
-              limitReached: true,
-              bookCount: deliveredCount,
-              bookLimit: FREE_BOOK_LIMIT
-            });
+        // Compter les chapitres déjà créés
+        const chapterCount = await prisma.order.count({
+          where: {
+            user: { email: userEmail },
+            status: { in: ['PAID', 'GENERATING', 'GENERATED', 'DELIVERED'] }
           }
-          } // end referralCredits else
+        });
+
+        if (chapterCount >= FREE_CHAPTER_LIMIT) {
+          // Limite atteinte → doit s'abonner au Club
+          return res.status(403).json({
+            success: false,
+            message: `Vous avez utilise vos ${FREE_CHAPTER_LIMIT} chapitres gratuits. Abonnez-vous au Club pour creer des livres complets illimites !`,
+            limitReached: true,
+            bookCount: chapterCount,
+            bookLimit: FREE_CHAPTER_LIMIT
+          });
         }
+
+        // Chapitre gratuit (5 pages + cliffhanger)
+        price = PRODUCT_PRICES.EBOOK_FREE;
+        isFirstBookFree = true;
+        console.log(`📖 Chapitre gratuit ${chapterCount + 1}/${FREE_CHAPTER_LIMIT} pour ${userEmail}`);
       }
 
-      // --- Attribution parrainage : créditer le parrain si le filleul crée son 1er livre ---
+      // --- Attribution parrainage : créditer le parrain si le filleul crée son 1er chapitre ---
       const refCode = formData.referralCode || formData.ref;
       if (refCode && isFirstBookFree) {
         try {
