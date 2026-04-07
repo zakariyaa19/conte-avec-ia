@@ -1120,26 +1120,37 @@ export async function autoCompleteStory(orderId: string): Promise<void> {
     const { generateStoryContinuation } = await import('../utils/storyTextGenerator');
 
     const storyParams = {
+      // Identité du protagoniste
       protagonistName: order.protagonistName,
       protagonistAge: order.protagonistAge || undefined,
       protagonistGender: order.protagonistGender || undefined,
       ageRange: order.ageRange,
+      // Apparence physique (CRITIQUE pour la cohérence visuelle des images)
+      eyeColor: (order as any).eyeColor || undefined,
+      hairColor: (order as any).hairColor || undefined,
+      skinColor: (order as any).skinColor || undefined,
+      photoUrl: (order as any).photoUrl || undefined,
+      // Thème et contexte
       generalTheme: order.generalTheme,
       customTheme: order.customTheme || undefined,
       specificSubject: order.specificSubject || '',
       customSubject: order.customSubject || undefined,
       centralMessage: order.centralMessage || '',
       customMessage: order.customMessage || undefined,
+      // Personnalisation
       hobbies: order.hobbies || undefined,
       favoriteDish: order.favoriteDish || undefined,
       specialEvents: order.specialEvents || undefined,
       religion: order.religion || undefined,
       customReligion: order.customReligion || undefined,
+      // Style et langue
       language: order.language || 'francais',
+      illustrationStyle: order.illustrationStyle || '',
+      // Personnages secondaires
       secondaryCharactersJson: order.secondaryCharactersJson || undefined,
+      // Crédits
       creatorName: order.creatorName || undefined,
       narratedBy: order.narratedBy || undefined,
-      illustrationStyle: order.illustrationStyle || '',
       isClub: true, // Generate as full/premium since they paid
     };
 
@@ -1179,21 +1190,35 @@ export async function autoCompleteStory(orderId: string): Promise<void> {
 
     console.log(`[Completion] Retrieved ${existingImages.length}/${existingCount} existing images`);
 
-    // 3. Générer les 12 images complètes (avec isClub=true pour utiliser CLUB_IMAGE_PARAGRAPH_INDICES)
-    // On passe TOUS les 12 paragraphes pour que le visual bible soit cohérent sur toute l'histoire.
-    // Puis on garde les 5 images existantes + les 7 nouvelles (indices 5-11).
+    // 3. Récupérer l'image de couverture comme référence visuelle (cohérence des personnages)
+    let coverReferenceBuffer: Buffer | undefined;
+    if (order.coverImageUrl) {
+      try {
+        const axios = (await import('axios')).default;
+        const coverResp = await axios.get(order.coverImageUrl, { responseType: 'arraybuffer', timeout: 15000 });
+        coverReferenceBuffer = Buffer.from(coverResp.data);
+        console.log(`[Completion] Cover reference image downloaded (${coverReferenceBuffer.length} bytes)`);
+      } catch {
+        console.warn('[Completion] Failed to download cover reference image — generating without reference');
+      }
+    }
+
+    // 4. Générer les 12 images complètes (avec isClub=true pour utiliser CLUB_IMAGE_PARAGRAPH_INDICES)
+    // On passe TOUS les 12 paragraphes + l'image de couverture comme référence visuelle
+    // pour que gpt-image-1 maintienne la cohérence du personnage sur toutes les pages.
     const { generateStoryImages } = await import('../utils/storyImageGenerator');
 
     const fullImageResult = await generateStoryImages(
-      { ...storyParams, isClub: true } as any, // isClub=true → utilise les 12 indices
+      { ...storyParams, isClub: true } as any,
       fullStory.title,
-      fullStory.paragraphs, // Les 12 paragraphes complets
+      fullStory.paragraphs,
       (progress: number) => {
         prisma.order.update({
           where: { id: orderId },
           data: { generationProgress: 30 + Math.round(progress * 0.5) }
         }).catch(() => {});
-      }
+      },
+      coverReferenceBuffer // Image de couverture comme référence visuelle pour la cohérence
     );
 
     // Assembler : garder les 5 premières images existantes + prendre les 7 nouvelles (indices 5-11)
