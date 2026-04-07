@@ -1324,6 +1324,49 @@ export const DashboardPage: React.FC = () => {
                         </svg>
                       </BookShareBtn>
                     )}
+
+                    {/* Badge "Chapitre" + bouton "Finir l'histoire" pour les livres bridés */}
+                    {!isClub && Number(story.price || 0) === 0 && story.storyStatus === 'DISPONIBLE' && (() => {
+                      // Vérifier si c'est un chapitre bridé (5 pages ou moins)
+                      let pCount = 0;
+                      try {
+                        const parsed = story.storyTextJson ? JSON.parse(story.storyTextJson) : [];
+                        pCount = Array.isArray(parsed) ? parsed.length : (parsed.paragraphs?.length || 0);
+                      } catch { /* ignore */ }
+                      if (pCount > 5) return null; // Livre complet — pas de bouton
+
+                      return (
+                        <div
+                          onClick={(e) => { e.stopPropagation(); navigate(`/dashboard/story/${story.id}`); }}
+                          style={{
+                            position: 'absolute', bottom: 0, left: 0, right: 0,
+                            background: 'linear-gradient(0deg, rgba(26,16,64,0.95) 0%, rgba(26,16,64,0.8) 70%, transparent 100%)',
+                            padding: '32px 10px 10px',
+                            borderRadius: '0 0 8px 8px',
+                            textAlign: 'center',
+                            zIndex: 5,
+                          }}
+                        >
+                          <p style={{
+                            fontSize: 9, fontWeight: 700, color: '#fbbf24',
+                            textTransform: 'uppercase', letterSpacing: '1px',
+                            margin: '0 0 4px',
+                          }}>
+                            Chapitre 1 / 2
+                          </p>
+                          <div style={{
+                            display: 'inline-block',
+                            background: 'linear-gradient(135deg, #a78bfa, #f093fb)',
+                            color: 'white', fontSize: 10, fontWeight: 800,
+                            padding: '5px 12px', borderRadius: 8,
+                            boxShadow: '0 2px 8px rgba(167,139,250,0.4)',
+                          }}>
+                            Finir — 2,99€
+                          </div>
+                        </div>
+                      );
+                    })()}
+
                     <BookOverlay>
                       <BookTitle>{title}</BookTitle>
                       <BookDate>{new Date(story.createdAt).toLocaleDateString('fr-FR')}</BookDate>
