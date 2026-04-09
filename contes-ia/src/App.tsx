@@ -63,6 +63,8 @@ import BlogArticleSEO3 from './pages/BlogArticleSEO3';
 import BlogArticleSEO4 from './pages/BlogArticleSEO4';
 import BlogArticleSEO5 from './pages/BlogArticleSEO5';
 import BlogArticleFeteMeres from './pages/BlogArticleFeteMeres';
+import BlogArticleVsWonderbly from './pages/BlogArticleVsWonderbly';
+import BlogArticleVsHourraHeros from './pages/BlogArticleVsHourraHeros';
 import { MentionsLegalesPage } from './pages/MentionsLegalesPage';
 import { PolitiqueConfidentialitePage } from './pages/PolitiqueConfidentialitePage';
 import ScrollToTop from './components/utils/ScrollToTop';
@@ -159,6 +161,8 @@ function App() {
           <Route path="/blog/livre-conte-personnalise-histoire-unique-enfant" element={<BlogArticleSEO4 />} />
           <Route path="/blog/conte-personnalise-gratuit" element={<BlogArticleConteGratuit />} />
           <Route path="/blog/cadeau-fete-des-meres-livre-personnalise" element={<BlogArticleFeteMeres />} />
+          <Route path="/blog/contedia-vs-wonderbly-comparatif" element={<BlogArticleVsWonderbly />} />
+          <Route path="/blog/contedia-vs-hourra-heros-comparatif" element={<BlogArticleVsHourraHeros />} />
           <Route path="/blog/livre-personnalise-bebe-premier-livre" element={<BlogArticleSEO5 />} />
           {/* Pages légales */}
           <Route path="/mentions-legales" element={<MentionsLegalesPage />} />

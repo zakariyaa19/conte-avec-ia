@@ -107,6 +107,20 @@
     <priority>0.8</priority>
   </url>
 
+  <!-- ══════ ARTICLES COMPARATIFS ══════ -->
+  <url>
+    <loc>https://contedia.fr/blog/contedia-vs-wonderbly-comparatif</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://contedia.fr/blog/contedia-vs-hourra-heros-comparatif</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
   <!-- ══════ LANDING PAGE TRANSACTIONNELLE ══════ -->
   <url>
     <loc>https://contedia.fr/livre-personnalise-enfant</loc>
