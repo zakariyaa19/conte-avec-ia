@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { PageLayout } from '../components/layout/PageLayout';
 import { SEOHead } from '../components/SEOHead';
-import { SchemaBreadcrumb } from '../components/SchemaMarkup';
+import { SchemaFAQ, SchemaBreadcrumb } from '../components/SchemaMarkup';
 import '../styles/BlogArticle.css';
 
 const BlogArticle1: React.FC = () => {
@@ -29,65 +29,42 @@ const BlogArticle1: React.FC = () => {
     }
   };
 
+  const faqQuestions = [
+    { question: "Comment créer un livre personnalisé avec mon chien ?", answer: "Sur Contedia, ajoutez le nom et une photo de votre chien comme personnage secondaire. L'IA crée une histoire unique où votre enfant et son chien vivent une aventure ensemble, avec des illustrations qui ressemblent à votre animal." },
+    { question: "Peut-on mettre un chat dans un livre personnalisé ?", answer: "Oui ! Sur Contedia, vous pouvez ajouter n'importe quel animal de compagnie comme personnage : chien, chat, lapin, hamster, perroquet... L'animal devient un personnage important de l'histoire." },
+    { question: "Combien coûte un livre personnalisé avec son animal ?", answer: "3 premiers chapitres gratuits sur Contedia. Le livre complet coûte 2,99€. L'abonnement Club à 1,99€ le premier mois inclut des livres complets illimités." },
+    { question: "L'animal ressemble-t-il vraiment au mien dans le livre ?", answer: "L'IA analyse la photo que vous fournissez pour reproduire les caractéristiques de votre animal (couleur du pelage, taille, race). Le résultat varie selon le style d'illustration choisi, mais l'animal est reconnaissable." },
+    { question: "C'est un bon cadeau pour un enfant qui aime les animaux ?", answer: "C'est le cadeau idéal ! L'enfant se voit comme héros aux côtés de son animal préféré. Les parents rapportent que ces livres deviennent les préférés des enfants, relus des dizaines de fois." }
+  ];
+
   const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "Comment créer un livre personnalisé avec mon chien ?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Sur Contedia, ajoutez le nom et une photo de votre chien comme personnage secondaire. L'IA crée une histoire unique où votre enfant et son chien vivent une aventure ensemble, avec des illustrations qui ressemblent à votre animal."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Peut-on mettre un chat dans un livre personnalisé ?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Oui ! Sur Contedia, vous pouvez ajouter n'importe quel animal de compagnie comme personnage : chien, chat, lapin, hamster, perroquet... L'animal devient un personnage important de l'histoire."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Combien coûte un livre personnalisé avec son animal ?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Le premier livre est entièrement gratuit sur Contedia. Les livres suivants coûtent 3,99€. L'abonnement Club à 9,99€/mois inclut 4 livres par mois."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "L'animal ressemble-t-il vraiment au mien dans le livre ?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "L'IA analyse la photo que vous fournissez pour reproduire les caractéristiques de votre animal (couleur du pelage, taille, race). Le résultat varie selon le style d'illustration choisi, mais l'animal est reconnaissable."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "C'est un bon cadeau pour un enfant qui aime les animaux ?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "C'est le cadeau idéal ! L'enfant se voit comme héros aux côtés de son animal préféré. Les parents rapportent que ces livres deviennent les préférés des enfants, relus des dizaines de fois."
-        }
-      }
-    ]
+    "@context": "https://schema.org", "@type": "FAQPage",
+    "mainEntity": faqQuestions.map(q => ({ "@type": "Question", "name": q.question, "acceptedAnswer": { "@type": "Answer", "text": q.answer } }))
   };
 
   return (
     <PageLayout>
+      <SEOHead
+        title="Livre Personnalisé Chien : Créez un Conte avec votre Animal | Contedia"
+        description="Créez un livre personnalisé avec votre chien ou chat comme personnage. Votre enfant et son animal vivent une aventure unique. 3 premiers chapitres gratuits !"
+        image="/images/blog/conte-animal-compagnie.jpg"
+        type="article"
+      />
+      <SchemaFAQ questions={faqQuestions} />
+      <SchemaBreadcrumb items={[
+        { name: "Accueil", url: "https://contedia.fr/" },
+        { name: "Blog", url: "https://contedia.fr/blog" },
+        { name: "Livre Personnalisé Chien", url: "https://contedia.fr/blog/histoire-animal-compagnie-livre-personnalise" }
+      ]} />
       <Helmet>
-        <meta name="description" content="Créez un livre personnalisé avec votre chien ou chat comme personnage. Votre enfant et son animal vivent une aventure unique. Premier livre gratuit !" />
-        <meta property="og:title" content="Livre Personnalisé Chien : Votre Animal Devient le Héros d'un Conte" />
-        <meta property="og:description" content="Transformez votre chien, chat ou animal en héros d'un conte personnalisé. Illustrations IA, histoire unique, premier livre gratuit." />
-        <meta property="og:image" content="https://contedia.fr/images/blog/conte-animal-compagnie.jpg" />
-        <meta property="og:url" content="https://contedia.fr/blog/histoire-animal-compagnie-livre-personnalise" />
-        <meta property="og:type" content="article" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <link rel="canonical" href="https://contedia.fr/blog/histoire-animal-compagnie-livre-personnalise" />
-        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org", "@type": "Article",
+          "headline": "Livre Personnalisé Chien : Créez un Conte avec votre Animal",
+          "image": "https://contedia.fr/images/blog/conte-animal-compagnie.jpg",
+          "author": { "@type": "Organization", "name": "Contedia" },
+          "publisher": { "@type": "Organization", "name": "Contedia", "logo": { "@type": "ImageObject", "url": "https://contedia.fr/logo-conte-ia.png" } },
+          "datePublished": "2026-02-15", "dateModified": "2026-04-09"
+        })}</script>
       </Helmet>
 
       <div className="article-container">
