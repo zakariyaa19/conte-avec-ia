@@ -231,7 +231,7 @@ export const StoryFormPage: React.FC = () => {
         } catch { /* tracking failure must never block redirect */ }
         // Délai 500ms pour garantir localStorage persisté sur mobile Safari
         setTimeout(() => {
-          window.location.href = `/dashboard/story/${orderResponse.data.id}`;
+          window.location.href = `/dashboard/story/${orderResponse.data.id}?new=true`;
         }, 500);
         return;
       }
@@ -331,7 +331,7 @@ export const StoryFormPage: React.FC = () => {
     <>
       <SEOHead
         title="Créer un Livre Personnalisé pour Enfant | Conte sur Mesure avec IA"
-        description="Créez facilement un conte personnalisé pour votre enfant en 3 étapes simples. 3 premiers chapitres gratuits, prêt en 5 minutes."
+        description="Créez facilement un conte personnalisé pour votre enfant en 3 étapes simples. 1er chapitre gratuit, prêt en 5 minutes."
         noindex={false}
       />
       <StoryWizard

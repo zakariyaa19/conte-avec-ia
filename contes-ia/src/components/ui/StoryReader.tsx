@@ -2,6 +2,8 @@ import React, { useRef, useState, useEffect, useCallback, useLayoutEffect } from
 import styled, { keyframes, css } from 'styled-components';
 import { theme } from '../../styles/theme';
 import { getImageUrl } from '../../config/constants';
+import { InlineCheckout } from '../payment/InlineCheckout';
+import { useExperiment } from '../../hooks/useExperiment';
 
 
 /* ═══════════════════════════════════════════
@@ -24,6 +26,7 @@ interface StoryReaderProps {
   isClub?: boolean;
   shareUrl?: string;
   isCliffhanger?: boolean; // true si l'histoire est un aperçu gratuit non terminé
+  cliffhangerSummary?: string; // question personnalisée générée par l'IA (tâche 2.2)
   orderId?: string;        // pour le paiement de complétion
   isGenerating?: boolean;  // true si la complétion est en cours de génération
   generationProgress?: number; // 0-100 progression de la génération
@@ -34,6 +37,7 @@ const fadeIn = keyframes`from{opacity:0}to{opacity:1}`;
 const slideUp = keyframes`from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}`;
 const slowZoom = keyframes`0%,100%{transform:scale(1)}50%{transform:scale(1.05)}`;
 const sparkleAnim = keyframes`0%,100%{opacity:0;transform:scale(0)}50%{opacity:1;transform:scale(1)}`;
+const pulseCta = keyframes`0%{box-shadow:0 0 0 0 rgba(255,107,107,0.55)}70%{box-shadow:0 0 0 14px rgba(255,107,107,0)}100%{box-shadow:0 0 0 0 rgba(255,107,107,0)}`;
 
 /* ═══════════ COLOR PALETTES ═══════════ */
 const COLORS_DAY = [
@@ -111,12 +115,49 @@ const CtrlBtn = styled.button<{ $active?: boolean }>`
   &:active { transform: scale(0.9); opacity: 0.8; }
 `;
 
+const FloatingShareBtn = styled.button<{ $visible: boolean }>`
+  position: fixed;
+  bottom: max(env(safe-area-inset-bottom, 16px), 16px);
+  right: 16px;
+  z-index: 10003;
+  width: 44px; height: 44px; border-radius: 50%;
+  border: none; cursor: pointer;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(10px);
+  color: rgba(255,255,255,0.85);
+  display: flex; align-items: center; justify-content: center;
+  opacity: ${p => p.$visible ? 0.85 : 0};
+  transform: translateY(${p => p.$visible ? '0' : '10px'});
+  transition: opacity 0.3s, transform 0.3s, background 0.15s;
+  &:hover { background: rgba(0,0,0,0.75); opacity: 1; }
+  &:active { transform: scale(0.92); }
+`;
+
+const ShareToast = styled.div<{ $visible: boolean }>`
+  position: fixed; bottom: 74px; right: 16px;
+  z-index: 10004;
+  padding: 8px 14px; border-radius: 20px;
+  background: rgba(16,185,129,0.95); color: white;
+  font-size: 12px; font-weight: 600;
+  opacity: ${p => p.$visible ? 1 : 0};
+  transform: translateY(${p => p.$visible ? '0' : '8px'});
+  transition: opacity 0.25s, transform 0.25s;
+  pointer-events: none;
+`;
+
 const PageIndicator = styled.div<{ $visible: boolean }>`
   position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
   z-index: 10002; backdrop-filter: blur(8px);
   background: rgba(0,0,0,0.5); color: rgba(255,255,255,0.7);
   padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600;
   opacity: ${p => p.$visible ? 1 : 0}; transition: opacity 0.3s;
+  display: flex; align-items: center; gap: 8px;
+  & > .hint {
+    font-size: 11px; font-weight: 500;
+    color: rgba(255,213,128,0.95);
+    padding-left: 8px;
+    border-left: 1px solid rgba(255,255,255,0.2);
+  }
 `;
 
 /* ═══════════ SLIDE BASE ═══════════ */
@@ -303,6 +344,44 @@ const EndButton = styled.button<{ $primary?: boolean }>`
   transition: transform 0.15s; &:active { transform: scale(0.97); }
 `;
 
+const PaywallCta = styled.button`
+  width: 100%; max-width: 340px;
+  padding: 18px 24px; border-radius: 16px; border: none;
+  background: linear-gradient(135deg, #FF6B6B, #FF8E53);
+  color: white; font-size: 17px; font-weight: 800; line-height: 1.3;
+  cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  animation: ${pulseCta} 2.2s ease-out infinite;
+  transition: transform 0.15s;
+  &:active { transform: scale(0.97); }
+  & > span.sub { font-size: 12px; font-weight: 600; opacity: 0.92; }
+`;
+
+const TrustBadges = styled.div`
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: 8px 14px; margin: 14px 0 6px;
+  font-size: 11px; color: rgba(255,255,255,0.55);
+  & > span { display: inline-flex; align-items: center; gap: 4px; }
+`;
+
+const TestimonialBlock = styled.div`
+  width: 100%; max-width: 320px;
+  margin: 4px 0 20px;
+  padding: 12px 14px;
+  border-left: 2px solid rgba(255,255,255,0.25);
+  text-align: left;
+  & p.quote { font-size: 13px; font-style: italic; color: rgba(255,255,255,0.82); margin: 0 0 4px; line-height: 1.45; }
+  & p.author { font-size: 11px; color: rgba(255,255,255,0.5); margin: 0; }
+`;
+
+const ClubLink = styled.button`
+  background: none; border: none; cursor: pointer;
+  color: rgba(255,255,255,0.55); font-size: 12px; font-weight: 500;
+  margin: 6px 0 4px; padding: 6px 10px;
+  text-decoration: underline; text-underline-offset: 3px;
+  &:hover { color: rgba(255,255,255,0.85); }
+`;
+
 const Sparkle = styled.div<{ $left: string; $top: string; $delay: number; $size: number }>`
   position: absolute;
   left: ${p => p.$left}; top: ${p => p.$top};
@@ -316,7 +395,7 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
   coverImageUrl, coverTitle, paragraphs, illustrationUrls,
   creatorName, narratedBy, protagonistName, onClose, onShare, onCreateAnother,
   isShared = false, isClub = false, shareUrl,
-  isCliffhanger = false, orderId,
+  isCliffhanger = false, cliffhangerSummary, orderId,
   isGenerating = false, generationProgress = 0,
 }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -324,9 +403,23 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
   const [visibleSlides, setVisibleSlides] = useState<Set<number>>(new Set([0]));
   const [showIndicator, setShowIndicator] = useState(true);
   const [nightMode, setNightMode] = useState(true);
-  const [showClubRecap, setShowClubRecap] = useState(false);
   const [completionLoading, setCompletionLoading] = useState(false);
   const [completionProgress, setCompletionProgress] = useState(0);
+  const [shareToastVisible, setShareToastVisible] = useState(false);
+  const [inlineCheckoutOpen, setInlineCheckoutOpen] = useState(false);
+
+  // 6.1 devbook — A/B test du flow de paiement completion
+  // control = redirection Checkout Session (ancien flow)
+  // inline  = Stripe Elements dans un modal (pas de redirection)
+  // ⚠️ KILL SWITCH : tant que REACT_APP_STRIPE_PUBLISHABLE_KEY n'est pas set cote prod ET
+  // que le webhook Stripe `payment_intent.succeeded` n'est pas active, on force control.
+  // Pour activer l'A/B inline : 1) add REACT_APP_STRIPE_PUBLISHABLE_KEY sur Vercel
+  //                             2) cocher payment_intent.succeeded dans Stripe webhook prod
+  //                             3) remplacer ['control'] par ['control', 'inline'] ici.
+  const completionCheckoutVariant = useExperiment(
+    'completion_checkout_v1',
+    ['control'] as const
+  );
   const indicatorTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const resolveUrl = useCallback((url: string | null) => {
@@ -366,12 +459,19 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
     return () => observer.disconnect();
   }, [slides.length]);
 
-  // Page indicator auto-hide
+  // Page indicator auto-hide (reste visible sur la derniere page du cliffhanger)
   useEffect(() => {
     setShowIndicator(true);
     if (indicatorTimeout.current) clearTimeout(indicatorTimeout.current);
-    indicatorTimeout.current = setTimeout(() => setShowIndicator(false), 2000);
-  }, [currentSlide]);
+    const currentType = slides[currentSlide]?.type;
+    const currentPageIndex = slides[currentSlide]?.index;
+    const isCliffhangerLastPage = isCliffhanger
+      && currentType === 'page'
+      && typeof currentPageIndex === 'number'
+      && currentPageIndex === pageCount - 1;
+    const delay = isCliffhangerLastPage ? 6000 : 2000;
+    indicatorTimeout.current = setTimeout(() => setShowIndicator(false), delay);
+  }, [currentSlide, isCliffhanger, pageCount, slides]);
 
   // Lock body scroll + force scroll to top + escape key
   useEffect(() => {
@@ -409,6 +509,27 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
 
   const colors = nightMode ? COLORS_NIGHT : COLORS_DAY;
 
+  const handleFloatingShare = useCallback(async () => {
+    const url = shareUrl || (typeof window !== 'undefined' ? window.location.href : '');
+    const text = `Regarde le livre personnalise de ${protagonistName} !`;
+    if (typeof navigator !== 'undefined' && (navigator as any).share) {
+      try {
+        await (navigator as any).share({ title: coverTitle, text, url });
+        return;
+      } catch { /* cancel ou erreur : fallback copy */ }
+    }
+    try {
+      if (typeof navigator !== 'undefined' && navigator.clipboard) {
+        await navigator.clipboard.writeText(url);
+        setShareToastVisible(true);
+        setTimeout(() => setShareToastVisible(false), 1800);
+        return;
+      }
+    } catch { /* ignore */ }
+    if (onShare) onShare();
+  }, [shareUrl, protagonistName, coverTitle, onShare]);
+
+  const showFloatingShare = slides[currentSlide]?.type === 'page';
 
   return (
     <Overlay>
@@ -425,9 +546,44 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
         </CtrlBtn>
       </TopControls>
 
-      <PageIndicator $visible={showIndicator}>
-        {currentSlide + 1} / {totalSlides}
-      </PageIndicator>
+      <FloatingShareBtn
+        $visible={showFloatingShare}
+        onClick={handleFloatingShare}
+        aria-label="Partager cette histoire"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="18" cy="5" r="3" />
+          <circle cx="6" cy="12" r="3" />
+          <circle cx="18" cy="19" r="3" />
+          <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+          <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+        </svg>
+      </FloatingShareBtn>
+      <ShareToast $visible={shareToastVisible}>Lien copie !</ShareToast>
+
+      {(() => {
+        const currentType = slides[currentSlide]?.type;
+        const currentPageIndex = slides[currentSlide]?.index;
+        if (currentType === 'end') return null;
+        let label: string;
+        let hint: string | null = null;
+        if (currentType === 'cover') {
+          label = 'Couverture';
+        } else if (currentType === 'page' && typeof currentPageIndex === 'number') {
+          label = `Page ${currentPageIndex + 1} / ${pageCount}`;
+          if (isCliffhanger && currentPageIndex === pageCount - 1) {
+            hint = 'Derniere page du chapitre gratuit';
+          }
+        } else {
+          label = `${currentSlide + 1} / ${totalSlides}`;
+        }
+        return (
+          <PageIndicator $visible={showIndicator}>
+            <span>{label}</span>
+            {hint && <span className="hint">{hint}</span>}
+          </PageIndicator>
+        );
+      })()}
 
       <ScrollContainer ref={scrollRef}>
         {slides.map((slide, idx) => {
@@ -519,6 +675,24 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
 
             // ═══ CLIFFHANGER — L'histoire n'est pas finie, proposer de payer ═══
             if (isCliffhanger && !isShared) {
+              const handleCompletion = async () => {
+                if (!orderId) return;
+                // Variante inline : on ouvre le modal Stripe Elements
+                // (cast string : le kill switch peut restreindre les variantes a ['control'])
+                if ((completionCheckoutVariant as string) === 'inline') {
+                  setInlineCheckoutOpen(true);
+                  return;
+                }
+                // Variante control : ancien flow par redirection Checkout
+                try {
+                  const { ApiService } = await import('../../config/api');
+                  const res = await ApiService.createCompletionSession(orderId);
+                  if (res.url) window.location.href = res.url;
+                  else alert(res.message || 'Erreur');
+                } catch { alert('Erreur de connexion'); }
+              };
+              const summary = (cliffhangerSummary || '').trim()
+                || `Que va-t-il découvrir ensuite ?`;
               return (
                 <EndSlide key="end" data-slide-index={idx}>
                   <Sparkle $left="15%" $top="20%" $delay={0} $size={4} />
@@ -526,18 +700,21 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
                   <Sparkle $left="50%" $top="10%" $delay={0.8} $size={4} />
                   <Sparkle $left="75%" $top="75%" $delay={1.5} $size={3} />
                   <EndContent>
-                    <EndEmoji style={{ fontSize: '3rem' }}>&#x2728;</EndEmoji>
-                    <EndTitle style={{ fontSize: '1.4rem', lineHeight: 1.3 }}>
-                      L'aventure de {protagonistName} continue...
+                    <EndEmoji style={{ fontSize: '2.6rem', marginBottom: 10 }}>&#x1F4D6;</EndEmoji>
+                    <EndTitle style={{ fontSize: '1.5rem', lineHeight: 1.25, marginBottom: 10 }}>
+                      L'histoire de {protagonistName} n'est pas finie...
                     </EndTitle>
-                    <EndSubtitle style={{ fontSize: '0.85rem', opacity: 0.7, marginBottom: 20 }}>
-                      Que va-t-il se passer ensuite ? Découvrez la suite !
-                    </EndSubtitle>
+                    <p style={{
+                      fontSize: 14, fontStyle: 'italic', color: 'rgba(255,255,255,0.78)',
+                      maxWidth: 320, lineHeight: 1.45, margin: '0 0 22px',
+                    }}>
+                      {summary}
+                    </p>
 
                     {/* Aperçu flouté — 3 "pages" grises */}
                     <div style={{
-                      display: 'flex', gap: 8, justifyContent: 'center', marginBottom: 24,
-                      filter: 'blur(2px)', opacity: 0.25, pointerEvents: 'none',
+                      display: 'flex', gap: 8, justifyContent: 'center', marginBottom: 18,
+                      filter: 'blur(2px)', opacity: 0.28, pointerEvents: 'none',
                     }}>
                       {[1,2,3].map(n => (
                         <div key={n} style={{
@@ -552,149 +729,43 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
                       ))}
                     </div>
 
-                    {/* Option A — Finir l'histoire (single 2.99€) */}
-                    <EndButton
-                      $primary
-                      onClick={async () => {
-                        if (!orderId) return;
-                        try {
-                          const { ApiService } = await import('../../config/api');
-                          const res = await ApiService.createCompletionSession(orderId);
-                          if (res.url) window.location.href = res.url;
-                          else alert(res.message || 'Erreur');
-                        } catch { alert('Erreur de connexion'); }
-                      }}
-                      style={{ marginBottom: 10, maxWidth: 320 }}
-                    >
-                      Découvrir la suite — 2,99€
-                    </EndButton>
-                    <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 11, margin: '0 0 20px' }}>
-                      12 pages complètes + PDF téléchargeable
-                    </p>
+                    {/* Témoignage — juste avant le CTA, moment de décision */}
+                    <TestimonialBlock>
+                      <p className="quote">&laquo; C'est devenu notre rituel du soir. &raquo;</p>
+                      <p className="author">&mdash; Marie, maman d'Hugo (3 ans) &middot; &#9733;&#9733;&#9733;&#9733;&#9733;</p>
+                    </TestimonialBlock>
 
-                    {/* Option B — Club (1.99€/mois) — Ouvre le récap d'abord */}
-                    {!isClub && !showClubRecap && (
-                      <div
-                        onClick={() => setShowClubRecap(true)}
-                        style={{
-                          width: '100%', maxWidth: 320, cursor: 'pointer',
-                          background: 'linear-gradient(145deg, #1a1040, #2d1b69)',
-                          borderRadius: '16px', padding: '16px 14px',
-                          textAlign: 'center', marginBottom: 16,
-                          border: '1px solid rgba(167,139,250,0.3)',
-                          boxShadow: '0 4px 20px rgba(45,27,105,0.5)',
-                          position: 'relative', overflow: 'hidden',
-                        }}
-                      >
-                        <div style={{ position: 'absolute', top: -20, right: -15, width: 50, height: 50, borderRadius: '50%', background: 'radial-gradient(circle, rgba(167,139,250,0.2) 0%, transparent 70%)', pointerEvents: 'none' }} />
-                        <p style={{ fontSize: 10, fontWeight: 800, color: '#fbbf24', textTransform: 'uppercase', letterSpacing: '1.5px', margin: '0 0 6px' }}>
-                          Recommand&eacute;
-                        </p>
-                        <p style={{ fontSize: 14, fontWeight: 800, color: '#f0e6ff', margin: '0 0 8px', lineHeight: 1.3 }}>
-                          Cette histoire + 4 livres/mois
-                        </p>
-                        <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 6, marginBottom: 8 }}>
-                          <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', textDecoration: 'line-through' }}>9,99&euro;</span>
-                          <span style={{ fontSize: 22, fontWeight: 800, color: 'white' }}>1,99&euro;</span>
-                          <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)' }}>/1er mois</span>
-                        </div>
-                        <div style={{
-                          display: 'inline-block', fontSize: 12, fontWeight: 700,
-                          color: 'white', padding: '8px 22px', borderRadius: 10,
-                          background: 'linear-gradient(135deg, #a78bfa, #f093fb)',
-                          boxShadow: '0 2px 10px rgba(167,139,250,0.4)',
-                        }}>
-                          D&eacute;couvrir le Club &rarr;
-                        </div>
-                      </div>
+                    {/* CTA principal pulsant */}
+                    <PaywallCta onClick={handleCompletion}>
+                      <span>Offrir la fin de l'histoire &agrave; {protagonistName}</span>
+                      <span className="sub">2,99&euro; &middot; 12 pages illustr&eacute;es &middot; PDF inclus</span>
+                    </PaywallCta>
+
+                    {/* Club — lien discret */}
+                    {!isClub && (
+                      <ClubLink onClick={() => { window.location.href = '/club/checkout'; }}>
+                        ou &eacute;conomisez avec le Club &rarr; 1,99&euro;/mois
+                      </ClubLink>
                     )}
 
-                    {/* Récap Club détaillé — s'affiche quand on clique */}
-                    {!isClub && showClubRecap && (
-                      <div style={{
-                        width: '100%', maxWidth: 340,
-                        background: 'linear-gradient(145deg, #1a1040 0%, #2d1b69 50%, #1a1040 100%)',
-                        borderRadius: '20px', padding: '22px 18px',
-                        textAlign: 'center', marginBottom: 16,
-                        border: '1px solid rgba(167,139,250,0.3)',
-                        boxShadow: '0 8px 32px rgba(45,27,105,0.6)',
-                      }}>
-                        <p style={{ fontSize: 11, fontWeight: 800, color: '#fbbf24', textTransform: 'uppercase', letterSpacing: '1.5px', margin: '0 0 10px' }}>
-                          Club des Histoires
-                        </p>
-                        <p style={{ fontSize: 15, fontWeight: 800, color: 'white', margin: '0 0 16px', lineHeight: 1.4 }}>
-                          Tout ce que vous d&eacute;bloquez
-                        </p>
-
-                        {/* Features list */}
-                        <div style={{ textAlign: 'left', marginBottom: 16 }}>
-                          {[
-                            { icon: '\u2705', text: 'La suite de cette histoire (12 pages)' },
-                            { icon: '\uD83D\uDCDA', text: '4 livres complets par mois' },
-                            { icon: '\uD83D\uDCD6', text: '2x plus de pages par livre' },
-                            { icon: '\uD83C\uDFA8', text: '9 styles d\'illustration' },
-                            { icon: '\uD83D\uDC6A', text: '5 personnages secondaires' },
-                            { icon: '\uD83D\uDC36', text: 'Animal de compagnie' },
-                            { icon: '\uD83C\uDF84', text: 'No\u00ebl, anniversaire, f\u00eates...' },
-                            { icon: '\uD83C\uDF0D', text: '10 langues' },
-                            { icon: '\u2B07\uFE0F', text: 'PDF t\u00e9l\u00e9chargeables illimit\u00e9s' },
-                          ].map((f, i) => (
-                            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 7 }}>
-                              <span style={{ fontSize: 14, width: 20, textAlign: 'center', flexShrink: 0 }}>{f.icon}</span>
-                              <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.8)', fontWeight: 500 }}>{f.text}</span>
-                            </div>
-                          ))}
-                        </div>
-
-                        {/* Prix */}
-                        <div style={{ marginBottom: 14 }}>
-                          <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.35)', textDecoration: 'line-through' }}>9,99&euro;/mois</span>
-                          <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 4, margin: '4px 0' }}>
-                            <span style={{ fontSize: 28, fontWeight: 800, color: 'white' }}>1,99&euro;</span>
-                            <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)' }}>le 1er mois</span>
-                          </div>
-                          <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)', margin: 0 }}>puis 9,99&euro;/mois &middot; sans engagement</p>
-                        </div>
-
-                        {/* CTA vers Stripe */}
-                        <div
-                          onClick={() => { window.location.href = '/club/checkout'; }}
-                          style={{
-                            display: 'inline-block', fontSize: 14, fontWeight: 800,
-                            color: 'white', padding: '12px 32px', borderRadius: 14,
-                            background: 'linear-gradient(135deg, #a78bfa, #f093fb)',
-                            boxShadow: '0 4px 16px rgba(167,139,250,0.5)',
-                            cursor: 'pointer',
-                          }}
-                        >
-                          Continuer vers le paiement &rarr;
-                        </div>
-                        <p style={{ fontSize: 9, color: 'rgba(255,255,255,0.25)', margin: '8px 0 0' }}>
-                          Paiement s&eacute;curis&eacute; Stripe &middot; Annulable en 1 clic
-                        </p>
-
-                        {/* Retour */}
-                        <button
-                          onClick={() => setShowClubRecap(false)}
-                          style={{
-                            background: 'none', border: 'none', color: 'rgba(255,255,255,0.3)',
-                            fontSize: 11, cursor: 'pointer', marginTop: 10,
-                            textDecoration: 'underline',
-                          }}
-                        >
-                          Retour
-                        </button>
-                      </div>
-                    )}
+                    {/* Trust signals */}
+                    <TrustBadges>
+                      <span>&#10003; Satisfait ou rembours&eacute;</span>
+                      <span>&#10003; Paiement s&eacute;curis&eacute; Stripe</span>
+                      <span>&#10003; Disponible instantan&eacute;ment</span>
+                    </TrustBadges>
 
                     {/* Partager */}
-                    {onShare && !showClubRecap && (
-                      <EndButton onClick={onShare} style={{ opacity: 0.5, maxWidth: 320 }}>
+                    {onShare && (
+                      <EndButton
+                        onClick={onShare}
+                        style={{ opacity: 0.45, maxWidth: 280, marginTop: 18, fontSize: 13 }}
+                      >
                         Envoyer l'aper&ccedil;u &agrave; un proche
                       </EndButton>
                     )}
 
-                    <p style={{ color: 'rgba(255,255,255,0.2)', fontSize: 10, marginTop: 20 }}>
+                    <p style={{ color: 'rgba(255,255,255,0.2)', fontSize: 10, marginTop: 18 }}>
                       Créé avec Contes d'IA
                     </p>
                   </EndContent>
@@ -864,6 +935,23 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
           return null;
         })}
       </ScrollContainer>
+
+      {inlineCheckoutOpen && orderId && (
+        <InlineCheckout
+          orderId={orderId}
+          protagonistName={protagonistName}
+          coverImageUrl={coverImageUrl}
+          onSuccess={() => {
+            // Paiement OK : on ferme le modal et on redirige vers la story avec ?completed=true
+            // pour que StoryDetailPage gere le flow post-achat (polling generation, reader, etc.)
+            setInlineCheckoutOpen(false);
+            if (typeof window !== 'undefined') {
+              window.location.href = `/dashboard/story/${orderId}?completed=true`;
+            }
+          }}
+          onClose={() => setInlineCheckoutOpen(false)}
+        />
+      )}
     </Overlay>
   );
 };

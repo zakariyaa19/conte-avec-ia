@@ -8,6 +8,8 @@ import { Footer } from '../components/layout/Footer';
 import { Button } from '../components/ui/Button';
 import { StoryPDFViewer } from '../components/ui/StoryPDFViewer';
 import { StoryReader } from '../components/ui/StoryReader';
+import { PostPurchaseFlow } from '../components/ui/PostPurchaseFlow';
+import { useExperiment } from '../hooks/useExperiment';
 import { ApiService } from '../config/api';
 import { getImageUrl } from '../config/constants';
 import { ShareModal } from '../components/ui/ShareModal';
@@ -528,6 +530,16 @@ export const StoryDetailPage: React.FC = () => {
   const location = useLocation();
   const { user, refreshProfile, isClub } = useAuth();
   const isCompletionReturn = useMemo(() => new URLSearchParams(location.search).get('completed') === 'true', [location.search]);
+  const isNewStory = useMemo(() => new URLSearchParams(location.search).get('new') === 'true', [location.search]);
+
+  // 6.2 / 6.3 devbook — A/B test du flow post-achat (control = ancien auto-open reader)
+  const postPurchaseVariant = useExperiment(
+    'post_purchase_flow_v1',
+    ['control', 'three_slides'] as const,
+    { identity: user?.email }
+  );
+  const [postPurchaseOpen, setPostPurchaseOpen] = useState(false);
+  const postPurchaseShownRef = React.useRef(false);
   const [story, setStory] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
@@ -585,12 +597,24 @@ export const StoryDetailPage: React.FC = () => {
     loadStory();
   }, [id]);
 
-  // Auto-ouvrir le reader si retour de Stripe (complétion payée)
+  // Auto-ouvrir le reader si retour de Stripe (complétion payée) ou nouveau livre prêt
+  const autoOpenedRef = React.useRef(false);
   useEffect(() => {
-    if (isCompletionReturn && story) {
-      setReaderOpen(true);
+    if (story && !autoOpenedRef.current) {
+      if (isCompletionReturn) {
+        autoOpenedRef.current = true;
+        if (postPurchaseVariant === 'three_slides' && !postPurchaseShownRef.current) {
+          postPurchaseShownRef.current = true;
+          setPostPurchaseOpen(true);
+        } else {
+          setReaderOpen(true);
+        }
+      } else if (isNewStory && story.storyStatus === 'DISPONIBLE') {
+        autoOpenedRef.current = true;
+        setReaderOpen(true);
+      }
     }
-  }, [isCompletionReturn, story]);
+  }, [isCompletionReturn, isNewStory, story, story?.storyStatus, postPurchaseVariant]);
 
   // Tracker la lecture uniquement quand le livre est prêt — 1 fois par visite
   const readTrackedRef = React.useRef(false);
@@ -604,15 +628,15 @@ export const StoryDetailPage: React.FC = () => {
     }
   }, [story?.storyStatus, id]);
 
-  // Auto-refresh while story is generating (5s si retour paiement, 10s sinon)
+  // Auto-refresh while story is generating (5s si retour paiement ou nouveau, 10s sinon)
   useEffect(() => {
     if (!story || story.storyStatus === 'DISPONIBLE') return;
-    const delay = isCompletionReturn ? 5000 : 10000;
+    const delay = (isCompletionReturn || isNewStory) ? 5000 : 10000;
     const interval = setInterval(() => {
       loadStory();
     }, delay);
     return () => clearInterval(interval);
-  }, [story?.storyStatus, id, isCompletionReturn]);
+  }, [story?.storyStatus, id, isCompletionReturn, isNewStory]);
 
   const loadStory = async () => {
     const token = safeLocalStorage.getItem('userToken');
@@ -957,6 +981,7 @@ export const StoryDetailPage: React.FC = () => {
               && (paragraphs?.length || 0) <= 5 // Exactement 5 paragraphes = cliffhanger (old stories ont 6+, completed ont 12)
               && !isCompletionReturn // Jamais cliffhanger si on revient de paiement
             }
+            cliffhangerSummary={(story as any).cliffhangerSummary || undefined}
             orderId={story.id}
             isGenerating={
               isCompletionReturn
@@ -974,6 +999,20 @@ export const StoryDetailPage: React.FC = () => {
           storyId={id}
           protagonistName={story?.protagonistName || ''}
           coverTitle={displayTitle}
+        />
+      )}
+
+      {postPurchaseOpen && story && (
+        <PostPurchaseFlow
+          protagonistName={story.protagonistName || ''}
+          storyReady={story.storyStatus === 'DISPONIBLE'}
+          generationProgress={story.generationProgress || 0}
+          shareUrl={story.shareToken ? `${window.location.origin}/s/${story.shareToken}` : undefined}
+          pdfUrl={pdfUrl || story.pdfUrl || undefined}
+          isClub={!!isClub}
+          onReadNow={() => { setPostPurchaseOpen(false); setReaderOpen(true); }}
+          onCreateAnother={() => { setPostPurchaseOpen(false); navigate('/create-story'); }}
+          onClose={() => { setPostPurchaseOpen(false); setReaderOpen(true); }}
         />
       )}
     </PageContainer>

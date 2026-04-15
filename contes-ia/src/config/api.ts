@@ -219,6 +219,22 @@ export class ApiService {
     });
   }
 
+  // 6.1 — PaymentIntent pour complétion inline (Stripe Elements, pas de redirection)
+  static async createCompletionIntent(orderId: string): Promise<{
+    success: boolean;
+    clientSecret?: string;
+    amount?: number;
+    currency?: string;
+    paymentIntentId?: string;
+    message?: string;
+    isClub?: boolean;
+  }> {
+    return this.request('/api/stripe/create-completion-intent', {
+      method: 'POST',
+      body: JSON.stringify({ orderId }),
+    });
+  }
+
   // Sauvegarder le cover image d'une commande
   static async saveCoverImage(orderId: string, coverImageBase64: string, coverTitle?: string): Promise<{ success: boolean; coverImageUrl?: string }> {
     return this.request(`/api/orders/${orderId}/cover`, {

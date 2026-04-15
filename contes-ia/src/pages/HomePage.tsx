@@ -1313,7 +1313,7 @@ const faqItems = [
   {
     id: '3',
     question: "Qu'est-ce que le Club des Histoires Uniques ?",
-    answer: "Vous pouvez créer jusqu'à 3 premiers chapitres gratuitement (5 pages illustrées chacun). Pour découvrir la suite complète d'un livre (12 pages), c'est seulement 2,99€. Ou rejoignez le Club des Histoires à 1,99€ le premier mois (puis 9,99€/mois) pour des livres complets illimités, 9 styles d'illustration, 5 personnages secondaires et bien plus. Sans engagement."
+    answer: "Vous pouvez créer votre premier chapitre gratuitement (5 pages illustrées). Pour découvrir la suite complète du livre (12 pages), c'est seulement 2,99€. Ou rejoignez le Club des Histoires à 1,99€ le premier mois (puis 9,99€/mois) pour des livres complets illimités, 9 styles d'illustration, 5 personnages secondaires et bien plus. Sans engagement."
   },
   {
     id: '4',
@@ -1467,7 +1467,7 @@ const faqReveal = useScrollReveal();
 
           <HeroContent>
             <HeroTextBlock>
-              <HeroBadge>Rejoignez +500 familles</HeroBadge>
+              <HeroBadge>+500 histoires déjà créées · ★★★★★</HeroBadge>
               <HeroTitle>
                 Créez un <span>livre personnalisé</span> gratuit pour votre enfant
               </HeroTitle>
@@ -1478,13 +1478,10 @@ const faqReveal = useScrollReveal();
                 <Button variant="primary" size="lg" onClick={() => navigate('/create-story')}>
                   Créer mon 1er chapitre GRATUIT
                 </Button>
-                <Button variant="outline" size="lg" onClick={() => navigate('/club')}>
-                  Découvrir le Club des Histoires
-                </Button>
               </CTAButtons>
               <TrustRow>
                 <TrustItem>
-                  <span>&#10003;</span> 3 chapitres gratuits
+                  <span>&#10003;</span> 1er chapitre gratuit
                 </TrustItem>
                 <TrustItem>
                   <span>&#10003;</span> Prêt en 5 minutes
@@ -1674,7 +1671,7 @@ const faqReveal = useScrollReveal();
               <SectionTitle>Gratuit ou Club ?</SectionTitle>
               <Divider />
               <SectionSubtitle>
-                3 chapitres gratuits. Le Club déverrouille les histoires complètes.
+                1er chapitre gratuit. Le Club déverrouille les histoires complètes.
               </SectionSubtitle>
             </SectionWrapper>
 

@@ -145,6 +145,9 @@ model Order {
   firstIllustrationUrl   String?
   storyPreviewTextJson   String?
 
+  // Hook paywall : question de cliffhanger en 1 phrase (genere par l'IA)
+  cliffhangerSummary   String?
+
   // Generation automatique
   generationProgress   Int?
   generationError      String?
