@@ -1,5 +1,5 @@
 import express from 'express';
-import { createPaymentSession, createCompletionSession, checkPaymentStatus, handleStripeWebhook, createSubscriptionSession, createCustomerPortal, checkSubscriptionStatus, applyRetentionDiscount } from '../controllers/stripeController';
+import { createPaymentSession, createCompletionSession, createCompletionIntent, checkPaymentStatus, handleStripeWebhook, createSubscriptionSession, createCustomerPortal, checkSubscriptionStatus, applyRetentionDiscount } from '../controllers/stripeController';
 import { authenticateClient } from '../middleware/clientAuth';
 
 const router = express.Router();
@@ -13,6 +13,7 @@ router.use(express.json());
 // Routes publiques
 router.post('/create-payment-session', createPaymentSession);
 router.post('/create-completion-session', createCompletionSession);
+router.post('/create-completion-intent', createCompletionIntent); // 6.1 — Stripe Elements inline
 router.get('/check-payment-status', checkPaymentStatus);
 
 // Routes protegees (necessite authentification client)

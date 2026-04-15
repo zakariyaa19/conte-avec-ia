@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { prisma } from '../utils/database';
-import { generateStoryText, StoryTextParams } from '../utils/storyTextGenerator';
+import { generateStoryText, generateCliffhangerSummary, StoryTextParams } from '../utils/storyTextGenerator';
 import { generateStoryImages, ImageGenerationParams } from '../utils/storyImageGenerator';
 import { assemblePdf } from '../utils/pdfAssemblyService';
 import { generateBookTitle, generateCoverImage, CoverGenerationParams } from '../utils/coverGeneratorService';
@@ -711,12 +711,30 @@ async function runGenerationPipeline(orderId: string, order: any, genLogId: stri
     const storyText = await generateStoryText(textParams, title);
     logStep('text', 'completed');
 
+    // Cliffhanger summary : question hook pour le paywall (uniquement version gratuite 5p)
+    let cliffhangerSummary: string | null = null;
+    if (!isClubOrder) {
+      try {
+        cliffhangerSummary = await generateCliffhangerSummary(
+          storyText.paragraphs,
+          textParams.protagonistName,
+          textParams.language
+        );
+        if (cliffhangerSummary) {
+          console.log(`[Generation] Cliffhanger summary: "${cliffhangerSummary}"`);
+        }
+      } catch (err: any) {
+        console.warn('[Generation] Cliffhanger summary generation failed (non-blocking):', err?.message);
+      }
+    }
+
     // Cache text in DB
     await prisma.order.update({
       where: { id: orderId },
       data: {
         storyTextJson: JSON.stringify(storyText.paragraphs),
         coverTitle: storyText.title,
+        cliffhangerSummary: cliffhangerSummary || undefined,
       }
     });
 

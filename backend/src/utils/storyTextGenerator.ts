@@ -417,6 +417,50 @@ Pas de titre, pas de commentaire, JUSTE le JSON array.`;
   throw new Error('Echec generation continuation apres 2 tentatives');
 }
 
+// --- Cliffhanger Summary (1-sentence hook for paywall) ---
+
+export async function generateCliffhangerSummary(
+  paragraphs: string[],
+  protagonistName: string,
+  language: string = 'francais'
+): Promise<string | null> {
+  if (!Array.isArray(paragraphs) || paragraphs.length === 0) return null;
+
+  const openai = getOpenAI();
+  const name = protagonistName || 'l\'enfant';
+  const lastParagraphs = paragraphs.slice(-2).join('\n\n');
+
+  const prompt = `Voici la fin d'un debut de conte pour enfants (il s'arrete sur un cliffhanger) :
+
+${lastParagraphs}
+
+Ecris UNE SEULE phrase en ${language}, sous forme de question, qui donne a un parent l'envie irresistible d'acheter la suite pour son enfant. La question doit :
+- Faire reference a un element CONCRET du cliffhanger (pas generique)
+- Commencer par "Est-ce que ${name}..." ou "Que va-t-il se passer quand ${name}..." ou une tournure similaire
+- Faire maximum 140 caracteres
+- Ne PAS divulguer la reponse
+- Etre emotionnellement engageante
+
+Reponds UNIQUEMENT avec la phrase, sans guillemets, sans prefixe, sans commentaire.`;
+
+  try {
+    const response = await openai.chat.completions.create({
+      model: 'gpt-4o-mini',
+      messages: [{ role: 'user', content: prompt }],
+      max_tokens: 120,
+      temperature: 0.8,
+    });
+    const raw = response.choices[0]?.message?.content?.trim();
+    if (!raw) return null;
+    const cleaned = raw.replace(/^["'«»\s]+|["'«»\s]+$/g, '').trim();
+    if (!cleaned || cleaned.length < 10) return null;
+    return cleaned.slice(0, 200);
+  } catch (error) {
+    console.error('[CliffhangerSummary] Failed:', error);
+    return null;
+  }
+}
+
 // --- Story Preview (3 opening paragraphs) ---
 
 export interface StoryPreviewResult {

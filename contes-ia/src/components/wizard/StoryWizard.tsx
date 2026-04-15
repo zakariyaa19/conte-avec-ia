@@ -238,10 +238,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
   const illustrationTriggeredRef = useRef(false);
   const previewStartRef = useRef<number | null>(null);
 
-  // Countdown timer for preview step
-  const [countdown, setCountdown] = useState(1200); // 20 minutes in seconds
   const [selectedOffer, setSelectedOffer] = useState<'single' | 'club_monthly' | 'club_annual' | null>(null);
-  const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
@@ -414,22 +411,6 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
   }, [currentStep, coverImageUrl, isCoverGenerating, generateCover]); // eslint-disable-line
 
-  // Countdown timer for preview step
-  useEffect(() => {
-    if (ALL_STEPS[currentStep] === 'preview') {
-      setCountdown(1200);
-      countdownRef.current = setInterval(() => {
-        setCountdown(prev => {
-          if (prev <= 1) return 1200; // restart silently
-          return prev - 1;
-        });
-      }, 1000);
-    }
-    return () => {
-      if (countdownRef.current) { clearInterval(countdownRef.current); countdownRef.current = null; }
-    };
-  }, [currentStep]);
-
   // Helpers
   const handleInputChange = (field: keyof StoryFormData, value: string) => {
     onUpdate({ [field]: value });
@@ -468,10 +449,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
       if (!formData.userEmail) { e.userEmail = "L'email est obligatoire"; ok = false; }
       else { const ev = validateEmail(formData.userEmail); if (!ev.isValid) { e.userEmail = ev.error || 'Email invalide'; ok = false; } }
     }
-    // firstName: NOT required in simplified mode (optional) — backend works without it
-    if (!isSimplifiedMode && !isAuthenticated && !formData.firstName) {
-      e.firstName = 'Le prénom est obligatoire'; ok = false;
-    }
+    // firstName: never required — backend works without it, collected later if needed
     setErrors(e);
     if (!ok) setGlobalError('Veuillez remplir tous les champs obligatoires');
     return ok;
@@ -509,10 +487,23 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
   const isHeroComplete = isSimplifiedMode
     ? !!(formData.protagonistName && formData.protagonistGender) // age auto-dérivé en mode simplifié
     : !!(formData.protagonistName && formData.protagonistAge && formData.protagonistGender);
+
+  // Pre-generation : lance la cover en background des que l'etape hero est complete
+  // (3.1 devbook) — ~30s gagnes a l'arrivee au preview
+  useEffect(() => {
+    if (!isHeroComplete) return;
+    if (coverImageUrl || isCoverGenerating) return;
+    if (ALL_STEPS[currentStep] === 'preview') return; // preview a son propre trigger
+    const timer = setTimeout(() => {
+      if (!coverImageUrl && !isCoverGenerating) generateCover();
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [isHeroComplete, coverImageUrl, isCoverGenerating, currentStep, generateCover]);
+
   const isAppearanceComplete = formData.appearanceMode === 'photo'
     ? !!formData.photo
     : !!(formData.eyeColor && formData.hairColor && formData.skinColor);
-  const isPaymentInfoComplete = !!(formData.productType && formData.userEmail && (isSimplifiedMode || formData.firstName));
+  const isPaymentInfoComplete = !!(formData.productType && formData.userEmail);
 
   // Auto-submit after Google auth — waits for email + cover (firstName optional)
   useEffect(() => {
@@ -897,13 +888,13 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                   fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.lg, fontWeight: 700,
                   color: 'var(--text-primary)', margin: `0 0 4px`,
                 }}>
-                  Ajoutez une photo de votre enfant
+                  Une photo de votre enfant ?
                 </p>
                 <p style={{
                   fontSize: theme.fontSizes.sm, color: 'var(--text-secondary)',
                   margin: `0 0 ${theme.spacing.md}`, lineHeight: 1.4,
                 }}>
-                  Les illustrations du livre ressembleront à votre enfant
+                  Les illustrations ressembleront davantage à votre enfant
                 </p>
 
                 {/* Upload zone */}
@@ -964,14 +955,34 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                   if (file) { onUpdate({ photo: file, appearanceMode: 'photo', eyeColor: '', hairColor: '', skinColor: '' }); }
                 }} />
 
-                {/* Optionnel — discret */}
+                {/* Skip photo — bouton visible */}
                 {!formData.photo && (
-                  <p style={{
-                    fontSize: '11px', color: 'var(--text-light)', marginTop: '8px',
-                    fontFamily: theme.fonts.body,
-                  }}>
-                    Optionnel — vous pouvez continuer sans photo
-                  </p>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onUpdate({ photo: undefined, eyeColor: '', hairColor: '', skinColor: '' });
+                      goToStep(currentStep + 1);
+                    }}
+                    style={{
+                      appearance: 'none', border: `1.5px solid var(--border-color)`,
+                      background: 'var(--bg-card)', borderRadius: '12px',
+                      padding: '12px 20px', marginTop: '12px', cursor: 'pointer',
+                      width: '100%', textAlign: 'center',
+                      transition: 'all 0.2s ease',
+                    }}
+                  >
+                    <p style={{
+                      fontFamily: theme.fonts.heading, fontSize: theme.fontSizes.sm,
+                      fontWeight: 600, color: 'var(--text-primary)', margin: '0 0 2px',
+                    }}>
+                      Continuer sans photo →
+                    </p>
+                    <p style={{
+                      fontSize: '11px', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.3,
+                    }}>
+                      Votre enfant sera quand même le héros de l'histoire
+                    </p>
+                  </button>
                 )}
             </div>
 
@@ -1374,9 +1385,6 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
         );
 
       case 'preview': {
-        const minutes = Math.floor(countdown / 60);
-        const seconds = countdown % 60;
-        const timerDisplay = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
         const heroName = formData.protagonistName || 'votre enfant';
         const creatorName = formData.creatorName || '';
         const storyTitle = coverTitle || previewTitle || `Le livre de ${heroName}`;
@@ -1417,6 +1425,43 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
         const isCompactPreview = isSimplifiedMode || isClubWithCredit;
         return (
           <>
+            {/* Bannière d'erreur cover + bouton Réessayer (2.1 devbook 3.2) */}
+            {hasError && (
+              <div style={{
+                width: '100%', maxWidth: 400, margin: '0 auto 14px',
+                padding: '12px 14px', borderRadius: 12,
+                background: '#fff5f5', border: '1px solid #fecaca',
+                display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'stretch',
+              }}>
+                <p style={{ margin: 0, fontSize: 13, color: '#991b1b', lineHeight: 1.4 }}>
+                  La génération de la couverture a échoué. Ça prend généralement moins d'une minute — réessayez.
+                </p>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <button
+                    type="button"
+                    onClick={handleRetryGeneration}
+                    style={{
+                      flex: 1, padding: '10px 12px', borderRadius: 10, border: 'none',
+                      background: 'linear-gradient(135deg, #FF6B6B, #FF8E53)', color: 'white',
+                      fontWeight: 700, fontSize: 13, cursor: 'pointer',
+                    }}
+                  >
+                    Réessayer la génération
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { onUpdate({ coverImageUrl: undefined, coverTitle: `Le livre de ${heroName}` }); }}
+                    style={{
+                      flex: 1, padding: '10px 12px', borderRadius: 10,
+                      border: '1px solid #fecaca', background: 'white', color: '#991b1b',
+                      fontWeight: 600, fontSize: 13, cursor: 'pointer',
+                    }}
+                  >
+                    Continuer sans couverture
+                  </button>
+                </div>
+              </div>
+            )}
             {!isCompactPreview && (
               <StepTitle style={{ fontSize: theme.fontSizes.lg, marginBottom: theme.spacing.sm, flexShrink: 0 }}>
                 {allReady ? `Le livre de ${heroName} est prêt !` : `Création du livre de ${heroName}...`}
@@ -1717,8 +1762,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
             </BookPreviewWrapper>
 
             <PreviewTimerBar>
-              <span>Votre livre est réservé pendant encore</span>
-              <PreviewTimerDigits>{timerDisplay}</PreviewTimerDigits>
+              <span>✨ Déjà +500 familles ont créé un livre avec Contedia</span>
             </PreviewTimerBar>
             </>
             )}
@@ -1843,9 +1887,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                                       if (res.data.token) safeLocalStorage.setItem('userToken', res.data.token);
                                       const googleEmail = res.data.user?.email || '';
                                       const googleFirstName = res.data.user?.firstName || '';
-                                      // Update both fields in one call
                                       onUpdate({ userEmail: googleEmail, firstName: googleFirstName });
-                                      // Flag for auto-submit via useEffect
                                       googleAutoSubmitRef.current = true;
                                     }
                                   }).catch(() => {});
@@ -1871,13 +1913,6 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                         placeholder="votre@email.com" required error={errors.userEmail}
                         disabled={isAuthenticated}
                         onBlur={isAuthenticated ? undefined : () => { validateField('userEmail', formData.userEmail || '', 'email'); handleEmailBlurCheck(); }} />
-                    </FullWidthField>
-                    <FullWidthField>
-                      <ValidatedInput label="Prénom" value={formData.firstName || ''}
-                        onChange={(v) => { setGlobalError(''); onUpdate({ firstName: v }); if (errors.firstName) setErrors(p => ({ ...p, firstName: '' })); }}
-                        placeholder="Votre prénom" required error={errors.firstName}
-                        onBlur={() => validateField('firstName', formData.firstName || '')}
-                        autoComplete="given-name" />
                     </FullWidthField>
                   </OrderInfoGrid>
                 </OrderInfoSection>
@@ -2032,7 +2067,16 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
               <ProgressSegment key={ALL_STEPS[i]} $status={getSegmentStatus(i)} />
             ))}
           </SegmentedProgressBar>
-          <ProgressHintText>{isFirstPurchase || isClubWithCredit ? 'Votre livre personnalisé — GRATUIT' : `Votre livre personnalisé — ${singlePriceLabel}`}</ProgressHintText>
+          <ProgressHintText>
+            {(() => {
+              const currentVisibleIdx = visibleStepIndices.indexOf(currentStep);
+              const totalVisible = visibleStepIndices.length;
+              const stepNum = currentVisibleIdx >= 0 ? currentVisibleIdx + 1 : 1;
+              return isFirstPurchase || isClubWithCredit
+                ? `Étape ${stepNum}/${totalVisible} · Gratuit · Sans carte bancaire`
+                : `Étape ${stepNum}/${totalVisible} · ${singlePriceLabel}`;
+            })()}
+          </ProgressHintText>
         </WizardHeaderNew>
       )}
 

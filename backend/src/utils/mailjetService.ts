@@ -182,10 +182,9 @@ export class MailjetService {
                   Name: data.customerName
                 }
               ],
-              Subject: `Le premier chapitre de ${data.protagonistName} est pret ! Que va-t-il se passer ensuite ?`,
+              Subject: `L'histoire de ${data.protagonistName} est prete !`,
               HTMLPart: (() => {
                 const dl = data.userId ? MailjetService.generateMagicDashboardLink(data.userId, data.customerEmail) : (process.env.FRONTEND_URL + '/dashboard');
-                const cl = (process.env.FRONTEND_URL || 'https://contedia.fr') + '/club/checkout';
                 const sn = data.customerName.replace(/&/g, '&amp;').replace(/</g, '&lt;');
                 const sp = data.protagonistName.replace(/&/g, '&amp;').replace(/</g, '&lt;');
 
@@ -195,61 +194,26 @@ export class MailjetService {
                   <!-- HEADER -->
                   <div style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); padding: 32px 24px; text-align: center; color: white;">
                     <p style="font-size: 36px; margin: 0 0 8px;">&#x1F4D6;&#x2728;</p>
-                    <h1 style="margin: 0; font-size: 22px; font-weight: 800; line-height: 1.3;">Le premier chapitre de ${sp} est pret !</h1>
+                    <h1 style="margin: 0; font-size: 22px; font-weight: 800; line-height: 1.3;">L'histoire de ${sp} est prete !</h1>
                     <p style="margin: 10px 0 0; font-size: 14px; opacity: 0.9;">${sn}, 5 pages illustrees vous attendent.</p>
                   </div>
 
                   <div style="padding: 32px 24px;">
 
-                    <!-- CTA 1 — Lire le chapitre -->
-                    <div style="text-align: center; margin: 0 0 24px;">
-                      <a href="${dl}" style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); color: white; text-decoration: none; padding: 16px 40px; border-radius: 14px; font-weight: 800; font-size: 16px; display: inline-block; box-shadow: 0 4px 16px rgba(255,107,107,0.4);">
-                        Lire le premier chapitre de ${sp}
+                    <!-- CTA UNIQUE — Lire l'histoire -->
+                    <div style="text-align: center; margin: 0 0 28px;">
+                      <a href="${dl}" style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); color: white; text-decoration: none; padding: 18px 44px; border-radius: 14px; font-weight: 800; font-size: 17px; display: inline-block; box-shadow: 0 4px 16px rgba(255,107,107,0.4);">
+                        Lire l'histoire de ${sp}
                       </a>
-                      <p style="font-size: 11px; color: #999; margin: 8px 0 0;">Connexion automatique — 1 clic</p>
+                      <p style="font-size: 11px; color: #999; margin: 10px 0 0;">Connexion automatique &mdash; 1 clic</p>
                     </div>
 
-                    <!-- CLIFFHANGER TEASER -->
-                    <div style="background: #fffbeb; border-radius: 12px; padding: 18px; margin: 0 0 24px; border: 1px solid #fde68a;">
-                      <p style="font-size: 15px; color: #92400e; margin: 0; text-align: center; font-weight: 700; line-height: 1.5;">
-                        &#x26A0;&#xFE0F; L'histoire s'arrete au meilleur moment...<br>
-                        <span style="font-weight: 400; font-size: 13px;">Que va decouvrir ${sp} ? La suite est a portee de clic.</span>
-                      </p>
-                    </div>
-
-                    <!-- CTA 2 — FINIR L'HISTOIRE (2.99€) — CTA PRINCIPAL DE CONVERSION -->
-                    <div style="background: linear-gradient(145deg, #1a1040, #2d1b69); border-radius: 16px; padding: 24px 20px; text-align: center; border: 1px solid rgba(167,139,250,0.3); margin: 0 0 20px;">
-                      <p style="font-size: 16px; font-weight: 800; color: white; margin: 0 0 8px; line-height: 1.3;">
-                        Decouvrez la fin de l'histoire
-                      </p>
-                      <p style="font-size: 12px; color: rgba(255,255,255,0.6); margin: 0 0 16px;">
-                        12 pages illustrees + PDF telechargeable
-                      </p>
-                      <a href="${dl}" style="display: inline-block; background: linear-gradient(135deg, #FF6B6B, #FF8E53); color: white; padding: 14px 36px; border-radius: 30px; text-decoration: none; font-weight: 800; font-size: 16px; box-shadow: 0 4px 16px rgba(255,107,107,0.4);">
-                        Finir l'histoire &mdash; 2,99&euro;
-                      </a>
-                      <p style="font-size: 10px; color: rgba(255,255,255,0.3); margin: 8px 0 0;">Paiement securise Stripe</p>
-                    </div>
-
-                    <!-- OU CLUB -->
-                    <div style="text-align: center; margin: 0 0 20px;">
-                      <p style="font-size: 12px; color: #999; margin: 0 0 8px;">ou</p>
-                      <a href="${cl}" style="display: inline-block; background: linear-gradient(135deg, #a78bfa, #f093fb); color: white; padding: 10px 28px; border-radius: 25px; text-decoration: none; font-weight: 700; font-size: 13px;">
-                        Club : cette histoire + 4 livres/mois &mdash; 1,99&euro;
-                      </a>
-                      <p style="font-size: 10px; color: #bbb; margin: 6px 0 0;">Sans engagement &middot; Annulable en 1 clic</p>
-                    </div>
-
-                    <!-- PREUVE SOCIALE -->
-                    <div style="text-align: center; margin: 0 0 16px; padding-top: 16px; border-top: 1px solid #f0f0f0;">
-                      <p style="font-size: 12px; color: #999; font-style: italic; margin: 0 0 4px;">
-                        &laquo; Mon fils me reclame la suite de son histoire tous les soirs ! &raquo;
-                      </p>
-                      <p style="font-size: 11px; color: #bbb; margin: 0;">Aurelie, maman de Leo (5 ans)</p>
-                    </div>
+                    <p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 24px; line-height: 1.6;">
+                      Bonne lecture ! &#x1F4D6;
+                    </p>
 
                     <!-- FOOTER -->
-                    <div style="text-align: center; padding: 12px 0;">
+                    <div style="text-align: center; padding: 16px 0; border-top: 1px solid #f0f0f0;">
                       <p style="font-size: 11px; color: #bbb; margin: 0;">Une question ? Repondez directement a cet email.</p>
                       <p style="font-size: 10px; color: #ddd; margin: 6px 0 0;">Contedia (PAUSIA) &middot; contedia.fr</p>
                     </div>
@@ -265,6 +229,158 @@ export class MailjetService {
     } catch (error) {
       console.error('Erreur envoi email livraison Mailjet:', error);
       throw new Error('Echec de l\'envoi de l\'email de livraison');
+    }
+  }
+
+  // Sequence post-achat (4.4 devbook) : relancer apres le paiement 2,99€ pour maximiser retention + LTV
+  // Steps : post_day1 (partage), post_day3 (nouvelle histoire), post_day7 (upsell Club si non-membre)
+  static async sendPostPurchaseEmail(data: {
+    customerName: string;
+    customerEmail: string;
+    protagonistName: string;
+    step: 'post_day1' | 'post_day3' | 'post_day7';
+    userId: string;
+  }): Promise<void> {
+    const frontendUrl = process.env.FRONTEND_URL || 'https://contedia.fr';
+    const magicLink = this.generateMagicDashboardLink(data.userId, data.customerEmail);
+    const createLink = `${frontendUrl}/create-story`;
+    const clubLink = `${frontendUrl}/club/checkout`;
+    const sn = data.customerName.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+    const sp = data.protagonistName.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+
+    const wrapper = (content: string) => `
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 560px; margin: 0 auto; background: #ffffff;">
+        <div style="background: linear-gradient(135deg, #1a1040, #2d1b69); padding: 22px 20px; text-align: center;">
+          <img src="${frontendUrl}/logo-conte-ia.png" alt="Contedia" style="height: 30px;" />
+        </div>
+        <div style="padding: 30px 24px;">${content}</div>
+        <div style="padding: 18px 20px; text-align: center; border-top: 1px solid #f0f0f0;">
+          <p style="font-size: 10px; color: #bbb; margin: 0;">Contedia (PAUSIA) &middot; contedia.fr</p>
+        </div>
+      </div>`;
+
+    const templates: Record<string, { subject: string; html: string }> = {
+      post_day1: {
+        subject: `Le livre de ${data.protagonistName} est pret a etre partage ! \uD83D\uDCD6`,
+        html: wrapper(`
+          <h1 style="color: #1a1040; font-size: 20px; margin: 0 0 12px; font-weight: 800;">${sn}, ${sp} est maintenant un vrai heros de livre !</h1>
+          <p style="font-size: 15px; color: #555; line-height: 1.65; margin: 0 0 22px;">
+            Le livre complet de ${sp} est pret. Partagez-le avec la famille, les proches, les grands-parents &mdash; c'est le genre de cadeau qu'on relit encore et encore.
+          </p>
+          <div style="text-align: center; margin: 0 0 18px;">
+            <a href="${magicLink}" style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); color: white; text-decoration: none; padding: 14px 34px; border-radius: 14px; font-weight: 800; font-size: 15px; display: inline-block;">
+              Ouvrir le livre de ${sp}
+            </a>
+          </div>
+          <p style="font-size: 13px; color: #777; text-align: center; margin: 0;">Le PDF est telechargeable depuis votre bibliotheque \u2193</p>
+        `)
+      },
+      post_day3: {
+        subject: `Quelle sera la prochaine aventure de ${data.protagonistName} ?`,
+        html: wrapper(`
+          <h1 style="color: #1a1040; font-size: 20px; margin: 0 0 12px; font-weight: 800;">Et si ${sp} vivait une nouvelle aventure ?</h1>
+          <p style="font-size: 15px; color: #555; line-height: 1.65; margin: 0 0 18px;">
+            Un anniversaire qui arrive ? Une occasion speciale ? Un simple "parce que j'en ai envie" ? Chaque nouvelle histoire demarre par un chapitre gratuit.
+          </p>
+          <div style="text-align: center; margin: 0 0 14px;">
+            <a href="${createLink}" style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); color: white; text-decoration: none; padding: 14px 34px; border-radius: 14px; font-weight: 800; font-size: 15px; display: inline-block;">
+              Creer une nouvelle histoire &rarr;
+            </a>
+          </div>
+          <p style="font-size: 12px; color: #999; text-align: center; margin: 0;">Gratuit &middot; sans carte bancaire</p>
+        `)
+      },
+      post_day7: {
+        subject: `${sn}, avec le Club, ${sp} aurait un nouveau livre chaque semaine`,
+        html: wrapper(`
+          <h1 style="color: #1a1040; font-size: 20px; margin: 0 0 12px; font-weight: 800;">Le Club des Histoires</h1>
+          <p style="font-size: 15px; color: #555; line-height: 1.65; margin: 0 0 18px;">
+            Vous avez aime offrir une histoire complete a ${sp} ? Avec le Club, vous en creez <strong>4 par mois</strong>, avec des styles, des themes et des occasions differents.
+          </p>
+          <div style="background: linear-gradient(145deg, #1a1040, #2d1b69); border-radius: 14px; padding: 18px; margin: 0 0 18px; text-align: center; border: 1px solid rgba(167,139,250,0.3);">
+            <p style="font-size: 11px; color: #fbbf24; margin: 0 0 6px; font-weight: 800; letter-spacing: 1.2px;">&#x2B50; OFFRE MEMBRE</p>
+            <p style="font-size: 12px; color: rgba(255,255,255,0.4); text-decoration: line-through; margin: 0;">9,99&euro;/mois</p>
+            <p style="font-size: 28px; font-weight: 800; color: white; margin: 4px 0;">1,99&euro;</p>
+            <p style="font-size: 11px; color: rgba(255,255,255,0.6); margin: 0 0 14px;">le 1er mois &middot; puis 9,99&euro;/mois &middot; sans engagement</p>
+            <a href="${clubLink}" style="background: linear-gradient(135deg, #a78bfa, #f093fb); color: white; text-decoration: none; padding: 12px 30px; border-radius: 12px; font-weight: 800; font-size: 14px; display: inline-block;">
+              Essayer le Club &rarr;
+            </a>
+          </div>
+          <p style="font-size: 11px; color: #aaa; text-align: center; margin: 0;">Annulable en 1 clic depuis votre compte.</p>
+        `)
+      },
+    };
+
+    const template = templates[data.step];
+    if (!template) throw new Error(`Template inconnu: ${data.step}`);
+    try {
+      const result = await getMailjet().post('send', { version: 'v3.1' }).request({
+        Messages: [{
+          From: { Email: process.env.MAILJET_FROM_EMAIL || 'contact@contedia.fr', Name: 'Contedia' },
+          To: [{ Email: data.customerEmail, Name: data.customerName }],
+          Subject: template.subject,
+          HTMLPart: template.html,
+        }]
+      });
+      console.log(`Email post-achat ${data.step} envoye:`, result.body);
+    } catch (error) {
+      console.error(`Erreur envoi email post-achat ${data.step}:`, error);
+      throw new Error(`Echec envoi email post-achat ${data.step}`);
+    }
+  }
+
+  // Email de rappel : envoye 3h apres livraison si l'histoire n'a pas ete lue (lastReadAt null)
+  // (4.3 devbook) — rattrape les utilisateurs perdus en spam ou qui ont oublie
+  static async sendUnreadReminderEmail(data: {
+    customerName: string;
+    customerEmail: string;
+    protagonistName: string;
+    userId: string;
+  }): Promise<void> {
+    try {
+      const dl = MailjetService.generateMagicDashboardLink(data.userId, data.customerEmail);
+      const sp = data.protagonistName.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+      const request = getMailjet()
+        .post('send', { version: 'v3.1' })
+        .request({
+          Messages: [
+            {
+              From: {
+                Email: process.env.MAILJET_FROM_EMAIL || 'contact@contedia.fr',
+                Name: 'Contedia'
+              },
+              To: [{ Email: data.customerEmail, Name: data.customerName }],
+              Subject: `Vous n'avez pas encore lu l'histoire de ${data.protagonistName} ? \uD83D\uDCD6`,
+              HTMLPart: `
+                <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 560px; margin: 0 auto; background: #ffffff;">
+                  <div style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); padding: 28px 24px; text-align: center; color: white;">
+                    <p style="font-size: 32px; margin: 0 0 6px;">&#x1F4D6;</p>
+                    <h1 style="margin: 0; font-size: 20px; font-weight: 800; line-height: 1.3;">L'histoire de ${sp} vous attend</h1>
+                  </div>
+                  <div style="padding: 28px 24px;">
+                    <p style="font-size: 15px; color: #444; line-height: 1.65; margin: 0 0 20px;">
+                      Petite piqure de rappel : l'histoire de ${sp} est prete depuis quelques heures, mais on ne vous a pas encore vu(e) passer.<br><br>
+                      Prenez 5 minutes ce soir, installez-vous confortablement, et laissez ${sp} devenir le heros de son aventure.
+                    </p>
+                    <div style="text-align: center; margin: 0 0 20px;">
+                      <a href="${dl}" style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); color: white; text-decoration: none; padding: 16px 38px; border-radius: 14px; font-weight: 800; font-size: 16px; display: inline-block; box-shadow: 0 4px 16px rgba(255,107,107,0.4);">
+                        Lire l'histoire de ${sp}
+                      </a>
+                    </div>
+                    <p style="font-size: 12px; color: #999; text-align: center; margin: 0;">Connexion automatique en 1 clic &middot; votre chapitre gratuit reste disponible</p>
+                    <div style="text-align: center; padding: 18px 0 0; margin-top: 22px; border-top: 1px solid #f0f0f0;">
+                      <p style="font-size: 10px; color: #ccc; margin: 0;">Contedia (PAUSIA) &middot; contedia.fr</p>
+                    </div>
+                  </div>
+                </div>`
+            }
+          ]
+        });
+      const result = await request;
+      console.log('Email rappel non-lu envoye via Mailjet:', result.body);
+    } catch (error) {
+      console.error('Erreur envoi email rappel non-lu:', error);
+      throw new Error('Echec de l\'envoi de l\'email de rappel');
     }
   }
 
@@ -405,6 +521,7 @@ export class MailjetService {
     protagonistName: string;
     step: 'day1' | 'day3' | 'day7';
     userId: string;
+    cliffhangerSummary?: string | null;
   }): Promise<void> {
     const magicLink = this.generateMagicDashboardLink(data.userId, data.customerEmail);
     const frontendUrl = process.env.FRONTEND_URL || 'https://contedia.fr';
@@ -436,10 +553,10 @@ export class MailjetService {
       </div>
     `;
 
-    // Badge prix commun avec urgence
-    const priceBadge = (urgency: string) => `
+    // Badge prix commun avec preuve sociale (remplace fausse urgence)
+    const priceBadge = (socialProof: string) => `
       <div style="background: linear-gradient(145deg, #1a1040, #2d1b69); border-radius: 16px; padding: 20px; margin: 24px 0; text-align: center; border: 1px solid rgba(167,139,250,0.3);">
-        <p style="font-size: 10px; font-weight: 800; color: #fbbf24; text-transform: uppercase; letter-spacing: 1.5px; margin: 0 0 8px;">&#x23F0; ${urgency}</p>
+        <p style="font-size: 10px; font-weight: 800; color: #fbbf24; text-transform: uppercase; letter-spacing: 1.5px; margin: 0 0 8px;">&#x2B50; ${socialProof}</p>
         <p style="font-size: 14px; color: rgba(255,255,255,0.4); text-decoration: line-through; margin: 0;">9,99&euro;/mois</p>
         <p style="font-size: 32px; font-weight: 800; color: white; margin: 4px 0;">1,99&euro;</p>
         <p style="font-size: 12px; color: rgba(255,255,255,0.6); margin: 0 0 16px;">le 1er mois &middot; puis 9,99&euro;/mois &middot; sans engagement</p>
@@ -457,7 +574,9 @@ export class MailjetService {
       // Objet qui intrigue, 1 question, Club en secondaire.
       // ═══════════════════════════════════════════════════
       day1: {
-        subject: `${data.customerName}, ${data.protagonistName} attend la suite de son histoire...`,
+        subject: data.cliffhangerSummary
+          ? data.cliffhangerSummary.slice(0, 140)
+          : `${data.customerName}, ${data.protagonistName} attend la suite de son histoire...`,
         html: wrapper(`
           <p style="font-size: 28px; text-align: center; margin: 0 0 16px;">&#x1F4D6;&#x2728;</p>
           <h1 style="color: #1a1040; font-size: 20px; text-align: center; margin: 0 0 20px; font-weight: 800; line-height: 1.4;">
@@ -474,6 +593,16 @@ export class MailjetService {
             </a>
           </div>
 
+          <!-- Temoignage — J+1 : angle enfant qui reconnait son prenom -->
+          <div style="background: #fff8f5; border-radius: 14px; padding: 18px 20px; margin: 0 0 16px; border: 1px solid #ffe4d6;">
+            <p style="font-size: 14px; color: #333; margin: 0; font-style: italic; line-height: 1.65; text-align: center;">
+              &laquo; Ma fille a adore voir son prenom dans l'histoire ! Elle me demande maintenant une nouvelle aventure chaque semaine. &raquo;
+            </p>
+            <p style="font-size: 11px; color: #999; margin: 8px 0 0; text-align: center; font-weight: 600;">
+              Sarah, maman de Lea (4 ans) &middot; &#9733;&#9733;&#9733;&#9733;&#9733;
+            </p>
+          </div>
+
           <!-- Teaser Club subtil, pas agressif -->
           <div style="background: #f9fafb; border-radius: 12px; padding: 16px; margin: 0 0 8px;">
             <p style="font-size: 13px; color: #777; margin: 0; text-align: center; line-height: 1.6;">
@@ -482,7 +611,7 @@ export class MailjetService {
             </p>
           </div>
 
-          ${priceBadge('Votre offre de bienvenue expire dans 48h')}
+          ${priceBadge('Rejoignez +500 familles dans le Club')}
         `)
       },
 
@@ -491,7 +620,7 @@ export class MailjetService {
       // Angle : concret + projection. Montrer ce qu'ils RATENT.
       // ═══════════════════════════════════════════════════
       day3: {
-        subject: `${data.protagonistName} avec son chat, en aquarelle, pour Noel... imaginez`,
+        subject: `L'histoire de ${data.protagonistName} n'est toujours pas finie...`,
         html: wrapper(`
           <h1 style="color: #1a1040; font-size: 20px; text-align: center; margin: 0 0 8px; font-weight: 800; line-height: 1.4;">
             Imaginez ${data.protagonistName}...
@@ -523,9 +652,19 @@ export class MailjetService {
             </a>
           </div>
 
+          <!-- Temoignage — J+3 : angle cadeau / emotion famille -->
+          <div style="background: #f5f8ff; border-radius: 14px; padding: 18px 20px; margin: 0 0 20px; border: 1px solid #dbe7ff;">
+            <p style="font-size: 14px; color: #333; margin: 0; font-style: italic; line-height: 1.65; text-align: center;">
+              &laquo; On a offert le livre a mamie pour Noel, elle a pleure de joie en decouvrant son petit-fils en heros. &raquo;
+            </p>
+            <p style="font-size: 11px; color: #999; margin: 8px 0 0; text-align: center; font-weight: 600;">
+              Thomas, papa de Jules (6 ans) &middot; &#9733;&#9733;&#9733;&#9733;&#9733;
+            </p>
+          </div>
+
           <p style="font-size: 13px; color: #999; text-align: center; margin: 0 0 8px;">ou accedez a tout avec le Club :</p>
 
-          ${priceBadge('Plus que 24h pour cette offre')}
+          ${priceBadge('Plebiscite par les familles du Club')}
         `)
       },
 
