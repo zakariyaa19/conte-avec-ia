@@ -411,9 +411,14 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
   // 6.1 devbook — A/B test du flow de paiement completion
   // control = redirection Checkout Session (ancien flow)
   // inline  = Stripe Elements dans un modal (pas de redirection)
+  // ⚠️ KILL SWITCH : tant que REACT_APP_STRIPE_PUBLISHABLE_KEY n'est pas set cote prod ET
+  // que le webhook Stripe `payment_intent.succeeded` n'est pas active, on force control.
+  // Pour activer l'A/B inline : 1) add REACT_APP_STRIPE_PUBLISHABLE_KEY sur Vercel
+  //                             2) cocher payment_intent.succeeded dans Stripe webhook prod
+  //                             3) remplacer ['control'] par ['control', 'inline'] ici.
   const completionCheckoutVariant = useExperiment(
     'completion_checkout_v1',
-    ['control', 'inline'] as const
+    ['control'] as const
   );
   const indicatorTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -673,7 +678,8 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
               const handleCompletion = async () => {
                 if (!orderId) return;
                 // Variante inline : on ouvre le modal Stripe Elements
-                if (completionCheckoutVariant === 'inline') {
+                // (cast string : le kill switch peut restreindre les variantes a ['control'])
+                if ((completionCheckoutVariant as string) === 'inline') {
                   setInlineCheckoutOpen(true);
                   return;
                 }
