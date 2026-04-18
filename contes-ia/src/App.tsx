@@ -69,6 +69,9 @@ import BlogArticleAlternativeLunii from './pages/BlogArticleAlternativeLunii';
 import BlogArticleAlternativeToniebox from './pages/BlogArticleAlternativeToniebox';
 import BlogArticleHistoireDuSoir from './pages/BlogArticleHistoireDuSoir';
 import BlogArticleConteSendormir from './pages/BlogArticleConteSendormir';
+import BlogArticleCadeauNaissance from './pages/BlogArticleCadeauNaissance';
+import BlogArticleCadeauNoel from './pages/BlogArticleCadeauNoel';
+import BlogArticleLivre3a5ans from './pages/BlogArticleLivre3a5ans';
 import { MentionsLegalesPage } from './pages/MentionsLegalesPage';
 import { PolitiqueConfidentialitePage } from './pages/PolitiqueConfidentialitePage';
 import ScrollToTop from './components/utils/ScrollToTop';
@@ -176,6 +179,9 @@ function App() {
           <Route path="/blog/alternative-toniebox-livre-personnalise-enfant" element={<BlogArticleAlternativeToniebox />} />
           <Route path="/blog/histoire-du-soir-enfant-meilleures-idees" element={<BlogArticleHistoireDuSoir />} />
           <Route path="/blog/conte-pour-sendormir-histoires-personnalisees" element={<BlogArticleConteSendormir />} />
+          <Route path="/blog/cadeau-naissance-livre-personnalise-bebe" element={<BlogArticleCadeauNaissance />} />
+          <Route path="/blog/cadeau-noel-livre-personnalise-enfant" element={<BlogArticleCadeauNoel />} />
+          <Route path="/blog/livre-personnalise-enfant-3-5-ans" element={<BlogArticleLivre3a5ans />} />
           {/* Pages légales */}
           <Route path="/mentions-legales" element={<MentionsLegalesPage />} />
           <Route path="/politique-confidentialite" element={<PolitiqueConfidentialitePage />} />
