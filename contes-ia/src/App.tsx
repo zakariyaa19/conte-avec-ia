@@ -67,6 +67,8 @@ import BlogArticleVsWonderbly from './pages/BlogArticleVsWonderbly';
 import BlogArticleVsHourraHeros from './pages/BlogArticleVsHourraHeros';
 import BlogArticleAlternativeLunii from './pages/BlogArticleAlternativeLunii';
 import BlogArticleAlternativeToniebox from './pages/BlogArticleAlternativeToniebox';
+import BlogArticleHistoireDuSoir from './pages/BlogArticleHistoireDuSoir';
+import BlogArticleConteSendormir from './pages/BlogArticleConteSendormir';
 import { MentionsLegalesPage } from './pages/MentionsLegalesPage';
 import { PolitiqueConfidentialitePage } from './pages/PolitiqueConfidentialitePage';
 import ScrollToTop from './components/utils/ScrollToTop';
@@ -172,6 +174,8 @@ function App() {
           <Route path="/blog/livre-personnalise-bebe-premier-livre" element={<BlogArticleSEO5 />} />
           <Route path="/blog/alternative-lunii-livre-personnalise-ia" element={<BlogArticleAlternativeLunii />} />
           <Route path="/blog/alternative-toniebox-livre-personnalise-enfant" element={<BlogArticleAlternativeToniebox />} />
+          <Route path="/blog/histoire-du-soir-enfant-meilleures-idees" element={<BlogArticleHistoireDuSoir />} />
+          <Route path="/blog/conte-pour-sendormir-histoires-personnalisees" element={<BlogArticleConteSendormir />} />
           {/* Pages légales */}
           <Route path="/mentions-legales" element={<MentionsLegalesPage />} />
           <Route path="/politique-confidentialite" element={<PolitiqueConfidentialitePage />} />

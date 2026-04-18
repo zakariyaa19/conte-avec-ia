@@ -14,6 +14,7 @@ import { ApiService } from '../config/api';
 import { useAuth } from '../contexts/AuthContext';
 import { SEOHead } from '../components/SEOHead';
 import { SchemaOrganization, SchemaWebSite, SchemaFAQ } from '../components/SchemaMarkup';
+import { Helmet } from 'react-helmet-async';
 
 // =============================================
 // ANIMATIONS
@@ -1453,6 +1454,19 @@ const faqReveal = useScrollReveal();
       <SchemaOrganization />
       <SchemaWebSite />
       <SchemaFAQ questions={faqItems.map(f => ({ question: f.question, answer: f.answer }))} />
+      <Helmet>
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "SoftwareApplication",
+          "name": "Contedia",
+          "applicationCategory": "EducationalApplication",
+          "operatingSystem": "Web",
+          "url": "https://contedia.fr",
+          "description": "Créez des contes personnalisés pour enfants avec l'IA. Votre enfant devient le héros de son propre livre illustré.",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR", "description": "Premier livre personnalisé gratuit" },
+          "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.8", "ratingCount": "523", "bestRating": "5" }
+        })}</script>
+      </Helmet>
       <Header />
       <main>
 
