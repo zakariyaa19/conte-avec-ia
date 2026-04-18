@@ -135,6 +135,20 @@
     <priority>0.8</priority>
   </url>
 
+  <!-- Articles "Histoire du soir / sommeil" (cluster SEO trafic) -->
+  <url>
+    <loc>https://contedia.fr/blog/histoire-du-soir-enfant-meilleures-idees</loc>
+    <lastmod>2026-04-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://contedia.fr/blog/conte-pour-sendormir-histoires-personnalisees</loc>
+    <lastmod>2026-04-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
   <!-- ══════ LANDING PAGE TRANSACTIONNELLE ══════ -->
   <url>
     <loc>https://contedia.fr/livre-personnalise-enfant</loc>
