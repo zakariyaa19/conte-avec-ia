@@ -76,8 +76,8 @@ const BlogArticleSEO1: React.FC = () => {
   return (
     <PageLayout>
       <SEOHead
-        title="Livre Personnalisé Enfant : Le Guide Complet 2026 (par Âge)"
-        description="Guide complet pour créer un livre personnalisé enfant en 2026. Conseils par âge (0-8 ans), comparatif classique vs IA, premier livre gratuit en 3 minutes."
+        title="Guide Livre Personnalisé Enfant 2026 : Comment Choisir par Âge (0-8 ans)"
+        description="Comment choisir le bon livre personnalisé pour votre enfant en 2026 ? Guide par âge (bébé, 3-5 ans, 6-8 ans), comparatif classique vs IA. Premier livre offert."
         image="/images/blog/livre-personnalise-enfant-guide-complet.jpg"
         type="article"
       />

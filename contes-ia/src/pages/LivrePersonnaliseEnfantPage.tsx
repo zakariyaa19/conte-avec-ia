@@ -572,8 +572,8 @@ const LivrePersonnaliseEnfantPage: React.FC = () => {
   return (
     <Page>
       <SEOHead
-        title="Livre Personnalisé Enfant — Créez une Histoire Unique Gratuit | Contedia"
-        description="Créez un livre personnalisé gratuit pour votre enfant. Son prénom, ses passions, des illustrations uniques par IA. Prêt en 5 minutes, 0€. +500 parents conquis."
+        title="Livre Personnalisé Enfant Gratuit — Créez Son Histoire en 5 min | Contedia"
+        description="Offrez un livre personnalisé à votre enfant : son prénom, sa photo, une histoire unique illustrée par IA. 100% gratuit, sans carte bancaire, prêt en 5 minutes."
         type="website"
       />
       <SchemaFAQ questions={faqQuestions} />

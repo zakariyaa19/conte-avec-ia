@@ -121,6 +121,20 @@
     <priority>0.8</priority>
   </url>
 
+  <!-- Articles "Alternative conteuses" (cluster SEO comparatif) -->
+  <url>
+    <loc>https://contedia.fr/blog/alternative-lunii-livre-personnalise-ia</loc>
+    <lastmod>2026-04-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://contedia.fr/blog/alternative-toniebox-livre-personnalise-enfant</loc>
+    <lastmod>2026-04-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
   <!-- ══════ LANDING PAGE TRANSACTIONNELLE ══════ -->
   <url>
     <loc>https://contedia.fr/livre-personnalise-enfant</loc>

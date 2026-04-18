@@ -78,8 +78,8 @@ const BlogArticleSEO2: React.FC = () => {
   return (
     <PageLayout>
       <SEOHead
-        title="Les 10 Meilleurs Livres Personnalisés Enfants en 2026 — Comparatif Honnête"
-        description="Comparatif des 10 meilleurs livres personnalisés enfants en 2026. Prix, qualité, personnalisation : on a tout testé. Contedia, Wonderbly, Hourra Héros..."
+        title="Meilleur Livre Personnalisé Enfant 2026 : Top 10 Comparatif (Prix + Avis)"
+        description="Quel est le meilleur livre personnalisé enfant en 2026 ? Top 10 comparé : prix, qualité, options. Wonderbly, Hourra Héros, Contedia… On a testé pour vous."
         image="/images/blog/meilleurs-livres-personnalises-comparatif.jpg"
         type="article"
       />

@@ -77,8 +77,8 @@ const BlogArticleSEO3: React.FC = () => {
   return (
     <PageLayout>
       <SEOHead
-        title="Conteuse Personnalisable 2026 : Lunii, Tonies ou IA ? Le Comparatif"
-        description="Comparatif conteuses personnalisables 2026 : Lunii, Tonies et alternatives IA. Avis honnête, prix, limites. Premier conte personnalisé gratuit."
+        title="Conteuse Personnalisable 2026 : Lunii, Tonies ou Livre IA ? Comparatif Honnête"
+        description="Quelle conteuse personnalisable choisir en 2026 ? Comparatif détaillé Lunii vs Tonies vs livre IA personnalisé. Prix, avis, limites de chaque solution. Test gratuit inclus."
         image="/images/blog/conteuse-personnalisable-livre-enfant.jpg"
         type="article"
       />
