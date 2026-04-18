@@ -1447,8 +1447,8 @@ const faqReveal = useScrollReveal();
   return (
     <PageContainer>
       <SEOHead
-        title="Livre Personnalisé Enfant Gratuit — Conte sur Mesure par IA | Contedia"
-        description="Créez un livre personnalisé gratuit pour votre enfant. Histoire unique générée par IA avec illustrations sur mesure. Commencez gratuitement, prêt en 5 minutes."
+        title="Conte Personnalisé Enfant Gratuit — Votre Enfant Héros de Son Livre | Contedia"
+        description="Créez un conte personnalisé gratuit où votre enfant devient le héros. Prénom, passions, illustrations IA uniques. Prêt en 5 min, 0€, sans carte bancaire. +500 familles conquises."
       />
       <SchemaOrganization />
       <SchemaWebSite />

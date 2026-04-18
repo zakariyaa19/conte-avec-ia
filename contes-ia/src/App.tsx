@@ -65,6 +65,8 @@ import BlogArticleSEO5 from './pages/BlogArticleSEO5';
 import BlogArticleFeteMeres from './pages/BlogArticleFeteMeres';
 import BlogArticleVsWonderbly from './pages/BlogArticleVsWonderbly';
 import BlogArticleVsHourraHeros from './pages/BlogArticleVsHourraHeros';
+import BlogArticleAlternativeLunii from './pages/BlogArticleAlternativeLunii';
+import BlogArticleAlternativeToniebox from './pages/BlogArticleAlternativeToniebox';
 import { MentionsLegalesPage } from './pages/MentionsLegalesPage';
 import { PolitiqueConfidentialitePage } from './pages/PolitiqueConfidentialitePage';
 import ScrollToTop from './components/utils/ScrollToTop';
@@ -144,16 +146,20 @@ function App() {
           <Route path="/blog/heros-foi-inspirer-enfants-personnages-spirituels" element={<BlogArticleFoi4 />} />
           <Route path="/blog/foi-tolerance-ouverture-respect-differentes-religions" element={<BlogArticleFoi5 />} />
           {/* Nouveaux articles 2026 */}
-          <Route path="/blog/livre-personnalise-enfant-2026" element={<BlogArticleNouveau1 />} />
-          <Route path="/blog/conte-personnalise-confiance-imagination-enfant" element={<BlogArticleNouveau2 />} />
+          {/* REDIRECT cannibalisation — group "livre perso enfant": redirige vers le guide SEO1 (54 imp, pos 15, meilleur angle) */}
+          <Route path="/blog/livre-personnalise-enfant-2026" element={<Navigate to="/blog/guide-livre-personnalise-enfant-2026" replace />} />
+          {/* REDIRECT cannibalisation — group "bienfaits": redirige vers enfant-heros (24 imp, CTR 8.33%, meilleur angle) */}
+          <Route path="/blog/conte-personnalise-confiance-imagination-enfant" element={<Navigate to="/blog/enfant-heros-propre-histoire" replace />} />
           <Route path="/blog/livre-personnalise-vs-livre-classique-enfant" element={<BlogArticleNouveau3 />} />
-          <Route path="/blog/intelligence-artificielle-histoires-enfants" element={<BlogArticleNouveau4 />} />
+          {/* REDIRECT cannibalisation — group IA: redirige vers le winner ia-revolution (191 imp, pos 8) */}
+          <Route path="/blog/intelligence-artificielle-histoires-enfants" element={<Navigate to="/blog/ia-revolution-creation-histoires-enfants" replace />} />
           <Route path="/blog/enfant-heros-propre-histoire" element={<BlogArticleNouveau5 />} />
           <Route path="/blog/conte-personnalise-rituel-coucher" element={<BlogArticleNouveau6 />} />
           <Route path="/blog/livre-personnalise-enfant-timide" element={<BlogArticleNouveau7 />} />
           <Route path="/blog/cadeau-livre-personnalise-enfant" element={<BlogArticleNouveau8 />} />
           <Route path="/blog/creation-histoires-personnalisees-conte-ia" element={<BlogArticleNouveau9 />} />
-          <Route path="/blog/bienfaits-lecture-personnalisee-enfant" element={<BlogArticleNouveau10 />} />
+          {/* REDIRECT cannibalisation — group "bienfaits": redirige vers enfant-heros */}
+          <Route path="/blog/bienfaits-lecture-personnalisee-enfant" element={<Navigate to="/blog/enfant-heros-propre-histoire" replace />} />
           {/* Articles SEO 2026 */}
           <Route path="/blog/guide-livre-personnalise-enfant-2026" element={<BlogArticleSEO1 />} />
           <Route path="/blog/meilleurs-livres-personnalises-enfants-comparatif-2026" element={<BlogArticleSEO2 />} />
@@ -164,6 +170,8 @@ function App() {
           <Route path="/blog/contedia-vs-wonderbly-comparatif" element={<BlogArticleVsWonderbly />} />
           <Route path="/blog/contedia-vs-hourra-heros-comparatif" element={<BlogArticleVsHourraHeros />} />
           <Route path="/blog/livre-personnalise-bebe-premier-livre" element={<BlogArticleSEO5 />} />
+          <Route path="/blog/alternative-lunii-livre-personnalise-ia" element={<BlogArticleAlternativeLunii />} />
+          <Route path="/blog/alternative-toniebox-livre-personnalise-enfant" element={<BlogArticleAlternativeToniebox />} />
           {/* Pages légales */}
           <Route path="/mentions-legales" element={<MentionsLegalesPage />} />
           <Route path="/politique-confidentialite" element={<PolitiqueConfidentialitePage />} />

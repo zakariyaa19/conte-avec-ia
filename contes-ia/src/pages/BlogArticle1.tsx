@@ -45,8 +45,8 @@ const BlogArticle1: React.FC = () => {
   return (
     <PageLayout>
       <SEOHead
-        title="Livre Personnalisé Chien : Créez un Conte avec votre Animal | Contedia"
-        description="Créez un livre personnalisé avec votre chien ou chat comme personnage. Votre enfant et son animal vivent une aventure unique. 3 premiers chapitres gratuits !"
+        title="Livre Personnalisé avec Son Chien ou Chat : Votre Enfant et Son Animal en Héros"
+        description="Créez un livre où votre enfant et son chien (ou chat) vivent une aventure ensemble. Photo de l'animal intégrée, illustrations IA. Premier conte gratuit, prêt en 5 min."
         image="/images/blog/conte-animal-compagnie.jpg"
         type="article"
       />

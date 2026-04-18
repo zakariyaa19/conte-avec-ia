@@ -71,8 +71,8 @@ const BlogArticle4: React.FC = () => {
   return (
     <PageLayout>
       <SEOHead
-        title="Livre Enfant IA : Comment l'Intelligence Artificielle Crée des Histoires Uniques"
-        description="Comment l'IA de Contedia crée des livres personnalisés pour enfants en 5 minutes. Du prénom au livre illustré : processus expliqué simplement. Premier livre gratuit."
+        title="Livre Enfant par IA : Comment Créer une Histoire Personnalisée en 5 Minutes"
+        description="Découvrez comment l'IA crée un livre personnalisé unique pour votre enfant en 5 minutes. Prénom, photo, illustrations — le processus pas à pas. Essai gratuit sans CB."
         type="article"
       />
       <SchemaFAQ questions={faqQuestions} />
