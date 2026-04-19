@@ -696,47 +696,54 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
                   <Sparkle $left="80%" $top="15%" $delay={0.5} $size={3} />
                   <Sparkle $left="50%" $top="10%" $delay={0.8} $size={4} />
                   <Sparkle $left="75%" $top="75%" $delay={1.5} $size={3} />
-                  <EndContent>
-                    <EndEmoji style={{ fontSize: '2.6rem', marginBottom: 10 }}>&#x1F4D6;</EndEmoji>
-                    <EndTitle style={{ fontSize: '1.5rem', lineHeight: 1.25, marginBottom: 10 }}>
-                      L'histoire de {protagonistName} n'est pas finie...
-                    </EndTitle>
-                    <p style={{
-                      fontSize: 14, fontStyle: 'italic', color: 'rgba(255,255,255,0.78)',
-                      maxWidth: 320, lineHeight: 1.45, margin: '0 0 22px',
-                    }}>
-                      {summary}
-                    </p>
+                  <EndContent style={{ padding: '0 20px', justifyContent: 'center', gap: 0 }}>
 
-                    {/* Aperçu flouté — 3 "pages" grises */}
-                    <div style={{
-                      display: 'flex', gap: 8, justifyContent: 'center', marginBottom: 18,
-                      filter: 'blur(2px)', opacity: 0.28, pointerEvents: 'none',
-                    }}>
-                      {[1,2,3].map(n => (
-                        <div key={n} style={{
-                          width: 55, height: 75, borderRadius: 6,
-                          background: 'linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05))',
-                          border: '1px solid rgba(255,255,255,0.1)',
-                          display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          fontSize: 10, color: 'rgba(255,255,255,0.3)',
-                        }}>
-                          p.{5 + n}
-                        </div>
-                      ))}
+                    {/* Header compact : emoji + titre + sous-titre en 1 bloc serré */}
+                    <div style={{ textAlign: 'center', marginBottom: 16 }}>
+                      <div style={{ fontSize: '2.2rem', marginBottom: 6 }}>&#x1F4D6;</div>
+                      <h2 style={{
+                        fontFamily: theme.fonts.heading, fontSize: 22, fontWeight: 800,
+                        color: 'white', margin: '0 0 6px', lineHeight: 1.2,
+                      }}>
+                        L'histoire de {protagonistName} n'est pas finie...
+                      </h2>
+                      <p style={{
+                        fontSize: 13, fontStyle: 'italic', color: 'rgba(255,255,255,0.65)',
+                        margin: 0, lineHeight: 1.35,
+                      }}>
+                        {summary}
+                      </p>
                     </div>
 
-                    {/* Témoignage — juste avant le CTA, moment de décision */}
-                    <TestimonialBlock>
-                      <p className="quote">&laquo; C'est devenu notre rituel du soir. &raquo;</p>
-                      <p className="author">&mdash; Marie, maman d'Hugo (3 ans) &middot; &#9733;&#9733;&#9733;&#9733;&#9733;</p>
-                    </TestimonialBlock>
-
-                    {/* CTA principal pulsant */}
-                    <PaywallCta onClick={handleCompletion}>
-                      <span>Offrir la fin de l'histoire &agrave; {protagonistName}</span>
+                    {/* CTA PRINCIPAL — focus total, pulsant, GROS */}
+                    <PaywallCta onClick={handleCompletion} style={{ marginBottom: 6 }}>
+                      <span>Offrir la suite &agrave; {protagonistName}</span>
                       <span className="sub">2,99&euro; &middot; 12 pages illustr&eacute;es &middot; PDF inclus</span>
                     </PaywallCta>
+
+                    {/* Trust badges — 1 ligne compacte */}
+                    <div style={{
+                      display: 'flex', justifyContent: 'center', gap: 12, flexWrap: 'wrap',
+                      margin: '8px 0 12px', fontSize: 10, color: 'rgba(255,255,255,0.45)',
+                    }}>
+                      <span>&#10003; Sans risque</span>
+                      <span>&#10003; Stripe</span>
+                      <span>&#10003; Instantan&eacute;</span>
+                    </div>
+
+                    {/* Séparateur visuel */}
+                    <div style={{
+                      width: 40, height: 1, background: 'rgba(255,255,255,0.12)',
+                      margin: '0 auto 12px',
+                    }} />
+
+                    {/* Témoignage — ultra compact, 1 ligne */}
+                    <p style={{
+                      fontSize: 12, fontStyle: 'italic', color: 'rgba(255,255,255,0.5)',
+                      textAlign: 'center', margin: '0 0 14px', lineHeight: 1.35,
+                    }}>
+                      &laquo; Mon fils r&eacute;clame son livre chaque soir &raquo; &mdash; Marie &#9733;&#9733;&#9733;&#9733;&#9733;
+                    </p>
 
                     {/* Club — lien discret */}
                     {!isClub && (
@@ -745,26 +752,20 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
                       </ClubLink>
                     )}
 
-                    {/* Trust signals */}
-                    <TrustBadges>
-                      <span>&#10003; Satisfait ou rembours&eacute;</span>
-                      <span>&#10003; Paiement s&eacute;curis&eacute; Stripe</span>
-                      <span>&#10003; Disponible instantan&eacute;ment</span>
-                    </TrustBadges>
-
-                    {/* Partager */}
+                    {/* Partager — encore plus discret, texte seul */}
                     {onShare && (
-                      <EndButton
+                      <button
                         onClick={onShare}
-                        style={{ opacity: 0.45, maxWidth: 280, marginTop: 18, fontSize: 13 }}
+                        style={{
+                          background: 'none', border: 'none', cursor: 'pointer',
+                          color: 'rgba(255,255,255,0.25)', fontSize: 11, marginTop: 10,
+                          textDecoration: 'underline', textUnderlineOffset: 3,
+                        }}
                       >
-                        Envoyer l'aper&ccedil;u &agrave; un proche
-                      </EndButton>
+                        Partager l'aper&ccedil;u
+                      </button>
                     )}
 
-                    <p style={{ color: 'rgba(255,255,255,0.2)', fontSize: 10, marginTop: 18 }}>
-                      Créé avec Contes d'IA
-                    </p>
                   </EndContent>
                 </EndSlide>
               );
