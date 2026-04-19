@@ -1239,7 +1239,7 @@ export async function autoCompleteStory(orderId: string): Promise<void> {
       coverReferenceBuffer // Image de couverture comme référence visuelle pour la cohérence
     );
 
-    // Assembler : garder les 5 premières images existantes + prendre les 7 nouvelles (indices 5-11)
+    // Assembler : garder les images existantes (3) + prendre les 17 nouvelles pour atteindre 20
     let allImages: Buffer[];
     if (existingImages.length >= existingCount && existingCount > 0) {
       // On a bien récupéré les images existantes : les garder + prendre les nouvelles

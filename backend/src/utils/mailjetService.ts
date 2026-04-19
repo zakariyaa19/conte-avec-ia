@@ -584,7 +584,7 @@ export class MailjetService {
           </h1>
 
           <p style="color: #555; font-size: 14px; line-height: 1.8; margin: 0 0 20px; text-align: center;">
-            Vous avez lu les 5 premieres pages. ${data.protagonistName} etait sur le point de decouvrir quelque chose d'incroyable... Que va-t-il se passer ensuite ? <strong>Decouvrez la suite pour seulement 2,99&euro;</strong> ou rejoignez le Club.
+            Vous avez decouvert les premieres pages de l'histoire de ${data.protagonistName}. L'aventure s'est arretee au moment le plus palpitant... Que va-t-il se passer ensuite ? <strong>Decouvrez la suite (20 pages) pour seulement 2,99&euro;</strong> ou rejoignez le Club.
           </p>
 
           <div style="text-align: center; margin: 0 0 24px;">
