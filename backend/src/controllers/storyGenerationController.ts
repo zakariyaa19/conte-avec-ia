@@ -683,7 +683,7 @@ async function runGenerationPipeline(orderId: string, order: any, genLogId: stri
     const title = order.coverTitle || await generateBookTitle(titleParams);
 
     const isClubOrder = order.purchaseType === 'CLUB';
-    console.log(`[Generation] Order type: ${isClubOrder ? 'CLUB (12 pages, premium)' : 'FREE/SINGLE (5 pages, cliffhanger)'}`);
+    console.log(`[Generation] Order type: ${isClubOrder ? 'CLUB (20 pages, premium)' : 'FREE/SINGLE (3 pages, cliffhanger)'}`);
 
     const textParams: StoryTextParams = {
       protagonistName: order.protagonistName,
@@ -1083,8 +1083,8 @@ export async function autoGenerateAndDeliver(orderId: string): Promise<void> {
 
 /**
  * Complete a cliffhanger story after payment (2.99€)
- * Takes existing 5 paragraphs + 5 images, generates 7 more paragraphs + 7 more images,
- * assembles new 12-page PDF, delivers to user.
+ * Takes existing 3 paragraphs + 3 images, generates 17 more paragraphs + 17 more images,
+ * assembles new 20-page PDF, delivers to user.
  */
 export async function autoCompleteStory(orderId: string): Promise<void> {
   if (activeGenerations.has(orderId)) {

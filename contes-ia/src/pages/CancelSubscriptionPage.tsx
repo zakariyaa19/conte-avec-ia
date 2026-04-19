@@ -112,7 +112,7 @@ export const CancelSubscriptionPage: React.FC = () => {
             }}>
               <p style={{ fontSize: '12px', color: 'var(--text-light)', margin: '0 0 6px', fontWeight: 600 }}>Plan Gratuit</p>
               <p style={{ fontFamily: theme.fonts.heading, fontSize: '18px', fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 10px' }}>0€</p>
-              {['1 livre', '6 pages', '1 style', '1 personnage'].map(f => (
+              {['1 livre', '3 pages', '1 style', '1 personnage'].map(f => (
                 <p key={f} style={{ fontSize: '11px', color: 'var(--text-secondary)', margin: '0 0 4px' }}>• {f}</p>
               ))}
             </div>

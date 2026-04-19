@@ -1755,7 +1755,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                   <BookLockedContent>
                     <BookLockedIcon>+</BookLockedIcon>
                     <BookLockedTitle>L'aventure de {heroName} continue...</BookLockedTitle>
-                    <BookLockedSubtitle>12 pages illustrées vous attendent</BookLockedSubtitle>
+                    <BookLockedSubtitle>20 pages illustrées vous attendent</BookLockedSubtitle>
                   </BookLockedContent>
                 </BookLockedOverlay>
               </BookPageFrame>
@@ -1787,7 +1787,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                       : 'Vos crédits mensuels ont été utilisés'}
                   </PricingCardSub>
                   <PricingCardFeaturesList>
-                    <PricingCardFeatureItem $highlight>1 livre complet (12 pages) pour {heroName}</PricingCardFeatureItem>
+                    <PricingCardFeatureItem $highlight>1 livre complet (20 pages) pour {heroName}</PricingCardFeatureItem>
                     <PricingCardFeatureItem>12 illustrations HD uniques</PricingCardFeatureItem>
                     <PricingCardFeatureItem>PDF téléchargeable et imprimable</PricingCardFeatureItem>
                   </PricingCardFeaturesList>

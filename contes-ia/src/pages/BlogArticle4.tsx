@@ -122,7 +122,7 @@ const BlogArticle4: React.FC = () => {
               </p>
               <ul>
                 <li><strong>Vous entrez les informations</strong> — Prénom (ex : « Léa »), âge (5 ans), thème (forêt enchantée), et optionnellement une photo.</li>
-                <li><strong>L'IA génère le texte</strong> — En quelques secondes, elle écrit une histoire de 6 à 12 pages adaptée à l'âge. « Léa marchait dans la forêt enchantée quand elle aperçut une lumière dorée entre les arbres... » — chaque phrase est unique, créée pour votre enfant.</li>
+                <li><strong>L'IA génère le texte</strong> — En quelques secondes, elle écrit une histoire de 3 à 20 pages adaptée à l'âge. « Léa marchait dans la forêt enchantée quand elle aperçut une lumière dorée entre les arbres... » — chaque phrase est unique, créée pour votre enfant.</li>
                 <li><strong>L'IA crée les illustrations</strong> — Pour chaque page, une illustration est générée dans le <Link to="/blog/nouveaux-personnages-styles-aventures-ados">style choisi</Link> (3D Pixar, manga, aquarelle...). Si vous avez ajouté une photo, le personnage ressemble à votre enfant.</li>
                 <li><strong>La couverture est générée</strong> — Avec le titre du conte et une illustration de couverture unique. Le prénom de votre enfant est intégré dans le titre.</li>
               </ul>
@@ -186,9 +186,9 @@ const BlogArticle4: React.FC = () => {
                 Pour que vous compreniez la qualité, voici des livres réels créés par des parents sur Contedia. Vous pouvez les <Link to="/exemples">lire en lecture interactive</Link> :
               </p>
               <ul>
-                <li><strong>« Les Aventures Magiques d'Emmie »</strong> — Emmie, 7 ans. Thème : forêt enchantée. Style : Animation 3D. L'IA a créé une histoire où Emmie rencontre une fée nommée Lila et aide à retrouver un cristal magique. 6 pages, illustrations Pixar-quality.</li>
-                <li><strong>« Rayan et le Dino de Pâques »</strong> — Rayan, 3 ans. Thème : Pâques. Style : Animation 3D. L'IA a écrit une aventure de 12 pages où Rayan et son bouledogue Luna trouvent un œuf de dinosaure pendant la chasse aux œufs.</li>
-                <li><strong>« Timéo et le fruit enchanté de Noël »</strong> — Timéo, 4 ans. Thème : Noël. Style : Kawaii. L'IA a créé un conte de 12 pages où Timéo et son chien Rex partent au Pôle Nord après avoir trouvé un fruit magique dans le jardin de Mamie.</li>
+                <li><strong>« Les Aventures Magiques d'Emmie »</strong> — Emmie, 7 ans. Thème : forêt enchantée. Style : Animation 3D. L'IA a créé une histoire où Emmie rencontre une fée nommée Lila et aide à retrouver un cristal magique. 3 pages, illustrations Pixar-quality.</li>
+                <li><strong>« Rayan et le Dino de Pâques »</strong> — Rayan, 3 ans. Thème : Pâques. Style : Animation 3D. L'IA a écrit une aventure de 20 pages où Rayan et son bouledogue Luna trouvent un œuf de dinosaure pendant la chasse aux œufs.</li>
+                <li><strong>« Timéo et le fruit enchanté de Noël »</strong> — Timéo, 4 ans. Thème : Noël. Style : Kawaii. L'IA a créé un conte de 20 pages où Timéo et son chien Rex partent au Pôle Nord après avoir trouvé un fruit magique dans le jardin de Mamie.</li>
               </ul>
               <p>
                 Chaque histoire est <strong>100% unique</strong> — générée par l'IA en quelques minutes, avec des illustrations créées sur mesure.

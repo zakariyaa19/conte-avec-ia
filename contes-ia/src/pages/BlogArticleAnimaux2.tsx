@@ -169,7 +169,7 @@ const BlogArticleAnimaux2: React.FC = () => {
                 Voici un conte de Noël créé par une vraie famille sur Contedia :
               </p>
               <p>
-                <strong>« Timéo et le fruit enchanté de Noël »</strong> — Timéo, 4 ans, trouve un fruit lumineux dans le jardin de Mamie. Avec Rex, son berger allemand, il part en aventure au Pôle Nord. Ils traversent des forêts enneigées, rencontrent des lutins farceurs, et aident le Père Noël à retrouver un cadeau perdu. Style Kawaii, 12 pages illustrées.
+                <strong>« Timéo et le fruit enchanté de Noël »</strong> — Timéo, 4 ans, trouve un fruit lumineux dans le jardin de Mamie. Avec Rex, son berger allemand, il part en aventure au Pôle Nord. Ils traversent des forêts enneigées, rencontrent des lutins farceurs, et aident le Père Noël à retrouver un cadeau perdu. Style Kawaii, 20 pages illustrées.
               </p>
               <p>
                 <em>Mamie Christine : « C'est devenu notre tradition familiale. Chaque Noël, je crée un nouveau conte pour Timéo. Il les garde tous précieusement. »</em>

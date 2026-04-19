@@ -116,7 +116,7 @@ const BlogArticleAnimaux3: React.FC = () => {
 
               <h2 id="comment">Comment ça marche concrètement</h2>
               <p>
-                En version simple : vous donnez une photo de votre animal + une description courte. L'IA fait le reste. En 5 minutes, votre chien/chat/lapin est un personnage illustré qui accompagne votre enfant dans une aventure de 6 à 12 pages.
+                En version simple : vous donnez une photo de votre animal + une description courte. L'IA fait le reste. En 5 minutes, votre chien/chat/lapin est un personnage illustré qui accompagne votre enfant dans une aventure de 3 à 20 pages.
               </p>
               <p>
                 L'IA ne « colle » pas la photo dans les illustrations. Elle <strong>analyse</strong> les caractéristiques physiques de votre animal (couleur du pelage, forme des oreilles, taille, race) et <strong>recrée</strong> un personnage illustré qui lui ressemble dans le style choisi. C'est comme si un illustrateur professionnel dessinait votre animal — mais en 30 secondes.

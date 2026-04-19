@@ -1314,7 +1314,7 @@ const faqItems = [
   {
     id: '3',
     question: "Qu'est-ce que le Club des Histoires Uniques ?",
-    answer: "Vous pouvez créer votre premier chapitre gratuitement (5 pages illustrées). Pour découvrir la suite complète du livre (12 pages), c'est seulement 2,99€. Ou rejoignez le Club des Histoires à 1,99€ le premier mois (puis 9,99€/mois) pour des livres complets illimités, 9 styles d'illustration, 5 personnages secondaires et bien plus. Sans engagement."
+    answer: "Vous pouvez créer votre premier chapitre gratuitement (3 pages illustrées). Pour découvrir la suite complète du livre (20 pages), c'est seulement 2,99€. Ou rejoignez le Club des Histoires à 1,99€ le premier mois (puis 9,99€/mois) pour des livres complets illimités, 9 styles d'illustration, 5 personnages secondaires et bien plus. Sans engagement."
   },
   {
     id: '4',

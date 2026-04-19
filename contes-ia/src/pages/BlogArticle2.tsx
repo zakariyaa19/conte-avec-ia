@@ -52,7 +52,7 @@ const BlogArticle2: React.FC = () => {
     },
     {
       question: "Combien coûte un conte personnalisé ?",
-      answer: "Le premier conte est 100% gratuit sur Contedia. Les suivants coûtent 3,99€. L'abonnement Club (9,99€/mois) inclut 4 livres de 12 pages avec accès aux 9 styles d'illustration."
+      answer: "Le premier conte est 100% gratuit sur Contedia. Les suivants coûtent 3,99€. L'abonnement Club (9,99€/mois) inclut 4 livres de 20 pages avec accès aux 9 styles d'illustration."
     }
   ];
 
@@ -193,14 +193,14 @@ const BlogArticle2: React.FC = () => {
                 Les enfants de 6-8 ans ont des attentes plus sophistiquées. Ils veulent de <strong>vrais rebondissements</strong>, des mystères à résoudre, des choix courageux. Sur Contedia, les histoires pour cette tranche d'âge offrent :
               </p>
               <ul>
-                <li><strong>12 pages</strong> (au lieu de 6) — Plus de texte, plus d'illustrations, plus d'aventure</li>
+                <li><strong>20 pages</strong> (au lieu de 3) — Plus de texte, plus d'illustrations, plus d'aventure</li>
                 <li><strong>Thèmes complexes</strong> — Mystère, enquête, voyage dans le temps, magie avancée</li>
                 <li><strong>Vocabulaire enrichi</strong> — L'enfant peut lire seul et apprend de nouveaux mots en contexte</li>
                 <li><strong>Valeurs fortes</strong> — Amitié, respect de l'environnement, <Link to="/blog/conte-personnalise-confiance-imagination-enfant">confiance en soi</Link>, acceptation de la différence</li>
                 <li><strong>Styles Manga et Block World</strong> — Les styles préférés des 6-8 ans, inspirés de leurs univers (anime, Minecraft)</li>
               </ul>
               <p>
-                L'abonnement <Link to="/club">Club Contedia</Link> (9,99€/mois) donne accès à 4 livres de 12 pages par mois avec les 9 styles — idéal pour varier les aventures chaque semaine.
+                L'abonnement <Link to="/club">Club Contedia</Link> (9,99€/mois) donne accès à 4 livres de 20 pages par mois avec les 9 styles — idéal pour varier les aventures chaque semaine.
               </p>
 
               <h2 id="creer">Créer un conte personnalisé en 3 minutes</h2>

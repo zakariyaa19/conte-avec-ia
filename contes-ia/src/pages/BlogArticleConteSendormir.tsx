@@ -41,7 +41,7 @@ const BlogArticleConteSendormir: React.FC = () => {
     },
     {
       question: "Combien de temps avant le sommeil faut-il lire le conte ?",
-      answer: "Idéalement, commencez la lecture 15 à 20 minutes avant l'heure d'extinction des lumières. Cela laisse le temps à l'enfant de se détendre progressivement. Un conte Contedia de 6 pages se lit en 5 à 10 minutes, ce qui s'intègre parfaitement dans un rituel du coucher de 20 minutes incluant brossage de dents et câlin."
+      answer: "Idéalement, commencez la lecture 15 à 20 minutes avant l'heure d'extinction des lumières. Cela laisse le temps à l'enfant de se détendre progressivement. Un conte Contedia de 3 pages se lit en 5 à 10 minutes, ce qui s'intègre parfaitement dans un rituel du coucher de 20 minutes incluant brossage de dents et câlin."
     },
     {
       question: "Mon enfant a peur du noir, quel type de conte choisir ?",
@@ -185,7 +185,7 @@ const BlogArticleConteSendormir: React.FC = () => {
                 <li><strong>L'IA écrit et illustre</strong> un conte unique en 3 minutes. Vous le recevez par email, prêt à lire ce soir</li>
               </ul>
               <p>
-                Le <Link to="/livre-personnalise-enfant">livre personnalisé</Link> comprend 6 pages d'histoire et 7 illustrations uniques. Le premier conte est <Link to="/blog/conte-personnalise-gratuit">entièrement gratuit</Link>, sans carte bancaire. Votre enfant entendra son prénom dans chaque page — un détail qui fait toute la différence au moment du coucher.
+                Le <Link to="/livre-personnalise-enfant">livre personnalisé</Link> comprend 3 pages d'histoire et 7 illustrations uniques. Le premier conte est <Link to="/blog/conte-personnalise-gratuit">entièrement gratuit</Link>, sans carte bancaire. Votre enfant entendra son prénom dans chaque page — un détail qui fait toute la différence au moment du coucher.
               </p>
               <p>
                 Vous pouvez aussi adapter les contes selon l'<Link to="/contes-par-age">âge de votre enfant</Link>. Pour les 2-3 ans, l'IA propose des phrases courtes et des images vives. Pour les 5-7 ans, des récits plus développés avec une intrigue douce qui accompagne l'endormissement.

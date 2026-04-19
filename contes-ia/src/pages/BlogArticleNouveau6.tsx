@@ -193,7 +193,7 @@ const BlogArticleNouveau6: React.FC = () => {
               <h3>2-3 ans : le mini-rituel</h3>
               <ul>
                 <li><strong>Durée totale :</strong> 10 minutes</li>
-                <li><strong>Conte :</strong> très court (3-5 pages), beaucoup d'illustrations</li>
+                <li><strong>Conte :</strong> très court (3 pages), beaucoup d'illustrations</li>
                 <li><strong>Thèmes :</strong> doudou, animaux, câlins, « bonne nuit »</li>
                 <li><strong>Clé :</strong> la voix douce du parent compte plus que l'histoire elle-même</li>
               </ul>
@@ -209,7 +209,7 @@ const BlogArticleNouveau6: React.FC = () => {
               <h3>6-8 ans : le rituel enrichi</h3>
               <ul>
                 <li><strong>Durée totale :</strong> 20-25 minutes</li>
-                <li><strong>Conte :</strong> 8-12 pages, intrigue plus complexe avec <Link to="/blog/intelligence-artificielle-histoires-enfants">personnalisation avancée</Link></li>
+                <li><strong>Conte :</strong> 8-20 pages, intrigue plus complexe avec <Link to="/blog/intelligence-artificielle-histoires-enfants">personnalisation avancée</Link></li>
                 <li><strong>Thèmes :</strong> mystère, exploration, valeurs, découverte</li>
                 <li><strong>Clé :</strong> discutez de l'histoire ensemble après la lecture. « Qu'aurais-tu fait à la place du héros ? »</li>
               </ul>

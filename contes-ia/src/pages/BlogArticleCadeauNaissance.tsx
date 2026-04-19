@@ -140,7 +140,7 @@ const BlogArticleCadeauNaissance: React.FC = () => {
                 Le <Link to="/blog/livre-personnalise-bebe-premier-livre">livre personnalisé Contedia</Link> n'est pas un simple PDF avec un prénom collé dessus. C'est un <strong>vrai livre illustré</strong>, écrit de A à Z par l'intelligence artificielle :
               </p>
               <ul>
-                <li><strong>6 pages d'histoire</strong> — un récit original qui intègre naturellement le prénom et les éléments choisis</li>
+                <li><strong>3 pages d'histoire</strong> — un récit original qui intègre naturellement le prénom et les éléments choisis</li>
                 <li><strong>7 illustrations uniques</strong> — générées par IA dans un style doux et adapté aux tout-petits</li>
                 <li><strong>Une couverture personnalisée</strong> — avec le titre et le prénom du bébé</li>
                 <li><strong>Un PDF haute qualité</strong> — lisible sur écran, imprimable pour en faire un livre physique</li>

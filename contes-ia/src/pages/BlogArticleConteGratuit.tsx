@@ -39,7 +39,7 @@ const BlogArticleConteGratuit: React.FC = () => {
     },
     {
       question: "Que contient le conte personnalisé gratuit ?",
-      answer: "Le conte gratuit contient 6 pages de texte écrit par l'IA + 7 illustrations uniques générées pour correspondre à l'histoire. Le prénom de votre enfant est intégré dans toute l'histoire, pas juste sur la couverture. Vous recevez un PDF téléchargeable et lisible sur tout appareil."
+      answer: "Le conte gratuit contient 3 pages de texte écrit par l'IA + 7 illustrations uniques générées pour correspondre à l'histoire. Le prénom de votre enfant est intégré dans toute l'histoire, pas juste sur la couverture. Vous recevez un PDF téléchargeable et lisible sur tout appareil."
     },
     {
       question: "En combien de temps reçoit-on le conte ?",
@@ -51,7 +51,7 @@ const BlogArticleConteGratuit: React.FC = () => {
     },
     {
       question: "Quelle est la différence entre le conte gratuit et le Club Contedia ?",
-      answer: "Le conte gratuit : 6 pages, 7 illustrations, 1 style. Le Club (9,99€/mois) : 4 livres par mois, 12 pages, 12+ illustrations, 9 styles d'illustration, personnages secondaires, occasions spéciales, crédits cumulables. Le gratuit est parfait pour tester. Le Club pour les familles qui veulent un nouveau conte régulièrement."
+      answer: "Le conte gratuit : 3 pages, 7 illustrations, 1 style. Le Club (9,99€/mois) : 4 livres par mois, 20 pages, 12+ illustrations, 9 styles d'illustration, personnages secondaires, occasions spéciales, crédits cumulables. Le gratuit est parfait pour tester. Le Club pour les familles qui veulent un nouveau conte régulièrement."
     }
   ];
 
@@ -124,7 +124,7 @@ const BlogArticleConteGratuit: React.FC = () => {
                 Le conte personnalisé gratuit sur <Link to="/livre-personnalise-enfant">Contedia</Link> n'est pas une version bridée ou un simple aperçu. C'est un <strong>vrai livre complet</strong> :
               </p>
               <ul>
-                <li><strong>6 pages d'histoire</strong> — écrites par l'IA à partir de zéro, intégrant le prénom, l'âge et les passions de votre enfant</li>
+                <li><strong>3 pages d'histoire</strong> — écrites par l'IA à partir de zéro, intégrant le prénom, l'âge et les passions de votre enfant</li>
                 <li><strong>7 illustrations uniques</strong> — générées par IA, dans un style professionnel, avec un personnage qui correspond à votre enfant</li>
                 <li><strong>Une couverture personnalisée</strong> — avec le titre du conte et le nom de votre enfant</li>
                 <li><strong>Un PDF téléchargeable</strong> — lisible sur téléphone, tablette ou ordinateur, imprimable</li>

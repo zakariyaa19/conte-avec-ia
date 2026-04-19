@@ -141,7 +141,7 @@ const BlogArticleFoi1: React.FC = () => {
                 <li>Transmettre la douceur et la bienveillance à travers des gestes simples</li>
                 <li>Créer un sentiment de sécurité : « tu es aimé, tu es protégé »</li>
               </ul>
-              <p><em>Le conte est court (6 pages), avec des illustrations très colorées et des phrases simples. Le prénom est répété à chaque page.</em></p>
+              <p><em>Le conte est court (3 pages), avec des illustrations très colorées et des phrases simples. Le prénom est répété à chaque page.</em></p>
 
               <h3>3-5 ans : gratitude, partage et bonté</h3>
               <p>

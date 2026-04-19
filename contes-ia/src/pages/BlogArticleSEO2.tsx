@@ -139,7 +139,7 @@ const BlogArticleSEO2: React.FC = () => {
                 <strong>Contedia</strong> représente la nouvelle génération du <strong>livre personnalisé par IA</strong>. Contrairement aux plateformes classiques qui insèrent simplement le prénom dans un modèle, l'intelligence artificielle crée une histoire <strong>100% unique</strong> à chaque commande. Le texte, les illustrations et même la couverture sont générés sur mesure.
               </p>
               <p>
-                Quand nous avons testé avec « Léa, 5 ans, thème aventure en forêt », le résultat nous a surpris : une histoire de 6 pages avec des illustrations en style <Link to="/styles-illustration">Animation 3D</Link> qui ressemblaient réellement au profil décrit. Aucun autre service n'offre ce niveau de personnalisation.
+                Quand nous avons testé avec « Léa, 5 ans, thème aventure en forêt », le résultat nous a surpris : une histoire de 3 pages avec des illustrations en style <Link to="/styles-illustration">Animation 3D</Link> qui ressemblaient réellement au profil décrit. Aucun autre service n'offre ce niveau de personnalisation.
               </p>
               <ul>
                 <li><strong>Personnalisation</strong> : 5/5 — Histoire entièrement unique, photo intégrée dans les illustrations, jusqu'à 5 personnages secondaires</li>
