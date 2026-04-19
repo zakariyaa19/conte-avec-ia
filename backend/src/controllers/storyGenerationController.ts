@@ -710,35 +710,21 @@ async function runGenerationPipeline(orderId: string, order: any, genLogId: stri
 
     const storyText = await generateStoryText(textParams, title);
     logStep('text', 'completed');
-
-    // Cliffhanger summary : question hook pour le paywall (uniquement version gratuite 5p)
-    let cliffhangerSummary: string | null = null;
-    if (!isClubOrder) {
-      try {
-        cliffhangerSummary = await generateCliffhangerSummary(
-          storyText.paragraphs,
-          textParams.protagonistName,
-          textParams.language
-        );
-        if (cliffhangerSummary) {
-          console.log(`[Generation] Cliffhanger summary: "${cliffhangerSummary}"`);
-        }
-      } catch (err: any) {
-        console.warn('[Generation] Cliffhanger summary generation failed (non-blocking):', err?.message);
-      }
-    }
-
-    // Cache text in DB
-    await prisma.order.update({
-      where: { id: orderId },
-      data: {
-        storyTextJson: JSON.stringify(storyText.paragraphs),
-        coverTitle: storyText.title,
-        cliffhangerSummary: cliffhangerSummary || undefined,
-      }
-    });
-
     await updateProgress(orderId, 'GENERATING_TEXT', 10);
+
+    // Cliffhanger summary : lance en PARALLELE avec les images (non-bloquant)
+    // Au lieu d'attendre 3-5s de plus avant de lancer les images
+    let cliffhangerPromise: Promise<string | null> = Promise.resolve(null);
+    if (!isClubOrder) {
+      cliffhangerPromise = generateCliffhangerSummary(
+        storyText.paragraphs,
+        textParams.protagonistName,
+        textParams.language
+      ).catch((err: any) => {
+        console.warn('[Generation] Cliffhanger summary generation failed (non-blocking):', err?.message);
+        return null;
+      });
+    }
 
     // --- Fetch first illustration from preview (if available) ---
     let firstIllustrationBuffer: Buffer | undefined;
@@ -860,6 +846,12 @@ async function runGenerationPipeline(orderId: string, order: any, genLogId: stri
     pdfBuffer = null;
     global.gc?.();
 
+    // Attendre le cliffhanger summary (lance en parallele des images — devrait etre fini)
+    const cliffhangerSummary = await cliffhangerPromise;
+    if (cliffhangerSummary) {
+      console.log(`[Generation] Cliffhanger summary: "${cliffhangerSummary}"`);
+    }
+
     // Update status with Cloudinary URL — mark as GENERATED so admin can deliver
     await prisma.order.update({
       where: { id: orderId },
@@ -869,6 +861,9 @@ async function runGenerationPipeline(orderId: string, order: any, genLogId: stri
         storyStatus: 'DISPONIBLE',
         generationProgress: 100,
         generatedAt: new Date(),
+        storyTextJson: JSON.stringify(storyText.paragraphs),
+        coverTitle: storyText.title,
+        cliffhangerSummary: cliffhangerSummary || undefined,
         ...(illustrationUrls.length > 0 && { illustrationUrlsJson: JSON.stringify(illustrationUrls) }),
       }
     });

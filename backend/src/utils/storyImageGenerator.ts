@@ -419,23 +419,19 @@ export async function generateStoryImages(
   // Skip first image index if we already have it from preview
   const startIndex = hasExistingFirst ? 1 : 0;
 
-  for (let i = startIndex; i < indices.length; i++) {
-    const progressIndex = hasExistingFirst ? i - 1 : i;
-    if (onProgress) onProgress(progressIndex, totalImages);
-
+  // Helper : genere UNE image avec retry logic (4 tentatives, safety fallback, rate limit handling)
+  const generateOneImage = async (i: number): Promise<Buffer> => {
     const paragraphIndex = indices[i];
 
     if (isDryRun) {
       console.log(`[StoryImageGenerator] Dry run: placeholder ${i + 1}/${totalImages} (paragraphe ${paragraphIndex + 1})`);
-      images.push(generatePlaceholderImage(i + 1, totalImages));
       await new Promise(r => setTimeout(r, 200));
-      continue;
+      return generatePlaceholderImage(i + 1, totalImages);
     }
 
-    const prompt = buildPageImagePrompt(params, visualBible, paragraphs[paragraphIndex], i + 1, indices.length, hasReferenceImage);
-
+    const basePrompt = buildPageImagePrompt(params, visualBible, paragraphs[paragraphIndex], i + 1, indices.length, hasReferenceImage);
     let lastError: Error | null = null;
-    let currentPrompt = prompt;
+    let currentPrompt = basePrompt;
 
     for (let attempt = 0; attempt < 4; attempt++) {
       try {
@@ -445,17 +441,10 @@ export async function generateStoryImages(
           await new Promise(r => setTimeout(r, delay));
         }
 
-        // Attempt 2: nettoyer le paragraphe des mots sensibles
         if (attempt === 1 && lastError?.message?.includes('safety')) {
           console.log(`[StoryImageGenerator] Safety reject — nettoyage prompt image ${i + 1}`);
-          currentPrompt = buildPageImagePrompt(
-            params, visualBible,
-            sanitizeParagraphForImage(paragraphs[paragraphIndex]),
-            i + 1, indices.length, hasReferenceImage
-          );
+          currentPrompt = buildPageImagePrompt(params, visualBible, sanitizeParagraphForImage(paragraphs[paragraphIndex]), i + 1, indices.length, hasReferenceImage);
         }
-
-        // Attempt 3: prompt ultra-simplifie (juste le personnage + style + scene generique)
         if (attempt === 2 && lastError?.message?.includes('safety')) {
           console.log(`[StoryImageGenerator] Safety reject x2 — prompt simplifie image ${i + 1}`);
           currentPrompt = `${visualBible}\n\nCREATE A SCENE:\n${params.protagonistName} in a happy, colorful scene with warm lighting. The character is smiling and having a wonderful time.\n\nPortrait format (2:3 vertical), full illustration, no borders.\nCRITICAL: Absolutely NO text anywhere. Pure illustration only.`;
@@ -463,96 +452,76 @@ export async function generateStoryImages(
 
         const openai = getOpenAI();
         let imageData: string | undefined;
-
-        const IMAGE_TIMEOUT = 120_000; // 2 minutes max par image
+        const IMAGE_TIMEOUT = 120_000;
 
         if (referenceFile) {
           const response = await withTimeout(
-            openai.images.edit({
-              model: 'gpt-image-1',
-              image: referenceFile,
-              prompt: currentPrompt,
-              n: 1,
-              size: imageSize as any,
-              quality: 'medium',
-            }),
-            IMAGE_TIMEOUT,
-            `image ${i + 1} (edit)`
+            openai.images.edit({ model: 'gpt-image-1', image: referenceFile, prompt: currentPrompt, n: 1, size: imageSize as any, quality: 'medium' }),
+            IMAGE_TIMEOUT, `image ${i + 1} (edit)`
           );
           imageData = response.data?.[0]?.b64_json;
-
           if (!imageData && response.data?.[0]?.url) {
             const resp = await fetch(response.data[0].url);
-            const arrBuf = await resp.arrayBuffer();
-            images.push(Buffer.from(arrBuf));
-            console.log(`[StoryImageGenerator] Image ${i + 1}/${totalImages} generee (via URL)`);
-            lastError = null;
-            break;
+            return Buffer.from(await resp.arrayBuffer());
           }
         } else {
           const response = await withTimeout(
-            openai.images.generate({
-              model: 'gpt-image-1',
-              prompt: currentPrompt,
-              n: 1,
-              size: imageSize as any,
-              quality: 'medium',
-            }),
-            IMAGE_TIMEOUT,
-            `image ${i + 1} (generate)`
+            openai.images.generate({ model: 'gpt-image-1', prompt: currentPrompt, n: 1, size: imageSize as any, quality: 'medium' }),
+            IMAGE_TIMEOUT, `image ${i + 1} (generate)`
           );
           imageData = response.data?.[0]?.b64_json;
-
           if (!imageData && response.data?.[0]?.url) {
             const resp = await fetch(response.data[0].url);
-            const arrBuf = await resp.arrayBuffer();
-            images.push(Buffer.from(arrBuf));
-            console.log(`[StoryImageGenerator] Image ${i + 1}/${totalImages} generee (via URL, sans ref)`);
-            lastError = null;
-            break;
+            return Buffer.from(await resp.arrayBuffer());
           }
         }
 
-        if (!imageData) {
-          throw new Error(`Pas d'image generee pour l'image ${i + 1}`);
-        }
-
-        images.push(Buffer.from(imageData, 'base64'));
-        console.log(`[StoryImageGenerator] Image ${i + 1}/${totalImages} generee avec succes${attempt > 0 ? ` (attempt ${attempt + 1})` : ''}`);
-        lastError = null;
-        break;
+        if (!imageData) throw new Error(`Pas d'image generee pour l'image ${i + 1}`);
+        console.log(`[StoryImageGenerator] Image ${i + 1}/${totalImages} generee${attempt > 0 ? ` (attempt ${attempt + 1})` : ''}`);
+        return Buffer.from(imageData, 'base64');
 
       } catch (error: any) {
         lastError = error;
         console.error(`[StoryImageGenerator] Erreur image ${i + 1}, tentative ${attempt + 1}:`, error.message);
-
         const isSafety = error.status === 400 && (error.message?.includes('safety') || error.message?.includes('rejected'));
         const isRateLimit = error.status === 429 || error.message?.includes('429');
-
         if (isRateLimit) {
-          const delay = Math.pow(2, attempt + 1) * 10000;
-          console.log(`[StoryImageGenerator] Rate limit, attente ${delay}ms`);
-          await new Promise(r => setTimeout(r, delay));
+          await new Promise(r => setTimeout(r, Math.pow(2, attempt + 1) * 10000));
         }
-
-        // Marquer l'erreur comme safety pour les prochaines tentatives
-        if (isSafety) {
-          lastError = new Error(`safety: ${error.message}`);
-        }
+        if (isSafety) lastError = new Error(`safety: ${error.message}`);
       }
     }
 
-    // DERNIER RECOURS: si toutes les tentatives echouent, utiliser un placeholder
-    // plutot que de crasher toute la generation du livre
-    if (lastError) {
-      console.error(`[StoryImageGenerator] TOUTES les tentatives ont echoue pour image ${i + 1} — utilisation placeholder`);
-      images.push(generatePlaceholderImage(i + 1, totalImages));
-      // On continue la generation au lieu de throw
+    console.error(`[StoryImageGenerator] TOUTES tentatives echouees pour image ${i + 1} — placeholder`);
+    return generatePlaceholderImage(i + 1, totalImages);
+  };
+
+  // ══════ GENERATION PARALLELE ══════
+  // FREE (3 images) : toutes en parallele (~15s au lieu de ~45s)
+  // CLUB (20 images) : par batch de 4 pour eviter les rate limits OpenAI
+  const BATCH_SIZE = isClub ? 4 : indices.length; // FREE = tout en parallele
+  const indicesToGenerate = indices.slice(startIndex);
+
+  for (let batchStart = 0; batchStart < indicesToGenerate.length; batchStart += BATCH_SIZE) {
+    const batch = indicesToGenerate.slice(batchStart, batchStart + BATCH_SIZE);
+    const batchIndices = batch.map((_, j) => startIndex + batchStart + j);
+
+    console.log(`[StoryImageGenerator] Batch ${Math.floor(batchStart / BATCH_SIZE) + 1}: generating ${batch.length} images in parallel (indices ${batchIndices.map(i => i + 1).join(', ')})`);
+
+    const batchResults = await Promise.all(
+      batchIndices.map(i => generateOneImage(i))
+    );
+
+    images.push(...batchResults);
+
+    if (onProgress) {
+      const completed = images.length;
+      onProgress(completed - (hasExistingFirst ? 1 : 0), totalImages);
     }
 
-    // Delai entre les images pour eviter les rate limits
-    if (i < totalImages - 1) {
-      await new Promise(r => setTimeout(r, 2000));
+    // Delai entre les batches pour eviter rate limits (pas entre les images d'un meme batch)
+    if (batchStart + BATCH_SIZE < indicesToGenerate.length) {
+      await new Promise(r => setTimeout(r, 1500));
     }
   }
 
