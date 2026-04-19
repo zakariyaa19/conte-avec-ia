@@ -978,7 +978,7 @@ export const StoryDetailPage: React.FC = () => {
             isCliffhanger={
               !isClub
               && Number(story.price || 0) === 0
-              && (paragraphs?.length || 0) <= 5 // Exactement 5 paragraphes = cliffhanger (old stories ont 6+, completed ont 12)
+              && (paragraphs?.length || 0) <= 5 // 3 paragraphes (nouveau) ou 5 (ancien format) = cliffhanger, completed = 20
               && !isCompletionReturn // Jamais cliffhanger si on revient de paiement
             }
             cliffhangerSummary={(story as any).cliffhangerSummary || undefined}

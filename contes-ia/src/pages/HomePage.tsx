@@ -1227,7 +1227,7 @@ const slidesData = [
     label: 'Recevoir',
     stepLabel: 'Étape 2',
     title: 'Recevez votre aperçu gratuit',
-    subtitle: 'Pas de carte bancaire. Entrez votre email et recevez les 5 premières pages de votre conte en quelques minutes.',
+    subtitle: 'Pas de carte bancaire. Entrez votre email et recevez les premières pages de votre conte en quelques minutes.',
     bgColor: `${theme.colors.accent.softPink}25`,
     illustrationId: 'order' as const
   },
