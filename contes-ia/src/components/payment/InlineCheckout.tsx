@@ -186,10 +186,29 @@ export const InlineCheckout: React.FC<InlineCheckoutProps> = ({
         if (res.success && res.clientSecret) {
           setClientSecret(res.clientSecret);
         } else {
+          // Erreur métier (400) — fallback vers l'ancien flow Checkout redirect
+          console.warn('[InlineCheckout] Intent failed, falling back to Checkout Session:', res.message);
+          try {
+            const fallback = await ApiService.createCompletionSession(orderId);
+            if (fallback.url) { window.location.href = fallback.url; return; }
+          } catch { /* ignore fallback failure */ }
           setLoadError(res.message || 'Impossible d\'initialiser le paiement.');
         }
       } catch (err: any) {
-        if (!cancelled) setLoadError('Erreur de connexion au serveur de paiement.');
+        if (cancelled) return;
+        console.warn('[InlineCheckout] Intent error, falling back to Checkout Session:', err?.message);
+        // Fallback automatique vers l'ancien flow (redirect Checkout)
+        try {
+          const fallback = await ApiService.createCompletionSession(orderId);
+          if (fallback.url) { window.location.href = fallback.url; return; }
+        } catch { /* ignore */ }
+        // Si même le fallback échoue, afficher l'erreur
+        const msg = err?.message || '';
+        if (msg && !msg.includes('Failed to fetch') && !msg.includes('NetworkError')) {
+          setLoadError(msg);
+        } else {
+          setLoadError('Erreur de connexion au serveur de paiement. Vérifiez votre connexion internet.');
+        }
       }
     })();
     return () => { cancelled = true; };
