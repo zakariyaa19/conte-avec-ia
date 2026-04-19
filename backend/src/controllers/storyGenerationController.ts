@@ -1216,8 +1216,8 @@ export async function autoCompleteStory(orderId: string): Promise<void> {
       }
     }
 
-    // 4. Générer les 12 images complètes (avec isClub=true pour utiliser CLUB_IMAGE_PARAGRAPH_INDICES)
-    // On passe TOUS les 12 paragraphes + l'image de couverture comme référence visuelle
+    // 4. Générer les 20 images complètes (avec isClub=true pour utiliser CLUB_IMAGE_PARAGRAPH_INDICES)
+    // On passe TOUS les 20 paragraphes + l'image de couverture comme référence visuelle
     // pour que gpt-image-1 maintienne la cohérence du personnage sur toutes les pages.
     const { generateStoryImages } = await import('../utils/storyImageGenerator');
 
@@ -1243,7 +1243,7 @@ export async function autoCompleteStory(orderId: string): Promise<void> {
       // Fallback : si les images existantes n'ont pas pu être récupérées, utiliser toutes les nouvelles
       allImages = fullImageResult.images;
     }
-    const imageResult = { images: allImages.slice(0, 12) }; // Sécurité: max 12
+    const imageResult = { images: allImages.slice(0, 20) }; // Sécurité: max 20 (livre complet)
 
     console.log(`[Completion] Final image count: ${imageResult.images.length} (${existingImages.length} kept + ${imageResult.images.length - existingImages.length} new)`);
 
