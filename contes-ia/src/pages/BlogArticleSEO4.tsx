@@ -41,11 +41,11 @@ const BlogArticleSEO4: React.FC = () => {
     },
     {
       question: "Combien coûte un livre conte personnalisé ?",
-      answer: "Premier livre : gratuit sur Contedia. Livres suivants : 3,99€ à l'unité. Abonnement Club : 9,99€/mois pour 4 livres de 12 pages illustrées (soit 2,50€ le livre). Comparé aux 25-40€ des livres imprimés classiques."
+      answer: "Premier livre : gratuit sur Contedia. Livres suivants : 3,99€ à l'unité. Abonnement Club : 9,99€/mois pour 4 livres de 20 pages illustrées (soit 2,50€ le livre). Comparé aux 25-40€ des livres imprimés classiques."
     },
     {
       question: "Le conte personnalisé est-il adapté aux tout-petits ?",
-      answer: "Oui ! Contedia adapte automatiquement le vocabulaire, la longueur et les illustrations à l'âge. 0-2 ans : phrases courtes, images colorées, 6 pages. 3-5 ans : aventures simples avec personnages secondaires. 6-8 ans : histoires complexes avec rebondissements."
+      answer: "Oui ! Contedia adapte automatiquement le vocabulaire, la longueur et les illustrations à l'âge. 0-2 ans : phrases courtes, images colorées, 3 pages. 3-5 ans : aventures simples avec personnages secondaires. 6-8 ans : histoires complexes avec rebondissements."
     },
     {
       question: "Peut-on offrir un conte personnalisé en cadeau ?",
@@ -185,9 +185,9 @@ const BlogArticleSEO4: React.FC = () => {
                 Contedia adapte <strong>automatiquement</strong> le vocabulaire, la longueur et le niveau de complexité :
               </p>
               <ul>
-                <li><strong>0-2 ans</strong> — Phrases très courtes, mots simples, illustrations très colorées avec des formes rondes. 6 pages. Le prénom est répété à chaque page pour créer la familiarité.</li>
-                <li><strong>3-5 ans</strong> — C'est <strong>l'âge d'or du conte personnalisé</strong>. Aventures simples avec un début, un défi et une fin heureuse. Personnages secondaires possibles. 6 à 12 pages. L'enfant comprend qu'il EST le héros.</li>
-                <li><strong>6-8 ans</strong> — Histoires plus longues avec des rebondissements et du vocabulaire enrichi. Thèmes complexes (mystère, enquête, voyage dans le temps). 12 pages. L'enfant peut <strong>lire seul</strong> — et il VEUT le faire car c'est SON histoire.</li>
+                <li><strong>0-2 ans</strong> — Phrases très courtes, mots simples, illustrations très colorées avec des formes rondes. 3 pages. Le prénom est répété à chaque page pour créer la familiarité.</li>
+                <li><strong>3-5 ans</strong> — C'est <strong>l'âge d'or du conte personnalisé</strong>. Aventures simples avec un début, un défi et une fin heureuse. Personnages secondaires possibles. 3 à 20 pages. L'enfant comprend qu'il EST le héros.</li>
+                <li><strong>6-8 ans</strong> — Histoires plus longues avec des rebondissements et du vocabulaire enrichi. Thèmes complexes (mystère, enquête, voyage dans le temps). 20 pages. L'enfant peut <strong>lire seul</strong> — et il VEUT le faire car c'est SON histoire.</li>
               </ul>
 
               <h2 id="cadeau">Le cadeau que les parents et grands-parents adorent offrir</h2>
@@ -214,10 +214,10 @@ const BlogArticleSEO4: React.FC = () => {
                 Voici quelques <strong>contes personnalisés</strong> créés par de vrais parents. Vous pouvez les <Link to="/exemples">lire en lecture interactive</Link> sur notre site :
               </p>
               <ul>
-                <li><strong>« Les Aventures Magiques d'Emmie »</strong> — Emmie, 7 ans, explore une forêt enchantée avec une fée et aide à retrouver un cristal magique. Style Animation 3D. 6 pages.</li>
-                <li><strong>« Rayan et le Dino de Pâques »</strong> — Rayan, 3 ans, part à la chasse aux œufs avec Luna, son bouledogue. Ensemble, ils découvrent un œuf de dinosaure ! Style 3D. 12 pages.</li>
-                <li><strong>« Timéo et le fruit enchanté de Noël »</strong> — Timéo, 4 ans, trouve un fruit lumineux dans le jardin de Mamie et part au Pôle Nord avec son chien Rex. Style Kawaii. 12 pages.</li>
-                <li><strong>« Enzo et les Coquillages Magiques »</strong> — Enzo, 4 ans, découvre des coquillages qui ouvrent des portails féeriques le jour de son anniversaire. Style Manga. 12 pages.</li>
+                <li><strong>« Les Aventures Magiques d'Emmie »</strong> — Emmie, 7 ans, explore une forêt enchantée avec une fée et aide à retrouver un cristal magique. Style Animation 3D. 3 pages.</li>
+                <li><strong>« Rayan et le Dino de Pâques »</strong> — Rayan, 3 ans, part à la chasse aux œufs avec Luna, son bouledogue. Ensemble, ils découvrent un œuf de dinosaure ! Style 3D. 20 pages.</li>
+                <li><strong>« Timéo et le fruit enchanté de Noël »</strong> — Timéo, 4 ans, trouve un fruit lumineux dans le jardin de Mamie et part au Pôle Nord avec son chien Rex. Style Kawaii. 20 pages.</li>
+                <li><strong>« Enzo et les Coquillages Magiques »</strong> — Enzo, 4 ans, découvre des coquillages qui ouvrent des portails féeriques le jour de son anniversaire. Style Manga. 20 pages.</li>
               </ul>
 
               <div className="article-cta">

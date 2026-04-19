@@ -718,7 +718,7 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
                     {/* CTA PRINCIPAL — focus total, pulsant, GROS */}
                     <PaywallCta onClick={handleCompletion} style={{ marginBottom: 6 }}>
                       <span>Offrir la suite &agrave; {protagonistName}</span>
-                      <span className="sub">2,99&euro; &middot; 12 pages illustr&eacute;es &middot; PDF inclus</span>
+                      <span className="sub">2,99&euro; &middot; 20 pages illustr&eacute;es &middot; PDF inclus</span>
                     </PaywallCta>
 
                     {/* Trust badges — 1 ligne compacte */}

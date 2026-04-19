@@ -1325,9 +1325,9 @@ export const DashboardPage: React.FC = () => {
                       </BookShareBtn>
                     )}
 
-                    {/* Badge "Chapitre" + bouton "Finir l'histoire" pour les livres bridés */}
+                    {/* CTA "Finir l'histoire" pour les livres bridés (cliffhanger) */}
                     {!isClub && Number(story.price || 0) === 0 && story.storyStatus === 'DISPONIBLE' && (() => {
-                      // Vérifier si c'est un chapitre bridé (5 pages ou moins)
+                      // Vérifier si c'est un chapitre bridé (3 pages ou moins, ou ancien format 5 pages)
                       let pCount = 0;
                       try {
                         const parsed = story.storyTextJson ? JSON.parse(story.storyTextJson) : [];
@@ -1340,28 +1340,27 @@ export const DashboardPage: React.FC = () => {
                           onClick={(e) => { e.stopPropagation(); navigate(`/dashboard/story/${story.id}`); }}
                           style={{
                             position: 'absolute', bottom: 0, left: 0, right: 0,
-                            background: 'linear-gradient(0deg, rgba(26,16,64,0.95) 0%, rgba(26,16,64,0.8) 70%, transparent 100%)',
-                            padding: '32px 10px 10px',
+                            background: 'linear-gradient(0deg, rgba(26,16,64,0.97) 0%, rgba(26,16,64,0.85) 60%, transparent 100%)',
+                            padding: '36px 10px 12px',
                             borderRadius: '0 0 8px 8px',
                             textAlign: 'center',
                             zIndex: 5,
                           }}
                         >
                           <p style={{
-                            fontSize: 9, fontWeight: 700, color: '#fbbf24',
-                            textTransform: 'uppercase', letterSpacing: '1px',
-                            margin: '0 0 4px',
+                            fontSize: 9, fontWeight: 700, color: 'rgba(255,255,255,0.5)',
+                            margin: '0 0 6px',
                           }}>
-                            Chapitre 1 / 2
+                            Apercu gratuit · {pCount} pages
                           </p>
                           <div style={{
                             display: 'inline-block',
-                            background: 'linear-gradient(135deg, #a78bfa, #f093fb)',
-                            color: 'white', fontSize: 10, fontWeight: 800,
-                            padding: '5px 12px', borderRadius: 8,
-                            boxShadow: '0 2px 8px rgba(167,139,250,0.4)',
+                            background: 'linear-gradient(135deg, #FF6B6B, #FF8E53)',
+                            color: 'white', fontSize: 11, fontWeight: 800,
+                            padding: '7px 16px', borderRadius: 10,
+                            boxShadow: '0 3px 12px rgba(255,107,107,0.4)',
                           }}>
-                            Finir — 2,99€
+                            Finir l'histoire — 2,99€
                           </div>
                         </div>
                       );

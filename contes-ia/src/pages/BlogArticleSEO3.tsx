@@ -240,7 +240,7 @@ const BlogArticleSEO3: React.FC = () => {
                 <li><strong>Étape 3 : C'est prêt</strong> — L'IA génère une histoire unique avec des illustrations. En 5 minutes, le livre est dans votre bibliothèque.</li>
               </ul>
               <p>
-                Le résultat : un livre illustré de 6 à 12 pages, lisible sur n'importe quel écran. Vous pouvez le lire ensemble au coucher, comme un <Link to="/blog/conte-personnalise-rituel-coucher">rituel du soir personnalisé</Link>. Et le partager avec toute la famille en un clic.
+                Le résultat : un livre illustré de 3 à 20 pages, lisible sur n'importe quel écran. Vous pouvez le lire ensemble au coucher, comme un <Link to="/blog/conte-personnalise-rituel-coucher">rituel du soir personnalisé</Link>. Et le partager avec toute la famille en un clic.
               </p>
 
               <h2 id="temoignages">Ce que les parents en pensent</h2>

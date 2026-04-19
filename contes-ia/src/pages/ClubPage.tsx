@@ -483,11 +483,11 @@ export const ClubPage: React.FC = () => {
     <Page>
       <SEOHead
         title="Club Contedia — 4 Livres Personnalisés par Mois | 1,99€ le 1er mois"
-        description="Rejoignez le Club Contedia : 4 livres personnalisés par mois, 12 pages illustrées, 9 styles d'illustration. 1,99€ le premier mois puis 9,99€/mois."
+        description="Rejoignez le Club Contedia : 4 livres personnalisés par mois, 20 pages illustrées, 9 styles d'illustration. 1,99€ le premier mois puis 9,99€/mois."
       />
       <SchemaProduct
         name="Club des Histoires Uniques — Abonnement mensuel"
-        description="4 livres personnalisés par mois, 12 pages illustrées, 9 styles d'illustration, personnages secondaires, multi-langues. Sans engagement."
+        description="4 livres personnalisés par mois, 20 pages illustrées, 9 styles d'illustration, personnages secondaires, multi-langues. Sans engagement."
         price="9.99"
       />
       <Header />

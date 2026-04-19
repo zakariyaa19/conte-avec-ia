@@ -108,10 +108,10 @@ function buildStoryPrompt(params: StoryTextParams): string {
 
   const religionNote = params.customReligion || params.religion || '';
 
-  return `Tu es un auteur de livres pour enfants reconnu. Ecris le DEBUT d'un conte en ${language} de EXACTEMENT 5 paragraphes.
+  return `Tu es un auteur de livres pour enfants reconnu. Ecris le DEBUT d'un conte en ${language} de EXACTEMENT 3 paragraphes.
 
 IMPORTANT — STRUCTURE CLIFFHANGER :
-Ce texte est le DEBUT d'une histoire. Il ne doit PAS avoir de fin. L'histoire doit se COUPER au moment le plus palpitant, le plus intense, pour donner envie de lire la suite.
+Ce texte est le TOUT DEBUT d'une histoire. Il ne doit PAS avoir de fin. L'histoire doit se COUPER net au moment le plus palpitant pour donner une envie IRRESISTIBLE de lire la suite. Le lecteur doit ressentir une frustration positive : il DOIT connaitre la suite.
 
 PROTAGONISTE :
 - Prenom : ${name}
@@ -128,18 +128,16 @@ ${message ? `MESSAGE CENTRAL : ${message} — ce message doit etre le fil conduc
 ${religionNote ? `CONTEXTE RELIGIEUX/SPIRITUEL : ${religionNote} (integrer avec respect et delicatesse)` : ''}
 ${params.specialEvents ? `EVENEMENT SPECIAL : ${params.specialEvents} — integrer cet evenement comme element important de l'histoire` : ''}
 
-STRUCTURE NARRATIVE OBLIGATOIRE (5 paragraphes) :
-- Paragraphe 1 : INTRODUCTION — Presenter ${name}, son univers, poser le decor de maniere enchantee
-- Paragraphe 2 : MISE EN PLACE — Un element declencheur lance l'aventure
-- Paragraphe 3 : DEVELOPPEMENT — ${name} avance dans l'aventure, decouvre, explore
-- Paragraphe 4 : MONTEE EN TENSION — Un defi, un mystere, une decouverte importante
-- Paragraphe 5 : CLIFFHANGER — Le moment le plus intense de l'histoire. ${name} est sur le point de decouvrir quelque chose d'incroyable, de resoudre le mystere, d'affronter le defi... mais le texte SE COUPE ICI. La derniere phrase doit creer un suspense irresistible (une porte qui s'ouvre, une lumiere qui brille, un bruit mysterieux, un personnage qui apparait...). NE PAS resoudre la situation.
+STRUCTURE NARRATIVE OBLIGATOIRE (3 paragraphes — rythme RAPIDE) :
+- Paragraphe 1 : INTRODUCTION IMMERSIVE — Presenter ${name} dans un decor enchante. Poser l'univers en quelques phrases fortes. Le lecteur doit etre immediatement captive.
+- Paragraphe 2 : DECLENCHEUR + AVENTURE — Un evenement inattendu lance l'aventure. ${name} decouvre quelque chose d'extraordinaire, rencontre un personnage fascinant, ou se retrouve dans une situation incroyable. Monter la tension RAPIDEMENT.
+- Paragraphe 3 : CLIFFHANGER INTENSE — Le moment le plus palpitant. ${name} est sur le point de decouvrir un secret, d'ouvrir une porte mystérieuse, d'affronter un defi... mais le texte SE COUPE NET. La derniere phrase doit creer un suspense IRRESISTIBLE. Le parent et l'enfant doivent absolument vouloir connaitre la suite. NE PAS resoudre. NE PAS donner d'indice sur la resolution.
 
 EXIGENCES :
 1. PAS DE FIN. PAS DE RESOLUTION. PAS DE MORALE. L'histoire est INACHEVEE.
 2. Vocabulaire adapte a un enfant de ${ageForVocab} ans
-3. Le prenom "${name}" doit apparaitre regulierement
-4. Chaque paragraphe fait 2 a 3 phrases MAXIMUM (tres court, aere, optimise pour lecture mobile plein ecran)
+3. Le prenom "${name}" doit apparaitre dans CHAQUE paragraphe
+4. Chaque paragraphe fait 3 a 4 phrases (assez pour immerger mais pas trop long — optimise pour lecture mobile)
 ${params.hobbies ? `5. Les passions de ${name} (${params.hobbies}) doivent etre integrees naturellement dans l'histoire` : '5. Integrer des details personnels pour rendre l\'histoire unique'}
 ${params.favoriteDish ? `6. Mentionner le plat favori (${params.favoriteDish}) a un moment de l'histoire` : ''}
 7. ${secondaryChars ? `CRUCIAL : Chaque personnage secondaire doit apparaitre avec des actions concretes et des dialogues.` : 'L\'histoire doit etre captivante, magique et positive'}
@@ -148,9 +146,9 @@ ${!hasSpecificAge ? `9. IMPORTANT : Ne mentionne JAMAIS un age precis pour ${nam
 10. Le dernier paragraphe DOIT finir sur des points de suspension (...) pour marquer le suspense
 
 FORMAT DE REPONSE :
-Reponds UNIQUEMENT avec un JSON array de EXACTEMENT 5 strings (chaque string = 1 paragraphe).
+Reponds UNIQUEMENT avec un JSON array de EXACTEMENT 3 strings (chaque string = 1 paragraphe).
 Pas de titre, pas de commentaire, JUSTE le JSON array.
-Exemple : ["Premier paragraphe...", "Deuxieme paragraphe...", ..., "Cinquieme paragraphe avec cliffhanger..."]`;
+Exemple : ["Premier paragraphe...", "Deuxieme paragraphe...", "Troisieme paragraphe avec cliffhanger..."]`;
 }
 
 // --- Club Premium prompt (12 paragraphs, rich narrative) ---
@@ -185,7 +183,7 @@ function buildClubStoryPrompt(params: StoryTextParams): string {
   const religionNote = params.customReligion || params.religion || '';
   const narratedBy = params.narratedBy || params.creatorName || '';
 
-  return `Tu es un auteur professionnel de livres premium pour enfants. Ecris un conte LONG et IMMERSIF en ${language} de EXACTEMENT 12 paragraphes.
+  return `Tu es un auteur professionnel de livres premium pour enfants. Ecris un conte LONG et IMMERSIF en ${language} de EXACTEMENT 20 paragraphes.
 
 PROTAGONISTE :
 - Prenom : ${name}
@@ -197,7 +195,7 @@ ${params.favoriteDish ? `- Plat favori : ${params.favoriteDish} — l'integrer n
 ${secondaryChars ? `PERSONNAGES SECONDAIRES (CRUCIAL — chacun doit avoir un VRAI role) :
 ${secondaryChars}
 Regles strictes :
-- Chaque personnage secondaire doit apparaitre dans AU MOINS 3 paragraphes
+- Chaque personnage secondaire doit apparaitre dans AU MOINS 5 paragraphes
 - Ils doivent avoir des dialogues, des actions, des emotions
 - Ils interagissent activement avec ${name}
 - Les animaux ont un comportement coherent et attachant
@@ -209,30 +207,31 @@ ${message ? `MESSAGE CENTRAL : ${message} — ce theme est le FIL ROUGE de toute
 ${religionNote ? `CONTEXTE SPIRITUEL : ${religionNote} (integrer avec respect et delicatesse)` : ''}
 ${params.specialEvents ? `EVENEMENT SPECIAL : ${params.specialEvents} — element important de l'intrigue` : ''}
 
-STRUCTURE NARRATIVE OBLIGATOIRE (12 paragraphes) :
-- Paragraphes 1-2 : INTRODUCTION — Presenter ${name}, son monde, ses proches. Creer l'atmosphere.
-- Paragraphe 3 : DECLENCHEUR — Un evenement inattendu lance l'aventure.
-- Paragraphes 4-6 : DEVELOPPEMENT — ${name} explore, decouvre, progresse. Rencontres et interactions.
-- Paragraphes 7-8 : OBSTACLE — Un defi majeur. ${name} doit trouver une solution. Moment de doute.
-- Paragraphes 9-10 : RESOLUTION — ${name} surmonte l'obstacle grace a ses qualites et l'aide de ses proches.
-- Paragraphe 11 : CONCLUSION — Retour au calme. Celebration. Reconnaissance.
-- Paragraphe 12 : MORALE ET OUVERTURE — Lecon apprise, formulee avec douceur.${narratedBy ? ` Terminer par "Histoire racontee par ${narratedBy}" en derniere phrase.` : ''}
+STRUCTURE NARRATIVE OBLIGATOIRE (20 paragraphes) :
+- Paragraphes 1-3 : INTRODUCTION — Presenter ${name}, son monde, ses proches. Creer l'atmosphere. Poser le decor de maniere enchantee.
+- Paragraphe 4 : DECLENCHEUR — Un evenement inattendu lance l'aventure.
+- Paragraphes 5-8 : DEVELOPPEMENT — ${name} explore, decouvre, progresse. Rencontres et interactions multiples.
+- Paragraphes 9-11 : MONTEE EN TENSION — Des defis grandissants. Decouvertes. Apprentissages.
+- Paragraphes 12-14 : OBSTACLE MAJEUR — Le plus grand defi. ${name} doit trouver une solution. Moment de doute, d'emotion.
+- Paragraphes 15-17 : RESOLUTION — ${name} surmonte l'obstacle grace a ses qualites, son courage et l'aide de ses proches.
+- Paragraphes 18-19 : CONCLUSION — Retour au calme. Celebration. Reconnaissance. Les personnages partagent un moment de joie.
+- Paragraphe 20 : MORALE ET OUVERTURE — Lecon apprise, formulee avec douceur et poesie.${narratedBy ? ` Terminer par "Histoire racontee par ${narratedBy}" en derniere phrase.` : ''}
 
 EXIGENCES QUALITE PREMIUM :
-1. Chaque paragraphe fait 3 a 4 phrases (plus riche que la version basique, mais toujours aere)
+1. Chaque paragraphe fait 3 a 4 phrases (riche mais toujours aere pour lecture mobile)
 2. Vocabulaire adapte a un enfant de ${ageForVocab} ans mais avec de la richesse
-3. Le prenom "${name}" apparait dans au moins 8 paragraphes sur 12
+3. Le prenom "${name}" apparait dans au moins 14 paragraphes sur 20
 4. Descriptions sensorielles : couleurs, sons, odeurs, textures
-5. Dialogues vivants entre les personnages (au moins 3 echanges dans l'histoire)
-6. Emotions claires et evoluant au fil de l'histoire
+5. Dialogues vivants entre les personnages (au moins 6 echanges dans l'histoire)
+6. Emotions claires et evoluant au fil de l'histoire : curiosite, excitation, peur, determination, joie
 7. Coherence parfaite entre tous les elements personnalises
 8. Ecris UNIQUEMENT en ${language} — aucun mot dans une autre langue
 ${!hasSpecificAge ? `9. NE MENTIONNE JAMAIS un age precis pour ${name}` : ''}
 
 FORMAT DE REPONSE :
-Reponds UNIQUEMENT avec un JSON array de EXACTEMENT 12 strings.
+Reponds UNIQUEMENT avec un JSON array de EXACTEMENT 20 strings.
 Pas de titre, pas de commentaire, JUSTE le JSON array.
-Exemple : ["Premier paragraphe...", "Deuxieme...", ..., "Douzieme paragraphe..."]`;
+Exemple : ["Premier paragraphe...", "Deuxieme...", ..., "Vingtieme paragraphe..."]`;
 }
 
 // --- Generate story text ---
@@ -240,7 +239,7 @@ Exemple : ["Premier paragraphe...", "Deuxieme...", ..., "Douzieme paragraphe..."
 export async function generateStoryText(params: StoryTextParams, title: string): Promise<StoryTextResult> {
   const openai = getOpenAI();
   const isClub = params.isClub === true;
-  const targetParagraphs = isClub ? 12 : 5;
+  const targetParagraphs = isClub ? 20 : 3;
   const prompt = isClub ? buildClubStoryPrompt(params) : buildStoryPrompt(params);
 
   console.log(`[StoryTextGenerator] Generating ${targetParagraphs} paragraphs (${isClub ? 'CLUB' : 'FREE'}) for:`, params.protagonistName);
@@ -342,43 +341,45 @@ ${secondaryChars ? `- Personnages secondaires :\n${secondaryChars}` : ''}
 ${religionNote ? `- Contexte spirituel : ${religionNote}` : ''}
 ${params.specialEvents ? `- Evenement special : ${params.specialEvents}` : ''}
 
-VOICI LE DEBUT DE L'HISTOIRE (5 paragraphes deja ecrits) :
+VOICI LE DEBUT DE L'HISTOIRE (${existingParagraphs.length} paragraphes deja ecrits) :
 ${existingText}
 
-REGLE ABSOLUE : La suite DOIT se derouler dans le MEME UNIVERS, avec les MEMES personnages, le MEME theme (${theme}) et le MEME ton que les 5 premiers paragraphes ci-dessus. Tu ne dois PAS changer d'univers, pas introduire de nouveaux themes, pas inventer un decor different. Tu continues EXACTEMENT la meme histoire.
+REGLE ABSOLUE : La suite DOIT se derouler dans le MEME UNIVERS, avec les MEMES personnages, le MEME theme (${theme}) et le MEME ton que les paragraphes ci-dessus. Tu ne dois PAS changer d'univers, pas introduire de nouveaux themes, pas inventer un decor different. Tu continues EXACTEMENT la meme histoire.
 
-Tu dois maintenant ecrire EXACTEMENT 7 paragraphes pour TERMINER cette histoire.
+Tu dois maintenant ecrire EXACTEMENT 17 paragraphes pour TERMINER cette histoire en beaute.
 
-STRUCTURE DE LA SUITE (7 paragraphes) :
-- Paragraphe 6 : REVELATION — La suite immediate du cliffhanger. Ce que ${name} decouvre. MEME LIEU, MEME UNIVERS.
-- Paragraphe 7 : AVENTURE — L'aventure continue dans le meme univers (${theme})
-- Paragraphe 8 : OBSTACLE — Un defi majeur se presente, en lien avec le theme "${theme}"
-- Paragraphe 9 : DETERMINATION — ${name} puise dans son courage et ses qualites${params.hobbies ? ` (ses passions : ${params.hobbies})` : ''}
-- Paragraphe 10 : RESOLUTION — ${name} surmonte le defi grace a ses qualites et l'aide de ses proches
-- Paragraphe 11 : CELEBRATION — Retour au calme, joie, reconnaissance
-- Paragraphe 12 : CONCLUSION — Morale douce et ouverture${message ? `. Le message central (${message}) doit transparaitre dans la resolution et la conclusion.` : ''}
+STRUCTURE DE LA SUITE (17 paragraphes — histoire RICHE et IMMERSIVE) :
+- Paragraphe 4 : REVELATION — La suite immediate du cliffhanger. Ce que ${name} decouvre. MEME LIEU, MEME UNIVERS.
+- Paragraphes 5-7 : AVENTURE — L'aventure s'installe. ${name} explore, decouvre, interagit avec les personnages. Dialogues et actions.
+- Paragraphes 8-10 : MONTEE EN TENSION — Des obstacles croissants, des decouvertes, des choix. Le theme "${theme}" est au coeur.
+- Paragraphes 11-13 : EPREUVE MAJEURE — Le plus grand defi. ${name} doute, cherche une solution, puise dans son courage${params.hobbies ? ` et ses passions (${params.hobbies})` : ''}.
+- Paragraphes 14-16 : RESOLUTION — ${name} surmonte l'epreuve grace a ses qualites et l'aide de ses proches. Moment emouvant.
+- Paragraphes 17-19 : CELEBRATION — Retour au calme, joie partagee, reconnaissance. Les personnages savourent la victoire.
+- Paragraphe 20 : CONCLUSION — Morale douce et ouverture poetique${message ? `. Le message central (${message}) doit transparaitre dans la resolution et la conclusion.` : ''}
 
 EXIGENCES :
-1. COHERENCE ABSOLUE avec les 5 premiers paragraphes : memes personnages, meme univers (${theme}), meme ton, meme decor
-2. ${secondaryChars ? `Les personnages secondaires doivent reapparaitre dans la suite avec des actions concretes` : 'Garder les memes personnages que dans le debut'}
+1. COHERENCE ABSOLUE avec les paragraphes existants : memes personnages, meme univers (${theme}), meme ton, meme decor
+2. ${secondaryChars ? `Les personnages secondaires doivent reapparaitre dans la suite avec des actions concretes et des dialogues` : 'Garder les memes personnages que dans le debut'}
 3. Vocabulaire adapte a un enfant de ${ageForVocab} ans
 4. Chaque paragraphe fait 3 a 4 phrases (riche mais aere)
-5. Le prenom "${name}" doit apparaitre regulierement
+5. Le prenom "${name}" doit apparaitre regulierement (dans au moins 12 paragraphes sur 17)
 6. La fin doit etre satisfaisante, positive et emouvante
-7. Ecris UNIQUEMENT en ${language}
+7. Au moins 5 echanges de dialogues dans la suite
+8. Ecris UNIQUEMENT en ${language}
 
 FORMAT DE REPONSE :
-Reponds UNIQUEMENT avec un JSON array de EXACTEMENT 7 strings (paragraphes 6 a 12).
+Reponds UNIQUEMENT avec un JSON array de EXACTEMENT 17 strings (paragraphes 4 a 20).
 Pas de titre, pas de commentaire, JUSTE le JSON array.`;
 
-  console.log(`[StoryTextGenerator] Generating continuation (7 paragraphs) for: ${name}`);
+  const targetContinuation = 17; // 3 existing + 17 new = 20 total
+  console.log(`[StoryTextGenerator] Generating continuation (${targetContinuation} paragraphs) for: ${name}`);
 
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
       const response = await openai.chat.completions.create({
         model: 'gpt-4o-mini',
         messages: [{ role: 'user', content: continuationPrompt }],
-        max_tokens: 6000,
+        max_tokens: 12000,
         temperature: 0.85,
       });
 
@@ -391,19 +392,19 @@ Pas de titre, pas de commentaire, JUSTE le JSON array.`;
 
       const continuationParagraphs = JSON.parse(jsonStr);
 
-      if (!Array.isArray(continuationParagraphs) || continuationParagraphs.length < 7) {
+      if (!Array.isArray(continuationParagraphs) || continuationParagraphs.length < targetContinuation) {
         if (attempt === 0) continue;
-        // Tolérance: si GPT retourne 5-6 au lieu de 7, on complète
-        if (Array.isArray(continuationParagraphs) && continuationParagraphs.length >= 5) {
-          while (continuationParagraphs.length < 7) continuationParagraphs.push(continuationParagraphs[continuationParagraphs.length - 1]);
+        // Tolérance: si GPT retourne un peu moins, on complète
+        if (Array.isArray(continuationParagraphs) && continuationParagraphs.length >= targetContinuation - 3) {
+          while (continuationParagraphs.length < targetContinuation) continuationParagraphs.push(continuationParagraphs[continuationParagraphs.length - 1]);
         } else {
-          throw new Error(`Continuation: ${continuationParagraphs?.length || 0} paragraphes au lieu de 7`);
+          throw new Error(`Continuation: ${continuationParagraphs?.length || 0} paragraphes au lieu de ${targetContinuation}`);
         }
       }
 
-      // Assembler l'histoire complete : 5 premiers + 7 nouveaux = 12 paragraphes
+      // Assembler l'histoire complete : 3 premiers + 17 nouveaux = 20 paragraphes
       const validContinuation = continuationParagraphs.map((p: any) => String(p));
-      const fullParagraphs = [...existingParagraphs, ...validContinuation].slice(0, 12);
+      const fullParagraphs = [...existingParagraphs, ...validContinuation].slice(0, 20);
 
       console.log(`[StoryTextGenerator] Continuation generated: ${validContinuation.length} new paragraphs, total: ${fullParagraphs.length}`);
       return { title, paragraphs: fullParagraphs };

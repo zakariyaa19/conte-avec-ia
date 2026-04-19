@@ -39,11 +39,11 @@ const BlogArticle3: React.FC = () => {
     },
     {
       question: "Un conte de fées personnalisé est-il adapté aux tout-petits ?",
-      answer: "Oui ! Pour les 0-2 ans, le conte est court (6 pages) avec des illustrations colorées et un vocabulaire simple. Pour les 3-5 ans, l'histoire est plus développée avec une aventure et un défi à surmonter. Tout s'adapte automatiquement à l'âge."
+      answer: "Oui ! Pour les 0-2 ans, le conte est court (3 pages) avec des illustrations colorées et un vocabulaire simple. Pour les 3-5 ans, l'histoire est plus développée avec une aventure et un défi à surmonter. Tout s'adapte automatiquement à l'âge."
     },
     {
       question: "Combien coûte un conte de fées personnalisé ?",
-      answer: "Le premier conte est 100% gratuit sur Contedia. Les suivants coûtent 3,99€. L'abonnement Club (9,99€/mois) inclut 4 livres de 12 pages avec 9 styles d'illustration."
+      answer: "Le premier conte est 100% gratuit sur Contedia. Les suivants coûtent 3,99€. L'abonnement Club (9,99€/mois) inclut 4 livres de 20 pages avec 9 styles d'illustration."
     },
     {
       question: "Mon enfant peut-il être accompagné d'un dragon ou d'une fée dans l'histoire ?",

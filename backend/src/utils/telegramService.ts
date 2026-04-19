@@ -481,7 +481,7 @@ ${order.secondaryCharacterAge ? `📝 Type/Âge: ${escapeHtml(order.secondaryCha
 💳 Montant : <b>${data.amount}€</b>
 
 ✅ <b>Le client a payé pour finir l'histoire !</b>
-📖 Génération du livre complet (12 pages) en cours...
+📖 Génération du livre complet (20 pages) en cours...
 
 💵💵💵💵💵💵💵💵💵💵💵💵💵💵`;
 

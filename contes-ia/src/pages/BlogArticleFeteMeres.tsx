@@ -36,7 +36,7 @@ const BlogArticleFeteMeres: React.FC = () => {
     },
     {
       question: "Combien coûte un livre personnalisé pour la fête des mères ?",
-      answer: "Sur Contedia, vous pouvez créer jusqu'à 3 premiers chapitres gratuitement (5 pages illustrées). Le livre complet (12 pages) coûte 2,99€. Le Club des Histoires à 1,99€ le premier mois donne accès à des livres complets illimités. C'est 10 à 15 fois moins cher qu'un cadeau personnalisé classique."
+      answer: "Sur Contedia, vous pouvez créer jusqu'à 3 premiers chapitres gratuitement (3 pages illustrées). Le livre complet (20 pages) coûte 2,99€. Le Club des Histoires à 1,99€ le premier mois donne accès à des livres complets illimités. C'est 10 à 15 fois moins cher qu'un cadeau personnalisé classique."
     },
     {
       question: "Est-ce que je peux le créer aujourd'hui et l'offrir dimanche ?",
@@ -209,7 +209,7 @@ const BlogArticleFeteMeres: React.FC = () => {
 
               <h3>Étape 3 — Recevez le livre</h3>
               <p>
-                L'IA génère une histoire unique avec des illustrations personnalisées. Le <strong>premier chapitre (5 pages) est gratuit</strong>. Pour le livre complet (12 pages illustrées + PDF), c'est seulement <strong>2,99€</strong>.
+                L'IA génère une histoire unique avec des illustrations personnalisées. Le <strong>premier chapitre (3 pages) est gratuit</strong>. Pour le livre complet (20 pages illustrées + PDF), c'est seulement <strong>2,99€</strong>.
               </p>
               <p>
                 Total : 5 minutes de création. 2,99€. Un souvenir pour la vie.
@@ -255,7 +255,7 @@ const BlogArticleFeteMeres: React.FC = () => {
                   <tbody>
                     <tr><td style={{ padding: '8px' }}>Prix</td><td style={{ padding: '8px', textAlign: 'center' }}>30-50€</td><td style={{ padding: '8px', textAlign: 'center', fontWeight: 700, color: '#22C55E' }}>2,99€</td></tr>
                     <tr style={{ background: 'var(--bg-secondary)' }}><td style={{ padding: '8px' }}>Durée de vie</td><td style={{ padding: '8px', textAlign: 'center' }}>5 jours</td><td style={{ padding: '8px', textAlign: 'center', fontWeight: 700, color: '#22C55E' }}>Pour toujours</td></tr>
-                    <tr><td style={{ padding: '8px' }}>Personnalisation</td><td style={{ padding: '8px', textAlign: 'center' }}>Une carte</td><td style={{ padding: '8px', textAlign: 'center', fontWeight: 700, color: '#22C55E' }}>12 pages uniques</td></tr>
+                    <tr><td style={{ padding: '8px' }}>Personnalisation</td><td style={{ padding: '8px', textAlign: 'center' }}>Une carte</td><td style={{ padding: '8px', textAlign: 'center', fontWeight: 700, color: '#22C55E' }}>20 pages uniques</td></tr>
                     <tr style={{ background: 'var(--bg-secondary)' }}><td style={{ padding: '8px' }}>Émotion</td><td style={{ padding: '8px', textAlign: 'center' }}>Sourire</td><td style={{ padding: '8px', textAlign: 'center', fontWeight: 700, color: '#22C55E' }}>Larmes de joie</td></tr>
                     <tr><td style={{ padding: '8px' }}>L'enfant participe</td><td style={{ padding: '8px', textAlign: 'center' }}>Non</td><td style={{ padding: '8px', textAlign: 'center', fontWeight: 700, color: '#22C55E' }}>Oui</td></tr>
                     <tr style={{ background: 'var(--bg-secondary)' }}><td style={{ padding: '8px' }}>Délai</td><td style={{ padding: '8px', textAlign: 'center' }}>Livraison 24-48h</td><td style={{ padding: '8px', textAlign: 'center', fontWeight: 700, color: '#22C55E' }}>Prêt en 5 min</td></tr>
@@ -312,7 +312,7 @@ const BlogArticleFeteMeres: React.FC = () => {
 
               <h3>Et si je veux créer plusieurs livres ?</h3>
               <p>
-                Vous pouvez créer <strong>jusqu'à 3 premiers chapitres gratuitement</strong>. Avec le <Link to="/club">Club des Histoires</Link> à 1,99€ le premier mois, vous avez accès à des livres complets illimités — 12 pages, 9 styles d'illustration, 5 personnages. Idéal si vous voulez créer un livre pour chaque enfant.
+                Vous pouvez créer <strong>jusqu'à 3 premiers chapitres gratuitement</strong>. Avec le <Link to="/club">Club des Histoires</Link> à 1,99€ le premier mois, vous avez accès à des livres complets illimités — 20 pages, 9 styles d'illustration, 5 personnages. Idéal si vous voulez créer un livre pour chaque enfant.
               </p>
 
               <div className="article-cta">

@@ -225,7 +225,7 @@ const BlogArticleCadeauNoel: React.FC = () => {
                 Le livre personnalisé n'a pas vocation à remplacer tous les cadeaux sous le sapin. Mais il est celui que l'enfant gardera, celui qu'il montrera à ses copains en disant <em>"Regarde, c'est mon histoire"</em>. Et pour les parents, c'est le meilleur rapport émotion/prix de Noël.
               </p>
               <p>
-                Envie de prolonger la magie au-delà de Noël ? Le <Link to="/club">Club Contedia</Link> offre 4 livres par mois, avec 12 pages et plus de styles d'illustration. Un cadeau qui dure toute l'année.
+                Envie de prolonger la magie au-delà de Noël ? Le <Link to="/club">Club Contedia</Link> offre 4 livres par mois, avec 20 pages et plus de styles d'illustration. Un cadeau qui dure toute l'année.
               </p>
 
               <div className="article-cta">

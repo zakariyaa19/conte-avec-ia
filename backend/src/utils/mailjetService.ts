@@ -195,7 +195,7 @@ export class MailjetService {
                   <div style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); padding: 32px 24px; text-align: center; color: white;">
                     <p style="font-size: 36px; margin: 0 0 8px;">&#x1F4D6;&#x2728;</p>
                     <h1 style="margin: 0; font-size: 22px; font-weight: 800; line-height: 1.3;">L'histoire de ${sp} est prete !</h1>
-                    <p style="margin: 10px 0 0; font-size: 14px; opacity: 0.9;">${sn}, 5 pages illustrees vous attendent.</p>
+                    <p style="margin: 10px 0 0; font-size: 14px; opacity: 0.9;">${sn}, 3 pages illustrees vous attendent.</p>
                   </div>
 
                   <div style="padding: 32px 24px;">
@@ -607,7 +607,7 @@ export class MailjetService {
           <div style="background: #f9fafb; border-radius: 12px; padding: 16px; margin: 0 0 8px;">
             <p style="font-size: 13px; color: #777; margin: 0; text-align: center; line-height: 1.6;">
               Avec le Club, decouvrez la suite de cette histoire<br>
-              <strong>+ 4 livres complets par mois</strong> avec <strong>12 pages</strong> chacun.
+              <strong>+ 4 livres complets par mois</strong> avec <strong>20 pages</strong> chacun.
             </p>
           </div>
 
@@ -640,7 +640,7 @@ export class MailjetService {
               <p style="font-size: 12px; color: #999; margin: 4px 0 0;">Chaque occasion merite une histoire.</p>
             </div>
             <div style="background: #f9f7ff; border-radius: 12px; padding: 14px 16px;">
-              <p style="font-size: 14px; color: #333; margin: 0;">&#x1F4D6; ...dans un livre de <strong>12 pages</strong> au lieu de 6</p>
+              <p style="font-size: 14px; color: #333; margin: 0;">&#x1F4D6; ...dans un livre de <strong>20 pages</strong> au lieu de 3</p>
               <p style="font-size: 12px; color: #999; margin: 4px 0 0;">2x plus long. 2x plus d'illustrations. 2x plus de magie.</p>
             </div>
           </div>

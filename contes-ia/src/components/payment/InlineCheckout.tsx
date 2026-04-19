@@ -215,7 +215,7 @@ export const InlineCheckout: React.FC<InlineCheckoutProps> = ({
         <Recap>
           {resolvedCover && <RecapCover src={resolvedCover} alt="" />}
           <RecapText>
-            <p className="title">Suite complete (12 pages)</p>
+            <p className="title">Suite complete (20 pages)</p>
             <p className="subtitle">Illustrations + PDF telechargeable</p>
           </RecapText>
           <RecapPrice>2,99€</RecapPrice>

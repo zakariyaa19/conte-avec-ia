@@ -40,7 +40,7 @@ const BlogArticleSEO1: React.FC = () => {
     },
     {
       question: "Combien coûte un livre personnalisé enfant ?",
-      answer: "Sur Contedia, le premier livre est 100% gratuit. Les suivants coûtent 3,99€. L'abonnement Club (9,99€/mois) inclut 4 livres avec 12 pages illustrées. Sur d'autres plateformes, comptez 25-40€ pour un livre imprimé."
+      answer: "Sur Contedia, le premier livre est 100% gratuit. Les suivants coûtent 3,99€. L'abonnement Club (9,99€/mois) inclut 4 livres avec 20 pages illustrées. Sur d'autres plateformes, comptez 25-40€ pour un livre imprimé."
     },
     {
       question: "Les livres personnalisés par IA sont-ils de bonne qualité ?",
@@ -181,7 +181,7 @@ const BlogArticleSEO1: React.FC = () => {
                 À cet âge, le <strong>livre personnalisé bébé</strong> est un outil sensoriel et affectif. Le bébé ne lit pas, mais il reconnaît son prénom quand vous le prononcez, et il est fasciné par les couleurs.
               </p>
               <ul>
-                <li><strong>6 pages maximum</strong> avec des phrases courtes et répétitives</li>
+                <li><strong>3 pages maximum</strong> avec des phrases courtes et répétitives</li>
                 <li><strong>Illustrations très colorées</strong> avec des formes rondes et rassurantes</li>
                 <li><strong>Thèmes doux</strong> : animaux, dodo, câlin, premiers pas</li>
                 <li>Le <strong>prénom est répété à chaque page</strong> — c'est l'élément clé</li>
@@ -222,7 +222,7 @@ const BlogArticleSEO1: React.FC = () => {
                 L'enfant sait lire (ou apprend). Le <strong>livre personnalisé</strong> devient un outil de motivation pour la lecture autonome. Quand l'histoire parle de LUI, il est <strong>2x plus motivé</strong> pour déchiffrer les mots tout seul. C'est la différence entre « lis ton livre » et « je veux lire MON livre ».
               </p>
               <ul>
-                <li><strong>12 pages et plus</strong> avec des rebondissements</li>
+                <li><strong>20 pages et plus</strong> avec des rebondissements</li>
                 <li><strong>Thèmes complexes</strong> : mystère, enquête, voyage dans le temps</li>
                 <li><strong>Personnalisation avancée</strong> : hobbies, plat préféré, meilleur ami intégrés</li>
                 <li><strong>Valeurs fortes</strong> : amitié, environnement, courage face à la différence</li>

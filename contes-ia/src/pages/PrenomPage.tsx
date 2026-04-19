@@ -112,7 +112,7 @@ const PrenomPage: React.FC = () => {
     },
     {
       question: `Combien coûte un livre personnalisé pour ${prenomDisplay} ?`,
-      answer: `Le premier livre est 100% gratuit (6 pages, 7 illustrations, PDF). Les suivants : 2,99€ par livre complet (12 pages) ou 9,99€/mois pour le Club (4 livres par mois). Aucune carte bancaire pour le gratuit.`,
+      answer: `Le premier livre est 100% gratuit (3 pages, 4 illustrations, PDF). Les suivants : 2,99€ par livre complet (20 pages) ou 9,99€/mois pour le Club (4 livres par mois). Aucune carte bancaire pour le gratuit.`,
     },
   ];
 

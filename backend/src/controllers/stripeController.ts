@@ -159,7 +159,7 @@ export const createCompletionSession = async (req: Request, res: Response) => {
           currency: 'eur',
           product_data: {
             name: `Suite du conte de ${protagonistName}`,
-            description: 'Histoire complete (12 pages illustrees + PDF telechargeagle)',
+            description: 'Histoire complete (20 pages illustrees + PDF telechargeagle)',
             images: order.coverImageUrl ? [order.coverImageUrl] : [],
           },
           unit_amount: unitAmount,
@@ -175,7 +175,7 @@ export const createCompletionSession = async (req: Request, res: Response) => {
       },
       custom_text: {
         submit: {
-          message: `L'histoire de ${protagonistName} sera completee en quelques minutes apres le paiement. Vous retrouverez le livre complet (12 pages) dans votre bibliotheque.`,
+          message: `L'histoire de ${protagonistName} sera completee en quelques minutes apres le paiement. Vous retrouverez le livre complet (20 pages) dans votre bibliotheque.`,
         },
       },
     });
