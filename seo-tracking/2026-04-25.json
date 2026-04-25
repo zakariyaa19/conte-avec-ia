@@ -1,0 +1,69 @@
+{
+  "date": "2026-04-25",
+  "period": "3 mois (2026-01-23 au 2026-04-22)",
+  "source": "Google Search Console",
+  "summary": {
+    "totalClicks": 97,
+    "totalImpressions": 4087,
+    "averageCTR": 2.37,
+    "averagePosition": 14.2
+  },
+  "monthlyBreakdown": [
+    { "month": "2026-01", "clicks": 6, "impressions": 175, "avgImpressions_day": 22 },
+    { "month": "2026-02", "clicks": 22, "impressions": 666, "avgImpressions_day": 24 },
+    { "month": "2026-03", "clicks": 29, "impressions": 1108, "avgImpressions_day": 36 },
+    { "month": "2026-04", "clicks": 36, "impressions": 1148, "avgImpressions_day": 52, "note": "partiel 1-22 avril" }
+  ],
+  "topQueries": [
+    { "query": "conteuse personnalisable", "clicks": 0, "impressions": 237, "ctr": 0, "position": 40.42, "trend": "UP x3 vs avril-18" },
+    { "query": "livre conte personnalisé", "clicks": 0, "impressions": 190, "ctr": 0, "position": 26.99, "trend": "UP x5 vs avril-18" },
+    { "query": "choisir livre personnalisé", "clicks": 0, "impressions": 79, "ctr": 0, "position": 53.75, "trend": "UP x2.5" },
+    { "query": "contes personnalises", "clicks": 0, "impressions": 46, "ctr": 0, "position": 16.87, "trend": "UP x2.7" },
+    { "query": "meilleur livre personnalisé", "clicks": 0, "impressions": 31, "ctr": 0, "position": 9.39, "trend": "STABLE" },
+    { "query": "contes personnalises enfants", "clicks": 0, "impressions": 26, "ctr": 0, "position": 18.0, "trend": "UP x2.6" },
+    { "query": "alternative toniebox", "clicks": 0, "impressions": 22, "ctr": 0, "position": 15.68, "trend": "STABLE" },
+    { "query": "livre personnalisé enfant chien", "clicks": 2, "impressions": 19, "ctr": 10.53, "position": 8.37, "trend": "NEW" },
+    { "query": "contedia", "clicks": 8, "impressions": 19, "ctr": 42.11, "position": 1.74, "trend": "STABLE" },
+    { "query": "alternative lunii", "clicks": 0, "impressions": 19, "ctr": 0, "position": 21.79, "trend": "STABLE" },
+    { "query": "livre personnalisé ia", "clicks": 0, "impressions": 19, "ctr": 0, "position": 12.21, "trend": "UP +58%" },
+    { "query": "livre personnalisé animaux", "clicks": 0, "impressions": 15, "ctr": 0, "position": 10.13, "trend": "UP x2.5" },
+    { "query": "histoire pour enfant ia", "clicks": 1, "impressions": 13, "ctr": 7.69, "position": 44.54, "trend": "NEW" },
+    { "query": "livre personnalisé bébé 1 an", "clicks": 0, "impressions": 13, "ctr": 0, "position": 11.46, "trend": "UP +30%" },
+    { "query": "livre enfant personnalisé ia", "clicks": 0, "impressions": 12, "ctr": 0, "position": 13.08, "trend": "UP +71%" }
+  ],
+  "topPages": [
+    { "page": "/blog/histoire-animal-compagnie-livre-personnalise", "clicks": 30, "impressions": 843, "ctr": 3.56, "position": 13.28, "trend": "UP x3.4 impressions" },
+    { "page": "/", "clicks": 24, "impressions": 707, "ctr": 3.39, "position": 17.75, "trend": "UP x4.8 impressions" },
+    { "page": "/blog/top-5-themes-histoires-animal-heros-conte", "clicks": 8, "impressions": 336, "ctr": 2.38, "position": 7.37, "trend": "UP x2.3" },
+    { "page": "/blog/meilleurs-livres-personnalises-enfants-comparatif-2026", "clicks": 7, "impressions": 149, "ctr": 4.70, "position": 7.17, "trend": "STABLE" },
+    { "page": "/blog/ia-revolution-creation-histoires-enfants", "clicks": 4, "impressions": 290, "ctr": 1.38, "position": 8.22, "trend": "UP +52% imp" },
+    { "page": "/blog/conteuse-personnalisable-alternative-numerique-2026", "clicks": 4, "impressions": 208, "ctr": 1.92, "position": 10.28, "trend": "STABLE" },
+    { "page": "/blog/enfant-heros-propre-histoire", "clicks": 4, "impressions": 111, "ctr": 3.60, "position": 7.89, "trend": "UP x4.6" },
+    { "page": "/ia-creation-conte", "clicks": 3, "impressions": 52, "ctr": 5.77, "position": 12.46, "trend": "UP x8.7 imp" }
+  ],
+  "programmaticSEO": {
+    "prenomPagesIndexed": 1,
+    "firstPrenomSeen": "martin",
+    "martinPosition": 10,
+    "martinImpressions": 1
+  },
+  "indexedPages": 133,
+  "actionsApplied": [
+    "Phase 1 funnel (24 taches)",
+    "SEO meta rewrites (8 pages)",
+    "Anti-cannibalisation (4 redirections)",
+    "Schema AggregateRating homepage",
+    "9 nouveaux articles SEO",
+    "50 pages prenoms programmatic",
+    "Refonte cliffhanger 3 pages / 20 pages"
+  ],
+  "keyInsights": [
+    "Impressions/jour: 22 (jan) → 52 (avr) = +136% en 3 mois",
+    "Article animaux = page #1 avec 843 impressions",
+    "conteuse personnalisable: 237 imp mais position 40 = énorme potentiel non capté",
+    "livre conte personnalisé: 190 imp, position 27 = potentiel",
+    "Programmatic SEO commence à indexer (/prenom/martin visible)",
+    "CTR global reste faible (~2-3%) — titles à continuer d'optimiser",
+    "Position moyenne en baisse (meilleure): 17 → 14 → 9 sur les top pages"
+  ]
+}
