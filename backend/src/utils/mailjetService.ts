@@ -3,6 +3,11 @@ import Mailjet from 'node-mailjet';
 // Configuration Mailjet — initialisation lazy pour attendre le chargement de dotenv
 let _mailjet: ReturnType<typeof Mailjet.apiConnect> | null = null;
 
+// Echappement HTML pour prevenir XSS dans les templates email
+function escapeHtml(text: string): string {
+  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
 function getMailjet() {
   if (!_mailjet) {
     const apiKey = process.env.MAILJET_API_KEY || '';
@@ -52,7 +57,7 @@ export class MailjetService {
                   <!-- Content -->
                   <div style="padding: 40px 30px;">
                     <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 25px;">
-                      <h2 style="color: #333; margin: 0 0 20px 0; font-size: 24px; border-bottom: 3px solid #FF9999; padding-bottom: 10px; display: inline-block;">🎉 Merci ${orderData.customerName} !</h2>
+                      <h2 style="color: #333; margin: 0 0 20px 0; font-size: 24px; border-bottom: 3px solid #FF9999; padding-bottom: 10px; display: inline-block;">🎉 Merci ${escapeHtml(orderData.customerName)} !</h2>
                       <p style="color: #555; font-size: 16px; line-height: 1.6; margin: 0;">
                         Nous avons bien reçu votre commande et celle-ci est maintenant <strong style="color: #FF9999;">en préparation</strong>. 
                         Notre équipe créative travaille déjà sur votre conte personnalisé !
@@ -416,7 +421,7 @@ export class MailjetService {
                   </div>
                   <div style="padding: 40px 30px;">
                     <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 25px;">
-                      <h2 style="color: #333; margin: 0 0 20px 0; font-size: 24px;">Bonjour ${data.customerName} !</h2>
+                      <h2 style="color: #333; margin: 0 0 20px 0; font-size: 24px;">Bonjour ${escapeHtml(data.customerName)} !</h2>
                       <p style="color: #555; font-size: 16px; line-height: 1.6;">
                         Notre IA est en train de creer le conte personnalise de <strong style="color: #FF9999;">${data.protagonistName}</strong>.
                       </p>

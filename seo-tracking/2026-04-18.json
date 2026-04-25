@@ -1,0 +1,33 @@
+{
+  "date": "2026-04-18",
+  "period": "28 derniers jours (2026-03-20 au 2026-04-16)",
+  "source": "Google Search Console",
+  "summary": {
+    "totalClicks": 47,
+    "totalImpressions": 1495,
+    "averageCTR": 3.14,
+    "averagePosition": 11.0
+  },
+  "topQueries": [
+    { "query": "contedia", "clicks": 8, "impressions": 17, "ctr": 47.06, "position": 1.71 },
+    { "query": "lunii ou tonies", "clicks": 1, "impressions": 7, "ctr": 14.29, "position": 6.71 },
+    { "query": "meilleur livre personnalisé enfant", "clicks": 1, "impressions": 2, "ctr": 50.0, "position": 3.0 },
+    { "query": "conteuse personnalisable", "clicks": 0, "impressions": 76, "ctr": 0, "position": 40.57 },
+    { "query": "livre conte personnalisé", "clicks": 0, "impressions": 38, "ctr": 0, "position": 24.29 },
+    { "query": "meilleur livre personnalisé", "clicks": 0, "impressions": 31, "ctr": 0, "position": 9.39 },
+    { "query": "choisir livre personnalisé", "clicks": 0, "impressions": 31, "ctr": 0, "position": 33.71 },
+    { "query": "alternative toniebox", "clicks": 0, "impressions": 22, "ctr": 0, "position": 15.68 },
+    { "query": "alternative lunii", "clicks": 0, "impressions": 19, "ctr": 0, "position": 21.79 },
+    { "query": "livre personnalisé ia", "clicks": 0, "impressions": 12, "ctr": 0, "position": 12.58 }
+  ],
+  "topPages": [
+    { "page": "/", "clicks": 11, "impressions": 147, "ctr": 7.48, "position": 13.96 },
+    { "page": "/blog/histoire-animal-compagnie-livre-personnalise", "clicks": 10, "impressions": 250, "ctr": 4.0, "position": 9.1 },
+    { "page": "/blog/meilleurs-livres-personnalises-enfants-comparatif-2026", "clicks": 7, "impressions": 142, "ctr": 4.93, "position": 7.37 },
+    { "page": "/blog/conteuse-personnalisable-alternative-numerique-2026", "clicks": 4, "impressions": 206, "ctr": 1.94, "position": 10.36 },
+    { "page": "/blog/ia-revolution-creation-histoires-enfants", "clicks": 4, "impressions": 191, "ctr": 2.09, "position": 8.5 }
+  ],
+  "indexedPages": 71,
+  "actionsApplied": ["Phase 1 funnel (24 taches)"],
+  "notes": "Baseline avant optimisations SEO"
+}

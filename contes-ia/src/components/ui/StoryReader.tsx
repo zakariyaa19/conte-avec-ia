@@ -673,7 +673,10 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
             // ═══ CLIFFHANGER — L'histoire n'est pas finie, proposer de payer ═══
             if (isCliffhanger && !isShared) {
               const handleCompletion = async () => {
-                if (!orderId) return;
+                if (!orderId) {
+                  alert('Impossible de finaliser la commande. Rechargez la page.');
+                  return;
+                }
                 // Variante inline : on ouvre le modal Stripe Elements
                 // (cast string : le kill switch peut restreindre les variantes a ['control'])
                 if ((completionCheckoutVariant as string) === 'inline') {
