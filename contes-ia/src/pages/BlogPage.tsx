@@ -179,7 +179,8 @@ const blogArticles = [
     { id: 40, title: "Cadeau de Noël Personnalisé : Le Livre Où Votre Enfant Est le Héros", excerpt: "Offrez un cadeau de Noël inoubliable : un livre personnalisé où votre enfant vit une aventure de Noël. Son prénom, ses passions, illustrations IA.", slug: "cadeau-noel-livre-personnalise-enfant", image: "cadeau-noel-personnalise" },
     { id: 41, title: "Livre Personnalisé 3-5 Ans : L'Âge d'Or de l'Imagination", excerpt: "Créez un livre personnalisé adapté aux 3-5 ans. Histoires avec son prénom, vocabulaire adapté, illustrations IA uniques. Premier livre gratuit.", slug: "livre-personnalise-enfant-3-5-ans", image: "livre-personnalise-3-5-ans" },
     { id: 42, title: "Contedia vs Epopia : Quel Livre Personnalisé Choisir en 2026 ?", excerpt: "Comparatif honnête Contedia vs Epopia : prix, personnalisation IA vs courrier, délai, qualité. Test gratuit inclus.", slug: "contedia-vs-epopia-comparatif", image: "contedia-vs-epopia" },
-    { id: 43, title: "Cadeau Anniversaire Enfant : Le Livre Personnalisé Qui Éclipse Tous les Jouets", excerpt: "Le cadeau d'anniversaire qui marque : un livre personnalisé où votre enfant est le héros. Création en 5 min, premier gratuit.", slug: "cadeau-anniversaire-enfant-livre-personnalise", image: "cadeau-anniversaire-personnalise" }
+    { id: 43, title: "Cadeau Anniversaire Enfant : Le Livre Personnalisé Qui Éclipse Tous les Jouets", excerpt: "Le cadeau d'anniversaire qui marque : un livre personnalisé où votre enfant est le héros. Création en 5 min, premier gratuit.", slug: "cadeau-anniversaire-enfant-livre-personnalise", image: "cadeau-anniversaire-personnalise" },
+    { id: 44, title: "Lunii vs Toniebox 2026 : Comparatif Complet + La Meilleure Alternative", excerpt: "Lunii ou Toniebox ? Comparatif prix, contenu, personnalisation. + La 3ème option que les parents ne connaissent pas : le livre personnalisé par IA.", slug: "lunii-vs-toniebox-comparatif-2026", image: "lunii-vs-toniebox-comparatif" }
 ];
 
 // ─── Article categories ───
@@ -241,8 +242,8 @@ const BlogPage: React.FC = () => {
   return (
     <PageContainer>
       <SEOHead
-        title="Blog — Livres Personnalisés Enfants, Contes IA, Idées Cadeaux | Contedia"
-        description="Articles et guides sur les livres personnalisés pour enfants. Conseils lecture, comparatifs, idées cadeaux et astuces pour créer le conte parfait."
+        title="Blog Contedia — Guides, Comparatifs & Idées Livres Personnalisés Enfants"
+        description="Guides pratiques, comparatifs honnêtes et idées cadeaux autour du livre personnalisé enfant. Conseils par âge, rituels lecture, alternatives Lunii/Toniebox."
       />
       <Helmet>
         <meta

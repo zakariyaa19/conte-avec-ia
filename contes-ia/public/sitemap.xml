@@ -26,19 +26,6 @@
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-  <url>
-    <loc>https://contedia.fr/club/checkout</loc>
-    <lastmod>2026-03-23</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://contedia.fr/login</loc>
-    <lastmod>2026-03-23</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-
   <!-- ══════ PAGES SEO (content pillars) ══════ -->
   <url>
     <loc>https://contedia.fr/themes-de-contes</loc>
@@ -181,6 +168,22 @@
     <lastmod>2026-04-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+  </url>
+
+  <!-- ══════ NOUVEL ARTICLE — Lunii vs Toniebox ══════ -->
+  <url>
+    <loc>https://contedia.fr/blog/lunii-vs-toniebox-comparatif-2026</loc>
+    <lastmod>2026-04-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- ══════ HUB PRÉNOMS ══════ -->
+  <url>
+    <loc>https://contedia.fr/prenoms</loc>
+    <lastmod>2026-04-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
 
   <!-- ══════ PROGRAMMATIC SEO — Pages par prénom (Top 50) ══════ -->
@@ -376,18 +379,9 @@
   </url>
 
   <!-- ══════ BLOG — Articles 2026 (éducatifs) ══════ -->
-  <url>
-    <loc>https://contedia.fr/blog/livre-personnalise-enfant-2026</loc>
-    <lastmod>2026-03-23</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://contedia.fr/blog/conte-personnalise-confiance-imagination-enfant</loc>
-    <lastmod>2026-03-23</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
+  <!-- URLs redirigées supprimées : livre-personnalise-enfant-2026, conte-personnalise-confiance-imagination-enfant,
+       intelligence-artificielle-histoires-enfants, conte-personnalise-rituel-coucher,
+       creation-histoires-personnalisees-conte-ia, bienfaits-lecture-personnalisee-enfant -->
   <url>
     <loc>https://contedia.fr/blog/livre-personnalise-vs-livre-classique-enfant</loc>
     <lastmod>2026-03-23</lastmod>
@@ -395,19 +389,7 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://contedia.fr/blog/intelligence-artificielle-histoires-enfants</loc>
-    <lastmod>2026-03-23</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>https://contedia.fr/blog/enfant-heros-propre-histoire</loc>
-    <lastmod>2026-03-23</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://contedia.fr/blog/conte-personnalise-rituel-coucher</loc>
     <lastmod>2026-03-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -420,18 +402,6 @@
   </url>
   <url>
     <loc>https://contedia.fr/blog/cadeau-livre-personnalise-enfant</loc>
-    <lastmod>2026-03-23</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://contedia.fr/blog/creation-histoires-personnalisees-conte-ia</loc>
-    <lastmod>2026-03-23</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://contedia.fr/blog/bienfaits-lecture-personnalisee-enfant</loc>
     <lastmod>2026-03-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
