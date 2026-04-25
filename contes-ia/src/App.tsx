@@ -72,6 +72,13 @@ import BlogArticleConteSendormir from './pages/BlogArticleConteSendormir';
 import PrenomPage from './pages/PrenomPage';
 import PrenomsHubPage from './pages/PrenomsHubPage';
 import BlogArticleLuniiVsToniebox from './pages/BlogArticleLuniiVsToniebox';
+import BlogArticleChatGPTvsContedia from './pages/BlogArticleChatGPTvsContedia';
+import BlogArticleConteuseGuide from './pages/BlogArticleConteuseGuide';
+import BlogArticleHistoireSoirAge from './pages/BlogArticleHistoireSoirAge';
+import BlogArticleCadeau3Ans from './pages/BlogArticleCadeau3Ans';
+import BlogArticleCadeau5Ans from './pages/BlogArticleCadeau5Ans';
+import AProposPage from './pages/AProposPage';
+import TarifsPage from './pages/TarifsPage';
 import BlogArticleCadeauNaissance from './pages/BlogArticleCadeauNaissance';
 import BlogArticleCadeauNoel from './pages/BlogArticleCadeauNoel';
 import BlogArticleLivre3a5ans from './pages/BlogArticleLivre3a5ans';
@@ -193,6 +200,15 @@ function App() {
           <Route path="/blog/cadeau-anniversaire-enfant-livre-personnalise" element={<BlogArticleCadeauAnniversaire />} />
           {/* Nouvel article SEO — Lunii vs Toniebox */}
           <Route path="/blog/lunii-vs-toniebox-comparatif-2026" element={<BlogArticleLuniiVsToniebox />} />
+          <Route path="/blog/chatgpt-vs-contedia-histoires-enfants" element={<BlogArticleChatGPTvsContedia />} />
+          {/* Nouveaux articles Phase 2 */}
+          <Route path="/blog/conteuse-enfant-guide-complet-2026" element={<BlogArticleConteuseGuide />} />
+          <Route path="/blog/histoire-du-soir-par-age-guide" element={<BlogArticleHistoireSoirAge />} />
+          <Route path="/blog/idee-cadeau-enfant-3-ans" element={<BlogArticleCadeau3Ans />} />
+          <Route path="/blog/idee-cadeau-enfant-5-ans" element={<BlogArticleCadeau5Ans />} />
+          {/* Pages business */}
+          <Route path="/a-propos" element={<AProposPage />} />
+          <Route path="/tarifs" element={<TarifsPage />} />
           {/* Programmatic SEO — hub prénoms + pages par prénom */}
           <Route path="/prenoms" element={<PrenomsHubPage />} />
           <Route path="/prenom/:prenom" element={<PrenomPage />} />

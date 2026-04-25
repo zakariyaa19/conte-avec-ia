@@ -15,58 +15,58 @@ import '../styles/BlogArticle.css';
  * Template unique, contenu dynamique basé sur le prénom.
  */
 
-// Top 50 prénoms français avec genre et popularité
-const PRENOMS_DATA: Record<string, { gender: 'fille' | 'garcon'; popularity: string; origin: string }> = {
-  emma: { gender: 'fille', popularity: 'Top 1 depuis 2005', origin: 'germanique' },
-  gabriel: { gender: 'garcon', popularity: 'Top 1 des garçons', origin: 'hébreu' },
-  louise: { gender: 'fille', popularity: 'Top 3', origin: 'germanique' },
-  raphael: { gender: 'garcon', popularity: 'Top 3', origin: 'hébreu' },
-  jade: { gender: 'fille', popularity: 'Top 2', origin: 'espagnol' },
-  leo: { gender: 'garcon', popularity: 'Top 5', origin: 'latin' },
-  alice: { gender: 'fille', popularity: 'Top 5', origin: 'germanique' },
-  louis: { gender: 'garcon', popularity: 'Top 5', origin: 'germanique' },
-  rose: { gender: 'fille', popularity: 'Top 10', origin: 'latin' },
-  noah: { gender: 'garcon', popularity: 'Top 5', origin: 'hébreu' },
-  chloe: { gender: 'fille', popularity: 'Top 10', origin: 'grec' },
-  adam: { gender: 'garcon', popularity: 'Top 10', origin: 'hébreu' },
-  lina: { gender: 'fille', popularity: 'Top 10', origin: 'arabe' },
-  lucas: { gender: 'garcon', popularity: 'Top 10', origin: 'latin' },
-  mia: { gender: 'fille', popularity: 'Top 10', origin: 'scandinave' },
-  arthur: { gender: 'garcon', popularity: 'Top 10', origin: 'celtique' },
-  ambre: { gender: 'fille', popularity: 'Top 15', origin: 'arabe' },
-  jules: { gender: 'garcon', popularity: 'Top 10', origin: 'latin' },
-  anna: { gender: 'fille', popularity: 'Top 15', origin: 'hébreu' },
-  hugo: { gender: 'garcon', popularity: 'Top 15', origin: 'germanique' },
-  lea: { gender: 'fille', popularity: 'Top 10', origin: 'hébreu' },
-  maël: { gender: 'garcon', popularity: 'Top 15', origin: 'celtique' },
-  luna: { gender: 'fille', popularity: 'Top 20', origin: 'latin' },
-  liam: { gender: 'garcon', popularity: 'Top 10', origin: 'irlandais' },
-  julia: { gender: 'fille', popularity: 'Top 20', origin: 'latin' },
-  ethan: { gender: 'garcon', popularity: 'Top 15', origin: 'hébreu' },
-  manon: { gender: 'fille', popularity: 'Top 15', origin: 'hébreu' },
-  nathan: { gender: 'garcon', popularity: 'Top 10', origin: 'hébreu' },
-  elena: { gender: 'fille', popularity: 'Top 20', origin: 'grec' },
-  tom: { gender: 'garcon', popularity: 'Top 20', origin: 'araméen' },
-  agathe: { gender: 'fille', popularity: 'Top 20', origin: 'grec' },
-  paul: { gender: 'garcon', popularity: 'Top 20', origin: 'latin' },
-  camille: { gender: 'fille', popularity: 'Top 15', origin: 'latin' },
-  sacha: { gender: 'garcon', popularity: 'Top 20', origin: 'grec' },
-  charlie: { gender: 'fille', popularity: 'Top 25', origin: 'germanique' },
-  mohamed: { gender: 'garcon', popularity: 'Top 20', origin: 'arabe' },
-  yasmine: { gender: 'fille', popularity: 'Top 30', origin: 'arabe' },
-  rayan: { gender: 'garcon', popularity: 'Top 20', origin: 'arabe' },
-  ines: { gender: 'fille', popularity: 'Top 15', origin: 'arabe' },
-  nolan: { gender: 'garcon', popularity: 'Top 20', origin: 'irlandais' },
-  sarah: { gender: 'fille', popularity: 'Top 15', origin: 'hébreu' },
-  theo: { gender: 'garcon', popularity: 'Top 15', origin: 'grec' },
-  clara: { gender: 'fille', popularity: 'Top 20', origin: 'latin' },
-  aaron: { gender: 'garcon', popularity: 'Top 20', origin: 'hébreu' },
-  charlotte: { gender: 'fille', popularity: 'Top 20', origin: 'germanique' },
-  gabin: { gender: 'garcon', popularity: 'Top 25', origin: 'latin' },
-  victoria: { gender: 'fille', popularity: 'Top 25', origin: 'latin' },
-  robin: { gender: 'garcon', popularity: 'Top 25', origin: 'germanique' },
-  lily: { gender: 'fille', popularity: 'Top 25', origin: 'anglais' },
-  martin: { gender: 'garcon', popularity: 'Top 30', origin: 'latin' },
+// Top 50 prénoms français avec genre, popularité, signification et prénoms similaires
+const PRENOMS_DATA: Record<string, { gender: 'fille' | 'garcon'; popularity: string; origin: string; meaning: string; relatedNames: string[] }> = {
+  emma: { gender: 'fille', popularity: 'Top 1 depuis 2005', origin: 'germanique', meaning: 'Toute entière, universelle', relatedNames: ['alice', 'louise', 'rose', 'charlotte', 'anna'] },
+  gabriel: { gender: 'garcon', popularity: 'Top 1 des garçons', origin: 'hébreu', meaning: 'Force de Dieu', relatedNames: ['raphael', 'nathan', 'adam', 'noah', 'aaron'] },
+  louise: { gender: 'fille', popularity: 'Top 3', origin: 'germanique', meaning: 'Illustre au combat', relatedNames: ['alice', 'charlotte', 'emma', 'rose', 'victoria'] },
+  raphael: { gender: 'garcon', popularity: 'Top 3', origin: 'hébreu', meaning: 'Dieu guérit', relatedNames: ['gabriel', 'nathan', 'adam', 'ethan', 'aaron'] },
+  jade: { gender: 'fille', popularity: 'Top 2', origin: 'espagnol', meaning: 'Pierre précieuse verte', relatedNames: ['ambre', 'luna', 'lily', 'rose', 'mia'] },
+  leo: { gender: 'garcon', popularity: 'Top 5', origin: 'latin', meaning: 'Lion', relatedNames: ['lucas', 'jules', 'paul', 'gabin', 'martin'] },
+  alice: { gender: 'fille', popularity: 'Top 5', origin: 'germanique', meaning: 'De noble lignée', relatedNames: ['louise', 'emma', 'charlotte', 'charlie', 'rose'] },
+  louis: { gender: 'garcon', popularity: 'Top 5', origin: 'germanique', meaning: 'Illustre au combat', relatedNames: ['hugo', 'arthur', 'robin', 'jules', 'paul'] },
+  rose: { gender: 'fille', popularity: 'Top 10', origin: 'latin', meaning: 'La fleur', relatedNames: ['lily', 'jade', 'clara', 'victoria', 'emma'] },
+  noah: { gender: 'garcon', popularity: 'Top 5', origin: 'hébreu', meaning: 'Repos, consolation', relatedNames: ['adam', 'gabriel', 'nathan', 'ethan', 'aaron'] },
+  chloe: { gender: 'fille', popularity: 'Top 10', origin: 'grec', meaning: 'Jeune pousse, verdure', relatedNames: ['elena', 'agathe', 'lea', 'julia', 'manon'] },
+  adam: { gender: 'garcon', popularity: 'Top 10', origin: 'hébreu', meaning: 'Fait de terre rouge', relatedNames: ['noah', 'gabriel', 'aaron', 'nathan', 'ethan'] },
+  lina: { gender: 'fille', popularity: 'Top 10', origin: 'arabe', meaning: 'Douce, tendre', relatedNames: ['ines', 'yasmine', 'ambre', 'mia', 'luna'] },
+  lucas: { gender: 'garcon', popularity: 'Top 10', origin: 'latin', meaning: 'Lumière', relatedNames: ['leo', 'jules', 'gabin', 'paul', 'martin'] },
+  mia: { gender: 'fille', popularity: 'Top 10', origin: 'scandinave', meaning: 'Celle qui est aimée', relatedNames: ['luna', 'lina', 'lily', 'jade', 'lea'] },
+  arthur: { gender: 'garcon', popularity: 'Top 10', origin: 'celtique', meaning: 'Ours, fort comme un ours', relatedNames: ['maël', 'louis', 'hugo', 'robin', 'liam'] },
+  ambre: { gender: 'fille', popularity: 'Top 15', origin: 'arabe', meaning: 'Pierre précieuse dorée', relatedNames: ['jade', 'lina', 'yasmine', 'ines', 'luna'] },
+  jules: { gender: 'garcon', popularity: 'Top 10', origin: 'latin', meaning: 'De la famille de Jule', relatedNames: ['leo', 'lucas', 'paul', 'gabin', 'louis'] },
+  anna: { gender: 'fille', popularity: 'Top 15', origin: 'hébreu', meaning: 'Grâce, faveur', relatedNames: ['emma', 'lea', 'sarah', 'manon', 'clara'] },
+  hugo: { gender: 'garcon', popularity: 'Top 15', origin: 'germanique', meaning: 'Esprit, intelligence', relatedNames: ['louis', 'arthur', 'robin', 'theo', 'jules'] },
+  lea: { gender: 'fille', popularity: 'Top 10', origin: 'hébreu', meaning: 'Lionne, celle qui est fatiguée', relatedNames: ['anna', 'sarah', 'manon', 'chloe', 'julia'] },
+  maël: { gender: 'garcon', popularity: 'Top 15', origin: 'celtique', meaning: 'Prince, chef', relatedNames: ['arthur', 'liam', 'nolan', 'robin', 'hugo'] },
+  luna: { gender: 'fille', popularity: 'Top 20', origin: 'latin', meaning: 'Lune', relatedNames: ['mia', 'lily', 'jade', 'lina', 'ambre'] },
+  liam: { gender: 'garcon', popularity: 'Top 10', origin: 'irlandais', meaning: 'Protecteur résolu', relatedNames: ['nolan', 'arthur', 'maël', 'ethan', 'noah'] },
+  julia: { gender: 'fille', popularity: 'Top 20', origin: 'latin', meaning: 'De la famille de Jule', relatedNames: ['camille', 'clara', 'victoria', 'elena', 'chloe'] },
+  ethan: { gender: 'garcon', popularity: 'Top 15', origin: 'hébreu', meaning: 'Fort, robuste, endurant', relatedNames: ['nathan', 'noah', 'adam', 'liam', 'aaron'] },
+  manon: { gender: 'fille', popularity: 'Top 15', origin: 'hébreu', meaning: 'Goutte de mer, celle qui élève', relatedNames: ['lea', 'anna', 'sarah', 'camille', 'chloe'] },
+  nathan: { gender: 'garcon', popularity: 'Top 10', origin: 'hébreu', meaning: 'Il a donné, don de Dieu', relatedNames: ['gabriel', 'raphael', 'ethan', 'noah', 'adam'] },
+  elena: { gender: 'fille', popularity: 'Top 20', origin: 'grec', meaning: 'Éclat du soleil', relatedNames: ['chloe', 'agathe', 'julia', 'victoria', 'clara'] },
+  tom: { gender: 'garcon', popularity: 'Top 20', origin: 'araméen', meaning: 'Jumeau', relatedNames: ['theo', 'hugo', 'sacha', 'robin', 'nolan'] },
+  agathe: { gender: 'fille', popularity: 'Top 20', origin: 'grec', meaning: 'Bonne, vertueuse', relatedNames: ['chloe', 'elena', 'charlotte', 'alice', 'camille'] },
+  paul: { gender: 'garcon', popularity: 'Top 20', origin: 'latin', meaning: 'Petit, humble', relatedNames: ['jules', 'lucas', 'leo', 'martin', 'gabin'] },
+  camille: { gender: 'fille', popularity: 'Top 15', origin: 'latin', meaning: 'Jeune assistante de cérémonie', relatedNames: ['julia', 'manon', 'charlotte', 'agathe', 'clara'] },
+  sacha: { gender: 'garcon', popularity: 'Top 20', origin: 'grec', meaning: 'Défenseur de l\'humanité', relatedNames: ['theo', 'tom', 'robin', 'hugo', 'nolan'] },
+  charlie: { gender: 'fille', popularity: 'Top 25', origin: 'germanique', meaning: 'Femme du peuple', relatedNames: ['alice', 'charlotte', 'louise', 'lily', 'emma'] },
+  mohamed: { gender: 'garcon', popularity: 'Top 20', origin: 'arabe', meaning: 'Le loué, le digne de louanges', relatedNames: ['rayan', 'adam', 'aaron', 'noah', 'nathan'] },
+  yasmine: { gender: 'fille', popularity: 'Top 30', origin: 'arabe', meaning: 'Fleur de jasmin', relatedNames: ['lina', 'ines', 'ambre', 'sarah', 'luna'] },
+  rayan: { gender: 'garcon', popularity: 'Top 20', origin: 'arabe', meaning: 'Porte du paradis, épanoui', relatedNames: ['mohamed', 'adam', 'noah', 'aaron', 'nathan'] },
+  ines: { gender: 'fille', popularity: 'Top 15', origin: 'arabe', meaning: 'Pure, chaste, compagne aimable', relatedNames: ['lina', 'yasmine', 'ambre', 'sarah', 'lea'] },
+  nolan: { gender: 'garcon', popularity: 'Top 20', origin: 'irlandais', meaning: 'Célèbre, illustre', relatedNames: ['liam', 'maël', 'arthur', 'tom', 'sacha'] },
+  sarah: { gender: 'fille', popularity: 'Top 15', origin: 'hébreu', meaning: 'Princesse', relatedNames: ['anna', 'lea', 'manon', 'ines', 'emma'] },
+  theo: { gender: 'garcon', popularity: 'Top 15', origin: 'grec', meaning: 'Don de Dieu', relatedNames: ['sacha', 'hugo', 'tom', 'robin', 'leo'] },
+  clara: { gender: 'fille', popularity: 'Top 20', origin: 'latin', meaning: 'Claire, brillante, illustre', relatedNames: ['julia', 'victoria', 'rose', 'camille', 'elena'] },
+  aaron: { gender: 'garcon', popularity: 'Top 20', origin: 'hébreu', meaning: 'Montagne de la force', relatedNames: ['gabriel', 'raphael', 'adam', 'ethan', 'nathan'] },
+  charlotte: { gender: 'fille', popularity: 'Top 20', origin: 'germanique', meaning: 'Femme forte, vigoureuse', relatedNames: ['louise', 'alice', 'emma', 'charlie', 'agathe'] },
+  gabin: { gender: 'garcon', popularity: 'Top 25', origin: 'latin', meaning: 'Originaire de Gabium', relatedNames: ['jules', 'lucas', 'leo', 'paul', 'martin'] },
+  victoria: { gender: 'fille', popularity: 'Top 25', origin: 'latin', meaning: 'Victoire', relatedNames: ['julia', 'clara', 'elena', 'rose', 'charlotte'] },
+  robin: { gender: 'garcon', popularity: 'Top 25', origin: 'germanique', meaning: 'Gloire, brillant', relatedNames: ['hugo', 'louis', 'arthur', 'maël', 'sacha'] },
+  lily: { gender: 'fille', popularity: 'Top 25', origin: 'anglais', meaning: 'Lys, pureté', relatedNames: ['rose', 'luna', 'mia', 'jade', 'charlie'] },
+  martin: { gender: 'garcon', popularity: 'Top 30', origin: 'latin', meaning: 'Consacré à Mars, guerrier', relatedNames: ['paul', 'jules', 'lucas', 'gabin', 'leo'] },
 };
 
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
@@ -222,6 +222,160 @@ const PrenomPage: React.FC = () => {
               <div className="article-cta">
                 <Link to="/create-story" className="cta-button">
                   Offrir son livre à {prenomDisplay} — C'est gratuit
+                </Link>
+              </div>
+
+              {data && (
+                <>
+                  <h2>Tout savoir sur le prénom {prenomDisplay}</h2>
+                  <p>
+                    Le prénom <strong>{prenomDisplay}</strong> vient du {data.origin} et signifie <strong>"{data.meaning}"</strong>.
+                    {data.origin === 'germanique' && ` D'origine germanique, ce prénom a traversé les siècles en conservant toute sa noblesse. Porté par des reines et des figures historiques marquantes, ${prenomDisplay} évoque à la fois la tradition et la modernité.`}
+                    {data.origin === 'hébreu' && ` Ce prénom biblique porte en lui une symbolique spirituelle profonde. Présent dans les textes sacrés des trois grandes religions monothéistes, ${prenomDisplay} est un prénom intemporel qui traverse les époques et les cultures.`}
+                    {data.origin === 'latin' && ` Hérité de la Rome antique, ce prénom latin a su traverser deux millénaires sans prendre une ride. Les Romains lui prêtaient des qualités de caractère que l'on retrouve encore aujourd'hui chez les enfants qui le portent.`}
+                    {data.origin === 'grec' && ` Issu de la Grèce antique, berceau de la civilisation occidentale, ce prénom porte en lui l'héritage d'une culture qui a façonné notre monde. Philosophes, héros mythologiques et figures historiques ont contribué à son rayonnement.`}
+                    {data.origin === 'celtique' && ` Ce prénom celtique nous vient des anciennes traditions bretonnes et gaéliques. Lié aux légendes arthuriennes et à la mythologie celtique, il évoque la nature, la force et une connexion profonde avec les éléments.`}
+                    {data.origin === 'arabe' && ` Ce prénom d'origine arabe est porteur d'une grande poésie et d'une signification profonde. Très répandu dans le monde francophone, il séduit par sa musicalité et la beauté de sa signification.`}
+                    {data.origin === 'espagnol' && ` Venu d'Espagne, ce prénom évoque la chaleur méditerranéenne et la beauté naturelle. Sa sonorité douce et son caractère unique en font un choix de plus en plus prisé par les parents français.`}
+                    {data.origin === 'scandinave' && ` Ce prénom d'origine scandinave porte en lui les grands espaces du Nord et la douceur des pays nordiques. Court et mélodieux, il a conquis les parents français par sa simplicité et son élégance.`}
+                    {data.origin === 'irlandais' && ` Venu d'Irlande, terre de légendes et de poésie, ce prénom celtique porte en lui toute la magie de l'île verte. Sa sonorité moderne et son caractère distinctif en font un choix très apprécié des jeunes parents.`}
+                    {data.origin === 'araméen' && ` Ce prénom d'origine araméenne nous vient des langues les plus anciennes de l'humanité. Porté par des figures bibliques majeures, il conserve une aura de sagesse et d'authenticité.`}
+                    {data.origin === 'anglais' && ` Ce prénom d'origine anglaise a su conquérir les parents français par sa douceur et son élégance naturelle. Évoquant la nature et la délicatesse, il est devenu un incontournable des prénoms modernes.`}
+                  </p>
+                  <p>
+                    En France, {prenomDisplay} connaît un succès remarquable depuis plusieurs années. Classé <strong>{data.popularity}</strong> des prénoms {data.gender === 'fille' ? 'féminins' : 'masculins'}, {ilElle} fait partie des prénoms préférés des parents français.
+                    Ce succès n'est pas un hasard : {prenomDisplay} possède cette qualité rare d'être à la fois {data.gender === 'fille' ? 'doux et affirmé' : 'fort et tendre'}, moderne sans être éphémère. Les parents qui choisissent ce prénom pour leur enfant souhaitent lui transmettre des valeurs de {data.gender === 'fille' ? 'grâce et de détermination' : 'courage et de sensibilité'}.
+                  </p>
+                  <p>
+                    C'est justement cette personnalité unique que nous mettons en valeur dans nos <Link to="/livre-personnalise-enfant">livres personnalisés</Link>. Quand {prenomDisplay} ouvre son livre et découvre que {ilElle} est le {heroWord} de l'histoire, que son prénom apparaît dans chaque page, la magie opère. Ce n'est plus "une histoire pour enfant" — c'est <strong>{sonSa} histoire</strong>, celle où {prenomDisplay} vit des aventures extraordinaires, surmonte des défis et grandit page après page.
+                  </p>
+
+                  <h2>3 idées d'histoires pour {prenomDisplay}</h2>
+                  <p>Voici un aperçu de ce que l'IA de Contedia peut créer pour {prenomDisplay}. Chaque histoire est unique, écrite sur mesure, avec le prénom intégré naturellement dans le récit.</p>
+
+                  <div style={{ marginBottom: 24 }}>
+                    <h3>L'aventure secrète de {prenomDisplay}</h3>
+                    <p style={{ fontStyle: 'italic', color: '#555', lineHeight: 1.7 }}>
+                      {prenomDisplay} part à la découverte d'un monde caché derrière une porte mystérieuse apparue dans {sonSa} chambre.
+                      {gender === 'fille'
+                        ? ` De l'autre côté, elle découvre un royaume souterrain peuplé de créatures lumineuses qui ont perdu leur étoile guide. Armée de son courage et de sa curiosité, ${prenomDisplay} traverse des grottes de cristal, résout l'énigme des trois gardiens et retrouve l'étoile volée par un dragon solitaire qui avait simplement besoin d'une amie. En ramenant la lumière, elle devient la protectrice éternelle de ce monde secret.`
+                        : ` De l'autre côté, il découvre un royaume souterrain peuplé de créatures lumineuses qui ont perdu leur étoile guide. Armé de son courage et de sa curiosité, ${prenomDisplay} traverse des grottes de cristal, résout l'énigme des trois gardiens et retrouve l'étoile volée par un dragon solitaire qui avait simplement besoin d'un ami. En ramenant la lumière, il devient le protecteur éternel de ce monde secret.`
+                      }
+                    </p>
+                  </div>
+
+                  <div style={{ marginBottom: 24 }}>
+                    <h3>{prenomDisplay} et l'animal magique de la forêt</h3>
+                    <p style={{ fontStyle: 'italic', color: '#555', lineHeight: 1.7 }}>
+                      {prenomDisplay} rencontre un animal magique dans la forêt enchantée au bout de {sonSa} jardin.
+                      {gender === 'fille'
+                        ? ` C'est un petit renard doré capable de parler, et il a besoin de son aide : la forêt est en danger, les arbres perdent leurs couleurs. Ensemble, ${prenomDisplay} et le renard partent à la recherche des quatre pierres de saison cachées aux quatre coins de la forêt. À chaque pierre retrouvée, une saison revient — le vert du printemps, l'or de l'été, le rouge de l'automne, le blanc de l'hiver. ${prenomDisplay} comprend que la nature a besoin qu'on prenne soin d'elle, et elle promet de toujours protéger sa forêt.`
+                        : ` C'est un petit renard doré capable de parler, et il a besoin de son aide : la forêt est en danger, les arbres perdent leurs couleurs. Ensemble, ${prenomDisplay} et le renard partent à la recherche des quatre pierres de saison cachées aux quatre coins de la forêt. À chaque pierre retrouvée, une saison revient — le vert du printemps, l'or de l'été, le rouge de l'automne, le blanc de l'hiver. ${prenomDisplay} comprend que la nature a besoin qu'on prenne soin d'elle, et il promet de toujours protéger sa forêt.`
+                      }
+                    </p>
+                  </div>
+
+                  <div style={{ marginBottom: 24 }}>
+                    <h3>Le pouvoir secret de {prenomDisplay}</h3>
+                    <p style={{ fontStyle: 'italic', color: '#555', lineHeight: 1.7 }}>
+                      {prenomDisplay} découvre qu'{ilElle} possède un pouvoir spécial le jour de {sonSa} anniversaire.
+                      {gender === 'fille'
+                        ? ` En soufflant ses bougies, ${prenomDisplay} réalise que ses dessins prennent vie ! Un papillon dessiné au crayon s'envole de la feuille, un soleil illumine toute la pièce. Mais quand elle dessine un orage par accident, elle doit apprendre à maîtriser ce don extraordinaire. Guidée par une vieille bibliothécaire magicienne, ${prenomDisplay} découvre que son pouvoir vient du coeur : ce qu'elle imagine avec amour devient réalité. Elle crée alors le plus beau cadeau du monde pour sa famille — un livre d'histoires vivantes, où chacun est le héros.`
+                        : ` En soufflant ses bougies, ${prenomDisplay} réalise que ses dessins prennent vie ! Un papillon dessiné au crayon s'envole de la feuille, un soleil illumine toute la pièce. Mais quand il dessine un orage par accident, il doit apprendre à maîtriser ce don extraordinaire. Guidé par un vieux bibliothécaire magicien, ${prenomDisplay} découvre que son pouvoir vient du coeur : ce qu'il imagine avec amour devient réalité. Il crée alors le plus beau cadeau du monde pour sa famille — un livre d'histoires vivantes, où chacun est le héros.`
+                      }
+                    </p>
+                  </div>
+
+                  <p>
+                    Ces histoires ne sont que des exemples. Sur Contedia, chaque livre est <strong>généré sur mesure</strong> selon l'âge, les passions et le thème que vous choisissez. <Link to="/create-story">Essayez gratuitement</Link> et découvrez l'histoire unique que l'IA va écrire pour {prenomDisplay}.
+                  </p>
+
+                  <div className="article-cta">
+                    <Link to="/create-story" className="cta-button">
+                      Découvrir l'histoire de {prenomDisplay} →
+                    </Link>
+                  </div>
+
+                  <h2>Pourquoi offrir un livre personnalisé à {prenomDisplay} ?</h2>
+                  <p>
+                    Un livre personnalisé n'est pas un simple cadeau — c'est une expérience de lecture transformatrice. Quand {prenomDisplay} ouvre un livre et voit <strong>son prénom sur chaque page</strong>, quelque chose de magique se produit : {ilElle} ne lit plus une histoire, {ilElle} <strong>vit</strong> une histoire.
+                  </p>
+                  <p>
+                    Les études en psychologie de l'enfant montrent que la personnalisation d'un récit renforce considérablement l'engagement et la compréhension. Un enfant qui se reconnaît dans le personnage principal développe plus facilement son empathie, sa confiance en soi et son goût pour la lecture. Pour {prenomDisplay}, chaque aventure devient une occasion de se projeter, de rêver et de grandir.
+                  </p>
+                  <p>
+                    De plus, un <Link to="/blog/guide-livre-personnalise-enfant-2026">livre personnalisé</Link> fait un cadeau inoubliable — que ce soit pour un anniversaire, Noël, ou simplement pour le plaisir de voir les yeux de {prenomDisplay} s'illuminer.
+                    {gender === 'fille'
+                      ? ` Les petites filles adorent se voir en héroïne courageuse, en exploratrice audacieuse ou en magicienne bienveillante.`
+                      : ` Les petits garçons adorent se voir en héros courageux, en explorateur audacieux ou en magicien bienveillant.`
+                    }
+                  </p>
+
+                  <h2>Prénoms similaires à {prenomDisplay}</h2>
+                  <p>Vous aimez le prénom {prenomDisplay} ? Découvrez des prénoms proches par leur sonorité ou leur origine {data.origin}, et créez aussi un livre personnalisé pour eux :</p>
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+                    gap: 12,
+                    margin: '20px 0 28px',
+                  }}>
+                    {data.relatedNames.map(name => (
+                      <Link
+                        to={`/prenom/${name}`}
+                        key={name}
+                        style={{
+                          display: 'block',
+                          padding: '14px 18px',
+                          background: '#f8f5ff',
+                          border: '1px solid #e0d4f5',
+                          borderRadius: 10,
+                          textAlign: 'center',
+                          textDecoration: 'none',
+                          color: '#6b21a8',
+                          fontWeight: 600,
+                          fontSize: 15,
+                          transition: 'all 0.2s',
+                        }}
+                      >
+                        {capitalize(name)}
+                      </Link>
+                    ))}
+                  </div>
+
+                  <h2>Articles qui pourraient vous intéresser</h2>
+                  <p>Pour aller plus loin dans l'univers des histoires personnalisées pour enfants :</p>
+                  <ul style={{ listStyle: 'none', padding: 0 }}>
+                    <li style={{ marginBottom: 12 }}>
+                      <Link to="/blog/guide-livre-personnalise-enfant-2026" style={{ color: '#6b21a8', fontWeight: 500 }}>
+                        Guide complet du livre personnalisé pour enfant en 2026
+                      </Link>
+                      <span style={{ display: 'block', fontSize: 13, color: '#777', marginTop: 2 }}>
+                        Tout ce qu'il faut savoir pour choisir et créer le livre parfait pour {prenomDisplay}.
+                      </span>
+                    </li>
+                    <li style={{ marginBottom: 12 }}>
+                      <Link to="/blog/histoire-du-soir-enfant-meilleures-idees" style={{ color: '#6b21a8', fontWeight: 500 }}>
+                        Les meilleures idées d'histoires du soir pour enfant
+                      </Link>
+                      <span style={{ display: 'block', fontSize: 13, color: '#777', marginTop: 2 }}>
+                        Découvrez comment transformer le rituel du coucher en moment magique avec {prenomDisplay}.
+                      </span>
+                    </li>
+                    <li style={{ marginBottom: 12 }}>
+                      <Link to="/blog/conte-personnalise-gratuit" style={{ color: '#6b21a8', fontWeight: 500 }}>
+                        Conte personnalisé gratuit : comment ça marche ?
+                      </Link>
+                      <span style={{ display: 'block', fontSize: 13, color: '#777', marginTop: 2 }}>
+                        Créez le premier livre de {prenomDisplay} sans rien payer — notre guide étape par étape.
+                      </span>
+                    </li>
+                  </ul>
+                </>
+              )}
+
+              <div className="article-cta">
+                <Link to="/create-story" className="cta-button">
+                  Créer l'histoire unique de {prenomDisplay} — Gratuit
                 </Link>
               </div>
 

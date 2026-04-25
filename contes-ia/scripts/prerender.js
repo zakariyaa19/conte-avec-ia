@@ -71,6 +71,14 @@ const ROUTES = [
   '/blog/contedia-vs-epopia-comparatif',
   '/blog/cadeau-anniversaire-enfant-livre-personnalise',
   '/blog/lunii-vs-toniebox-comparatif-2026',
+  '/blog/conteuse-enfant-guide-complet-2026',
+  '/blog/histoire-du-soir-par-age-guide',
+  '/blog/idee-cadeau-enfant-3-ans',
+  '/blog/idee-cadeau-enfant-5-ans',
+  '/blog/chatgpt-vs-contedia-histoires-enfants',
+  // Pages business
+  '/a-propos',
+  '/tarifs',
   // Hub prenoms
   '/prenoms',
   // Pages prenoms programmatiques

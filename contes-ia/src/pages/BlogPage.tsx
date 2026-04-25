@@ -180,7 +180,12 @@ const blogArticles = [
     { id: 41, title: "Livre Personnalisé 3-5 Ans : L'Âge d'Or de l'Imagination", excerpt: "Créez un livre personnalisé adapté aux 3-5 ans. Histoires avec son prénom, vocabulaire adapté, illustrations IA uniques. Premier livre gratuit.", slug: "livre-personnalise-enfant-3-5-ans", image: "livre-personnalise-3-5-ans" },
     { id: 42, title: "Contedia vs Epopia : Quel Livre Personnalisé Choisir en 2026 ?", excerpt: "Comparatif honnête Contedia vs Epopia : prix, personnalisation IA vs courrier, délai, qualité. Test gratuit inclus.", slug: "contedia-vs-epopia-comparatif", image: "contedia-vs-epopia" },
     { id: 43, title: "Cadeau Anniversaire Enfant : Le Livre Personnalisé Qui Éclipse Tous les Jouets", excerpt: "Le cadeau d'anniversaire qui marque : un livre personnalisé où votre enfant est le héros. Création en 5 min, premier gratuit.", slug: "cadeau-anniversaire-enfant-livre-personnalise", image: "cadeau-anniversaire-personnalise" },
-    { id: 44, title: "Lunii vs Toniebox 2026 : Comparatif Complet + La Meilleure Alternative", excerpt: "Lunii ou Toniebox ? Comparatif prix, contenu, personnalisation. + La 3ème option que les parents ne connaissent pas : le livre personnalisé par IA.", slug: "lunii-vs-toniebox-comparatif-2026", image: "lunii-vs-toniebox-comparatif" }
+    { id: 44, title: "Lunii vs Toniebox 2026 : Comparatif Complet + La Meilleure Alternative", excerpt: "Lunii ou Toniebox ? Comparatif prix, contenu, personnalisation. + La 3ème option que les parents ne connaissent pas : le livre personnalisé par IA.", slug: "lunii-vs-toniebox-comparatif-2026", image: "lunii-vs-toniebox-comparatif" },
+    { id: 45, title: "Conteuse Enfant : Le Guide Complet d'Achat 2026", excerpt: "Lunii, Toniebox, Bookinou, Merlin, Yoto... Quel conteuse enfant choisir ? Guide complet + l'alternative IA personnalisée.", slug: "conteuse-enfant-guide-complet-2026", image: "conteuse-enfant-guide-complet" },
+    { id: 46, title: "Histoire du Soir : Le Guide Complet par Âge (0-8 ans)", excerpt: "Quelle histoire du soir selon l'âge ? Idées, rituels, durées, thèmes adaptés pour chaque tranche d'âge.", slug: "histoire-du-soir-par-age-guide", image: "histoire-du-soir-par-age" },
+    { id: 47, title: "Idée Cadeau Enfant 3 Ans : 15 Idées Originales (2026)", excerpt: "Quel cadeau offrir à un enfant de 3 ans ? 15 idées testées : jouets éducatifs, livres, expériences, cadeaux personnalisés.", slug: "idee-cadeau-enfant-3-ans", image: "idee-cadeau-enfant-3-ans" },
+    { id: 48, title: "Idée Cadeau Enfant 5 Ans : 15 Idées qui Émerveillent", excerpt: "Quel cadeau pour un enfant de 5 ans ? 15 idées originales : jouets créatifs, jeux de société, livres, expériences.", slug: "idee-cadeau-enfant-5-ans", image: "idee-cadeau-enfant-5-ans" },
+    { id: 49, title: "ChatGPT vs Contedia : Peut-on Créer un Livre Enfant avec ChatGPT ?", excerpt: "On a testé ChatGPT pour écrire des histoires enfants. Comparatif honnête : illustrations, mise en page, sécurité.", slug: "chatgpt-vs-contedia-histoires-enfants", image: "chatgpt-vs-contedia" }
 ];
 
 // ─── Article categories ───
@@ -189,6 +194,15 @@ const recentArticles = blogArticles.filter(a => a.id >= 16);
 const animalArticles = blogArticles.filter(a => a.id >= 6 && a.id <= 10);
 const faithArticles = blogArticles.filter(a => a.id >= 11 && a.id <= 15);
 const firstArticles = blogArticles.filter(a => a.id >= 1 && a.id <= 5);
+const cadeauxArticles = blogArticles.filter(a =>
+  ['cadeau-livre-personnalise-enfant', 'cadeau-fete-des-meres-livre-personnalise', 'cadeau-naissance-livre-personnalise-bebe', 'cadeau-noel-livre-personnalise-enfant', 'cadeau-anniversaire-enfant-livre-personnalise', 'idee-cadeau-enfant-3-ans', 'idee-cadeau-enfant-5-ans'].includes(a.slug)
+);
+const comparatifsArticles = blogArticles.filter(a =>
+  ['meilleurs-livres-personnalises-enfants-comparatif-2026', 'contedia-vs-wonderbly-comparatif', 'contedia-vs-hourra-heros-comparatif', 'contedia-vs-epopia-comparatif', 'alternative-lunii-livre-personnalise-ia', 'alternative-toniebox-livre-personnalise-enfant', 'lunii-vs-toniebox-comparatif-2026', 'conteuse-enfant-guide-complet-2026', 'chatgpt-vs-contedia-histoires-enfants'].includes(a.slug)
+);
+const rituelsArticles = blogArticles.filter(a =>
+  ['histoire-du-soir-enfant-meilleures-idees', 'conte-pour-sendormir-histoires-personnalisees', 'histoire-du-soir-par-age-guide'].includes(a.slug)
+);
 
 // ─── Category Section Component ───
 
@@ -284,6 +298,9 @@ const BlogPage: React.FC = () => {
           <SectionDivider />
 
           <CategorySection title="Articles Récents" articles={recentArticles} />
+          <CategorySection title="Comparatifs & Alternatives" articles={comparatifsArticles} />
+          <CategorySection title="Idées Cadeaux" articles={cadeauxArticles} />
+          <CategorySection title="Rituels & Histoires du Soir" articles={rituelsArticles} />
           <CategorySection title="Animaux de Compagnie" articles={animalArticles} />
           <CategorySection title="Foi et Spiritualité" articles={faithArticles} />
           <CategorySection title="Nos Premiers Articles" articles={firstArticles} />

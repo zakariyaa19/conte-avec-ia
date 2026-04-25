@@ -170,12 +170,56 @@
     <priority>0.8</priority>
   </url>
 
-  <!-- ══════ NOUVEL ARTICLE — Lunii vs Toniebox ══════ -->
+  <!-- ══════ NOUVEAUX ARTICLES PHASE 2 ══════ -->
   <url>
     <loc>https://contedia.fr/blog/lunii-vs-toniebox-comparatif-2026</loc>
     <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://contedia.fr/blog/conteuse-enfant-guide-complet-2026</loc>
+    <lastmod>2026-04-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://contedia.fr/blog/histoire-du-soir-par-age-guide</loc>
+    <lastmod>2026-04-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://contedia.fr/blog/idee-cadeau-enfant-3-ans</loc>
+    <lastmod>2026-04-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://contedia.fr/blog/idee-cadeau-enfant-5-ans</loc>
+    <lastmod>2026-04-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://contedia.fr/blog/chatgpt-vs-contedia-histoires-enfants</loc>
+    <lastmod>2026-04-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- ══════ PAGES BUSINESS ══════ -->
+  <url>
+    <loc>https://contedia.fr/a-propos</loc>
+    <lastmod>2026-04-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://contedia.fr/tarifs</loc>
+    <lastmod>2026-04-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
 
   <!-- ══════ HUB PRÉNOMS ══════ -->
