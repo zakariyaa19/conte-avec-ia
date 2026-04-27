@@ -1432,24 +1432,14 @@ const faqReveal = useScrollReveal();
   }, []);
 
   useEffect(() => {
-    document.title = "Livre Personnalisé Enfant Gratuit — Conte sur Mesure par IA | Contedia";
-
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', "Créez un livre personnalisé gratuit pour votre enfant. Histoire unique générée par IA avec illustrations sur mesure. Commencez gratuitement, prêt en 5 minutes.");
-    } else {
-      const meta = document.createElement('meta');
-      meta.name = 'description';
-      meta.content = "Créez un livre personnalisé gratuit pour votre enfant. Histoire unique générée par IA avec illustrations sur mesure. Commencez gratuitement, prêt en 5 minutes.";
-      document.head.appendChild(meta);
-    }
+    document.title = "Livre Personnalisé Enfant GRATUIT — Histoire IA en 5 min | Contedia";
   }, []);
 
   return (
     <PageContainer>
       <SEOHead
-        title="Conte Personnalisé Enfant Gratuit — Votre Enfant Héros de Son Livre | Contedia"
-        description="Créez un conte personnalisé gratuit où votre enfant devient le héros. Prénom, passions, illustrations IA uniques. Prêt en 5 min, 0€, sans carte bancaire. +500 familles conquises."
+        title="Livre Personnalisé Enfant GRATUIT — Histoire IA en 5 min | Contedia"
+        description="Votre enfant héros de son propre livre illustré par IA. Prénom + passions = histoire unique. 1er livre 100% gratuit, sans carte bancaire. Prêt en 5 minutes."
       />
       <SchemaOrganization />
       <SchemaWebSite />

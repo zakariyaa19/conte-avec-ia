@@ -143,3 +143,35 @@ export const SchemaBreadcrumb: React.FC<{
     </Helmet>
   );
 };
+
+/**
+ * Schema HowTo — pour les pages avec des étapes/tutoriels
+ * Affiche les étapes directement dans Google (rich snippets)
+ */
+export const SchemaHowTo: React.FC<{
+  name: string;
+  description: string;
+  totalTime?: string;
+  steps: { name: string; text: string; image?: string }[];
+}> = ({ name, description, totalTime, steps }) => {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": name,
+    "description": description,
+    ...(totalTime && { "totalTime": totalTime }),
+    "step": steps.map((s, i) => ({
+      "@type": "HowToStep",
+      "position": i + 1,
+      "name": s.name,
+      "text": s.text,
+      ...(s.image && { "image": s.image }),
+    })),
+  };
+
+  return (
+    <Helmet>
+      <script type="application/ld+json">{JSON.stringify(schema)}</script>
+    </Helmet>
+  );
+};

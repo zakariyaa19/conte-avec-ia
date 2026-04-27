@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { PageLayout } from '../components/layout/PageLayout';
 import { SEOHead } from '../components/SEOHead';
-import { SchemaFAQ, SchemaBreadcrumb } from '../components/SchemaMarkup';
+import { SchemaFAQ, SchemaBreadcrumb, SchemaHowTo } from '../components/SchemaMarkup';
 import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
@@ -81,6 +81,16 @@ const BlogArticleConteGratuit: React.FC = () => {
         { name: "Blog", url: "https://contedia.fr/blog" },
         { name: "Conte personnalisé gratuit", url: "https://contedia.fr/blog/conte-personnalise-gratuit" }
       ]} />
+      <SchemaHowTo
+        name="Créer un conte personnalisé gratuit pour votre enfant"
+        description="Comment créer un livre personnalisé gratuit en 3 étapes simples sur Contedia"
+        totalTime="PT5M"
+        steps={[
+          { name: "Remplissez le formulaire", text: "Entrez le prénom de votre enfant, choisissez un thème et décrivez ses passions. L'IA s'occupe du reste." },
+          { name: "L'IA crée l'histoire", text: "Notre intelligence artificielle génère une histoire unique avec des illustrations personnalisées en quelques minutes." },
+          { name: "Recevez votre livre", text: "Votre livre personnalisé est prêt ! Lisez-le en ligne ou téléchargez le PDF illustré gratuitement." }
+        ]}
+      />
       <Helmet>
         <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>
       </Helmet>

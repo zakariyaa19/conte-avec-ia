@@ -70,6 +70,15 @@ import BlogArticleAlternativeToniebox from './pages/BlogArticleAlternativeTonieb
 import BlogArticleHistoireDuSoir from './pages/BlogArticleHistoireDuSoir';
 import BlogArticleConteSendormir from './pages/BlogArticleConteSendormir';
 import PrenomPage from './pages/PrenomPage';
+import PrenomsHubPage from './pages/PrenomsHubPage';
+import BlogArticleLuniiVsToniebox from './pages/BlogArticleLuniiVsToniebox';
+import BlogArticleChatGPTvsContedia from './pages/BlogArticleChatGPTvsContedia';
+import BlogArticleConteuseGuide from './pages/BlogArticleConteuseGuide';
+import BlogArticleHistoireSoirAge from './pages/BlogArticleHistoireSoirAge';
+import BlogArticleCadeau3Ans from './pages/BlogArticleCadeau3Ans';
+import BlogArticleCadeau5Ans from './pages/BlogArticleCadeau5Ans';
+import AProposPage from './pages/AProposPage';
+import TarifsPage from './pages/TarifsPage';
 import BlogArticleCadeauNaissance from './pages/BlogArticleCadeauNaissance';
 import BlogArticleCadeauNoel from './pages/BlogArticleCadeauNoel';
 import BlogArticleLivre3a5ans from './pages/BlogArticleLivre3a5ans';
@@ -162,10 +171,12 @@ function App() {
           {/* REDIRECT cannibalisation — group IA: redirige vers le winner ia-revolution (191 imp, pos 8) */}
           <Route path="/blog/intelligence-artificielle-histoires-enfants" element={<Navigate to="/blog/ia-revolution-creation-histoires-enfants" replace />} />
           <Route path="/blog/enfant-heros-propre-histoire" element={<BlogArticleNouveau5 />} />
-          <Route path="/blog/conte-personnalise-rituel-coucher" element={<BlogArticleNouveau6 />} />
+          {/* REDIRECT cannibalisation — rituel coucher → conte s'endormir (contenu fusionné) */}
+          <Route path="/blog/conte-personnalise-rituel-coucher" element={<Navigate to="/blog/conte-pour-sendormir-histoires-personnalisees" replace />} />
           <Route path="/blog/livre-personnalise-enfant-timide" element={<BlogArticleNouveau7 />} />
           <Route path="/blog/cadeau-livre-personnalise-enfant" element={<BlogArticleNouveau8 />} />
-          <Route path="/blog/creation-histoires-personnalisees-conte-ia" element={<BlogArticleNouveau9 />} />
+          {/* REDIRECT cannibalisation — creation histoires → IA revolution (contenu fusionné) */}
+          <Route path="/blog/creation-histoires-personnalisees-conte-ia" element={<Navigate to="/blog/ia-revolution-creation-histoires-enfants" replace />} />
           {/* REDIRECT cannibalisation — group "bienfaits": redirige vers enfant-heros */}
           <Route path="/blog/bienfaits-lecture-personnalisee-enfant" element={<Navigate to="/blog/enfant-heros-propre-histoire" replace />} />
           {/* Articles SEO 2026 */}
@@ -187,7 +198,19 @@ function App() {
           <Route path="/blog/livre-personnalise-enfant-3-5-ans" element={<BlogArticleLivre3a5ans />} />
           <Route path="/blog/contedia-vs-epopia-comparatif" element={<BlogArticleVsEpopia />} />
           <Route path="/blog/cadeau-anniversaire-enfant-livre-personnalise" element={<BlogArticleCadeauAnniversaire />} />
-          {/* Programmatic SEO — pages par prénom */}
+          {/* Nouvel article SEO — Lunii vs Toniebox */}
+          <Route path="/blog/lunii-vs-toniebox-comparatif-2026" element={<BlogArticleLuniiVsToniebox />} />
+          <Route path="/blog/chatgpt-vs-contedia-histoires-enfants" element={<BlogArticleChatGPTvsContedia />} />
+          {/* Nouveaux articles Phase 2 */}
+          <Route path="/blog/conteuse-enfant-guide-complet-2026" element={<BlogArticleConteuseGuide />} />
+          <Route path="/blog/histoire-du-soir-par-age-guide" element={<BlogArticleHistoireSoirAge />} />
+          <Route path="/blog/idee-cadeau-enfant-3-ans" element={<BlogArticleCadeau3Ans />} />
+          <Route path="/blog/idee-cadeau-enfant-5-ans" element={<BlogArticleCadeau5Ans />} />
+          {/* Pages business */}
+          <Route path="/a-propos" element={<AProposPage />} />
+          <Route path="/tarifs" element={<TarifsPage />} />
+          {/* Programmatic SEO — hub prénoms + pages par prénom */}
+          <Route path="/prenoms" element={<PrenomsHubPage />} />
           <Route path="/prenom/:prenom" element={<PrenomPage />} />
           {/* Pages légales */}
           <Route path="/mentions-legales" element={<MentionsLegalesPage />} />

@@ -1,4 +1,36 @@
 {
+  "redirects": [
+    {
+      "source": "/blog/livre-personnalise-enfant-2026",
+      "destination": "/blog/guide-livre-personnalise-enfant-2026",
+      "statusCode": 301
+    },
+    {
+      "source": "/blog/conte-personnalise-confiance-imagination-enfant",
+      "destination": "/blog/enfant-heros-propre-histoire",
+      "statusCode": 301
+    },
+    {
+      "source": "/blog/intelligence-artificielle-histoires-enfants",
+      "destination": "/blog/ia-revolution-creation-histoires-enfants",
+      "statusCode": 301
+    },
+    {
+      "source": "/blog/bienfaits-lecture-personnalisee-enfant",
+      "destination": "/blog/enfant-heros-propre-histoire",
+      "statusCode": 301
+    },
+    {
+      "source": "/blog/conte-personnalise-rituel-coucher",
+      "destination": "/blog/conte-pour-sendormir-histoires-personnalisees",
+      "statusCode": 301
+    },
+    {
+      "source": "/blog/creation-histoires-personnalisees-conte-ia",
+      "destination": "/blog/ia-revolution-creation-histoires-enfants",
+      "statusCode": 301
+    }
+  ],
   "rewrites": [
     {
       "source": "/(.*)",
