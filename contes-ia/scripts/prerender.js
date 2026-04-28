@@ -3,9 +3,16 @@
  * Script de prerendering custom pour Contedia
  * Utilise Puppeteer moderne pour pre-rendre toutes les pages publiques
  * Usage: node scripts/prerender.js
+ * Skip silencieusement si puppeteer n'est pas installe (ex: Vercel)
  */
 
-const puppeteer = require('puppeteer');
+let puppeteer;
+try {
+  puppeteer = require('puppeteer');
+} catch {
+  console.log('⏭️  Prerendering skipped (puppeteer not available — normal on Vercel)');
+  process.exit(0);
+}
 const { createServer } = require('http');
 const { readFileSync, writeFileSync, mkdirSync, existsSync } = require('fs');
 const { join, dirname } = require('path');
