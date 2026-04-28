@@ -16,9 +16,11 @@ export const StoryFormPage: React.FC = () => {
   const { user, isAuthenticated, isClub, setTokenAndUser } = useAuth();
   const location = useLocation();
   const isAdMode = useMemo(() => new URLSearchParams(location.search).get('from') === 'ad', [location.search]);
+  // Nouveau formulaire par defaut. ?ui=wizard pour revenir a l'ancien.
   const useChatUI = useMemo(() => {
     const params = new URLSearchParams(location.search);
-    return params.get('ui') === 'chat' || safeLocalStorage.getItem('feature_chat_ui') === 'true';
+    if (params.get('ui') === 'wizard') return false;
+    return true;
   }, [location.search]);
   const referralCode = useMemo(() => {
     const ref = new URLSearchParams(location.search).get('ref');
