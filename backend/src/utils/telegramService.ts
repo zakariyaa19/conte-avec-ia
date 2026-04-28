@@ -294,46 +294,45 @@ ${productEmoji} <b>Produit:</b> eBook Numérique
       const safeSpecialEvents = escapeHtml(order.specialEvents);
       const safeCustomReligion = escapeHtml(order.customReligion);
 
+      // Section "Saisie client" — les 3 champs du formulaire chat
       message += `
 
 ━━━━━━━━━━━━━━━━━━━━━━
-📝 <b>DÉTAILS DE LA COMMANDE</b>
+✏️ <b>SAISIE CLIENT</b>
 
-🎯 <b>Conte personnalisé</b>
-📚 Tranche d'âge: ${escapeHtml(order.ageRange) || 'Non spécifié'}
-🌟 Thème général: ${this.formatTheme(order.generalTheme)}${safeCustomTheme ? ` (${safeCustomTheme})` : ''}
-📖 Sujet: ${this.formatSubject(order.specificSubject)}${safeCustomSubject ? ` (${safeCustomSubject})` : ''}
-💭 Message central: ${this.formatMessage(order.centralMessage)}${safeCustomMessage ? ` (${safeCustomMessage})` : ''}
-🎨 Style: ${this.formatIllustrationStyle(order.illustrationStyle)}
-${order.coverTitle ? `📕 Titre couverture: ${escapeHtml(order.coverTitle)}` : ''}
-${order.language ? `🌍 Langue: ${escapeHtml(order.language)}` : ''}
+👤 <b>Prénom:</b> ${safeProtagName || 'Non spécifié'}
+${order.photoUrl ? `📸 <b>Photo:</b> Oui` : ''}
+📝 <b>Histoire:</b> ${safeSpecialEvents || 'Non spécifié'}`;
 
-👦👧 <b>Protagoniste</b>
-🏷️ Nom: ${safeProtagName || 'Non spécifié'}
-🎂 Âge: ${escapeHtml(order.protagonistAge) || 'Non spécifié'}
-${order.protagonistGender ? `⚧️ Sexe: ${order.protagonistGender === 'boy' ? 'Garçon' : 'Fille'}` : ''}
-${order.photoUrl ? `📸 Photo fournie: Oui` : `👁️ Yeux: ${escapeHtml(order.eyeColor) || 'Non spécifié'}
-💇 Cheveux: ${escapeHtml(order.hairColor) || 'Non spécifié'}
-🎨 Peau: ${escapeHtml(order.skinColor) || 'Non spécifié'}`}
-${safeHobbies ? `🎮 Loisirs: ${safeHobbies}` : ''}
-${safeFavoriteDish ? `🍽️ Plat préféré: ${safeFavoriteDish}` : ''}
-${safeSpecialEvents ? `🎉 Événements: ${safeSpecialEvents}` : ''}
-${order.religion ? `🙏 Religion: ${escapeHtml(order.religion)}${safeCustomReligion ? ` (${safeCustomReligion})` : ''}` : ''}`;
-
-      // Personnages secondaires
+      // Personnages secondaires inline
       const secondaryChars = parseSecondaryCharacters(order.secondaryCharactersJson);
-      if (secondaryChars.length > 0) {
-        message += `
-
-👥 <b>Personnages secondaires (${secondaryChars.length})</b>
-${escapeHtml(formatSecondaryCharacters(secondaryChars))}`;
-      } else if (order.secondaryCharacterName) {
-        message += `
-
-👥 <b>Personnage secondaire</b>
-🏷️ Nom: ${escapeHtml(order.secondaryCharacterName)}
-${order.secondaryCharacterAge ? `📝 Type/Âge: ${escapeHtml(order.secondaryCharacterAge)}` : ''}`;
+      const hasSecondary = secondaryChars.length > 0 || order.secondaryCharacterName;
+      if (hasSecondary) {
+        if (secondaryChars.length > 0) {
+          message += `
+👥 <b>Personnage secondaire:</b> ${escapeHtml(formatSecondaryCharacters(secondaryChars))}`;
+        } else if (order.secondaryCharacterName) {
+          message += `
+👥 <b>Personnage secondaire:</b> ${escapeHtml(order.secondaryCharacterName)}`;
+        }
       }
+
+      message += `
+
+━━━━━━━━━━━━━━━━━━━━━━
+🤖 <b>DONNÉES PARSÉES</b>
+
+📚 Tranche d'âge: ${escapeHtml(order.ageRange) || 'Auto'}
+🌟 Thème: ${this.formatTheme(order.generalTheme)}${safeCustomTheme ? ` → ${safeCustomTheme}` : ''}
+📖 Sujet: ${this.formatSubject(order.specificSubject)}${safeCustomSubject ? ` (${safeCustomSubject})` : ''}
+💭 Message: ${this.formatMessage(order.centralMessage)}${safeCustomMessage ? ` (${safeCustomMessage})` : ''}
+🎨 Style: ${this.formatIllustrationStyle(order.illustrationStyle)}
+${order.protagonistGender ? `⚧️ Sexe: ${order.protagonistGender === 'boy' ? 'Garçon' : 'Fille'}` : '⚧️ Sexe: Auto'}
+🎂 Âge: ${escapeHtml(order.protagonistAge) || 'Auto'}
+${order.coverTitle ? `📕 Titre: ${escapeHtml(order.coverTitle)}` : ''}
+${!order.photoUrl ? `👁️ Yeux: ${escapeHtml(order.eyeColor) || 'Auto'} | 💇 Cheveux: ${escapeHtml(order.hairColor) || 'Auto'} | 🎨 Peau: ${escapeHtml(order.skinColor) || 'Auto'}` : ''}
+${safeHobbies ? `🎮 Loisirs: ${safeHobbies}` : ''}
+${order.religion ? `🙏 Religion: ${escapeHtml(order.religion)}` : ''}`;
 
       // Createur
       if (order.creatorName) {
