@@ -618,9 +618,30 @@ export const AdminOrderDetailPage: React.FC<AdminOrderDetailPageProps> = ({ toke
           </CardBody>
         </Card>
 
+        {/* Saisie client (formulaire chat) */}
+        {order.specialEvents && (
+          <Card>
+            <CardHeader style={{ background: 'linear-gradient(135deg, #FF999920, #FF7F7F10)' }}>Saisie client</CardHeader>
+            <CardBody>
+              <InfoRow><Label>Prenom</Label><Value style={{ fontWeight: 700 }}>{order.protagonistName}</Value></InfoRow>
+              <InfoRow><Label>Histoire</Label><Value style={{ whiteSpace: 'pre-wrap', lineHeight: 1.5, fontSize: '0.85rem' }}>{order.specialEvents}</Value></InfoRow>
+              {order.secondaryCharactersJson && (() => {
+                try {
+                  const chars = JSON.parse(order.secondaryCharactersJson);
+                  if (Array.isArray(chars) && chars.length > 0) {
+                    return <InfoRow><Label>Personnage secondaire</Label><Value>{chars.map((c: any) => `${c.ageOrType || ''} ${c.name || ''}`).join(', ').trim()}</Value></InfoRow>;
+                  }
+                } catch {}
+                return null;
+              })()}
+              {order.photoUrl && <InfoRow><Label>Photo</Label><Value>Oui</Value></InfoRow>}
+            </CardBody>
+          </Card>
+        )}
+
         {/* Story details */}
         <Card>
-          <CardHeader>Details du conte</CardHeader>
+          <CardHeader>Details du conte (parse)</CardHeader>
           <CardBody>
             <InfoRow><Label>Tranche d'age</Label><Value>{order.ageRange}</Value></InfoRow>
             <InfoRow><Label>Theme</Label><Value>{order.generalTheme === 'custom' && order.customTheme ? order.customTheme : order.generalTheme}</Value></InfoRow>
