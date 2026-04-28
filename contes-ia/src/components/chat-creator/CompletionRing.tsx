@@ -2,8 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { RingWrap, RingPct, RingParticles } from './ChatStoryStyles';
 
 interface Props { percentage: number; color: string; }
-const R = 15, CIRC = 2 * Math.PI * R;
-const P = [{ tx:'12px',ty:'-12px' },{ tx:'-10px',ty:'-14px' },{ tx:'14px',ty:'4px' },{ tx:'-12px',ty:'8px' }];
+const R = 16, CIRC = 2 * Math.PI * R;
+const P = [{ tx:'14px',ty:'-14px' },{ tx:'-12px',ty:'-16px' },{ tx:'16px',ty:'5px' },{ tx:'-14px',ty:'10px' }];
 
 export const CompletionRing: React.FC<Props> = ({ percentage, color }) => {
   const [c, setC] = useState(false);
@@ -21,9 +21,9 @@ export const CompletionRing: React.FC<Props> = ({ percentage, color }) => {
 
   return (
     <RingWrap $celebrating={c}>
-      <svg width="38" height="38" viewBox="0 0 38 38" style={{ transform: 'rotate(-90deg)' }}>
-        <circle cx="19" cy="19" r={R} fill="none" stroke="var(--border-color, rgba(0,0,0,0.06))" strokeWidth="3" />
-        <circle cx="19" cy="19" r={R} fill="none" stroke={color} strokeWidth="3" strokeLinecap="round"
+      <svg width="42" height="42" viewBox="0 0 42 42" style={{ transform: 'rotate(-90deg)' }}>
+        <circle cx="21" cy="21" r={R} fill="none" stroke="var(--border-color, rgba(0,0,0,0.06))" strokeWidth="3.5" />
+        <circle cx="21" cy="21" r={R} fill="none" stroke={color} strokeWidth="3.5" strokeLinecap="round"
           strokeDasharray={CIRC} strokeDashoffset={CIRC - (percentage / 100) * CIRC}
           style={{ transition: 'stroke-dashoffset 600ms ease-out, stroke 400ms ease' }} />
       </svg>

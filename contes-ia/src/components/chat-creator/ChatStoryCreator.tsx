@@ -10,8 +10,8 @@ import { useCompletionScore } from './useCompletionScore';
 import { CompletionRing } from './CompletionRing';
 
 import {
-  PageWrap, Header, Logo, Body, Footer, FooterInner,
-  Title, Subtitle, TrustRow, TrustItem,
+  PageWrap, Header, Logo, Body, BodyInner, Footer, FooterInner,
+  HeroBlock, HeroBadge, Title, Subtitle, TrustRow, TrustItem,
   FieldWrap, FieldHeader, FieldLabel, CharCount, FieldInput, FieldTextarea, FieldHint,
   PhotoBtn, CTA, CTASpinner, AuthInput, C,
 } from './ChatStoryStyles';
@@ -253,80 +253,82 @@ export const ChatStoryCreator: React.FC<Props> = ({
         </Header>
 
         <Body>
-          <div>
-            <Title>Creez <span>l'histoire unique</span> de votre enfant</Title>
-            <Subtitle>Remplissez les champs, l'IA cree le livre</Subtitle>
-          </div>
+          <BodyInner>
+            {/* Hero accueillant */}
+            <HeroBlock>
+              <HeroBadge>+500 histoires creees &middot; &#11088;&#11088;&#11088;&#11088;&#11088;</HeroBadge>
+              <Title>Creez un <span>livre personnalise</span> pour votre enfant</Title>
+              <Subtitle>Votre enfant devient le heros d'une histoire unique. Illustrations IA, pret en 5 minutes !</Subtitle>
+            </HeroBlock>
 
-          {/* ── Prenom + Photo ── */}
-          <FieldWrap>
-            <FieldHeader>
-              <FieldLabel>Prenom de l'enfant <span style={{ color: C.coral }}>*</span></FieldLabel>
-              <CharCount $over={name.length > LIMITS.name}>{name.length}/{LIMITS.name}</CharCount>
-            </FieldHeader>
-            <FieldInput
-              value={name}
-              onChange={e => { if (e.target.value.length <= LIMITS.name) setName(e.target.value); }}
-              placeholder="Luna, Adam, Ines..."
-              maxLength={LIMITS.name}
-              autoFocus
-              aria-required="true"
-            />
-            <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp,image/heic"
-              style={{ display: 'none' }} aria-label="Ajouter une photo de l'enfant"
-              onChange={e => { const f = e.target.files?.[0]; if (f) pickPhoto(f); e.target.value = ''; }} />
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 6 }}>
+            {/* ── Prenom + Photo ── */}
+            <FieldWrap>
+              <FieldHeader>
+                <FieldLabel>Prenom de l'enfant <span style={{ color: C.coral }}>*</span></FieldLabel>
+                <CharCount $over={name.length > LIMITS.name}>{name.length}/{LIMITS.name}</CharCount>
+              </FieldHeader>
+              <FieldInput
+                value={name}
+                onChange={e => { if (e.target.value.length <= LIMITS.name) setName(e.target.value); }}
+                placeholder="Luna, Adam, Ines..."
+                maxLength={LIMITS.name}
+                autoFocus
+                aria-required="true"
+              />
+              <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp,image/heic"
+                style={{ display: 'none' }} aria-label="Ajouter une photo de l'enfant"
+                onChange={e => { const f = e.target.files?.[0]; if (f) pickPhoto(f); e.target.value = ''; }} />
               <PhotoBtn $has={!!photo} onClick={() => fileRef.current?.click()} type="button">
-                {photo ? '✅' : '📷'} {photo ? 'Photo ajoutee' : 'Ajouter sa photo (optionnel)'}
+                {photo ? '✅' : '📷'} {photo ? 'Photo ajoutee' : 'Ajouter sa photo pour des illustrations personnalisees'}
               </PhotoBtn>
               {photoPreview && (
-                <>
-                  <img src={photoPreview} alt="Photo de l'enfant" style={{ width: 28, height: 28, borderRadius: 6, objectFit: 'cover' }} />
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 12px', background: 'rgba(76,175,80,0.05)', borderRadius: 10 }}>
+                  <img src={photoPreview} alt="Photo de l'enfant" style={{ width: 40, height: 40, borderRadius: 10, objectFit: 'cover' }} />
+                  <span style={{ fontSize: '0.8rem', color: C.success, fontWeight: 500, flex: 1 }}>Les illustrations ressembleront a votre enfant</span>
                   <button onClick={() => { setPhoto(null); setPhotoPreview(null); }}
                     aria-label="Supprimer la photo"
-                    style={{ background: 'none', border: 'none', color: C.danger, fontSize: 12, cursor: 'pointer', padding: '4px' }}>&#10005;</button>
-                </>
+                    style={{ background: 'none', border: 'none', color: C.danger, fontSize: 14, cursor: 'pointer', padding: '6px' }}>&#10005;</button>
+                </div>
               )}
-            </div>
-            <FieldHint><span className="icon">&#9432;</span> La photo permet de generer des illustrations qui lui ressemblent</FieldHint>
-          </FieldWrap>
+            </FieldWrap>
 
-          {/* ── Description histoire ── */}
-          <FieldWrap>
-            <FieldHeader>
-              <FieldLabel>Decrivez votre histoire <span style={{ color: C.coral }}>*</span></FieldLabel>
-              <CharCount $over={story.length > LIMITS.story}>{story.length}/{LIMITS.story}</CharCount>
-            </FieldHeader>
-            <FieldTextarea
-              value={story}
-              onChange={e => { if (e.target.value.length <= LIMITS.story) setStory(e.target.value); }}
-              placeholder="Une petite fille de 10 ans qui adore le foot, dans l'univers de Harry Potter. Style manga, sur le theme du courage..."
-              maxLength={LIMITS.story}
-              aria-required="true"
-            />
-            <FieldHint><span className="icon">&#9432;</span> Mentionnez l'age, le theme, le style d'illustration et la morale souhaitee</FieldHint>
-          </FieldWrap>
+            {/* ── Description histoire ── */}
+            <FieldWrap>
+              <FieldHeader>
+                <FieldLabel>Decrivez votre histoire <span style={{ color: C.coral }}>*</span></FieldLabel>
+                <CharCount $over={story.length > LIMITS.story}>{story.length}/{LIMITS.story}</CharCount>
+              </FieldHeader>
+              <FieldTextarea
+                value={story}
+                onChange={e => { if (e.target.value.length <= LIMITS.story) setStory(e.target.value); }}
+                placeholder="Une petite fille de 10 ans qui adore le foot, dans l'univers de Harry Potter. Style manga, sur le theme du courage..."
+                maxLength={LIMITS.story}
+                aria-required="true"
+              />
+              <FieldHint><span className="icon">&#128161;</span> Mentionnez l'age, le theme, le style d'illustration et la morale souhaitee</FieldHint>
+            </FieldWrap>
 
-          {/* ── Personnage secondaire ── */}
-          <FieldWrap>
-            <FieldHeader>
-              <FieldLabel>Personnage secondaire <span className="opt">(optionnel)</span></FieldLabel>
-              <CharCount $over={secondary.length > LIMITS.secondary}>{secondary.length}/{LIMITS.secondary}</CharCount>
-            </FieldHeader>
-            <FieldInput
-              value={secondary}
-              onChange={e => { if (e.target.value.length <= LIMITS.secondary) setSecondary(e.target.value); }}
-              placeholder="Son chien Moustache, sa meilleure amie Jade..."
-              maxLength={LIMITS.secondary}
-            />
-          </FieldWrap>
+            {/* ── Personnage secondaire ── */}
+            <FieldWrap>
+              <FieldHeader>
+                <FieldLabel>Personnage secondaire <span className="opt">(optionnel)</span></FieldLabel>
+                <CharCount $over={secondary.length > LIMITS.secondary}>{secondary.length}/{LIMITS.secondary}</CharCount>
+              </FieldHeader>
+              <FieldInput
+                value={secondary}
+                onChange={e => { if (e.target.value.length <= LIMITS.secondary) setSecondary(e.target.value); }}
+                placeholder="Son chien Moustache, sa meilleure amie Jade..."
+                maxLength={LIMITS.secondary}
+              />
+            </FieldWrap>
 
-          {/* Trust */}
-          <TrustRow>
-            <TrustItem>&#9889; Pret en 5 min</TrustItem>
-            <TrustItem>&#127873; 1er chapitre gratuit</TrustItem>
-            <TrustItem>&#128274; Sans engagement</TrustItem>
-          </TrustRow>
+            {/* Trust */}
+            <TrustRow>
+              <TrustItem>&#10003; 1er chapitre gratuit</TrustItem>
+              <TrustItem>&#10003; Pret en 5 minutes</TrustItem>
+              <TrustItem>&#10003; Sans carte bancaire</TrustItem>
+            </TrustRow>
+          </BodyInner>
         </Body>
 
         <Footer>
