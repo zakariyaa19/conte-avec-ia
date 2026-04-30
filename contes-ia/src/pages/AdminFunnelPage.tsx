@@ -352,17 +352,16 @@ const EmptyState = styled.div`
 `;
 
 // ═══════════════════════════════════════════════
-// STEP CONFIG — formulaire gratuit uniquement
+// STEP CONFIG — nouveau formulaire 2-step (ChatStoryCreator)
+// step 1 (form) : prenom + description histoire + photo optionnelle
+// step 2 (preview) : cover preview + auth/email + soumission finale
 // ═══════════════════════════════════════════════
 
 const STEPS: { key: string; label: string; color: string }[] = [
-  { key: 'page_view',       label: 'Page formulaire',   color: '#6366F1' },
-  { key: 'wizard_age',      label: 'Age selectionne',   color: '#8B5CF6' },
-  { key: 'wizard_theme',    label: 'Theme choisi',      color: '#A78BFA' },
-  { key: 'wizard_character', label: 'Infos du heros',   color: '#F59E0B' },
-  { key: 'wizard_preview',  label: 'Preview du livre',  color: '#3B82F6' },
-  { key: 'email_entered',   label: 'Email saisi',       color: '#10B981' },
-  { key: 'form_submitted',  label: 'Livre cree',        color: '#059669' },
+  { key: 'page_view',        label: 'Visite formulaire',  color: '#6366F1' },
+  { key: 'chat_to_preview',  label: 'Histoire decrite',   color: '#8B5CF6' },
+  { key: 'email_entered',    label: 'Email/Auth',         color: '#10B981' },
+  { key: 'form_submitted',   label: 'Livre cree',         color: '#059669' },
 ];
 
 const SOURCE_LABELS: Record<string, string> = {
@@ -440,7 +439,7 @@ export const AdminFunnelPage: React.FC<Props> = ({ token }) => {
         <Header>
           <HeaderLeft>
             <Title>Funnel de conversion</Title>
-            <Subtitle>Parcours formulaire gratuit uniquement</Subtitle>
+            <Subtitle>Parcours nouveau formulaire 2-step (description histoire → identification → livre cree)</Subtitle>
           </HeaderLeft>
           <PeriodPicker>
             {periods.map(p => (
@@ -534,35 +533,47 @@ export const AdminFunnelPage: React.FC<Props> = ({ token }) => {
             {/* ── INSIGHT SUMMARY ── */}
             <InsightCard>
               <InsightTitle>Resume</InsightTitle>
-              {funnel[1] && funnel[1].pct < 50 && (
-                <InsightItem>
-                  Seulement <strong>{funnel[1].pct}%</strong> des visiteurs selectionnent un age. Beaucoup quittent sans interagir.
-                </InsightItem>
-              )}
-              {funnel[2] && funnel[2].dropPct >= 50 && (
-                <InsightItem>
-                  <strong>{funnel[2].dropPct}%</strong> abandonnent au choix du theme. L'etape est peut-etre confuse ou trop longue.
-                </InsightItem>
-              )}
-              {funnel.find(s => s.key === 'email_entered') && funnel.find(s => s.key === 'wizard_preview') && (
-                (() => {
-                  const preview = funnel.find(s => s.key === 'wizard_preview')!;
-                  const email = funnel.find(s => s.key === 'email_entered')!;
-                  if (preview.sessions > 0 && email.sessions > 0) {
-                    const previewToEmail = Math.round((email.sessions / preview.sessions) * 100);
-                    return previewToEmail >= 50 ? (
-                      <InsightItem>
-                        <strong>{previewToEmail}%</strong> des visiteurs qui voient la preview saisissent leur email. Bonne conversion.
-                      </InsightItem>
-                    ) : (
-                      <InsightItem>
-                        Seulement <strong>{previewToEmail}%</strong> saisissent leur email apres la preview. La preview ne convainc pas assez.
-                      </InsightItem>
-                    );
-                  }
-                  return null;
-                })()
-              )}
+              {(() => {
+                const chatStep = funnel.find(s => s.key === 'chat_to_preview');
+                if (chatStep && chatStep.pct < 30) {
+                  return (
+                    <InsightItem>
+                      Seulement <strong>{chatStep.pct}%</strong> des visiteurs decrivent une histoire. Le step 1 (prenom + description) ne donne pas assez envie d'avancer.
+                    </InsightItem>
+                  );
+                }
+                return null;
+              })()}
+              {(() => {
+                const chatStep = funnel.find(s => s.key === 'chat_to_preview');
+                const emailStep = funnel.find(s => s.key === 'email_entered');
+                if (chatStep && emailStep && chatStep.sessions > 0) {
+                  const chatToEmail = Math.round((emailStep.sessions / chatStep.sessions) * 100);
+                  return chatToEmail >= 60 ? (
+                    <InsightItem>
+                      <strong>{chatToEmail}%</strong> des visiteurs qui arrivent en preview s'identifient. Bonne friction d'auth.
+                    </InsightItem>
+                  ) : (
+                    <InsightItem>
+                      Seulement <strong>{chatToEmail}%</strong> s'identifient apres avoir vu la preview. La cover preview ou l'auth doit convertir mieux.
+                    </InsightItem>
+                  );
+                }
+                return null;
+              })()}
+              {(() => {
+                const emailStep = funnel.find(s => s.key === 'email_entered');
+                const submitStep = funnel.find(s => s.key === 'form_submitted');
+                if (emailStep && submitStep && emailStep.sessions > 0) {
+                  const emailToSubmit = Math.round((submitStep.sessions / emailStep.sessions) * 100);
+                  return emailToSubmit < 80 ? (
+                    <InsightItem>
+                      <strong>{100 - emailToSubmit}%</strong> abandonnent apres avoir saisi leur email — verifier que le CTA final fonctionne et que la cover est prete.
+                    </InsightItem>
+                  ) : null;
+                }
+                return null;
+              })()}
               <InsightItem>
                 Taux de conversion global : <strong>{convRate}%</strong> ({conversions} sur {visitors} visiteurs)
               </InsightItem>
