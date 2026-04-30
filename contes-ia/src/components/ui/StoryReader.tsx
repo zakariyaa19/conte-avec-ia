@@ -244,15 +244,34 @@ const PageImg = styled.img<{ $visible: boolean }>`
 const PageTextBox = styled.div<{ $accent: string; $night: boolean }>`
   flex: 1; display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  padding: 8px 20px 12px;
+  padding: 8px 20px 56px; /* 56px bottom = laisse de la place au PageIndicator flottant (bottom: 20px + ~28px hauteur) */
   overflow: hidden; /* NO internal scroll — text must fit */
   min-height: 0; /* allow flex shrinking */
 
   /* Desktop: 50% */
   @media (orientation: landscape), (min-width: 1025px) {
     width: 50%;
-    padding: 40px 48px;
+    padding: 40px 48px 56px;
   }
+`;
+
+/* Banniere inline pour la derniere page du chapitre gratuit — remplace le hint
+   dans le PageIndicator flottant pour ne JAMAIS masquer le texte. */
+const CliffhangerBanner = styled.div`
+  font-family: ${theme.fonts.body};
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(255,213,128,0.95);
+  background: rgba(255,213,128,0.1);
+  border: 1px solid rgba(255,213,128,0.25);
+  padding: 4px 12px;
+  border-radius: 12px;
+  margin: 0 0 10px;
+  flex-shrink: 0;
+  backdrop-filter: blur(4px);
+  white-space: nowrap;
 `;
 
 const PageNum = styled.div<{ $accent: string; $night: boolean }>`
@@ -563,21 +582,18 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
         const currentPageIndex = slides[currentSlide]?.index;
         if (currentType === 'end') return null;
         let label: string;
-        let hint: string | null = null;
         if (currentType === 'cover') {
           label = 'Couverture';
         } else if (currentType === 'page' && typeof currentPageIndex === 'number') {
           label = `Page ${currentPageIndex + 1} / ${pageCount}`;
-          if (isCliffhanger && currentPageIndex === pageCount - 1) {
-            hint = 'Derniere page du chapitre gratuit';
-          }
         } else {
           label = `${currentSlide + 1} / ${totalSlides}`;
         }
+        // Le hint "Derniere page du chapitre gratuit" est rendu inline dans la PageTextBox
+        // (cf. plus bas) pour ne pas masquer le texte sur petite hauteur d'ecran.
         return (
           <PageIndicator $visible={showIndicator}>
             <span>{label}</span>
-            {hint && <span className="hint">{hint}</span>}
           </PageIndicator>
         );
       })()}
@@ -611,6 +627,7 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
             const imgSide: 'left' | 'right' = i % 2 === 0 ? 'right' : 'left';
             const authorSuffix = i === pageCount - 1 && (narratedBy || creatorName)
               ? `\n\n— Histoire racontée par ${narratedBy || creatorName}` : '';
+            const isCliffhangerLastPage = isCliffhanger && i === pageCount - 1;
 
             return (
               <PageSlide key={`page-${i}`} data-slide-index={idx} $bg={c.bg}>
@@ -621,6 +638,7 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
                 )}
                 <PageTextBox $accent={c.accent} $night={nightMode}>
                   <PageNum $accent={c.accent} $night={nightMode}>{i + 1}</PageNum>
+                  {isCliffhangerLastPage && <CliffhangerBanner>Derniere page du chapitre gratuit</CliffhangerBanner>}
                   <AutoFitText text={rawText + authorSuffix} night={nightMode} />
                   <PageDivider $accent={c.accent} />
                 </PageTextBox>

@@ -137,7 +137,7 @@ EXIGENCES :
 1. PAS DE FIN. PAS DE RESOLUTION. PAS DE MORALE. L'histoire est INACHEVEE.
 2. Vocabulaire adapte a un enfant de ${ageForVocab} ans
 3. Le prenom "${name}" doit apparaitre dans CHAQUE paragraphe
-4. Chaque paragraphe fait 3 a 4 phrases (assez pour immerger mais pas trop long — optimise pour lecture mobile)
+4. LIMITE STRICTE — Chaque paragraphe fait ENTRE 150 ET 220 CARACTERES (espaces inclus). Compte les caracteres avant de finaliser. C'est non-negociable : un paragraphe trop long est illisible sur mobile. Vise 2-3 phrases courtes et percutantes.
 ${params.hobbies ? `5. Les passions de ${name} (${params.hobbies}) doivent etre integrees naturellement dans l'histoire` : '5. Integrer des details personnels pour rendre l\'histoire unique'}
 ${params.favoriteDish ? `6. Mentionner le plat favori (${params.favoriteDish}) a un moment de l'histoire` : ''}
 7. ${secondaryChars ? `CRUCIAL : Chaque personnage secondaire doit apparaitre avec des actions concretes et des dialogues.` : 'L\'histoire doit etre captivante, magique et positive'}
@@ -222,7 +222,7 @@ PLAN NARRATIF (20 parties) :
 - MORALE ET OUVERTURE (1 partie) — Lecon apprise avec douceur et poesie.${narratedBy ? ` Terminer par "Histoire racontee par ${narratedBy}" en derniere phrase.` : ''}
 
 EXIGENCES QUALITE PREMIUM :
-1. Chaque paragraphe fait 3 a 4 phrases (riche mais toujours aere pour lecture mobile)
+1. LIMITE STRICTE — Chaque paragraphe fait ENTRE 180 ET 260 CARACTERES (espaces inclus). Vise 2-3 phrases courtes mais riches. Un paragraphe trop long est illisible sur mobile.
 2. Vocabulaire adapte a un enfant de ${ageForVocab} ans mais avec de la richesse
 3. Le prenom "${name}" apparait dans au moins 14 paragraphes sur 20
 4. Descriptions sensorielles : couleurs, sons, odeurs, textures
@@ -284,12 +284,30 @@ export async function generateStoryText(params: StoryTextParams, title: string):
       }
 
       // Nettoyage : supprimer les prefixes "Paragraphe X:", "Partie X:", "[X]", etc.
+      // Plus : enforcer la limite de caracteres (filet de securite si GPT depasse)
+      const HARD_MAX = isClub ? 320 : 260; // marge au-dessus de la consigne (260/220) pour eviter de couper trop agressivement
       const validParagraphs = paragraphs.map((p: any) => {
         let text = String(p).trim();
         text = text.replace(/^(Paragraphe|Partie|Chapitre|Page)\s*\d*\s*[:.\-–—]\s*/i, '');
         text = text.replace(/^\[\d+\]\s*/, '');
         text = text.replace(/^\d+[\.\)]\s*/, '');
-        return text.trim();
+        text = text.trim();
+        // Si trop long : couper a la derniere phrase qui rentre
+        if (text.length > HARD_MAX) {
+          const sentenceEnd = text.lastIndexOf('.', HARD_MAX);
+          const exclEnd = text.lastIndexOf('!', HARD_MAX);
+          const questEnd = text.lastIndexOf('?', HARD_MAX);
+          const cut = Math.max(sentenceEnd, exclEnd, questEnd);
+          if (cut > HARD_MAX * 0.6) {
+            text = text.slice(0, cut + 1);
+          } else {
+            // Pas de fin de phrase trouvee : couper au dernier espace + ellipsis
+            const spaceCut = text.lastIndexOf(' ', HARD_MAX);
+            text = (spaceCut > 0 ? text.slice(0, spaceCut) : text.slice(0, HARD_MAX)).trimEnd() + '...';
+          }
+          console.warn(`[StoryTextGenerator] Paragraph exceeded ${HARD_MAX} chars, truncated to ${text.length}`);
+        }
+        return text;
       });
 
       console.log(`[StoryTextGenerator] Successfully generated ${targetParagraphs} paragraphs (${isClub ? 'CLUB' : 'FREE'})`);
