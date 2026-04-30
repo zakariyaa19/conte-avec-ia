@@ -359,16 +359,26 @@ export const ChatStoryCreator: React.FC<Props> = ({
         <div />
       </Header>
 
-      <Body style={{ alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-        <div ref={previewTopRef} style={{ width: '100%', maxWidth: 400, flex: '1 1 0', minHeight: 0, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <p style={{ fontFamily: "'Baloo 2', cursive", fontSize: '1rem', fontWeight: 700, textAlign: 'center', margin: '0 0 8px' }}>
+      <Body style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', overflowY: 'auto', padding: '20px 16px' }}>
+        <div ref={previewTopRef} style={{
+          width: '100%', maxWidth: 440,
+          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14,
+          margin: 'auto 0',
+        }}>
+          {/* Title */}
+          <p style={{ fontFamily: "'Baloo 2', cursive", fontSize: '1.05rem', fontWeight: 700, textAlign: 'center', margin: 0 }}>
             {coverError ? `Preparation du livre de ${heroNameFull}` : coverReady ? `Le livre de ${heroNameFull} est pret !` : `Creation du livre de ${heroNameFull}...`}
           </p>
 
-          {/* Cover — BookCoverPreview avec MagicalLoadingScene (livre anime, sparkles, messages rotatifs) */}
-          <div style={{ flex: '1 1 0', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 0, margin: '0 0 8px' }}>
+          {/* Cover — BookCoverPreview avec MagicalLoadingScene (livre anime, sparkles, messages rotatifs).
+              Largeur explicite pour garantir un rendu coherent (sinon le ratio 2/3 du composant donne 0 height
+              quand le parent flex n'a pas de hauteur definie). */}
+          <div style={{
+            width: '100%', maxWidth: 240,
+            flexShrink: 0,
+          }}>
             {coverError ? (
-              <div style={{ textAlign: 'center', padding: 20 }}>
+              <div style={{ textAlign: 'center', padding: 20, aspectRatio: '2/3', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-card)', borderRadius: 12 }}>
                 <p style={{ fontSize: '3rem', margin: '0 0 8px' }}>📖</p>
                 <p style={{ fontSize: '0.8rem', color: 'var(--text-light)', margin: '0 0 12px' }}>La couverture n'a pas pu etre generee</p>
                 <button onClick={() => coverPreview.generate()} style={{
@@ -384,16 +394,16 @@ export const ChatStoryCreator: React.FC<Props> = ({
             )}
           </div>
 
-          {/* Auth */}
-          {!isAuthenticated && (
-            <p style={{ fontFamily: "'Baloo 2', cursive", fontSize: '0.875rem', fontWeight: 700, textAlign: 'center', margin: '0 0 8px' }}>
-              Recevez le livre de {heroNameFull} gratuitement
-            </p>
-          )}
+          {/* Auth + CTA */}
+          <div style={{ width: '100%' }}>
+            {!isAuthenticated && (
+              <p style={{ fontFamily: "'Baloo 2', cursive", fontSize: '0.95rem', fontWeight: 700, textAlign: 'center', margin: '0 0 10px' }}>
+                Recevez le livre de {heroNameFull} gratuitement
+              </p>
+            )}
 
-          <div style={{ width: '100%', flexShrink: 0 }}>
             {!isAuthenticated && !inApp && (
-              <div style={{ textAlign: 'center', marginBottom: 8 }}>
+              <div style={{ textAlign: 'center', marginBottom: 10 }}>
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
                   <GoogleLogin onSuccess={handleGoogle} onError={() => setGoogleError(true)} text="continue_with" shape="rectangular" size="large" />
                 </div>
@@ -409,7 +419,7 @@ export const ChatStoryCreator: React.FC<Props> = ({
             )}
 
             {isAuthenticated && currentUser && (
-              <div style={{ background: 'rgba(76,175,80,0.08)', border: '1px solid rgba(76,175,80,0.2)', borderRadius: 10, padding: '8px 12px', marginBottom: 8, textAlign: 'center', fontSize: 13, fontWeight: 600, color: '#2E7D32' }}>
+              <div style={{ background: 'rgba(76,175,80,0.08)', border: '1px solid rgba(76,175,80,0.2)', borderRadius: 10, padding: '10px 14px', marginBottom: 10, textAlign: 'center', fontSize: 13, fontWeight: 600, color: '#2E7D32' }}>
                 Connecte : <strong>{currentUser.email}</strong>
               </div>
             )}
@@ -428,7 +438,7 @@ export const ChatStoryCreator: React.FC<Props> = ({
               {isBusy ? <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}><CTASpinner /> Creation en cours...</span> : `Lire le livre de ${heroName} gratuitement →`}
             </CTA>
 
-            <p style={{ fontSize: 10, color: 'var(--text-light)', marginTop: 8, textAlign: 'center' }}>&#9989; Gratuit &middot; &#9889; Pret en 5 min</p>
+            <p style={{ fontSize: 11, color: 'var(--text-light)', marginTop: 10, textAlign: 'center' }}>&#9989; Gratuit &middot; &#9889; Pret en 5 min</p>
           </div>
         </div>
       </Body>
