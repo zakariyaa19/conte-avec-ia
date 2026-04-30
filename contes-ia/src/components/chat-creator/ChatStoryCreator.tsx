@@ -117,13 +117,13 @@ export const ChatStoryCreator: React.FC<Props> = ({
 
     return {
       protagonistName: name.trim(),
-      protagonistAge: age,
-      protagonistGender: gender,
-      ageRange,
+      protagonistAge: age || '7',
+      protagonistGender: gender || 'girl',
+      ageRange: ageRange || '6-9',
       generalTheme: theme || 'stories',
       customTheme,
-      specificSubject: occasion,
-      centralMessage: moral,
+      specificSubject: occasion || theme || 'stories',
+      centralMessage: moral || 'courage',
       illustrationStyle: style,
       hobbies,
       secondaryCharacters: secondaryChars.length ? secondaryChars : undefined,
@@ -347,7 +347,9 @@ export const ChatStoryCreator: React.FC<Props> = ({
   const coverReady = !!coverPreview.rawBase64;
   const coverUrl = coverPreview.coverImageUrl;
   const coverError = coverPreview.error;
-  const payReady = (coverReady || coverError) && (isAuthenticated || validEmail);
+  // Le client peut soumettre des qu'il est identifie. La cover est un bonus visuel —
+  // si elle n'est pas prete, le backend la regenerera lors de la creation du livre.
+  const payReady = isAuthenticated || validEmail;
 
   return (
     <PageWrap>
@@ -431,20 +433,21 @@ export const ChatStoryCreator: React.FC<Props> = ({
 
             <CTA $active={!!payReady && !isBusy} disabled={!payReady || isBusy} onClick={handlePreviewSubmit}
               style={{ width: '100%' }} aria-busy={isBusy}>
-              {isBusy ? <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}><CTASpinner /> Envoi...</span> : 'Lire mon livre gratuitement →'}
+              {isBusy ? <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}><CTASpinner /> Creation en cours...</span> : `Lire le livre de ${heroName} gratuitement →`}
             </CTA>
 
             {!coverReady && !coverError ? (
-              <div style={{ width: '100%', marginTop: 6 }}>
+              <div style={{ width: '100%', marginTop: 8 }}>
                 <div style={{ height: 3, borderRadius: 2, background: 'var(--border-color)', overflow: 'hidden' }}>
                   <div style={{ height: '100%', width: '40%', background: 'linear-gradient(90deg, #FF9999, #FF7F7F, #FF9999)', animation: 'cs 1.5s ease-in-out infinite' }} />
                 </div>
-                <p style={{ fontSize: 10, color: 'var(--text-secondary)', marginTop: 4, textAlign: 'center' }}>Votre couverture est en cours de creation...</p>
-                <p style={{ fontSize: 9, color: 'var(--text-light)', marginTop: 1, textAlign: 'center' }}>Entrez votre email en attendant</p>
+                <p style={{ fontSize: 11, color: 'var(--text-secondary)', marginTop: 6, textAlign: 'center' }}>
+                  {isAuthenticated ? `Apercu de la couverture en preparation...` : `Apercu de la couverture en preparation — entrez votre email`}
+                </p>
                 <style>{`@keyframes cs { 0% { transform: translateX(-100%); } 100% { transform: translateX(350%); } }`}</style>
               </div>
             ) : (
-              <p style={{ fontSize: 10, color: 'var(--text-light)', marginTop: 6, textAlign: 'center' }}>&#9989; Gratuit &middot; &#9889; Pret en 5 min</p>
+              <p style={{ fontSize: 10, color: 'var(--text-light)', marginTop: 8, textAlign: 'center' }}>&#9989; Gratuit &middot; &#9889; Pret en 5 min</p>
             )}
           </div>
         </div>
