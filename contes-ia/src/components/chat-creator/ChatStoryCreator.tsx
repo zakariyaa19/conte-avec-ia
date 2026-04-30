@@ -153,6 +153,16 @@ export const ChatStoryCreator: React.FC<Props> = ({
     }
   }, [isAuthenticated, currentUser]);
 
+  // Funnel : email_entered fire des qu'un email valide est saisi (manuel) OU
+  // qu'une auth Google a aboutit. Une seule fois par session grace au dedup interne.
+  useEffect(() => {
+    if (isAuthenticated && currentUser?.email) {
+      trackFunnelStep('email_entered');
+    } else if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      trackFunnelStep('email_entered');
+    }
+  }, [isAuthenticated, currentUser, email]);
+
   // Focus on step change
   useEffect(() => {
     if (step === 'preview') {
