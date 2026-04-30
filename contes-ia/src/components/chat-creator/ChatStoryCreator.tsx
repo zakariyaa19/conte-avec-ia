@@ -8,6 +8,7 @@ import { trackFunnelStep } from '../../utils/funnelTracker';
 import { useCoverPreview, isPhase1Complete } from '../../hooks/useCoverPreview';
 import { useCompletionScore } from './useCompletionScore';
 import { CompletionRing } from './CompletionRing';
+import { BookCoverPreview } from '../ui/BookCoverPreview';
 
 import {
   PageWrap, Header, Logo, Body, BodyInner, Footer, FooterInner,
@@ -364,11 +365,9 @@ export const ChatStoryCreator: React.FC<Props> = ({
             {coverError ? `Preparation du livre de ${heroNameFull}` : coverReady ? `Le livre de ${heroNameFull} est pret !` : `Creation du livre de ${heroNameFull}...`}
           </p>
 
-          {/* Cover */}
+          {/* Cover — BookCoverPreview avec MagicalLoadingScene (livre anime, sparkles, messages rotatifs) */}
           <div style={{ flex: '1 1 0', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 0, margin: '0 0 8px' }}>
-            {coverUrl ? (
-              <img src={coverUrl} alt={`Couverture du livre de ${heroNameFull}`} style={{ maxHeight: '100%', maxWidth: '70%', borderRadius: 12, objectFit: 'contain', boxShadow: '0 8px 24px rgba(0,0,0,0.4)' }} />
-            ) : coverError ? (
+            {coverError ? (
               <div style={{ textAlign: 'center', padding: 20 }}>
                 <p style={{ fontSize: '3rem', margin: '0 0 8px' }}>📖</p>
                 <p style={{ fontSize: '0.8rem', color: 'var(--text-light)', margin: '0 0 12px' }}>La couverture n'a pas pu etre generee</p>
@@ -378,17 +377,10 @@ export const ChatStoryCreator: React.FC<Props> = ({
                 }}>Reessayer</button>
               </div>
             ) : (
-              <div role="status" aria-label="Generation de la couverture en cours" style={{ maxHeight: '100%', aspectRatio: '3/4', borderRadius: 12, overflow: 'hidden', background: 'linear-gradient(145deg, var(--bg-card, #2E2850), var(--bg-secondary, #1C1735))', boxShadow: '0 8px 24px rgba(0,0,0,0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: 180 }}>
-                <svg viewBox="0 0 160 220" width="100%" height="100%" fill="none">
-                  <rect width="160" height="220" fill="url(#sg)"><animate attributeName="opacity" values="0.3;0.6;0.3" dur="2s" repeatCount="indefinite" /></rect>
-                  <defs><linearGradient id="sg" x1="0" y1="0" x2="160" y2="220"><stop offset="0%" stopColor="#FF9999" stopOpacity="0.08" /><stop offset="50%" stopColor="#A78BFA" stopOpacity="0.12" /><stop offset="100%" stopColor="#FF9999" stopOpacity="0.06" /></linearGradient></defs>
-                  <rect x="18" y="30" width="120" height="160" rx="6" stroke="#FF9999" strokeWidth="1.5" opacity="0.25" />
-                  <rect x="35" y="55" width="0" height="8" rx="4" fill="#E8A060" opacity="0.3"><animate attributeName="width" values="0;80" dur="1.5s" begin="0.5s" fill="freeze" /></rect>
-                  <rect x="35" y="70" width="0" height="6" rx="3" fill="#6BA3D6" opacity="0.25"><animate attributeName="width" values="0;65" dur="1.2s" begin="1s" fill="freeze" /></rect>
-                  <circle cx="120" cy="42" r="3" fill="#FFD700"><animate attributeName="opacity" values="0;0.8;0" dur="1.5s" repeatCount="indefinite" /></circle>
-                  <text x="80" y="200" textAnchor="middle" fill="rgba(255,255,255,0.4)" fontSize="9">Creation en cours...</text>
-                </svg>
-              </div>
+              <BookCoverPreview
+                coverImageUrl={coverUrl}
+                isGenerating={!coverReady}
+              />
             )}
           </div>
 
@@ -436,19 +428,7 @@ export const ChatStoryCreator: React.FC<Props> = ({
               {isBusy ? <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}><CTASpinner /> Creation en cours...</span> : `Lire le livre de ${heroName} gratuitement →`}
             </CTA>
 
-            {!coverReady && !coverError ? (
-              <div style={{ width: '100%', marginTop: 8 }}>
-                <div style={{ height: 3, borderRadius: 2, background: 'var(--border-color)', overflow: 'hidden' }}>
-                  <div style={{ height: '100%', width: '40%', background: 'linear-gradient(90deg, #FF9999, #FF7F7F, #FF9999)', animation: 'cs 1.5s ease-in-out infinite' }} />
-                </div>
-                <p style={{ fontSize: 11, color: 'var(--text-secondary)', marginTop: 6, textAlign: 'center' }}>
-                  {isAuthenticated ? `Apercu de la couverture en preparation...` : `Apercu de la couverture en preparation — entrez votre email`}
-                </p>
-                <style>{`@keyframes cs { 0% { transform: translateX(-100%); } 100% { transform: translateX(350%); } }`}</style>
-              </div>
-            ) : (
-              <p style={{ fontSize: 10, color: 'var(--text-light)', marginTop: 8, textAlign: 'center' }}>&#9989; Gratuit &middot; &#9889; Pret en 5 min</p>
-            )}
+            <p style={{ fontSize: 10, color: 'var(--text-light)', marginTop: 8, textAlign: 'center' }}>&#9989; Gratuit &middot; &#9889; Pret en 5 min</p>
           </div>
         </div>
       </Body>
