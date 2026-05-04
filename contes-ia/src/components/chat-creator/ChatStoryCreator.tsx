@@ -261,11 +261,7 @@ export const ChatStoryCreator: React.FC<Props> = ({
                 margin: 0,
                 letterSpacing: '-0.01em',
               }}>
-                {detected.name ? (
-                  <>L'histoire de <span style={{ color: C.coral }}>{detected.name}</span><br />en 5 minutes</>
-                ) : (
-                  <>L'histoire personnalisée<br />de votre enfant <span style={{ color: C.coral }}>en 5 min</span></>
-                )}
+                L'histoire personnalisée<br />de votre enfant <span style={{ color: C.coral }}>en 5 min</span>
               </h1>
               <Subtitle style={{ marginTop: 2 }}>Décrivez ci-dessous, l'IA s'occupe du reste.</Subtitle>
             </div>
