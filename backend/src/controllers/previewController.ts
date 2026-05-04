@@ -355,4 +355,119 @@ export class PreviewController {
       });
     }
   }
+
+  /**
+   * Smart Hint — analyse en temps reel du brief client par GPT-4o-mini.
+   * Retourne UNE phrase de conseil courte et personnalisee selon ce qui manque.
+   * Cache LRU 5 min pour eviter les appels en doublon.
+   */
+  static async generateSmartHint(req: Request, res: Response) {
+    try {
+      const { description } = req.body as { description?: string };
+
+      // Validation
+      const desc = (description || '').trim();
+      if (desc.length < 3) {
+        return res.json({
+          success: true,
+          data: { hint: "Décris-moi l'enfant et l'histoire que tu imagines." }
+        });
+      }
+      if (desc.length > 800) {
+        return res.status(400).json({ success: false, message: 'Description trop longue' });
+      }
+
+      if (!process.env.OPENAI_API_KEY) {
+        return res.json({
+          success: true,
+          data: { hint: getLocalFallbackHint(desc) }
+        });
+      }
+
+      // Cache lookup (5 min TTL)
+      const cacheKey = hintCacheKey(desc);
+      const cached = hintCache.get(cacheKey);
+      if (cached && Date.now() - cached.t < 5 * 60 * 1000) {
+        return res.json({ success: true, data: { hint: cached.hint, cached: true } });
+      }
+
+      const { default: OpenAI } = await import('openai');
+      const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+      const systemPrompt = `Tu aides un parent à décrire l'histoire personnalisée qu'il veut créer pour son enfant. Tu vas lire son brief et proposer UNE phrase courte de conseil pour enrichir sa description.
+
+PRIORITÉ DE CE QUI MANQUE (du plus important au moins important) :
+1. Prénom de l'enfant
+2. Âge
+3. Genre (fille/garçon)
+4. Univers ou monde (peut être une franchise — Mario, Harry Potter — ou inventé)
+5. Compagnon (animal, ami, frère, sœur)
+6. Morale ou message à transmettre
+7. Style d'illustration (manga, aquarelle, 3D...)
+8. Hobbies ou passions de l'enfant
+
+RÈGLES STRICTES :
+- UNE seule phrase, 8 à 14 mots maximum
+- Français parfait, accents corrects, ton tutoiement chaleureux
+- Pas d'emojis, pas de guillemets, pas de numérotation, pas de "💡"
+- Pas de validation flatteuse type "Super !", "Génial !"
+- Style suggestion neutre et utile, comme un coach silencieux
+- Si le brief contient déjà des éléments d'un niveau de priorité, passe au suivant
+- Si TOUT est défini → réponds exactement : "Tout est prêt, lance la création."
+- Si le brief est vide ou trop court (<10 chars) → suggère le prénom
+
+Retourne UNIQUEMENT la phrase, rien d'autre.`;
+
+      const completion = await openai.chat.completions.create({
+        model: 'gpt-4o-mini',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: `Brief actuel : """${desc}"""\n\nPropose ta suggestion :` },
+        ],
+        max_tokens: 60,
+        temperature: 0.4,
+      });
+
+      let hint = completion.choices[0]?.message?.content?.trim() || '';
+      // Nettoyage defensif : enlever guillemets, points multiples, etc.
+      hint = hint.replace(/^["'«»\s]+|["'«»\s]+$/g, '').replace(/\.{2,}/g, '.').trim();
+      if (!hint) hint = getLocalFallbackHint(desc);
+
+      // Cache
+      hintCache.set(cacheKey, { hint, t: Date.now() });
+      // Cleanup si > 200 entrees
+      if (hintCache.size > 200) {
+        const cutoff = Date.now() - 5 * 60 * 1000;
+        for (const [k, v] of hintCache.entries()) {
+          if (v.t < cutoff) hintCache.delete(k);
+        }
+      }
+
+      res.json({ success: true, data: { hint } });
+    } catch (error: any) {
+      console.error('Erreur smart-hint:', error?.message || error);
+      // Fallback gracieux : local hint, pas d'erreur exposee
+      const desc = (req.body?.description || '').trim();
+      res.json({ success: true, data: { hint: getLocalFallbackHint(desc), fallback: true } });
+    }
+  }
+}
+
+// ── Cache LRU simple en memoire (5 min TTL) ────────────────────────
+const hintCache = new Map<string, { hint: string; t: number }>();
+function hintCacheKey(desc: string): string {
+  // Normalize : lowercase + trim + collapse spaces. Pas de hash pour rester debug-friendly.
+  return desc.toLowerCase().replace(/\s+/g, ' ').trim().slice(0, 400);
+}
+
+// ── Fallback local si OpenAI indisponible ────────────────────────
+function getLocalFallbackHint(desc: string): string {
+  const t = desc.toLowerCase();
+  if (t.length < 3) return "Décris-moi l'enfant et l'histoire que tu imagines.";
+  if (!/^[A-ZÀ-ÖØ-Ý]/.test(desc.trim())) return "Le prénom de l'enfant ?";
+  if (!/\d+\s*ans?/i.test(desc)) return "Quel âge a l'enfant ?";
+  if (!/(fille|garçon|garcon|fillette|princesse|prince|fils)/i.test(desc)) return "Une fille ou un garçon ?";
+  if (!/(univers|monde|royaume|aventure|magie|ecole|école|école)/i.test(desc) && desc.length < 60) return "Dans quel univers va se dérouler l'histoire ?";
+  if (!/(courage|amitié|amitie|amour|partage|honnete|honnête|persever)/i.test(desc)) return "Une morale ou un message à transmettre ?";
+  return "Tout est prêt, lance la création.";
 }

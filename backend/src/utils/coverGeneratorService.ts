@@ -455,19 +455,34 @@ function buildCoverPrompt(params: CoverGenerationParams, characterDescription: s
   if (params.hobbies) console.log('buildCoverPrompt: hobbies =>', params.hobbies);
   if (params.specialEvents) console.log('buildCoverPrompt: specialEvents =>', params.specialEvents);
 
+  const userBrief = (params.specialEvents || '').trim();
+  const briefBlock = userBrief
+    ? `╔═══ CLIENT BRIEF (PRIMARY SOURCE OF TRUTH) ═══╗
+"${userBrief}"
+╚════════════════════════════════════════════════╝
+The brief above is what the parent wrote to describe the story they imagine for their child. The cover MUST visually reflect this brief above all else:
+- If the brief mentions a known universe or franchise (Mario, Harry Potter, Disney, Pokemon, Naruto, Minecraft, Star Wars, etc.), recreate that exact world's visual codes, settings, atmosphere, and iconic visual elements on the cover.
+- If the brief mentions specific objects, animals, places, hobbies, or activities — they MUST appear visibly on the cover.
+- The mood, tone, and atmosphere of the brief must be visually translated.
+If the brief contradicts the supplementary indications below, FOLLOW THE BRIEF.
+
+`
+    : '';
+
   return `Create a beautiful children's book COVER illustration. This is a PORTRAIT format image (taller than wide), designed exactly like a real children's book front cover.
 
-ART STYLE: ${styleDirective}.
+${briefBlock}ART STYLE: ${styleDirective}.
 
 TITLE TEXT: The title "${title}" must be prominently displayed at the top of the cover, rendered in ${titleStyle}. The title must be perfectly legible, spelled correctly in French, and be a major visual element of the cover. Below the title, in smaller text, write "contedia.fr" as a subtle watermark near the bottom edge.
 
 MAIN CHARACTER: ${characterDescription}. The character should be the central focus of the illustration, shown from head to at least knees, facing slightly toward the viewer with a warm, inviting expression.
 
-SCENE: The character is in ${scene}. The background should be rich and immersive but not overwhelm the character.
+────── SUPPLEMENTARY INDICATIONS (use only if not specified in brief) ──────
+
+SCENE: ${userBrief ? `Build the scene faithfully from the brief. Fallback if the brief is silent: ` : 'The character is in '}${scene}. The background should be rich and immersive but not overwhelm the character.
 
 ${mood ? `MOOD: The overall atmosphere should convey ${mood}.` : ''}
-${params.hobbies ? `PERSONAL TOUCHES: The character loves ${params.hobbies}. Subtly integrate visual hints of these hobbies into the scene or character's accessories/surroundings.` : ''}
-${params.specialEvents ? `SPECIAL CONTEXT: ${params.specialEvents}. Reflect this in the scene atmosphere.` : ''}
+${params.hobbies ? `PERSONAL TOUCHES: The character loves ${params.hobbies}. Subtly integrate visual hints of these hobbies into the scene or accessories.` : ''}
 
 COMPOSITION: This must look like a professional children's book cover:
 - Portrait orientation (taller than wide)

@@ -108,46 +108,60 @@ function buildStoryPrompt(params: StoryTextParams): string {
 
   const religionNote = params.customReligion || params.religion || '';
 
+  const userBrief = (params.specialEvents || '').trim();
+
   return `Tu es un auteur de livres pour enfants reconnu. Ecris le DEBUT d'un conte en ${language} de EXACTEMENT 3 paragraphes.
 
-IMPORTANT — STRUCTURE CLIFFHANGER :
-Ce texte est le TOUT DEBUT d'une histoire. Il ne doit PAS avoir de fin. L'histoire doit se COUPER net au moment le plus palpitant pour donner une envie IRRESISTIBLE de lire la suite. Le lecteur doit ressentir une frustration positive : il DOIT connaitre la suite.
+╔═════════ BRIEF DU CLIENT — SOURCE DE VERITE ABSOLUE ═════════╗
+${userBrief || '(aucun brief libre — utilise les indications ci-dessous)'}
+╚═══════════════════════════════════════════════════════════════╝
+
+REGLE FONDAMENTALE :
+Le BRIEF ci-dessus est ce que le client a ECRIT lui-meme pour decrire l'histoire qu'il imagine pour son enfant. Tu DOIS le suivre fidelement. Tout ce qu'il mentionne doit apparaitre dans l'histoire :
+- Si l'univers est une franchise (Mario, Harry Potter, Disney, Pokemon, Naruto, Minecraft...), place l'histoire dans CET univers precis avec ses codes, lieux et atmospheres caracteristiques.
+- Si c'est un univers invente, respecte-le exactement.
+- Tous les hobbies, objets, personnages, evenements mentionnes doivent etre presents dans l'histoire.
+- Le ton et le style implicite du brief doivent transparaitre.
+Si le brief contredit les indications ci-dessous, suis le BRIEF.
+
+────── INDICATIONS COMPLEMENTAIRES (a utiliser SI le brief n'a pas precise) ──────
 
 PROTAGONISTE :
 - Prenom : ${name}
 ${hasSpecificAge ? `- Age : ${params.protagonistAge} ans` : `- Tranche d'age : ${params.ageRange || '6-9'} ans (NE PAS mentionner un age precis dans le recit)`}
 - Genre : ${genderWord}
-${params.hobbies ? `- Passions/Hobbies : ${params.hobbies}` : ''}
+${params.hobbies ? `- Passions/Hobbies (issus du brief) : ${params.hobbies}` : ''}
 ${params.favoriteDish ? `- Plat favori : ${params.favoriteDish}` : ''}
 
-${secondaryChars ? `PERSONNAGES SECONDAIRES (OBLIGATOIRE — ils doivent TOUS apparaitre dans l'histoire) :\n${secondaryChars}\nChaque personnage secondaire doit avoir un vrai role dans l'histoire : dialogues, actions, interactions avec ${name}. Ils ne doivent PAS etre simplement mentionnes une fois — ils accompagnent ${name} dans l'aventure.` : ''}
+${secondaryChars ? `PERSONNAGES SECONDAIRES (issus du brief — doivent TOUS apparaitre) :\n${secondaryChars}\nChacun a un vrai role : dialogues, actions, interactions avec ${name}.` : ''}
 
-THEME : ${theme}
-${occasion ? `OCCASION : ${occasion} — l'histoire doit se derouler dans le contexte de cette occasion` : ''}
-${message ? `MESSAGE CENTRAL : ${message} — ce message doit etre le fil conducteur de toute l'histoire` : ''}
-${religionNote ? `CONTEXTE RELIGIEUX/SPIRITUEL : ${religionNote} (integrer avec respect et delicatesse)` : ''}
-${params.specialEvents ? `EVENEMENT SPECIAL : ${params.specialEvents} — integrer cet evenement comme element important de l'histoire` : ''}
+THEME DE FOND (a utiliser uniquement si le brief n'a pas defini d'univers) : ${theme}
+${occasion ? `OCCASION : ${occasion}` : ''}
+${message ? `MESSAGE CENTRAL (si non implicite dans le brief) : ${message}` : ''}
+${religionNote ? `CONTEXTE RELIGIEUX/SPIRITUEL : ${religionNote} (integrer avec respect)` : ''}
+
+────── STRUCTURE CLIFFHANGER ──────
+
+Ce texte est le TOUT DEBUT d'une histoire. Il ne doit PAS avoir de fin. L'histoire doit se COUPER net au moment le plus palpitant pour donner une envie IRRESISTIBLE de lire la suite. Frustration positive maximum.
 
 PLAN NARRATIF (3 parties — rythme RAPIDE) :
-- INTRODUCTION IMMERSIVE — Presenter ${name} dans un decor enchante. Poser l'univers en quelques phrases fortes.
-- DECLENCHEUR + AVENTURE — Un evenement inattendu lance l'aventure. ${name} decouvre quelque chose d'extraordinaire. Monter la tension RAPIDEMENT.
-- CLIFFHANGER INTENSE — Le moment le plus palpitant. ${name} est sur le point de decouvrir un secret, d'ouvrir une porte mysterieuse... mais le texte SE COUPE NET. Suspense IRRESISTIBLE. NE PAS resoudre.
+1. INTRODUCTION IMMERSIVE — Presenter ${name} dans le decor du brief. Poser l'univers en quelques phrases fortes et evocatrices.
+2. DECLENCHEUR + AVENTURE — Un evenement inattendu lance l'aventure. ${name} decouvre quelque chose d'extraordinaire. Monter la tension RAPIDEMENT.
+3. CLIFFHANGER INTENSE — Le moment le plus palpitant. ${name} est sur le point de decouvrir un secret, d'ouvrir une porte mysterieuse... mais le texte SE COUPE NET. NE PAS resoudre.
 
-EXIGENCES :
+────── EXIGENCES TECHNIQUES ──────
+
 1. PAS DE FIN. PAS DE RESOLUTION. PAS DE MORALE. L'histoire est INACHEVEE.
-2. Vocabulaire adapte a un enfant de ${ageForVocab} ans
-3. Le prenom "${name}" doit apparaitre dans CHAQUE paragraphe
-4. LIMITE STRICTE — Chaque paragraphe fait ENTRE 150 ET 220 CARACTERES (espaces inclus). Compte les caracteres avant de finaliser. C'est non-negociable : un paragraphe trop long est illisible sur mobile. Vise 2-3 phrases courtes et percutantes.
-${params.hobbies ? `5. Les passions de ${name} (${params.hobbies}) doivent etre integrees naturellement dans l'histoire` : '5. Integrer des details personnels pour rendre l\'histoire unique'}
-${params.favoriteDish ? `6. Mentionner le plat favori (${params.favoriteDish}) a un moment de l'histoire` : ''}
-7. ${secondaryChars ? `CRUCIAL : Chaque personnage secondaire doit apparaitre avec des actions concretes et des dialogues.` : 'L\'histoire doit etre captivante, magique et positive'}
-8. Ecris en ${language}
-${!hasSpecificAge ? `9. IMPORTANT : Ne mentionne JAMAIS un age precis pour ${name} dans le texte.` : ''}
-10. Le dernier paragraphe DOIT finir sur des points de suspension (...) pour marquer le suspense
+2. Vocabulaire adapte a un enfant de ${ageForVocab} ans.
+3. Le prenom "${name}" apparait dans CHAQUE paragraphe.
+4. LIMITE STRICTE — Chaque paragraphe fait ENTRE 150 ET 220 CARACTERES (espaces inclus). Compte avant de finaliser. Vise 2-3 phrases courtes et percutantes.
+5. Tous les elements du BRIEF (univers, personnages, hobbies, objets, lieux mentionnes) doivent etre integres NATURELLEMENT.
+6. Ecris en ${language}.
+${!hasSpecificAge ? `7. NE MENTIONNE JAMAIS un age precis pour ${name} dans le texte.` : ''}
+8. Le dernier paragraphe DOIT finir sur des points de suspension (...).
 
 REGLE CRITIQUE :
-NE PAS ecrire "Paragraphe", "Partie", "Chapitre" ou tout autre label dans le texte.
-Chaque string doit contenir UNIQUEMENT le texte narratif, comme lu a voix haute a un enfant.
+NE PAS ecrire "Paragraphe", "Partie", "Chapitre" ou tout autre label dans le texte. Chaque string contient UNIQUEMENT le texte narratif, comme lu a voix haute a un enfant.
 
 FORMAT DE REPONSE :
 Reponds UNIQUEMENT avec un JSON array de EXACTEMENT 3 strings.
@@ -187,29 +201,42 @@ function buildClubStoryPrompt(params: StoryTextParams): string {
   const religionNote = params.customReligion || params.religion || '';
   const narratedBy = params.narratedBy || params.creatorName || '';
 
+  const userBrief = (params.specialEvents || '').trim();
+
   return `Tu es un auteur professionnel de livres premium pour enfants. Ecris un conte LONG et IMMERSIF en ${language} de EXACTEMENT 20 paragraphes.
+
+╔═════════ BRIEF DU CLIENT — SOURCE DE VERITE ABSOLUE ═════════╗
+${userBrief || '(aucun brief libre — utilise les indications ci-dessous)'}
+╚═══════════════════════════════════════════════════════════════╝
+
+REGLE FONDAMENTALE :
+Le BRIEF ci-dessus est ce que le client a ECRIT lui-meme pour decrire l'histoire qu'il imagine. Tu DOIS le suivre fidelement sur 20 paragraphes :
+- Si l'univers est une franchise (Mario, Harry Potter, Disney, Pokemon, Naruto, Minecraft, Star Wars...), place l'histoire dans CET univers precis avec ses codes, lieux, regles, atmospheres, personnages emblematiques caracteristiques.
+- Si c'est un univers invente, respecte-le exactement et developpe-le sur 20 paragraphes.
+- Tous les hobbies, objets, personnages, evenements, lieux mentionnes doivent etre presents et integres a l'intrigue.
+- Le ton et le style implicite du brief doivent transparaitre.
+Si le brief contredit les indications ci-dessous, suis le BRIEF.
+
+────── INDICATIONS COMPLEMENTAIRES (a utiliser SI le brief n'a pas precise) ──────
 
 PROTAGONISTE :
 - Prenom : ${name}
 ${hasSpecificAge ? `- Age : ${params.protagonistAge} ans` : `- Tranche d'age : ${params.ageRange || '6-9'} ans (NE PAS mentionner un age precis)`}
 - Genre : ${genderWord}
-${params.hobbies ? `- Passions/Hobbies : ${params.hobbies} — ces passions doivent etre un element CENTRAL de l'aventure, pas juste mentionnees` : ''}
-${params.favoriteDish ? `- Plat favori : ${params.favoriteDish} — l'integrer naturellement dans une scene` : ''}
+${params.hobbies ? `- Passions/Hobbies (issus du brief) : ${params.hobbies} — element CENTRAL de l'aventure` : ''}
+${params.favoriteDish ? `- Plat favori : ${params.favoriteDish}` : ''}
 
-${secondaryChars ? `PERSONNAGES SECONDAIRES (CRUCIAL — chacun doit avoir un VRAI role) :
+${secondaryChars ? `PERSONNAGES SECONDAIRES (issus du brief — chacun doit avoir un VRAI role) :
 ${secondaryChars}
 Regles strictes :
 - Chaque personnage secondaire doit apparaitre dans AU MOINS 5 paragraphes
 - Ils doivent avoir des dialogues, des actions, des emotions
-- Ils interagissent activement avec ${name}
-- Les animaux ont un comportement coherent et attachant
-- Les humains ont une personnalite distincte` : ''}
+- Ils interagissent activement avec ${name}` : ''}
 
-THEME : ${theme}
-${occasion ? `OCCASION : ${occasion} — l'histoire se deroule ENTIEREMENT dans le contexte de cette occasion. Ambiance, decors, details doivent correspondre.` : ''}
-${message ? `MESSAGE CENTRAL : ${message} — ce theme est le FIL ROUGE de toute l'histoire. Il doit transparaitre dans les choix, les actions et la resolution.` : ''}
-${religionNote ? `CONTEXTE SPIRITUEL : ${religionNote} (integrer avec respect et delicatesse)` : ''}
-${params.specialEvents ? `EVENEMENT SPECIAL : ${params.specialEvents} — element important de l'intrigue` : ''}
+THEME DE FOND (uniquement si le brief n'a pas defini d'univers) : ${theme}
+${occasion ? `OCCASION : ${occasion}` : ''}
+${message ? `MESSAGE CENTRAL (si non implicite dans le brief) : ${message}` : ''}
+${religionNote ? `CONTEXTE SPIRITUEL : ${religionNote} (integrer avec respect)` : ''}
 
 PLAN NARRATIF (20 parties) :
 - INTRODUCTION (3 parties) — Presenter ${name}, son monde, ses proches. Creer l'atmosphere enchantee.
