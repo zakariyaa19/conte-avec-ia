@@ -205,8 +205,9 @@ const RatioContainer = styled.div`
   background: var(--bg-secondary);
 `;
 
-/* --- Magical Loading Animation --- */
+/* --- Loading Animation : sombre, sobre, video-like --- */
 
+/* Background sombre avec leger shift de tons */
 const MagicalLoadingScene = styled.div`
   position: absolute;
   inset: 0;
@@ -214,146 +215,78 @@ const MagicalLoadingScene = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(160deg, #fef3e8 0%, #fce4ec 25%, #e8eaf6 50%, #f3e5f5 75%, #fef3e8 100%);
-  background-size: 400% 400%;
-  animation: ${gradientShift} 10s ease-in-out infinite;
+  background: linear-gradient(160deg, #16142a 0%, #1d1740 35%, #221a4a 70%, #16142a 100%);
+  background-size: 200% 200%;
+  animation: ${gradientShift} 14s ease-in-out infinite;
   overflow: hidden;
+  padding: 16px;
+  gap: 14px;
 `;
 
-/* Soft ambient glow circles */
-const AmbientGlow = styled.div<{ $x: string; $y: string; $color: string; $delay: string; $size: string }>`
+/* Particule de poussiere tres subtile (vs gros sparkles colores) */
+const DustParticle = styled.div<{ $x: string; $y: string; $delay: string; $size: string }>`
   position: absolute;
   left: ${p => p.$x};
   top: ${p => p.$y};
   width: ${p => p.$size};
   height: ${p => p.$size};
   border-radius: 50%;
-  background: ${p => p.$color};
-  filter: blur(30px);
+  background: rgba(255, 255, 255, 0.5);
+  filter: blur(0.5px);
+  opacity: 0;
   animation: ${gentlePulse} 6s ease-in-out infinite;
   animation-delay: ${p => p.$delay};
-  pointer-events: none;
 `;
 
-/* Large animated book */
-const AnimatedBook = styled.div`
-  width: 130px;
-  height: 170px;
-  perspective: 400px;
-  margin-bottom: ${theme.spacing.lg};
-  z-index: 2;
-
-  @media (max-width: ${theme.breakpoints.sm}) {
-    width: 100px;
-    height: 130px;
-  }
-`;
-
-const BookBody = styled.div`
-  width: 100%;
-  height: 100%;
+/* Conteneur du livre — perspective pour un leger 3D */
+const VideoBookFrame = styled.div`
+  width: 65%;
+  max-width: 180px;
+  aspect-ratio: 3/4;
   position: relative;
-  transform-style: preserve-3d;
-  animation: ${bookFloat} 4s ease-in-out infinite;
-`;
+  z-index: 2;
+  filter: drop-shadow(0 8px 24px rgba(255, 153, 153, 0.18));
 
-const BookCoverShape = styled.div`
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(145deg, ${theme.colors.accent.coral}, #e8456b, ${theme.colors.accent.softPink});
-  border-radius: 4px 8px 8px 4px;
-  animation: ${bookGlow} 3s ease-in-out infinite;
-  overflow: hidden;
-
-  /* Spine */
-  &::before {
-    content: '';
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 7px;
-    background: linear-gradient(90deg, rgba(0,0,0,0.25), rgba(0,0,0,0.05));
-    border-radius: 4px 0 0 4px;
-  }
-
-  /* Star decoration on cover */
-  &::after {
-    content: '';
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    width: 30px; height: 30px;
-    border: 2.5px solid rgba(255,255,255,0.4);
-    border-radius: 50%;
-    box-shadow: 0 0 12px rgba(255,255,255,0.2);
-  }
-`;
-
-const MagicSweepOverlay = styled.div`
-  position: absolute;
-  inset: 0;
-  border-radius: 4px 8px 8px 4px;
-  overflow: hidden;
-  pointer-events: none;
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 40%;
+  svg {
+    width: 100%;
     height: 100%;
-    background: linear-gradient(
-      90deg,
-      rgba(255, 255, 255, 0) 0%,
-      rgba(255, 255, 255, 0.35) 40%,
-      rgba(255, 255, 255, 0.5) 50%,
-      rgba(255, 255, 255, 0.35) 60%,
-      rgba(255, 255, 255, 0) 100%
-    );
-    animation: ${magicSweep} 3s ease-in-out infinite;
+    display: block;
   }
-`;
 
-const SparkleElement = styled.div<{ $x: string; $y: string; $delay: string; $size: string }>`
-  position: absolute;
-  left: ${p => p.$x};
-  top: ${p => p.$y};
-  width: ${p => p.$size};
-  height: ${p => p.$size};
-  animation: ${sparkle} 2.5s ease-in-out infinite;
-  animation-delay: ${p => p.$delay};
-  z-index: 1;
-
-  &::before {
+  /* Ligne de "scan" coral qui balaie le livre une fois toutes les 4s */
+  &::after {
     content: '';
     position: absolute;
-    inset: 0;
-    background: ${theme.colors.accent.coral};
-    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    top: 8%;
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, ${theme.colors.accent.coral}, transparent);
+    box-shadow: 0 0 12px ${theme.colors.accent.coral};
+    opacity: 0;
+    animation: scanLine 4s ease-in-out infinite;
+    border-radius: 2px;
+  }
+
+  @keyframes scanLine {
+    0%   { transform: translateY(0); opacity: 0; }
+    8%   { opacity: 1; }
+    50%  { transform: translateY(280%); opacity: 1; }
+    58%  { opacity: 0; }
+    100% { opacity: 0; }
   }
 `;
 
-/* Orbiting particle */
-const OrbitParticle = styled.div<{ $delay: string; $duration: string; $size: string; $color: string }>`
-  position: absolute;
-  top: 50%; left: 50%;
-  width: ${p => p.$size};
-  height: ${p => p.$size};
-  border-radius: 50%;
-  background: ${p => p.$color};
-  animation: ${orbitFloat} ${p => p.$duration} linear infinite;
-  animation-delay: ${p => p.$delay};
-  z-index: 1;
-`;
-
-/* Loading title */
+/* Loading title — clair sur sombre */
 const LoadingTitle = styled.h3`
   font-family: ${theme.fonts.heading};
   font-size: ${theme.fontSizes.lg};
   font-weight: 700;
-  color: var(--text-primary);
-  margin: 0 0 4px;
+  color: rgba(255, 255, 255, 0.95);
+  margin: 0;
   z-index: 2;
+  text-align: center;
+  letter-spacing: 0.005em;
 
   @media (max-width: ${theme.breakpoints.sm}) {
     font-size: ${theme.fontSizes.base};
@@ -363,28 +296,28 @@ const LoadingTitle = styled.h3`
 const LoadingSubtitle = styled.p`
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.xs};
-  color: var(--text-light);
-  margin: 0 0 ${theme.spacing.md};
+  color: rgba(255, 255, 255, 0.55);
+  margin: 0;
   z-index: 2;
+  text-align: center;
 `;
 
 const RotatingMessages = styled.div`
   text-align: center;
-  min-height: 48px;
+  min-height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   width: 100%;
-  margin-top: ${theme.spacing.sm};
   z-index: 2;
 `;
 
 const MessageText = styled.p<{ $index: number; $total: number }>`
   font-family: ${theme.fonts.body};
-  font-size: ${theme.fontSizes.sm};
-  color: var(--text-secondary);
-  font-weight: 600;
+  font-size: ${theme.fontSizes.xs};
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
   position: absolute;
   opacity: 0;
   animation: ${floatMessage} ${p => p.$total * 3.5}s ease-in-out infinite;
@@ -393,22 +326,21 @@ const MessageText = styled.p<{ $index: number; $total: number }>`
   max-width: 280px;
   line-height: 1.5;
   margin: 0;
+  letter-spacing: 0.005em;
 
   @media (max-width: ${theme.breakpoints.sm}) {
-    font-size: ${theme.fontSizes.xs};
     max-width: 240px;
   }
 `;
 
 const ProgressBarContainer = styled.div`
   width: 65%;
-  height: 6px;
-  background: var(--border-color);
+  height: 3px;
+  background: rgba(255, 255, 255, 0.08);
   border-radius: ${theme.borderRadius.full};
-  margin-top: ${theme.spacing.lg};
+  margin-top: 4px;
   overflow: hidden;
   z-index: 2;
-  box-shadow: inset 0 1px 3px rgba(0,0,0,0.04);
 `;
 
 const ProgressFill = styled.div`
@@ -462,7 +394,7 @@ const LOADING_MESSAGES = [
   'Les personnages prennent vie...',
   'Les illustrations se dessinent...',
   'Votre conte se construit page par page...',
-  'Les couleurs et les details apparaissent...',
+  'Les couleurs et les détails apparaissent...',
   'Encore quelques instants magiques...',
 ];
 
@@ -504,36 +436,94 @@ export const BookCoverPreview: React.FC<BookCoverPreviewProps> = React.memo(({
               </>
             )}
 
-            {/* Mode 2 : Generation en cours */}
+            {/* Mode 2 : Génération en cours — visuel sombre, sobre, video-like */}
             {isGenerating && (
               <MagicalLoadingScene>
-                {/* Ambient glows */}
-                <AmbientGlow $x="10%" $y="20%" $color="rgba(255,154,139,0.3)" $delay="0s" $size="80px" />
-                <AmbientGlow $x="70%" $y="60%" $color="rgba(179,157,219,0.25)" $delay="2s" $size="100px" />
-                <AmbientGlow $x="50%" $y="10%" $color="rgba(255,213,180,0.3)" $delay="4s" $size="70px" />
+                {/* Particules de poussière très subtiles (au lieu de sparkles agressifs) */}
+                <DustParticle $x="12%" $y="22%" $delay="0s"   $size="2px" />
+                <DustParticle $x="84%" $y="18%" $delay="1.5s" $size="2px" />
+                <DustParticle $x="78%" $y="74%" $delay="3s"   $size="3px" />
+                <DustParticle $x="18%" $y="72%" $delay="2s"   $size="2px" />
+                <DustParticle $x="50%" $y="88%" $delay="4s"   $size="2px" />
 
-                {/* Sparkles */}
-                <SparkleElement $x="10%" $y="15%" $delay="0s" $size="12px" />
-                <SparkleElement $x="85%" $y="10%" $delay="0.5s" $size="8px" />
-                <SparkleElement $x="78%" $y="75%" $delay="1s" $size="11px" />
-                <SparkleElement $x="15%" $y="70%" $delay="1.5s" $size="14px" />
-                <SparkleElement $x="90%" $y="40%" $delay="0.3s" $size="7px" />
-                <SparkleElement $x="5%" $y="42%" $delay="0.8s" $size="9px" />
-                <SparkleElement $x="50%" $y="85%" $delay="1.8s" $size="10px" />
-                <SparkleElement $x="35%" $y="8%" $delay="2.2s" $size="6px" />
+                {/* Livre SVG qui se dessine progressivement (effet vidéo) */}
+                <VideoBookFrame>
+                  <svg viewBox="0 0 200 270" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <defs>
+                      <linearGradient id="bookFill" x1="0" y1="0" x2="200" y2="270" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%"  stopColor="#FF9999" stopOpacity="0.18" />
+                        <stop offset="55%" stopColor="#FF7F7F" stopOpacity="0.10" />
+                        <stop offset="100%" stopColor="#A78BFA" stopOpacity="0.12" />
+                      </linearGradient>
+                      <linearGradient id="spineFill" x1="0" y1="0" x2="0" y2="270">
+                        <stop offset="0%" stopColor="rgba(255,255,255,0.04)" />
+                        <stop offset="100%" stopColor="rgba(255,255,255,0)" />
+                      </linearGradient>
+                    </defs>
 
-                {/* Orbiting particles */}
-                <OrbitParticle $delay="0s" $duration="8s" $size="5px" $color={`${theme.colors.accent.coral}80`} />
-                <OrbitParticle $delay="2s" $duration="10s" $size="4px" $color={`${theme.colors.accent.softPink}90`} />
-                <OrbitParticle $delay="4s" $duration="7s" $size="3px" $color="rgba(179,157,219,0.6)" />
+                    {/* Couverture remplie (apparait progressivement) */}
+                    <rect x="20" y="18" width="160" height="234" rx="6" fill="url(#bookFill)">
+                      <animate attributeName="opacity" values="0;1" dur="1.4s" begin="0.6s" fill="freeze" />
+                    </rect>
 
-                {/* Animated Book */}
-                <AnimatedBook>
-                  <BookBody>
-                    <BookCoverShape />
-                    <MagicSweepOverlay />
-                  </BookBody>
-                </AnimatedBook>
+                    {/* Tranche du livre */}
+                    <rect x="20" y="18" width="14" height="234" fill="url(#spineFill)">
+                      <animate attributeName="opacity" values="0;1" dur="0.8s" begin="1s" fill="freeze" />
+                    </rect>
+
+                    {/* Contour de couverture qui se dessine (stroke animation) */}
+                    <rect
+                      x="20" y="18" width="160" height="234" rx="6"
+                      stroke="rgba(255,153,153,0.55)" strokeWidth="1.4" fill="none"
+                      strokeDasharray="788" strokeDashoffset="788"
+                    >
+                      <animate attributeName="stroke-dashoffset" from="788" to="0" dur="2s" begin="0s" fill="freeze" />
+                    </rect>
+
+                    {/* Lignes de titre qui se dessinent */}
+                    <line x1="48" y1="62" x2="152" y2="62"
+                      stroke="rgba(255,179,186,0.7)" strokeWidth="2.5" strokeLinecap="round"
+                      strokeDasharray="104" strokeDashoffset="104">
+                      <animate attributeName="stroke-dashoffset" from="104" to="0" dur="1.2s" begin="2.2s" fill="freeze" />
+                    </line>
+                    <line x1="62" y1="78" x2="138" y2="78"
+                      stroke="rgba(255,213,128,0.5)" strokeWidth="2" strokeLinecap="round"
+                      strokeDasharray="76" strokeDashoffset="76">
+                      <animate attributeName="stroke-dashoffset" from="76" to="0" dur="1s" begin="2.8s" fill="freeze" />
+                    </line>
+
+                    {/* Personnage stylisé — silhouette qui se dessine + remplissage */}
+                    <g>
+                      {/* Tête : cercle qui se dessine */}
+                      <circle cx="100" cy="140" r="22"
+                        stroke="rgba(255,200,180,0.85)" strokeWidth="1.8" fill="none"
+                        strokeDasharray="139" strokeDashoffset="139">
+                        <animate attributeName="stroke-dashoffset" from="139" to="0" dur="1.4s" begin="3.4s" fill="freeze" />
+                      </circle>
+                      {/* Tête remplie */}
+                      <circle cx="100" cy="140" r="22" fill="rgba(255,200,180,0.18)">
+                        <animate attributeName="opacity" values="0;1" dur="1s" begin="4.6s" fill="freeze" />
+                      </circle>
+
+                      {/* Corps : courbe qui se dessine */}
+                      <path d="M 70 200 Q 100 175 130 200 L 130 232 L 70 232 Z"
+                        stroke="rgba(167,139,250,0.7)" strokeWidth="1.8" fill="none"
+                        strokeDasharray="180" strokeDashoffset="180">
+                        <animate attributeName="stroke-dashoffset" from="180" to="0" dur="1.4s" begin="4s" fill="freeze" />
+                      </path>
+                      <path d="M 70 200 Q 100 175 130 200 L 130 232 L 70 232 Z"
+                        fill="rgba(167,139,250,0.18)">
+                        <animate attributeName="opacity" values="0;1" dur="1s" begin="5.4s" fill="freeze" />
+                      </path>
+                    </g>
+
+                    {/* Petite étoile décorative qui pulse */}
+                    <circle cx="160" cy="48" r="2" fill="rgba(255,213,128,0.9)">
+                      <animate attributeName="opacity" values="0;1;0" dur="2s" begin="3s" repeatCount="indefinite" />
+                      <animate attributeName="r" values="1.5;3;1.5" dur="2s" begin="3s" repeatCount="indefinite" />
+                    </circle>
+                  </svg>
+                </VideoBookFrame>
 
                 {/* Title */}
                 <LoadingTitle>Votre conte prend vie</LoadingTitle>
@@ -548,7 +538,7 @@ export const BookCoverPreview: React.FC<BookCoverPreviewProps> = React.memo(({
                   ))}
                 </RotatingMessages>
 
-                {/* Progress Bar */}
+                {/* Progress Bar — fine, sur fond sombre */}
                 <ProgressBarContainer>
                   <ProgressFill />
                 </ProgressBarContainer>

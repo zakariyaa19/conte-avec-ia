@@ -49,23 +49,47 @@ export function useStoryDetection(combined: string, hasPhoto: boolean): Detected
       gender = 'boy';
     }
 
-    // ── Theme
+    // ── Theme : detection PERMISSIVE
+    // 1. Categories explicites (mots-cles directs)
+    // 2. Pattern "univers de X", "monde de X", "dans le X" → univers detecte (custom)
+    // 3. Franchises populaires + lieux/decors → theme detecte
+    // Le but : des que l'utilisateur exprime une intention d'univers, on considere
+    // que c'est detecte. Le texte complet va de toute facon a GPT qui comprendra.
     let theme: string | null = null;
-    if (/magie|magique|fee|fees|sorcier|sorciere|dragon|licorne|chateau|enchante|harry\s*potter|narnia|elf/.test(t)) theme = 'fairy-tales';
-    else if (/educatif|ecole|apprendre|science|math|lecture/.test(t)) theme = 'educational';
-    else if (/aventure|voyage|pirate|espace|tresor|jungle|mystere|detective|exploration|quete/.test(t)) theme = 'stories';
-    else if (/famille|frere|soeur|papa|maman|grand-pere|grand-mere/.test(t)) theme = 'family';
-    else if (/anniversaire|noel|fete|paques|halloween|aid|eid/.test(t)) theme = 'celebrations';
+    // Categories canoniques (priorite haute)
+    if (/magie|magique|fee\b|fees\b|sorcier|sorciere|dragon|licorne|chateau|enchante|royaume|princes/.test(t)) theme = 'fairy-tales';
+    else if (/educatif|ecole|apprendre|science|math|lecture|classe|maitresse|maitre\s+d'?ecole/.test(t)) theme = 'educational';
+    else if (/aventure|voyage|pirate|espace|tresor|jungle|mystere|detective|exploration|quete|enquete|expedition/.test(t)) theme = 'stories';
+    else if (/famille|frere|soeur|papa|maman|grand-?pere|grand-?mere|papi|mamie/.test(t)) theme = 'family';
+    else if (/anniversaire|noel|christmas|fete|paques|easter|halloween|aid|eid|ramadan/.test(t)) theme = 'celebrations';
+    // Pattern generique : "univers/monde/royaume de X" ou "dans le/la X" → custom
+    else if (
+      /(?:univers?|monde|royaume|planete|galaxie|pays|ville|ile|foret|jungle|ocean|mer|montagne|desert|espace)\s+(?:d[eu]s?\s+|de\s+l[ae']\s*)?[a-zA-Zà-ÿ]/i.test(text)
+      || /dans\s+(?:l[ae']\s*|les?\s+|du\s+)?[a-zA-Zà-ÿ]/i.test(text) && /univers|monde|royaume|monde/.test(t)
+    ) {
+      theme = 'stories';
+    }
+    // Franchises et licences populaires (couvre "univers de mario", "harry potter", etc.)
+    else if (/mario|pokemon|naruto|disney|pixar|harry\s*potter|narnia|star\s*wars|avatar|frozen|reine\s*des\s*neiges|spider-?man|batman|superman|marvel|dc\s+comics|minecraft|fortnite|roblox|paw\s*patrol|pat\s*patrouille|peppa|miraculous/.test(t)) {
+      theme = 'fairy-tales';
+    }
+    // Decors / lieux (suffit a considerer un univers)
+    else if (/foret|jungle|ocean|mer\b|plage|montagne|desert|espace|spatial|sous-?marin|chateau|dragon|arc-en-ciel|nuage|etoile|planete|robot|cyborg|extraterrestre|alien|monstre/.test(t)) {
+      theme = 'stories';
+    }
 
-    // ── Morale
+    // ── Morale : detection PERMISSIVE
+    // Mots-cles + pattern "morale du/de X" + "leçon de X" + "message de X"
     let moral: string | null = null;
-    if (/courage|courageux|brave|peur|surmonter|affront/.test(t)) moral = 'courage';
-    else if (/amitie|ami\b|amie\b|copain|copine|camarade/.test(t)) moral = 'friendship';
-    else if (/amour|tendresse|affection|coeur/.test(t)) moral = 'love';
-    else if (/partage|genereux|generosite|donner/.test(t)) moral = 'sharing';
-    else if (/respect|tolerance|politesse|gentil/.test(t)) moral = 'respect';
-    else if (/honnetete|verite|sincere|mentir/.test(t)) moral = 'honesty';
-    else if (/perseverance|determination|abandonner|reussir|effort/.test(t)) moral = 'perseverance';
+    if (/courage|courageux|courageuse|brave|peur|surmonter|affront|oser|hero|heroïne|heroine/.test(t)) moral = 'courage';
+    else if (/amitie|amitié|\bami(?:e|s|es)?\b|copain|copine|camarade|allie|allié|ensemble/.test(t)) moral = 'friendship';
+    else if (/amour|tendresse|affection|c[oe]ur|aime[rz]?\s+(?:son|sa|ses|le|la)/.test(t)) moral = 'love';
+    else if (/partage|genereux|generosite|générosité|donner|offrir|cadeau/.test(t)) moral = 'sharing';
+    else if (/respect|tolerance|tolérance|politesse|gentil|gentillesse|accepter/.test(t)) moral = 'respect';
+    else if (/honnetete|honnêteté|verite|vérité|sincere|sincère|mentir|mensonge|verite|vrai/.test(t)) moral = 'honesty';
+    else if (/perseverance|persévérance|determination|détermination|abandonner|reussir|réussir|effort|persister/.test(t)) moral = 'perseverance';
+    // Pattern generique : "morale du X" / "lecon X" / "message X" → considere detecte
+    else if (/(?:morale|moralité|lecon|leçon|message|valeur)\s+(?:du|de\s+l[ae']?|sur|de)/i.test(text)) moral = 'courage';
 
     // ── Personnage secondaire
     let secondary: DetectedEntities['secondary'] = null;
@@ -79,14 +103,16 @@ export function useStoryDetection(combined: string, hasPhoto: boolean): Detected
       }
     }
 
-    // ── Style illustration (uniquement si EXPLICITEMENT mentionne)
+    // ── Style illustration : detection PERMISSIVE
     let style: string | null = null;
-    if (/aquarelle|watercolor|peinture/.test(t)) style = 'watercolor';
-    else if (/manga|anime|japonais|dessin\s*anime/.test(t)) style = 'japanese-manga';
-    else if (/3d|pixar|disney|animation\s*3/.test(t)) style = '3d-animation';
-    else if (/kawaii|mignon|cute/.test(t)) style = 'kawaii';
-    else if (/papier\s*decoupe|collage|origami/.test(t)) style = 'paper-cut';
-    else if (/bloc|minecraft|lego|cubique/.test(t)) style = 'block-world';
+    if (/aquarelle|watercolor|peinture|peint/.test(t)) style = 'watercolor';
+    else if (/manga|anime|japonais|dessin\s*anime|chibi/.test(t)) style = 'japanese-manga';
+    else if (/3d|pixar|disney|animation\s*3|cgi/.test(t)) style = '3d-animation';
+    else if (/kawaii|mignon|cute|adorable/.test(t)) style = 'kawaii';
+    else if (/papier\s*decoupe|papier\s*découpé|collage|origami/.test(t)) style = 'paper-cut';
+    else if (/bloc|minecraft|lego|cubique|voxel/.test(t)) style = 'block-world';
+    // Pattern generique : "style X", "illustration en X" → considere detecte
+    else if (/(?:style|illustration|dessin|graphisme|image|esthetique|esthétique)\s+(?:de\s+|en\s+|d['']|du\s+)?[a-zA-Zà-ÿ]/i.test(text)) style = '3d-animation';
 
     // ── Hobby
     let hobby: string | null = null;

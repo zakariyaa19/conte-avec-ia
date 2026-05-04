@@ -12,16 +12,16 @@ import { DetectedEntities } from './useStoryDetection';
  */
 export function useSmartHint(d: DetectedEntities): string {
   return useMemo(() => {
-    if (!d.name) return "Le prenom de l'enfant ?";
-    if (!d.age) return `Quel age a ${d.name} ?`;
-    if (!d.gender) return `${d.name} est une fille ou un garcon ?`;
-    if (!d.theme) return "Dans quel univers va se derouler l'histoire ?";
-    if (!d.moral) return "Une morale ou un message a transmettre ?";
-    if (!d.secondary) return "Un compagnon a ajouter (animal, ami) ?";
+    if (!d.name) return "Le prénom de l'enfant ?";
+    if (!d.age) return `Quel âge a ${d.name} ?`;
+    if (!d.gender) return `${d.name} est une fille ou un garçon ?`;
+    if (!d.theme) return "Dans quel univers va se dérouler l'histoire ?";
+    if (!d.moral) return "Une morale ou un message à transmettre ?";
+    if (!d.secondary) return "Un compagnon à ajouter (animal, ami) ?";
     if (!d.style) return "Un style d'illustration ? (manga, aquarelle, 3D)";
     if (!d.hobby) return "Quelles sont ses passions ?";
-    if (!d.hasPhoto) return "Ajoute sa photo pour des illustrations fideles";
-    if (!d.occasion) return "Une occasion speciale ? (anniversaire, Noel)";
-    return "Tout est pret, lance la creation.";
+    if (!d.hasPhoto) return "Ajoutez sa photo pour des illustrations fidèles";
+    if (!d.occasion) return "Une occasion spéciale ? (anniversaire, Noël)";
+    return "Tout est prêt, lancez la création.";
   }, [d.name, d.age, d.gender, d.theme, d.moral, d.secondary, d.style, d.hobby, d.hasPhoto, d.occasion]);
 }
