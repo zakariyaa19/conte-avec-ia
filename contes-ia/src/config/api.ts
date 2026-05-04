@@ -807,13 +807,14 @@ export class ApiService {
   // Smart Hint — analyse IA en temps reel du brief client
   static async generateSmartHint(
     description: string,
+    hasPhoto: boolean,
     signal?: AbortSignal
   ): Promise<{ success: boolean; data?: { hint: string; cached?: boolean; fallback?: boolean }; message?: string }> {
     const url = `${this.baseUrl}/api/preview/smart-hint`;
     const response = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ description }),
+      body: JSON.stringify({ description, hasPhoto }),
       signal,
     });
     return response.json();

@@ -363,14 +363,15 @@ export class PreviewController {
    */
   static async generateSmartHint(req: Request, res: Response) {
     try {
-      const { description } = req.body as { description?: string };
+      const { description, hasPhoto } = req.body as { description?: string; hasPhoto?: boolean };
+      const photoUploaded = !!hasPhoto;
 
       // Validation
       const desc = (description || '').trim();
       if (desc.length < 3) {
         return res.json({
           success: true,
-          data: { hint: "Décris-moi l'enfant et l'histoire que tu imagines." }
+          data: { hint: "Quel est le prénom de l'enfant ?" }
         });
       }
       if (desc.length > 800) {
@@ -380,12 +381,12 @@ export class PreviewController {
       if (!process.env.OPENAI_API_KEY) {
         return res.json({
           success: true,
-          data: { hint: getLocalFallbackHint(desc) }
+          data: { hint: getLocalFallbackHint(desc, photoUploaded) }
         });
       }
 
-      // Cache lookup (5 min TTL)
-      const cacheKey = hintCacheKey(desc);
+      // Cache lookup (5 min TTL) — la photo influence le hint, l'inclure dans la cle
+      const cacheKey = hintCacheKey(desc) + '|p=' + (photoUploaded ? '1' : '0');
       const cached = hintCache.get(cacheKey);
       if (cached && Date.now() - cached.t < 5 * 60 * 1000) {
         return res.json({ success: true, data: { hint: cached.hint, cached: true } });
@@ -505,7 +506,7 @@ Retourne UNIQUEMENT la phrase, rien d'autre.`;
         model: 'gpt-4o-mini',
         messages: [
           { role: 'system', content: systemPrompt },
-          { role: 'user', content: `Brief du parent :\n"""${desc}"""\n\nQuelle est la PROCHAINE info manquante a demander (selon l'ordre de priorite) ?` },
+          { role: 'user', content: `Brief du parent :\n"""${desc}"""\n\nINFOS EXTERNES :\n- Photo de l'enfant deja jointe : ${photoUploaded ? 'OUI ✓' : 'NON'}\n\nQuelle est la PROCHAINE info manquante a demander (selon l'ordre de priorite) ? ${photoUploaded ? 'Ne propose JAMAIS d\'ajouter une photo (deja faite). Passe a la priorite suivante.' : ''}` },
         ],
         max_tokens: 60,
         // Temperature moderee : on veut respect de la priorite, pas creativite narrative
@@ -532,7 +533,8 @@ Retourne UNIQUEMENT la phrase, rien d'autre.`;
       console.error('Erreur smart-hint:', error?.message || error);
       // Fallback gracieux : local hint, pas d'erreur exposee
       const desc = (req.body?.description || '').trim();
-      res.json({ success: true, data: { hint: getLocalFallbackHint(desc), fallback: true } });
+      const ph = !!req.body?.hasPhoto;
+      res.json({ success: true, data: { hint: getLocalFallbackHint(desc, ph), fallback: true } });
     }
   }
 }
@@ -545,13 +547,15 @@ function hintCacheKey(desc: string): string {
 }
 
 // ── Fallback local si OpenAI indisponible ────────────────────────
-function getLocalFallbackHint(desc: string): string {
+function getLocalFallbackHint(desc: string, hasPhoto = false): string {
   const t = desc.toLowerCase();
-  if (t.length < 3) return "Décris-moi l'enfant et l'histoire que tu imagines.";
-  if (!/^[A-ZÀ-ÖØ-Ý]/.test(desc.trim())) return "Le prénom de l'enfant ?";
+  if (t.length < 3) return "Quel est le prénom de l'enfant ?";
+  if (!/^[A-ZÀ-ÖØ-Ý]/.test(desc.trim())) return "Quel est le prénom de l'enfant ?";
   if (!/\d+\s*ans?/i.test(desc)) return "Quel âge a l'enfant ?";
   if (!/(fille|garçon|garcon|fillette|princesse|prince|fils)/i.test(desc)) return "Une fille ou un garçon ?";
-  if (!/(univers|monde|royaume|aventure|magie|ecole|école|école)/i.test(desc) && desc.length < 60) return "Dans quel univers va se dérouler l'histoire ?";
+  if (!/(univers|monde|royaume|aventure|magie|ecole|école)/i.test(desc) && desc.length < 60) return "Dans quel univers va se dérouler l'histoire ?";
+  if (!/(frere|frère|soeur|sœur|ami|copain|copine|cousin|grand-)/i.test(desc)) return "Quel personnage secondaire pour l'accompagner ?";
   if (!/(courage|amitié|amitie|amour|partage|honnete|honnête|persever)/i.test(desc)) return "Une morale ou un message à transmettre ?";
+  if (!hasPhoto) return "Ajoute sa photo pour que les illustrations lui ressemblent.";
   return "Tout est prêt, lance la création.";
 }
