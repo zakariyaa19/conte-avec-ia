@@ -7,9 +7,6 @@ import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticleHistoireDuSoir: React.FC = () => {
-  useEffect(() => {
-    document.title = "Histoire du Soir pour Enfant : 10 Idées Magiques pour un Rituel Inoubliable | Contedia";
-  }, []);
 
   const tableOfContents = [
     { title: "Pourquoi le rituel histoire du soir est si important", id: "pourquoi-rituel" },

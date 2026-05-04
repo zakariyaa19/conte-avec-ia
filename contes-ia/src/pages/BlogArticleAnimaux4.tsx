@@ -7,9 +7,6 @@ import { SchemaFAQ, SchemaBreadcrumb } from '../components/SchemaMarkup';
 import '../styles/BlogArticle.css';
 
 const BlogArticleAnimaux4: React.FC = () => {
-  useEffect(() => {
-    document.title = 'Lire avec son Chien ou Chat : Le Rituel qui Transforme la Lecture en Plaisir | Contedia';
-  }, []);
 
   const tableOfContents = [
     { title: "Pourquoi lire avec son animal change tout", id: "pourquoi" },

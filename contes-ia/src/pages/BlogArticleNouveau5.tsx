@@ -7,9 +7,6 @@ import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticleNouveau5: React.FC = () => {
-  useEffect(() => {
-    document.title = "Pourquoi les Enfants Adorent Être le Héros de Leur Histoire | Contedia";
-  }, []);
 
   const tableOfContents = [
     { title: "L'effet magique du prénom", id: "effet-prenom" },

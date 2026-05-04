@@ -63,8 +63,6 @@ const CGVContent = styled.div`
 
 const CGVPage: React.FC = () => {
   useEffect(() => {
-    document.title = 'Conditions Generales de Vente | Contes d\'IA';
-
     const metaRobots = document.querySelector('meta[name="robots"]') || document.createElement('meta');
     metaRobots.setAttribute('name', 'robots');
     metaRobots.setAttribute('content', 'noindex, follow');

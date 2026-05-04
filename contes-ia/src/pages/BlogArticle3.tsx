@@ -7,9 +7,6 @@ import { SchemaFAQ, SchemaBreadcrumb } from '../components/SchemaMarkup';
 import '../styles/BlogArticle.css';
 
 const BlogArticle3: React.FC = () => {
-  useEffect(() => {
-    document.title = 'Conte de Fées Personnalisé : Votre Enfant Devient Prince ou Princesse | Contedia';
-  }, []);
 
   const tableOfContents = [
     { title: "Pourquoi les contes de fées fascinent toujours", id: "pourquoi" },

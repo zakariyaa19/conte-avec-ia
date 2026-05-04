@@ -7,9 +7,6 @@ import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticleConteGratuit: React.FC = () => {
-  useEffect(() => {
-    document.title = "Conte Personnalisé Gratuit pour Enfant — Créez le Vôtre en 2 Min | Contedia";
-  }, []);
 
   const tableOfContents = [
     { title: "Ce que vous allez recevoir", id: "ce-que-vous-recevez" },

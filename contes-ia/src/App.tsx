@@ -110,7 +110,7 @@ function App() {
         <ScrollToTop />
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/story-form" element={<StoryFormPage />} />
+          <Route path="/story-form" element={<Navigate to="/create-story" replace />} />
           <Route path="/create-story" element={<StoryFormPage />} />
           <Route path="/success" element={<SuccessPage />} />
           <Route path="/cancel" element={<CancelPage />} />

@@ -7,9 +7,6 @@ import { SchemaFAQ, SchemaBreadcrumb } from '../components/SchemaMarkup';
 import '../styles/BlogArticle.css';
 
 const BlogArticleSEO2: React.FC = () => {
-  useEffect(() => {
-    document.title = 'Les 10 Meilleurs Livres Personnalisés Enfants en 2026 — Comparatif Honnête | Contedia';
-  }, []);
 
   const tableOfContents = [
     { title: "Notre méthode de test", id: "methodologie" },

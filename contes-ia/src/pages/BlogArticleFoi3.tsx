@@ -7,9 +7,6 @@ import { SchemaFAQ, SchemaBreadcrumb } from '../components/SchemaMarkup';
 import '../styles/BlogArticle.css';
 
 const BlogArticleFoi3: React.FC = () => {
-  useEffect(() => {
-    document.title = 'Comment l\'IA de Contedia Respecte votre Religion : Transparence et Confiance | Contedia';
-  }, []);
 
   const tableOfContents = [
     { title: "La question que les parents nous posent", id: "question" },
@@ -74,6 +71,7 @@ const BlogArticleFoi3: React.FC = () => {
         title="Comment l'IA de Contedia Respecte votre Religion : Transparence et Confiance"
         description="Transparence : comment l'IA adapte les contes à votre religion. Garde-fous, sécurité des données, neutralité. Premier livre gratuit."
         type="article"
+        noindex={true}
       />
       <SchemaFAQ questions={faqQuestions} />
       <SchemaBreadcrumb items={[

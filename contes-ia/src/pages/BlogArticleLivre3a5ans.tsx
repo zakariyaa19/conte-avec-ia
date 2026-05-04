@@ -7,9 +7,6 @@ import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticleLivre3a5ans: React.FC = () => {
-  useEffect(() => {
-    document.title = "Livre Personnalisé Enfant 3-5 Ans : L'Âge d'Or de l'Imagination | Contedia";
-  }, []);
 
   const tableOfContents = [
     { title: "Pourquoi 3-5 ans est l'âge parfait pour un livre personnalisé", id: "age-parfait" },

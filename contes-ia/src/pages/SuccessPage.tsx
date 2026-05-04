@@ -295,8 +295,6 @@ export const SuccessPage: React.FC = () => {
   const isFirstBookFree = searchParams.get('free') === 'true';
 
   useEffect(() => {
-    document.title = 'Commande Confirmée | Votre Livre Personnalisé est en Préparation';
-
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
       metaDescription.setAttribute('content', 'Félicitations ! Votre conte personnalisé est confirmé. Votre eBook personnalisé sera bientôt prêt.');

@@ -7,9 +7,6 @@ import { SchemaFAQ, SchemaBreadcrumb } from '../components/SchemaMarkup';
 import '../styles/BlogArticle.css';
 
 const BlogArticleAnimaux3: React.FC = () => {
-  useEffect(() => {
-    document.title = 'Photo de votre Animal → Personnage de Conte : Comment l\'IA Crée les Illustrations | Contedia';
-  }, []);
 
   const tableOfContents = [
     { title: "Comment ça marche concrètement", id: "comment" },

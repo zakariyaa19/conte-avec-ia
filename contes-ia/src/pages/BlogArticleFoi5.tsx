@@ -7,9 +7,6 @@ import { SchemaFAQ, SchemaBreadcrumb } from '../components/SchemaMarkup';
 import '../styles/BlogArticle.css';
 
 const BlogArticleFoi5: React.FC = () => {
-  useEffect(() => {
-    document.title = 'Apprendre la Tolérance Religieuse à son Enfant par les Contes Personnalisés | Contedia';
-  }, []);
 
   const tableOfContents = [
     { title: "Pourquoi enseigner la tolérance dès le plus jeune âge", id: "pourquoi" },
@@ -70,6 +67,7 @@ const BlogArticleFoi5: React.FC = () => {
         title="Apprendre la Tolérance Religieuse à son Enfant par les Contes Personnalisés"
         description="Comment enseigner la tolérance et le respect des différentes religions à votre enfant grâce aux contes personnalisés. Exemples, dialogue. Gratuit."
         type="article"
+        noindex={true}
       />
       <SchemaFAQ questions={faqQuestions} />
       <SchemaBreadcrumb items={[

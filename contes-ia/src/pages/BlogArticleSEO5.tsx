@@ -7,9 +7,6 @@ import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticleSEO5: React.FC = () => {
-  useEffect(() => {
-    document.title = 'Livre Personnalisé Bébé : Le Premier Livre de Sa Vie | Contedia';
-  }, []);
 
   const tableOfContents = [
     { title: "Pourquoi un livre personnalisé pour bébé ?", id: "pourquoi" },

@@ -130,10 +130,6 @@ export const CancelPage: React.FC = () => {
     }
   }, [orderId]);
 
-  useEffect(() => {
-    document.title = 'Paiement annulé | Contes d\'IA';
-  }, []);
-
   return (
     <Page>
       <Header />

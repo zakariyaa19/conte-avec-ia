@@ -144,8 +144,6 @@ export const StoryFormPage: React.FC = () => {
 
   // SEO
   useEffect(() => {
-    document.title = 'Créer un Livre Personnalisé pour Enfant | Conte sur Mesure avec IA';
-
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
       metaDescription.setAttribute('content', 'Créez facilement un conte personnalisé pour votre enfant en 3 étapes simples. Choisissez le thème, personnalisez le héros avec photo et recevez votre livre unique généré par IA.');

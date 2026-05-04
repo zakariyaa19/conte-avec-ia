@@ -290,10 +290,6 @@ export const ExemplesPage: React.FC = () => {
     }
   }, []);
 
-  useEffect(() => {
-    document.title = "Exemples de Contes Personnalisés | Contes d'IA";
-  }, []);
-
   return (
     <PageContainer>
       <SEOHead

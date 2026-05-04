@@ -7,9 +7,6 @@ import { SchemaFAQ, SchemaBreadcrumb } from '../components/SchemaMarkup';
 import '../styles/BlogArticle.css';
 
 const BlogArticle5: React.FC = () => {
-  useEffect(() => {
-    document.title = 'Conte Personnalisé Religieux : Transmettre la Foi à votre Enfant avec Douceur | Contedia';
-  }, []);
 
   const tableOfContents = [
     { title: "Pourquoi transmettre la foi par les histoires", id: "pourquoi" },
@@ -75,6 +72,7 @@ const BlogArticle5: React.FC = () => {
         title="Conte Personnalisé Religieux : Transmettre la Foi à votre Enfant avec Douceur"
         description="Créez un conte personnalisé avec les valeurs religieuses de votre famille. Ramadan, Noël, Pâques... L'IA adapte l'histoire à votre foi. Premier livre gratuit."
         type="article"
+        noindex={true}
       />
       <SchemaFAQ questions={faqQuestions} />
       <SchemaBreadcrumb items={[

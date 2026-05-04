@@ -7,9 +7,6 @@ import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticleLuniiVsToniebox: React.FC = () => {
-  useEffect(() => {
-    document.title = 'Lunii vs Toniebox 2026 : Comparatif Complet + La Meilleure Alternative';
-  }, []);
 
   const tableOfContents = [
     { title: "Lunii vs Toniebox : le résumé", id: "resume" },

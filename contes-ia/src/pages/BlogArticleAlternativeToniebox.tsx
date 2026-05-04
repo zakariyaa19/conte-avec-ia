@@ -7,9 +7,6 @@ import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticleAlternativeToniebox: React.FC = () => {
-  useEffect(() => {
-    document.title = "Alternative Toniebox 2026 : 5 Solutions Modernes pour les Histoires de vos Enfants | Contedia";
-  }, []);
 
   const tableOfContents = [
     { title: "Pourquoi les parents cherchent une alternative à la Toniebox", id: "pourquoi-alternative" },

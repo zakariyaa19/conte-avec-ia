@@ -7,9 +7,6 @@ import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticleCadeauAnniversaire: React.FC = () => {
-  useEffect(() => {
-    document.title = "Cadeau Anniversaire Enfant Original : Créez Son Livre d'Aventure Personnalisé | Contedia";
-  }, []);
 
   const tableOfContents = [
     { title: "Pourquoi un livre personnalisé est le meilleur cadeau d'anniversaire", id: "pourquoi-livre" },

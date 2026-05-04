@@ -7,9 +7,6 @@ import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticleAnimaux5: React.FC = () => {
-  useEffect(() => {
-    document.title = "5 Thèmes d'Aventures pour Créer un Conte avec Votre Animal | Contedia";
-  }, []);
 
   const tableOfContents = [
     { title: "Comment choisir le bon thème", id: "choisir-theme" },

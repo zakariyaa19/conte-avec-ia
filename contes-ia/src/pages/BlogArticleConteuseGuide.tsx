@@ -7,9 +7,6 @@ import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticleConteuseGuide: React.FC = () => {
-  useEffect(() => {
-    document.title = "Conteuse Enfant 2026 : Guide Complet d'Achat + Alternative IA | Contedia";
-  }, []);
 
   const tableOfContents = [
     { title: "Qu'est-ce qu'une conteuse enfant ?", id: "definition" },

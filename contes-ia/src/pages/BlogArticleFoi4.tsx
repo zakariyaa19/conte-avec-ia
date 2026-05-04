@@ -7,9 +7,6 @@ import { SchemaFAQ, SchemaBreadcrumb } from '../components/SchemaMarkup';
 import '../styles/BlogArticle.css';
 
 const BlogArticleFoi4: React.FC = () => {
-  useEffect(() => {
-    document.title = 'Votre Enfant, Héros de Foi : Comment un Conte Personnalisé Inspire les Valeurs Spirituelles | Contedia';
-  }, []);
 
   const tableOfContents = [
     { title: "Pourquoi votre enfant a besoin d'être un héros de foi", id: "pourquoi" },
@@ -70,6 +67,7 @@ const BlogArticleFoi4: React.FC = () => {
         title="Votre Enfant, Héros de Foi : Conte Personnalisé et Valeurs Spirituelles"
         description="Votre enfant devient un héros de foi dans son conte personnalisé. Courage, partage, patience : il incarne vos valeurs dans son aventure. Gratuit."
         type="article"
+        noindex={true}
       />
       <SchemaFAQ questions={faqQuestions} />
       <SchemaBreadcrumb items={[

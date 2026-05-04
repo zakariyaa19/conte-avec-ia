@@ -7,9 +7,6 @@ import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticleNouveau10: React.FC = () => {
-  useEffect(() => {
-    document.title = "7 Bienfaits de la Lecture Personnalisée sur le Développement de l'Enfant | Contedia";
-  }, []);
 
   const tableOfContents = [
     { title: "Pourquoi la lecture personnalisée est différente", id: "pourquoi-different" },

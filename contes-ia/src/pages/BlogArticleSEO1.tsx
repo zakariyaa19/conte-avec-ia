@@ -7,9 +7,6 @@ import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticleSEO1: React.FC = () => {
-  useEffect(() => {
-    document.title = 'Livre Personnalisé Enfant : Le Guide Complet 2026 (par Âge) | Contedia';
-  }, []);
 
   const tableOfContents = [
     { title: "Qu'est-ce qu'un livre personnalisé enfant ?", id: "definition" },

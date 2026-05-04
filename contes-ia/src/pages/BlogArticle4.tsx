@@ -7,9 +7,6 @@ import { SchemaFAQ, SchemaBreadcrumb } from '../components/SchemaMarkup';
 import '../styles/BlogArticle.css';
 
 const BlogArticle4: React.FC = () => {
-  useEffect(() => {
-    document.title = 'Livre Enfant IA : Comment l\'Intelligence Artificielle Crée des Histoires Uniques | Contedia';
-  }, []);
 
   const tableOfContents = [
     { title: "Comment l'IA crée une histoire personnalisée", id: "comment-ia" },
@@ -71,8 +68,8 @@ const BlogArticle4: React.FC = () => {
   return (
     <PageLayout>
       <SEOHead
-        title="Livre Enfant par IA : Comment Créer une Histoire Personnalisée en 5 Minutes"
-        description="Découvrez comment l'IA crée un livre personnalisé unique pour votre enfant en 5 minutes. Prénom, photo, illustrations — le processus pas à pas. Essai gratuit sans CB."
+        title="Livre Personnalisé IA Enfant : Histoire Unique en 5 min (Gratuit) | Contedia"
+        description="Créez un livre personnalisé par IA pour votre enfant en 5 minutes. Prénom, photo, illustrations sur mesure. 1er chapitre gratuit, sans carte bancaire."
         type="article"
       />
       <SchemaFAQ questions={faqQuestions} />

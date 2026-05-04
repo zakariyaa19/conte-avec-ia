@@ -7,9 +7,6 @@ import { SchemaFAQ, SchemaBreadcrumb } from '../components/SchemaMarkup';
 import '../styles/BlogArticle.css';
 
 const BlogArticle2: React.FC = () => {
-  useEffect(() => {
-    document.title = 'Conte Personnalisé Enfant : 9 Styles d\'Illustration et Héros sur Mesure | Contedia';
-  }, []);
 
   const tableOfContents = [
     { title: "Votre enfant, héros d'un conte unique", id: "heros" },
@@ -72,8 +69,8 @@ const BlogArticle2: React.FC = () => {
   return (
     <PageLayout>
       <SEOHead
-        title="Conte Personnalisé Enfant : 9 Styles d'Illustration et Héros sur Mesure"
-        description="Découvrez les 9 styles d'illustration pour créer un conte personnalisé unique. Animation 3D, Manga, Kawaii... Photo de l'enfant dans les illustrations. Gratuit."
+        title="Conte Personnalisé : 9 Styles d'Illustration au Choix (Enfants & Ados) | Contedia"
+        description="9 styles d'illustration pour un conte personnalisé unique : Animation 3D, Manga, Kawaii, Aquarelle... Votre enfant héros, dans le style qu'il préfère. Gratuit."
         type="article"
       />
       <SchemaFAQ questions={faqQuestions} />

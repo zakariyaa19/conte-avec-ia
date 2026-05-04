@@ -7,9 +7,6 @@ import { SchemaFAQ, SchemaBreadcrumb } from '../components/SchemaMarkup';
 import '../styles/BlogArticle.css';
 
 const BlogArticleFoi1: React.FC = () => {
-  useEffect(() => {
-    document.title = 'Transmettre la Foi à son Enfant par les Histoires : Le Guide par Âge | Contedia';
-  }, []);
 
   const tableOfContents = [
     { title: "Pourquoi les histoires transmettent mieux que les leçons", id: "pourquoi" },

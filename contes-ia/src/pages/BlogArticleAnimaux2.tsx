@@ -7,9 +7,6 @@ import { SchemaFAQ, SchemaBreadcrumb } from '../components/SchemaMarkup';
 import '../styles/BlogArticle.css';
 
 const BlogArticleAnimaux2: React.FC = () => {
-  useEffect(() => {
-    document.title = 'Cadeau Noël Enfant : Le Conte Personnalisé avec son Animal de Compagnie | Contedia';
-  }, []);
 
   const tableOfContents = [
     { title: "Pourquoi ce cadeau est le meilleur de Noël", id: "pourquoi" },

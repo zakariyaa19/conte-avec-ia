@@ -7,9 +7,6 @@ import { SchemaFAQ, SchemaBreadcrumb } from '../components/SchemaMarkup';
 import '../styles/BlogArticle.css';
 
 const BlogArticleAnimaux1: React.FC = () => {
-  useEffect(() => {
-    document.title = 'Animal de Compagnie et Imagination : Pourquoi Votre Enfant Invente des Histoires avec son Chien | Contedia';
-  }, []);
 
   const tableOfContents = [
     { title: "Pourquoi les enfants inventent des histoires avec leurs animaux", id: "pourquoi" },
@@ -71,8 +68,8 @@ const BlogArticleAnimaux1: React.FC = () => {
   return (
     <PageLayout>
       <SEOHead
-        title="Animal de Compagnie et Imagination Enfant : Pourquoi il Invente des Histoires avec son Chien"
-        description="Pourquoi votre animal stimule l'imagination de votre enfant. Transformez cette complicité en livre personnalisé où ils vivent l'aventure ensemble. Gratuit."
+        title="Livre Personnalisé Enfant & Animal : L'Histoire où ils sont Héros | Contedia"
+        description="Votre enfant et son chien (ou chat) deviennent les héros d'un livre personnalisé unique. Découvrez comment l'animal stimule son imagination. 1er chapitre gratuit."
         type="article"
       />
       <SchemaFAQ questions={faqQuestions} />

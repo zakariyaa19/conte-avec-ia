@@ -7,9 +7,6 @@ import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticleNouveau6: React.FC = () => {
-  useEffect(() => {
-    document.title = "Lecture du Soir : Le Guide du Rituel avec un Conte Personnalisé | Contedia";
-  }, []);
 
   const tableOfContents = [
     { title: "Pourquoi le rituel du coucher change tout", id: "pourquoi-rituel" },
