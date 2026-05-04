@@ -113,13 +113,13 @@ export const Logo = styled.div`
   &:hover { opacity: 0.8; }
 `;
 
-/* Composer = textarea + paperclip wrapper. Border statique tres subtile,
-   AUCUN changement au focus (pas de pastel chiant). textarea en 16px pour
-   empecher l'auto-zoom iOS Safari. */
+/* Composer = textarea + paperclip wrapper. AUCUNE bordure visible —
+   la profondeur du card vient uniquement du box-shadow. textarea en 16px
+   pour empecher l'auto-zoom iOS Safari. */
 export const Composer = styled.div`
   position: relative;
   background: ${C.bgCard};
-  border: 1px solid rgba(255, 153, 153, 0.12);
+  border: none;
   border-radius: 18px;
   padding: 14px 14px 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 6px 18px rgba(0, 0, 0, 0.04);
