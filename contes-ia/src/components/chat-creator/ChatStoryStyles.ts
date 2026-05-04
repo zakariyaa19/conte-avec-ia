@@ -113,24 +113,18 @@ export const Logo = styled.div`
   &:hover { opacity: 0.8; }
 `;
 
-/* Composer = textarea + paperclip wrapper. Border tres subtile coral, focus-within
-   donne un anneau plus marque sans agresser. Plus aucune couleur beige. */
+/* Composer = textarea + paperclip wrapper. Border statique tres subtile,
+   AUCUN changement au focus (pas de pastel chiant). textarea en 16px pour
+   empecher l'auto-zoom iOS Safari. */
 export const Composer = styled.div`
   position: relative;
   background: ${C.bgCard};
-  border: 1.5px solid rgba(255, 153, 153, 0.18);
+  border: 1px solid rgba(255, 153, 153, 0.12);
   border-radius: 18px;
   padding: 14px 14px 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 6px 18px rgba(0, 0, 0, 0.04);
-  transition: border-color 0.18s ease, box-shadow 0.18s ease;
 
-  &:focus-within {
-    border-color: ${C.coral};
-    box-shadow:
-      0 1px 3px rgba(0, 0, 0, 0.08),
-      0 6px 22px rgba(255, 153, 153, 0.12),
-      0 0 0 3px rgba(255, 153, 153, 0.12);
-  }
+  /* Pas de focus-within : aucun changement visuel au clic */
 
   textarea {
     width: 100%;
@@ -141,7 +135,8 @@ export const Composer = styled.div`
     resize: none;
     background: transparent;
     font-family: 'Poppins', system-ui, sans-serif;
-    font-size: 15px;
+    /* 16px obligatoire pour bloquer l'auto-zoom iOS Safari quand l'utilisateur tape */
+    font-size: 16px;
     line-height: 1.5;
     color: ${C.text};
     padding: 0;

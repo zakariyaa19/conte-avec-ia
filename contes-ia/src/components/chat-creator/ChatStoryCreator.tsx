@@ -14,7 +14,7 @@ import { SmartHint } from './SmartHint';
 
 import {
   PageWrap, Header, Logo, Body, BodyInner, Footer, FooterInner,
-  HeroBadge, Subtitle, TrustRow, TrustItem,
+  Subtitle, TrustRow, TrustItem,
   CTA, CTASpinner, AuthInput, C, Composer,
 } from './ChatStoryStyles';
 
@@ -76,7 +76,7 @@ export const ChatStoryCreator: React.FC<Props> = ({
   const detected = useStoryDetection(story, !!photo);
   const percentage = computeDetectionScore(detected);
   // SmartHint = vraie analyse IA du brief (debounced, cache, fallback local)
-  const hintText = useSmartHint(story, detected);
+  const { hint: hintText, thinking: hintThinking } = useSmartHint(story, detected);
   const ringColor = percentage >= 70 ? '#22C55E' : percentage >= 35 ? '#F59E0B' : '#FF9999';
 
   // ── mergedData : detection + defaults pour la creation backend ──
@@ -232,19 +232,28 @@ export const ChatStoryCreator: React.FC<Props> = ({
   if (step === 'form') {
     return (
       <PageWrap>
-        <Header>
-          <Logo onClick={() => window.location.href = '/'}>Contedia</Logo>
-          <div />
-        </Header>
+        {/* Logo Contedia minimal, cliquable, en haut-gauche flottant — pas de header bar */}
+        <div
+          onClick={() => { window.location.href = '/'; }}
+          role="button"
+          aria-label="Retour à l'accueil"
+          style={{
+            position: 'absolute', top: 14, left: 16, zIndex: 5,
+            fontFamily: "'Baloo 2', 'Comic Neue', cursive",
+            fontSize: 16, fontWeight: 700, color: C.coral, cursor: 'pointer',
+            opacity: 0.7,
+          }}
+        >
+          Contedia
+        </div>
 
         <Body>
           <BodyInner>
-            {/* Hero compact + H1 dynamique */}
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, marginTop: 8 }}>
-              <HeroBadge>+500 histoires créées &middot; &#11088;&#11088;&#11088;&#11088;&#11088;</HeroBadge>
+            {/* Hero compact + H1 dynamique (sans badge) */}
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, marginTop: 28 }}>
               <h1 style={{
                 fontFamily: "'Baloo 2', 'Comic Neue', cursive",
-                fontSize: 'clamp(1.5rem, 5.5vw, 2.1rem)',
+                fontSize: 'clamp(1.55rem, 5.8vw, 2.15rem)',
                 lineHeight: 1.15,
                 fontWeight: 800,
                 color: C.text,
@@ -322,8 +331,8 @@ export const ChatStoryCreator: React.FC<Props> = ({
               </div>
             </Composer>
 
-            {/* SmartHint — suggestion discrète sous la textarea */}
-            <SmartHint text={hintText} />
+            {/* SmartHint — apparition IA stylée sous la textarea */}
+            <SmartHint text={hintText} thinking={hintThinking} />
 
             {/* Trust */}
             <TrustRow>
