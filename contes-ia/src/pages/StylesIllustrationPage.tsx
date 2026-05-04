@@ -5,6 +5,7 @@ import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
 import { useScrollReveal, useStaggerReveal } from '../hooks/useScrollReveal';
 import { SEOHead } from '../components/SEOHead';
+import { SchemaBreadcrumb } from '../components/SchemaMarkup';
 import { theme } from '../styles/theme';
 import {
   PageContainer, HeroSection, HeroDecoBlur, HeroContent, HeroBadge,
@@ -43,7 +44,12 @@ const StylesIllustrationPage: React.FC = () => {
       <SEOHead
         title="Styles d'Illustration Livre Personnalisé | Conte Illustré sur Mesure"
         description="Choisissez le style parfait pour votre livre illustré personnalisé : aquarelle douce, cartoon coloré, réalisme fantastique, vintage. Conte illustré sur mesure pour votre enfant."
-      />      <Header />
+      />
+      <SchemaBreadcrumb items={[
+        { name: 'Accueil', url: 'https://contedia.fr/' },
+        { name: 'Styles d\'illustration', url: 'https://contedia.fr/styles-illustration' },
+      ]} />
+      <Header />
 
       <HeroSection>
         <HeroDecoBlur $size={350} $top="-10%" $left="-5%" $color={theme.colors.accent.coral} $opacity={0.08} />

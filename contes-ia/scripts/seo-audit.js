@@ -22,6 +22,9 @@ const BUILD_DIR = join(__dirname, '..', 'build');
 const HOMEPAGE_TITLE = "Livre Personnalisé Enfant GRATUIT — Histoire IA en 5 min | Contedia";
 const HOMEPAGE_DESC_FRAGMENT = "Votre enfant héros de son propre livre illustré par IA";
 
+// Pages utilitaires (app/galerie) qui n'ont pas vocation à exposer des schemas SEO
+const UTILITY_PAGES = new Set(['/create-story', '/exemples']);
+
 // Trouve tous les index.html prerendés
 function findPrerenderedPages(dir, baseUrl = '') {
   const pages = [];
@@ -95,11 +98,10 @@ function auditPage(file, url) {
     warnings.push(`CANONICAL_DUPLICATES: ${canonicals.length} canonicals`);
   }
 
-  // 5. JSON-LD schemas (warning, pas critique : les pages utilitaires comme
-  // /create-story ou /exemples n'ont pas besoin de schema)
+  // 5. JSON-LD schemas (skip les pages utilitaires qui n'ont pas besoin de schema)
   const schemaScripts = [...html.matchAll(/<script type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)].map(m => m[1]);
-  if (schemaScripts.length === 0) {
-    warnings.push('NO_JSONLD: aucun schema JSON-LD (acceptable pour pages utilitaires)');
+  if (schemaScripts.length === 0 && !UTILITY_PAGES.has(url)) {
+    warnings.push('NO_JSONLD: aucun schema JSON-LD');
   }
   let validSchemas = 0;
   let invalidSchemas = 0;

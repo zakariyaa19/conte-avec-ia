@@ -5,6 +5,7 @@ import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
 import { useScrollReveal, useStaggerReveal } from '../hooks/useScrollReveal';
 import { SEOHead } from '../components/SEOHead';
+import { SchemaBreadcrumb } from '../components/SchemaMarkup';
 import { theme } from '../styles/theme';
 import {
   PageContainer, HeroSection, HeroDecoBlur, HeroContent, HeroBadge,
@@ -119,7 +120,12 @@ const ContesMultilinguesPage: React.FC = () => {
       <SEOHead
         title="Livre Personnalisé Multilingue pour Enfant | Apprentissage des Langues"
         description="Créez un livre personnalisé multilingue pour enfant : français, anglais, espagnol, italien, allemand, arabe. Apprentissage naturel des langues avec des histoires sur mesure."
-      />      <Header />
+      />
+      <SchemaBreadcrumb items={[
+        { name: 'Accueil', url: 'https://contedia.fr/' },
+        { name: 'Contes multilingues', url: 'https://contedia.fr/contes-multilingues' },
+      ]} />
+      <Header />
 
       <HeroSection>
         <HeroDecoBlur $size={350} $top="-10%" $left="-5%" $color={theme.colors.accent.coral} $opacity={0.08} />

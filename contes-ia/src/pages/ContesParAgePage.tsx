@@ -5,6 +5,7 @@ import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
 import { useScrollReveal, useStaggerReveal } from '../hooks/useScrollReveal';
 import { SEOHead } from '../components/SEOHead';
+import { SchemaBreadcrumb } from '../components/SchemaMarkup';
 import { theme } from '../styles/theme';
 import {
   PageContainer, HeroSection, HeroDecoBlur, HeroContent, HeroBadge,
@@ -42,7 +43,12 @@ const ContesParAgePage: React.FC = () => {
       <SEOHead
         title="Contes Personnalisés par Âge | Livre pour Bébé et Enfant Adapté"
         description="Choisissez un conte adapté à l'âge de votre enfant : livre pour bébé personnalisé (2-4 ans), histoires magiques (4-6 ans), aventures (6-8 ans). Développement optimal avec notre IA."
-      />      <Header />
+      />
+      <SchemaBreadcrumb items={[
+        { name: 'Accueil', url: 'https://contedia.fr/' },
+        { name: 'Contes par âge', url: 'https://contedia.fr/contes-par-age' },
+      ]} />
+      <Header />
 
       <HeroSection>
         <HeroDecoBlur $size={350} $top="-10%" $left="-5%" $color={theme.colors.accent.coral} $opacity={0.08} />

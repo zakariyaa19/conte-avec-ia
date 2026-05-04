@@ -5,6 +5,7 @@ import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
 import { useScrollReveal, useStaggerReveal } from '../hooks/useScrollReveal';
 import { SEOHead } from '../components/SEOHead';
+import { SchemaBreadcrumb } from '../components/SchemaMarkup';
 import { theme } from '../styles/theme';
 import {
   PageContainer, HeroSection, HeroDecoBlur, HeroContent, HeroBadge,
@@ -52,7 +53,12 @@ const IACreationContePage: React.FC = () => {
       <SEOHead
         title="IA et Créativité : Créer des Histoires Uniques pour Enfants | Innovation"
         description="Découvrez comment l'IA révolutionne les livres pour enfants. Créer un livre magique avec intelligence artificielle : génération narrative, personnalisation et illustrations uniques."
-      />      <Header />
+      />
+      <SchemaBreadcrumb items={[
+        { name: 'Accueil', url: 'https://contedia.fr/' },
+        { name: 'Comment fonctionne l\'IA', url: 'https://contedia.fr/ia-creation-conte' },
+      ]} />
+      <Header />
 
       <HeroSection>
         <HeroDecoBlur $size={350} $top="-10%" $left="-5%" $color={theme.colors.accent.coral} $opacity={0.08} />
