@@ -5,6 +5,7 @@ import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
 import { useScrollReveal, useStaggerReveal } from '../hooks/useScrollReveal';
 import { SEOHead } from '../components/SEOHead';
+import { SchemaBreadcrumb } from '../components/SchemaMarkup';
 import { theme } from '../styles/theme';
 import {
   PageContainer, HeroSection, HeroDecoBlur, HeroContent, HeroBadge,
@@ -149,7 +150,12 @@ const IdeesCadeauxPage: React.FC = () => {
       <SEOHead
         title="Idées Cadeaux Originaux pour Enfants | Livre Personnalisé Anniversaire"
         description="Découvrez le cadeau personnalisé enfant parfait ! Livre personnalisé pour anniversaire, Noël, rentrée. Histoire personnalisée pour un anniversaire d'enfant unique et mémorable."
-      />      <Header />
+      />
+      <SchemaBreadcrumb items={[
+        { name: 'Accueil', url: 'https://contedia.fr/' },
+        { name: 'Idées cadeaux', url: 'https://contedia.fr/idees-cadeaux' },
+      ]} />
+      <Header />
 
       <HeroSection>
         <HeroDecoBlur $size={350} $top="-10%" $left="-5%" $color={theme.colors.accent.coral} $opacity={0.08} />

@@ -5,6 +5,7 @@ import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
 import { useScrollReveal, useStaggerReveal } from '../hooks/useScrollReveal';
 import { SEOHead } from '../components/SEOHead';
+import { SchemaBreadcrumb } from '../components/SchemaMarkup';
 import { theme } from '../styles/theme';
 import {
   PageContainer, HeroSection, HeroDecoBlur, HeroContent, HeroBadge,
@@ -144,7 +145,12 @@ const ValeursEducativesPage: React.FC = () => {
       <SEOHead
         title="Contes Éducatifs Personnalisés | Valeurs et Développement Émotionnel Enfant"
         description="Transmettez des valeurs importantes avec nos contes éducatifs personnalisés : respect, courage, empathie, confiance en soi. Développement émotionnel optimal de votre enfant."
-      />      <Header />
+      />
+      <SchemaBreadcrumb items={[
+        { name: 'Accueil', url: 'https://contedia.fr/' },
+        { name: 'Valeurs éducatives', url: 'https://contedia.fr/valeurs-educatives' },
+      ]} />
+      <Header />
 
       <HeroSection>
         <HeroDecoBlur $size={350} $top="-10%" $left="-5%" $color={theme.colors.accent.coral} $opacity={0.08} />

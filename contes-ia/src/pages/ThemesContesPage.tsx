@@ -5,6 +5,7 @@ import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
 import { useScrollReveal, useStaggerReveal } from '../hooks/useScrollReveal';
 import { SEOHead } from '../components/SEOHead';
+import { SchemaBreadcrumb } from '../components/SchemaMarkup';
 import { theme } from '../styles/theme';
 import {
   PageContainer, HeroSection, HeroDecoBlur, HeroContent, HeroBadge,
@@ -43,7 +44,12 @@ const ThemesContesPage: React.FC = () => {
       <SEOHead
         title="Thèmes de Contes Personnalisés pour Enfants | Livre sur Mesure avec IA"
         description="Choisissez parmi nos thèmes de contes personnalisés : aventure, magie, animaux, héros, amitié. Créez un livre enfant sur mesure adapté aux goûts de votre petit avec notre IA."
-      />      <Header />
+      />
+      <SchemaBreadcrumb items={[
+        { name: 'Accueil', url: 'https://contedia.fr/' },
+        { name: 'Thèmes de contes', url: 'https://contedia.fr/themes-de-contes' },
+      ]} />
+      <Header />
 
       <HeroSection>
         <HeroDecoBlur $size={350} $top="-10%" $left="-5%" $color={theme.colors.accent.coral} $opacity={0.08} />
