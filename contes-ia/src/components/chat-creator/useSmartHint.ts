@@ -4,7 +4,13 @@ import { DetectedEntities } from './useStoryDetection';
 
 const FIRST_HINT = "Décris-moi l'enfant et l'histoire que tu imagines.";
 
-/** Hint local de fallback : si l'API est en flight ou KO, on affiche quelque chose de pertinent. */
+export interface SmartHintResult {
+  hint: string;
+  /** True quand l'IA est en train d'analyser (debounce ou appel API en cours) */
+  thinking: boolean;
+}
+
+/** Fallback local si l'API est en flight ou KO. */
 function localFallback(d: DetectedEntities): string {
   if (!d.name) return "Le prénom de l'enfant ?";
   if (!d.age) return `Quel âge a ${d.name} ?`;
@@ -20,15 +26,17 @@ function localFallback(d: DetectedEntities): string {
 }
 
 /**
- * useSmartHint — vraie analyse IA du brief client.
+ * Hook IA qui retourne {hint, thinking}.
  *
- * Le hook envoie la description au backend (qui appelle GPT-4o-mini) avec
- * un debounce de 1.1s apres la derniere frappe. Cache en memoire pour eviter
- * les requetes en doublon. Fallback sur la detection locale si API timeout
- * ou erreur — le client n'attend jamais sans hint.
+ * - Pendant le debounce et l'appel API : thinking=true → composant affiche 3 dots
+ * - Quand le hint arrive : thinking=false, hint = la phrase de conseil
+ * - Cache memoire 50 entries (par hash de description)
+ * - Abort previous request a chaque nouvelle frappe
+ * - Fallback local si API timeout/erreur
  */
-export function useSmartHint(description: string, detected: DetectedEntities): string {
+export function useSmartHint(description: string, detected: DetectedEntities): SmartHintResult {
   const [hint, setHint] = useState<string>(FIRST_HINT);
+  const [thinking, setThinking] = useState(false);
   const cacheRef = useRef<Map<string, string>>(new Map());
   const abortRef = useRef<AbortController | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -37,24 +45,24 @@ export function useSmartHint(description: string, detected: DetectedEntities): s
     const desc = description.trim();
     if (desc.length < 3) {
       setHint(FIRST_HINT);
+      setThinking(false);
       return;
     }
 
-    // Cache hit immediat (memoire client) → pas d'appel
+    // Cache hit immediat → pas de spinner
     const cacheKey = desc.toLowerCase().replace(/\s+/g, ' ').slice(0, 400);
     const cached = cacheRef.current.get(cacheKey);
     if (cached) {
       setHint(cached);
+      setThinking(false);
       return;
     }
 
-    // Affichage immediat du fallback local pendant que l'API travaille
-    setHint(prev => prev || localFallback(detected));
+    // L'IA "reflechit" : montrer les 3 dots tant qu'on n'a pas la reponse
+    setThinking(true);
 
-    // Debounce 1.1s avant l'appel API
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(async () => {
-      // Annule la requete precedente si toujours en flight
       abortRef.current?.abort();
       const ctrl = new AbortController();
       abortRef.current = ctrl;
@@ -64,17 +72,20 @@ export function useSmartHint(description: string, detected: DetectedEntities): s
         if (ctrl.signal.aborted) return;
         if (res.success && res.data?.hint) {
           cacheRef.current.set(cacheKey, res.data.hint);
-          // Limite cache 50 entrees
           if (cacheRef.current.size > 50) {
             const first = cacheRef.current.keys().next().value;
             if (first) cacheRef.current.delete(first);
           }
           setHint(res.data.hint);
+          setThinking(false);
+        } else {
+          setHint(localFallback(detected));
+          setThinking(false);
         }
       } catch (err: any) {
         if (err?.name === 'AbortError') return;
-        // Fallback gracieux : on garde le hint local existant
         setHint(localFallback(detected));
+        setThinking(false);
       }
     }, 1100);
 
@@ -83,5 +94,5 @@ export function useSmartHint(description: string, detected: DetectedEntities): s
     };
   }, [description, detected]);
 
-  return hint;
+  return { hint, thinking };
 }
