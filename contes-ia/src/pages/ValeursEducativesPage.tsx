@@ -144,13 +144,7 @@ const ValeursEducativesPage: React.FC = () => {
       <SEOHead
         title="Contes Éducatifs Personnalisés | Valeurs et Développement Émotionnel Enfant"
         description="Transmettez des valeurs importantes avec nos contes éducatifs personnalisés : respect, courage, empathie, confiance en soi. Développement émotionnel optimal de votre enfant."
-      />
-      <Helmet>
-        <title>Contes Éducatifs Personnalisés | Valeurs et Développement Émotionnel Enfant</title>
-        <meta name="description" content="Transmettez des valeurs importantes avec nos contes éducatifs personnalisés : respect, courage, empathie, confiance en soi. Développement émotionnel optimal de votre enfant." />
-        <meta name="keywords" content="conte éducatif personnalisé, contes éducatifs et développement émotionnel, conte personnalisé pour apprendre la confiance en soi, valeurs éducatives conte, livre éducatif personnalisé pour enfant, développement émotionnel enfant, conte moral personnalisé" />
-      </Helmet>
-      <Header />
+      />      <Header />
 
       <HeroSection>
         <HeroDecoBlur $size={350} $top="-10%" $left="-5%" $color={theme.colors.accent.coral} $opacity={0.08} />

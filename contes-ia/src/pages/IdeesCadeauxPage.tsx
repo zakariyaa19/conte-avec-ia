@@ -149,13 +149,7 @@ const IdeesCadeauxPage: React.FC = () => {
       <SEOHead
         title="Idées Cadeaux Originaux pour Enfants | Livre Personnalisé Anniversaire"
         description="Découvrez le cadeau personnalisé enfant parfait ! Livre personnalisé pour anniversaire, Noël, rentrée. Histoire personnalisée pour un anniversaire d'enfant unique et mémorable."
-      />
-      <Helmet>
-        <title>Idées Cadeaux Originaux pour Enfants | Livre Personnalisé Anniversaire</title>
-        <meta name="description" content="Découvrez le cadeau personnalisé enfant parfait ! Livre personnalisé pour anniversaire, Noël, rentrée. Histoire personnalisée pour un anniversaire d'enfant unique et mémorable." />
-        <meta name="keywords" content="cadeau personnalisé enfant, histoire personnalisée pour un anniversaire d'enfant, idée cadeau original pour un enfant de 5 ans, livre personnalisé anniversaire, cadeau enfant original, livre personnalisé Noël, cadeau unique enfant, livre personnalisé rentrée" />
-      </Helmet>
-      <Header />
+      />      <Header />
 
       <HeroSection>
         <HeroDecoBlur $size={350} $top="-10%" $left="-5%" $color={theme.colors.accent.coral} $opacity={0.08} />

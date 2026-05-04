@@ -52,13 +52,7 @@ const IACreationContePage: React.FC = () => {
       <SEOHead
         title="IA et Créativité : Créer des Histoires Uniques pour Enfants | Innovation"
         description="Découvrez comment l'IA révolutionne les livres pour enfants. Créer un livre magique avec intelligence artificielle : génération narrative, personnalisation et illustrations uniques."
-      />
-      <Helmet>
-        <title>IA et Créativité : Créer des Histoires Uniques pour Enfants | Innovation</title>
-        <meta name="description" content="Découvrez comment l'IA révolutionne les livres pour enfants. Créer un livre magique avec intelligence artificielle : génération narrative, personnalisation et illustrations uniques." />
-        <meta name="keywords" content="IA et créativité, créer des histoires uniques pour enfants, comment l'intelligence artificielle révolutionne les livres pour enfants, créer un livre magique avec intelligence artificielle, personnalisation et imagination chez l'enfant, technologie conte personnalisé" />
-      </Helmet>
-      <Header />
+      />      <Header />
 
       <HeroSection>
         <HeroDecoBlur $size={350} $top="-10%" $left="-5%" $color={theme.colors.accent.coral} $opacity={0.08} />

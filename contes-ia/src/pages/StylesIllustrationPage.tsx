@@ -43,13 +43,7 @@ const StylesIllustrationPage: React.FC = () => {
       <SEOHead
         title="Styles d'Illustration Livre Personnalisé | Conte Illustré sur Mesure"
         description="Choisissez le style parfait pour votre livre illustré personnalisé : aquarelle douce, cartoon coloré, réalisme fantastique, vintage. Conte illustré sur mesure pour votre enfant."
-      />
-      <Helmet>
-        <title>Styles d'Illustration Livre Personnalisé | Conte Illustré sur Mesure</title>
-        <meta name="description" content="Choisissez le style parfait pour votre livre illustré personnalisé : aquarelle douce, cartoon coloré, réalisme fantastique, vintage. Conte illustré sur mesure pour votre enfant." />
-        <meta name="keywords" content="livre illustré personnalisé, conte illustré sur mesure, styles illustration livre enfant, livre personnalisé aquarelle, conte cartoon personnalisé, illustration sur mesure enfant, livre artistique personnalisé" />
-      </Helmet>
-      <Header />
+      />      <Header />
 
       <HeroSection>
         <HeroDecoBlur $size={350} $top="-10%" $left="-5%" $color={theme.colors.accent.coral} $opacity={0.08} />

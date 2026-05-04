@@ -119,13 +119,7 @@ const ContesMultilinguesPage: React.FC = () => {
       <SEOHead
         title="Livre Personnalisé Multilingue pour Enfant | Apprentissage des Langues"
         description="Créez un livre personnalisé multilingue pour enfant : français, anglais, espagnol, italien, allemand, arabe. Apprentissage naturel des langues avec des histoires sur mesure."
-      />
-      <Helmet>
-        <title>Livre Personnalisé Multilingue pour Enfant | Apprentissage des Langues</title>
-        <meta name="description" content="Créez un livre personnalisé multilingue pour enfant : français, anglais, espagnol, italien, allemand, arabe. Apprentissage naturel des langues avec des histoires sur mesure." />
-        <meta name="keywords" content="livre personnalisé multilingue pour enfant, conte personnalisé anglais, livre personnalisé espagnol, apprentissage langues enfant, conte bilingue personnalisé, livre éducatif multilingue, histoire personnalisée langues étrangères" />
-      </Helmet>
-      <Header />
+      />      <Header />
 
       <HeroSection>
         <HeroDecoBlur $size={350} $top="-10%" $left="-5%" $color={theme.colors.accent.coral} $opacity={0.08} />
