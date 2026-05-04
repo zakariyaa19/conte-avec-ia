@@ -15,7 +15,7 @@ import { SmartHint } from './SmartHint';
 import {
   PageWrap, Header, Logo, Body, BodyInner, Footer, FooterInner,
   HeroBadge, Subtitle, TrustRow, TrustItem,
-  CTA, CTASpinner, AuthInput, C,
+  CTA, CTASpinner, AuthInput, C, Composer,
 } from './ChatStoryStyles';
 
 interface Props {
@@ -34,8 +34,8 @@ const STORY_LIMIT = 600;
 const PLACEHOLDERS = [
   "Une petite fille de 10 ans qui adore le foot, dans l'univers d'Harry Potter...",
   "Mon fils Adam, 5 ans, courageux face au monstre sous son lit, avec son chien Moustache...",
-  "Luna, 7 ans, princesse en quete de son dragon perdu, sur le theme de l'amitie...",
-  "Ines et son chat Biscuit explorent un chateau magique, style aquarelle...",
+  "Luna, 7 ans, princesse en quête de son dragon perdu, sur le thème de l'amitié...",
+  "Inès et son chat Biscuit explorent un château magique, style aquarelle...",
 ];
 
 export const ChatStoryCreator: React.FC<Props> = ({
@@ -145,8 +145,8 @@ export const ChatStoryCreator: React.FC<Props> = ({
 
   // Photo
   const pickPhoto = useCallback((file: File) => {
-    if (file.size > 15 * 1024 * 1024) { alert('Photo trop lourde (max 15MB)'); return; }
-    if (!file.type.startsWith('image/')) { alert('Format de fichier non supporte'); return; }
+    if (file.size > 15 * 1024 * 1024) { alert('Photo trop lourde (max 15 Mo)'); return; }
+    if (!file.type.startsWith('image/')) { alert('Format de fichier non supporté'); return; }
     const r = new FileReader();
     r.onerror = () => { alert('Erreur lors de la lecture de la photo'); };
     r.onload = e => { setPhoto(file); setPhotoPreview(e.target?.result as string); };
@@ -240,7 +240,7 @@ export const ChatStoryCreator: React.FC<Props> = ({
           <BodyInner>
             {/* Hero compact + H1 dynamique */}
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, marginTop: 8 }}>
-              <HeroBadge>+500 histoires creees &middot; &#11088;&#11088;&#11088;&#11088;&#11088;</HeroBadge>
+              <HeroBadge>+500 histoires créées &middot; &#11088;&#11088;&#11088;&#11088;&#11088;</HeroBadge>
               <h1 style={{
                 fontFamily: "'Baloo 2', 'Comic Neue', cursive",
                 fontSize: 'clamp(1.5rem, 5.5vw, 2.1rem)',
@@ -254,44 +254,21 @@ export const ChatStoryCreator: React.FC<Props> = ({
                 {detected.name ? (
                   <>L'histoire de <span style={{ color: C.coral }}>{detected.name}</span><br />en 5 minutes</>
                 ) : (
-                  <>L'histoire personnalisee<br />de votre enfant <span style={{ color: C.coral }}>en 5 min</span></>
+                  <>L'histoire personnalisée<br />de votre enfant <span style={{ color: C.coral }}>en 5 min</span></>
                 )}
               </h1>
-              <Subtitle style={{ marginTop: 2 }}>Decrivez ci-dessous, l'IA s'occupe du reste.</Subtitle>
+              <Subtitle style={{ marginTop: 2 }}>Décrivez ci-dessous, l'IA s'occupe du reste.</Subtitle>
             </div>
 
             {/* ── Composer unique : textarea + paperclip integre ── */}
-            <div style={{
-              position: 'relative',
-              background: C.bgCard,
-              border: `1.5px solid ${C.borderInput}`,
-              borderRadius: 18,
-              padding: '14px 14px 8px',
-              boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 6px 18px rgba(0,0,0,0.04)',
-              transition: 'border-color 0.18s ease, box-shadow 0.18s ease',
-            }}>
+            <Composer>
               <textarea
                 ref={textareaRef}
                 value={story}
                 onChange={e => { if (e.target.value.length <= STORY_LIMIT) setStory(e.target.value); }}
                 placeholder={PLACEHOLDERS[phIdx]}
                 autoFocus
-                aria-label="Decrivez l'histoire que vous voulez creer"
-                style={{
-                  width: '100%',
-                  minHeight: 110,
-                  maxHeight: 280,
-                  border: 'none',
-                  outline: 'none',
-                  resize: 'none',
-                  background: 'transparent',
-                  fontFamily: "'Poppins', system-ui, sans-serif",
-                  fontSize: 15,
-                  lineHeight: 1.5,
-                  color: C.text,
-                  padding: 0,
-                  letterSpacing: '0.005em',
-                }}
+                aria-label="Décrivez l'histoire que vous voulez créer"
               />
               {/* Photo chip si attachee */}
               {photoPreview && (
@@ -342,15 +319,15 @@ export const ChatStoryCreator: React.FC<Props> = ({
                   </span>
                 )}
               </div>
-            </div>
+            </Composer>
 
-            {/* SmartHint — suggestion discrete sous la textarea */}
+            {/* SmartHint — suggestion discrète sous la textarea */}
             <SmartHint text={hintText} />
 
             {/* Trust */}
             <TrustRow>
               <TrustItem>&#10003; 1er chapitre gratuit</TrustItem>
-              <TrustItem>&#10003; Pret en 5 minutes</TrustItem>
+              <TrustItem>&#10003; Prêt en 5 minutes</TrustItem>
               <TrustItem>&#10003; Sans carte bancaire</TrustItem>
             </TrustRow>
           </BodyInner>
@@ -359,7 +336,7 @@ export const ChatStoryCreator: React.FC<Props> = ({
         <Footer>
           <FooterInner>
             <CTA $active={canGo} disabled={!canGo || isBusy} onClick={gotoPreview} aria-busy={isBusy}>
-              {canGo ? `Creer le livre de ${heroName} — Gratuit` : 'Decrivez votre histoire ci-dessus'}
+              {canGo ? `Créer le livre de ${heroName} — Gratuit` : 'Décrivez votre histoire ci-dessus'}
             </CTA>
             <CompletionRing percentage={percentage} color={ringColor} />
           </FooterInner>
@@ -372,8 +349,8 @@ export const ChatStoryCreator: React.FC<Props> = ({
   const coverReady = !!coverPreview.rawBase64;
   const coverUrl = coverPreview.coverImageUrl;
   const coverError = coverPreview.error;
-  // Le client peut soumettre des qu'il est identifie. La cover est un bonus visuel —
-  // si elle n'est pas prete, le backend la regenerera lors de la creation du livre.
+  // Le client peut soumettre des qu'il est identifié. La cover est un bonus visuel —
+  // si elle n'est pas prête, le backend la régénère lors de la création du livre.
   const payReady = isAuthenticated || validEmail;
 
   return (
@@ -391,7 +368,7 @@ export const ChatStoryCreator: React.FC<Props> = ({
         }}>
           {/* Title */}
           <p style={{ fontFamily: "'Baloo 2', cursive", fontSize: '1.05rem', fontWeight: 700, textAlign: 'center', margin: 0 }}>
-            {coverError ? `Preparation du livre de ${heroNameFull}` : coverReady ? `Le livre de ${heroNameFull} est pret !` : `Creation du livre de ${heroNameFull}...`}
+            {coverError ? `Préparation du livre de ${heroNameFull}` : coverReady ? `Le livre de ${heroNameFull} est prêt !` : `Création du livre de ${heroNameFull}...`}
           </p>
 
           {/* Cover — BookCoverPreview avec MagicalLoadingScene (livre anime, sparkles, messages rotatifs).
@@ -404,11 +381,11 @@ export const ChatStoryCreator: React.FC<Props> = ({
             {coverError ? (
               <div style={{ textAlign: 'center', padding: 20, aspectRatio: '2/3', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-card)', borderRadius: 12 }}>
                 <p style={{ fontSize: '3rem', margin: '0 0 8px' }}>📖</p>
-                <p style={{ fontSize: '0.8rem', color: 'var(--text-light)', margin: '0 0 12px' }}>La couverture n'a pas pu etre generee</p>
+                <p style={{ fontSize: '0.8rem', color: 'var(--text-light)', margin: '0 0 12px' }}>La couverture n'a pas pu être générée</p>
                 <button onClick={() => coverPreview.generate()} style={{
                   padding: '8px 16px', borderRadius: 8, border: `1.5px solid ${C.coral}`, background: 'transparent',
                   color: C.coral, fontWeight: 600, fontSize: '0.8rem', cursor: 'pointer', fontFamily: 'inherit',
-                }}>Reessayer</button>
+                }}>Réessayer</button>
               </div>
             ) : (
               <BookCoverPreview
@@ -432,7 +409,7 @@ export const ChatStoryCreator: React.FC<Props> = ({
                   <GoogleLogin onSuccess={handleGoogle} onError={() => setGoogleError(true)} text="continue_with" shape="rectangular" size="large" />
                 </div>
                 {googleError && (
-                  <p style={{ fontSize: 11, color: C.danger, margin: '6px 0 0', textAlign: 'center' }}>Connexion Google echouee. Utilisez votre email.</p>
+                  <p style={{ fontSize: 11, color: C.danger, margin: '6px 0 0', textAlign: 'center' }}>Connexion Google échouée. Utilisez votre email.</p>
                 )}
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '10px 0 6px' }}>
                   <div style={{ flex: 1, height: 1, background: 'var(--border-color)' }} />
@@ -444,7 +421,7 @@ export const ChatStoryCreator: React.FC<Props> = ({
 
             {isAuthenticated && currentUser && (
               <div style={{ background: 'rgba(76,175,80,0.08)', border: '1px solid rgba(76,175,80,0.2)', borderRadius: 10, padding: '10px 14px', marginBottom: 10, textAlign: 'center', fontSize: 13, fontWeight: 600, color: '#2E7D32' }}>
-                Connecte : <strong>{currentUser.email}</strong>
+                Connecté : <strong>{currentUser.email}</strong>
               </div>
             )}
 
@@ -459,10 +436,10 @@ export const ChatStoryCreator: React.FC<Props> = ({
 
             <CTA $active={!!payReady && !isBusy} disabled={!payReady || isBusy} onClick={handlePreviewSubmit}
               style={{ width: '100%' }} aria-busy={isBusy}>
-              {isBusy ? <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}><CTASpinner /> Creation en cours...</span> : `Lire le livre de ${heroName} gratuitement →`}
+              {isBusy ? <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}><CTASpinner /> Création en cours...</span> : `Lire le livre de ${heroName} gratuitement →`}
             </CTA>
 
-            <p style={{ fontSize: 11, color: 'var(--text-light)', marginTop: 10, textAlign: 'center' }}>&#9989; Gratuit &middot; &#9889; Pret en 5 min</p>
+            <p style={{ fontSize: 11, color: 'var(--text-light)', marginTop: 10, textAlign: 'center' }}>&#9989; Gratuit &middot; &#9889; Prêt en 5 min</p>
           </div>
         </div>
       </Body>

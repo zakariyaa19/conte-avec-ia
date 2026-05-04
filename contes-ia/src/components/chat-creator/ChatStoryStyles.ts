@@ -113,6 +113,47 @@ export const Logo = styled.div`
   &:hover { opacity: 0.8; }
 `;
 
+/* Composer = textarea + paperclip wrapper. Border tres subtile coral, focus-within
+   donne un anneau plus marque sans agresser. Plus aucune couleur beige. */
+export const Composer = styled.div`
+  position: relative;
+  background: ${C.bgCard};
+  border: 1.5px solid rgba(255, 153, 153, 0.18);
+  border-radius: 18px;
+  padding: 14px 14px 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 6px 18px rgba(0, 0, 0, 0.04);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+
+  &:focus-within {
+    border-color: ${C.coral};
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.08),
+      0 6px 22px rgba(255, 153, 153, 0.12),
+      0 0 0 3px rgba(255, 153, 153, 0.12);
+  }
+
+  textarea {
+    width: 100%;
+    min-height: 110px;
+    max-height: 280px;
+    border: none;
+    outline: none;
+    resize: none;
+    background: transparent;
+    font-family: 'Poppins', system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    color: ${C.text};
+    padding: 0;
+    letter-spacing: 0.005em;
+
+    &::placeholder {
+      color: ${C.textLight};
+      opacity: 0.55;
+    }
+  }
+`;
+
 export const Body = styled.main`
   flex: 1;
   overflow-y: auto;
