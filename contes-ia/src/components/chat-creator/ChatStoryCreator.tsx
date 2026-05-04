@@ -75,9 +75,13 @@ export const ChatStoryCreator: React.FC<Props> = ({
   // ── Detection en live (sans defaults) — pilote scoring + cover preview ──
   const detected = useStoryDetection(story, !!photo);
   const percentage = computeDetectionScore(detected);
+  // Seuil 70% = "pret a lancer" : on override le hint et on signale visuellement
+  const isReady = percentage >= 70;
   // SmartHint = vraie analyse IA du brief (debounced, cache, fallback local)
-  const { hint: hintText, thinking: hintThinking } = useSmartHint(story, detected);
-  const ringColor = percentage >= 70 ? '#22C55E' : percentage >= 35 ? '#F59E0B' : '#FF9999';
+  const { hint: aiHint, thinking: hintThinking } = useSmartHint(story, detected);
+  // Au-dessus de 70%, on remplace le hint par une invitation a lancer la creation
+  const hintText = isReady ? "Tout est prêt — tu peux lancer la création !" : aiHint;
+  const ringColor = isReady ? '#22C55E' : percentage >= 35 ? '#F59E0B' : '#FF9999';
 
   // ── mergedData : detection + defaults pour la creation backend ──
   const mergedData = useMemo<Partial<StoryFormData>>(() => {
@@ -341,8 +345,18 @@ export const ChatStoryCreator: React.FC<Props> = ({
 
         <Footer>
           <FooterInner>
-            <CTA $active={canGo} disabled={!canGo || isBusy} onClick={gotoPreview} aria-busy={isBusy}>
-              {canGo ? `Créer le livre de ${heroName} — Gratuit` : 'Décrivez votre histoire ci-dessus'}
+            <CTA
+              $active={canGo}
+              disabled={!canGo || isBusy}
+              onClick={gotoPreview}
+              aria-busy={isBusy}
+              style={isReady ? { boxShadow: '0 0 0 3px rgba(34,197,94,0.18), 0 8px 28px rgba(34,197,94,0.3)' } : undefined}
+            >
+              {!canGo
+                ? 'Décrivez votre histoire ci-dessus'
+                : isReady
+                  ? `✨ Prêt — créer le livre de ${heroName}`
+                  : `Créer le livre de ${heroName} — Gratuit`}
             </CTA>
             <CompletionRing percentage={percentage} color={ringColor} />
           </FooterInner>

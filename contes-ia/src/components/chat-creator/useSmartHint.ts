@@ -49,8 +49,8 @@ export function useSmartHint(description: string, detected: DetectedEntities): S
       return;
     }
 
-    // Cache hit immediat → pas de spinner
-    const cacheKey = desc.toLowerCase().replace(/\s+/g, ' ').slice(0, 400);
+    // Cle de cache inclut hasPhoto (le hint doit changer quand la photo est ajoutee)
+    const cacheKey = desc.toLowerCase().replace(/\s+/g, ' ').slice(0, 400) + '|p=' + (detected.hasPhoto ? '1' : '0');
     const cached = cacheRef.current.get(cacheKey);
     if (cached) {
       setHint(cached);
@@ -68,7 +68,7 @@ export function useSmartHint(description: string, detected: DetectedEntities): S
       abortRef.current = ctrl;
 
       try {
-        const res = await ApiService.generateSmartHint(desc, ctrl.signal);
+        const res = await ApiService.generateSmartHint(desc, detected.hasPhoto, ctrl.signal);
         if (ctrl.signal.aborted) return;
         if (res.success && res.data?.hint) {
           cacheRef.current.set(cacheKey, res.data.hint);
