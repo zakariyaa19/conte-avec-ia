@@ -75,12 +75,12 @@ export const ChatStoryCreator: React.FC<Props> = ({
   // ── Detection en live (sans defaults) — pilote scoring + cover preview ──
   const detected = useStoryDetection(story, !!photo);
   const percentage = computeDetectionScore(detected);
-  // Seuil 70% = "pret a lancer" : on override le hint et on signale visuellement
+  // Seuil 70% = "pret a lancer" : signal visuel CTA (couleur + texte). On NE PAS
+  // override le hint pour ne pas court-circuiter les suggestions importantes
+  // restantes de GPT (notamment "ajoute la photo de l'enfant").
   const isReady = percentage >= 70;
   // SmartHint = vraie analyse IA du brief (debounced, cache, fallback local)
-  const { hint: aiHint, thinking: hintThinking } = useSmartHint(story, detected);
-  // Au-dessus de 70%, on remplace le hint par une invitation a lancer la creation
-  const hintText = isReady ? "Tout est prêt — tu peux lancer la création !" : aiHint;
+  const { hint: hintText, thinking: hintThinking } = useSmartHint(story, detected);
   const ringColor = isReady ? '#22C55E' : percentage >= 35 ? '#F59E0B' : '#FF9999';
 
   // ── mergedData : detection + defaults pour la creation backend ──
