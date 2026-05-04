@@ -404,13 +404,7 @@ const AProposPage: React.FC = () => {
       <SEOHead
         title="À Propos de Contedia — Notre Mission, Notre Équipe | Contedia"
         description="Découvrez l'histoire de Contedia : notre mission, notre technologie IA, notre engagement pour des histoires personnalisées de qualité pour les enfants."
-      />
-      <Helmet>
-        <title>À Propos de Contedia — Notre Mission, Notre Équipe | Contedia</title>
-        <meta name="description" content="Découvrez l'histoire de Contedia : notre mission, notre technologie IA, notre engagement pour des histoires personnalisées de qualité pour les enfants." />
-        <link rel="canonical" href="https://contedia.fr/a-propos" />
-      </Helmet>
-      <SchemaOrganization />
+      />      <SchemaOrganization />
       <SchemaBreadcrumb items={[
         { name: 'Accueil', url: 'https://contedia.fr/' },
         { name: 'À Propos', url: 'https://contedia.fr/a-propos' },

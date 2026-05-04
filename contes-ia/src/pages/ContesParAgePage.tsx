@@ -42,13 +42,7 @@ const ContesParAgePage: React.FC = () => {
       <SEOHead
         title="Contes Personnalisés par Âge | Livre pour Bébé et Enfant Adapté"
         description="Choisissez un conte adapté à l'âge de votre enfant : livre pour bébé personnalisé (2-4 ans), histoires magiques (4-6 ans), aventures (6-8 ans). Développement optimal avec notre IA."
-      />
-      <Helmet>
-        <title>Contes Personnalisés par Âge | Livre pour Bébé et Enfant Adapté</title>
-        <meta name="description" content="Choisissez un conte adapté à l'âge de votre enfant : livre pour bébé personnalisé (2-4 ans), histoires magiques (4-6 ans), aventures (6-8 ans). Développement optimal avec notre IA." />
-        <meta name="keywords" content="livre pour bébé personnalisé, comment choisir un conte adapté à l'âge de son enfant, conte personnalisé 2 ans, livre personnalisé 3 ans, histoire personnalisée 5 ans, conte éducatif personnalisé, livre adapté âge enfant" />
-      </Helmet>
-      <Header />
+      />      <Header />
 
       <HeroSection>
         <HeroDecoBlur $size={350} $top="-10%" $left="-5%" $color={theme.colors.accent.coral} $opacity={0.08} />

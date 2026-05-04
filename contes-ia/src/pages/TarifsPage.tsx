@@ -492,13 +492,7 @@ const TarifsPage: React.FC = () => {
       <SEOHead
         title="Tarifs Contedia — Livre Personnalisé Enfant dès 0€ | Contedia"
         description="Combien coûte un livre personnalisé Contedia ? Premier livre gratuit, livre complet à 2,99€, abonnement Club à 1,99€/mois. Transparent, sans engagement."
-      />
-      <Helmet>
-        <title>Tarifs Contedia — Livre Personnalisé Enfant dès 0€ | Contedia</title>
-        <meta name="description" content="Combien coûte un livre personnalisé Contedia ? Premier livre gratuit, livre complet à 2,99€, abonnement Club à 1,99€/mois. Transparent, sans engagement." />
-        <link rel="canonical" href="https://contedia.fr/tarifs" />
-      </Helmet>
-      <SchemaProduct
+      />      <SchemaProduct
         name="Livre Personnalisé Gratuit — Contedia"
         description="Premier livre personnalisé gratuit : 3 chapitres illustrés, prénom de l'enfant, PDF téléchargeable."
         price="0"

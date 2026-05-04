@@ -43,13 +43,7 @@ const ThemesContesPage: React.FC = () => {
       <SEOHead
         title="Thèmes de Contes Personnalisés pour Enfants | Livre sur Mesure avec IA"
         description="Choisissez parmi nos thèmes de contes personnalisés : aventure, magie, animaux, héros, amitié. Créez un livre enfant sur mesure adapté aux goûts de votre petit avec notre IA."
-      />
-      <Helmet>
-        <title>Thèmes de Contes Personnalisés pour Enfants | Livre sur Mesure avec IA</title>
-        <meta name="description" content="Choisissez parmi nos thèmes de contes personnalisés : aventure, magie, animaux, héros, amitié. Créez un livre enfant sur mesure adapté aux goûts de votre petit avec notre IA." />
-        <meta name="keywords" content="thèmes contes personnalisés, livre enfant sur mesure, conte magique personnalisé, histoire personnalisée aventure, conte personnalisé animaux, livre personnalisé héros, thème conte enfant, choix thème livre personnalisé" />
-      </Helmet>
-      <Header />
+      />      <Header />
 
       <HeroSection>
         <HeroDecoBlur $size={350} $top="-10%" $left="-5%" $color={theme.colors.accent.coral} $opacity={0.08} />

@@ -476,14 +476,7 @@ const PrenomsHubPage: React.FC = () => {
       <SEOHead
         title="Livre Personnalisé par Prénom : Emma, Gabriel, Louise... | Contedia"
         description="Découvrez nos livres personnalisés par prénom. 50+ histoires uniques où votre enfant est le héros. Emma, Gabriel, Louise, Raphaël... Créez le livre de votre enfant gratuitement."
-      />
-      <Helmet>
-        <title>Livre Personnalisé par Prénom : Emma, Gabriel, Louise... | Contedia</title>
-        <meta name="description" content="Découvrez nos livres personnalisés par prénom. 50+ histoires uniques où votre enfant est le héros. Emma, Gabriel, Louise, Raphaël... Créez le livre de votre enfant gratuitement." />
-        <meta name="keywords" content="livre personnalisé prénom, histoire personnalisée enfant, livre prénom enfant, conte personnalisé prénom, Emma livre personnalisé, Gabriel histoire personnalisée, livre prénom bébé, cadeau prénom enfant" />
-        <link rel="canonical" href="https://contedia.fr/prenoms" />
-      </Helmet>
-      <SchemaFAQ questions={FAQ_QUESTIONS} />
+      />      <SchemaFAQ questions={FAQ_QUESTIONS} />
       <SchemaBreadcrumb items={[
         { name: 'Accueil', url: 'https://contedia.fr/' },
         { name: 'Prénoms', url: 'https://contedia.fr/prenoms' },
