@@ -94,11 +94,13 @@
     <!-- Title fourni par react-helmet-async via SEOHead component -->
     <title>Contedia</title>
 
-    <!-- Anti-FOUC : background immediat pour eviter un flash blanc avant chargement de la CSS bundled. -->
+    <!-- Anti-FOUC : couleurs ALIGNEES sur GlobalStyles.ts pour eviter tout flash entre
+         le rendu initial et l'application de la CSS bundled. Applique aussi au body
+         pour ne pas dependre de l'inheritance. -->
     <style>
       html { background: #FEFCF8; }
-      html[data-theme="dark"] { background: #0d0a1f; }
-      body { margin: 0; background: inherit; min-height: 100vh; -webkit-text-size-adjust: 100%; }
+      body { margin: 0; background: #FEFCF8; min-height: 100vh; -webkit-text-size-adjust: 100%; color: #2C2C2C; }
+      html[data-theme="dark"], html[data-theme="dark"] body { background: #141028; color: #F5F0E8; }
       #root { min-height: 100vh; }
     </style>
   </head>

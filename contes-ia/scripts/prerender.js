@@ -243,7 +243,13 @@ async function prerenderPage(browser, route) {
       }
     });
 
-    const html = await page.content();
+    let html = await page.content();
+
+    // Le prerender baked le data-theme du moment dans <html>. Si on le laisse,
+    // le user voit la couleur du theme prerendu une fraction de seconde avant
+    // que le script du head lise localStorage et le change → flash.
+    // On retire l'attribut pour que le script soit seule source de verite.
+    html = html.replace(/(<html\b[^>]*?)\s+data-theme="[^"]*"/i, '$1');
 
     // Creer le repertoire et sauver le fichier
     const outputPath = route === '/'
