@@ -6,15 +6,16 @@ import { useAuth } from '../../contexts/AuthContext';
 import { safeLocalStorage } from '../../utils/safeStorage';
 import { trackFunnelStep } from '../../utils/funnelTracker';
 import { useCoverPreview, isPhase1Complete } from '../../hooks/useCoverPreview';
-import { useCompletionScore } from './useCompletionScore';
 import { CompletionRing } from './CompletionRing';
 import { BookCoverPreview } from '../ui/BookCoverPreview';
+import { useStoryDetection, computeDetectionScore } from './useStoryDetection';
+import { useSmartHint } from './useSmartHint';
+import { SmartHint } from './SmartHint';
 
 import {
   PageWrap, Header, Logo, Body, BodyInner, Footer, FooterInner,
-  HeroBlock, HeroBadge, Title, Subtitle, TrustRow, TrustItem,
-  FieldWrap, FieldHeader, FieldLabel, CharCount, FieldInput, FieldTextarea, FieldHint,
-  PhotoBtn, CTA, CTASpinner, AuthInput, C,
+  HeroBadge, Subtitle, TrustRow, TrustItem,
+  CTA, CTASpinner, AuthInput, C,
 } from './ChatStoryStyles';
 
 interface Props {
@@ -28,105 +29,78 @@ interface Props {
   clubCredit: any;
 }
 
-const LIMITS = { name: 30, story: 500, secondary: 200 };
+const STORY_LIMIT = 600;
+
+const PLACEHOLDERS = [
+  "Une petite fille de 10 ans qui adore le foot, dans l'univers d'Harry Potter...",
+  "Mon fils Adam, 5 ans, courageux face au monstre sous son lit, avec son chien Moustache...",
+  "Luna, 7 ans, princesse en quete de son dragon perdu, sur le theme de l'amitie...",
+  "Ines et son chat Biscuit explorent un chateau magique, style aquarelle...",
+];
 
 export const ChatStoryCreator: React.FC<Props> = ({
   formData, onUpdate, onSubmit, isSubmitting,
   isAuthenticated, isClub, currentUser,
 }) => {
-  // ── Fields ─────────────────────────────────────────────
-  const [name, setName] = useState('');
+  // ── Single field : description complete (prenom + age + theme + tout) ────
   const [story, setStory] = useState('');
-  const [secondary, setSecondary] = useState('');
   const [photo, setPhoto] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [email, setEmail] = useState(formData.userEmail || '');
   const [step, setStep] = useState<'form' | 'preview'>('form');
   const [googleError, setGoogleError] = useState(false);
-  const [submitting, setSubmitting] = useState(false); // local guard anti double-click
+  const [submitting, setSubmitting] = useState(false);
+  const [phIdx, setPhIdx] = useState(0);
   const { setTokenAndUser } = useAuth();
   const googleAutoRef = useRef(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const previewTopRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // ── Build StoryFormData from fields ────────────────────
+  // Placeholder rotatif (4.5s) — cesse de tourner des que l'utilisateur ecrit
+  useEffect(() => {
+    if (story.length > 0) return;
+    const id = setInterval(() => setPhIdx(i => (i + 1) % PLACEHOLDERS.length), 4500);
+    return () => clearInterval(id);
+  }, [story.length]);
+
+  // Auto-grow de la textarea (jusqu'a 280px puis scroll interne)
+  useEffect(() => {
+    const el = textareaRef.current;
+    if (!el) return;
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 280) + 'px';
+  }, [story]);
+
+  // ── Detection en live (sans defaults) — pilote scoring + SmartHint ──
+  const detected = useStoryDetection(story, !!photo);
+  const percentage = computeDetectionScore(detected);
+  const hintText = useSmartHint(detected);
+  const ringColor = percentage >= 70 ? '#22C55E' : percentage >= 35 ? '#F59E0B' : '#FF9999';
+
+  // ── mergedData : detection + defaults pour la creation backend ──
   const mergedData = useMemo<Partial<StoryFormData>>(() => {
-    const storyNorm = story.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-
-    // Parse age
-    const ageMatch = story.match(/(\d{1,2})\s*ans?\b/i);
-    const age = ageMatch ? ageMatch[1] : '';
-    const ageNum = parseInt(age, 10);
-    const ageRange = !age ? '' : ageNum <= 2 ? '0-2' : ageNum <= 5 ? '3-5' : ageNum <= 9 ? '6-9' : '10+';
-
-    // Parse gender
-    const isGirl = /\b(?:fille|fillette|petite|princesse|elle)\b/i.test(story);
-    const isBoy = /\b(?:gar[cç]on|fils|petit|prince(?!sse)|il\s+(?:aime|adore|veut))\b/i.test(story);
-    const gender: 'boy' | 'girl' | undefined = isGirl ? 'girl' : isBoy ? 'boy' : undefined;
-
-    // Parse theme
-    let theme = '';
-    if (/magie|magique|fee|sorcier|dragon|licorne|chateau|enchante|harry potter|univers/.test(storyNorm)) theme = 'fairy-tales';
-    else if (/educatif|ecole|apprendre|science/.test(storyNorm)) theme = 'educational';
-    else if (/aventure|voyage|pirate|espace|tresor|jungle|mystere|detective/.test(storyNorm)) theme = 'stories';
-    else if (/famille|frere|soeur|papa|maman/.test(storyNorm)) theme = 'family';
-    else if (/anniversaire|noel|fete|paques/.test(storyNorm)) theme = 'celebrations';
-    else if (story.length > 20) theme = 'stories';
-
-    // Parse occasion (specificSubject)
-    let occasion = '';
-    if (/anniversaire/.test(storyNorm)) occasion = 'birthday';
-    else if (/noel|christmas/.test(storyNorm)) occasion = 'christmas';
-    else if (/paques/.test(storyNorm)) occasion = 'easter';
-    else if (/aid|eid|ramadan/.test(storyNorm)) occasion = 'eid';
-    else if (/fete des mere/.test(storyNorm)) occasion = 'mothers-day';
-    else if (/fete des pere/.test(storyNorm)) occasion = 'fathers-day';
-
-    // Parse moral (centralMessage)
-    let moral = '';
-    if (/courage|courageux|brave|peur|surmonter/.test(storyNorm)) moral = 'courage';
-    else if (/amitie|ami|copain|camarade/.test(storyNorm)) moral = 'friendship';
-    else if (/amour|tendresse|affection/.test(storyNorm)) moral = 'love';
-    else if (/partage|genereux|generosite/.test(storyNorm)) moral = 'sharing';
-    else if (/respect|tolerance|politesse/.test(storyNorm)) moral = 'respect';
-    else if (/honnetete|verite|sincere/.test(storyNorm)) moral = 'honesty';
-    else if (/perseverance|determination|abandonner/.test(storyNorm)) moral = 'perseverance';
-
-    // Parse illustration style
-    let style = formData.illustrationStyle || '3d-animation';
-    if (/aquarelle|watercolor|peinture/.test(storyNorm)) style = 'watercolor';
-    else if (/manga|anime|japonais|dessin anime/.test(storyNorm)) style = 'japanese-manga';
-    else if (/3d|pixar|disney/.test(storyNorm)) style = '3d-animation';
-    else if (/kawaii|mignon|cute/.test(storyNorm)) style = 'kawaii';
-    else if (/papier decoupe|collage/.test(storyNorm)) style = 'paper-cut';
-    else if (/bloc|minecraft|lego/.test(storyNorm)) style = 'block-world';
-
-    // Parse hobbies
-    const hobbyMatch = storyNorm.match(/(?:aime|adore|passion|kiffe|fan de|jouer au|faire du|faire de la)\s+(?:le |la |les |l'|du |de la |au |aux )?(.{3,30}?)(?:\.|,|$|\s+(?:et\s|avec|pour|dans|qui|elle|il|je))/);
-    const hobbies = hobbyMatch?.[1]?.trim() || '';
-
-    // Custom theme
-    const customMatch = storyNorm.match(/(?:dans\s+l'?\s*)?univers?\s+(?:de\s+)?(.{3,40}?)(?:\.|,|$|\s+(?:et|avec|pour|elle|il|je|qui))/);
-    const customTheme = customMatch?.[1]?.trim() || '';
-
-    // Secondary characters
-    const secondaryChars = secondary.trim() ? [{
-      kind: /\b(?:chat|chien|lapin|hamster|oiseau|dragon|licorne|renard|loup|ours|tortue|poisson|cheval|poney)\b/i.test(secondary) ? 'animal' as const : 'human' as const,
-      name: secondary.match(/(?:s'appelle|appele|nomme|nom(?:me)?)\s+([a-zà-ÿ]+)/i)?.[1] || secondary.split(/\s+/)[0] || '',
-      ageOrType: secondary.match(/\b(chat|chien|lapin|hamster|oiseau|dragon|licorne|ami|amie|frere|soeur|cousin|voisin|cheval|poney)\b/i)?.[1] || '',
+    let ageRange = '6-9';
+    if (detected.age) {
+      const n = parseInt(detected.age, 10);
+      ageRange = n <= 2 ? '0-2' : n <= 5 ? '3-5' : n <= 9 ? '6-9' : '10+';
+    }
+    const secondaryChars = detected.secondary ? [{
+      kind: detected.secondary.kind,
+      name: '',
+      ageOrType: detected.secondary.label,
     }] : [];
-
     return {
-      protagonistName: name.trim(),
-      protagonistAge: age || '7',
-      protagonistGender: gender || 'girl',
-      ageRange: ageRange || '6-9',
-      generalTheme: theme || 'stories',
-      customTheme,
-      specificSubject: occasion || theme || 'stories',
-      centralMessage: moral || 'courage',
-      illustrationStyle: style,
-      hobbies,
+      protagonistName: detected.name || '',
+      protagonistAge: detected.age || '7',
+      protagonistGender: detected.gender || 'girl',
+      ageRange,
+      generalTheme: detected.theme || 'stories',
+      customTheme: '',
+      specificSubject: detected.occasion || detected.theme || 'stories',
+      centralMessage: detected.moral || 'courage',
+      illustrationStyle: detected.style || formData.illustrationStyle || '3d-animation',
+      hobbies: detected.hobby || '',
       secondaryCharacters: secondaryChars.length ? secondaryChars : undefined,
       language: 'french',
       productType: 'ebook',
@@ -134,11 +108,10 @@ export const ChatStoryCreator: React.FC<Props> = ({
       photo: photo || undefined,
       specialEvents: story.trim(),
     } as Partial<StoryFormData>;
-  }, [name, story, secondary, photo, formData.illustrationStyle]);
+  }, [detected, story, photo, formData.illustrationStyle]);
 
-  const { percentage, color } = useCompletionScore(mergedData, !!photo);
-  const heroName = name.trim().length > 15 ? name.trim().substring(0, 15) + '...' : (name.trim() || 'votre enfant');
-  const heroNameFull = name.trim() || 'votre enfant';
+  const heroName = detected.name && detected.name.length > 15 ? detected.name.substring(0, 15) + '...' : (detected.name || 'votre enfant');
+  const heroNameFull = detected.name || 'votre enfant';
 
   // Cover preview
   const coverPreview = useCoverPreview(mergedData);
@@ -180,8 +153,8 @@ export const ChatStoryCreator: React.FC<Props> = ({
     r.readAsDataURL(file);
   }, []);
 
-  // canGo = prenom + description suffisent
-  const canGo = name.trim().length >= 2 && story.trim().length >= 10;
+  // canGo = prenom detecte + un peu de description (le reste a des defauts safe)
+  const canGo = !!detected.name && story.trim().length >= 12;
 
   // CTA → preview
   const gotoPreview = useCallback(() => {
@@ -265,73 +238,114 @@ export const ChatStoryCreator: React.FC<Props> = ({
 
         <Body>
           <BodyInner>
-            {/* Hero accueillant */}
-            <HeroBlock>
+            {/* Hero compact + H1 dynamique */}
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, marginTop: 8 }}>
               <HeroBadge>+500 histoires creees &middot; &#11088;&#11088;&#11088;&#11088;&#11088;</HeroBadge>
-              <Title>Creez un <span>livre personnalise</span> pour votre enfant</Title>
-              <Subtitle>Votre enfant devient le heros d'une histoire unique. Illustrations IA, pret en 5 minutes !</Subtitle>
-            </HeroBlock>
+              <h1 style={{
+                fontFamily: "'Baloo 2', 'Comic Neue', cursive",
+                fontSize: 'clamp(1.5rem, 5.5vw, 2.1rem)',
+                lineHeight: 1.15,
+                fontWeight: 800,
+                color: C.text,
+                textAlign: 'center',
+                margin: 0,
+                letterSpacing: '-0.01em',
+              }}>
+                {detected.name ? (
+                  <>L'histoire de <span style={{ color: C.coral }}>{detected.name}</span><br />en 5 minutes</>
+                ) : (
+                  <>L'histoire personnalisee<br />de votre enfant <span style={{ color: C.coral }}>en 5 min</span></>
+                )}
+              </h1>
+              <Subtitle style={{ marginTop: 2 }}>Decrivez ci-dessous, l'IA s'occupe du reste.</Subtitle>
+            </div>
 
-            {/* ── Prenom + Photo ── */}
-            <FieldWrap>
-              <FieldHeader>
-                <FieldLabel>Prenom de l'enfant <span style={{ color: C.coral }}>*</span></FieldLabel>
-                <CharCount $over={name.length > LIMITS.name}>{name.length}/{LIMITS.name}</CharCount>
-              </FieldHeader>
-              <FieldInput
-                value={name}
-                onChange={e => { if (e.target.value.length <= LIMITS.name) setName(e.target.value); }}
-                placeholder="Luna, Adam, Ines..."
-                maxLength={LIMITS.name}
+            {/* ── Composer unique : textarea + paperclip integre ── */}
+            <div style={{
+              position: 'relative',
+              background: C.bgCard,
+              border: `1.5px solid ${C.borderInput}`,
+              borderRadius: 18,
+              padding: '14px 14px 8px',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 6px 18px rgba(0,0,0,0.04)',
+              transition: 'border-color 0.18s ease, box-shadow 0.18s ease',
+            }}>
+              <textarea
+                ref={textareaRef}
+                value={story}
+                onChange={e => { if (e.target.value.length <= STORY_LIMIT) setStory(e.target.value); }}
+                placeholder={PLACEHOLDERS[phIdx]}
                 autoFocus
-                aria-required="true"
+                aria-label="Decrivez l'histoire que vous voulez creer"
+                style={{
+                  width: '100%',
+                  minHeight: 110,
+                  maxHeight: 280,
+                  border: 'none',
+                  outline: 'none',
+                  resize: 'none',
+                  background: 'transparent',
+                  fontFamily: "'Poppins', system-ui, sans-serif",
+                  fontSize: 15,
+                  lineHeight: 1.5,
+                  color: C.text,
+                  padding: 0,
+                  letterSpacing: '0.005em',
+                }}
               />
-              <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp,image/heic"
-                style={{ display: 'none' }} aria-label="Ajouter une photo de l'enfant"
-                onChange={e => { const f = e.target.files?.[0]; if (f) pickPhoto(f); e.target.value = ''; }} />
-              <PhotoBtn $has={!!photo} onClick={() => fileRef.current?.click()} type="button">
-                {photo ? '✅' : '📷'} {photo ? 'Photo ajoutee' : 'Ajouter sa photo pour des illustrations personnalisees'}
-              </PhotoBtn>
+              {/* Photo chip si attachee */}
               {photoPreview && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 12px', background: 'rgba(76,175,80,0.05)', borderRadius: 10 }}>
-                  <img src={photoPreview} alt="Photo de l'enfant" style={{ width: 40, height: 40, borderRadius: 10, objectFit: 'cover' }} />
-                  <span style={{ fontSize: '0.8rem', color: C.success, fontWeight: 500, flex: 1 }}>Les illustrations ressembleront a votre enfant</span>
+                <div style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 8,
+                  background: 'rgba(76,175,80,0.08)',
+                  border: '1px solid rgba(76,175,80,0.2)',
+                  borderRadius: 24,
+                  padding: '4px 10px 4px 4px',
+                  marginTop: 6,
+                  fontSize: 12,
+                  color: C.success,
+                  fontWeight: 500,
+                }}>
+                  <img src={photoPreview} alt="Photo" style={{ width: 24, height: 24, borderRadius: '50%', objectFit: 'cover' }} />
+                  <span>Photo jointe</span>
                   <button onClick={() => { setPhoto(null); setPhotoPreview(null); }}
-                    aria-label="Supprimer la photo"
-                    style={{ background: 'none', border: 'none', color: C.danger, fontSize: 14, cursor: 'pointer', padding: '6px' }}>&#10005;</button>
+                    aria-label="Retirer la photo"
+                    style={{ background: 'none', border: 'none', color: C.danger, fontSize: 14, cursor: 'pointer', padding: '0 4px', lineHeight: 1 }}>&#10005;</button>
                 </div>
               )}
-            </FieldWrap>
+              {/* Footer du composer : paperclip a gauche, count discret a droite */}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 8, paddingTop: 8, borderTop: `1px solid ${C.border}` }}>
+                <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp,image/heic"
+                  style={{ display: 'none' }} aria-label="Joindre une photo de l'enfant"
+                  onChange={e => { const f = e.target.files?.[0]; if (f) pickPhoto(f); e.target.value = ''; }} />
+                <button
+                  type="button"
+                  onClick={() => fileRef.current?.click()}
+                  aria-label="Joindre une photo"
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 6,
+                    background: 'transparent', border: 'none',
+                    color: photo ? C.success : C.textLight,
+                    fontSize: 13, fontWeight: 500, cursor: 'pointer',
+                    padding: '4px 6px', borderRadius: 8,
+                    fontFamily: 'inherit',
+                  }}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
+                  </svg>
+                  {photo ? 'Photo jointe' : 'Joindre une photo'}
+                </button>
+                {story.length > STORY_LIMIT * 0.8 && (
+                  <span style={{ fontSize: 11, color: story.length >= STORY_LIMIT ? C.danger : C.textLight, fontWeight: 500 }}>
+                    {story.length}/{STORY_LIMIT}
+                  </span>
+                )}
+              </div>
+            </div>
 
-            {/* ── Description histoire ── */}
-            <FieldWrap>
-              <FieldHeader>
-                <FieldLabel>Decrivez votre histoire <span style={{ color: C.coral }}>*</span></FieldLabel>
-                <CharCount $over={story.length > LIMITS.story}>{story.length}/{LIMITS.story}</CharCount>
-              </FieldHeader>
-              <FieldTextarea
-                value={story}
-                onChange={e => { if (e.target.value.length <= LIMITS.story) setStory(e.target.value); }}
-                placeholder="Une petite fille de 10 ans qui adore le foot, dans l'univers de Harry Potter. Style manga, sur le theme du courage..."
-                maxLength={LIMITS.story}
-                aria-required="true"
-              />
-              <FieldHint><span className="icon">&#128161;</span> Mentionnez l'age, le theme, le style d'illustration et la morale souhaitee</FieldHint>
-            </FieldWrap>
-
-            {/* ── Personnage secondaire ── */}
-            <FieldWrap>
-              <FieldHeader>
-                <FieldLabel>Personnage secondaire <span className="opt">(optionnel)</span></FieldLabel>
-                <CharCount $over={secondary.length > LIMITS.secondary}>{secondary.length}/{LIMITS.secondary}</CharCount>
-              </FieldHeader>
-              <FieldInput
-                value={secondary}
-                onChange={e => { if (e.target.value.length <= LIMITS.secondary) setSecondary(e.target.value); }}
-                placeholder="Son chien Moustache, sa meilleure amie Jade..."
-                maxLength={LIMITS.secondary}
-              />
-            </FieldWrap>
+            {/* SmartHint — suggestion discrete sous la textarea */}
+            <SmartHint text={hintText} />
 
             {/* Trust */}
             <TrustRow>
@@ -345,9 +359,9 @@ export const ChatStoryCreator: React.FC<Props> = ({
         <Footer>
           <FooterInner>
             <CTA $active={canGo} disabled={!canGo || isBusy} onClick={gotoPreview} aria-busy={isBusy}>
-              {canGo ? `Creer le livre de ${heroName} — Gratuit` : 'Remplissez les champs ci-dessus'}
+              {canGo ? `Creer le livre de ${heroName} — Gratuit` : 'Decrivez votre histoire ci-dessus'}
             </CTA>
-            <CompletionRing percentage={percentage} color={color} />
+            <CompletionRing percentage={percentage} color={ringColor} />
           </FooterInner>
         </Footer>
       </PageWrap>
