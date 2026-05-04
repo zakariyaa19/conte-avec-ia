@@ -7,9 +7,6 @@ import { SchemaFAQ, SchemaBreadcrumb } from '../components/SchemaMarkup';
 import '../styles/BlogArticle.css';
 
 const BlogArticleNouveau1: React.FC = () => {
-  useEffect(() => {
-    document.title = 'Offrir un Livre Personnalisé Enfant en 2026 : Le Cadeau Qui Émerveille | Contedia';
-  }, []);
 
   const tableOfContents = [
     { title: "Pourquoi c'est LE cadeau de 2026", id: "pourquoi" },

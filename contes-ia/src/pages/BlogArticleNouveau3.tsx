@@ -7,9 +7,6 @@ import { SchemaFAQ, SchemaBreadcrumb } from '../components/SchemaMarkup';
 import '../styles/BlogArticle.css';
 
 const BlogArticleNouveau3: React.FC = () => {
-  useEffect(() => {
-    document.title = 'Livre Personnalisé vs Livre Classique : Lequel Choisir pour votre Enfant ? | Contedia';
-  }, []);
 
   const tableOfContents = [
     { title: "La vraie question que les parents se posent", id: "question" },

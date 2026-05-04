@@ -7,9 +7,6 @@ import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticleCadeau3Ans: React.FC = () => {
-  useEffect(() => {
-    document.title = 'Idée Cadeau Enfant 3 Ans : 15 Idées Originales et Éducatives (2026) | Contedia';
-  }, []);
 
   const tableOfContents = [
     { title: "Pourquoi 3 ans est un âge clé pour les cadeaux", id: "age-cle" },

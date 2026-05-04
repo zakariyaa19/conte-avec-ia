@@ -7,9 +7,6 @@ import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticleCadeauNoel: React.FC = () => {
-  useEffect(() => {
-    document.title = "Cadeau de Noël Enfant Personnalisé : Le Livre Dont Il Est le Héros | Contedia";
-  }, []);
 
   const tableOfContents = [
     { title: "Pourquoi le livre personnalisé est LE cadeau de Noël", id: "pourquoi-noel" },

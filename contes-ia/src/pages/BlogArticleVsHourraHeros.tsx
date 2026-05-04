@@ -7,9 +7,6 @@ import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticleVsHourraHeros: React.FC = () => {
-  useEffect(() => {
-    document.title = 'Contedia vs Hourra Héros : Quel Livre Personnalisé Choisir en 2026 ?';
-  }, []);
 
   const tableOfContents = [
     { title: "Comparatif en un coup d'œil", id: "resume" },

@@ -7,9 +7,6 @@ import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticleFeteMeres: React.FC = () => {
-  useEffect(() => {
-    document.title = 'Cadeau Fête des Mères Personnalisé : Le Livre Qui Fait Pleurer Maman | Contedia';
-  }, []);
 
   const tableOfContents = [
     { title: "Pourquoi un cadeau personnalisé pour la fête des mères ?", id: "pourquoi" },

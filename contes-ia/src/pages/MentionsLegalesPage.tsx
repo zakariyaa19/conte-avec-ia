@@ -49,8 +49,6 @@ const LegalContent = styled.div`
 
 const MentionsLegalesPage: React.FC = () => {
   useEffect(() => {
-    document.title = 'Mentions Legales | Contes d\'IA';
-
     const metaRobots = document.querySelector('meta[name="robots"]') || document.createElement('meta');
     metaRobots.setAttribute('name', 'robots');
     metaRobots.setAttribute('content', 'noindex, follow');

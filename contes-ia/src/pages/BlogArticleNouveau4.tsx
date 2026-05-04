@@ -7,9 +7,6 @@ import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticleNouveau4: React.FC = () => {
-  useEffect(() => {
-    document.title = "Comment l'IA Crée un Conte Personnalisé pour Votre Enfant | Contedia";
-  }, []);
 
   const tableOfContents = [
     { title: "Comment ça marche concrètement", id: "comment-ca-marche" },

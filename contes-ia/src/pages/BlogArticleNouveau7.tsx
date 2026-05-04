@@ -7,9 +7,6 @@ import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticleNouveau7: React.FC = () => {
-  useEffect(() => {
-    document.title = "Livre Personnalisé pour Enfant Timide ou Anxieux : Guide Complet | Contedia";
-  }, []);
 
   const tableOfContents = [
     { title: "Pourquoi la timidité n'est pas un problème", id: "timidite-pas-probleme" },

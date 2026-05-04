@@ -7,9 +7,6 @@ import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticleNouveau8: React.FC = () => {
-  useEffect(() => {
-    document.title = "Livre Personnalisé : Le Cadeau de Naissance et Anniversaire Qui Marque | Contedia";
-  }, []);
 
   const tableOfContents = [
     { title: "Pourquoi ce cadeau est différent", id: "pourquoi-different" },

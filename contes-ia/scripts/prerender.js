@@ -1,17 +1,31 @@
 #!/usr/bin/env node
 /**
  * Script de prerendering custom pour Contedia
- * Utilise Puppeteer moderne pour pre-rendre toutes les pages publiques
- * Usage: node scripts/prerender.js
- * Skip silencieusement si puppeteer n'est pas installe (ex: Vercel)
+ * Pre-rend toutes les pages publiques pour donner du HTML aux crawlers SEO
+ * (Googlebot léger, Bingbot, partages sociaux) qui ne rendent pas le JS.
+ *
+ * Stratégie :
+ *  - En local (macOS/Windows) : utilise `puppeteer` (devDep, Chromium intégré)
+ *  - Sur Vercel (Linux build)  : utilise `puppeteer-core` + `@sparticuz/chromium`
+ *    (deps standard, légers, conçus pour environnements serverless)
+ *  - Si rien n'est disponible : skip silencieusement (build ne casse pas)
  */
 
 let puppeteer;
+let sparticuzChromium = null;
+
 try {
   puppeteer = require('puppeteer');
+  console.log('  → Backend: puppeteer (full, local dev)');
 } catch {
-  console.log('⏭️  Prerendering skipped (puppeteer not available — normal on Vercel)');
-  process.exit(0);
+  try {
+    puppeteer = require('puppeteer-core');
+    sparticuzChromium = require('@sparticuz/chromium');
+    console.log('  → Backend: puppeteer-core + @sparticuz/chromium (Vercel)');
+  } catch {
+    console.log('⏭️  Prerendering skipped (no puppeteer backend available)');
+    process.exit(0);
+  }
 }
 const { createServer } = require('http');
 const { readFileSync, writeFileSync, mkdirSync, existsSync } = require('fs');
@@ -41,7 +55,6 @@ const ROUTES = [
   '/blog/nouveaux-personnages-styles-aventures-ados',
   '/blog/evolution-livres-enfants-contes-fees-aventures-personnalisees',
   '/blog/ia-revolution-creation-histoires-enfants',
-  '/blog/integrer-valeurs-religieuses-contes-personnalises',
   '/blog/animal-compagnie-stimule-imagination-enfant',
   '/blog/conte-personnalise-noel-cadeau-amoureux-animaux',
   '/blog/photo-heros-conte-ia-transforme-animal-personnage',
@@ -49,16 +62,10 @@ const ROUTES = [
   '/blog/top-5-themes-histoires-animal-heros-conte',
   '/blog/transmettre-foi-histoires-contes-personnalises-spiritualite',
   '/blog/fetes-religieuses-conte-personnalise-noel-ramadan-paque-diwali',
-  '/blog/personnaliser-foi-ia-adapte-valeurs-religieuses',
-  '/blog/heros-foi-inspirer-enfants-personnages-spirituels',
-  '/blog/foi-tolerance-ouverture-respect-differentes-religions',
-  '/blog/offrir-livre-personnalise-enfant-2026',
   '/blog/livre-personnalise-vs-livre-classique-enfant',
   '/blog/enfant-heros-propre-histoire',
-  '/blog/conte-personnalise-rituel-coucher',
   '/blog/livre-personnalise-enfant-timide',
   '/blog/cadeau-livre-personnalise-enfant',
-  '/blog/creation-histoires-personnalisees-conte-ia',
   '/blog/guide-livre-personnalise-enfant-2026',
   '/blog/meilleurs-livres-personnalises-enfants-comparatif-2026',
   '/blog/conteuse-personnalisable-alternative-numerique-2026',
@@ -121,6 +128,12 @@ function startServer() {
     '.map': 'application/json',
   };
 
+  // Snapshot the pristine index.html ONCE at server startup.
+  // The prerender writes back to build/index.html for the "/" route,
+  // so we must avoid serving the contaminated post-prerender file
+  // as the SPA shell to subsequent routes.
+  const pristineIndexHtml = readFileSync(join(BUILD_DIR, 'index.html'), 'utf-8');
+
   const server = createServer((req, res) => {
     let filePath = join(BUILD_DIR, req.url);
     const ext = require('path').extname(filePath);
@@ -133,11 +146,9 @@ function startServer() {
       return;
     }
 
-    // SPA fallback: servir index.html pour toutes les routes
-    const indexPath = join(BUILD_DIR, 'index.html');
-    const content = readFileSync(indexPath, 'utf-8');
+    // SPA fallback: servir l'index.html pristine en mémoire
     res.writeHead(200, { 'Content-Type': 'text/html' });
-    res.end(content);
+    res.end(pristineIndexHtml);
   });
 
   return new Promise((resolve) => {
@@ -192,8 +203,9 @@ async function prerenderPage(browser, route) {
       { timeout: 15000 }
     );
 
-    // Petit delai pour que styled-components injecte ses styles
-    await new Promise(r => setTimeout(r, 500));
+    // Délai pour que styled-components + react-helmet-async injectent dans le DOM
+    // (Helmet utilise des effets différés ; 2.5s laisse largement le temps)
+    await new Promise(r => setTimeout(r, 2500));
 
     const html = await page.content();
 
@@ -226,15 +238,35 @@ async function main() {
 
   const server = await startServer();
 
-  const browser = await puppeteer.launch({
-    headless: 'new',
-    args: [
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-      '--disable-dev-shm-usage',
-      '--disable-gpu',
-    ],
-  });
+  let launchOptions;
+  let browser;
+  try {
+    launchOptions = sparticuzChromium
+      ? {
+          args: sparticuzChromium.args,
+          defaultViewport: sparticuzChromium.defaultViewport,
+          executablePath: await sparticuzChromium.executablePath(),
+          headless: sparticuzChromium.headless,
+        }
+      : {
+          headless: 'new',
+          args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-gpu',
+          ],
+        };
+
+    browser = await puppeteer.launch(launchOptions);
+  } catch (err) {
+    // En prod (Vercel), si Chromium ne peut pas démarrer, on ne casse PAS la build.
+    // Le site reste fonctionnel, juste sans HTML prérendéré (état antérieur).
+    console.log(`⚠️  Chromium launch failed: ${err.message}`);
+    console.log('⏭️  Prerendering skipped — build continues with SPA shell only');
+    server.close();
+    process.exit(0);
+  }
 
   let success = 0;
   let failed = 0;

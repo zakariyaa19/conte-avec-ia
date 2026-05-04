@@ -7,9 +7,6 @@ import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticleNouveau9: React.FC = () => {
-  useEffect(() => {
-    document.title = "Les Coulisses de Contedia : Comment Votre Conte Est Créé | Contedia";
-  }, []);
 
   const tableOfContents = [
     { title: "Pourquoi on vous montre tout", id: "transparence" },

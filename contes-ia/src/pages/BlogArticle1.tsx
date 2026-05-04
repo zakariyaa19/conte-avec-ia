@@ -7,9 +7,6 @@ import { SchemaFAQ, SchemaBreadcrumb } from '../components/SchemaMarkup';
 import '../styles/BlogArticle.css';
 
 const BlogArticle1: React.FC = () => {
-  useEffect(() => {
-    document.title = 'Livre Personnalisé Chien : Créez un Conte avec votre Animal | Conte d\'IA';
-  }, []);
 
   const tableOfContents = [
     { title: "Pourquoi créer un livre personnalisé avec son chien", id: "pourquoi" },

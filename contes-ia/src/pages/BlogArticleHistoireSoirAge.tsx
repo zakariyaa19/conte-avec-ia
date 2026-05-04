@@ -7,9 +7,6 @@ import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticleHistoireSoirAge: React.FC = () => {
-  useEffect(() => {
-    document.title = "Histoire du Soir Enfant : Guide Complet par Âge (0-8 ans) | Contedia";
-  }, []);
 
   const tableOfContents = [
     { title: "Pourquoi l'histoire du soir est essentielle", id: "importance" },

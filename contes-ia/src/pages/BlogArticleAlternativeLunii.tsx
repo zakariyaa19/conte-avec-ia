@@ -7,9 +7,6 @@ import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticleAlternativeLunii: React.FC = () => {
-  useEffect(() => {
-    document.title = "Alternative Lunii 2026 : Le Livre Personnalisé IA Remplace la Conteuse | Contedia";
-  }, []);
 
   const tableOfContents = [
     { title: "Pourquoi chercher une alternative à Lunii ?", id: "pourquoi-alternative" },

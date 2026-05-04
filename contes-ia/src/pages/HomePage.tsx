@@ -1431,10 +1431,6 @@ const faqReveal = useScrollReveal();
     setSelectedStory(null);
   }, []);
 
-  useEffect(() => {
-    document.title = "Livre Personnalisé Enfant GRATUIT — Histoire IA en 5 min | Contedia";
-  }, []);
-
   return (
     <PageContainer>
       <SEOHead
@@ -1453,8 +1449,7 @@ const faqReveal = useScrollReveal();
           "operatingSystem": "Web",
           "url": "https://contedia.fr",
           "description": "Créez des contes personnalisés pour enfants avec l'IA. Votre enfant devient le héros de son propre livre illustré.",
-          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR", "description": "Premier livre personnalisé gratuit" },
-          "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.8", "ratingCount": "523", "bestRating": "5" }
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR", "description": "Premier livre personnalisé gratuit" }
         })}</script>
       </Helmet>
       <Header />

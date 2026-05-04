@@ -7,9 +7,6 @@ import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticleCadeau5Ans: React.FC = () => {
-  useEffect(() => {
-    document.title = 'Idée Cadeau Enfant 5 Ans : 15 Idées Originales qui Émerveillent (2026) | Contedia';
-  }, []);
 
   const tableOfContents = [
     { title: "Pourquoi 5 ans est un âge charnière", id: "age-charniere" },

@@ -7,9 +7,6 @@ import { SchemaFAQ, SchemaBreadcrumb } from '../components/SchemaMarkup';
 import '../styles/BlogArticle.css';
 
 const BlogArticleNouveau2: React.FC = () => {
-  useEffect(() => {
-    document.title = 'Conte Personnalisé et Confiance en Soi : Pourquoi Votre Enfant a Besoin d\'Être le Héros | Contedia';
-  }, []);
 
   const tableOfContents = [
     { title: "Le lien entre conte personnalisé et confiance en soi", id: "lien" },

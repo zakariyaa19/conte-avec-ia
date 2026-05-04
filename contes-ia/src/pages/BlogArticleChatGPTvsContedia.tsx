@@ -7,9 +7,6 @@ import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticleChatGPTvsContedia: React.FC = () => {
-  useEffect(() => {
-    document.title = 'ChatGPT vs Contedia : Peut-on Créer un Livre Enfant avec ChatGPT ? | Contedia';
-  }, []);
 
   const tableOfContents = [
     { title: "Ce que ChatGPT sait faire", id: "chatgpt-forces" },

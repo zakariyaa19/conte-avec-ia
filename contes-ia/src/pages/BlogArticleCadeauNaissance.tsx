@@ -7,9 +7,6 @@ import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticleCadeauNaissance: React.FC = () => {
-  useEffect(() => {
-    document.title = "Cadeau de Naissance Original : Offrez un Livre Personnalisé au Bébé | Contedia";
-  }, []);
 
   const tableOfContents = [
     { title: "Pourquoi un livre personnalisé est le plus beau cadeau de naissance", id: "pourquoi-livre" },

@@ -7,9 +7,6 @@ import { SchemaFAQ, SchemaBreadcrumb } from '../components/SchemaMarkup';
 import '../styles/BlogArticle.css';
 
 const BlogArticleSEO4: React.FC = () => {
-  useEffect(() => {
-    document.title = 'Livre Conte Personnalisé : Comment Créer une Histoire Unique pour votre Enfant | Contedia';
-  }, []);
 
   const tableOfContents = [
     { title: "Qu'est-ce qu'un livre conte personnalisé ?", id: "definition" },

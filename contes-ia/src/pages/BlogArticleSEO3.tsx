@@ -7,9 +7,6 @@ import { SchemaFAQ, SchemaBreadcrumb } from '../components/SchemaMarkup';
 import '../styles/BlogArticle.css';
 
 const BlogArticleSEO3: React.FC = () => {
-  useEffect(() => {
-    document.title = 'Conteuse Enfant Personnalisable 2026 : Guide + Meilleure Alternative IA | Contedia';
-  }, []);
 
   const tableOfContents = [
     { title: "Qu'est-ce qu'une conteuse personnalisable ?", id: "definition" },
@@ -77,8 +74,8 @@ const BlogArticleSEO3: React.FC = () => {
   return (
     <PageLayout>
       <SEOHead
-        title="Conteuse Enfant Personnalisable 2026 : Guide + Meilleure Alternative IA"
-        description="Quelle conteuse personnalisable choisir en 2026 ? Comparatif détaillé Lunii vs Tonies vs livre IA personnalisé. Prix, avis, limites de chaque solution. Test gratuit inclus."
+        title="Conteuse Personnalisable : Comparatif & Meilleures Alternatives 2026 | Contedia"
+        description="Quelle conteuse personnalisable choisir ? Comparatif Lunii vs Tonies vs livre IA personnalisé : prix, avis, limites. La meilleure alternative pour votre enfant."
         image="/images/blog/conteuse-personnalisable-livre-enfant.jpg"
         type="article"
       />

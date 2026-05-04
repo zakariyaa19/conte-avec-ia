@@ -7,9 +7,6 @@ import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticleConteSendormir: React.FC = () => {
-  useEffect(() => {
-    document.title = "Conte pour S'endormir : 7 Histoires Personnalisées Qui Aident Votre Enfant à Dormir | Contedia";
-  }, []);
 
   const tableOfContents = [
     { title: "Pourquoi un conte aide votre enfant à s'endormir", id: "pourquoi-conte" },

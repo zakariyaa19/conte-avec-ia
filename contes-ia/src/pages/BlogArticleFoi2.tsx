@@ -7,9 +7,6 @@ import { SchemaFAQ, SchemaBreadcrumb } from '../components/SchemaMarkup';
 import '../styles/BlogArticle.css';
 
 const BlogArticleFoi2: React.FC = () => {
-  useEffect(() => {
-    document.title = 'Conte Personnalisé Noël, Ramadan, Pâques, Diwali : Célébrez les Fêtes en Famille | Contedia';
-  }, []);
 
   const tableOfContents = [
     { title: "Un conte personnalisé pour chaque fête religieuse", id: "chaque-fete" },

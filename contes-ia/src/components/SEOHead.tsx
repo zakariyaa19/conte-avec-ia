@@ -31,7 +31,7 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
   const location = useLocation();
   const baseUrl = 'https://contedia.fr';
   const canonicalUrl = `${baseUrl}${location.pathname}`;
-  const defaultTitle = 'Créez un conte personnalisé avec l\'IA | Contes d\'IA';
+  const defaultTitle = 'Créez un conte personnalisé avec l\'IA | Contedia';
   const defaultDescription = 'Créez un livre personnalisé gratuit pour votre enfant. Histoire unique générée par IA avec illustrations sur mesure. Prêt en 5 minutes.';
   const defaultImage = `${baseUrl}/images/og-image.png`;
 
@@ -45,7 +45,7 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
       <link rel="canonical" href={canonicalUrl} />
 
       {/* Title & Description */}
-      {title && <title>{pageTitle}</title>}
+      <title>{pageTitle}</title>
       <meta name="description" content={pageDescription} />
 
       {/* Robots */}
@@ -57,7 +57,7 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
       <meta property="og:title" content={pageTitle} />
       <meta property="og:description" content={pageDescription} />
       <meta property="og:image" content={pageImage} />
-      <meta property="og:site_name" content="Contes d'IA" />
+      <meta property="og:site_name" content="Contedia" />
       <meta property="og:locale" content="fr_FR" />
 
       {/* Twitter */}
@@ -66,12 +66,8 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
       <meta name="twitter:description" content={pageDescription} />
       <meta name="twitter:image" content={pageImage} />
 
-      {/* Hreflang — marchés francophones */}
+      {/* Hreflang — francophone unique (pas de version par marché) */}
       <link rel="alternate" hrefLang="fr" href={canonicalUrl} />
-      <link rel="alternate" hrefLang="fr-FR" href={canonicalUrl} />
-      <link rel="alternate" hrefLang="fr-BE" href={canonicalUrl} />
-      <link rel="alternate" hrefLang="fr-CH" href={canonicalUrl} />
-      <link rel="alternate" hrefLang="fr-CA" href={canonicalUrl} />
       <link rel="alternate" hrefLang="x-default" href={canonicalUrl} />
     </Helmet>
   );

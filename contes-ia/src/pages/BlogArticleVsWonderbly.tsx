@@ -7,9 +7,6 @@ import { Helmet } from 'react-helmet-async';
 import '../styles/BlogArticle.css';
 
 const BlogArticleVsWonderbly: React.FC = () => {
-  useEffect(() => {
-    document.title = 'Contedia vs Wonderbly : Comparatif Honnête 2026 | Quel Livre Personnalisé Choisir ?';
-  }, []);
 
   const tableOfContents = [
     { title: "Contedia vs Wonderbly en un coup d'œil", id: "resume" },
