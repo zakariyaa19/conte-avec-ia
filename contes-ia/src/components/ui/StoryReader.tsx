@@ -627,7 +627,6 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
             const imgSide: 'left' | 'right' = i % 2 === 0 ? 'right' : 'left';
             const authorSuffix = i === pageCount - 1 && (narratedBy || creatorName)
               ? `\n\n— Histoire racontée par ${narratedBy || creatorName}` : '';
-            const isCliffhangerLastPage = isCliffhanger && i === pageCount - 1;
 
             return (
               <PageSlide key={`page-${i}`} data-slide-index={idx} $bg={c.bg}>
@@ -638,7 +637,6 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
                 )}
                 <PageTextBox $accent={c.accent} $night={nightMode}>
                   <PageNum $accent={c.accent} $night={nightMode}>{i + 1}</PageNum>
-                  {isCliffhangerLastPage && <CliffhangerBanner>Derniere page du chapitre gratuit</CliffhangerBanner>}
                   <AutoFitText text={rawText + authorSuffix} night={nightMode} />
                   <PageDivider $accent={c.accent} />
                 </PageTextBox>
