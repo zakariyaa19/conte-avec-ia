@@ -207,6 +207,42 @@ async function prerenderPage(browser, route) {
     // (Helmet utilise des effets différés ; 2.5s laisse largement le temps)
     await new Promise(r => setTimeout(r, 2500));
 
+    // CRITIQUE — Fix FOUC pour styled-components v6 :
+    // En production, styled-components v6 stocke les regles CSS dans le CSSStyleSheet
+    // attache au tag <style data-styled> (via sheet.cssRules), MAIS le textContent
+    // du tag reste vide. Du coup page.content() (qui serialize via outerHTML) ne
+    // capture rien et le HTML prerendu est sans styles → FOUC.
+    //
+    // On extrait les rules via sheet.cssRules et on les ecrit dans un nouveau
+    // <style data-prerendered-sc> que le serializer captera.
+    await page.evaluate(() => {
+      try {
+        const cssRules = [];
+        const styleTags = document.querySelectorAll('style[data-styled]');
+        for (const tag of styleTags) {
+          if (tag.sheet) {
+            try {
+              for (const rule of tag.sheet.cssRules) {
+                cssRules.push(rule.cssText);
+              }
+            } catch (_) { /* CORS sheet, skip */ }
+          }
+          // Defensif : certaines versions/contextes peuvent aussi avoir du textContent
+          if (tag.textContent && tag.textContent.trim()) {
+            cssRules.push(tag.textContent);
+          }
+        }
+        if (cssRules.length > 0) {
+          const styleEl = document.createElement('style');
+          styleEl.setAttribute('data-prerendered-sc', 'true');
+          styleEl.textContent = cssRules.join('\n');
+          document.head.appendChild(styleEl);
+        }
+      } catch (e) {
+        console.warn('[prerender] Style extraction failed:', e && e.message);
+      }
+    });
+
     const html = await page.content();
 
     // Creer le repertoire et sauver le fichier

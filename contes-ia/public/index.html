@@ -94,41 +94,13 @@
     <!-- Title fourni par react-helmet-async via SEOHead component -->
     <title>Contedia</title>
 
-    <!-- Anti-FOUC : styled-components v6 utilise CSSOM (adoptedStyleSheets) qui ne sont pas
-         capturees dans le prerender HTML → le browser affiche du HTML brut le temps que le JS
-         bundle charge et que styled-components injecte. On masque #root jusqu'a ce que React
-         soit monte (la classe .app-ready est posee dans index.tsx apres ReactDOM.createRoot). -->
+    <!-- Anti-FOUC : background immediat pour eviter un flash blanc avant chargement de la CSS bundled. -->
     <style>
       html { background: #FEFCF8; }
       html[data-theme="dark"] { background: #0d0a1f; }
       body { margin: 0; background: inherit; min-height: 100vh; -webkit-text-size-adjust: 100%; }
       #root { min-height: 100vh; }
-
-      /* Hide raw HTML pre-hydration. .js-on est ajoute par le script ci-dessous —
-         si JS disable (crawler old), .js-on n'est pas la et le contenu reste visible. */
-      html.js-on #root { opacity: 0; transition: opacity 0.18s ease; }
-      html.js-on.app-ready #root { opacity: 1; }
-
-      /* Spinner discret centre tant que React n'est pas monte */
-      html.js-on:not(.app-ready)::after {
-        content: '';
-        position: fixed;
-        top: 50%; left: 50%;
-        width: 32px; height: 32px;
-        margin: -16px 0 0 -16px;
-        border: 2.5px solid rgba(255, 153, 153, 0.2);
-        border-top-color: #FF9999;
-        border-radius: 50%;
-        animation: contedia-spin 0.8s linear infinite;
-        z-index: 9999;
-        pointer-events: none;
-      }
-      @keyframes contedia-spin { to { transform: rotate(360deg); } }
     </style>
-    <script>
-      // Marquer JS-on des le head pour activer la regle CSS d'opacite + spinner
-      document.documentElement.classList.add('js-on');
-    </script>
   </head>
   <body>
     <noscript>Vous devez activer JavaScript pour utiliser cette application.</noscript>
