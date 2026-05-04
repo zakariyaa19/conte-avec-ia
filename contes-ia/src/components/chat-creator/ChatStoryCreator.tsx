@@ -72,10 +72,11 @@ export const ChatStoryCreator: React.FC<Props> = ({
     el.style.height = Math.min(el.scrollHeight, 280) + 'px';
   }, [story]);
 
-  // ── Detection en live (sans defaults) — pilote scoring + SmartHint ──
+  // ── Detection en live (sans defaults) — pilote scoring + cover preview ──
   const detected = useStoryDetection(story, !!photo);
   const percentage = computeDetectionScore(detected);
-  const hintText = useSmartHint(detected);
+  // SmartHint = vraie analyse IA du brief (debounced, cache, fallback local)
+  const hintText = useSmartHint(story, detected);
   const ringColor = percentage >= 70 ? '#22C55E' : percentage >= 35 ? '#F59E0B' : '#FF9999';
 
   // ── mergedData : detection + defaults pour la creation backend ──
