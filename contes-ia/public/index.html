@@ -76,18 +76,34 @@
     </script>
     <!-- End Microsoft Clarity -->
 
-    <!-- Title fourni par react-helmet-async via SEOHead component -->
-    <title>Contedia</title>
-  </head>
-  <body>
+    <!-- Detection theme TRES EN AMONT pour eviter le FOUC.
+         Doit s'executer AVANT le rendu du body et avant le style anti-FOUC ci-dessous. -->
     <script>
       (function(){
-        var t = localStorage.getItem('theme-preference');
-        if (!t) t = 'light';
-        if (window.location.pathname.indexOf('/admin') === 0) t = 'light';
-        document.documentElement.setAttribute('data-theme', t);
+        try {
+          var t = localStorage.getItem('theme-preference');
+          if (!t) t = 'light';
+          if (window.location.pathname.indexOf('/admin') === 0) t = 'light';
+          document.documentElement.setAttribute('data-theme', t);
+        } catch (e) {
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
       })();
     </script>
+
+    <!-- Title fourni par react-helmet-async via SEOHead component -->
+    <title>Contedia</title>
+
+    <!-- Anti-FOUC : background immediat pour eviter un flash blanc/erreur avant chargement de la CSS bundled.
+         Le data-theme set au-dessus garantit que la bonne couleur s'applique des le premier paint. -->
+    <style>
+      html { background: #FEFCF8; }
+      html[data-theme="dark"] { background: #0d0a1f; }
+      body { margin: 0; background: inherit; min-height: 100vh; -webkit-text-size-adjust: 100%; }
+      #root { min-height: 100vh; }
+    </style>
+  </head>
+  <body>
     <noscript>Vous devez activer JavaScript pour utiliser cette application.</noscript>
     <div id="root"></div>
   </body>
