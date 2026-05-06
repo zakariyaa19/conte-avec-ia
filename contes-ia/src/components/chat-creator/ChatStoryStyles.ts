@@ -153,7 +153,9 @@ export const Body = styled.main`
   flex: 1;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  padding: 28px 20px 20px;
+  /* Padding-top reduit : la zone du haut doit etre compacte pour que clavier ouvert,
+     titre + SmartHint + textarea tiennent ensemble dans la fenetre visible. */
+  padding: 18px 20px 20px;
   position: relative;
   z-index: 1;
 
@@ -169,10 +171,12 @@ export const BodyInner = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  /* Gap reduit sur mobile pour densifier le bloc title+hint+textarea (visible
+     au-dessus du clavier). Desktop garde plus d'espace. */
+  gap: 12px;
 
   @media (min-width: 768px) {
-    gap: 28px;
+    gap: 24px;
   }
 `;
 
