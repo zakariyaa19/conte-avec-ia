@@ -253,21 +253,26 @@ export const ChatStoryCreator: React.FC<Props> = ({
 
         <Body>
           <BodyInner>
-            {/* Hero compact — un seul titre fusionne (CTA + value prop).
-                Le sous-titre est SUPPRIME : le SmartHint juste sous le titre prend
-                ce role (dynamique, visible meme clavier ouvert). */}
+            {/* Hero — promesse emotionnelle qui place l'enfant comme heros.
+                Echo du best-seller "Livres dont vous etes le heros" : ancrage culturel
+                instantane pour tout parent francophone. Pas d'imperatif (le SmartHint
+                en-dessous joue le role CTA dynamique). Les promesses fonctionnelles
+                (5 min, gratuit, sans CB) sont deja dans le TrustRow en bas. */}
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 14 }}>
               <h1 style={{
                 fontFamily: "'Baloo 2', 'Comic Neue', cursive",
-                fontSize: 'clamp(1.35rem, 5.2vw, 1.95rem)',
-                lineHeight: 1.18,
+                fontSize: 'clamp(1.45rem, 5.6vw, 2.05rem)',
+                lineHeight: 1.16,
                 fontWeight: 800,
                 color: C.text,
                 textAlign: 'center',
                 margin: 0,
-                letterSpacing: '-0.01em',
+                letterSpacing: '-0.015em',
+                maxWidth: 360,
+                // text-wrap: balance equilibre les lignes naturellement
+                textWrap: 'balance' as any,
               }}>
-                Décrivez votre enfant <span style={{ color: C.coral }}>—</span> son livre en 5 min
+                Le livre dont votre enfant est le <span style={{ color: C.coral }}>héros</span>.
               </h1>
             </div>
 
