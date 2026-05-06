@@ -142,6 +142,18 @@ export const Composer = styled.div`
     padding: 0;
     letter-spacing: 0.005em;
 
+    /* Override le focus ring coral global (GlobalStyles ligne ~142 applique
+       un box-shadow 0 0 0 3px rgba(255,153,153,0.15) sur tout textarea:focus).
+       Style moderne : pas de halo, le caret seul indique le focus —
+       comme ChatGPT, Linear, Notion. Le subtil box-shadow du Composer
+       (parent) reste visible et suffit pour la profondeur. */
+    &:focus,
+    &:focus-visible {
+      border: none;
+      outline: none;
+      box-shadow: none;
+    }
+
     &::placeholder {
       color: ${C.textLight};
       opacity: 0.55;
