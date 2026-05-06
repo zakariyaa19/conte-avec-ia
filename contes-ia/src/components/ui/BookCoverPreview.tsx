@@ -427,10 +427,10 @@ export const BookCoverPreview: React.FC<BookCoverPreviewProps> = React.memo(({
             {/* Mode 1 : Image IA */}
             {hasAIImage && !isGenerating && (
               <>
-                <AIImage src={coverImageUrl!} alt="Couverture de votre conte" loading="eager" />
+                <AIImage src={coverImageUrl!} alt="Couverture de votre livre" loading="eager" />
                 <HoverOverlay>
                   <HoverCTAText>
-                    Recevoir mon conte complet maintenant
+                    Recevoir mon livre complet maintenant
                   </HoverCTAText>
                 </HoverOverlay>
               </>
