@@ -254,14 +254,14 @@ export const ChatStoryCreator: React.FC<Props> = ({
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <h1 style={{
                 fontFamily: "'Baloo 2', 'Comic Neue', cursive",
-                fontSize: 'clamp(1.45rem, 5.6vw, 2.05rem)',
-                lineHeight: 1.16,
+                fontSize: 'clamp(1.6rem, 6.2vw, 2.25rem)',
+                lineHeight: 1.14,
                 fontWeight: 800,
                 color: C.text,
                 textAlign: 'center',
                 margin: 0,
                 letterSpacing: '-0.015em',
-                maxWidth: 360,
+                maxWidth: 380,
                 // text-wrap: balance equilibre les lignes naturellement
                 textWrap: 'balance' as any,
               }}>
