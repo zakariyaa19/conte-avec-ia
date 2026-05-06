@@ -14,7 +14,7 @@ import { SmartHint } from './SmartHint';
 
 import {
   PageWrap, Header, Logo, Body, BodyInner, Footer, FooterInner,
-  Subtitle, TrustRow, TrustItem,
+  TrustRow, TrustItem,
   CTA, CTASpinner, AuthInput, C, Composer,
 } from './ChatStoryStyles';
 
@@ -253,22 +253,28 @@ export const ChatStoryCreator: React.FC<Props> = ({
 
         <Body>
           <BodyInner>
-            {/* Hero compact + H1 dynamique (sans badge) */}
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, marginTop: 28 }}>
+            {/* Hero compact — un seul titre fusionne (CTA + value prop).
+                Le sous-titre est SUPPRIME : le SmartHint juste sous le titre prend
+                ce role (dynamique, visible meme clavier ouvert). */}
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 14 }}>
               <h1 style={{
                 fontFamily: "'Baloo 2', 'Comic Neue', cursive",
-                fontSize: 'clamp(1.55rem, 5.8vw, 2.15rem)',
-                lineHeight: 1.15,
+                fontSize: 'clamp(1.35rem, 5.2vw, 1.95rem)',
+                lineHeight: 1.18,
                 fontWeight: 800,
                 color: C.text,
                 textAlign: 'center',
                 margin: 0,
                 letterSpacing: '-0.01em',
               }}>
-                L'histoire personnalisée<br />de votre enfant <span style={{ color: C.coral }}>en 5 min</span>
+                Décrivez votre enfant <span style={{ color: C.coral }}>—</span> son livre en 5 min
               </h1>
-              <Subtitle style={{ marginTop: 2 }}>Décrivez ci-dessous, l'IA s'occupe du reste.</Subtitle>
             </div>
+
+            {/* SmartHint REMONTE au-dessus du Composer : reste visible meme quand le
+                clavier mobile est ouvert (sinon il passe sous le clavier et l'utilisateur
+                ne voit plus la recommandation IA pendant qu'il tape). */}
+            <SmartHint text={hintText} thinking={hintThinking} />
 
             {/* ── Composer unique : textarea + paperclip integre ── */}
             <Composer>
@@ -330,9 +336,6 @@ export const ChatStoryCreator: React.FC<Props> = ({
                 )}
               </div>
             </Composer>
-
-            {/* SmartHint — apparition IA stylée sous la textarea */}
-            <SmartHint text={hintText} thinking={hintThinking} />
 
             {/* Trust */}
             <TrustRow>
