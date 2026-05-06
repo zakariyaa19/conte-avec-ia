@@ -11,6 +11,7 @@ import { BookCoverPreview } from '../ui/BookCoverPreview';
 import { useStoryDetection, computeDetectionScore } from './useStoryDetection';
 import { useSmartHint } from './useSmartHint';
 import { SmartHint } from './SmartHint';
+import { Header as SiteHeader } from '../layout/Header';
 
 import {
   PageWrap, Header, Logo, Body, BodyInner, Footer, FooterInner,
@@ -236,13 +237,12 @@ export const ChatStoryCreator: React.FC<Props> = ({
   if (step === 'form') {
     return (
       <PageWrap>
-        {/* Header glass : meme composant que le step 2 (preview) — coherent avec
-            les autres pages du site. Remplace l'ancien logo absolu qui se superposait
-            au H1 sur certains screens. */}
-        <Header>
-          <Logo onClick={() => { window.location.href = '/'; }}>Contedia</Logo>
-          <div />
-        </Header>
+        {/* Header GLOBAL du site (le meme que la homepage) — coherence avec les
+            autres pages, acces au compte/dashboard, standard du secteur (Wonderbly,
+            Hooray Heroes, Storyjumper). Le SiteHeader gere son propre fixed +
+            HeaderSpacer. PageWrap ajoute le padding-top correspondant pour que le
+            contenu commence sous le header. */}
+        <SiteHeader />
 
         <Body>
           <BodyInner>
