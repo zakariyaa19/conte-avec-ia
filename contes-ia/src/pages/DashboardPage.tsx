@@ -10,6 +10,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { ApiService } from '../config/api';
 import { getImageUrl } from '../config/constants';
 import { ShareModal } from '../components/ui/ShareModal';
+import { LibraryFullModal } from '../components/ui/LibraryFullModal';
 import { SEOHead } from '../components/SEOHead';
 
 /* ══════════════════════════════════════════════
@@ -864,6 +865,7 @@ export const DashboardPage: React.FC = () => {
   const [subscriptionActivating, setSubscriptionActivating] = useState(false);
   const [countdown, setCountdown] = useState<{ days: number; hours: number } | null>(null);
   const [shareStory, setShareStory] = useState<{ id: string; name: string; title?: string } | null>(null);
+  const [showLibraryFull, setShowLibraryFull] = useState(false);
 
   // Derive protagonist name (most used) for personalized messages
   const heroName = useMemo(() => {
@@ -1092,12 +1094,10 @@ export const DashboardPage: React.FC = () => {
             </button>
             <button onClick={() => {
               if (!isClub && stories.length >= 3) {
-                if (window.confirm('Vous avez utilisé vos 3 chapitres gratuits.\n\nRejoignez le Club pour créer des livres complets illimités !')) {
-                  navigate('/club/checkout');
-                }
+                setShowLibraryFull(true);
                 return;
               }
-              else navigate('/create-story');
+              navigate('/create-story');
             }} style={{
               height: 36, padding: '0 16px', borderRadius: 18, border: 'none',
               background: theme.colors.accent.coral, color: 'white',
@@ -1395,6 +1395,16 @@ export const DashboardPage: React.FC = () => {
           coverTitle={shareStory.title}
         />
       )}
+
+      <LibraryFullModal
+        open={showLibraryFull}
+        onClose={() => setShowLibraryFull(false)}
+        onUpgrade={() => {
+          setShowLibraryFull(false);
+          navigate('/club/checkout');
+        }}
+        bookCount={stories.length}
+      />
     </PageContainer>
   );
 };
