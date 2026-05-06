@@ -236,20 +236,13 @@ export const ChatStoryCreator: React.FC<Props> = ({
   if (step === 'form') {
     return (
       <PageWrap>
-        {/* Logo Contedia minimal, cliquable, en haut-gauche flottant — pas de header bar */}
-        <div
-          onClick={() => { window.location.href = '/'; }}
-          role="button"
-          aria-label="Retour à l'accueil"
-          style={{
-            position: 'absolute', top: 14, left: 16, zIndex: 5,
-            fontFamily: "'Baloo 2', 'Comic Neue', cursive",
-            fontSize: 16, fontWeight: 700, color: C.coral, cursor: 'pointer',
-            opacity: 0.7,
-          }}
-        >
-          Contedia
-        </div>
+        {/* Header glass : meme composant que le step 2 (preview) — coherent avec
+            les autres pages du site. Remplace l'ancien logo absolu qui se superposait
+            au H1 sur certains screens. */}
+        <Header>
+          <Logo onClick={() => { window.location.href = '/'; }}>Contedia</Logo>
+          <div />
+        </Header>
 
         <Body>
           <BodyInner>
@@ -258,7 +251,7 @@ export const ChatStoryCreator: React.FC<Props> = ({
                 instantane pour tout parent francophone. Pas d'imperatif (le SmartHint
                 en-dessous joue le role CTA dynamique). Les promesses fonctionnelles
                 (5 min, gratuit, sans CB) sont deja dans le TrustRow en bas. */}
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 14 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <h1 style={{
                 fontFamily: "'Baloo 2', 'Comic Neue', cursive",
                 fontSize: 'clamp(1.45rem, 5.6vw, 2.05rem)',
