@@ -165,14 +165,16 @@ export const Body = styled.main`
   flex: 1;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  /* Padding-top reduit : la zone du haut doit etre compacte pour que clavier ouvert,
-     titre + SmartHint + textarea tiennent ensemble dans la fenetre visible. */
-  padding: 18px 20px 20px;
+  /* Padding-top : un peu d'air entre le SiteHeader et le H1 — pas trop pour
+     que clavier ouvert, titre + SmartHint + textarea tiennent ensemble dans
+     la fenetre visible, mais assez pour que le titre ne soit pas colle au
+     bord du header. */
+  padding: 32px 20px 20px;
   position: relative;
   z-index: 1;
 
   @media (min-width: 768px) {
-    padding: 40px 24px 24px;
+    padding: 48px 24px 24px;
     display: flex;
     justify-content: center;
   }
