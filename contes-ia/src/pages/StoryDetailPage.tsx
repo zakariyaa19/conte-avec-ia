@@ -10,6 +10,7 @@ import { StoryPDFViewer } from '../components/ui/StoryPDFViewer';
 import { StoryReader } from '../components/ui/StoryReader';
 import { PostPurchaseFlow } from '../components/ui/PostPurchaseFlow';
 import { useExperiment } from '../hooks/useExperiment';
+import { trackPaywallEvent } from '../utils/paywallTracking';
 import { ApiService } from '../config/api';
 import { getImageUrl } from '../config/constants';
 import { ShareModal } from '../components/ui/ShareModal';
@@ -603,6 +604,14 @@ export const StoryDetailPage: React.FC = () => {
     if (story && !autoOpenedRef.current) {
       if (isCompletionReturn) {
         autoOpenedRef.current = true;
+        // Tracking : retour de Stripe Checkout (variante control) = paiement reussi
+        if (id) {
+          trackPaywallEvent('paywall_payment_success', {
+            orderId: id,
+            variant: 'control',
+            protagonistName: story.protagonistName || '',
+          });
+        }
         if (postPurchaseVariant === 'three_slides' && !postPurchaseShownRef.current) {
           postPurchaseShownRef.current = true;
           setPostPurchaseOpen(true);
@@ -614,7 +623,7 @@ export const StoryDetailPage: React.FC = () => {
         setReaderOpen(true);
       }
     }
-  }, [isCompletionReturn, isNewStory, story, story?.storyStatus, postPurchaseVariant]);
+  }, [isCompletionReturn, isNewStory, story, story?.storyStatus, postPurchaseVariant, id]);
 
   // Tracker la lecture uniquement quand le livre est prêt — 1 fois par visite
   const readTrackedRef = React.useRef(false);

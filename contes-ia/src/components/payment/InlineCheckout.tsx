@@ -4,6 +4,7 @@ import { loadStripe, Stripe } from '@stripe/stripe-js';
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { ApiService } from '../../config/api';
 import { getImageUrl } from '../../config/constants';
+import { trackPaywallEvent } from '../../utils/paywallTracking';
 
 /**
  * 6.1 devbook — Stripe Elements inline (pas de redirection)
@@ -115,8 +116,9 @@ const Loader = styled.div`
 /* ═══════════ INNER FORM (needs to be inside <Elements>) ═══════════ */
 const PaymentForm: React.FC<{
   protagonistName: string;
+  orderId: string;
   onSuccess: () => void;
-}> = ({ protagonistName, onSuccess }) => {
+}> = ({ protagonistName, orderId, onSuccess }) => {
   const stripe = useStripe();
   const elements = useElements();
   const [submitting, setSubmitting] = useState(false);
@@ -146,6 +148,11 @@ const PaymentForm: React.FC<{
     }
     // Succes (pas de 3DS) ou redirection effectuee par Stripe (3DS)
     if (result.paymentIntent && result.paymentIntent.status === 'succeeded') {
+      trackPaywallEvent('paywall_payment_success', {
+        orderId,
+        variant: 'inline',
+        protagonistName,
+      });
       onSuccess();
     }
     // Note : si 3DS, la page redirige vers return_url et on revient avec ?payment_intent=... ;
@@ -176,6 +183,15 @@ export const InlineCheckout: React.FC<InlineCheckoutProps> = ({
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const stripe = useMemo(() => getStripePromise(), []);
+
+  // Fire paywall_checkout_open des l'ouverture du modal
+  useEffect(() => {
+    trackPaywallEvent('paywall_checkout_open', {
+      orderId,
+      variant: 'inline',
+      protagonistName,
+    });
+  }, [orderId, protagonistName]);
 
   useEffect(() => {
     let cancelled = false;
@@ -265,7 +281,7 @@ export const InlineCheckout: React.FC<InlineCheckoutProps> = ({
               },
             }}
           >
-            <PaymentForm protagonistName={protagonistName} onSuccess={onSuccess} />
+            <PaymentForm protagonistName={protagonistName} orderId={orderId} onSuccess={onSuccess} />
           </Elements>
         )}
       </Card>
