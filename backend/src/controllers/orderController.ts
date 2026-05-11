@@ -11,6 +11,7 @@ import { ClubService } from '../utils/clubService';
 import { MailjetService } from '../utils/mailjetService';
 import { buildOrderDetailsString } from '../utils/orderFormatter';
 import { saveCoverImage } from '../utils/coverStorage';
+import { isPlausibleName, normalizeChildName, resolveCustomerName } from '../utils/nameValidation';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', { typescript: true });
 
@@ -42,6 +43,20 @@ export class OrderController {
           message: 'Données obligatoires manquantes dans le formulaire'
         });
       }
+
+      // Garde-fou : refuser un prenom qui est un article francais, un pronom,
+      // une suite de chiffres, ou < 2 caracteres. Ces valeurs viennent de bugs
+      // de detection frontend ("Un enfant..." -> "Un"). Le client doit fournir
+      // un VRAI prenom car il finit dans les emails et le prompt GPT.
+      if (!isPlausibleName(formData.protagonistName)) {
+        console.warn(`[OrderController] Prenom rejete: "${formData.protagonistName}" (email=${userEmail})`);
+        return res.status(400).json({
+          success: false,
+          message: 'Saisissez un vrai prénom pour l\'enfant (pas un article ni un chiffre).',
+          field: 'protagonistName',
+        });
+      }
+      formData.protagonistName = normalizeChildName(formData.protagonistName);
 
       // Prix par défaut : 0€ (chapitre gratuit). Sera ajusté si Club/crédits épuisés.
       let price = 0;
@@ -326,7 +341,7 @@ export class OrderController {
         try {
           const orderDetails = buildOrderDetailsString(updatedOrder);
           const customerEmail = user.email;
-          const customerName = user.firstName || formData.creatorName || 'Client';
+          const customerName = resolveCustomerName([user.firstName, formData.creatorName]);
 
           if (customerEmail) {
             await MailjetService.sendOrderConfirmation({
@@ -381,7 +396,7 @@ export class OrderController {
         // Notifications + génération en arrière-plan (ne bloque PAS la réponse)
         const orderId = order.id;
         const customerEmail = user.email;
-        const customerName = user.firstName || formData.creatorName || 'Client';
+        const customerName = resolveCustomerName([user.firstName, formData.creatorName]);
 
         setImmediate(async () => {
           try {

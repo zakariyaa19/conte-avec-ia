@@ -15,6 +15,52 @@ export interface DetectedEntities {
 
 const norm = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 
+// Mots francais frequents qui ne sont JAMAIS des prenoms. La detection regex
+// matchait sur le 1er mot capitalise (ex: "Un enfant de 6 ans..." -> "Un").
+// Cette liste filtre les faux positifs evidents.
+const STOP_WORDS_NAME = new Set([
+  // Articles
+  'un', 'une', 'le', 'la', 'les', 'des', 'du', 'de', 'au', 'aux', 'l',
+  // Pronoms sujets et toniques
+  'il', 'elle', 'ils', 'elles', 'on', 'je', 'tu', 'nous', 'vous', 'moi', 'toi', 'lui', 'eux',
+  // Possessifs
+  'mon', 'ma', 'mes', 'ton', 'ta', 'tes', 'son', 'sa', 'ses',
+  'notre', 'nos', 'votre', 'vos', 'leur', 'leurs',
+  // Demonstratifs
+  'ce', 'cet', 'cette', 'ces', 'ca', 'celui', 'celle', 'ceux', 'celles',
+  // Prepositions / conjonctions
+  'avec', 'sans', 'pour', 'dans', 'sur', 'sous', 'chez', 'vers', 'entre', 'par',
+  'et', 'ou', 'mais', 'donc', 'car', 'ni', 'or',
+  // Adverbes / interrogatifs frequents
+  'voici', 'voila', 'oui', 'non', 'aussi', 'comme', 'tres', 'tout', 'tous', 'toute', 'toutes',
+  'quand', 'qui', 'que', 'quoi', 'dont', 'ou',
+  // Verbes auxiliaires conjugaisons frequentes au debut de phrase
+  'est', 'sont', 'etait', 'etaient', 'aura', 'aurait',
+  // Mots qui commencent souvent une description d'enfant
+  'mon', 'ma', 'notre', 'enfant', 'fille', 'fils', 'bebe', 'fillette', 'garcon',
+  'petit', 'petite', 'grand', 'grande',
+  // Nombres ecrits
+  'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit', 'neuf', 'dix',
+]);
+
+/**
+ * Verifie qu'un candidat-prenom est plausible :
+ * - Au moins 2 caracteres
+ * - Pas un stop-word francais
+ * - Pas une suite de chiffres
+ * - Lettres ASCII/accentuees uniquement
+ */
+export function isPlausibleName(candidate: string | null | undefined): candidate is string {
+  if (!candidate) return false;
+  const trimmed = candidate.trim();
+  if (trimmed.length < 2) return false;
+  if (/^\d+$/.test(trimmed)) return false; // "313" rejete
+  if (!/^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ\s'-]*$/.test(trimmed)) return false;
+  const lower = trimmed.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  if (STOP_WORDS_NAME.has(lower)) return false;
+  return true;
+}
+
 /**
  * Parser intelligent — extrait les entites du texte libre tape par l'utilisateur.
  * Retourne null pour chaque champ NON detecte (sans defaults). C'est cette detection
@@ -26,15 +72,25 @@ export function useStoryDetection(combined: string, hasPhoto: boolean): Detected
     const text = combined || '';
     const t = norm(text);
 
-    // ── Prenom : tout debut du texte (avant virgule, " ans", " est", etc.)
-    // OU mot capitalise non-stopword. Min 2 chars.
+    // ── Prenom : on cherche un mot capitalise qui n'est PAS un stop-word francais.
+    // Bug historique : "Un enfant de 6 ans..." -> regex matchait "Un" comme prenom.
+    // Maintenant on parcourt tous les candidats capitalises et on prend le premier
+    // qui passe isPlausibleName (rejette articles, pronoms, chiffres, etc.).
     let name: string | null = null;
-    const firstWordMatch = text.match(/^\s*([A-ZÀ-ÖØ-Ý][a-zà-öø-ÿ-]{1,29})/);
-    if (firstWordMatch) {
-      name = firstWordMatch[1].trim();
-    } else {
-      const capMatch = text.match(/(?:^|\s)([A-ZÀ-ÖØ-Ý][a-zà-öø-ÿ-]{2,29})/);
-      if (capMatch) name = capMatch[1].trim();
+    const capCandidates = text.match(/(?:^|\s|[.,;:!?'"])([A-ZÀ-ÖØ-Ý][a-zà-öø-ÿ-]{1,29})/g) || [];
+    for (const raw of capCandidates) {
+      const candidate = raw.replace(/^[\s.,;:!?'"]+/, '').trim();
+      if (isPlausibleName(candidate)) {
+        name = candidate;
+        break;
+      }
+    }
+    // Tentative complementaire : "appelé(e) X", "prenom X", "il/elle s'appelle X"
+    if (!name) {
+      const explicit = text.match(/(?:appel[ée]e?|prenom|nomm[ée]e?|c'est|appell?\w*)\s+([A-ZÀ-ÖØ-Ý][a-zà-öø-ÿ-]{1,29})/i);
+      if (explicit && isPlausibleName(explicit[1])) {
+        name = explicit[1].trim();
+      }
     }
 
     // ── Age : "X ans"
@@ -136,7 +192,7 @@ export function useStoryDetection(combined: string, hasPhoto: boolean): Detected
     else if (/halloween/.test(t)) occasion = 'halloween';
 
     return {
-      name: name && name.length >= 2 ? name : null,
+      name: isPlausibleName(name) ? name : null,
       age,
       gender,
       theme,
