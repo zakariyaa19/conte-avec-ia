@@ -5,7 +5,7 @@ import styled, { keyframes } from 'styled-components';
 import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
 import { SEOHead } from '../components/SEOHead';
-import { SchemaFAQ, SchemaBreadcrumb } from '../components/SchemaMarkup';
+import { SchemaFAQ, SchemaBreadcrumb, SchemaHowTo, SchemaProduct } from '../components/SchemaMarkup';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import { theme } from '../styles/theme';
 import { Button } from '../components/ui/Button';
@@ -541,11 +541,32 @@ const covers = [
 
 const faqQuestions = [
   { question: "Comment créer un livre personnalisé pour mon enfant ?", answer: "Sur Contedia, remplissez un formulaire simple avec le prénom, l'âge et les passions de votre enfant. L'IA écrit une histoire unique et génère des illustrations personnalisées. Vous recevez votre livre par email en 5 minutes. Le premier livre est gratuit." },
-  { question: "Le premier livre est-il vraiment gratuit ?", answer: "Oui, totalement gratuit. Pas de carte bancaire demandée, pas d'abonnement caché. Vous recevez un vrai livre complet (3 pages, 7 illustrations) par email. Si vous aimez, vous pouvez créer d'autres livres ou rejoindre le Club." },
-  { question: "À quel âge peut-on offrir un livre personnalisé ?", answer: "Dès la naissance. Pour les 0-2 ans, les parents lisent à voix haute. Pour les 3-5 ans, l'enfant reconnaît son prénom et s'identifie au héros. Pour les 6-8 ans, il peut lire seul son aventure." },
+  { question: "Le premier livre personnalisé enfant est-il vraiment gratuit ?", answer: "Oui, totalement gratuit. Pas de carte bancaire demandée, pas d'abonnement caché. Vous recevez un vrai livre complet (3 pages, 7 illustrations) par email. Si vous aimez, vous pouvez créer d'autres livres ou rejoindre le Club." },
+  { question: "À quel âge peut-on offrir un livre personnalisé enfant ?", answer: "Dès la naissance. Pour les 0-2 ans, les parents lisent à voix haute. Pour les 3-5 ans, l'enfant reconnaît son prénom et s'identifie au héros. Pour les 6-8 ans, il peut lire seul son aventure." },
   { question: "Quelle est la différence avec Wonderbly ou Hourra Héros ?", answer: "Les livres personnalisés classiques remplacent juste le prénom dans un texte standard. Sur Contedia, l'IA écrit une histoire 100% unique à partir de zéro, intégrant le prénom, les passions, les amis et le thème choisi. Deux enfants du même âge reçoivent deux histoires complètement différentes." },
   { question: "Le livre personnalisé est-il un bon cadeau ?", answer: "C'est le cadeau qui éclipse tous les autres. Un jouet, l'enfant l'oublie en 2 semaines. Un livre avec SON nom dedans, il le garde toute sa vie. Parfait pour un anniversaire, Noël, une naissance. À partir de 0€." },
-  { question: "Comment l'IA crée-t-elle les illustrations ?", answer: "L'IA génère chaque illustration à partir du texte de la page, en respectant le style choisi (aquarelle, 3D, manga...). Le personnage principal correspond au profil de l'enfant. Toutes les illustrations sont uniques et cohérentes entre elles." }
+  { question: "Comment l'IA crée-t-elle les illustrations ?", answer: "L'IA génère chaque illustration à partir du texte de la page, en respectant le style choisi (aquarelle, 3D, manga...). Le personnage principal correspond au profil de l'enfant. Toutes les illustrations sont uniques et cohérentes entre elles." },
+  { question: "Quel est le meilleur livre personnalisé enfant en 2026 ?", answer: "Pour une vraie personnalisation (prénom + photo + histoire unique générée par IA), Contedia est le n°1 en 2026. Vs Wonderbly (25-40€, texte templaté) et Hourra Héros (35€, idem), Contedia propose le premier livre gratuit puis 2,99€ pour la version complète. Voir notre comparatif détaillé des 10 meilleurs livres personnalisés enfants 2026." },
+  { question: "Peut-on intégrer une photo de mon enfant dans le livre personnalisé ?", answer: "Oui. La photo est optionnelle mais elle permet à l'IA d'analyser les traits physiques (couleur de cheveux, yeux, peau) pour créer un personnage qui ressemble vraiment à votre enfant dans les illustrations. La photo est supprimée des serveurs après génération du livre." },
+  { question: "Combien coûte un livre personnalisé enfant ?", answer: "Le premier livre personnalisé est gratuit (chapitre de 3 pages, sans CB). Pour la version complète : 2,99€ unique. Pour des livres illimités : Club mensuel 1,99€ le premier mois (puis 9,99€/mois, 4 livres complets), ou Club annuel 79,99€/an (-33%). Vs concurrents 25-40€ par livre." },
+  { question: "Le livre personnalisé enfant est-il imprimable ?", answer: "Oui, vous recevez un PDF haute qualité que vous pouvez imprimer chez vous, dans un service de copie, ou via un imprimeur en ligne (Vistaprint, Photobox) pour avoir un vrai livre relié. Le PDF est aussi parfait pour la lecture sur tablette, téléphone ou ordinateur." },
+  { question: "Peut-on offrir un livre personnalisé pour la naissance d'un bébé ?", answer: "Oui, c'est l'un des cadeaux de naissance les plus émouvants. Vous renseignez le prénom du bébé et créez un livre avec une histoire douce adaptée 0-2 ans. Les parents le gardent toute leur vie comme premier souvenir. À partir de 0€." },
+  { question: "Est-ce qu'il existe un livre personnalisé enfant gratuit ?", answer: "Sur Contedia, le premier livre personnalisé est entièrement gratuit, sans carte bancaire, sans engagement. Vous testez la qualité avant tout achat. C'est le seul service de livre personnalisé enfant qui offre cette gratuité totale sur le premier livre en 2026." }
+];
+
+const howToSteps = [
+  {
+    name: "Choisir le thème et l'âge",
+    text: "Sélectionnez l'âge de votre enfant (0-12 ans) et le thème du livre personnalisé : aventure, animaux, espace, Noël, contes de fées, dinosaures…"
+  },
+  {
+    name: "Personnaliser le héros",
+    text: "Renseignez le prénom, la photo optionnelle, les hobbies, les personnages secondaires (frère, sœur, animal). L'IA intègre tout dans le récit."
+  },
+  {
+    name: "Recevoir le livre en 5 minutes",
+    text: "L'IA génère un livre personnalisé enfant illustré 100% unique. Vous le recevez par email, lisible sur tout écran ou imprimable en PDF."
+  }
 ];
 
 const articleSchema = {
@@ -572,8 +593,8 @@ const LivrePersonnaliseEnfantPage: React.FC = () => {
   return (
     <Page>
       <SEOHead
-        title="Livre Personnalisé Enfant — Créez l'Aventure Unique de Votre Enfant | Contedia"
-        description="Offrez un livre où votre enfant est le héros : prénom, photo, histoire unique illustrée par IA. 1er livre gratuit, prêt en 5 min. Livraison PDF immédiate."
+        title="Livre personnalisé enfant : prénom + photo + IA (1er gratuit) | Contedia"
+        description="Le livre personnalisé enfant qui inclut le vrai prénom et la photo de votre enfant. Histoire 100% unique générée par IA en 5 minutes. Premier livre offert, sans CB."
         type="website"
       />
       <SchemaFAQ questions={faqQuestions} />
@@ -581,6 +602,18 @@ const LivrePersonnaliseEnfantPage: React.FC = () => {
         { name: "Accueil", url: "https://contedia.fr/" },
         { name: "Livre Personnalisé Enfant", url: "https://contedia.fr/livre-personnalise-enfant" }
       ]} />
+      <SchemaHowTo
+        name="Comment créer un livre personnalisé enfant en 5 minutes"
+        description="Créez en 3 étapes un livre personnalisé enfant illustré 100% unique avec le prénom et la photo. Premier livre gratuit."
+        totalTime="PT5M"
+        steps={howToSteps}
+      />
+      <SchemaProduct
+        name="Livre personnalisé enfant — Premier livre gratuit"
+        description="Livre personnalisé pour enfant avec prénom, photo et histoire 100% unique par IA. Premier livre offert."
+        price="0"
+        priceCurrency="EUR"
+      />
       <Helmet>
         <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>
       </Helmet>
@@ -596,7 +629,7 @@ const LivrePersonnaliseEnfantPage: React.FC = () => {
           <HeroText>
             <HeroBadge>Premier livre gratuit</HeroBadge>
             <HeroH1>
-              Créez un <span>Livre Personnalisé</span> pour Votre Enfant
+              Le <span>livre personnalisé enfant</span> où il est enfin le héros
             </HeroH1>
             <HeroSub>
               Son prénom, ses passions, des illustrations créées pour lui.

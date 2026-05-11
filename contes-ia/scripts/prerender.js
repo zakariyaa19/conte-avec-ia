@@ -43,6 +43,7 @@ const ROUTES = [
   '/club',
   '/blog',
   '/livre-personnalise-enfant',
+  '/conte-personnalise',
   '/themes-de-contes',
   '/contes-par-age',
   '/styles-illustration',
@@ -78,6 +79,7 @@ const ROUTES = [
   '/blog/alternative-lunii-livre-personnalise-ia',
   '/blog/alternative-toniebox-livre-personnalise-enfant',
   '/blog/histoire-du-soir-enfant-meilleures-idees',
+  '/blog/histoire-du-soir-50-idees',
   '/blog/conte-pour-sendormir-histoires-personnalisees',
   '/blog/cadeau-naissance-livre-personnalise-bebe',
   '/blog/cadeau-noel-livre-personnalise-enfant',
@@ -109,6 +111,20 @@ const ROUTES = [
   '/prenom/sarah', '/prenom/theo', '/prenom/clara', '/prenom/aaron',
   '/prenom/charlotte', '/prenom/gabin', '/prenom/victoria', '/prenom/robin',
   '/prenom/lily', '/prenom/martin',
+  // Vague 2 (mai 2026) - top 50-100 + diaspora
+  '/prenom/mila', '/prenom/eva', '/prenom/capucine', '/prenom/romane',
+  '/prenom/juliette', '/prenom/romy', '/prenom/alma', '/prenom/suzanne',
+  '/prenom/josephine', '/prenom/gabrielle', '/prenom/alba', '/prenom/augustine',
+  '/prenom/margaux', '/prenom/apolline', '/prenom/garance',
+  '/prenom/elias', '/prenom/marcel', '/prenom/axel', '/prenom/alexandre',
+  '/prenom/isaac', '/prenom/augustin', '/prenom/antoine', '/prenom/david',
+  '/prenom/julien', '/prenom/valentin', '/prenom/thomas', '/prenom/baptiste',
+  '/prenom/simon', '/prenom/samuel', '/prenom/noe', '/prenom/basile',
+  '/prenom/amir', '/prenom/kenza', '/prenom/layla', '/prenom/malek',
+  '/prenom/omar', '/prenom/samir', '/prenom/nour', '/prenom/hamza',
+  '/prenom/salma', '/prenom/karim', '/prenom/fatima', '/prenom/mehdi',
+  '/prenom/anis', '/prenom/mariam',
+  '/prenom/naelle', '/prenom/livia', '/prenom/milan',
 ];
 
 // Serveur HTTP statique simple avec SPA fallback

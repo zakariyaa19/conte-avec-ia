@@ -38,7 +38,7 @@ const PRENOMS_DATA: Record<string, { gender: 'fille' | 'garcon'; popularity: str
   anna: { gender: 'fille', popularity: 'Top 15', origin: 'hébreu', meaning: 'Grâce, faveur', relatedNames: ['emma', 'lea', 'sarah', 'manon', 'clara'] },
   hugo: { gender: 'garcon', popularity: 'Top 15', origin: 'germanique', meaning: 'Esprit, intelligence', relatedNames: ['louis', 'arthur', 'robin', 'theo', 'jules'] },
   lea: { gender: 'fille', popularity: 'Top 10', origin: 'hébreu', meaning: 'Lionne, celle qui est fatiguée', relatedNames: ['anna', 'sarah', 'manon', 'chloe', 'julia'] },
-  maël: { gender: 'garcon', popularity: 'Top 15', origin: 'celtique', meaning: 'Prince, chef', relatedNames: ['arthur', 'liam', 'nolan', 'robin', 'hugo'] },
+  mael: { gender: 'garcon', popularity: 'Top 15', origin: 'celtique', meaning: 'Prince, chef', relatedNames: ['arthur', 'liam', 'nolan', 'robin', 'hugo'] },
   luna: { gender: 'fille', popularity: 'Top 20', origin: 'latin', meaning: 'Lune', relatedNames: ['mia', 'lily', 'jade', 'lina', 'ambre'] },
   liam: { gender: 'garcon', popularity: 'Top 10', origin: 'irlandais', meaning: 'Protecteur résolu', relatedNames: ['nolan', 'arthur', 'maël', 'ethan', 'noah'] },
   julia: { gender: 'fille', popularity: 'Top 20', origin: 'latin', meaning: 'De la famille de Jule', relatedNames: ['camille', 'clara', 'victoria', 'elena', 'chloe'] },
@@ -67,6 +67,64 @@ const PRENOMS_DATA: Record<string, { gender: 'fille' | 'garcon'; popularity: str
   robin: { gender: 'garcon', popularity: 'Top 25', origin: 'germanique', meaning: 'Gloire, brillant', relatedNames: ['hugo', 'louis', 'arthur', 'maël', 'sacha'] },
   lily: { gender: 'fille', popularity: 'Top 25', origin: 'anglais', meaning: 'Lys, pureté', relatedNames: ['rose', 'luna', 'mia', 'jade', 'charlie'] },
   martin: { gender: 'garcon', popularity: 'Top 30', origin: 'latin', meaning: 'Consacré à Mars, guerrier', relatedNames: ['paul', 'jules', 'lucas', 'gabin', 'leo'] },
+
+  // ═══════ 50 prénoms supplémentaires (top 50-100 + diaspora) ═══════
+
+  // Filles françaises populaires
+  mila: { gender: 'fille', popularity: 'Top 30', origin: 'slave', meaning: 'Chère, aimable', relatedNames: ['luna', 'mia', 'lina', 'lily', 'jade'] },
+  eva: { gender: 'fille', popularity: 'Top 35', origin: 'hébreu', meaning: 'Vivante, source de vie', relatedNames: ['emma', 'anna', 'lea', 'mia', 'rose'] },
+  capucine: { gender: 'fille', popularity: 'Top 35', origin: 'latin', meaning: 'Fleur orange', relatedNames: ['rose', 'lily', 'jade', 'ambre', 'alma'] },
+  romane: { gender: 'fille', popularity: 'Top 40', origin: 'latin', meaning: 'Romaine, citoyenne de Rome', relatedNames: ['julia', 'clara', 'victoria', 'manon', 'camille'] },
+  juliette: { gender: 'fille', popularity: 'Top 30', origin: 'latin', meaning: 'De la famille de Jule', relatedNames: ['julia', 'charlotte', 'alice', 'rose', 'louise'] },
+  romy: { gender: 'fille', popularity: 'Top 40', origin: 'germanique', meaning: 'Renommée glorieuse', relatedNames: ['mia', 'luna', 'lily', 'charlie', 'jade'] },
+  alma: { gender: 'fille', popularity: 'Top 50', origin: 'latin', meaning: 'Âme, bienveillante', relatedNames: ['anna', 'eva', 'mia', 'luna', 'rose'] },
+  suzanne: { gender: 'fille', popularity: 'Top 60', origin: 'hébreu', meaning: 'Lys gracieux', relatedNames: ['louise', 'charlotte', 'alice', 'capucine', 'juliette'] },
+  josephine: { gender: 'fille', popularity: 'Top 50', origin: 'hébreu', meaning: 'Que Dieu ajoute', relatedNames: ['louise', 'charlotte', 'capucine', 'agathe', 'gabrielle'] },
+  gabrielle: { gender: 'fille', popularity: 'Top 70', origin: 'hébreu', meaning: 'Force de Dieu', relatedNames: ['josephine', 'charlotte', 'victoria', 'alice', 'clara'] },
+  alba: { gender: 'fille', popularity: 'Top 60', origin: 'latin', meaning: 'Aurore, blanche', relatedNames: ['alma', 'luna', 'eva', 'rose', 'mia'] },
+  augustine: { gender: 'fille', popularity: 'Top 70', origin: 'latin', meaning: 'Vénérable, majestueuse', relatedNames: ['josephine', 'gabrielle', 'agathe', 'capucine', 'alma'] },
+  margaux: { gender: 'fille', popularity: 'Top 50', origin: 'grec', meaning: 'Perle', relatedNames: ['camille', 'manon', 'agathe', 'clara', 'lea'] },
+  apolline: { gender: 'fille', popularity: 'Top 40', origin: 'grec', meaning: 'Consacrée à Apollon', relatedNames: ['gabrielle', 'capucine', 'juliette', 'agathe', 'alma'] },
+  garance: { gender: 'fille', popularity: 'Top 70', origin: 'persan', meaning: 'Plante à fleurs rouges', relatedNames: ['alma', 'ambre', 'capucine', 'rose', 'romy'] },
+
+  // Garçons français populaires
+  elias: { gender: 'garcon', popularity: 'Top 25', origin: 'hébreu', meaning: 'Mon Dieu est Yahvé', relatedNames: ['noah', 'adam', 'gabriel', 'aaron', 'nathan'] },
+  marcel: { gender: 'garcon', popularity: 'Top 60', origin: 'latin', meaning: 'Petit guerrier', relatedNames: ['martin', 'paul', 'louis', 'jules', 'gabin'] },
+  axel: { gender: 'garcon', popularity: 'Top 30', origin: 'scandinave', meaning: 'Père de la paix', relatedNames: ['liam', 'nolan', 'ethan', 'maël', 'noah'] },
+  alexandre: { gender: 'garcon', popularity: 'Top 40', origin: 'grec', meaning: 'Protecteur des hommes', relatedNames: ['arthur', 'antoine', 'sacha', 'theo', 'gabriel'] },
+  isaac: { gender: 'garcon', popularity: 'Top 40', origin: 'hébreu', meaning: 'Il rira, joie', relatedNames: ['adam', 'noah', 'aaron', 'gabriel', 'nathan'] },
+  augustin: { gender: 'garcon', popularity: 'Top 50', origin: 'latin', meaning: 'Vénérable, majestueux', relatedNames: ['antoine', 'arthur', 'louis', 'jules', 'paul'] },
+  antoine: { gender: 'garcon', popularity: 'Top 40', origin: 'latin', meaning: 'Inestimable, précieux', relatedNames: ['alexandre', 'augustin', 'paul', 'arthur', 'louis'] },
+  david: { gender: 'garcon', popularity: 'Top 80', origin: 'hébreu', meaning: 'Bien-aimé', relatedNames: ['samuel', 'nathan', 'adam', 'gabriel', 'isaac'] },
+  julien: { gender: 'garcon', popularity: 'Top 80', origin: 'latin', meaning: 'De la famille de Jule', relatedNames: ['jules', 'paul', 'martin', 'lucas', 'leo'] },
+  valentin: { gender: 'garcon', popularity: 'Top 60', origin: 'latin', meaning: 'Vigoureux, en bonne santé', relatedNames: ['martin', 'antoine', 'jules', 'paul', 'baptiste'] },
+  thomas: { gender: 'garcon', popularity: 'Top 50', origin: 'araméen', meaning: 'Jumeau', relatedNames: ['tom', 'theo', 'sacha', 'hugo', 'antoine'] },
+  baptiste: { gender: 'garcon', popularity: 'Top 60', origin: 'grec', meaning: 'Celui qui baptise', relatedNames: ['valentin', 'antoine', 'martin', 'augustin', 'paul'] },
+  simon: { gender: 'garcon', popularity: 'Top 50', origin: 'hébreu', meaning: 'Dieu a entendu', relatedNames: ['samuel', 'nathan', 'aaron', 'noah', 'isaac'] },
+  samuel: { gender: 'garcon', popularity: 'Top 50', origin: 'hébreu', meaning: 'Dieu a entendu', relatedNames: ['simon', 'david', 'nathan', 'aaron', 'isaac'] },
+  noe: { gender: 'garcon', popularity: 'Top 30', origin: 'hébreu', meaning: 'Repos, paix', relatedNames: ['noah', 'adam', 'aaron', 'liam', 'elias'] },
+  basile: { gender: 'garcon', popularity: 'Top 80', origin: 'grec', meaning: 'Royal', relatedNames: ['antoine', 'augustin', 'martin', 'theo', 'simon'] },
+
+  // Diaspora maghrébine et arabe (volume FR + Maroc/Algérie/Tunisie)
+  amir: { gender: 'garcon', popularity: 'Top 60', origin: 'arabe', meaning: 'Prince, commandant', relatedNames: ['rayan', 'mohamed', 'adam', 'mehdi', 'karim'] },
+  kenza: { gender: 'fille', popularity: 'Top 50', origin: 'arabe', meaning: 'Trésor caché', relatedNames: ['yasmine', 'lina', 'ines', 'salma', 'mariam'] },
+  layla: { gender: 'fille', popularity: 'Top 60', origin: 'arabe', meaning: 'Nuit, beauté de la nuit', relatedNames: ['yasmine', 'lina', 'salma', 'kenza', 'nour'] },
+  malek: { gender: 'garcon', popularity: 'Top 70', origin: 'arabe', meaning: 'Roi, souverain', relatedNames: ['amir', 'rayan', 'mehdi', 'karim', 'mohamed'] },
+  omar: { gender: 'garcon', popularity: 'Top 70', origin: 'arabe', meaning: 'Florissant, prospère', relatedNames: ['amir', 'karim', 'mehdi', 'rayan', 'mohamed'] },
+  samir: { gender: 'garcon', popularity: 'Top 90', origin: 'arabe', meaning: 'Compagnon de conversation', relatedNames: ['amir', 'karim', 'mehdi', 'rayan', 'omar'] },
+  nour: { gender: 'fille', popularity: 'Top 50', origin: 'arabe', meaning: 'Lumière', relatedNames: ['yasmine', 'lina', 'salma', 'kenza', 'layla'] },
+  hamza: { gender: 'garcon', popularity: 'Top 70', origin: 'arabe', meaning: 'Fort, courageux comme un lion', relatedNames: ['amir', 'mohamed', 'karim', 'omar', 'mehdi'] },
+  salma: { gender: 'fille', popularity: 'Top 70', origin: 'arabe', meaning: 'Saine, paisible', relatedNames: ['yasmine', 'lina', 'kenza', 'layla', 'nour'] },
+  karim: { gender: 'garcon', popularity: 'Top 80', origin: 'arabe', meaning: 'Généreux, noble', relatedNames: ['amir', 'omar', 'samir', 'mehdi', 'hamza'] },
+  fatima: { gender: 'fille', popularity: 'Top 80', origin: 'arabe', meaning: 'Celle qui sevre, la séparée', relatedNames: ['salma', 'yasmine', 'mariam', 'nour', 'kenza'] },
+  mehdi: { gender: 'garcon', popularity: 'Top 50', origin: 'arabe', meaning: 'Guidé par Dieu', relatedNames: ['amir', 'rayan', 'karim', 'omar', 'malek'] },
+  anis: { gender: 'garcon', popularity: 'Top 70', origin: 'arabe', meaning: 'Compagnon fidèle', relatedNames: ['amir', 'mehdi', 'samir', 'omar', 'rayan'] },
+  mariam: { gender: 'fille', popularity: 'Top 60', origin: 'hébreu', meaning: 'Aimée, élevée', relatedNames: ['sarah', 'yasmine', 'salma', 'fatima', 'kenza'] },
+
+  // Internationaux et tendance
+  naelle: { gender: 'fille', popularity: 'Top 80', origin: 'hébreu', meaning: 'Don de Dieu', relatedNames: ['mia', 'luna', 'eva', 'lina', 'naya'] },
+  livia: { gender: 'fille', popularity: 'Top 80', origin: 'latin', meaning: 'Couleur olive, paix', relatedNames: ['julia', 'clara', 'alma', 'romy', 'eva'] },
+  milan: { gender: 'garcon', popularity: 'Top 60', origin: 'slave', meaning: 'Aimable, gracieux', relatedNames: ['liam', 'ethan', 'noah', 'maël', 'nolan'] },
 };
 
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
