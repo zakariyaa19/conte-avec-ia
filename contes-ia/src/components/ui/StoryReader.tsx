@@ -445,7 +445,11 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
   }, []);
 
   // Build slides: cover + pages (text+image combined) + end
-  const pageCount = Math.max(paragraphs.length, illustrationUrls.length);
+  // Le texte est la source de verite : on n'affiche pas de page sans paragraphe.
+  // Defensif pour les commandes generees pendant un bug ou les images sont en avance sur le texte.
+  const pageCount = paragraphs.length > 0
+    ? paragraphs.length
+    : illustrationUrls.length;
   const slides: { type: 'cover' | 'page' | 'end'; index?: number }[] = [{ type: 'cover' }];
   for (let i = 0; i < pageCount; i++) {
     slides.push({ type: 'page', index: i });

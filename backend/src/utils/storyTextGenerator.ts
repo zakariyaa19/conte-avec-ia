@@ -275,7 +275,7 @@ Pas de titre, pas de label, pas de commentaire, JUSTE le JSON array du texte nar
 export async function generateStoryText(params: StoryTextParams, title: string): Promise<StoryTextResult> {
   const openai = getOpenAI();
   const isClub = params.isClub === true;
-  const targetParagraphs = isClub ? 20 : 3;
+  const targetParagraphs = isClub ? 20 : 5;
   const prompt = isClub ? buildClubStoryPrompt(params) : buildStoryPrompt(params);
 
   console.log(`[StoryTextGenerator] Generating ${targetParagraphs} paragraphs (${isClub ? 'CLUB' : 'FREE'}) for:`, params.protagonistName);
