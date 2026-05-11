@@ -30,6 +30,8 @@ import ValeursEducativesPage from './pages/ValeursEducativesPage';
 import IdeesCadeauxPage from './pages/IdeesCadeauxPage';
 import IACreationContePage from './pages/IACreationContePage';
 import LivrePersonnaliseEnfantPage from './pages/LivrePersonnaliseEnfantPage';
+import ContePersonnaliseLandingPage from './pages/ContePersonnaliseLandingPage';
+import BlogArticleHistoireDuSoir50 from './pages/BlogArticleHistoireDuSoir50';
 import BlogPage from './pages/BlogPage';
 import BlogArticle1 from './pages/BlogArticle1';
 import BlogArticle2 from './pages/BlogArticle2';
@@ -143,6 +145,7 @@ function App() {
           <Route path="/idees-cadeaux" element={<IdeesCadeauxPage />} />
           <Route path="/ia-creation-conte" element={<IACreationContePage />} />
           <Route path="/livre-personnalise-enfant" element={<LivrePersonnaliseEnfantPage />} />
+          <Route path="/conte-personnalise" element={<ContePersonnaliseLandingPage />} />
           <Route path="/blog" element={<BlogPage />} />
           {/* Articles de blog */}
           <Route path="/blog/histoire-animal-compagnie-livre-personnalise" element={<BlogArticle1 />} />
@@ -192,6 +195,7 @@ function App() {
           <Route path="/blog/alternative-lunii-livre-personnalise-ia" element={<BlogArticleAlternativeLunii />} />
           <Route path="/blog/alternative-toniebox-livre-personnalise-enfant" element={<BlogArticleAlternativeToniebox />} />
           <Route path="/blog/histoire-du-soir-enfant-meilleures-idees" element={<BlogArticleHistoireDuSoir />} />
+          <Route path="/blog/histoire-du-soir-50-idees" element={<BlogArticleHistoireDuSoir50 />} />
           <Route path="/blog/conte-pour-sendormir-histoires-personnalisees" element={<BlogArticleConteSendormir />} />
           <Route path="/blog/cadeau-naissance-livre-personnalise-bebe" element={<BlogArticleCadeauNaissance />} />
           <Route path="/blog/cadeau-noel-livre-personnalise-enfant" element={<BlogArticleCadeauNoel />} />

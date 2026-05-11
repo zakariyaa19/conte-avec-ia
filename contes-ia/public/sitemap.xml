@@ -125,6 +125,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://contedia.fr/blog/histoire-du-soir-50-idees</loc>
+    <lastmod>2026-05-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://contedia.fr/blog/conte-pour-sendormir-histoires-personnalisees</loc>
     <lastmod>2026-04-18</lastmod>
     <changefreq>monthly</changefreq>
@@ -277,10 +283,66 @@
   <url><loc>https://contedia.fr/prenom/lily</loc><lastmod>2026-04-18</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://contedia.fr/prenom/martin</loc><lastmod>2026-04-18</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
 
-  <!-- ══════ LANDING PAGE TRANSACTIONNELLE ══════ -->
+  <!-- ══════ Vague 2 prénoms (mai 2026) — top 50-100 + diaspora ══════ -->
+  <url><loc>https://contedia.fr/prenom/mila</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/eva</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/capucine</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/romane</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/juliette</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/romy</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/alma</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/suzanne</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/josephine</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/gabrielle</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/alba</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/augustine</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/margaux</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/apolline</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/garance</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/elias</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/marcel</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/axel</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/alexandre</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/isaac</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/augustin</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/antoine</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/david</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/julien</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/valentin</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/thomas</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/baptiste</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/simon</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/samuel</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/noe</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/basile</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/amir</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/kenza</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/layla</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/malek</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/omar</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/samir</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/nour</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/hamza</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/salma</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/karim</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/fatima</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/mehdi</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/anis</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/mariam</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/naelle</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/livia</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://contedia.fr/prenom/milan</loc><lastmod>2026-05-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+
+  <!-- ══════ LANDING PAGES TRANSACTIONNELLES ══════ -->
   <url>
     <loc>https://contedia.fr/livre-personnalise-enfant</loc>
-    <lastmod>2026-03-30</lastmod>
+    <lastmod>2026-05-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://contedia.fr/conte-personnalise</loc>
+    <lastmod>2026-05-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
