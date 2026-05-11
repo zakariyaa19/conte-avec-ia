@@ -4,6 +4,7 @@ import { theme } from '../../styles/theme';
 import { getImageUrl } from '../../config/constants';
 import { InlineCheckout } from '../payment/InlineCheckout';
 import { useExperiment } from '../../hooks/useExperiment';
+import { trackPaywallEvent } from '../../utils/paywallTracking';
 
 
 /* ═══════════════════════════════════════════
@@ -489,6 +490,19 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
     indicatorTimeout.current = setTimeout(() => setShowIndicator(false), delay);
   }, [currentSlide, isCliffhanger, pageCount, slides]);
 
+  // Tracking : fire paywall_view quand l'utilisateur atteint la slide cliffhanger
+  useEffect(() => {
+    if (!isCliffhanger || isShared || !orderId) return;
+    const currentType = slides[currentSlide]?.type;
+    if (currentType === 'end') {
+      trackPaywallEvent('paywall_view', {
+        orderId,
+        variant: completionCheckoutVariant,
+        protagonistName,
+      });
+    }
+  }, [currentSlide, isCliffhanger, isShared, orderId, slides, completionCheckoutVariant, protagonistName]);
+
   // Lock body scroll + force scroll to top + escape key
   useEffect(() => {
     const prev = document.body.style.overflow;
@@ -693,6 +707,11 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
                   alert('Impossible de finaliser la commande. Rechargez la page.');
                   return;
                 }
+                trackPaywallEvent('paywall_click', {
+                  orderId,
+                  variant: completionCheckoutVariant,
+                  protagonistName,
+                });
                 // Variante inline : on ouvre le modal Stripe Elements
                 // (cast string : le kill switch peut restreindre les variantes a ['control'])
                 if ((completionCheckoutVariant as string) === 'inline') {
@@ -703,8 +722,14 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
                 try {
                   const { ApiService } = await import('../../config/api');
                   const res = await ApiService.createCompletionSession(orderId);
-                  if (res.url) window.location.href = res.url;
-                  else alert(res.message || 'Erreur');
+                  if (res.url) {
+                    trackPaywallEvent('paywall_checkout_open', {
+                      orderId,
+                      variant: completionCheckoutVariant,
+                      protagonistName,
+                    });
+                    window.location.href = res.url;
+                  } else alert(res.message || 'Erreur');
                 } catch { alert('Erreur de connexion'); }
               };
               const summary = (cliffhangerSummary || '').trim()

@@ -199,18 +199,26 @@ export class MailjetService {
                   <!-- HEADER -->
                   <div style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); padding: 32px 24px; text-align: center; color: white;">
                     <p style="font-size: 36px; margin: 0 0 8px;">&#x1F4D6;&#x2728;</p>
-                    <h1 style="margin: 0; font-size: 22px; font-weight: 800; line-height: 1.3;">L'histoire de ${sp} est prete !</h1>
-                    <p style="margin: 10px 0 0; font-size: 14px; opacity: 0.9;">${sn}, 3 pages illustrees vous attendent.</p>
+                    <h1 style="margin: 0; font-size: 22px; font-weight: 800; line-height: 1.3;">Le premier chapitre de ${sp} est pret !</h1>
+                    <p style="margin: 10px 0 0; font-size: 14px; opacity: 0.9;">${sn}, decouvrez les 5 premieres pages illustrees.</p>
                   </div>
 
                   <div style="padding: 32px 24px;">
 
                     <!-- CTA UNIQUE — Lire l'histoire -->
-                    <div style="text-align: center; margin: 0 0 28px;">
+                    <div style="text-align: center; margin: 0 0 22px;">
                       <a href="${dl}" style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); color: white; text-decoration: none; padding: 18px 44px; border-radius: 14px; font-weight: 800; font-size: 17px; display: inline-block; box-shadow: 0 4px 16px rgba(255,107,107,0.4);">
-                        Lire l'histoire de ${sp}
+                        Lire le chapitre de ${sp}
                       </a>
                       <p style="font-size: 11px; color: #999; margin: 10px 0 0;">Connexion automatique &mdash; 1 clic</p>
+                    </div>
+
+                    <!-- Teaser cliffhanger : annoncer la suite des le depart -->
+                    <div style="background: #fff8f5; border: 1px solid #ffe4d6; border-radius: 12px; padding: 14px 16px; margin: 0 0 20px; text-align: center;">
+                      <p style="font-size: 13px; color: #b45309; margin: 0; line-height: 1.55;">
+                        &#x1F4A1; L'histoire s'arrete sur un suspense.<br>
+                        <strong>Le livre complet de ${sp} (20 pages) sera deblocable a la fin du chapitre pour 2,99&euro;.</strong>
+                      </p>
                     </div>
 
                     <p style="font-size: 14px; color: #666; text-align: center; margin: 0 0 24px; line-height: 1.6;">
@@ -558,166 +566,170 @@ export class MailjetService {
       </div>
     `;
 
-    // Badge prix commun avec preuve sociale (remplace fausse urgence)
-    const priceBadge = (socialProof: string) => `
-      <div style="background: linear-gradient(145deg, #1a1040, #2d1b69); border-radius: 16px; padding: 20px; margin: 24px 0; text-align: center; border: 1px solid rgba(167,139,250,0.3);">
-        <p style="font-size: 10px; font-weight: 800; color: #fbbf24; text-transform: uppercase; letter-spacing: 1.5px; margin: 0 0 8px;">&#x2B50; ${socialProof}</p>
-        <p style="font-size: 14px; color: rgba(255,255,255,0.4); text-decoration: line-through; margin: 0;">9,99&euro;/mois</p>
-        <p style="font-size: 32px; font-weight: 800; color: white; margin: 4px 0;">1,99&euro;</p>
-        <p style="font-size: 12px; color: rgba(255,255,255,0.6); margin: 0 0 16px;">le 1er mois &middot; puis 9,99&euro;/mois &middot; sans engagement</p>
-        <a href="${clubLink}" style="background: linear-gradient(135deg, #a78bfa, #f093fb); color: white; padding: 14px 36px; border-radius: 30px; text-decoration: none; font-weight: 800; font-size: 15px; display: inline-block; box-shadow: 0 4px 16px rgba(167,139,250,0.5);">
-          Essayer le Club pour 1,99&euro; &rarr;
-        </a>
-        <p style="font-size: 10px; color: rgba(255,255,255,0.3); margin: 10px 0 0;">Sans engagement &middot; Annulable en 1 clic</p>
-      </div>
-    `;
-
     const templates: Record<string, { subject: string; html: string }> = {
       // ═══════════════════════════════════════════════════
       // J+1 — 24h apres
-      // Angle : EMOTIONNEL + personnel. Pas commercial.
-      // Objet qui intrigue, 1 question, Club en secondaire.
+      // Angle : COMPLETION 2,99€ uniquement. Reaccrocher au cliffhanger.
+      // Club = lien discret en bas, pas en CTA.
       // ═══════════════════════════════════════════════════
       day1: {
-        subject: data.cliffhangerSummary
-          ? data.cliffhangerSummary.slice(0, 140)
-          : `${data.customerName}, ${data.protagonistName} attend la suite de son histoire...`,
+        subject: `Le livre de ${data.protagonistName} n'est pas encore termine...`,
         html: wrapper(`
-          <p style="font-size: 28px; text-align: center; margin: 0 0 16px;">&#x1F4D6;&#x2728;</p>
-          <h1 style="color: #1a1040; font-size: 20px; text-align: center; margin: 0 0 20px; font-weight: 800; line-height: 1.4;">
-            L'histoire de ${data.protagonistName}<br>s'est arretee au meilleur moment...
+          <p style="font-size: 28px; text-align: center; margin: 0 0 16px;">&#x1F4D6;</p>
+          <h1 style="color: #1a1040; font-size: 22px; text-align: center; margin: 0 0 18px; font-weight: 800; line-height: 1.35;">
+            L'histoire de ${data.protagonistName}<br>s'arrete au meilleur moment.
           </h1>
 
-          <p style="color: #555; font-size: 14px; line-height: 1.8; margin: 0 0 20px; text-align: center;">
-            Vous avez decouvert les premieres pages de l'histoire de ${data.protagonistName}. L'aventure s'est arretee au moment le plus palpitant... Que va-t-il se passer ensuite ? <strong>Decouvrez la suite (20 pages) pour seulement 2,99&euro;</strong> ou rejoignez le Club.
+          <p style="color: #555; font-size: 15px; line-height: 1.75; margin: 0 0 14px; text-align: center;">
+            Hier, vous avez cree le premier chapitre du livre de <strong>${data.protagonistName}</strong>. Mais l'aventure s'est interrompue sur un cliffhanger&hellip;
           </p>
 
-          <div style="text-align: center; margin: 0 0 24px;">
-            <a href="${magicLink}" style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); color: white; padding: 14px 36px; border-radius: 30px; text-decoration: none; font-weight: 700; font-size: 15px; display: inline-block; box-shadow: 0 4px 16px rgba(255,107,107,0.3);">
-              Decouvrir la suite — 2,99&euro;
+          ${data.cliffhangerSummary ? `
+          <div style="background: #fff8f5; border-left: 3px solid #FF6B6B; border-radius: 8px; padding: 14px 18px; margin: 0 0 22px;">
+            <p style="font-size: 13px; color: #b45309; margin: 0; font-style: italic; line-height: 1.6;">
+              &laquo; ${data.cliffhangerSummary.replace(/&/g, '&amp;').replace(/</g, '&lt;').slice(0, 200)} &raquo;
+            </p>
+          </div>
+          ` : ''}
+
+          <p style="color: #555; font-size: 14px; line-height: 1.75; margin: 0 0 22px; text-align: center;">
+            Pour <strong>2,99&euro;</strong>, debloquez les <strong>15 pages restantes</strong> avec 15 nouvelles illustrations &mdash; la suite et la fin du livre que <em>vous</em> avez imagine pour ${data.protagonistName}.
+          </p>
+
+          <div style="text-align: center; margin: 0 0 12px;">
+            <a href="${magicLink}" style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); color: white; padding: 16px 40px; border-radius: 30px; text-decoration: none; font-weight: 800; font-size: 16px; display: inline-block; box-shadow: 0 4px 16px rgba(255,107,107,0.4);">
+              Finir le livre de ${data.protagonistName} &mdash; 2,99&euro;
             </a>
+            <p style="font-size: 11px; color: #999; margin: 8px 0 0;">Paiement Stripe securise &middot; PDF telechargeable immediatement</p>
           </div>
 
-          <!-- Temoignage — J+1 : angle enfant qui reconnait son prenom -->
-          <div style="background: #fff8f5; border-radius: 14px; padding: 18px 20px; margin: 0 0 16px; border: 1px solid #ffe4d6;">
+          <!-- Temoignage -->
+          <div style="background: #fff8f5; border-radius: 14px; padding: 18px 20px; margin: 22px 0 0; border: 1px solid #ffe4d6;">
             <p style="font-size: 14px; color: #333; margin: 0; font-style: italic; line-height: 1.65; text-align: center;">
-              &laquo; Ma fille a adore voir son prenom dans l'histoire ! Elle me demande maintenant une nouvelle aventure chaque semaine. &raquo;
+              &laquo; J'ai paye les 2,99&euro; pour la suite et je ne regrette pas une seconde. La fin est superbe, ma fille reclame une relecture chaque soir. &raquo;
             </p>
             <p style="font-size: 11px; color: #999; margin: 8px 0 0; text-align: center; font-weight: 600;">
               Sarah, maman de Lea (4 ans) &middot; &#9733;&#9733;&#9733;&#9733;&#9733;
             </p>
           </div>
 
-          <!-- Teaser Club subtil, pas agressif -->
-          <div style="background: #f9fafb; border-radius: 12px; padding: 16px; margin: 0 0 8px;">
-            <p style="font-size: 13px; color: #777; margin: 0; text-align: center; line-height: 1.6;">
-              Avec le Club, decouvrez la suite de cette histoire<br>
-              <strong>+ 4 livres complets par mois</strong> avec <strong>20 pages</strong> chacun.
-            </p>
-          </div>
-
-          ${priceBadge('Rejoignez +500 familles dans le Club')}
+          <!-- Lien Club discret -->
+          <p style="font-size: 11px; color: #aaa; text-align: center; margin: 22px 0 0; line-height: 1.6;">
+            Vous prevoyez plusieurs livres ? <a href="${clubLink}" style="color: #a78bfa; text-decoration: none;">Decouvrir le Club &rarr;</a>
+          </p>
         `)
       },
 
       // ═══════════════════════════════════════════════════
       // J+3 — 72h apres
-      // Angle : concret + projection. Montrer ce qu'ils RATENT.
+      // Angle : concret. Lister ce qui MANQUE au livre incomplet.
+      // CTA unique = finir le livre pour 2,99€. Club = lien discret.
       // ═══════════════════════════════════════════════════
       day3: {
-        subject: `L'histoire de ${data.protagonistName} n'est toujours pas finie...`,
+        subject: `Le livre de ${data.protagonistName} est encore inacheve`,
         html: wrapper(`
-          <h1 style="color: #1a1040; font-size: 20px; text-align: center; margin: 0 0 8px; font-weight: 800; line-height: 1.4;">
-            Imaginez ${data.protagonistName}...
+          <h1 style="color: #1a1040; font-size: 21px; text-align: center; margin: 0 0 14px; font-weight: 800; line-height: 1.4;">
+            Voici ce qui manque au livre<br>de ${data.protagonistName}&hellip;
           </h1>
 
-          <div style="margin: 20px 0 24px;">
-            <div style="background: #f9f7ff; border-radius: 12px; padding: 14px 16px; margin-bottom: 8px;">
-              <p style="font-size: 14px; color: #333; margin: 0;">&#x1F3A8; ...dans une histoire en <strong>aquarelle</strong>, en <strong>manga</strong>, ou en <strong>3D Pixar</strong></p>
-              <p style="font-size: 12px; color: #999; margin: 4px 0 0;">9 styles differents. Chaque livre est unique.</p>
+          <p style="color: #555; font-size: 14px; line-height: 1.7; margin: 0 0 22px; text-align: center;">
+            Vous avez cree les 5 premieres pages, mais le livre est encore <strong>incomplet</strong>. Voici tout ce qui attend ${data.protagonistName} dans la suite :
+          </p>
+
+          <div style="margin: 0 0 24px;">
+            <div style="background: #fff8f5; border-left: 3px solid #FF6B6B; border-radius: 8px; padding: 14px 18px; margin-bottom: 10px;">
+              <p style="font-size: 14px; color: #333; margin: 0; font-weight: 700;">&#x1F4D6; 15 pages supplementaires</p>
+              <p style="font-size: 12px; color: #777; margin: 4px 0 0; line-height: 1.55;">La revelation du cliffhanger, l'aventure entiere, l'obstacle final et la fin.</p>
             </div>
-            <div style="background: #f9f7ff; border-radius: 12px; padding: 14px 16px; margin-bottom: 8px;">
-              <p style="font-size: 14px; color: #333; margin: 0;">&#x1F436; ...avec son <strong>chat</strong>, son <strong>doudou</strong> et sa <strong>grande soeur</strong> dans l'aventure</p>
-              <p style="font-size: 12px; color: #999; margin: 4px 0 0;">Jusqu'a 5 personnages par histoire.</p>
+            <div style="background: #fff8f5; border-left: 3px solid #FF6B6B; border-radius: 8px; padding: 14px 18px; margin-bottom: 10px;">
+              <p style="font-size: 14px; color: #333; margin: 0; font-weight: 700;">&#x1F3A8; 15 nouvelles illustrations</p>
+              <p style="font-size: 12px; color: #777; margin: 4px 0 0; line-height: 1.55;">Generees dans le meme style que vos 5 premieres pages, pour une coherence parfaite.</p>
             </div>
-            <div style="background: #f9f7ff; border-radius: 12px; padding: 14px 16px; margin-bottom: 8px;">
-              <p style="font-size: 14px; color: #333; margin: 0;">&#x1F384; ...dans une histoire de <strong>Noel</strong>, d'<strong>anniversaire</strong>, de <strong>Ramadan</strong>...</p>
-              <p style="font-size: 12px; color: #999; margin: 4px 0 0;">Chaque occasion merite une histoire.</p>
+            <div style="background: #fff8f5; border-left: 3px solid #FF6B6B; border-radius: 8px; padding: 14px 18px; margin-bottom: 10px;">
+              <p style="font-size: 14px; color: #333; margin: 0; font-weight: 700;">&#x1F4C4; PDF complet telechargeable</p>
+              <p style="font-size: 12px; color: #777; margin: 4px 0 0; line-height: 1.55;">A imprimer pour offrir, a lire le soir sur tablette, ou a partager avec les grands-parents.</p>
             </div>
-            <div style="background: #f9f7ff; border-radius: 12px; padding: 14px 16px;">
-              <p style="font-size: 14px; color: #333; margin: 0;">&#x1F4D6; ...dans un livre de <strong>20 pages</strong> au lieu de 3</p>
-              <p style="font-size: 12px; color: #999; margin: 4px 0 0;">2x plus long. 2x plus d'illustrations. 2x plus de magie.</p>
+            <div style="background: #fff8f5; border-left: 3px solid #FF6B6B; border-radius: 8px; padding: 14px 18px;">
+              <p style="font-size: 14px; color: #333; margin: 0; font-weight: 700;">&#x2728; Une vraie fin pour ${data.protagonistName}</p>
+              <p style="font-size: 12px; color: #777; margin: 4px 0 0; line-height: 1.55;">${data.protagonistName} merite que son histoire ait une conclusion.</p>
             </div>
           </div>
 
-          <!-- CTA Complétion rapide -->
-          <div style="text-align: center; margin: 0 0 16px;">
-            <a href="${magicLink}" style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); color: white; padding: 14px 36px; border-radius: 30px; text-decoration: none; font-weight: 800; font-size: 15px; display: inline-block; box-shadow: 0 4px 16px rgba(255,107,107,0.4);">
-              Finir l'histoire de ${data.protagonistName} &mdash; 2,99&euro;
+          <!-- CTA principal -->
+          <div style="text-align: center; margin: 0 0 22px;">
+            <p style="font-size: 13px; color: #777; margin: 0 0 10px;">Tout cela, en 1 paiement unique :</p>
+            <a href="${magicLink}" style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); color: white; padding: 16px 40px; border-radius: 30px; text-decoration: none; font-weight: 800; font-size: 16px; display: inline-block; box-shadow: 0 4px 16px rgba(255,107,107,0.4);">
+              Finir le livre &mdash; 2,99&euro;
             </a>
+            <p style="font-size: 11px; color: #999; margin: 8px 0 0;">Genere et livre en 2 minutes apres paiement.</p>
           </div>
 
-          <!-- Temoignage — J+3 : angle cadeau / emotion famille -->
-          <div style="background: #f5f8ff; border-radius: 14px; padding: 18px 20px; margin: 0 0 20px; border: 1px solid #dbe7ff;">
+          <!-- Temoignage -->
+          <div style="background: #f5f8ff; border-radius: 14px; padding: 18px 20px; margin: 0 0 18px; border: 1px solid #dbe7ff;">
             <p style="font-size: 14px; color: #333; margin: 0; font-style: italic; line-height: 1.65; text-align: center;">
-              &laquo; On a offert le livre a mamie pour Noel, elle a pleure de joie en decouvrant son petit-fils en heros. &raquo;
+              &laquo; On a offert le livre complet a mamie pour Noel, elle a pleure de joie en decouvrant son petit-fils en heros. &raquo;
             </p>
             <p style="font-size: 11px; color: #999; margin: 8px 0 0; text-align: center; font-weight: 600;">
               Thomas, papa de Jules (6 ans) &middot; &#9733;&#9733;&#9733;&#9733;&#9733;
             </p>
           </div>
 
-          <p style="font-size: 13px; color: #999; text-align: center; margin: 0 0 8px;">ou accedez a tout avec le Club :</p>
-
-          ${priceBadge('Plebiscite par les familles du Club')}
+          <!-- Lien Club discret -->
+          <p style="font-size: 11px; color: #aaa; text-align: center; margin: 0; line-height: 1.6;">
+            Plusieurs enfants ou plusieurs livres prevus ? <a href="${clubLink}" style="color: #a78bfa; text-decoration: none;">Le Club passe a 1,99&euro;/mois &rarr;</a>
+          </p>
         `)
       },
 
       // ═══════════════════════════════════════════════════
       // J+7 — Dernier email
-      // Angle : honnete + derniere chance + temoignage
-      // ZERO relance apres celui-ci.
+      // Angle : honnete + derniere chance pour finir LE livre cree.
+      // Temoignage centre completion 2,99€. ZERO relance apres celui-ci.
       // ═══════════════════════════════════════════════════
       day7: {
-        subject: `${data.customerName}, on ne vous ecrira plus apres ca`,
+        subject: `Dernier rappel : le livre de ${data.protagonistName} attend sa fin`,
         html: wrapper(`
-          <h1 style="color: #1a1040; font-size: 20px; text-align: center; margin: 0 0 20px; font-weight: 800; line-height: 1.4;">
+          <h1 style="color: #1a1040; font-size: 21px; text-align: center; margin: 0 0 18px; font-weight: 800; line-height: 1.4;">
             Dernier email. Promis.
           </h1>
 
-          <p style="color: #555; font-size: 14px; line-height: 1.8; margin: 0 0 24px; text-align: center;">
-            ${data.customerName}, on ne va pas vous harceler. Si le Club ne vous interesse pas, on comprend et on ne vous enverra plus d'email a ce sujet.<br><br>
-            Mais avant, on voulait juste vous montrer ce qu'une maman nous a ecrit :
+          <p style="color: #555; font-size: 14px; line-height: 1.8; margin: 0 0 22px; text-align: center;">
+            ${data.customerName}, on ne va pas vous harceler.<br>
+            Si vous n'avez pas envie de finir le livre de ${data.protagonistName}, on comprend &mdash; et on ne vous enverra plus d'email a ce sujet.<br><br>
+            Mais avant, voici ce que disent ceux qui l'ont fait :
           </p>
 
-          <div style="background: #f0fdf4; border-radius: 16px; padding: 24px; margin: 0 0 24px; border: 1px solid #bbf7d0;">
+          <div style="background: #f0fdf4; border-radius: 16px; padding: 22px; margin: 0 0 22px; border: 1px solid #bbf7d0;">
             <p style="font-size: 15px; color: #333; margin: 0; font-style: italic; line-height: 1.7; text-align: center;">
-              &laquo; Mon fils me reclame "son livre" chaque soir avant de dormir. Depuis qu'on est au Club, il en a un nouveau chaque semaine. C'est devenu notre rituel. &raquo;
+              &laquo; J'ai hesite avant de payer les 2,99&euro;. Quand mon fils a vu la fin du livre &mdash; avec son prenom partout, son chien dans l'histoire, sa propre conclusion &mdash; il m'a dit &laquo;c'est MON livre maman&raquo;. Le meilleur 2,99&euro; depense. &raquo;
             </p>
             <p style="font-size: 12px; color: #888; margin: 12px 0 0; text-align: center; font-weight: 600;">
-              Aurelie, maman de Leo (5 ans)
+              Aurelie, maman de Leo (5 ans) &middot; &#9733;&#9733;&#9733;&#9733;&#9733;
             </p>
           </div>
 
-          <!-- CTA 1 — Complétion -->
-          <div style="text-align: center; margin: 0 0 16px;">
-            <p style="font-size: 14px; color: #555; margin: 0 0 12px;">L'histoire de ${data.protagonistName} n'est pas finie...</p>
-            <a href="${magicLink}" style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); color: white; padding: 14px 36px; border-radius: 30px; text-decoration: none; font-weight: 800; font-size: 16px; display: inline-block; box-shadow: 0 4px 16px rgba(255,107,107,0.4);">
-              Finir l'histoire &mdash; 2,99&euro;
+          <!-- CTA principal : finir le livre -->
+          <div style="text-align: center; margin: 0 0 22px;">
+            <p style="font-size: 14px; color: #555; margin: 0 0 14px; line-height: 1.6;">
+              Le livre de <strong>${data.protagonistName}</strong> est sauvegarde dans votre bibliotheque.<br>
+              Il manque encore <strong>15 pages</strong> et 15 illustrations pour qu'il soit complet.
+            </p>
+            <a href="${magicLink}" style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); color: white; padding: 16px 40px; border-radius: 30px; text-decoration: none; font-weight: 800; font-size: 16px; display: inline-block; box-shadow: 0 4px 16px rgba(255,107,107,0.4);">
+              Finir le livre &mdash; 2,99&euro;
             </a>
+            <p style="font-size: 11px; color: #999; margin: 10px 0 0;">Paiement unique &middot; PDF complet en 2 min &middot; Pas d'abonnement</p>
           </div>
 
-          <!-- CTA 2 — Club -->
-          <div style="text-align: center; margin: 0 0 24px;">
-            <p style="font-size: 12px; color: #999; margin: 0 0 8px;">ou le Club (cette histoire + 4 livres/mois) :</p>
-            <a href="${clubLink}" style="background: linear-gradient(135deg, #a78bfa, #f093fb); color: white; padding: 12px 32px; border-radius: 30px; text-decoration: none; font-weight: 700; font-size: 14px; display: inline-block;">
-              Club &mdash; 1,99&euro; le 1er mois
-            </a>
-          </div>
+          <!-- Lien Club tres discret -->
+          <p style="font-size: 11px; color: #aaa; text-align: center; margin: 0 0 20px;">
+            <a href="${clubLink}" style="color: #a78bfa; text-decoration: none;">Decouvrir le Club</a>
+            &nbsp;&middot;&nbsp;
+            <a href="${magicLink}" style="color: #a0a0a0; text-decoration: none;">Voir ma bibliotheque</a>
+          </p>
 
           <p style="color: #ccc; font-size: 11px; text-align: center; margin: 0;">
             Merci d'avoir essaye Contedia. &#x2764;&#xFE0F;<br>
-            On espere que ${data.protagonistName} a aime son histoire.
+            On espere que ${data.protagonistName} aura sa fin un jour.
           </p>
         `)
       }

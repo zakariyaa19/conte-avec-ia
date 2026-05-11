@@ -1803,7 +1803,7 @@ export const StoryWizard: React.FC<StoryWizardProps> = ({
                   <PricingCardSub>Juste votre email — pas de carte bancaire</PricingCardSub>
                   <PricingCardFeaturesList>
                     <PricingCardFeatureItem $highlight>1 livre personnalisé pour {heroName}</PricingCardFeatureItem>
-                    <PricingCardFeatureItem>7 illustrations HD uniques</PricingCardFeatureItem>
+                    <PricingCardFeatureItem>5 pages illustrées HD (1er chapitre)</PricingCardFeatureItem>
                     <PricingCardFeatureItem>Bibliothèque en ligne pour lire et télécharger</PricingCardFeatureItem>
                     <PricingCardFeatureItem>Prêt en 5 minutes par email</PricingCardFeatureItem>
                   </PricingCardFeaturesList>

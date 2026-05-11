@@ -106,7 +106,7 @@ export class OrderController {
       }
 
       // --- Logique chapitres gratuits (modèle cliffhanger) ---
-      // Tout utilisateur non-Club peut créer jusqu'à 3 chapitres gratuits (3 pages + cliffhanger)
+      // Tout utilisateur non-Club peut créer jusqu'à 3 chapitres gratuits (5 pages + cliffhanger)
       // Les membres Club créent des livres complets directement (20 pages, pas de cliffhanger)
       const isExistingClubMember = user && user.role === 'CLUB' && user.subscriptionStatus === 'active';
       let isFirstBookFree = false;
@@ -131,7 +131,7 @@ export class OrderController {
           });
         }
 
-        // Chapitre gratuit (3 pages + cliffhanger)
+        // Chapitre gratuit (5 pages + cliffhanger)
         price = PRODUCT_PRICES.EBOOK_FREE;
         isFirstBookFree = true;
         console.log(`📖 Chapitre gratuit ${chapterCount + 1}/${FREE_CHAPTER_LIMIT} pour ${userEmail}`);

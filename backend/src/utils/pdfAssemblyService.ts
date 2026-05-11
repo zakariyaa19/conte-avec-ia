@@ -17,9 +17,9 @@ interface AccentColors {
 export interface PdfAssemblyParams {
   title: string;
   creatorName: string;
-  paragraphs: string[]; // 3 paragraphs (free/cliffhanger) or 20 (club/completed)
+  paragraphs: string[]; // 5 paragraphs (free/cliffhanger) or 20 (club/completed)
   coverImage: Buffer;   // Cover image (portrait, from order's coverImageData)
-  images: Buffer[];     // 3 images (free) or 20 images (club/completed)
+  images: Buffer[];     // 5 images (free) or 20 images (club/completed)
 }
 
 interface PdfFonts {

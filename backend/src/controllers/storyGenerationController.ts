@@ -683,7 +683,7 @@ async function runGenerationPipeline(orderId: string, order: any, genLogId: stri
     const title = order.coverTitle || await generateBookTitle(titleParams);
 
     const isClubOrder = order.purchaseType === 'CLUB';
-    console.log(`[Generation] Order type: ${isClubOrder ? 'CLUB (20 pages, premium)' : 'FREE/SINGLE (3 pages, cliffhanger)'}`);
+    console.log(`[Generation] Order type: ${isClubOrder ? 'CLUB (20 pages, premium)' : 'FREE/SINGLE (5 pages, cliffhanger)'}`);
 
     const textParams: StoryTextParams = {
       protagonistName: order.protagonistName,
@@ -1078,7 +1078,7 @@ export async function autoGenerateAndDeliver(orderId: string): Promise<void> {
 
 /**
  * Complete a cliffhanger story after payment (2.99€)
- * Takes existing 3 paragraphs + 3 images, generates 17 more paragraphs + 17 more images,
+ * Takes existing 5 paragraphs + 5 images, generates 15 more paragraphs + 15 more images,
  * assembles new 20-page PDF, delivers to user.
  */
 export async function autoCompleteStory(orderId: string): Promise<void> {
@@ -1234,7 +1234,7 @@ export async function autoCompleteStory(orderId: string): Promise<void> {
       coverReferenceBuffer // Image de couverture comme référence visuelle pour la cohérence
     );
 
-    // Assembler : garder les images existantes (3) + prendre les 17 nouvelles pour atteindre 20
+    // Assembler : garder les images existantes (5) + prendre les 15 nouvelles pour atteindre 20
     let allImages: Buffer[];
     if (existingImages.length >= existingCount && existingCount > 0) {
       // On a bien récupéré les images existantes : les garder + prendre les nouvelles
