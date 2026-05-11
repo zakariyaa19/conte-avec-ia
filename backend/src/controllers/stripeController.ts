@@ -6,6 +6,7 @@ import { ClientAuthRequest } from '../middleware/clientAuth';
 import { buildOrderDetailsString } from '../utils/orderFormatter';
 import { ClubService } from '../utils/clubService';
 import { generateClientToken } from './authController';
+import { resolveCustomerName } from '../utils/nameValidation';
 
 // Ordre de progression des statuts — un statut ne peut JAMAIS reculer
 const STATUS_ORDER = ['PENDING', 'PAID', 'GENERATING', 'GENERATED', 'DELIVERED'] as const;
@@ -303,7 +304,7 @@ async function processCompletionPayment(orderId: string, source: string): Promis
     try {
       const { TelegramService } = await import('../utils/telegramService');
       await TelegramService.sendCompletionPaidAlert({
-        customerName: order.user?.firstName || 'Client',
+        customerName: resolveCustomerName([order.user?.firstName, order.creatorName]),
         customerEmail: order.user?.email || 'inconnu',
         protagonistName: order.protagonistName || 'Enfant',
         amount: PRODUCT_PRICES.EBOOK_COMPLETE,
@@ -483,7 +484,7 @@ async function finalizePendingClubOrders(userId: string) {
       try {
         const orderDetails = buildOrderDetailsString(updatedOrder);
         const customerEmail = order.user?.email;
-        const customerName = order.user?.firstName || order.creatorName || 'Client';
+        const customerName = resolveCustomerName([order.user?.firstName, order.creatorName]);
 
         if (customerEmail) {
           await MailjetService.sendOrderConfirmation({
@@ -876,7 +877,7 @@ export const handleStripeWebhook = async (req: Request, res: Response) => {
                   try {
                     const orderDetails = buildOrderDetailsString(updatedOrder);
                     const customerEmail = updatedUser.email;
-                    const customerName = order.user?.firstName || order.creatorName || 'Client';
+                    const customerName = resolveCustomerName([order.user?.firstName, order.creatorName]);
 
                     if (customerEmail) {
                       await MailjetService.sendOrderConfirmation({
@@ -955,7 +956,7 @@ export const handleStripeWebhook = async (req: Request, res: Response) => {
               try {
                 const orderDetails = buildOrderDetailsString(updatedOrder);
                 const customerEmail = order.user?.email || session.customer_details?.email || session.customer_email;
-                const customerName = order.user?.firstName || order.creatorName || 'Client';
+                const customerName = resolveCustomerName([order.user?.firstName, order.creatorName]);
 
                 if (customerEmail) {
                   await MailjetService.sendOrderConfirmation({

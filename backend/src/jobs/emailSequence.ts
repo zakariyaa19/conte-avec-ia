@@ -1,5 +1,6 @@
 import { prisma } from '../utils/database';
 import { MailjetService } from '../utils/mailjetService';
+import { resolveCustomerName } from '../utils/nameValidation';
 
 /**
  * Séquence d'emails de relance Club après le premier livre gratuit.
@@ -47,7 +48,7 @@ export async function processEmailSequence(): Promise<{ sent: number; errors: nu
 
     const emailsSent = (order as any).emailSequenceSent || '';
 
-    const customerName = user.firstName || 'Parent';
+    const customerName = resolveCustomerName([user.firstName], 'Bonjour');
     const protagonistName = order.protagonistName || 'votre enfant';
 
     try {
@@ -149,7 +150,7 @@ export async function processEmailSequence(): Promise<{ sent: number; errors: nu
     const paidAt = new Date(order.paidAt);
     const hoursSincePaid = (now.getTime() - paidAt.getTime()) / (1000 * 60 * 60);
     const emailsSent = (order as any).emailSequenceSent || '';
-    const customerName = user.firstName || 'Parent';
+    const customerName = resolveCustomerName([user.firstName], 'Bonjour');
     const protagonistName = order.protagonistName || 'votre enfant';
     const isClub = user.role === 'CLUB' || user.subscriptionStatus === 'active';
 

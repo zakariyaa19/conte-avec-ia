@@ -5,6 +5,7 @@ import { generateStoryImages, ImageGenerationParams } from '../utils/storyImageG
 import { assemblePdf } from '../utils/pdfAssemblyService';
 import { generateBookTitle, generateCoverImage, CoverGenerationParams } from '../utils/coverGeneratorService';
 import { uploadPdfToCloudinary, uploadCoverToCloudinary, deleteFromCloudinary, isCloudinaryUrl } from '../utils/cloudinaryService';
+import { resolveCustomerName } from '../utils/nameValidation';
 import fs from 'fs';
 import path from 'path';
 
@@ -968,7 +969,7 @@ export async function autoGenerateAndDeliver(orderId: string): Promise<void> {
   try {
     const { MailjetService } = await import('../utils/mailjetService');
     const customerEmail = order.user?.email;
-    const customerName = order.user?.firstName || order.creatorName || 'Client';
+    const customerName = resolveCustomerName([order.user?.firstName, order.creatorName]);
 
     if (customerEmail) {
       await MailjetService.sendStoryInProgressEmail({

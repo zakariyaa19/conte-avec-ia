@@ -8,7 +8,7 @@ import { trackFunnelStep } from '../../utils/funnelTracker';
 import { useCoverPreview, isPhase1Complete } from '../../hooks/useCoverPreview';
 import { CompletionRing } from './CompletionRing';
 import { BookCoverPreview } from '../ui/BookCoverPreview';
-import { useStoryDetection, computeDetectionScore } from './useStoryDetection';
+import { useStoryDetection, computeDetectionScore, isPlausibleName } from './useStoryDetection';
 import { useSmartHint } from './useSmartHint';
 import { SmartHint } from './SmartHint';
 import { Header as SiteHeader } from '../layout/Header';
@@ -16,7 +16,7 @@ import { Header as SiteHeader } from '../layout/Header';
 import {
   PageWrap, Header, Logo, Body, BodyInner, Footer, FooterInner,
   TrustRow, TrustItem,
-  CTA, CTASpinner, AuthInput, C, Composer,
+  CTA, CTASpinner, AuthInput, C, Composer, FieldInput,
 } from './ChatStoryStyles';
 
 interface Props {
@@ -45,6 +45,12 @@ export const ChatStoryCreator: React.FC<Props> = ({
 }) => {
   // ── Single field : description complete (prenom + age + theme + tout) ────
   const [story, setStory] = useState('');
+  // Prenom de l'enfant : champ dedie obligatoire (separe du brief libre).
+  // Avant : on extrayait le prenom du brief via regex et on tombait sur "Un",
+  // "Le", "Mon" si le brief commencait par un article. Maintenant le parent
+  // ecrit explicitement le prenom dans son propre champ.
+  const [childName, setChildName] = useState('');
+  const [childNameTouched, setChildNameTouched] = useState(false);
   const [photo, setPhoto] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [email, setEmail] = useState(formData.userEmail || '');
@@ -74,8 +80,25 @@ export const ChatStoryCreator: React.FC<Props> = ({
   }, [story]);
 
   // ── Detection en live (sans defaults) — pilote scoring + cover preview ──
+  // Note: `detected.name` est seulement une SUGGESTION pour auto-remplir le
+  // champ dedie. La source de verite du prenom = `childName` (input dedie).
   const detected = useStoryDetection(story, !!photo);
   const percentage = computeDetectionScore(detected);
+
+  // Auto-fill du prenom depuis le brief si le parent n'a pas encore touche
+  // au champ. Des qu'il l'edite, on ne le surcharge plus.
+  useEffect(() => {
+    if (childNameTouched) return;
+    if (detected.name && isPlausibleName(detected.name)) {
+      setChildName(detected.name);
+    }
+  }, [detected.name, childNameTouched]);
+
+  // Le prenom final utilise partout = celui du champ dedie, valide.
+  const validatedChildName = useMemo(() => {
+    const trimmed = childName.trim();
+    return isPlausibleName(trimmed) ? trimmed : '';
+  }, [childName]);
   // Seuil 70% = "pret a lancer" : signal visuel CTA (couleur + texte). On NE PAS
   // override le hint pour ne pas court-circuiter les suggestions importantes
   // restantes de GPT (notamment "ajoute la photo de l'enfant").
@@ -97,7 +120,8 @@ export const ChatStoryCreator: React.FC<Props> = ({
       ageOrType: detected.secondary.label,
     }] : [];
     return {
-      protagonistName: detected.name || '',
+      // Source de verite = champ dedie. Plus jamais "Un" ou "Le" en prenom.
+      protagonistName: validatedChildName,
       protagonistAge: detected.age || '7',
       protagonistGender: detected.gender || 'girl',
       ageRange,
@@ -114,10 +138,12 @@ export const ChatStoryCreator: React.FC<Props> = ({
       photo: photo || undefined,
       specialEvents: story.trim(),
     } as Partial<StoryFormData>;
-  }, [detected, story, photo, formData.illustrationStyle]);
+  }, [detected, story, photo, formData.illustrationStyle, validatedChildName]);
 
-  const heroName = detected.name && detected.name.length > 15 ? detected.name.substring(0, 15) + '...' : (detected.name || 'votre enfant');
-  const heroNameFull = detected.name || 'votre enfant';
+  // heroName utilise pour les libelles UI (CTA, titre preview, etc.) -> toujours base
+  // sur le champ dedie valide pour rester coherent avec ce qui sera utilise dans les mails.
+  const heroNameFull = validatedChildName || 'votre enfant';
+  const heroName = heroNameFull.length > 15 ? heroNameFull.substring(0, 15) + '...' : heroNameFull;
 
   // Cover preview
   const coverPreview = useCoverPreview(mergedData);
@@ -159,8 +185,9 @@ export const ChatStoryCreator: React.FC<Props> = ({
     r.readAsDataURL(file);
   }, []);
 
-  // canGo = prenom detecte + un peu de description (le reste a des defauts safe)
-  const canGo = !!detected.name && story.trim().length >= 12;
+  // canGo = prenom VALIDE (champ dedie) + un peu de description. Le prenom doit
+  // venir du champ dedie pour eviter "Un", "Le", "313" comme prenoms.
+  const canGo = !!validatedChildName && story.trim().length >= 12;
 
   // CTA → preview
   const gotoPreview = useCallback(() => {
@@ -274,14 +301,53 @@ export const ChatStoryCreator: React.FC<Props> = ({
                 ne voit plus la recommandation IA pendant qu'il tape). */}
             <SmartHint text={hintText} thinking={hintThinking} />
 
-            {/* ── Composer unique : textarea + paperclip integre ── */}
+            {/* ── Composer unique : prenom + textarea + paperclip ── */}
             <Composer>
+              {/* Champ dedie OBLIGATOIRE : le prenom de l'enfant. Source de verite
+                  pour les mails, le prompt GPT, la couverture. Auto-rempli depuis
+                  la detection si plausible, mais editable et requis. */}
+              <div style={{ marginBottom: 10 }}>
+                <label
+                  htmlFor="child-name-input"
+                  style={{
+                    display: 'block', fontSize: 13, fontWeight: 600,
+                    color: C.text, marginBottom: 6,
+                  }}
+                >
+                  Prénom de l'enfant <span style={{ color: C.coral }}>*</span>
+                </label>
+                <FieldInput
+                  id="child-name-input"
+                  type="text"
+                  value={childName}
+                  onChange={e => {
+                    setChildName(e.target.value);
+                    setChildNameTouched(true);
+                  }}
+                  onBlur={() => setChildNameTouched(true)}
+                  placeholder="Ex : Léa, Adam, Lucas…"
+                  maxLength={30}
+                  autoComplete="off"
+                  spellCheck={false}
+                  aria-required="true"
+                  aria-invalid={childNameTouched && !validatedChildName}
+                  style={{ padding: '10px 14px', fontSize: '0.95rem' }}
+                />
+                {childNameTouched && childName.trim().length > 0 && !validatedChildName && (
+                  <p style={{
+                    fontSize: 11, color: C.danger,
+                    margin: '4px 0 0 2px', lineHeight: 1.3,
+                  }}>
+                    Saisissez un vrai prénom (pas un article ni un chiffre).
+                  </p>
+                )}
+              </div>
+
               <textarea
                 ref={textareaRef}
                 value={story}
                 onChange={e => { if (e.target.value.length <= STORY_LIMIT) setStory(e.target.value); }}
                 placeholder={PLACEHOLDERS[phIdx]}
-                autoFocus
                 aria-label="Décrivez l'histoire que vous voulez créer"
               />
               {/* Photo chip si attachee */}
