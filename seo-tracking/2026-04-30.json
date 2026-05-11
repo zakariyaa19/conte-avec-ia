@@ -1,0 +1,130 @@
+{
+  "date": "2026-04-30",
+  "period": "3 mois glissants (2026-01-29 au 2026-04-28)",
+  "source": "Google Search Console",
+  "summary": {
+    "totalClicks": 109,
+    "totalImpressions": 3668,
+    "averageCTR": 2.97,
+    "averagePosition": 14.3
+  },
+  "monthlyBreakdown": [
+    { "month": "2026-01", "clicks": 3, "impressions": 57, "avgImpressions_day": 19.0, "note": "partiel 29-31 jan" },
+    { "month": "2026-02", "clicks": 24, "impressions": 735, "avgImpressions_day": 26.2 },
+    { "month": "2026-03", "clicks": 31, "impressions": 1205, "avgImpressions_day": 38.9 },
+    { "month": "2026-04", "clicks": 51, "impressions": 1671, "avgImpressions_day": 59.7, "note": "partiel 1-28 avril, pic W4 à 73.7 imp/j" }
+  ],
+  "weeklyApril": [
+    { "week": "W1 (1-7)", "clicks": 14, "impressions": 453, "avgImp_day": 64.7 },
+    { "week": "W2 (8-14)", "clicks": 13, "impressions": 369, "avgImp_day": 52.7 },
+    { "week": "W3 (15-21)", "clicks": 6, "impressions": 333, "avgImp_day": 47.6 },
+    { "week": "W4 (22-28)", "clicks": 18, "impressions": 516, "avgImp_day": 73.7 }
+  ],
+  "topQueries": [
+    { "query": "contedia", "clicks": 9, "impressions": 21, "ctr": 42.86, "position": 1.71, "trend": "STABLE" },
+    { "query": "livre personnalisé enfant chien", "clicks": 2, "impressions": 17, "ctr": 11.76, "position": 8.41, "trend": "STABLE" },
+    { "query": "histoire pour enfant ia", "clicks": 1, "impressions": 12, "ctr": 8.33, "position": 43.25, "trend": "STABLE" },
+    { "query": "lunii ou tonies", "clicks": 1, "impressions": 7, "ctr": 14.29, "position": 6.71, "trend": "STABLE" },
+    { "query": "lunii vs tonies", "clicks": 1, "impressions": 4, "ctr": 25.0, "position": 9.75, "trend": "NEW" },
+    { "query": "meilleur livre personnalisé enfant", "clicks": 1, "impressions": 2, "ctr": 50.0, "position": 3.0, "trend": "STABLE" },
+    { "query": "conteuse personnalisable", "clicks": 0, "impressions": 232, "ctr": 0, "position": 39.68, "trend": "STABLE" },
+    { "query": "livre conte personnalisé", "clicks": 0, "impressions": 190, "ctr": 0, "position": 25.13, "trend": "STABLE" },
+    { "query": "choisir livre personnalisé", "clicks": 0, "impressions": 79, "ctr": 0, "position": 53.75, "trend": "STABLE" },
+    { "query": "contes personnalises", "clicks": 0, "impressions": 46, "ctr": 0, "position": 16.39, "trend": "UP" },
+    { "query": "meilleur livre personnalisé", "clicks": 0, "impressions": 31, "ctr": 0, "position": 9.39, "trend": "STABLE" },
+    { "query": "contes personnalises enfants", "clicks": 0, "impressions": 27, "ctr": 0, "position": 18.07, "trend": "STABLE" },
+    { "query": "alternative toniebox", "clicks": 0, "impressions": 22, "ctr": 0, "position": 15.68, "trend": "STABLE" },
+    { "query": "livre personnalisé ia", "clicks": 0, "impressions": 20, "ctr": 0, "position": 12.25, "trend": "STABLE" },
+    { "query": "alternative lunii", "clicks": 0, "impressions": 19, "ctr": 0, "position": 21.79, "trend": "STABLE" },
+    { "query": "livre personnalisé animaux", "clicks": 0, "impressions": 15, "ctr": 0, "position": 9.8, "trend": "UP" },
+    { "query": "livre enfant personnalisé ia", "clicks": 0, "impressions": 14, "ctr": 0, "position": 12.5, "trend": "STABLE" },
+    { "query": "livre personnalisé bébé 1 an", "clicks": 0, "impressions": 13, "ctr": 0, "position": 11.46, "trend": "STABLE" }
+  ],
+  "topPages": [
+    { "page": "/blog/histoire-animal-compagnie-livre-personnalise", "clicks": 32, "impressions": 825, "ctr": 3.88, "position": 12.53, "trend": "LEADING" },
+    { "page": "/", "clicks": 25, "impressions": 702, "ctr": 3.56, "position": 16.8, "trend": "UP" },
+    { "page": "/blog/top-5-themes-histoires-animal-heros-conte", "clicks": 13, "impressions": 498, "ctr": 2.61, "position": 7.54, "trend": "UP +48% imp" },
+    { "page": "/blog/meilleurs-livres-personnalises-enfants-comparatif-2026", "clicks": 8, "impressions": 164, "ctr": 4.88, "position": 6.87, "trend": "STABLE" },
+    { "page": "/blog/ia-revolution-creation-histoires-enfants", "clicks": 6, "impressions": 371, "ctr": 1.62, "position": 8.41, "trend": "UP +28% imp" },
+    { "page": "/blog/intelligence-artificielle-histoires-enfants", "clicks": 6, "impressions": 77, "ctr": 7.79, "position": 9.7, "trend": "REDIRECT cible" },
+    { "page": "/blog/conteuse-personnalisable-alternative-numerique-2026", "clicks": 4, "impressions": 211, "ctr": 1.9, "position": 10.18, "trend": "STABLE" },
+    { "page": "/blog/enfant-heros-propre-histoire", "clicks": 4, "impressions": 132, "ctr": 3.03, "position": 7.77, "trend": "STABLE" },
+    { "page": "/ia-creation-conte", "clicks": 3, "impressions": 52, "ctr": 5.77, "position": 11.92, "trend": "UP" },
+    { "page": "/story-form", "clicks": 0, "impressions": 171, "ctr": 0, "position": 54.98, "note": "noindex=false mais pos 55 — déchets de crawl" }
+  ],
+  "geo": {
+    "france": { "clicks": 86, "impressions": 2475, "ctr_pct": 3.47, "share_clicks": 78.9 },
+    "maroc": { "clicks": 7, "impressions": 75, "ctr_pct": 9.33 },
+    "belgique": { "clicks": 4, "impressions": 80, "ctr_pct": 5.0 },
+    "canada": { "clicks": 1, "impressions": 125, "ctr_pct": 0.8, "note": "125 imp 0.8% CTR — potentiel non capté" },
+    "usa": { "clicks": 0, "impressions": 327, "ctr_pct": 0, "note": "327 impressions FR-diaspora?" }
+  },
+  "devices": {
+    "mobile": { "clicks": 68, "impressions": 1753, "ctr_pct": 3.88, "share": "62%" },
+    "desktop": { "clicks": 39, "impressions": 1813, "ctr_pct": 2.15, "share": "36%" },
+    "tablet": { "clicks": 2, "impressions": 102, "ctr_pct": 1.96 }
+  },
+  "searchAppearance": {
+    "richResults": "Extraits de produits: 0 clics / 4 imp — schema Product probablement insuffisant",
+    "faqSnippets": "Aucune apparence FAQ dans les résultats malgré SchemaFAQ présent sur 49 articles"
+  },
+  "comparison": {
+    "vsPrevious": {
+      "period": "vs relevé 2026-04-25 (jan23-avr22)",
+      "clicksDelta_april": "+42% (36 → 51 clics sur avril)",
+      "impressionsDelta_april": "+45% (1148 → 1671 impressions sur avril)",
+      "impressionPerDay_jan_vs_apr": "19 → 59.7 = +214%",
+      "positionAvg": "14.2 → 14.3 (stable globalement, mais top pages en amélioration)",
+      "newQueries": ["lunii vs tonies"],
+      "biggestGains": [
+        { "query": "contes personnalises", "impressionDelta": "+46 (stable sur cumul)" },
+        { "page": "/blog/top-5-themes-histoires-animal-heros-conte", "impressionDelta": "+48% vs précédent" }
+      ]
+    }
+  },
+  "indexedPages": 133,
+  "seoIssuesDetected": [
+    "BUG: SEOHead ne rend pas <title> quand title prop absent (ligne 48) — n'affecte aucune page actuellement car toutes passent title=",
+    "BRAND: og:site_name='Contes d'IA' partout (SEOHead + index.html) alors que la marque est maintenant Contedia",
+    "DUPLICATE: 10 pages avec double balise <title> (SEOHead + Helmet direct) — redondant mais cohérent",
+    "SITEMAP: /create-story dans le sitemap mais est un alias de /story-form (duplicate content risk)",
+    "STORY-FORM: noindex=false sur StoryFormPage alors que la page devrait être noindex (171 imp, pos 55, 0 clics — waste de crawl budget)",
+    "SCHEMA: Aucun rich result FAQ malgré 49 articles avec SchemaFAQ — Google ne valide peut-être pas le markup (React SPA, SSR absent)",
+    "SCHEMA: AggregateRating sur homepage avec 523 avis fictifs (4.8/5) — risque de pénalité Google si non sourcé",
+    "HREFLANG: SEOHead génère le même canonical pour tous les pays francophones (fr, fr-FR, fr-BE, fr-CH, fr-CA) sur la même URL — incorrect, hreflang devrait pointer vers des URLs différentes ou être supprimé",
+    "REACT SPA: Pas de SSR/prerender — Google doit exécuter JS pour voir le contenu. Peut expliquer les positions élevées malgré bon contenu"
+  ],
+  "actionsApplied": [
+    "Phase 1 funnel (24 taches)",
+    "SEO meta rewrites (8 pages)",
+    "Anti-cannibalisation (4 redirections)",
+    "Schema AggregateRating homepage",
+    "9 nouveaux articles SEO",
+    "50 pages prenoms programmatic",
+    "Refonte cliffhanger 3 pages / 20 pages"
+  ],
+  "keyInsights": [
+    "Impressions/jour: 19 (jan) → 59.7 (avr) = +214% en 3 mois",
+    "Meilleure semaine ever: 22-28 avril à 73.7 imp/j",
+    "Page animaux = leader incontesté: 825 imp, 32 clics, pos 12.5",
+    "conteuse personnalisable: 232 imp, pos 39.7 = plus grand gap potentiel/résultat",
+    "Article ia-revolution: 371 imp, pos 8.4 mais CTR 1.62% — title à retravailler",
+    "Article conteuse: 211 imp, pos 10.2, CTR 1.9% — title insuffisamment cliquable",
+    "Canada: 125 imp, 0.8% CTR — la diaspora francophone CA est visible mais ne clique pas",
+    "Mobile = 62% des clics, CTR mobile (3.88%) > desktop (2.15%) — site mobile-first OK",
+    "FAQ schema présent sur 49 articles mais 0 rich result dans GSC — SSR manquant probable cause",
+    "Prenom pages: 50 dans sitemap mais seulement martin/louise/arthur/tom/charlie visibles en GSC"
+  ],
+  "recommendations": [
+    "URGENT: Réécrire title de /blog/ia-revolution (371 imp, 1.62% CTR) — inclure 'livre' et bénéfice concret",
+    "URGENT: Réécrire title de /blog/conteuse-personnalisable (211 imp, 1.9% CTR) — plus comparatif/actionnable",
+    "QUICK WIN: Créer contenu ciblant 'conteuse personnalisable' pos 39 → besoin d'une page dédiée ou enrichissement massif",
+    "QUICK WIN: Pousser 'meilleur livre personnalisé' pos 9.4 vers top 5 (31 imp, 0 clics)",
+    "FIX: Passer StoryFormPage en noindex=true + retirer /create-story du sitemap",
+    "FIX: Mettre à jour og:site_name de 'Contes d'IA' vers 'Contedia' dans SEOHead et index.html",
+    "FIX: Revoir AggregateRating (523 avis fictifs) — risque pénalité",
+    "MOYEN TERME: Implémenter prerender/SSR pour améliorer indexation schema et positions",
+    "CONTENU: Article dédié 'livre conte personnalisé' (190 imp, pos 25) — mot-clé fort non ciblé directement",
+    "CONTENU: Article 'choisir livre personnalisé' (79 imp, pos 53) — guide comparatif"
+  ]
+}

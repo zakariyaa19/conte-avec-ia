@@ -337,7 +337,7 @@ export const StoryFormPage: React.FC = () => {
       <SEOHead
         title="Créer un Livre Personnalisé pour Enfant | Conte sur Mesure avec IA"
         description="Créez facilement un conte personnalisé pour votre enfant en 3 étapes simples. 1er chapitre gratuit, prêt en 5 minutes."
-        noindex={false}
+        noindex={true}
       />
       {useChatUI ? (
         <ChatStoryCreator

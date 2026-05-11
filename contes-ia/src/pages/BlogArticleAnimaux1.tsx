@@ -68,8 +68,8 @@ const BlogArticleAnimaux1: React.FC = () => {
   return (
     <PageLayout>
       <SEOHead
-        title="Livre Personnalisé Enfant & Animal : L'Histoire où ils sont Héros | Contedia"
-        description="Votre enfant et son chien (ou chat) deviennent les héros d'un livre personnalisé unique. Découvrez comment l'animal stimule son imagination. 1er chapitre gratuit."
+        title="Animal de compagnie & imagination de l'enfant : 7 bienfaits (+ idée livre) | Contedia"
+        description="Pourquoi votre enfant invente-t-il sans cesse des histoires avec son chien ou son chat ? Les 7 bienfaits cognitifs de l'animal sur l'imagination + comment en faire un livre personnalisé unique."
         type="article"
       />
       <SchemaFAQ questions={faqQuestions} />

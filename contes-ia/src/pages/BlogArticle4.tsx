@@ -68,8 +68,8 @@ const BlogArticle4: React.FC = () => {
   return (
     <PageLayout>
       <SEOHead
-        title="Livre Personnalisé IA Enfant : Histoire Unique en 5 min (Gratuit) | Contedia"
-        description="Créez un livre personnalisé par IA pour votre enfant en 5 minutes. Prénom, photo, illustrations sur mesure. 1er chapitre gratuit, sans carte bancaire."
+        title="Histoire enfant IA : comment ça marche (et est-ce vraiment unique ?) | Contedia"
+        description="L'IA peut-elle vraiment écrire une histoire unique pour votre enfant ? On vous explique comment ça marche, ce que ça change vs un livre classique, et combien ça coûte. Premier chapitre offert."
         type="article"
       />
       <SchemaFAQ questions={faqQuestions} />
