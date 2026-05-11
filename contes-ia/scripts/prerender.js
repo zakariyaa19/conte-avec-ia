@@ -38,7 +38,7 @@ const CONCURRENCY = 4;
 // Toutes les pages publiques a pre-rendre
 const ROUTES = [
   '/',
-  '/create-story',
+  // '/create-story' retiré : page noindex (formulaire wizard, pas de contenu rankable)
   '/exemples',
   '/club',
   '/blog',
@@ -163,7 +163,9 @@ function startServer() {
 async function prerenderPage(browser, route) {
   const page = await browser.newPage();
 
-  // Bloquer les requetes externes (tracking pixels, fonts, etc.)
+  // Bloquer les requetes externes (tracking pixels, fonts, etc.) ET
+  // les appels API (backend non disponible pendant prerender — sinon les
+  // composants qui parsent r.json() crash sur le HTML fallback du SPA server).
   await page.setRequestInterception(true);
   page.on('request', (req) => {
     const url = req.url();
@@ -176,7 +178,12 @@ async function prerenderPage(browser, route) {
       url.includes('fonts.gstatic.com') ||
       url.includes('vercel.live') ||
       url.includes('facebook.com/tr') ||
-      url.includes('conte-avec-ia-backend.onrender.com')
+      url.includes('conte-avec-ia-backend.onrender.com') ||
+      // API backend en dev (HomePage/ExemplesPage fetch /api/public/examples)
+      url.includes('localhost:5001') ||
+      url.includes('127.0.0.1:5001') ||
+      // SPA-fallback safety net : tout chemin /api/* sur le serveur de prerender
+      /^https?:\/\/localhost:\d+\/api\//.test(url)
     ) {
       req.abort();
       return;
