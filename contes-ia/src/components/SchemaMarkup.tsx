@@ -10,7 +10,6 @@ export const SchemaOrganization: React.FC = () => {
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "Contedia",
-    "alternateName": "Contes d'IA",
     "url": "https://contedia.fr",
     "logo": "https://contedia.fr/logo-conte-ia.png",
     "description": "Créez des livres personnalisés pour enfants grâce à l'intelligence artificielle. Histoires uniques, illustrations sur mesure, premier livre gratuit.",
@@ -48,8 +47,8 @@ export const SchemaWebSite: React.FC = () => {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "Contedia",
-    "alternateName": "Contes d'IA",
-    "url": "https://contedia.fr"
+    "url": "https://contedia.fr",
+    "inLanguage": "fr-FR"
   };
 
   return (

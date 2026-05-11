@@ -1,0 +1,94 @@
+{
+  "date": "2026-05-11",
+  "period": "3 mois glissants (2026-02-10 au 2026-05-09)",
+  "source": "Google Search Console",
+  "summary": {
+    "totalClicks": 126,
+    "totalImpressions": 4130,
+    "averageCTR": 3.05,
+    "averagePosition": 11.2
+  },
+  "monthlyBreakdown": [
+    { "month": "2026-02 (à partir du 10)", "clicks": 21, "impressions": 552, "avgImpressions_day": 29.0 },
+    { "month": "2026-03", "clicks": 30, "impressions": 1166, "avgImpressions_day": 37.6 },
+    { "month": "2026-04", "clicks": 51, "impressions": 1816, "avgImpressions_day": 60.5 },
+    { "month": "2026-05 (1-9)", "clicks": 25, "impressions": 637, "avgImpressions_day": 70.8 }
+  ],
+  "trendVsPrevious": {
+    "vsRelevé_2026-04-30": {
+      "clicksDelta": "+15.6% (109 → 126)",
+      "impressionsDelta": "+12.6% (3668 → 4130)",
+      "positionDelta": "14.3 → 11.2 (-3.1 places, AMÉLIORATION significative)",
+      "bestDayEver": "2026-05-03 → 8 clics / 90 imp / CTR 8.89% / pos 6.3"
+    }
+  },
+  "topQueries": [
+    { "query": "contedia", "clicks": 11, "impressions": 23, "ctr": 47.83, "position": 1.65, "type": "BRAND" },
+    { "query": "livre personnalisé enfant chien", "clicks": 2, "impressions": 11, "ctr": 18.18, "position": 8.36, "type": "TRANSACTIONAL_LONGTAIL" },
+    { "query": "histoire pour enfant ia", "clicks": 1, "impressions": 11, "ctr": 9.09, "position": 39.91, "type": "INFORMATIONAL" },
+    { "query": "lunii ou tonies", "clicks": 1, "impressions": 7, "ctr": 14.29, "position": 6.71, "type": "COMPARATIVE" },
+    { "query": "lunii vs tonies", "clicks": 1, "impressions": 4, "ctr": 25.0, "position": 9.75, "type": "COMPARATIVE" },
+    { "query": "meilleur livre personnalisé enfant", "clicks": 1, "impressions": 2, "ctr": 50.0, "position": 3.0, "type": "TRANSACTIONAL_BUSINESS" },
+    { "query": "conteuse personnalisable", "clicks": 0, "impressions": 222, "ctr": 0, "position": 38.81, "type": "MISSED_OPPORTUNITY_GIANT" },
+    { "query": "livre conte personnalisé", "clicks": 0, "impressions": 166, "ctr": 0, "position": 23.89, "type": "MISSED_OPPORTUNITY_LARGE" },
+    { "query": "choisir livre personnalisé", "clicks": 0, "impressions": 79, "ctr": 0, "position": 53.75, "type": "MISSED_OPPORTUNITY" },
+    { "query": "contes personnalises", "clicks": 0, "impressions": 50, "ctr": 0, "position": 15.44, "type": "MISSED_OPPORTUNITY_NEAR" },
+    { "query": "meilleur livre personnalisé", "clicks": 0, "impressions": 31, "ctr": 0, "position": 9.39, "type": "QUICK_WIN" },
+    { "query": "contes personnalises enfants", "clicks": 0, "impressions": 28, "ctr": 0, "position": 18.75, "type": "MISSED_OPPORTUNITY" },
+    { "query": "livre de conte personnalisé", "clicks": 0, "impressions": 27, "ctr": 0, "position": 35.52, "type": "MISSED_OPPORTUNITY" },
+    { "query": "alternative toniebox", "clicks": 0, "impressions": 22, "ctr": 0, "position": 15.68, "type": "QUICK_WIN_COMPARATIVE" },
+    { "query": "livre personnalisé ia", "clicks": 0, "impressions": 20, "ctr": 0, "position": 12.25, "type": "QUICK_WIN" },
+    { "query": "alternative lunii", "clicks": 0, "impressions": 19, "ctr": 0, "position": 21.79, "type": "QUICK_WIN_COMPARATIVE" },
+    { "query": "livre personnalisé animaux", "clicks": 0, "impressions": 19, "ctr": 0, "position": 9.21, "type": "QUICK_WIN" },
+    { "query": "livre enfant personnalisé ia", "clicks": 0, "impressions": 16, "ctr": 0, "position": 11.94, "type": "QUICK_WIN" },
+    { "query": "livre personnalisé bébé 1 an", "clicks": 0, "impressions": 13, "ctr": 0, "position": 11.46, "type": "QUICK_WIN" }
+  ],
+  "topPages": [
+    { "page": "/blog/histoire-animal-compagnie-livre-personnalise", "clicks": 43, "impressions": 868, "ctr": 4.95, "position": 10.95, "status": "LEADER" },
+    { "page": "/", "clicks": 24, "impressions": 669, "ctr": 3.59, "position": 15.8, "status": "BRAND_TRAFFIC" },
+    { "page": "/blog/top-5-themes-histoires-animal-heros-conte", "clicks": 16, "impressions": 681, "ctr": 2.35, "position": 7.53, "status": "RISING" },
+    { "page": "/blog/meilleurs-livres-personnalises-enfants-comparatif-2026", "clicks": 13, "impressions": 228, "ctr": 5.7, "position": 6.01, "status": "STRONG_PERFORMER" },
+    { "page": "/blog/ia-revolution-creation-histoires-enfants", "clicks": 6, "impressions": 467, "ctr": 1.28, "position": 8.32, "status": "TITLE_PROBLEM" },
+    { "page": "/blog/conteuse-personnalisable-alternative-numerique-2026", "clicks": 5, "impressions": 232, "ctr": 2.16, "position": 9.59, "status": "TITLE_PROBLEM_UNDER_GIANT" },
+    { "page": "/blog/enfant-heros-propre-histoire", "clicks": 4, "impressions": 130, "ctr": 3.08, "position": 8.25, "status": "STABLE" },
+    { "page": "/blog/intelligence-artificielle-histoires-enfants", "clicks": 3, "impressions": 63, "ctr": 4.76, "position": 8.84, "status": "REDIRECT_SOURCE" },
+    { "page": "/blog/conte-personnalise-gratuit", "clicks": 3, "impressions": 53, "ctr": 5.66, "position": 8.0, "status": "TRANSACTIONAL_BIG_POTENTIAL" },
+    { "page": "/ia-creation-conte", "clicks": 3, "impressions": 53, "ctr": 5.66, "position": 11.89, "status": "LANDING_WORKING" },
+    { "page": "/story-form", "clicks": 0, "impressions": 144, "ctr": 0, "position": 54.94, "status": "CRAWL_WASTE_TODO_NOINDEX" }
+  ],
+  "geo": {
+    "france": { "clicks": 101, "impressions": 2770, "ctr_pct": 3.65, "share_clicks": 80.2 },
+    "usa": { "clicks": 0, "impressions": 361, "ctr_pct": 0, "note": "diaspora FR 361 imp, 0 clic — pas exploité" },
+    "canada": { "clicks": 2, "impressions": 141, "ctr_pct": 1.42 },
+    "belgique": { "clicks": 5, "impressions": 103, "ctr_pct": 4.85 },
+    "maroc": { "clicks": 8, "impressions": 74, "ctr_pct": 10.81 },
+    "suisse": { "clicks": 2, "impressions": 66, "ctr_pct": 3.03 }
+  },
+  "devices": {
+    "mobile": { "clicks": 81, "impressions": 2025, "ctr_pct": 4.0, "share_clicks": 64.3 },
+    "desktop": { "clicks": 43, "impressions": 2002, "ctr_pct": 2.15, "share_clicks": 34.1 },
+    "tablet": { "clicks": 2, "impressions": 103, "ctr_pct": 1.94 }
+  },
+  "indexedPages_estimate": 133,
+  "keyInsights": [
+    "Position moyenne 14.3 → 11.2 = -3 places en 11 jours — momentum positif fort",
+    "Trajectoire impressions/jour: 19 (jan) → 70.8 (mai) = +273% en 4 mois",
+    "Meilleur jour de toujours: 2026-05-03 → 8 clics, CTR 8.89%, pos 6.3 (le site rentre dans le top 10 fiable)",
+    "Article ANIMAUX = leader incontesté: 43 clics / 868 imp / pos 11 (+34% vs précédent relevé)",
+    "GAP ÉNORME: conteuse personnalisable = 222 imp / pos 38.8 / 0 clic — potentiel 1ère page = ~50 clics/mois",
+    "GAP MOYEN: livre conte personnalisé = 166 imp / pos 24 — manque page dédiée exact match",
+    "QUICK WIN: meilleur livre personnalisé pos 9.39 → un push à pos 5 = ~10 clics supplémentaires",
+    "USA 361 impressions / 0 clic = potentiel diaspora francophone CA/US (~500 imp combinées) jamais capté",
+    "Mobile = 64% des clics, CTR 4% vs 2.15% desktop — UX mobile-first OK",
+    "Brand 'contedia': 11 clics / 23 imp = encore très peu de recherche directe = on est en phase de découverte SEO non-brand"
+  ],
+  "recommendations_urgentes": [
+    "Fix /story-form: noindex=true OU 301 → / + retirer /create-story du sitemap (144 imp gaspillées)",
+    "Fix og:site_name 'Contes d'IA' → 'Contedia' dans SEOHead.tsx + index.html",
+    "Réécrire title /blog/ia-revolution (467 imp, CTR 1.28%) — inclure 'livre' + bénéfice",
+    "Réécrire title /blog/conteuse-personnalisable (232 imp, CTR 2.16%) — exact match query",
+    "Implémenter prerender (react-snap ou Vercel ISR via Next migration) — schema FAQ pas crawlé",
+    "Auditer/supprimer AggregateRating 523 avis si non sourçable — risque pénalité Google"
+  ],
+  "actionPlanFile": "seo-tracking/2026-05-11-strategie-globale.md"
+}
