@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
-import { StoryWizard } from '../components/wizard/StoryWizard';
 import { ChatStoryCreator } from '../components/chat-creator/ChatStoryCreator';
 import { ApiService } from '../config/api';
 import { StoryFormData } from '../types/FormTypes';
@@ -15,13 +14,6 @@ export const StoryFormPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { user, isAuthenticated, isClub, setTokenAndUser } = useAuth();
   const location = useLocation();
-  const isAdMode = useMemo(() => new URLSearchParams(location.search).get('from') === 'ad', [location.search]);
-  // Nouveau formulaire par defaut. ?ui=wizard pour revenir a l'ancien.
-  const useChatUI = useMemo(() => {
-    const params = new URLSearchParams(location.search);
-    if (params.get('ui') === 'wizard') return false;
-    return true;
-  }, [location.search]);
   const referralCode = useMemo(() => {
     const ref = new URLSearchParams(location.search).get('ref');
     if (ref) safeLocalStorage.setItem('referralCode', ref);
@@ -339,30 +331,16 @@ export const StoryFormPage: React.FC = () => {
         description="Créez facilement un conte personnalisé pour votre enfant en 3 étapes simples. 1er chapitre gratuit, prêt en 5 minutes."
         noindex={true}
       />
-      {useChatUI ? (
-        <ChatStoryCreator
-          formData={formData}
-          onUpdate={handleFormUpdate}
-          onSubmit={handleSubmit}
-          isSubmitting={isSubmitting}
-          isAuthenticated={isAuthenticated}
-          isClub={isClub}
-          currentUser={user}
-          clubCredit={clubCredit}
-        />
-      ) : (
-        <StoryWizard
-          formData={formData}
-          onUpdate={handleFormUpdate}
-          onSubmit={handleSubmit}
-          isSubmitting={isSubmitting}
-          isAuthenticated={isAuthenticated}
-          isClub={isClub}
-          currentUser={user}
-          clubCredit={clubCredit}
-          isAdMode={isAdMode}
-        />
-      )}
+      <ChatStoryCreator
+        formData={formData}
+        onUpdate={handleFormUpdate}
+        onSubmit={handleSubmit}
+        isSubmitting={isSubmitting}
+        isAuthenticated={isAuthenticated}
+        isClub={isClub}
+        currentUser={user}
+        clubCredit={clubCredit}
+      />
     </>
   );
 };
