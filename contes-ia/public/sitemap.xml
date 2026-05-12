@@ -131,6 +131,43 @@
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://contedia.fr/blog/histoire-personnalisee-chien</loc>
+    <lastmod>2026-05-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://contedia.fr/blog/choisir-livre-personnalise-guide-achat</loc>
+    <lastmod>2026-05-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <!-- ══════ Sous-pillars par tranche d'âge ══════ -->
+  <url>
+    <loc>https://contedia.fr/contes-par-age/bebe-0-2-ans</loc>
+    <lastmod>2026-05-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://contedia.fr/contes-par-age/3-5-ans</loc>
+    <lastmod>2026-05-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://contedia.fr/contes-par-age/6-8-ans</loc>
+    <lastmod>2026-05-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://contedia.fr/contes-par-age/9-12-ans</loc>
+    <lastmod>2026-05-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://contedia.fr/blog/conte-pour-sendormir-histoires-personnalisees</loc>
     <lastmod>2026-04-18</lastmod>
     <changefreq>monthly</changefreq>
