@@ -32,6 +32,9 @@ import IACreationContePage from './pages/IACreationContePage';
 import LivrePersonnaliseEnfantPage from './pages/LivrePersonnaliseEnfantPage';
 import ContePersonnaliseLandingPage from './pages/ContePersonnaliseLandingPage';
 import BlogArticleHistoireDuSoir50 from './pages/BlogArticleHistoireDuSoir50';
+import BlogArticleHistoireChien from './pages/BlogArticleHistoireChien';
+import BlogArticleChoisirLivrePersonnalise from './pages/BlogArticleChoisirLivrePersonnalise';
+import ContesParAgeTranchePage from './pages/ContesParAgeTranchePage';
 import BlogPage from './pages/BlogPage';
 import BlogArticle1 from './pages/BlogArticle1';
 import BlogArticle2 from './pages/BlogArticle2';
@@ -139,6 +142,7 @@ function App() {
           {/* Nouvelles pages SEO */}
           <Route path="/themes-de-contes" element={<ThemesContesPage />} />
           <Route path="/contes-par-age" element={<ContesParAgePage />} />
+          <Route path="/contes-par-age/:tranche" element={<ContesParAgeTranchePage />} />
           <Route path="/styles-illustration" element={<StylesIllustrationPage />} />
           <Route path="/contes-multilingues" element={<ContesMultilinguesPage />} />
           <Route path="/valeurs-educatives" element={<ValeursEducativesPage />} />
@@ -196,6 +200,8 @@ function App() {
           <Route path="/blog/alternative-toniebox-livre-personnalise-enfant" element={<BlogArticleAlternativeToniebox />} />
           <Route path="/blog/histoire-du-soir-enfant-meilleures-idees" element={<BlogArticleHistoireDuSoir />} />
           <Route path="/blog/histoire-du-soir-50-idees" element={<BlogArticleHistoireDuSoir50 />} />
+          <Route path="/blog/histoire-personnalisee-chien" element={<BlogArticleHistoireChien />} />
+          <Route path="/blog/choisir-livre-personnalise-guide-achat" element={<BlogArticleChoisirLivrePersonnalise />} />
           <Route path="/blog/conte-pour-sendormir-histoires-personnalisees" element={<BlogArticleConteSendormir />} />
           <Route path="/blog/cadeau-naissance-livre-personnalise-bebe" element={<BlogArticleCadeauNaissance />} />
           <Route path="/blog/cadeau-noel-livre-personnalise-enfant" element={<BlogArticleCadeauNoel />} />
