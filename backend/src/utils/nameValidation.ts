@@ -65,6 +65,20 @@ export function resolveCustomerName(
 }
 
 /**
+ * Resout un prenom d'enfant pour AFFICHAGE (sujets de mails, corps, prompts GPT).
+ * Si le nom stocke est invalide (vieille donnee avec "Un", "313", etc.), retourne
+ * un fallback neutre au lieu d'envoyer "L'histoire de Un est prete !".
+ *
+ * Usage : `displayChildName(order.protagonistName)` -> "Lea" ou "votre enfant"
+ */
+export function displayChildName(
+  name: string | null | undefined,
+  fallback: string = 'votre enfant'
+): string {
+  return isPlausibleName(name) ? name.trim() : fallback;
+}
+
+/**
  * Nettoie un prenom recu du formulaire (trim, capitalisation premiere lettre).
  * Suppose que la validation `isPlausibleName` a deja passe.
  */

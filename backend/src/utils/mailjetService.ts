@@ -1,4 +1,5 @@
 import Mailjet from 'node-mailjet';
+import { displayChildName } from './nameValidation';
 
 // Configuration Mailjet — initialisation lazy pour attendre le chargement de dotenv
 let _mailjet: ReturnType<typeof Mailjet.apiConnect> | null = null;
@@ -171,6 +172,10 @@ export class MailjetService {
     protagonistName: string;
     userId?: string;
   }): Promise<void> {
+    // Filet de securite : si une vieille commande a "Un", "313" ou autre prenom
+    // invalide stocke en base, on tombe sur "votre enfant" plutot que d'envoyer
+    // "L'histoire de Un est prete !" qui nuirait a l'image de marque.
+    data.protagonistName = displayChildName(data.protagonistName);
     try {
       const request = getMailjet()
         .post('send', { version: 'v3.1' })
@@ -254,6 +259,8 @@ export class MailjetService {
     step: 'post_day1' | 'post_day3' | 'post_day7';
     userId: string;
   }): Promise<void> {
+    // Filet de securite contre les vieux prenoms invalides ("Un", "313", etc.)
+    data.protagonistName = displayChildName(data.protagonistName);
     const frontendUrl = process.env.FRONTEND_URL || 'https://contedia.fr';
     const magicLink = this.generateMagicDashboardLink(data.userId, data.customerEmail);
     const createLink = `${frontendUrl}/create-story`;
@@ -350,6 +357,8 @@ export class MailjetService {
     protagonistName: string;
     userId: string;
   }): Promise<void> {
+    // Filet de securite contre les vieux prenoms invalides ("Un", "313", etc.)
+    data.protagonistName = displayChildName(data.protagonistName);
     try {
       const dl = MailjetService.generateMagicDashboardLink(data.userId, data.customerEmail);
       const sp = data.protagonistName.replace(/&/g, '&amp;').replace(/</g, '&lt;');
@@ -404,6 +413,8 @@ export class MailjetService {
     orderNumber: string;
     protagonistName: string;
   }): Promise<void> {
+    // Filet de securite contre les vieux prenoms invalides ("Un", "313", etc.)
+    data.protagonistName = displayChildName(data.protagonistName);
     try {
       const request = getMailjet()
         .post('send', { version: 'v3.1' })
@@ -536,6 +547,8 @@ export class MailjetService {
     userId: string;
     cliffhangerSummary?: string | null;
   }): Promise<void> {
+    // Filet de securite contre les vieux prenoms invalides ("Un", "313", etc.)
+    data.protagonistName = displayChildName(data.protagonistName);
     const magicLink = this.generateMagicDashboardLink(data.userId, data.customerEmail);
     const frontendUrl = process.env.FRONTEND_URL || 'https://contedia.fr';
     const clubLink = `${frontendUrl}/club/checkout`;
