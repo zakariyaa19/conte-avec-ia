@@ -12,6 +12,7 @@ import { MailjetService } from '../utils/mailjetService';
 import { buildOrderDetailsString } from '../utils/orderFormatter';
 import { saveCoverImage } from '../utils/coverStorage';
 import { isPlausibleName, normalizeChildName, resolveCustomerName } from '../utils/nameValidation';
+import { extractStoryEntities } from '../utils/storyEntityExtractor';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', { typescript: true });
 
@@ -35,24 +36,77 @@ export class OrderController {
       // Normaliser l'email (trim + lowercase) pour éviter les doublons
       if (userEmail) userEmail = userEmail.trim().toLowerCase();
 
-      // Validation des données requises
-      if (!formData.ageRange || !formData.generalTheme || !formData.protagonistName ||
-          !formData.productType) {
+      // Validation des donnees minimales (productType + brief libre obligatoires)
+      if (!formData.productType) {
         return res.status(400).json({
           success: false,
           message: 'Données obligatoires manquantes dans le formulaire'
         });
       }
 
-      // Garde-fou : refuser un prenom qui est un article francais, un pronom,
-      // une suite de chiffres, ou < 2 caracteres. Ces valeurs viennent de bugs
-      // de detection frontend ("Un enfant..." -> "Un"). Le client doit fournir
-      // un VRAI prenom car il finit dans les emails et le prompt GPT.
+      // ══ Extraction des entites via GPT-4o-mini ═════════════════════════
+      // Le frontend envoie ses devinettes (regex) mais GPT donne la reponse
+      // autoritative. Surtout pour le prenom : la regex frontend pouvait
+      // attraper "Un" ou "Le" comme prenom. GPT lit le contexte complet et
+      // retourne le vrai prenom (ou null si vraiment rien). On ecrase ensuite
+      // les champs frontend par les valeurs GPT (quand elles sont meilleures).
+      const brief = (formData.specialEvents || '').trim();
+      let extracted = null as Awaited<ReturnType<typeof extractStoryEntities>> | null;
+      if (brief.length >= 3) {
+        try {
+          extracted = await extractStoryEntities(brief);
+        } catch (extractErr) {
+          console.error('[OrderController] Echec extraction GPT, on continue avec les valeurs frontend:', extractErr);
+        }
+      }
+
+      // Prenom : priorite GPT > frontend
+      if (extracted?.protagonistName) {
+        formData.protagonistName = extracted.protagonistName;
+      }
+      // Age, genre, theme, hobbies : completer si manquant cote frontend
+      if (extracted?.protagonistAge && !formData.protagonistAge) {
+        formData.protagonistAge = extracted.protagonistAge;
+      }
+      if (extracted?.protagonistGender && !formData.protagonistGender) {
+        formData.protagonistGender = extracted.protagonistGender as any;
+      }
+      if (extracted?.hobbies && !formData.hobbies) {
+        formData.hobbies = extracted.hobbies;
+      }
+      if (extracted?.favoriteDish && !(formData as any).favoriteDish) {
+        (formData as any).favoriteDish = extracted.favoriteDish;
+      }
+      if (extracted?.theme && !formData.customTheme) {
+        formData.customTheme = extracted.theme;
+      }
+      if (extracted?.occasion && !formData.customSubject) {
+        formData.customSubject = extracted.occasion;
+      }
+      // Personnages secondaires : si GPT en a trouve plus, on prend la version GPT
+      const frontendChars = (formData as any).secondaryCharacters;
+      const gptChars = extracted?.secondaryCharacters || [];
+      if (gptChars.length > 0 && (!Array.isArray(frontendChars) || frontendChars.length < gptChars.length)) {
+        (formData as any).secondaryCharacters = gptChars.map(c => ({
+          name: c.name || '',
+          kind: c.kind,
+          ageOrType: c.role || '',
+          physical: '',
+        }));
+      }
+
+      // Defaults safe pour les champs encore vides (le backend tolere ces fallbacks)
+      if (!formData.ageRange) formData.ageRange = '6-9';
+      if (!formData.generalTheme) formData.generalTheme = 'stories';
+
+      // Garde-fou final : si malgre tout le prenom est invalide, on rejette
+      // proprement avec un message clair. Au lieu d'echouer en silence sur la
+      // generation, l'utilisateur peut corriger son brief.
       if (!isPlausibleName(formData.protagonistName)) {
-        console.warn(`[OrderController] Prenom rejete: "${formData.protagonistName}" (email=${userEmail})`);
+        console.warn(`[OrderController] Prenom non extrait apres GPT: "${formData.protagonistName}" (email=${userEmail}) brief="${brief.slice(0, 100)}"`);
         return res.status(400).json({
           success: false,
-          message: 'Saisissez un vrai prénom pour l\'enfant (pas un article ni un chiffre).',
+          message: 'Ajoutez le prénom de l\'enfant dans votre description pour que l\'histoire le mette en héros.',
           field: 'protagonistName',
         });
       }
