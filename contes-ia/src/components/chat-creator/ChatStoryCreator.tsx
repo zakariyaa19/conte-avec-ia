@@ -165,9 +165,11 @@ export const ChatStoryCreator: React.FC<Props> = ({
     r.readAsDataURL(file);
   }, []);
 
-  // canGo = prenom detecte + un peu de description (le reste a des defauts safe).
-  // Le filtre stop-words ds useStoryDetection empeche "Un", "Le" de passer.
-  const canGo = !!detected.name && story.trim().length >= 12;
+  // canGo = brief substantiel. La regex peut rater un prenom en minuscules
+  // ou complexe, mais le backend appelle GPT-4o-mini au submit pour extraire
+  // le vrai prenom + entites. Si GPT echoue aussi (vraiment aucun prenom dans
+  // le texte), le backend renvoie 400 avec un message clair.
+  const canGo = story.trim().length >= 20;
 
   // CTA → preview
   const gotoPreview = useCallback(() => {
