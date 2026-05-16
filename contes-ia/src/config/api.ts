@@ -127,7 +127,14 @@ export class ApiService {
           }
         }
 
-        throw new Error(errorData.message || `Erreur ${response.status}: ${response.statusText}`);
+        // statusText est vide en HTTP/2 (Cloudflare/Render) : ne jamais
+        // produire un message vide type "Erreur 400:". On lit message PUIS
+        // error (certains endpoints renvoient {error}), sinon message generique.
+        throw new Error(
+          errorData.message ||
+          errorData.error ||
+          `Une erreur est survenue (code ${response.status}). Merci de reessayer.`
+        );
       }
 
       return await response.json();

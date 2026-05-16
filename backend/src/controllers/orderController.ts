@@ -250,6 +250,17 @@ export class OrderController {
         }
       }
 
+      // Filet de securite CRITIQUE : toute commande a prix 0 doit etre finalisee
+      // comme livre gratuit (statut PAID + generation + notifications). Sans ca,
+      // un membre Club passant par l'UI mono-champ (qui envoie purchaseType
+      // SINGLE) cree une commande a 0€ jamais finalisee : elle reste PENDING,
+      // n'est jamais generee/notifiee, et le frontend retombe sur
+      // createPaymentSession qui rejette le prix 0 -> "Erreur 400:" vide.
+      // On exclut purchaseType CLUB (nouvel abonnement = checkout subscription).
+      if (price === 0 && !isClubFreeOrder && user && purchaseType !== 'CLUB') {
+        isFirstBookFree = true;
+      }
+
       // Défensif : garantir que les champs obligatoires ne sont jamais null/undefined
       const safeSpecificSubject = formData.specificSubject || formData.generalTheme || 'non spécifié';
       const safeCentralMessage = formData.centralMessage || 'non spécifié';
