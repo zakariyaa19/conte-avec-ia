@@ -1,4 +1,4 @@
-// Design System V2 - Thème principal pour Contes d'IA
+// Design System V2 - Thème principal pour Contedia
 // Refonte complète : ombres plus douces, animations, meilleure hiérarchie
 
 export const theme = {

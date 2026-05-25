@@ -85,9 +85,6 @@ const BlogArticleConteuseGuide: React.FC = () => {
       </Helmet>
 
       <div className="article-container">
-        <div className="article-breadcrumb">
-          <Link to="/blog">Blog</Link> / Conteuse Enfant : Guide Complet 2026
-        </div>
 
         <div className="article-layout">
           <div className="article-main">

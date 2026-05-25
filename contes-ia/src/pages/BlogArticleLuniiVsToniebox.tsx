@@ -86,9 +86,6 @@ const BlogArticleLuniiVsToniebox: React.FC = () => {
       </Helmet>
 
       <div className="article-container">
-        <div className="article-breadcrumb">
-          <Link to="/blog">Blog</Link> / Lunii vs Toniebox 2026 : Comparatif Complet
-        </div>
 
         <div className="article-layout">
           <div className="article-main">

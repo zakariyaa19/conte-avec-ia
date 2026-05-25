@@ -91,9 +91,6 @@ const BlogArticleSEO2: React.FC = () => {
       </Helmet>
 
       <div className="article-container">
-        <div className="article-breadcrumb">
-          <Link to="/blog">Blog</Link> / Les 10 meilleurs livres personnalisés enfants 2026
-        </div>
 
         <div className="article-layout">
           <div className="article-main">

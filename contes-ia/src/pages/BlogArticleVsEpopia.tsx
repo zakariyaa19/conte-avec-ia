@@ -77,9 +77,6 @@ const BlogArticleVsEpopia: React.FC = () => {
       </Helmet>
 
       <div className="article-container">
-        <div className="article-breadcrumb">
-          <Link to="/blog">Blog</Link> / Contedia vs Epopia
-        </div>
 
         <div className="article-layout">
           <div className="article-main">

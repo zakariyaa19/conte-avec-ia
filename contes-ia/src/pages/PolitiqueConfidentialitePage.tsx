@@ -200,7 +200,7 @@ const PolitiqueConfidentialitePage: React.FC = () => {
 
             <h3>10. Protection des mineurs</h3>
             <p>
-              Le service Contes d'IA est destine aux parents et tuteurs legaux. Les commandes sont passees par des adultes. Les donnees de personnalisation concernant les enfants (prenom, age) sont collectees aupres du parent/tuteur et utilisees uniquement pour la creation du conte.
+              Le service Contedia est destine aux parents et tuteurs legaux. Les commandes sont passees par des adultes. Les donnees de personnalisation concernant les enfants (prenom, age) sont collectees aupres du parent/tuteur et utilisees uniquement pour la creation du conte.
             </p>
             <p>
               Les photos d'enfants sont traitees de maniere securisee et supprimees automatiquement apres generation du conte. Aucune donnee d'enfant n'est partagee a des fins marketing.

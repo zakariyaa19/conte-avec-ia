@@ -90,9 +90,6 @@ const BlogArticleSEO4: React.FC = () => {
       </Helmet>
 
       <div className="article-container">
-        <div className="article-breadcrumb">
-          <Link to="/blog">Blog</Link> / Livre conte personnalisé : créez une histoire unique
-        </div>
 
         <div className="article-layout">
           <div className="article-main">

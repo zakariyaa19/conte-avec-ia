@@ -84,9 +84,6 @@ const BlogArticleFoi2: React.FC = () => {
       </Helmet>
 
       <div className="article-container">
-        <div className="article-breadcrumb">
-          <Link to="/blog">Blog</Link> / Contes personnalisés pour les fêtes religieuses
-        </div>
 
         <div className="article-layout">
           <div className="article-main">

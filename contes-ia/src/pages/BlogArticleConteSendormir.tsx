@@ -77,9 +77,6 @@ const BlogArticleConteSendormir: React.FC = () => {
       </Helmet>
 
       <div className="article-container">
-        <div className="article-breadcrumb">
-          <Link to="/blog">Blog</Link> / Conte pour s'endormir
-        </div>
 
         <div className="article-layout">
           <div className="article-main">

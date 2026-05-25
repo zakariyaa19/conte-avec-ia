@@ -77,9 +77,6 @@ const BlogArticleCadeauAnniversaire: React.FC = () => {
       </Helmet>
 
       <div className="article-container">
-        <div className="article-breadcrumb">
-          <Link to="/blog">Blog</Link> / Cadeau anniversaire enfant
-        </div>
 
         <div className="article-layout">
           <div className="article-main">

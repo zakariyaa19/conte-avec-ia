@@ -83,9 +83,6 @@ const BlogArticleAnimaux2: React.FC = () => {
       </Helmet>
 
       <div className="article-container">
-        <div className="article-breadcrumb">
-          <Link to="/blog">Blog</Link> / Cadeau Noël : conte personnalisé avec son animal
-        </div>
 
         <div className="article-layout">
           <div className="article-main">

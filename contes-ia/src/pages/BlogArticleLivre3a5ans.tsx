@@ -77,9 +77,6 @@ const BlogArticleLivre3a5ans: React.FC = () => {
       </Helmet>
 
       <div className="article-container">
-        <div className="article-breadcrumb">
-          <Link to="/blog">Blog</Link> / Livre personnalisé enfant 3-5 ans
-        </div>
 
         <div className="article-layout">
           <div className="article-main">

@@ -89,9 +89,6 @@ const BlogArticleFeteMeres: React.FC = () => {
       </Helmet>
 
       <div className="article-container">
-        <div className="article-breadcrumb">
-          <Link to="/blog">Blog</Link> / Cadeau Fête des Mères Personnalisé
-        </div>
 
         <div className="article-layout">
           <div className="article-main">

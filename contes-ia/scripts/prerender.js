@@ -42,6 +42,12 @@ const ROUTES = [
   '/exemples',
   '/club',
   '/blog',
+  // Hubs de catégorie (silos thématiques, mai 2026)
+  '/blog/categorie/animaux',
+  '/blog/categorie/conteuses',
+  '/blog/categorie/cadeaux',
+  '/blog/categorie/sommeil',
+  '/blog/categorie/foi',
   '/livre-personnalise-enfant',
   '/conte-personnalise',
   '/themes-de-contes',

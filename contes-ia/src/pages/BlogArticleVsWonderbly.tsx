@@ -86,9 +86,6 @@ const BlogArticleVsWonderbly: React.FC = () => {
       </Helmet>
 
       <div className="article-container">
-        <div className="article-breadcrumb">
-          <Link to="/blog">Blog</Link> / Contedia vs Wonderbly : Comparatif 2026
-        </div>
 
         <div className="article-layout">
           <div className="article-main">

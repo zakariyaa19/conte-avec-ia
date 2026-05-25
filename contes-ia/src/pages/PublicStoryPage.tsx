@@ -318,13 +318,13 @@ export const PublicStoryPage: React.FC = () => {
   return (
     <PageContainer>
       <Helmet>
-        <title>{displayTitle} - Contes d'IA</title>
+        <title>{displayTitle} - Contedia</title>
         <meta name="description" content={ogDescription} />
         <meta property="og:title" content={displayTitle} />
         <meta property="og:description" content={ogDescription} />
         <meta property="og:type" content="article" />
         {coverUrl && <meta property="og:image" content={coverUrl} />}
-        <meta property="og:site_name" content="Contes d'IA" />
+        <meta property="og:site_name" content="Contedia" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={displayTitle} />
         <meta name="twitter:description" content={ogDescription} />
@@ -335,9 +335,9 @@ export const PublicStoryPage: React.FC = () => {
       <MainContent>
         {/* Hero */}
         <HeroSection>
-          <BrandBadge>Contes d'IA</BrandBadge>
+          <BrandBadge>Contedia</BrandBadge>
           <HeroTitle>{displayTitle}</HeroTitle>
-          <HeroSubtitle>Créée avec Contes d'IA</HeroSubtitle>
+          <HeroSubtitle>Créée avec Contedia</HeroSubtitle>
         </HeroSection>
 
         {/* Cover */}
