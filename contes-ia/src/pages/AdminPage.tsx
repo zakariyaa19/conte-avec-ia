@@ -7,9 +7,10 @@ import AdminClientsPage from './AdminClientsPage';
 import AdminClientDetailPage from './AdminClientDetailPage';
 import AdminGenerationPage from './AdminGenerationPage';
 import AdminFunnelPage from './AdminFunnelPage';
+import AdminStoryViewerPage from './AdminStoryViewerPage';
 
 export const AdminPage: React.FC = () => {
-  const { orderId, clientId } = useParams<{ orderId?: string; clientId?: string }>();
+  const { orderId, clientId, storyOrderId } = useParams<{ orderId?: string; clientId?: string; storyOrderId?: string }>();
   const location = useLocation();
   const { adminToken, logout } = useAuth();
 
@@ -17,6 +18,10 @@ export const AdminPage: React.FC = () => {
   const token = adminToken || '';
 
   // Routage interne selon l'URL
+  if (storyOrderId) {
+    return <AdminStoryViewerPage token={token} />;
+  }
+
   if (orderId) {
     return <AdminOrderDetailPage token={token} />;
   }

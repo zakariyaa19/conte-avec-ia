@@ -17,6 +17,7 @@ router.post('/bootstrap', AdminController.createAdminTemp);
 router.get('/dashboard/stats', authenticateAdmin, requireAdmin, AdminController.getDashboardStatsExtended);
 router.get('/orders', authenticateAdmin, requireAdmin, AdminController.getOrders);
 router.get('/orders/:id', authenticateAdmin, requireAdmin, AdminController.getOrderDetails);
+router.get('/orders/:id/story-content', authenticateAdmin, requireAdmin, AdminController.getStoryContent);
 router.patch('/orders/:id', authenticateAdmin, requireAdmin, AdminController.updateOrder);
 router.delete('/orders/:id', authenticateAdmin, requireAdmin, AdminController.deleteOrder);
 
