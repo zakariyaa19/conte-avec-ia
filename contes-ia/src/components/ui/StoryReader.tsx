@@ -3,7 +3,6 @@ import styled, { keyframes, css } from 'styled-components';
 import { theme } from '../../styles/theme';
 import { getImageUrl } from '../../config/constants';
 import { InlineCheckout } from '../payment/InlineCheckout';
-import { useExperiment } from '../../hooks/useExperiment';
 import { trackPaywallEvent } from '../../utils/paywallTracking';
 
 
@@ -428,15 +427,10 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
   const [shareToastVisible, setShareToastVisible] = useState(false);
   const [inlineCheckoutOpen, setInlineCheckoutOpen] = useState(false);
 
-  // 6.1 devbook — A/B test du flow de paiement completion
-  // control = redirection Checkout Session (ancien flow)
-  // inline  = Stripe Elements dans un modal (pas de redirection)
-  // Kill-switch leve le 2026-04-15 : REACT_APP_STRIPE_PUBLISHABLE_KEY ajoute sur Vercel
-  // + webhook Stripe prod ecoute payment_intent.succeeded. A/B 50/50 actif.
-  const completionCheckoutVariant = useExperiment(
-    'completion_checkout_v1',
-    ['control', 'inline'] as const
-  );
+  // Flow paiement completion : 100% inline (Stripe Elements en modal).
+  // A/B 'control' (redirect Stripe Checkout) supprime le 2026-05-25 — la variante
+  // redirect sortait l'utilisateur du site avec un UI moins fiable, conversion plus faible.
+  const completionCheckoutVariant = 'inline' as const;
   const indicatorTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const resolveUrl = useCallback((url: string | null) => {
@@ -706,7 +700,7 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
 
             // ═══ CLIFFHANGER — L'histoire n'est pas finie, proposer de payer ═══
             if (isCliffhanger && !isShared) {
-              const handleCompletion = async () => {
+              const handleCompletion = () => {
                 if (!orderId) {
                   alert('Impossible de finaliser la commande. Rechargez la page.');
                   return;
@@ -716,25 +710,7 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
                   variant: completionCheckoutVariant,
                   protagonistName,
                 });
-                // Variante inline : on ouvre le modal Stripe Elements
-                // (cast string : le kill switch peut restreindre les variantes a ['control'])
-                if ((completionCheckoutVariant as string) === 'inline') {
-                  setInlineCheckoutOpen(true);
-                  return;
-                }
-                // Variante control : ancien flow par redirection Checkout
-                try {
-                  const { ApiService } = await import('../../config/api');
-                  const res = await ApiService.createCompletionSession(orderId);
-                  if (res.url) {
-                    trackPaywallEvent('paywall_checkout_open', {
-                      orderId,
-                      variant: completionCheckoutVariant,
-                      protagonistName,
-                    });
-                    window.location.href = res.url;
-                  } else alert(res.message || 'Erreur');
-                } catch { alert('Erreur de connexion'); }
+                setInlineCheckoutOpen(true);
               };
               const summary = (cliffhangerSummary || '').trim()
                 || `Que va-t-il découvrir ensuite ?`;
