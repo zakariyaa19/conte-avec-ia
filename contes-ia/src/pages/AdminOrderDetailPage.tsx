@@ -537,6 +537,21 @@ export const AdminOrderDetailPage: React.FC<AdminOrderDetailPageProps> = ({ toke
       <PageHeader>
         <PageTitle>Commande #{order.id.slice(-8)}</PageTitle>
         <HeaderActions>
+          <button
+            onClick={() => navigate(`/admin/story/${order.id}`)}
+            style={{
+              padding: '6px 14px',
+              borderRadius: '6px',
+              fontSize: '13px',
+              fontWeight: 600,
+              cursor: 'pointer',
+              background: theme.colors.admin.accent,
+              color: 'white',
+              border: 'none',
+            }}
+          >
+            Lire le livre
+          </button>
           <StatusDropdownWrapper>
             <StatusBtn $bg={cfg.color} disabled={updating}>
               {cfg.label} ▾

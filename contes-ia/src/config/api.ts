@@ -295,6 +295,14 @@ export class ApiService {
     });
   }
 
+  static async getAdminStoryContent(token: string, orderId: string): Promise<{ success: boolean; data: any }> {
+    return this.request(`/api/admin/orders/${orderId}/story-content`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+  }
+
   static async updateAdminOrder(token: string, orderId: string, updateData: any): Promise<{ success: boolean; data: any }> {
     return this.request(`/api/admin/orders/${orderId}`, {
       method: 'PATCH',

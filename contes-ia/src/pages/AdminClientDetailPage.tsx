@@ -615,20 +615,12 @@ export const AdminClientDetailPage: React.FC<AdminClientDetailPageProps> = ({ to
                               <ActionBtn onClick={() => navigate(`/admin/order/${order.id}`)}>
                                 Detail
                               </ActionBtn>
-                              {order.status === 'DELIVERED' && (
-                                <ActionBtn
-                                  $variant="primary"
-                                  onClick={() => {
-                                    if (order.shareToken) {
-                                      window.open(`https://contedia.fr/story/${order.shareToken}`, '_blank');
-                                    } else {
-                                      window.open(`https://contedia.fr/dashboard/story/${order.id}`, '_blank');
-                                    }
-                                  }}
-                                >
-                                  Lire
-                                </ActionBtn>
-                              )}
+                              <ActionBtn
+                                $variant="primary"
+                                onClick={() => navigate(`/admin/story/${order.id}`)}
+                              >
+                                Lire
+                              </ActionBtn>
                             </div>
                           </Td>
                         </tr>

@@ -250,6 +250,91 @@ export class AdminController {
     }
   }
 
+  // Contenu du livre (paragraphes + illustrations) pour consultation admin
+  static async getStoryContent(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+
+      const order = await prisma.order.findUnique({
+        where: { id },
+        select: {
+          id: true,
+          status: true,
+          protagonistName: true,
+          coverTitle: true,
+          coverImageUrl: true,
+          firstIllustrationUrl: true,
+          storyTextJson: true,
+          storyPreviewTextJson: true,
+          illustrationUrlsJson: true,
+          illustrationStyle: true,
+          generalTheme: true,
+          ageRange: true,
+          creatorName: true,
+          narratedBy: true,
+          createdAt: true,
+          user: { select: { email: true, firstName: true } }
+        }
+      });
+
+      if (!order) {
+        return res.status(404).json({ success: false, message: 'Commande non trouvée' });
+      }
+
+      let storyParagraphs: string[] = [];
+      let isPreview = false;
+      if (order.storyTextJson) {
+        try {
+          const parsed = JSON.parse(order.storyTextJson);
+          if (Array.isArray(parsed)) storyParagraphs = parsed;
+        } catch {}
+      }
+      if (storyParagraphs.length === 0 && order.storyPreviewTextJson) {
+        try {
+          const parsed = JSON.parse(order.storyPreviewTextJson);
+          if (Array.isArray(parsed)) {
+            storyParagraphs = parsed;
+            isPreview = true;
+          }
+        } catch {}
+      }
+
+      let illustrationUrls: string[] = [];
+      if (order.illustrationUrlsJson) {
+        try {
+          const parsed = JSON.parse(order.illustrationUrlsJson);
+          if (Array.isArray(parsed)) illustrationUrls = parsed;
+        } catch {}
+      }
+
+      res.json({
+        success: true,
+        data: {
+          orderId: order.id,
+          status: order.status,
+          protagonistName: order.protagonistName,
+          coverTitle: order.coverTitle,
+          coverImageUrl: order.coverImageUrl,
+          firstIllustrationUrl: order.firstIllustrationUrl,
+          storyParagraphs,
+          illustrationUrls,
+          illustrationStyle: order.illustrationStyle,
+          generalTheme: order.generalTheme,
+          ageRange: order.ageRange,
+          creatorName: order.creatorName,
+          narratedBy: order.narratedBy,
+          createdAt: order.createdAt,
+          isPreview,
+          hasContent: storyParagraphs.length > 0,
+          clientEmail: order.user?.email || null,
+        }
+      });
+    } catch (error) {
+      console.error('Erreur récupération contenu livre:', error);
+      res.status(500).json({ success: false, message: 'Erreur lors de la récupération du livre' });
+    }
+  }
+
   // Mettre à jour une commande
   static async updateOrder(req: Request, res: Response) {
     try {
