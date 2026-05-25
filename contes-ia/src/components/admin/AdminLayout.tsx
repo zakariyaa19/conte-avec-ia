@@ -182,7 +182,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
     <LayoutWrapper>
       <SidebarOverlay $isOpen={sidebarOpen} onClick={() => setSidebarOpen(false)} />
       <Sidebar $isOpen={sidebarOpen}>
-        <Logo>Contes d'IA</Logo>
+        <Logo>Contedia</Logo>
         <Nav>
           {navItems.map(item => (
             <NavItem

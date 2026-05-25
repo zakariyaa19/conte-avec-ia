@@ -319,7 +319,7 @@ export const UpgradePage: React.FC = () => {
       <Content>
         <Hero>
           <HeroTitle>Passez au Club</HeroTitle>
-          <HeroSub>Déverrouillez tout le potentiel de Contes d'IA</HeroSub>
+          <HeroSub>Déverrouillez tout le potentiel de Contedia</HeroSub>
         </Hero>
 
         {/* Checklist — ce que le Club déverrouille */}

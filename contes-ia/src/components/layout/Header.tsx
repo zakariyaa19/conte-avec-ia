@@ -5,6 +5,7 @@ import { Button } from '../ui/Button';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
+import { Breadcrumb } from './Breadcrumb';
 
 /* ─── Animations ─── */
 const fadeIn = keyframes`
@@ -519,7 +520,7 @@ export const Header: React.FC = () => {
       <HeaderContainer $scrolled={scrolled} ref={headerRef}>
         <HeaderContent>
           {/* Logo */}
-          <Logo onClick={() => go('/')}>Contes d'IA</Logo>
+          <Logo onClick={() => go('/')}>Contedia</Logo>
 
           {/* Desktop Nav — centré */}
           <Nav>
@@ -614,6 +615,9 @@ export const Header: React.FC = () => {
           </RightSection>
         </HeaderContent>
       </HeaderContainer>
+
+      {/* ─── Breadcrumb site-wide (UI uniquement, path-aware, rend null si pas pertinent) ─── */}
+      <Breadcrumb />
 
       {/* ─── Mobile Drawer ─── */}
       <Overlay $open={drawerOpen} onClick={() => setDrawerOpen(false)} />

@@ -82,9 +82,6 @@ const BlogArticleCadeauNaissance: React.FC = () => {
       </Helmet>
 
       <div className="article-container">
-        <div className="article-breadcrumb">
-          <Link to="/blog">Blog</Link> / Cadeau naissance livre personnalisé
-        </div>
 
         <div className="article-layout">
           <div className="article-main">

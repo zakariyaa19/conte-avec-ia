@@ -121,9 +121,6 @@ const BlogArticleHistoireChien: React.FC = () => {
       </Helmet>
 
       <div className="article-container">
-        <div className="article-breadcrumb">
-          <Link to="/blog">Blog</Link> / Histoire personnalisée avec un chien
-        </div>
 
         <div className="article-layout">
           <div className="article-main">

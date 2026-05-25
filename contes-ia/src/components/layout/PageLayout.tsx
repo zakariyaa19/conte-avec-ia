@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { theme } from '../../styles/theme';
 import { Header } from './Header';
 import { Footer } from './Footer';
+import { RelatedArticlesByCategory } from '../blog/RelatedArticlesByCategory';
 
 const PageContainer = styled.div`
   min-height: 100vh;
@@ -27,6 +28,7 @@ export const PageLayout: React.FC<PageLayoutProps> = ({ children }) => {
       <MainContent>
         {children}
       </MainContent>
+      <RelatedArticlesByCategory />
       <Footer />
     </PageContainer>
   );

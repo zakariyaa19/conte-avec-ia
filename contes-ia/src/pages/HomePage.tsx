@@ -1729,7 +1729,7 @@ const faqReveal = useScrollReveal();
         <FeaturesSection ref={featuresReveal.ref}>
           <Container>
             <SectionWrapper $visible={featuresReveal.isVisible}>
-              <SectionTitle>Pourquoi choisir Contes d'IA ?</SectionTitle>
+              <SectionTitle>Pourquoi choisir Contedia ?</SectionTitle>
               <Divider />
             </SectionWrapper>
 

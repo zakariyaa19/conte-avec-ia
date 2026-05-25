@@ -80,9 +80,6 @@ const BlogArticleCadeau5Ans: React.FC = () => {
       </Helmet>
 
       <div className="article-container">
-        <div className="article-breadcrumb">
-          <Link to="/blog">Blog</Link> / Idée Cadeau Enfant 5 Ans : 15 Idées qui Émerveillent
-        </div>
 
         <div className="article-layout">
           <div className="article-main">

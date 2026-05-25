@@ -1,7 +1,8 @@
 import React from 'react';
-import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import styled, { css } from 'styled-components';
+import { Link, useNavigate } from 'react-router-dom';
 import { theme } from '../../styles/theme';
+import { BLOG_CATEGORIES } from '../../data/blogArticles';
 const FooterContainer = styled.footer`
   background-color: var(--bg-secondary);
   margin-top: auto;
@@ -31,7 +32,7 @@ const FooterContent = styled.div`
 
 const FooterGrid = styled.div`
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
   gap: ${theme.spacing.xl};
   margin-bottom: ${theme.spacing.xl};
 
@@ -69,7 +70,7 @@ const FooterLinks = styled.div`
   gap: 0.625rem;
 `;
 
-const FooterLink = styled.a`
+const linkStyles = css`
   color: var(--text-light);
   font-size: ${theme.fontSizes.sm};
   text-decoration: none;
@@ -80,6 +81,17 @@ const FooterLink = styled.a`
     color: ${theme.colors.accent.coral};
     padding-left: 4px;
   }
+`;
+
+// Lien externe / mailto / tel / anchor smooth-scroll : reste sur <a> + onClick.
+const FooterLink = styled.a`
+  ${linkStyles}
+`;
+
+// Lien interne (route) : utilise <Link> de react-router → href crawlable par
+// Google (vrai jus PageRank distribué depuis le footer site-wide).
+const FooterRouterLink = styled(Link)`
+  ${linkStyles}
 `;
 
 const FooterBottom = styled.div`
@@ -131,7 +143,7 @@ export const Footer: React.FC = () => {
       <FooterContent>
         <FooterGrid>
           <FooterSection>
-            <h4>Contes d'IA</h4>
+            <h4>Contedia</h4>
             <FooterDescription>
               Créez des contes personnalisés et magiques pour vos enfants grâce à l'intelligence artificielle.
               Chaque histoire est unique et adaptée à votre petit lecteur.
@@ -141,33 +153,47 @@ export const Footer: React.FC = () => {
           <FooterSection>
             <h4>Navigation</h4>
             <FooterLinks>
-              <FooterLink href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/'); }}>Accueil</FooterLink>
-              <FooterLink href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/exemples'); }}>Exemples de contes</FooterLink>
-              <FooterLink href="#" onClick={(e) => { e.preventDefault(); handleNavigation('#tarifs'); }}>Nos tarifs</FooterLink>
-              <FooterLink href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/create-story'); }}>Créer un conte</FooterLink>
+              <FooterRouterLink to="/">Accueil</FooterRouterLink>
+              <FooterRouterLink to="/exemples">Exemples de contes</FooterRouterLink>
+              <FooterLink href="#tarifs" onClick={(e) => { e.preventDefault(); handleNavigation('#tarifs'); }}>Nos tarifs</FooterLink>
+              <FooterRouterLink to="/create-story">Créer un conte</FooterRouterLink>
+              <FooterRouterLink to="/blog">Blog</FooterRouterLink>
+              <FooterRouterLink to="/club">Club</FooterRouterLink>
+              <FooterRouterLink to="/a-propos">À propos</FooterRouterLink>
+            </FooterLinks>
+          </FooterSection>
+
+          <FooterSection>
+            <h4>Explorer le blog</h4>
+            <FooterLinks>
+              {BLOG_CATEGORIES.map(c => (
+                <FooterRouterLink key={c.slug} to={`/blog/categorie/${c.slug}`}>
+                  {c.label}
+                </FooterRouterLink>
+              ))}
             </FooterLinks>
           </FooterSection>
 
           <FooterSection>
             <h4>Support</h4>
             <FooterLinks>
-              <FooterLink href="#" onClick={(e) => { e.preventDefault(); handleNavigation('mailto:contact@contedia.fr'); }}>Nous contacter</FooterLink>
-              <FooterLink href="#" onClick={(e) => { e.preventDefault(); handleNavigation('tel:+33780777110'); }}>Support téléphonique</FooterLink>
+              <FooterLink href="mailto:contact@contedia.fr">Nous contacter</FooterLink>
+              <FooterLink href="tel:+33780777110">Support téléphonique</FooterLink>
             </FooterLinks>
           </FooterSection>
 
           <FooterSection>
             <h4>Légal</h4>
             <FooterLinks>
-              <FooterLink href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/mentions-legales'); }}>Mentions légales</FooterLink>
-              <FooterLink href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/conditions-generales-de-vente'); }}>Conditions générales de vente</FooterLink>
-              <FooterLink href="#" onClick={(e) => { e.preventDefault(); handleNavigation('/politique-confidentialite'); }}>Politique de confidentialité</FooterLink>
+              <FooterRouterLink to="/mentions-legales">Mentions légales</FooterRouterLink>
+              <FooterRouterLink to="/conditions-generales-de-vente">Conditions générales de vente</FooterRouterLink>
+              <FooterRouterLink to="/politique-confidentialite">Politique de confidentialité</FooterRouterLink>
             </FooterLinks>
           </FooterSection>
         </FooterGrid>
 
         <FooterBottom>
-          <Copyright>&copy; 2025 Contes d'IA. Tous droits réservés.</Copyright>
+          <Copyright>&copy; 2025 Contedia. Tous droits réservés.</Copyright>
           <LegalInfo>
             SIRET: 99282930900010 | TVA non applicable, art. 293 B du CGI | contact@contedia.fr
           </LegalInfo>

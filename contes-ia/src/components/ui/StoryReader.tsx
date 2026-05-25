@@ -971,7 +971,7 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
                   )}
 
                   <p style={{ color: 'rgba(255,255,255,0.25)', fontSize: 11, marginTop: 24 }}>
-                    Créé avec Contes d'IA
+                    Créé avec Contedia
                   </p>
                 </EndContent>
               </EndSlide>

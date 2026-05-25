@@ -81,9 +81,6 @@ const BlogArticleChatGPTvsContedia: React.FC = () => {
       </Helmet>
 
       <div className="article-container">
-        <div className="article-breadcrumb">
-          <Link to="/blog">Blog</Link> / ChatGPT vs Contedia : Créer un Livre Enfant
-        </div>
 
         <div className="article-layout">
           <div className="article-main">

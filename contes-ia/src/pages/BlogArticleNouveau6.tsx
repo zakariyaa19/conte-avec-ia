@@ -83,9 +83,6 @@ const BlogArticleNouveau6: React.FC = () => {
       </Helmet>
 
       <div className="article-container">
-        <div className="article-breadcrumb">
-          <Link to="/blog">Blog</Link> / Rituel du coucher et conte personnalisé
-        </div>
 
         <div className="article-layout">
           <div className="article-main">

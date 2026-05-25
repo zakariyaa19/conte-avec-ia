@@ -82,9 +82,6 @@ const BlogArticleAlternativeLunii: React.FC = () => {
       </Helmet>
 
       <div className="article-container">
-        <div className="article-breadcrumb">
-          <Link to="/blog">Blog</Link> / Alternative Lunii
-        </div>
 
         <div className="article-layout">
           <div className="article-main">

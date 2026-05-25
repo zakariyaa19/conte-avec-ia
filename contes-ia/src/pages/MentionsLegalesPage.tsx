@@ -102,7 +102,7 @@ const MentionsLegalesPage: React.FC = () => {
 
             <h3>4. Activite</h3>
             <p>
-              Contes d'IA est un service en ligne de creation de livres numeriques personnalises pour enfants, generes a l'aide de l'intelligence artificielle. Le service propose la creation de contes personnalises (produit numerique) et un abonnement mensuel (Club).
+              Contedia est un service en ligne de creation de livres numeriques personnalises pour enfants, generes a l'aide de l'intelligence artificielle. Le service propose la creation de contes personnalises (produit numerique) et un abonnement mensuel (Club).
             </p>
 
             <h3>5. Propriete intellectuelle</h3>

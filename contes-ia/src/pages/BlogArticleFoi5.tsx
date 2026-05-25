@@ -80,9 +80,6 @@ const BlogArticleFoi5: React.FC = () => {
       </Helmet>
 
       <div className="article-container">
-        <div className="article-breadcrumb">
-          <Link to="/blog">Blog</Link> / Tolérance religieuse et contes personnalisés
-        </div>
 
         <div className="article-layout">
           <div className="article-main">

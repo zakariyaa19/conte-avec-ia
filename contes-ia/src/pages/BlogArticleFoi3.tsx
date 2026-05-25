@@ -84,9 +84,6 @@ const BlogArticleFoi3: React.FC = () => {
       </Helmet>
 
       <div className="article-container">
-        <div className="article-breadcrumb">
-          <Link to="/blog">Blog</Link> / Comment l'IA respecte votre religion
-        </div>
 
         <div className="article-layout">
           <div className="article-main">

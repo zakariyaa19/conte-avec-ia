@@ -228,10 +228,6 @@ const ContesParAgeTranchePage: React.FC = () => {
       </Helmet>
 
       <div className="article-container">
-        <div className="article-breadcrumb">
-          <Link to="/contes-par-age">Contes par âge</Link> / {data.ageRange}
-        </div>
-
         <div className="article-layout">
           <div className="article-main">
             <div className="article-header">

@@ -392,6 +392,38 @@
     <priority>0.8</priority>
   </url>
 
+  <!-- ══════ BLOG — Hubs de catégorie (silos thématiques) ══════ -->
+  <url>
+    <loc>https://contedia.fr/blog/categorie/animaux</loc>
+    <lastmod>2026-05-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://contedia.fr/blog/categorie/conteuses</loc>
+    <lastmod>2026-05-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://contedia.fr/blog/categorie/cadeaux</loc>
+    <lastmod>2026-05-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://contedia.fr/blog/categorie/sommeil</loc>
+    <lastmod>2026-05-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://contedia.fr/blog/categorie/foi</loc>
+    <lastmod>2026-05-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
   <!-- ══════ BLOG — Articles SEO 2026 (haute priorité) ══════ -->
   <url>
     <loc>https://contedia.fr/blog/guide-livre-personnalise-enfant-2026</loc>

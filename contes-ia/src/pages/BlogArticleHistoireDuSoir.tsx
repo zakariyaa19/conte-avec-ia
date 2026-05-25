@@ -82,9 +82,6 @@ const BlogArticleHistoireDuSoir: React.FC = () => {
       </Helmet>
 
       <div className="article-container">
-        <div className="article-breadcrumb">
-          <Link to="/blog">Blog</Link> / Histoire du soir enfant
-        </div>
 
         <div className="article-layout">
           <div className="article-main">

@@ -89,9 +89,6 @@ const BlogArticleSEO1: React.FC = () => {
       </Helmet>
 
       <div className="article-container">
-        <div className="article-breadcrumb">
-          <Link to="/blog">Blog</Link> / Livre personnalisé enfant : guide complet 2026
-        </div>
 
         <div className="article-layout">
           <div className="article-main">

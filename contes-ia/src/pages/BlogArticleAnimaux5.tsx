@@ -85,9 +85,6 @@ const BlogArticleAnimaux5: React.FC = () => {
       </Helmet>
 
       <div className="article-container">
-        <div className="article-breadcrumb">
-          <Link to="/blog">Blog</Link> / 5 thèmes d'aventures avec votre animal
-        </div>
 
         <div className="article-layout">
           <div className="article-main">

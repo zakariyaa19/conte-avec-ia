@@ -83,9 +83,6 @@ const BlogArticleNouveau4: React.FC = () => {
       </Helmet>
 
       <div className="article-container">
-        <div className="article-breadcrumb">
-          <Link to="/blog">Blog</Link> / Comment l'IA crée un conte personnalisé
-        </div>
 
         <div className="article-layout">
           <div className="article-main">

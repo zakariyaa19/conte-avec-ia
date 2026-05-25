@@ -84,9 +84,6 @@ const BlogArticleAnimaux4: React.FC = () => {
       </Helmet>
 
       <div className="article-container">
-        <div className="article-breadcrumb">
-          <Link to="/blog">Blog</Link> / Lire avec son chien ou chat : le rituel lecture
-        </div>
 
         <div className="article-layout">
           <div className="article-main">

@@ -36,6 +36,7 @@ import BlogArticleHistoireChien from './pages/BlogArticleHistoireChien';
 import BlogArticleChoisirLivrePersonnalise from './pages/BlogArticleChoisirLivrePersonnalise';
 import ContesParAgeTranchePage from './pages/ContesParAgeTranchePage';
 import BlogPage from './pages/BlogPage';
+import BlogCategoryPage from './pages/BlogCategoryPage';
 import BlogArticle1 from './pages/BlogArticle1';
 import BlogArticle2 from './pages/BlogArticle2';
 import BlogArticle3 from './pages/BlogArticle3';
@@ -134,6 +135,7 @@ function App() {
           <Route path="/admin" element={<AdminProtectedRoute><AdminPage /></AdminProtectedRoute>} />
           <Route path="/admin/orders" element={<AdminProtectedRoute><AdminPage /></AdminProtectedRoute>} />
           <Route path="/admin/order/:orderId" element={<AdminProtectedRoute><AdminPage /></AdminProtectedRoute>} />
+          <Route path="/admin/story/:storyOrderId" element={<AdminProtectedRoute><AdminPage /></AdminProtectedRoute>} />
           <Route path="/admin/generation" element={<AdminProtectedRoute><AdminPage /></AdminProtectedRoute>} />
           <Route path="/admin/funnel" element={<AdminProtectedRoute><AdminPage /></AdminProtectedRoute>} />
           <Route path="/admin/clients" element={<AdminProtectedRoute><AdminPage /></AdminProtectedRoute>} />
@@ -151,6 +153,8 @@ function App() {
           <Route path="/livre-personnalise-enfant" element={<LivrePersonnaliseEnfantPage />} />
           <Route path="/conte-personnalise" element={<ContePersonnaliseLandingPage />} />
           <Route path="/blog" element={<BlogPage />} />
+          {/* Pages-hub de catégorie (silos thématiques pour SEO et maillage) */}
+          <Route path="/blog/categorie/:categorie" element={<BlogCategoryPage />} />
           {/* Articles de blog */}
           <Route path="/blog/histoire-animal-compagnie-livre-personnalise" element={<BlogArticle1 />} />
           <Route path="/blog/nouveaux-personnages-styles-aventures-ados" element={<BlogArticle2 />} />

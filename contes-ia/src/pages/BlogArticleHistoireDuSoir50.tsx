@@ -102,9 +102,6 @@ const BlogArticleHistoireDuSoir50: React.FC = () => {
       </Helmet>
 
       <div className="article-container">
-        <div className="article-breadcrumb">
-          <Link to="/blog">Blog</Link> / Histoire du soir : 50 idées par âge pour endormir votre enfant
-        </div>
 
         <div className="article-layout">
           <div className="article-main">

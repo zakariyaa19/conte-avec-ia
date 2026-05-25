@@ -203,10 +203,6 @@ const PrenomPage: React.FC = () => {
       </Helmet>
 
       <div className="article-container">
-        <div className="article-breadcrumb">
-          <Link to="/">Accueil</Link> / <Link to="/blog">Prénoms</Link> / {prenomDisplay}
-        </div>
-
         <div className="article-layout">
           <div className="article-main">
             <div className="article-header">

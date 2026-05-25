@@ -103,9 +103,6 @@ const BlogArticleSEO5: React.FC = () => {
       </Helmet>
 
       <div className="article-container">
-        <div className="article-breadcrumb">
-          <Link to="/blog">Blog</Link> / Livre Personnalisé Bébé : Le Premier Livre de Sa Vie
-        </div>
 
         <div className="article-layout">
           <div className="article-main">
