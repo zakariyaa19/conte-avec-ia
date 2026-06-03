@@ -68,8 +68,8 @@ const BlogArticle4: React.FC = () => {
   return (
     <PageLayout>
       <SEOHead
-        title="Histoire enfant IA : comment ça marche (et est-ce vraiment unique ?) | Contedia"
-        description="L'IA peut-elle vraiment écrire une histoire unique pour votre enfant ? On vous explique comment ça marche, ce que ça change vs un livre classique, et combien ça coûte. Premier chapitre offert."
+        title="Histoire pour Enfant par IA : Créez un Conte Unique et Gratuit en 5 min | Contedia"
+        description="Créez une histoire unique pour votre enfant grâce à l'IA : son prénom, ses passions, ses propres illustrations. Premier chapitre 100% gratuit, prêt en 5 minutes, sans carte bancaire."
         type="article"
       />
       <SchemaFAQ questions={faqQuestions} />

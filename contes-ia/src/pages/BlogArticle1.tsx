@@ -145,9 +145,9 @@ const BlogArticle1: React.FC = () => {
                 </Link>
               </div>
 
-              <h2 id="autres-animaux">Livre personnalisé chat, lapin, hamster : ça marche pour tous les animaux</h2>
+              <h2 id="autres-animaux">Livre personnalisé animaux : chat, lapin, hamster… tous les compagnons deviennent des héros</h2>
               <p>
-                Le <strong>livre personnalisé</strong> ne se limite pas aux chiens ! Sur Contedia, vous pouvez intégrer n'importe quel animal de compagnie :
+                Le <strong>livre personnalisé animaux</strong> ne se limite pas aux chiens ! Sur Contedia, vous pouvez créer un livre personnalisé avec n'importe quel animal de compagnie :
               </p>
               <ul>
                 <li><strong>Chat</strong> — Les chats font d'excellents personnages mystérieux et malins. Parfait pour les histoires d'enquête ou de magie.</li>
