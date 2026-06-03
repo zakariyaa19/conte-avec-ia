@@ -70,8 +70,8 @@ const BlogArticleAnimaux5: React.FC = () => {
   return (
     <PageLayout>
       <SEOHead
-        title="Top 5 Histoires avec Animaux pour Enfants — Chien, Chat, Licorne en Héros"
-        description="Les 5 meilleurs thèmes d'histoires où l'animal de votre enfant devient un héros. Chien, chat, lapin, licorne… Créez un conte personnalisé gratuit avec son compagnon."
+        title="Conte sur les Animaux : 5 Histoires où Votre Enfant Devient le Héros (Gratuit)"
+        description="Conte sur les animaux où votre enfant et son compagnon (chien, chat, lapin, licorne…) vivent une aventure ensemble. 5 thèmes magiques à créer gratuitement en 5 minutes."
         type="article"
       />
       <SchemaFAQ questions={faqQuestions} />

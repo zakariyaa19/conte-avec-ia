@@ -1,0 +1,126 @@
+{
+  "date": "2026-06-03",
+  "period": "3 mois glissants (~2026-03-02 au 2026-06-01)",
+  "source": "Google Search Console export (contedia.fr-Performance-on-Search-2026-06-03)",
+  "summary": {
+    "totalClicks": 199,
+    "totalImpressions": 5701,
+    "averageCTR": 3.49,
+    "averagePosition": 9.2,
+    "note": "Position moyenne consolide sous le top 10 (~9.2). Reprise post-Pentecote CONFIRMEE : semaine 26 mai-1 juin = la plus forte jamais enregistree."
+  },
+  "trendVsPrevious": {
+    "vs_2026-05-25": {
+      "clicksDelta": "+19.9% (166 -> 199)",
+      "impressionsDelta": "+10.7% (5149 -> 5701)",
+      "ctrDelta": "+0.27pt (3.22% -> 3.49%)",
+      "positionDelta": "9.63 -> ~9.2 = amelioration continue",
+      "recoveryConfirmed": "La chute 21-23 mai (1/1/2 clics) etait bien calendaire (Pentecote) : rebond net des le 26 mai. 29 mai = 7 clics/8.86% CTR, 31 mai = 6 clics. Prediction du snapshot precedent validee.",
+      "bestSingleDay": "2026-05-20 reste le pic (9 clics/115 imp/CTR 7.83%/pos 6.4)"
+    }
+  },
+  "topQueries": [
+    { "query": "contedia", "clicks": 29, "impressions": 44, "ctr": 65.91, "position": 1.52, "type": "BRAND", "trend": "UP (23->29) — notoriete marque en hausse continue (TikTok/organique)" },
+    { "query": "meilleur livre personnalisé enfant", "clicks": 4, "impressions": 144, "ctr": 2.78, "position": 4.7, "trend": "IMP x1.8 (80->144), pos stable ~4.7. CTR a ameliorer sur pos 4." },
+    { "query": "livre personnalisé ado", "clicks": 2, "impressions": 13, "ctr": 15.38, "position": 8.46, "trend": "NOUVEAU SEGMENT — ado/teen emerge, CTR 15%" },
+    { "query": "meilleur livre personnalisé", "clicks": 1, "impressions": 51, "ctr": 1.96, "position": 9.18, "trend": "PREMIER CLIC (0->1), imp 39->51 — quick win se materialise lentement, title toujours pas optimise" },
+    { "query": "livre personnalisé enfant chien", "clicks": 1, "impressions": 8, "ctr": 12.5, "position": 8.0 },
+    { "query": "lunii ou tonies", "clicks": 1, "impressions": 7, "ctr": 14.29, "position": 6.71 },
+    { "query": "meilleur livre enfant personnalisé", "clicks": 1, "impressions": 6, "ctr": 16.67, "position": 6.0 },
+    { "query": "lunii vs tonies", "clicks": 1, "impressions": 4, "ctr": 25, "position": 9.75, "trend": "NEW" },
+    { "query": "histoire pour enfant ia", "clicks": 1, "impressions": 4, "ctr": 25, "position": 13.5, "trend": "POSITION +16 places (30.1 -> 13.5) — gros bond" },
+    { "query": "conteuse personnalisable", "clicks": 0, "impressions": 147, "ctr": 0, "position": 32.96, "trend": "TOUJOURS 0 clic sur 147 imp — PIEGE D'INTENTION confirme (appareil audio vs livre)" },
+    { "query": "livre conte personnalisé", "clicks": 0, "impressions": 115, "ctr": 0, "position": 22.92 },
+    { "query": "choisir livre personnalisé", "clicks": 0, "impressions": 74, "ctr": 0, "position": 51.55, "trend": "TOUJOURS enterre pos 51 — cannibalisation/contenu non re-evalue" },
+    { "query": "contes personnalises", "clicks": 0, "impressions": 50, "ctr": 0, "position": 14.54 },
+    { "query": "livre personnalisé animaux", "clicks": 0, "impressions": 23, "ctr": 0, "position": 9.0, "trend": "QUICK WIN TOUJOURS NON TRAITE — pos 9, ajouter H2 exact dans article leader" },
+    { "query": "alternative toniebox", "clicks": 0, "impressions": 25, "ctr": 0, "position": 15.32 },
+    { "query": "alternative lunii", "clicks": 0, "impressions": 22, "ctr": 0, "position": 21.14 },
+    { "query": "créer un livre pour enfant avec ia", "clicks": 0, "impressions": 13, "ctr": 0, "position": 8.62, "trend": "quick win pos 8" },
+    { "query": "livre personnalisé bébé 1 an", "clicks": 0, "impressions": 13, "ctr": 0, "position": 11.46 },
+    { "query": "conte sur les animaux", "clicks": 0, "impressions": 11, "ctr": 0, "position": 9.91, "trend": "cluster animaux genere bcp de longue traine (conte animalié, histoire avec animaux, conte avec des animaux pos 1)" },
+    { "query": "livre personnalisé enfant 8 ans", "clicks": 0, "impressions": 10, "ctr": 0, "position": 10.1, "trend": "silo age" },
+    { "query": "cadeau naissance livre personnalisé", "clicks": 0, "impressions": 8, "ctr": 0, "position": 8.62, "trend": "NEW commercial pos 8 — quick win" },
+    { "query": "livre personnalisé prénom gratuit", "clicks": 0, "impressions": 8, "ctr": 0, "position": 11.62, "trend": "programmatic prenoms" },
+    { "query": "prix livre personnalisé", "clicks": 0, "impressions": 4, "ctr": 0, "position": 9.25, "trend": "NEW commercial transactionnel pos 9 — quick win (section/page prix)" }
+  ],
+  "topPages": [
+    { "page": "/blog/histoire-animal-compagnie-livre-personnalise", "clicks": 51, "impressions": 1012, "ctr": 5.04, "position": 8.11, "status": "LEADER renforce (46->51 clics, pos 8.96->8.11). Cluster animaux = moteur #1." },
+    { "page": "/", "clicks": 40, "impressions": 540, "ctr": 7.41, "position": 12.05, "status": "Home +11% clics, CTR 7.41% excellent" },
+    { "page": "/blog/meilleurs-livres-personnalises-enfants-comparatif-2026", "clicks": 34, "impressions": 703, "ctr": 4.84, "position": 5.62, "status": "GROS MOUVEUR +48% clics (23->34), pos 5.62 — pilier comparatif solide" },
+    { "page": "/blog/top-5-themes-histoires-animal-heros-conte", "clicks": 22, "impressions": 982, "ctr": 2.24, "position": 7.62, "status": "QUICK WIN #1 NON TRAITE : 982 imp/CTR 2.24% sur pos 7.6 = ~20 clics perdus/mois. TITLE A REECRIRE." },
+    { "page": "/blog/ia-revolution-creation-histoires-enfants", "clicks": 7, "impressions": 571, "ctr": 1.23, "position": 8.37, "status": "URGENCE PERSISTANTE : 571 imp/CTR 1.23% pos 8. Refonte title precedente insuffisante." },
+    { "page": "/blog/conteuse-personnalisable-alternative-numerique-2026", "clicks": 6, "impressions": 264, "ctr": 2.27, "position": 9.11 },
+    { "page": "/blog/enfant-heros-propre-histoire", "clicks": 5, "impressions": 160, "ctr": 3.12, "position": 8.26 },
+    { "page": "/blog/conte-personnalise-gratuit", "clicks": 4, "impressions": 55, "ctr": 7.27, "position": 7.96, "status": "Excellent CTR transactionnel" },
+    { "page": "/blog/idee-cadeau-enfant-5-ans", "clicks": 3, "impressions": 104, "ctr": 2.88, "position": 8.87 },
+    { "page": "/contes-par-age/9-12-ans", "clicks": 3, "impressions": 32, "ctr": 9.38, "position": 6.97, "status": "SILO AGE FONCTIONNE — sous-page tranche ranke pos 7 CTR 9%" },
+    { "page": "/blog/contedia-vs-epopia-comparatif", "clicks": 3, "impressions": 24, "ctr": 12.5, "position": 7.33, "status": "comparatif concurrent CTR 12.5%" },
+    { "page": "/blog/cadeau-fete-des-meres-livre-personnalise", "clicks": 2, "impressions": 92, "ctr": 2.17, "position": 8.71, "status": "saisonnier fete des meres a fonctionne" },
+    { "page": "/blog/livre-personnalise-vs-livre-classique-enfant", "clicks": 1, "impressions": 98, "ctr": 1.02, "position": 40.38, "status": "CHUTE pos 40 — cannibalisation cluster 'livre personnalise'" },
+    { "page": "/story-form", "clicks": 0, "impressions": 91, "ctr": 0, "position": 41.51, "status": "ALERTE TECHNIQUE : page formulaire censee etre NOINDEX apparait indexee (91 imp). A verifier." },
+    { "page": "/prenom/paul", "clicks": 1, "impressions": 11, "ctr": 9.09, "position": 3.91, "status": "programmatic" },
+    { "page": "/prenom/luna", "clicks": 1, "impressions": 1, "ctr": 100, "position": 1.0, "status": "programmatic pos 1" },
+    { "page": "/prenom/leo", "clicks": 1, "impressions": 1, "ctr": 100, "position": 3.0 },
+    { "page": "/prenom/martin", "clicks": 1, "impressions": 6, "ctr": 16.67, "position": 6.17 }
+  ],
+  "programmaticPrenoms": {
+    "status": "DECOLLAGE MASSIF — ~70 pages prenoms desormais indexees avec impressions",
+    "withClicks": ["paul (pos 3.9)", "luna (pos 1)", "leo (pos 3)", "augustine (pos 5)", "martin (pos 6.2)", "rose (pos 6)"],
+    "highImpressions": ["clara (23)", "louise (23)", "sarah", "raphael", "hugo", "noah", "nathan", "louis", "mila", "anna", "rayan"],
+    "manyRankTop10": "Une majorite des fiches prenoms rankent pos 3-7 — la preuve de concept est validee a l'echelle",
+    "risk": "Contenu unique mince par prenom -> risque doorway si scaling sans enrichissement",
+    "opportunity": "Inclure 'signification prenom' (gros volume) + prenoms diaspora (Maroc/Afrique FR CTR eleve)"
+  },
+  "geo": {
+    "france": { "clicks": 167, "impressions": 3943, "ctr_pct": 4.24, "position": 10.23, "share_clicks": 83.9 },
+    "canada": { "clicks": 6, "impressions": 193, "ctr_pct": 3.11, "position": 7.39 },
+    "maroc": { "clicks": 6, "impressions": 97, "ctr_pct": 6.19, "position": 7.13 },
+    "belgique": { "clicks": 5, "impressions": 148, "ctr_pct": 3.38 },
+    "suisse": { "clicks": 4, "impressions": 100, "ctr_pct": 4.0 },
+    "usa": { "clicks": 0, "impressions": 486, "ctr_pct": 0, "position": 6.33, "note": "TOUJOURS 0 clic sur 486 imp (pos 6.3 pourtant !) — diaspora FR-US non captee, titres trop France-centric" },
+    "diasporaAfriqueFR": { "note": "Benin (3 clics CTR 60%), Tunisie, Senegal, Cote d'Ivoire, Togo, Mali... forte presence francophone Afrique — vecteur a activer (cf prenoms diaspora + silo Foi)" }
+  },
+  "devices": {
+    "mobile": { "clicks": 134, "impressions": 3062, "ctr_pct": 4.38, "position": 8.44, "share_clicks": 67.3 },
+    "desktop": { "clicks": 64, "impressions": 2547, "ctr_pct": 2.51, "position": 10.16, "share_clicks": 32.2 },
+    "tablet": { "clicks": 1, "impressions": 92, "ctr_pct": 1.09 }
+  },
+  "richResults": {
+    "extraits_de_produits": { "clicks": 0, "impressions": 4, "position": 4.75, "note": "Product schema genere des rich results (extraits produits) — base a exploiter, manque Review/AggregateRating pour les etoiles" }
+  },
+  "newSignals": [
+    "SEGMENT ADO emerge : 'livre personnalisé ado' (CTR 15%), 'conte pour ado' — micro-cluster a considerer (article BlogArticle2 ados existe deja)",
+    "CLUSTER ANIMAUX explose en longue traine : conte sur les animaux (9.9), histoire avec des animaux, conte avec des animaux (pos 1), conte animalié, une petite histoire imaginaire des animaux (5.5)",
+    "REQUETES COMMERCIALES nouvelles : 'prix livre personnalisé' (pos 9.25), 'cadeau naissance livre personnalisé' (pos 8.62) — quick wins transactionnels",
+    "SILO AGE confirme : /contes-par-age/9-12-ans (pos 7 CTR 9%), 'livre personnalisé 10 ans', 'livre personnalisé enfant 8 ans'",
+    "PROGRAMMATIC PRENOMS : ~70 pages indexees, plusieurs en top 5 — basculement majeur depuis le dernier releve"
+  ],
+  "technicalAlert": {
+    "issue": "/story-form indexee (91 imp, pos 41.51) alors qu'elle doit etre en noindex",
+    "action": "Verifier que noindex={true} est bien rendu par le prerender Puppeteer en prod sur /story-form et /create-story. Si deja noindex, demander desindexation via GSC."
+  },
+  "keyInsights": [
+    "Croissance continue : 199 clics (+20%), 5701 imp (+11%), position ~9.2, CTR 3.49% (+0.27pt)",
+    "Reprise post-Pentecote CONFIRMEE — semaine 26 mai-1 juin = record (34 clics/7j)",
+    "Article LEADER animaux toujours #1 et se renforce (51 clics, pos 8.1)",
+    "Comparatif meilleurs-livres : +48% clics — 2e moteur",
+    "2 QUICK WINS CTR toujours NON traites depuis 2 releves : top-5-themes (982 imp/2.24%) et ia-revolution (571 imp/1.23%) = ~30-40 clics/mois dormants",
+    "Programmatic prenoms en plein decollage (~70 pages, plusieurs top 5)",
+    "Nouveaux signaux : segment ADO + requetes prix/cadeau naissance + explosion longue traine animaux",
+    "PIEGE conteuse personnalisable : 147 imp / 0 clic confirme sur 2 releves — intention appareil != produit livre",
+    "ALERTE : /story-form indexee a tort (noindex a verifier)"
+  ],
+  "recommendations": [
+    "PRIORITE 1 (toujours en attente) : reecrire les titles de top-5-themes (982 imp) et ia-revolution (571 imp) — ROI immediat ~30-40 clics/mois",
+    "QUICK WIN : ajouter H2 'livre personnalisé animaux' (pos 9, 23 imp) dans l'article leader",
+    "QUICK WIN : title de meilleurs-livres-comparatif avec 'meilleur livre personnalisé' exact (pos 9.18 sur 51 imp)",
+    "NOUVEAU : creer/optimiser une reponse a 'prix livre personnalisé' (pos 9.25) et 'cadeau naissance' (pos 8.62)",
+    "PROGRAMMATIC : enrichir le contenu unique des fiches prenoms AVANT de scaler + ajouter 'signification'",
+    "TECHNIQUE : verifier noindex de /story-form",
+    "CANNIBALISATION : traiter le cluster 'livre personnalisé' (vs-classique tombe pos 40, choisir-livre pos 51) — designer pilier + fusions/redirects",
+    "ADO : evaluer un micro-cluster ado (segment qui emerge avec bon CTR)",
+    "SAISON : preparer le silo Noel/cadeaux des septembre (mise en cache des positions avant le pic Q4)"
+  ],
+  "previousSnapshotFile": "seo-tracking/2026-05-25.json"
+}

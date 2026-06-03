@@ -29,6 +29,11 @@
       "source": "/blog/creation-histoires-personnalisees-conte-ia",
       "destination": "/blog/ia-revolution-creation-histoires-enfants",
       "statusCode": 301
+    },
+    {
+      "source": "/blog/choisir-livre-personnalise-guide-achat",
+      "destination": "/blog/guide-livre-personnalise-enfant-2026",
+      "statusCode": 301
     }
   ],
   "rewrites": [
@@ -52,6 +57,24 @@
         {
           "key": "X-XSS-Protection",
           "value": "1; mode=block"
+        }
+      ]
+    },
+    {
+      "source": "/create-story",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
+      "source": "/story-form",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
         }
       ]
     }

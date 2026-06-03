@@ -318,7 +318,6 @@ const ContesParAgeTranchePage: React.FC = () => {
                 <li><Link to="/conte-personnalise">Conte personnalisé : la landing transactionnelle Contedia</Link></li>
                 <li><Link to="/livre-personnalise-enfant">Livre personnalisé enfant : tous âges confondus</Link></li>
                 <li><Link to="/blog/guide-livre-personnalise-enfant-2026">Guide complet du livre personnalisé enfant 2026</Link></li>
-                <li><Link to="/blog/choisir-livre-personnalise-guide-achat">Comment choisir un livre personnalisé : guide d'achat</Link></li>
               </ul>
             </div>
           </div>
