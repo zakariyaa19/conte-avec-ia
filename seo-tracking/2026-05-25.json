@@ -1,0 +1,123 @@
+{
+  "date": "2026-05-25",
+  "period": "3 mois glissants (~2026-02-24 au 2026-05-23)",
+  "source": "Google Search Console export",
+  "summary": {
+    "totalClicks": 166,
+    "totalImpressions": 5149,
+    "averageCTR": 3.22,
+    "averagePosition": 9.63,
+    "note": "Position moyenne passe SOUS la barre du top 10 — palier majeur franchi"
+  },
+  "trendVsPrevious": {
+    "vs_2026-05-11": {
+      "clicksDelta": "+31.7% (126 -> 166 sur 14 jours)",
+      "impressionsDelta": "+24.7% (4130 -> 5149)",
+      "ctrDelta": "+5.6% (3.05% -> 3.22%)",
+      "positionDelta": "11.2 -> 9.63 = -1.57 places (entree top 10 reelle)",
+      "bestDayEver": "2026-05-20 -> 9 clics / 115 imp / CTR 7.83% / pos 6.4"
+    }
+  },
+  "recentDaysAnalysis": {
+    "concernedDays": ["2026-05-21", "2026-05-22", "2026-05-23"],
+    "values": [
+      { "date": "2026-05-21", "clicks": 1, "impressions": 97 },
+      { "date": "2026-05-22", "clicks": 1, "impressions": 74 },
+      { "date": "2026-05-23", "clicks": 2, "impressions": 61 }
+    ],
+    "samePeriodPriorWeek": [
+      { "date": "2026-05-14", "clicks": 5, "impressions": 107 },
+      { "date": "2026-05-15", "clicks": 2, "impressions": 93 },
+      { "date": "2026-05-16", "clicks": 3, "impressions": 96 },
+      { "date": "2026-05-17", "clicks": 4, "impressions": 126 }
+    ],
+    "rootCauses": [
+      "PRIMARY: Lundi de Pentecote 25 mai = ferie France. Long weekend 23-25 mai. France = 80% du trafic donc impact direct (creux pre-ferie classique sur niches familiales).",
+      "SECONDARY: Google dance J+10/J+14 apres la refonte massive titles + nouveaux pillars du 11-12 mai (article conteuse-personnalisable: -34% imp mais +5 places en position = re-evaluation).",
+      "TERTIARY: bruit statistique normal a ce volume (1-9 clics/jour, ±50% sur 2-3 jours est dans la marge)"
+    ],
+    "verdict": "PAS UN SIGNAL D'ALERTE. Effet calendrier + Google dance + bruit. Pattern attendu : retour a la normale apres la Pentecote."
+  },
+  "topQueries": [
+    { "query": "contedia", "clicks": 23, "impressions": 38, "ctr": 60.53, "position": 1.58, "type": "BRAND", "trend": "UP (11->23 clics)" },
+    { "query": "meilleur livre personnalisé enfant", "clicks": 3, "impressions": 80, "ctr": 3.75, "position": 4.54, "trend": "IMPRESSIONS x40 (2 -> 80) — gain majeur" },
+    { "query": "livre personnalisé enfant chien", "clicks": 1, "impressions": 9, "ctr": 11.11, "position": 8.0, "trend": "STABLE" },
+    { "query": "lunii ou tonies", "clicks": 1, "impressions": 7, "ctr": 14.29, "position": 6.71, "trend": "STABLE" },
+    { "query": "histoire pour enfant ia", "clicks": 1, "impressions": 7, "ctr": 14.29, "position": 30.14, "trend": "POSITION +10 places (39.9 -> 30.1)" },
+    { "query": "meilleur livre enfant personnalisé", "clicks": 1, "impressions": 4, "ctr": 25, "position": 6.5, "trend": "NEW" },
+    { "query": "conteuse personnalisable", "clicks": 0, "impressions": 146, "ctr": 0, "position": 33.13, "trend": "POSITION +5.7 places (38.8 -> 33.1) post-refonte 15e8a48 — Google dance en cours" },
+    { "query": "livre conte personnalisé", "clicks": 0, "impressions": 131, "ctr": 0, "position": 23.8, "trend": "STABLE" },
+    { "query": "choisir livre personnalisé", "clicks": 0, "impressions": 79, "ctr": 0, "position": 53.75, "trend": "STABLE — article cree mais pas encore re-evalue par Google" },
+    { "query": "contes personnalises", "clicks": 0, "impressions": 51, "ctr": 0, "position": 15.06, "trend": "POSITION amelioree (15.4 -> 15.1)" },
+    { "query": "meilleur livre personnalisé", "clicks": 0, "impressions": 39, "ctr": 0, "position": 9.18, "trend": "POSITION amelioree (9.4 -> 9.2) — quick win imminent" },
+    { "query": "livre de conte personnalisé", "clicks": 0, "impressions": 33, "ctr": 0, "position": 31.52 },
+    { "query": "contes personnalises enfants", "clicks": 0, "impressions": 24, "ctr": 0, "position": 18.5 },
+    { "query": "alternative toniebox", "clicks": 0, "impressions": 22, "ctr": 0, "position": 15.68, "trend": "STABLE" },
+    { "query": "alternative lunii", "clicks": 0, "impressions": 22, "ctr": 0, "position": 21.14, "trend": "POSITION amelioree (-0.65)" },
+    { "query": "livre personnalisé animaux", "clicks": 0, "impressions": 20, "ctr": 0, "position": 9.2, "trend": "QUICK WIN — pos 9 sur volume non negligeable" },
+    { "query": "livre personnalisé ia", "clicks": 0, "impressions": 19, "ctr": 0, "position": 12.37 },
+    { "query": "livre enfant personnalisé ia", "clicks": 0, "impressions": 16, "ctr": 0, "position": 11.94 },
+    { "query": "créer un livre pour enfant avec ia", "clicks": 0, "impressions": 13, "ctr": 0, "position": 8.62, "trend": "NEW QUERY pos 8 — quick win" },
+    { "query": "livre personnalisé bébé 1 an", "clicks": 0, "impressions": 13, "ctr": 0, "position": 11.46, "trend": "STABLE" },
+    { "query": "conte sur les animaux", "clicks": 0, "impressions": 11, "ctr": 0, "position": 9.91, "trend": "NEW QUERY pos 9 — capture cluster animaux" },
+    { "query": "livre personnalisé enfant 8 ans", "clicks": 0, "impressions": 10, "ctr": 0, "position": 10.1, "trend": "NEW — sous-pillar age commence a ranker" },
+    { "query": "livre personnalisé prénom gratuit", "clicks": 0, "impressions": 8, "ctr": 0, "position": 11.62, "trend": "NEW QUERY — programmatic prenoms commence" }
+  ],
+  "topPages": [
+    { "page": "/blog/histoire-animal-compagnie-livre-personnalise", "clicks": 46, "impressions": 963, "ctr": 4.78, "position": 8.96, "status": "LEADER + entree top 10 reelle (10.95 -> 8.96)" },
+    { "page": "/", "clicks": 36, "impressions": 579, "ctr": 6.22, "position": 13.09, "status": "Home +50% clics, position 15.8 -> 13" },
+    { "page": "/blog/meilleurs-livres-personnalises-enfants-comparatif-2026", "clicks": 23, "impressions": 500, "ctr": 4.6, "position": 5.57, "status": "PROGRESSION MAJEURE clics +77%, imp x2.2" },
+    { "page": "/blog/top-5-themes-histoires-animal-heros-conte", "clicks": 20, "impressions": 906, "ctr": 2.21, "position": 7.63, "status": "STRONG +25% clics — CTR a booster (title)" },
+    { "page": "/blog/ia-revolution-creation-histoires-enfants", "clicks": 6, "impressions": 540, "ctr": 1.11, "position": 8.31, "status": "TITLE PROBLEM persistant — CTR 1.11% sur pos 8 = title refonte n'a pas encore boost" },
+    { "page": "/blog/conteuse-personnalisable-alternative-numerique-2026", "clicks": 5, "impressions": 255, "ctr": 1.96, "position": 9.18, "status": "Position s'ameliore (9.59 -> 9.18) post-refonte mais CTR pas encore decolle" },
+    { "page": "/blog/enfant-heros-propre-histoire", "clicks": 5, "impressions": 139, "ctr": 3.6, "position": 8.28 },
+    { "page": "/blog/conte-personnalise-gratuit", "clicks": 4, "impressions": 55, "ctr": 7.27, "position": 7.96, "status": "Excellent CTR transactionnel, pos 8" },
+    { "page": "/blog/idee-cadeau-enfant-5-ans", "clicks": 3, "impressions": 85, "ctr": 3.53, "position": 8.11, "status": "NEW PERFORMER — sous-pillar age fonctionne" },
+    { "page": "/ia-creation-conte", "clicks": 3, "impressions": 53, "ctr": 5.66, "position": 10.3 },
+    { "page": "/blog/histoire-du-soir-50-idees", "clicks": 1, "impressions": 31, "ctr": 3.23, "position": 10.81, "status": "NOUVEAU entre en SERP — cree le 11 mai" },
+    { "page": "/prenom/paul", "clicks": 1, "impressions": 10, "ctr": 10, "position": 4, "status": "Programmatic prenom enfin visible pos 4" }
+  ],
+  "geo": {
+    "france": { "clicks": 138, "impressions": 3476, "ctr_pct": 3.97, "share_clicks": 83.1, "vs_prev": "+37% clics" },
+    "maroc": { "clicks": 8, "impressions": 93, "ctr_pct": 8.6, "vs_prev": "stable" },
+    "canada": { "clicks": 5, "impressions": 182, "ctr_pct": 2.75, "vs_prev": "+150% clics — diaspora FR commence a cliquer" },
+    "belgique": { "clicks": 4, "impressions": 136, "ctr_pct": 2.94, "vs_prev": "stable" },
+    "usa": { "clicks": 0, "impressions": 466, "ctr_pct": 0, "vs_prev": "imp +29% mais toujours 0 clic — potentiel diaspora US-FR non capte" },
+    "suisse": { "clicks": 2, "impressions": 88, "ctr_pct": 2.27 }
+  },
+  "devices": {
+    "mobile": { "clicks": 107, "impressions": 2689, "ctr_pct": 3.98, "share_clicks": 64.5 },
+    "desktop": { "clicks": 56, "impressions": 2346, "ctr_pct": 2.39, "share_clicks": 33.7 },
+    "tablet": { "clicks": 3, "impressions": 114, "ctr_pct": 2.63 }
+  },
+  "actionsAppliedSinceLastSnapshot": [
+    "Commit 367c764 (silo Phase 2) push v2 le 25 mai — PAS encore en prod, deploy en cours via merge to main aujourd'hui",
+    "5 hubs categorie + Breadcrumb site-wide + Related section + Footer crawlable + brand rename 13 occ + cleanup 54 breadcrumbs en dur",
+    "Note: ces changements n'apparaissent PAS encore dans la fenetre GSC (qui s'arrete au 23 mai)"
+  ],
+  "keyInsights": [
+    "Position moyenne franchit le SEUIL psychologique du top 10 (9.63) — palier majeur",
+    "Article LEADER /blog/histoire-animal-compagnie entre VRAIMENT dans le top 10 (pos 8.96)",
+    "Article meilleurs-livres-comparatif explose: clics +77%, imp x2.2",
+    "Requete 'meilleur livre personnalise enfant': imp x40 (2 -> 80) — Google nous trouve enfin",
+    "Conteuse personnalisable: imp baisse mais position monte de 5 places post-refonte — Google dance normal en cours",
+    "Programmatic prenom (Paul, pos 4) + sous-pillars age (cadeau 5 ans, pos 8) commencent a ramener du trafic",
+    "Canada x2.5 en clics — diaspora francophone CA commence a cliquer",
+    "USA: imp 466 / 0 clic = potentiel toujours non capte (titres trop France-centric ?)"
+  ],
+  "drop_explanation": {
+    "user_concern": "Chute clics/imp les 21-23 mai (1/97, 1/74, 2/61)",
+    "analysis": "Effet calendrier (Pentecote = ferie France 25 mai, long weekend 23-25) + Google dance post-refonte 11-12 mai + bruit statistique a faible volume. Comparaison meme jour semaine precedente: samedi 17 mai = 126 imp vs samedi 23 mai = 61 imp (-52%). Cohérent avec un creux pre-ferie classique.",
+    "verdict": "PAS UN SIGNAL D'ALERTE — tendance de fond reste tres positive (+32% clics, +25% imp, -1.6 places en 14 jours)",
+    "expected_recovery": "Retour a la normale des la semaine du 26-30 mai post-Pentecote"
+  },
+  "recommendations": [
+    "URGENT title (toujours): /blog/ia-revolution (540 imp, CTR 1.11% pos 8) — la refonte n'a pas suffi, peut-etre essayer un H1/title plus emotional",
+    "QUICK WIN: pousser 'meilleur livre personnalise' (pos 9.18 sur 39 imp) — refresh title /blog/meilleurs-livres-comparatif-2026 avec le mot-cle exact",
+    "QUICK WIN: 'livre personnalise animaux' (pos 9.2 sur 20 imp) — article leader animal-compagnie pourrait inclure cette variante exacte en H2",
+    "CANADA: ajouter du contenu/exemples diaspora CA-FR pour activer la conversion (5 clics deja, x150% — leverage facile)",
+    "USA: 466 imp 0 clic — tester titre alternatif sur 1 article qui rank en US (analyse separee a faire)",
+    "ATTENDRE: prochain snapshot post-Pentecote (vers 1-3 juin) pour mesurer la VRAIE photo + l'impact des changements du 25 mai (silo Phase 2 + hubs)"
+  ],
+  "previousSnapshotFile": "seo-tracking/2026-05-11.json"
+}

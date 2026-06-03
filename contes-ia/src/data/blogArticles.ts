@@ -68,8 +68,7 @@ export const blogArticles: BlogArticle[] = [
 // Ils sont référencés par les pages-hub de catégorie pour le maillage.
 export const extraHubArticles: BlogArticle[] = [
   { id: 50, title: "Histoire du soir : 50 idées par âge pour endormir votre enfant", excerpt: "50 histoires du soir testées en famille (5 min, par âge, par thème) pour endormir votre enfant. Le rituel idéal + bonus : créer SA propre histoire du soir personnalisée gratuitement.", slug: "histoire-du-soir-50-idees", image: "histoire-du-soir-enfant" },
-  { id: 51, title: "Histoire personnalisée avec un chien : votre enfant + son chien héros", excerpt: "Créez une histoire personnalisée où votre enfant et son chien sont les héros. Toutes races acceptées (golden, labrador, bouledogue…). Premier livre gratuit, prêt en 5 minutes.", slug: "histoire-personnalisee-chien", image: "enfant-chien-livre-personnalise" },
-  { id: 52, title: "Comment choisir un livre personnalisé pour son enfant ? Guide d'achat 2026", excerpt: "Choisir un livre personnalisé : 5 critères clés, comparatif des 6 meilleurs services, par âge, par budget, par occasion. Les pièges à éviter + notre verdict. Premier livre gratuit.", slug: "choisir-livre-personnalise-guide-achat", image: "choisir-livre-personnalise" }
+  { id: 51, title: "Histoire personnalisée avec un chien : votre enfant + son chien héros", excerpt: "Créez une histoire personnalisée où votre enfant et son chien sont les héros. Toutes races acceptées (golden, labrador, bouledogue…). Premier livre gratuit, prêt en 5 minutes.", slug: "histoire-personnalisee-chien", image: "enfant-chien-livre-personnalise" }
 ];
 
 export const allArticles: BlogArticle[] = [...blogArticles, ...extraHubArticles];

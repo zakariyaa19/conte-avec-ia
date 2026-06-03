@@ -87,7 +87,6 @@ const ROUTES = [
   '/blog/histoire-du-soir-enfant-meilleures-idees',
   '/blog/histoire-du-soir-50-idees',
   '/blog/histoire-personnalisee-chien',
-  '/blog/choisir-livre-personnalise-guide-achat',
   '/contes-par-age/bebe-0-2-ans',
   '/contes-par-age/3-5-ans',
   '/contes-par-age/6-8-ans',

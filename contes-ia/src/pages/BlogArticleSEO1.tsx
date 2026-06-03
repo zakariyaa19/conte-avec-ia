@@ -302,6 +302,34 @@ const BlogArticleSEO1: React.FC = () => {
                 <li><strong>5. Disponibilité</strong> — Numérique (immédiat, partageable) ou imprimé (5-7 jours de livraison). Le numérique permet de lire sur tous les appareils et d'envoyer le livre aux grands-parents en un clic.</li>
               </ul>
 
+              <h2 id="budget">Quel budget pour un livre personnalisé ?</h2>
+              <p>
+                Le prix d'un livre personnalisé varie énormément selon le format et le service. Voici comment choisir selon votre budget :
+              </p>
+              <ul>
+                <li><strong>0€ — Tester avant d'investir</strong> : Contedia est le seul service avec un premier livre 100% gratuit (sans carte bancaire). Vous découvrez la qualité de la personnalisation IA avant de décider.</li>
+                <li><strong>5-30€ — Un livre unique premium</strong> : complétion Contedia à 2,99€ (livre numérique complet), ou un livre imprimé Wonderbly à 25-35€.</li>
+                <li><strong>30-50€ — Grande qualité d'impression</strong> : Wonderbly couverture rigide ou Hourra Héros premium (35-45€).</li>
+                <li><strong>80-120€/an — Livres illimités</strong> : le Club Contedia annuel (79,99€/an) revient à environ 1,67€ par livre pour 4 livres complets par mois — le meilleur ratio qualité/prix en 2026.</li>
+              </ul>
+              <p>
+                Pour un comparatif détaillé service par service, consultez notre <Link to="/blog/meilleurs-livres-personnalises-enfants-comparatif-2026">comparatif des 10 meilleurs livres personnalisés 2026</Link>.
+              </p>
+
+              <h2 id="pieges">Les 3 pièges à éviter quand on achète un livre personnalisé</h2>
+              <h3>Piège n°1 : la fausse personnalisation</h3>
+              <p>
+                Certains sites se vantent d'une « personnalisation IA » alors qu'ils se contentent de substituer le prénom dans un texte pré-écrit. Vérification rapide : si le service vous demande seulement le prénom et l'âge (pas de thème, pas de hobbies, pas de personnage secondaire), c'est probablement du templating, pas de l'IA.
+              </p>
+              <h3>Piège n°2 : les frais de port cachés</h3>
+              <p>
+                Le piège classique : 24,90€ affichés → 38,90€ payés une fois tout ajouté. Allez toujours jusqu'à l'écran de paiement final avant de comparer. Ou choisissez un service numérique (comme Contedia) où le total payé = le prix affiché.
+              </p>
+              <h3>Piège n°3 : les abonnements cachés</h3>
+              <p>
+                Certains services proposent un « livre offert » mais activent en réalité un abonnement mensuel automatique. Lisez toujours les CGV avant de donner votre carte. Avec Contedia, le premier livre est vraiment gratuit, aucune carte n'est demandée pour l'essai.
+              </p>
+
               <h2 id="faq">Questions fréquentes sur les livres personnalisés enfants</h2>
 
               {faqQuestions.map((faq, i) => (
@@ -321,9 +349,10 @@ const BlogArticleSEO1: React.FC = () => {
                 <em>Découvrez aussi nos autres guides :</em>
               </p>
               <ul>
+                <li><Link to="/livre-personnalise-enfant">Livre personnalisé enfant : créez le vôtre (1er livre gratuit)</Link></li>
                 <li><Link to="/blog/meilleurs-livres-personnalises-enfants-comparatif-2026">Les 10 meilleurs livres personnalisés — Comparatif 2026</Link></li>
                 <li><Link to="/blog/conteuse-personnalisable-alternative-numerique-2026">Conteuse personnalisable : la meilleure alternative en 2026</Link></li>
-                <li><Link to="/blog/conte-personnalise-confiance-imagination-enfant">Comment un conte personnalisé développe la confiance de votre enfant</Link></li>
+                <li><Link to="/blog/enfant-heros-propre-histoire">Comment un conte personnalisé développe la confiance de votre enfant</Link></li>
                 <li><Link to="/blog/livre-personnalise-vs-livre-classique-enfant">Livre personnalisé vs livre classique : lequel choisir ?</Link></li>
                 <li><Link to="/blog/enfant-heros-propre-histoire">Pourquoi les enfants adorent être le héros de leur propre histoire</Link></li>
               </ul>
