@@ -55,21 +55,21 @@ const BlogArticle4: React.FC = () => {
   const articleSchema = {
     "@context": "https://schema.org",
     "@type": "Article",
-    "headline": "Livre Enfant IA : Comment l'Intelligence Artificielle Crée des Histoires Uniques",
-    "description": "Découvrez comment l'IA de Contedia crée des livres personnalisés pour enfants : du prénom au livre illustré en 5 minutes. Processus, qualité, sécurité.",
+    "headline": "Comment l'IA Crée une Histoire pour Enfant : le Test Complet en 5 Minutes",
+    "description": "On a testé la création d'une histoire pour enfant par IA : prénom, passions, illustrations personnalisées générées en 5 minutes. Premier chapitre gratuit, sans carte bancaire.",
     "image": "https://contedia.fr/images/blog/ia-creation-histoires.jpg",
     "author": { "@type": "Organization", "name": "Contedia", "url": "https://contedia.fr" },
     "publisher": { "@type": "Organization", "name": "Contedia", "logo": { "@type": "ImageObject", "url": "https://contedia.fr/logo-conte-ia.png" } },
     "datePublished": "2025-11-04",
-    "dateModified": "2026-03-22",
+    "dateModified": "2026-07-13",
     "mainEntityOfPage": { "@type": "WebPage", "@id": "https://contedia.fr/blog/ia-revolution-creation-histoires-enfants" }
   };
 
   return (
     <PageLayout>
       <SEOHead
-        title="Histoire pour Enfant par IA : Créez un Conte Unique et Gratuit en 5 min | Contedia"
-        description="Créez une histoire unique pour votre enfant grâce à l'IA : son prénom, ses passions, ses propres illustrations. Premier chapitre 100% gratuit, prêt en 5 minutes, sans carte bancaire."
+        title="Comment l'IA Crée une Histoire pour Enfant en 5 Minutes (On a Testé)"
+        description="On a testé la création d'une histoire pour enfant par IA : prénom, passions, illustrations personnalisées générées en 5 minutes. Premier chapitre gratuit, sans carte bancaire — le résultat en images."
         type="article"
       />
       <SchemaFAQ questions={faqQuestions} />
@@ -87,9 +87,9 @@ const BlogArticle4: React.FC = () => {
         <div className="article-layout">
           <div className="article-main">
             <div className="article-header">
-              <h1>Livre Enfant IA : Comment l'Intelligence Artificielle Crée des Histoires Uniques pour votre Enfant</h1>
+              <h1>Comment l'IA Crée une Histoire pour Enfant : le Test Complet en 5 Minutes</h1>
               <div className="article-meta">
-                <span>Par l'équipe Contedia · Mis à jour le 22 mars 2026 · 8 min de lecture</span>
+                <span>Par l'équipe Contedia · Mis à jour le 13 juillet 2026 · 8 min de lecture</span>
               </div>
             </div>
 

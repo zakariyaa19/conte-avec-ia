@@ -1,0 +1,115 @@
+{
+  "date": "2026-07-13",
+  "period": "3 mois glissants (~2026-04-12 au 2026-07-11)",
+  "source": "Google Search Console export (contedia.fr-Performance-on-Search-2026-07-13)",
+  "summary": {
+    "totalClicks": 254,
+    "totalImpressions": 7376,
+    "averageCTR": 3.44,
+    "averagePositionNote": "≈7.3 (moyenne quotidienne non ponderee sur Graphique.csv, ordre de grandeur fiable)",
+    "note": "Croissance confirmee sur 2 releves consecutifs. Cap technique franchi : 9 des 12 urgences de l'audit 2026-05-11 verifiees resolues dans le code en production."
+  },
+  "trendVsPrevious": {
+    "vs_2026-06-03": {
+      "clicksDelta": "+27.6% (199 -> 254)",
+      "impressionsDelta": "+29.4% (5701 -> 7376)",
+      "ctrDelta": "-0.05pt (3.49% -> 3.44%, stable)",
+      "positionDelta": "9.2 -> ~7.3 = amelioration continue",
+      "note": "4 releves independants (fev ~22-24, mai 11.2, juin 9.2, juillet ~7.3) confirment la meme direction malgre des methodologies legerement differentes."
+    }
+  },
+  "codeVerification": {
+    "resolved": [
+      "/story-form + /create-story : noindex + X-Robots-Tag + retires du sitemap",
+      "og:site_name = Contedia partout (sauf manifest.json PWA, mineur hors perimetre SEO)",
+      "AggregateRating fictif (523 avis) supprime du code",
+      "Prerender Puppeteer au build (165 routes) deploye sur Vercel -> schema desormais visible au crawl",
+      "Cannibalisation cluster 'livre personnalise' resolue : fusion choisir-livre-personnalise -> guide-livre-personnalise-enfant-2026, 301, livre-personnalise-vs-livre-classique-enfant remonte de pos 40.4 a 13.3",
+      "5 hubs de categorie blog crees et en prod : /blog/categorie/{animaux,conteuses,cadeaux,sommeil,foi}",
+      "Pillar /conte-personnalise cree (mai) avec schema HowTo+FAQ+Product",
+      "/tarifs ajoute au sitemap et indexable"
+    ],
+    "partial": [
+      "/tarifs indexe mais quasi invisible : 0 clic / 31 imp / pos 24.6",
+      "Titles CTR ia-revolution + top-5-themes retouches en juin (commit a375183) mais CTR toujours casse (1.63% / 2.21%)"
+    ],
+    "notResolved": [
+      "Hubs /comparatif/ et /occasions/ recommandes en mai : jamais construits, aucune route trouvee",
+      "Schema Review/AggregateRating source (remplacant l'avis fictif) : non fait",
+      "Ciblage USA / diaspora francophone Afrique : non fait, 505 imp US toujours a 0.2% CTR"
+    ],
+    "diagnosticCorrection": "Hreflang : pas un bug (canonical dynamique par page + x-default, config mono-langue volontaire) -- le diagnostic initial de mai etait errone sur ce point precis."
+  },
+  "topQueries": [
+    { "query": "contedia", "clicks": 33, "impressions": 47, "ctr": 70.21, "position": 1.47, "type": "BRAND", "trend": "UP continu (23->29->33) -- notoriete marque en croissance reguliere" },
+    { "query": "meilleur livre personnalisé enfant", "clicks": 11, "impressions": 480, "ctr": 2.29, "position": 5.53, "trend": "IMP x3.3 vs juin (144->480), pos amelioree 4.7->5.5 (bruit normal). CTR encore sous-optimal pour une pos 5.5 -- QUICK WIN #1" },
+    { "query": "livre personnalisé ado", "clicks": 2, "impressions": 18, "ctr": 11.11, "position": 7.33, "trend": "Segment ado toujours emergent, CTR correct" },
+    { "query": "conteuse personnalisable", "clicks": 0, "impressions": 174, "ctr": 0, "position": 14.59, "trend": "Position 38.8 (mai) -> 32.96 (juin) -> 14.59 (juillet) mais TOUJOURS 0 clic sur 3 releves. Piege d'intention confirme (appareil audio vs livre IA) malgre refonte de 3500 mots." },
+    { "query": "alternative toniebox", "clicks": 0, "impressions": 64, "ctr": 0, "position": 14.53 },
+    { "query": "livre conte personnalisé", "clicks": 0, "impressions": 50, "ctr": 0, "position": 12.1, "trend": "Grosse amelioration position (22.9 en juin -> 12.1) mais CTR toujours nul" },
+    { "query": "contes personnalises", "clicks": 0, "impressions": 43, "ctr": 0, "position": 10.63 },
+    { "query": "livre personnalisé ia", "clicks": 0, "impressions": 31, "ctr": 0, "position": 12.65 },
+    { "query": "livre personnalisé prénom gratuit", "clicks": 1, "impressions": 9, "ctr": 11.11, "position": 7.22 }
+  ],
+  "topPages": [
+    { "page": "/blog/histoire-animal-compagnie-livre-personnalise", "clicks": 56, "impressions": 1140, "ctr": 4.91, "position": 6.93, "status": "PILIER #1 renforce (51->56 clics), croissance saine et continue depuis 4 releves" },
+    { "page": "/blog/meilleurs-livres-personnalises-enfants-comparatif-2026", "clicks": 49, "impressions": 1511, "ctr": 3.24, "position": 5.9, "status": "PILIER #2, impressions x2.1 en 6 semaines (703->1511). Plus gros gisement CTR du site." },
+    { "page": "/", "clicks": 39, "impressions": 296, "ctr": 13.18, "position": 8.66, "status": "CTR excellent et stable" },
+    { "page": "/blog/top-5-themes-histoires-animal-heros-conte", "clicks": 24, "impressions": 1087, "ctr": 2.21, "position": 8.05, "status": "CTR CASSE PERSISTANT -- 3e releve consecutif. Title deja retouche en juin (commit a375183) sans effet suffisant." },
+    { "page": "/blog/ia-revolution-creation-histoires-enfants", "clicks": 9, "impressions": 552, "ctr": 1.63, "position": 8.64, "status": "CTR CASSE PERSISTANT -- 3e releve consecutif. Envisager fusion plutot qu'un 3e retitrage." },
+    { "page": "/blog/histoire-du-soir-50-idees", "clicks": 10, "impressions": 229, "ctr": 4.37, "position": 10.03, "status": "Nouveau pillar (cree mai), sain, a muscler pour top 10" },
+    { "page": "/blog/conteuse-personnalisable-alternative-numerique-2026", "clicks": 2, "impressions": 155, "ctr": 1.29, "position": 9.57, "status": "Malgre refonte massive (3500 mots, mai) CTR toujours catastrophique. Repositionnement d'angle necessaire, pas un nouveau retitrage." },
+    { "page": "/blog/categorie/conteuses", "clicks": 2, "impressions": 140, "ctr": 1.43, "position": 10.57, "status": "Nouveau hub silo phase 2, jeune, a suivre" },
+    { "page": "/blog/livre-personnalise-vs-livre-classique-enfant", "clicks": 1, "impressions": 23, "ctr": 4.35, "position": 13.26, "status": "REMONTE de pos 40.4 (juin) a 13.3 -- preuve que la fusion cannibalisation a fonctionne" },
+    { "page": "/tarifs", "clicks": 0, "impressions": 31, "ctr": 0, "position": 24.61, "status": "Indexe depuis mai mais toujours invisible -- contenu insuffisant pour requete commerciale" }
+  ],
+  "programmaticPrenoms": {
+    "status": "Extension confirmee -- 80+ slugs prenoms avec impressions mesurables dans cet export (vs ~70 en juin, ~50 en mai)",
+    "diasporaConfirmed": "Fatima, Mohamed, Salma, Karim, Nour, Kenza, Mehdi, Samir, Hamza, Anis, Mariam apparaissent tous avec impressions -- couverture diaspora en expansion organique",
+    "opportunity": "Programmatic prenom x theme jamais lance -- prochaine etape apres stabilisation des hubs comparatif/occasions"
+  },
+  "geo": {
+    "france": { "clicks": 216, "impressions": 5147, "ctr_pct": 4.2, "position": 7.54, "share_clicks": 85.0 },
+    "canada": { "clicks": 7, "impressions": 197, "ctr_pct": 3.55, "position": 7.62 },
+    "belgique": { "clicks": 5, "impressions": 205, "ctr_pct": 2.44, "position": 7.11 },
+    "maroc": { "clicks": 4, "impressions": 122, "ctr_pct": 3.28, "position": 7.49 },
+    "usa": { "clicks": 1, "impressions": 505, "ctr_pct": 0.2, "position": 7.99, "note": "TOUJOURS quasi 0 clic malgre bonne position (7.99) et impressions en hausse (486->505) -- signal identique depuis 2 releves, jamais traite" },
+    "diasporaAfriqueFR": { "note": "Togo, Mali, Senegal, Congo-Brazzaville, RDC, Cameroun, Haiti, Cote d'Ivoire, Burkina Faso, Guinee, Benin (2 clics/25% CTR) presents avec impressions mais quasi aucun clic -- vecteur confirme 2 fois, toujours non active" }
+  },
+  "devices": {
+    "mobile": { "clicks": 171, "impressions": 4271, "ctr_pct": 4.0, "position": 7.13, "share_clicks": 67.3 },
+    "desktop": { "clicks": 78, "impressions": 3005, "ctr_pct": 2.6, "position": 8.58, "share_clicks": 30.7 },
+    "tablet": { "clicks": 5, "impressions": 100, "ctr_pct": 5.0 }
+  },
+  "richResults": {
+    "status": "AUCUNE DONNEE dans 'Apparence dans les resultats de recherche' -- 0 rich result actif malgre schema FAQ/HowTo deploye sur ~150 pages",
+    "note": "Coherent avec la restriction Google d'aout 2023 (FAQ rich results limites aux sites gouvernementaux/sante, HowTo tres restreint). Ne pas sur-investir dans FAQ/HowTo pour un gain de CTR visible -- garder pour la structure on-page uniquement."
+  },
+  "newSignals": [
+    "2 pages a fort volume (top-5-themes 1087 imp, ia-revolution 552 imp) resistent a une 1ere correction de title -- necessite une approche plus radicale ou une fusion",
+    "Cluster conteuse (6 pages) toujours cannibalise -- hub /comparatif/ jamais construit malgre recommandation de mai",
+    "meilleurs-livres-comparatif-2026 : plus gros gisement CTR du site (1511 imp/mois a 3.24%)",
+    "requete 'meilleur livre personnalisé enfant' : 480 imp/mois (x3.3 vs juin), CTR 2.29% seulement sur pos 5.5",
+    "/tarifs indexe depuis mai mais toujours invisible (pos 24.6) -- pillar business inactif"
+  ],
+  "keyInsights": [
+    "Croissance confirmee sur 2 releves consecutifs : 254 clics (+27.6%), 7376 imp (+29.4%), position ~7.3, CTR stable 3.44%",
+    "9 des 12 urgences techniques de l'audit 2026-05-11 verifiees resolues dans le code de production",
+    "2 pages CTR cassees resistent malgre 1ere correction (juin) -- signal qu'un simple ajustement de title ne suffit plus, approche plus radicale necessaire",
+    "'conteuse personnalisable' : piege d'intention confirme sur 3 releves malgre investissement editorial lourd (3500 mots) -- decision strategique a prendre",
+    "Cluster conteuse toujours cannibalise sur 6 pages -- meme methode que la resolution 'livre personnalise' (fusion+301) applicable",
+    "USA (505 imp, 0.2% CTR) et diaspora Afrique francophone : signal confirme 2 fois, jamais active",
+    "0 rich result actif malgre schema deploye -- coherent avec restriction Google FAQ/HowTo 2023, pas une anomalie technique"
+  ],
+  "recommendations": [
+    "PRIORITE 1 : reecriture radicale (pas un ajustement) des titles top-5-themes et ia-revolution -- la correction de juin n'a pas suffi",
+    "PRIORITE 1 : lancer le silo Noel/cadeaux Q4 avant fin aout (fenetre de rankage 6-8 semaines)",
+    "PRIORITE 1 : refonte de fond /tarifs sur 'prix livre personnalisé enfant' -- indexe depuis 2 mois, toujours invisible",
+    "PRIORITE 1 : trancher sur 'conteuse personnalisable' -- repositionner l'angle editorial ou cesser d'y investir",
+    "ENSUITE : construire le hub /comparatif/conteuse pour resoudre la cannibalisation a 6 pages (methode deja validee sur le cluster livre personnalise)",
+    "ENSUITE : construire le hub /occasions/ pour organiser les 8 articles cadeaux epars",
+    "ENSUITE : landing dediee diaspora USA/Canada francophone",
+    "PLUS TARD : programmatic prenom x theme, cluster diaspora Afrique francophone, schema Review source"
+  ],
+  "previousSnapshotFile": "seo-tracking/2026-06-03.json"
+}
