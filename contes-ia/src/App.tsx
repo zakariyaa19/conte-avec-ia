@@ -86,6 +86,8 @@ import AProposPage from './pages/AProposPage';
 import TarifsPage from './pages/TarifsPage';
 import BlogArticleCadeauNaissance from './pages/BlogArticleCadeauNaissance';
 import BlogArticleCadeauNoel from './pages/BlogArticleCadeauNoel';
+import BlogArticleCadeauNoelFille from './pages/BlogArticleCadeauNoelFille';
+import BlogArticleCadeauNoelGarcon from './pages/BlogArticleCadeauNoelGarcon';
 import BlogArticleLivre3a5ans from './pages/BlogArticleLivre3a5ans';
 import BlogArticleVsEpopia from './pages/BlogArticleVsEpopia';
 import BlogArticleCadeauAnniversaire from './pages/BlogArticleCadeauAnniversaire';
@@ -208,6 +210,8 @@ function App() {
           <Route path="/blog/conte-pour-sendormir-histoires-personnalisees" element={<BlogArticleConteSendormir />} />
           <Route path="/blog/cadeau-naissance-livre-personnalise-bebe" element={<BlogArticleCadeauNaissance />} />
           <Route path="/blog/cadeau-noel-livre-personnalise-enfant" element={<BlogArticleCadeauNoel />} />
+          <Route path="/blog/idee-cadeau-noel-fille" element={<BlogArticleCadeauNoelFille />} />
+          <Route path="/blog/idee-cadeau-noel-garcon" element={<BlogArticleCadeauNoelGarcon />} />
           <Route path="/blog/livre-personnalise-enfant-3-5-ans" element={<BlogArticleLivre3a5ans />} />
           <Route path="/blog/contedia-vs-epopia-comparatif" element={<BlogArticleVsEpopia />} />
           <Route path="/blog/cadeau-anniversaire-enfant-livre-personnalise" element={<BlogArticleCadeauAnniversaire />} />

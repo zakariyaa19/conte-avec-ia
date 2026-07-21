@@ -1,0 +1,159 @@
+{
+  "date": "2026-07-21",
+  "period": "3 mois glissants (~2026-04-20 au 2026-07-19)",
+  "source": "Google Search Console export (contedia.fr-Performance-on-Search-2026-07-21)",
+  "summary": {
+    "totalClicks": 288,
+    "totalImpressions": 8165,
+    "averageCTR": 3.53,
+    "averagePositionNote": "≈7.79 (moyenne quotidienne non ponderee sur Graphique.csv, legere degradation vs ~7.3 au 13/07 mais dans le bruit habituel -- quelques jours a pos 9-11 debut/mi-juillet tirent la moyenne, ordre de grandeur reste fiable)",
+    "note": "Fenetre glissante tres proche du releve precedent : ~83 des 91 jours se recoupent avec l'export du 13/07 (debut 20/04 vs 12/04, fin 19/07 vs 11/07). Ce releve mesure surtout un glissement de 8 jours, pas un mois independant -- interpreter les deltas avec prudence."
+  },
+  "monthlyBreakdown": [
+    { "month": "2026-04", "clicks": 22, "impressions": 731, "avgImpressions_day": 66.5 },
+    { "month": "2026-05", "clicks": 110, "impressions": 2660, "avgImpressions_day": 85.8 },
+    { "month": "2026-06", "clicks": 75, "impressions": 2557, "avgImpressions_day": 85.2 },
+    { "month": "2026-07", "clicks": 81, "impressions": 2217, "avgImpressions_day": 116.7, "note": "Partiel (19 jours), mais avg impressions/jour en nette acceleration (85 -> 117), coherent avec la tendance de fond depuis avril" }
+  ],
+  "trendVsPrevious": {
+    "vs_2026-07-13": {
+      "clicksDelta": "+13.4% (254 -> 288)",
+      "impressionsDelta": "+10.7% (7376 -> 8165)",
+      "ctrDelta": "+0.09pt (3.44% -> 3.53%, stable)",
+      "positionDelta": "~7.3 -> ~7.79 = legere degradation apparente, probablement du bruit de fenetre glissante (voir note ci-dessus) plutot qu'un vrai recul",
+      "note": "5 releves consecutifs (mai 11.2, juin 9.2, juillet 7.3, juillet 7.79) restent dans une bande de stabilisation post-amelioration -- pas de signal d'alarme, croissance clics/impressions continue."
+    }
+  },
+  "codeVerification": {
+    "resolved": [
+      "/story-form + /create-story : noindex + X-Robots-Tag + retires du sitemap",
+      "og:site_name = Contedia partout (sauf manifest.json PWA, mineur hors perimetre SEO)",
+      "AggregateRating fictif (523 avis) supprime du code",
+      "Prerender Puppeteer au build (165 routes) deploye sur Vercel -> schema desormais visible au crawl",
+      "Cannibalisation cluster 'livre personnalise' resolue : fusion choisir-livre-personnalise -> guide-livre-personnalise-enfant-2026, 301, livre-personnalise-vs-livre-classique-enfant remonte de pos 40.4 a 13.3 (mais retombe a 6 impr/pos 9 ce releve -- volume trop faible pour trancher, a resurveiller)",
+      "5 hubs de categorie blog crees et en prod : /blog/categorie/{animaux,conteuses,cadeaux,sommeil,foi}",
+      "Pillar /conte-personnalise cree (mai) avec schema HowTo+FAQ+Product",
+      "/tarifs ajoute au sitemap et indexable"
+    ],
+    "partial": [
+      "/tarifs indexe mais quasi invisible : 0 clic / 33 imp / pos 26.45 -- s'est meme legerement degrade vs 07/13 (pos 24.6 -> 26.45)",
+      "IMPORTANT -- 2e passe de titles CTR ia-revolution + top-5-themes (commit 0cc54f7, 13/07) : verifie via `git merge-base --is-ancestor 0cc54f7 main` -> le commit n'est PAS un ancetre de main. Il est reste sur la branche v2 et n'a tres probablement PAS ete deploye en production (Render/Vercel deploient depuis main). Aucune conclusion sur son effet CTR n'est possible tant qu'il n'est pas merge -- a verifier/merger avant d'attendre un quelconque impact."
+    ],
+    "notResolved": [
+      "Hub /comparatif/ : toujours aucune route trouvee dans Pages.csv. En revanche, les pages 'vs' individuelles existent deja et commencent a performer separement (contedia-vs-epopia 4 clics/55 impr, lunii-vs-toniebox-comparatif-2026 7 clics/231 impr, alternative-toniebox-livre-personnalise-enfant 9 clics/204 impr) -- le contenu du futur hub existe donc deja de facon eparpillee, ce qui change la nature du chantier (consolidation/maillage plutot que creation ex-nihilo).",
+      "Hub /occasions/ : jamais construit, aucune route trouvee.",
+      "Schema Review/AggregateRating source (remplacant l'avis fictif) : non fait",
+      "Ciblage USA / diaspora francophone Afrique : non fait, 496 imp US toujours a 0.2% CTR (identique au releve precedent, 3e confirmation)"
+    ],
+    "diagnosticCorrection": "Hreflang : pas un bug (canonical dynamique par page + x-default, config mono-langue volontaire) -- confirme, rien de nouveau ce releve."
+  },
+  "topQueries": [
+    { "query": "contedia", "clicks": 33, "impressions": 44, "ctr": 75.0, "position": 1.41, "type": "BRAND", "trend": "STABLE -- marque toujours tres solide (33 clics constants), impressions -6.4% (47->44) sans consequence, CTR/position meme amelieres" },
+    { "query": "meilleur livre personnalisé enfant", "clicks": 16, "impressions": 608, "ctr": 2.63, "position": 5.74, "trend": "UP -- clics +45% (11->16), impressions +27% (480->608), CTR ameliore (2.29%->2.63%). Toujours le plus gros quick win CTR du site pour une pos <6." },
+    { "query": "livre personnalisé ado", "clicks": 2, "impressions": 23, "ctr": 8.7, "position": 6.43, "trend": "STABLE, segment ado toujours petit volume mais sain" },
+    { "query": "conteuse personnalisable", "clicks": 0, "impressions": 196, "ctr": 0, "position": 15.15, "trend": "TOUJOURS 0 clic sur 4 releves consecutifs (mai 38.8 -> juin 32.96 -> juillet 14.59 -> ce jour 15.15). Position stable sous top 15 mais piege d'intention confirme une 4e fois." },
+    { "query": "alternative toniebox", "clicks": 2, "impressions": 107, "ctr": 1.87, "position": 18.01, "trend": "NOUVEAU SIGNAL -- 1ers clics jamais enregistres sur cette requete (0->2), impressions +67% (64->107), mais position s'est degradee (14.53->18.01). A surveiller : le trafic vient peut-etre d'une autre page/requete proche (page alternative-toniebox-livre-personnalise-enfant qui elle progresse bien, 9 clics/204 impr)." },
+    { "query": "livre conte personnalisé", "clicks": 0, "impressions": 31, "ctr": 0, "position": 9.06, "trend": "Position encore amelioree (22.9 juin -> 12.1 juillet -> 9.06 aujourd'hui, desormais en top 10) mais CTR TOUJOURS nul sur 4 releves. Variante proche 'livre de conte personnalisé' capte 1 clic/34 impr/pos 18.1 -- confusion de requetes possible." },
+    { "query": "contes personnalises", "clicks": 0, "impressions": 40, "ctr": 0, "position": 10.25, "trend": "STABLE, 0 clic persistant" },
+    { "query": "livre personnalisé ia", "clicks": 0, "impressions": 28, "ctr": 0, "position": 12.5, "trend": "STABLE, 0 clic persistant" },
+    { "query": "livre personnalisé prénom gratuit", "clicks": 1, "impressions": 9, "ctr": 11.11, "position": 7.67, "trend": "STABLE" }
+  ],
+  "newQueriesWithClicksThisPeriod": [
+    { "query": "meilleur livre enfant personnalisé", "clicks": 2, "impressions": 9, "ctr": 22.22, "position": 6.89 },
+    { "query": "histoire du soir", "clicks": 1, "impressions": 72, "ctr": 1.39, "position": 9.15 },
+    { "query": "histoire du soir enfant", "clicks": 1, "impressions": 71, "ctr": 1.41, "position": 8.83 },
+    { "query": "meilleur livre personnalisé", "clicks": 1, "impressions": 34, "ctr": 2.94, "position": 8.32 },
+    { "query": "livre personnalisé animaux", "clicks": 1, "impressions": 29, "ctr": 3.45, "position": 7.69 },
+    { "query": "toniebox ou lunii", "clicks": 1, "impressions": 9, "ctr": 11.11, "position": 5.89 },
+    { "query": "histoire d'un soir enfant", "clicks": 1, "impressions": 7, "ctr": 14.29, "position": 8.0 }
+  ],
+  "topPages": [
+    { "page": "/blog/meilleurs-livres-personnalises-enfants-comparatif-2026", "clicks": 58, "impressions": 1736, "ctr": 3.34, "position": 6.02, "status": "PILIER #1 desormais, continue de grossir (49->58 clics, 1511->1736 impr +14.9%). Plus gros gisement CTR confirme a nouveau." },
+    { "page": "/blog/histoire-animal-compagnie-livre-personnalise", "clicks": 56, "impressions": 1168, "ctr": 4.79, "position": 6.84, "status": "PILIER #2, stable et sain (56 clics constant, impr +2.5%)" },
+    { "page": "/", "clicks": 39, "impressions": 273, "ctr": 14.29, "position": 7.44, "status": "CTR excellent, encore ameliore (13.18%->14.29%), position amelioree" },
+    { "page": "/blog/top-5-themes-histoires-animal-heros-conte", "clicks": 23, "impressions": 1048, "ctr": 2.19, "position": 8.2, "status": "CTR CASSE PERSISTANT -- 4e releve consecutif, quasi inchange (2.21%->2.19%). Rappel : le 2e retitrage (commit 0cc54f7) n'est probablement PAS deploye en prod (reste sur v2) -- aucun effet attendu tant qu'il n'est pas merge sur main." },
+    { "page": "/blog/histoire-du-soir-50-idees", "clicks": 14, "impressions": 484, "ctr": 2.89, "position": 9.51, "status": "Forte progression d'impressions (229->484, +111%), clics +40% (10->14), mais CTR dilue (4.37%->2.89%) -- position vient de repasser sous top 10, potentiel quick win a suivre de pres" },
+    { "page": "/blog/ia-revolution-creation-histoires-enfants", "clicks": 10, "impressions": 506, "ctr": 1.98, "position": 8.52, "status": "CTR toujours faible mais legere amelioration (1.63%->1.98%), impressions -8.3%. Trop tot / pas fiable pour l'attribuer au retitrage 0cc54f7 : ce commit n'est pas deploye en prod (reste sur branche v2) -- ce mouvement est du bruit de fenetre glissante, pas un effet du correctif." },
+    { "page": "/blog/alternative-toniebox-livre-personnalise-enfant", "clicks": 9, "impressions": 204, "ctr": 4.41, "position": 6.44, "status": "NOUVEL ENTRANT dans le top 10 pages, bon CTR pour une pos <7 -- signal positif sur le cluster toniebox/alternative" },
+    { "page": "/blog/idee-cadeau-enfant-5-ans", "clicks": 9, "impressions": 204, "ctr": 4.41, "position": 9.5, "status": "NOUVEL ENTRANT, pertinent avant le silo cadeaux Q4" },
+    { "page": "/blog/lunii-vs-toniebox-comparatif-2026", "clicks": 7, "impressions": 231, "ctr": 3.03, "position": 8.36, "status": "NOUVEL ENTRANT -- page comparatif individuelle qui performe deja seule, argument pour une consolidation en hub plutot qu'une creation ex-nihilo" },
+    { "page": "/blog/conteuse-personnalisable-alternative-numerique-2026", "clicks": 2, "impressions": 209, "ctr": 0.96, "position": 13.71, "status": "S'AGGRAVE -- CTR encore plus bas (1.29%->0.96%), position degradee (9.57->13.71) malgre impressions +34.8%. Confirme la necessite d'un repositionnement d'angle plutot qu'un nouveau retitrage." },
+    { "page": "/blog/categorie/conteuses", "clicks": 2, "impressions": 172, "ctr": 1.16, "position": 13.03, "status": "Hub silo phase 2, impressions +22.9% mais position degradee (10.57->13.03), a surveiller" },
+    { "page": "/blog/livre-personnalise-vs-livre-classique-enfant", "clicks": 0, "impressions": 6, "ctr": 0, "position": 9.0, "status": "Volume trop faible pour conclure (23->6 impr) mais position toujours sous 10 -- la fusion anti-cannibalisation tient, juste peu de volume sur cette requete precise" },
+    { "page": "/tarifs", "clicks": 0, "impressions": 33, "ctr": 0, "position": 26.45, "status": "Indexe depuis mai, encore plus invisible qu'au 13/07 (pos 24.6 -> 26.45) -- contenu insuffisant pour requete commerciale, aucun progres" }
+  ],
+  "programmaticPrenoms": {
+    "status": "Extension confirmee -- slugs prenoms avec clics reels ce releve (margaux, fatima, louis, anna, paul, alma, hugo, marcel, emma, axel, adam, jade, robin, rose, luna, martin, augustine, milan, leo, mohamed, charlie) -- diversification des prenoms convertisseurs vs juillet",
+    "diasporaConfirmed": "mohamed, fatima, kenza, mehdi, samir, nour, karim, sacha, alba, valentin, elias, mariam, anis, hamza, samir presents avec impressions -- couverture diaspora stable/en expansion, coherent avec le releve precedent",
+    "opportunity": "Programmatic prenom x theme toujours pas lance -- prochaine etape apres stabilisation des hubs comparatif/occasions"
+  },
+  "geo": {
+    "france": { "clicks": 245, "impressions": 5807, "ctr_pct": 4.22, "position": 7.66, "share_clicks": 85.1 },
+    "canada": { "clicks": 7, "impressions": 214, "ctr_pct": 3.27, "position": 7.42 },
+    "belgique": { "clicks": 5, "impressions": 236, "ctr_pct": 2.12, "position": 7.52 },
+    "suisse": { "clicks": 4, "impressions": 135, "ctr_pct": 2.96, "position": 8.35 },
+    "maroc": { "clicks": 4, "impressions": 124, "ctr_pct": 3.23, "position": 7.69 },
+    "usa": { "clicks": 1, "impressions": 496, "ctr_pct": 0.2, "position": 8.07, "note": "IDENTIQUE au releve du 13/07 (505 imp/0.2%/7.99 -> 496 imp/0.2%/8.07) -- 3e confirmation consecutive du signal, toujours pas de landing/angle dedie diaspora" },
+    "diasporaAfriqueFR": { "note": "Guinee, Benin, Gabon presents avec quelques clics isoles (CTR ponctuellement eleve mais volumes 5-15 impr, non significatif) ; Mali, Togo, Senegal, Cameroun, Cote d'Ivoire, Burkina Faso, RDC, Congo-Brazzaville, Haiti toujours a 0 clic malgre impressions -- vecteur confirme mais toujours non active" }
+  },
+  "devices": {
+    "mobile": { "clicks": 198, "impressions": 4919, "ctr_pct": 4.03, "position": 7.13, "share_clicks": 68.75 },
+    "desktop": { "clicks": 83, "impressions": 3128, "ctr_pct": 2.65, "position": 9.09, "share_clicks": 28.82 },
+    "tablet": { "clicks": 7, "impressions": 118, "ctr_pct": 5.93, "position": 6.71 }
+  },
+  "richResults": {
+    "status": "TOUJOURS AUCUNE DONNEE dans 'Apparence dans les resultats de recherche' -- confirme le releve precedent, rien de nouveau",
+    "note": "Coherent avec la restriction Google d'aout 2023 (FAQ/HowTo rich results tres restreints). Pas d'action a mener ici."
+  },
+  "comparison": {
+    "vsPrevious": {
+      "clicksDelta": "+13.4% (254 -> 288)",
+      "impressionsDelta": "+10.7% (7376 -> 8165)",
+      "positionDelta": "+0.49 (~7.30 -> ~7.79, dans le bruit de fenetre glissante)",
+      "newQueries": [
+        "meilleur livre enfant personnalisé",
+        "histoire du soir",
+        "histoire du soir enfant",
+        "meilleur livre personnalisé",
+        "livre personnalisé animaux",
+        "toniebox ou lunii",
+        "histoire d'un soir enfant"
+      ],
+      "lostQueries": ["non determinable -- l'export precedent ne listait qu'un top 9 restreint, pas de liste exhaustive de requetes pour comparaison stricte"],
+      "biggestGains": [
+        { "query": "alternative toniebox", "impressionDelta": "+67% (64 -> 107), plus 1ers clics jamais enregistres (0 -> 2)" },
+        { "query": "meilleur livre personnalisé enfant", "impressionDelta": "+27% (480 -> 608), clics +45% (11 -> 16)" }
+      ],
+      "biggestLosses": [
+        { "query": "livre conte personnalisé", "impressionDelta": "-38% (50 -> 31), mais position amelioree (12.1 -> 9.06)" },
+        { "query": "contedia", "impressionDelta": "-6% (47 -> 44), sans impact sur les clics (33 constant)" }
+      ]
+    }
+  },
+  "newSignals": [
+    "Le 2e retitrage CTR (commit 0cc54f7, 13/07) n'est PAS sur main -- verification git formelle (merge-base --is-ancestor). Il n'a donc tres probablement pas ete deploye en prod. Aucun effet CTR ne peut/doit lui etre attribue sur ce releve.",
+    "ia-revolution et top-5-themes bougent a peine (1.63%->1.98% et 2.21%->2.19%) -- mouvements coherents avec du bruit statistique sur une fenetre glissante qui se recoupe a 91%, pas avec un effet de correctif",
+    "Les pages 'vs'/comparatif individuelles (contedia-vs-epopia, lunii-vs-toniebox, alternative-toniebox) performent deja separement et entrent dans le top 10 -- le contenu du futur hub /comparatif/ existe deja de facon eparpillee",
+    "conteuse personnalisable : 0 clic sur 4 releves consecutifs malgre position stabilisee <15 -- le piege d'intention est desormais un fait etabli, pas une hypothese",
+    "USA (496 imp, 0.2% CTR) : identique au releve precedent au point pres -- signal totalement stable et jamais traite depuis 3 releves",
+    "histoire-du-soir-50-idees : impressions x2.1 (229->484) en 8 jours, page la plus dynamique du releve -- silo sommeil en accelaration organique"
+  ],
+  "keyInsights": [
+    "Croissance qui se poursuit mais releve tres rapproche du precedent (8 jours de decalage sur une fenetre de 91j qui se recoupe a 91%) -- traiter les deltas comme un signal faible, pas une tendance nouvelle",
+    "Le correctif CTR de la 2e passe (0cc54f7) n'est pas deploye en production (reste sur v2, absent de main) -- merger avant de juger son effet ; a ce jour ia-revolution et top-5-themes n'ont quasiment pas bouge, ce qui est attendu puisque le fix n'est pas live",
+    "Points ouverts persistants CONFIRMES SANS CHANGEMENT : conteuse personnalisable (0 clic, 4e releve), USA/diaspora (CTR 0.2%, 3e releve identique), cluster conteuse toujours cannibalise (pas de hub)",
+    "Nouveau : le contenu du futur hub /comparatif/ existe deja et commence a performer page par page (alternative-toniebox, lunii-vs-toniebox, contedia-vs-epopia) -- le hub devient un chantier de consolidation/maillage sur du contenu qui marche, pas un sauvetage urgent",
+    "histoire-du-soir-50-idees est la page la plus dynamique du releve (impressions x2.1) -- silo sommeil a fort potentiel court terme"
+  ],
+  "recommendations": [
+    "URGENT -- merger la branche v2 sur main pour que le 2e retitrage CTR (commit 0cc54f7) soit enfin en production ; sans ca aucune mesure d'impact n'est possible sur les 2 prochains releves non plus",
+    "PRIORITE 1 -- lancer le silo Noel/cadeaux Q4 MAINTENANT : fenetre de rankage de 6-8 semaines, fin aout est dans ~5 semaines, chaque semaine de retard rogne directement la fenetre de visibilite avant les fetes",
+    "PRIORITE 1 -- refonte de fond /tarifs sur 'prix livre personnalisé enfant' : indexe depuis 2+ mois, position s'est encore degradee (24.6->26.45), aucun signe d'amelioration naturelle",
+    "PRIORITE 1 -- trancher definitivement sur 'conteuse personnalisable' (4 releves a 0 clic) : repositionner l'angle editorial ou desinvestir, ne pas laisser trainer un 5e releve",
+    "ENSUITE (pas avant la fin du silo Noel) -- hub /comparatif/ : etant donne que les pages individuelles marchent deja, ce chantier peut suivre le silo Q4 sans perte d'opportunite ; le construire en consolidation/maillage plutot qu'en creation de contenu neuf",
+    "ENSUITE -- hub /occasions/ pour organiser les articles cadeaux epars, a coupler naturellement avec le silo Noel",
+    "PLUS TARD -- landing dediee diaspora USA/Canada francophone, programmatic prenom x theme, schema Review source"
+  ],
+  "verdictPriorisationQ3": "Silo Noel/cadeaux Q4 passe devant le hub /comparatif/. Raison : le silo a une deadline dure (fenetre de rankage 6-8 semaines, fin aout dans ~5 semaines -- tout retard est une perte seche de trafic saisonnier non rattrapable) alors que le hub comparatif n'a pas de deadline et vient de perdre en urgence : ce releve montre que les pages 'vs' individuelles (alternative-toniebox 9 clics, lunii-vs-toniebox 7 clics, contedia-vs-epopia 4 clics) captent deja du trafic sans le hub. Le hub reste utile (resoudre la cannibalisation, ameliorer le maillage) mais peut attendre 2-3 semaines de plus sans cout d'opportunite significatif. Les nouvelles donnees renforcent donc la priorisation deja actee au 13/07, elles ne la changent pas.",
+  "previousSnapshotFile": "seo-tracking/2026-07-13.json"
+}
