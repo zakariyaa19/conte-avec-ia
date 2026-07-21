@@ -57,21 +57,21 @@ const BlogArticleAnimaux5: React.FC = () => {
   const articleSchema = {
     "@context": "https://schema.org",
     "@type": "Article",
-    "headline": "5 Thèmes d'Aventures pour Créer un Conte Personnalisé avec Votre Animal",
-    "description": "5 thèmes d'aventures pour transformer votre animal en héros de conte : forêt enchantée, espace, enquête, océan, fées. Exemples par animal et par âge.",
+    "headline": "Conte sur les Animaux : 5 Aventures où Votre Enfant Devient le Héros",
+    "description": "5 histoires où votre enfant vit l'aventure avec l'animal de son choix (chat, lapin, cheval, licorne…). Illustrations IA à son image, premier chapitre gratuit.",
     "image": "https://contedia.fr/images/blog/themes-aventures-animaux.jpg",
     "author": { "@type": "Organization", "name": "Contedia", "url": "https://contedia.fr" },
     "publisher": { "@type": "Organization", "name": "Contedia", "logo": { "@type": "ImageObject", "url": "https://contedia.fr/logo-conte-ia.png" } },
     "datePublished": "2025-11-04",
-    "dateModified": "2026-03-23",
+    "dateModified": "2026-07-13",
     "mainEntityOfPage": { "@type": "WebPage", "@id": "https://contedia.fr/blog/top-5-themes-histoires-animal-heros-conte" }
   };
 
   return (
     <PageLayout>
       <SEOHead
-        title="Conte sur les Animaux : 5 Histoires où Votre Enfant Devient le Héros (Gratuit)"
-        description="Conte sur les animaux où votre enfant et son compagnon (chien, chat, lapin, licorne…) vivent une aventure ensemble. 5 thèmes magiques à créer gratuitement en 5 minutes."
+        title="Conte sur les Animaux : Votre Enfant Devient le Héros avec Chat, Lapin ou Licorne"
+        description="5 histoires où votre enfant vit l'aventure avec l'animal de son choix (chat, lapin, cheval, licorne…). Illustrations IA à son image, premier chapitre 100% gratuit, prêt en 5 minutes sans carte bancaire."
         type="article"
       />
       <SchemaFAQ questions={faqQuestions} />
@@ -89,9 +89,9 @@ const BlogArticleAnimaux5: React.FC = () => {
         <div className="article-layout">
           <div className="article-main">
             <div className="article-header">
-              <h1>5 Thèmes d'Aventures pour Créer un Conte Personnalisé avec Votre Animal</h1>
+              <h1>Conte sur les Animaux : 5 Aventures où Votre Enfant Devient le Héros</h1>
               <div className="article-meta">
-                <span>Par l'équipe Contedia · Mis à jour le 23 mars 2026 · 7 min de lecture</span>
+                <span>Par l'équipe Contedia · Mis à jour le 13 juillet 2026 · 7 min de lecture</span>
               </div>
             </div>
 
