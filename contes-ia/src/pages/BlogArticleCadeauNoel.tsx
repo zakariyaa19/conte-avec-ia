@@ -13,6 +13,7 @@ const BlogArticleCadeauNoel: React.FC = () => {
     { title: "Le conte de Noël personnalisé : ce que votre enfant va découvrir", id: "conte-noel" },
     { title: "Comment offrir le livre avant le 25 décembre", id: "comment-offrir" },
     { title: "Livre personnalisé vs autres cadeaux de Noël", id: "comparatif" },
+    { title: "Une idée précise selon fille ou garçon ?", id: "fille-garcon" },
     { title: "FAQ", id: "faq" },
   ];
 
@@ -55,7 +56,7 @@ const BlogArticleCadeauNoel: React.FC = () => {
     "author": { "@type": "Organization", "name": "Contedia", "url": "https://contedia.fr" },
     "publisher": { "@type": "Organization", "name": "Contedia", "logo": { "@type": "ImageObject", "url": "https://contedia.fr/logo-conte-ia.png" } },
     "datePublished": "2026-04-18",
-    "dateModified": "2026-04-18",
+    "dateModified": "2026-07-21",
     "mainEntityOfPage": { "@type": "WebPage", "@id": "https://contedia.fr/blog/cadeau-noel-livre-personnalise-enfant" }
   };
 
@@ -83,7 +84,7 @@ const BlogArticleCadeauNoel: React.FC = () => {
             <div className="article-header">
               <h1>Cadeau de Noël Personnalisé : Le Livre Où Votre Enfant Est le Héros de Noël</h1>
               <div className="article-meta">
-                <span>Par l'équipe Contedia · Mis à jour le 18 avril 2026 · 7 min de lecture</span>
+                <span>Par l'équipe Contedia · Mis à jour le 21 juillet 2026 · 8 min de lecture</span>
               </div>
             </div>
 
@@ -219,8 +220,24 @@ const BlogArticleCadeauNoel: React.FC = () => {
                 Le livre personnalisé n'a pas vocation à remplacer tous les cadeaux sous le sapin. Mais il est celui que l'enfant gardera, celui qu'il montrera à ses copains en disant <em>"Regarde, c'est mon histoire"</em>. Et pour les parents, c'est le meilleur rapport émotion/prix de Noël.
               </p>
               <p>
-                Envie de prolonger la magie au-delà de Noël ? Le <Link to="/club">Club Contedia</Link> offre 4 livres par mois, avec 20 pages et plus de styles d'illustration. Un cadeau qui dure toute l'année.
+                Envie de prolonger la magie au-delà de Noël ? Le <Link to="/club">Club Contedia</Link> (1,99€ le premier mois puis 9,99€/mois) offre 4 livres par mois, avec 20 pages et plus de styles d'illustration. Un cadeau qui dure toute l'année.
               </p>
+
+              <div style={{ background: '#f8f9fa', borderRadius: '12px', padding: '20px', margin: '20px 0', borderLeft: '4px solid #6366f1' }}>
+                <p style={{ fontStyle: 'italic', margin: '0 0 8px' }}>
+                  "On a créé le livre le 23 décembre au soir, sans trop y croire. Le lendemain matin, ma fille a ouvert son cadeau et a hurlé de joie en voyant son prénom sur la couverture. Elle l'a relu trois fois avant midi. Les autres cadeaux, on ne s'en souvient déjà plus."
+                </p>
+                <p style={{ margin: 0, fontWeight: 600, color: '#555' }}>— Sarah, maman de deux enfants, Bordeaux</p>
+              </div>
+
+              <h2 id="fille-garcon">Une idée plus précise selon fille ou garçon ?</h2>
+              <p>
+                Pour aller plus loin selon les passions de votre enfant, nous avons détaillé <strong>15 idées de cadeaux de Noël</strong> spécifiques dans deux guides complémentaires : thèmes, budgets et témoignages inclus.
+              </p>
+              <ul>
+                <li><Link to="/blog/idee-cadeau-noel-fille">Idée cadeau de Noël fille : 15 idées originales</Link></li>
+                <li><Link to="/blog/idee-cadeau-noel-garcon">Idée cadeau de Noël garçon : 15 idées originales</Link></li>
+              </ul>
 
               <div className="article-cta">
                 <Link to="/create-story" className="cta-button">
@@ -247,6 +264,8 @@ const BlogArticleCadeauNoel: React.FC = () => {
                 <em>Découvrez aussi :</em>
               </p>
               <ul>
+                <li><Link to="/blog/idee-cadeau-noel-fille">Idée cadeau de Noël fille : 15 idées</Link></li>
+                <li><Link to="/blog/idee-cadeau-noel-garcon">Idée cadeau de Noël garçon : 15 idées</Link></li>
                 <li><Link to="/livre-personnalise-enfant">Livre personnalisé enfant : tout savoir</Link></li>
                 <li><Link to="/blog/conte-personnalise-gratuit">Conte personnalisé gratuit : créez le vôtre</Link></li>
                 <li><Link to="/blog/cadeau-naissance-livre-personnalise-bebe">Cadeau de naissance : le livre personnalisé bébé</Link></li>
