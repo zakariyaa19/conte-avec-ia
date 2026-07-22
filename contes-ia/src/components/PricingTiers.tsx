@@ -200,9 +200,9 @@ export const PricingTiers: React.FC<PricingTiersProps> = ({ onSelectPlan }) => {
           </PriceBlock>
           <Divider />
           <Features>
-            <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>1er chapitre gratuit (5 pages illustrées)</Feature>
+            <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>1er chapitre gratuit (3 pages illustrées)</Feature>
             <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>Livre complet à 2,99€</Feature>
-            <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>5 illustrations par chapitre</Feature>
+            <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>3 illustrations par chapitre</Feature>
             <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>Bibliothèque en ligne</Feature>
             <Feature><FeatureIcon style={{ color: '#22C55E' }}>&#10003;</FeatureIcon>Lecture + téléchargement PDF</Feature>
             <Feature $disabled><FeatureIcon>—</FeatureIcon>9 styles d'illustration</Feature>

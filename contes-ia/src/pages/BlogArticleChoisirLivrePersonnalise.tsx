@@ -57,7 +57,7 @@ const BlogArticleChoisirLivrePersonnalise: React.FC = () => {
     },
     {
       question: "Peut-on tester un livre personnalisé avant d'acheter ?",
-      answer: "Très peu de services proposent un essai gratuit réel. Contedia est l'exception : le premier livre est ENTIÈREMENT gratuit (chapitre 3 pages + 7 illustrations + PDF), sans carte bancaire ni engagement. Vous testez la qualité avant tout achat. Wonderbly propose un 'aperçu' (3 premières pages) mais pas le livre complet. Mon Petit Pousse et Hourra Héros : aucun essai gratuit."
+      answer: "Très peu de services proposent un essai gratuit réel. Contedia est l'exception : le premier livre est ENTIÈREMENT gratuit (chapitre 3 pages + 3 illustrations + PDF), sans carte bancaire ni engagement. Vous testez la qualité avant tout achat. Wonderbly propose un 'aperçu' (3 premières pages) mais pas le livre complet. Mon Petit Pousse et Hourra Héros : aucun essai gratuit."
     },
     {
       question: "À partir de quel âge offrir un livre personnalisé ?",

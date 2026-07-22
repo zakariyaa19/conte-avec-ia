@@ -110,7 +110,7 @@ function buildStoryPrompt(params: StoryTextParams): string {
 
   const userBrief = (params.specialEvents || '').trim();
 
-  return `Tu es un auteur de livres pour enfants reconnu. Ecris le DEBUT d'un conte en ${language} de EXACTEMENT 5 paragraphes.
+  return `Tu es un auteur de livres pour enfants reconnu. Ecris le DEBUT d'un conte en ${language} de EXACTEMENT 3 paragraphes.
 
 ╔═════════ BRIEF DU CLIENT — SOURCE DE VERITE ABSOLUE ═════════╗
 ${userBrief || '(aucun brief libre — utilise les indications ci-dessous)'}
@@ -144,12 +144,10 @@ ${religionNote ? `CONTEXTE RELIGIEUX/SPIRITUEL : ${religionNote} (integrer avec 
 
 Ce texte est le TOUT DEBUT d'une histoire. Il ne doit PAS avoir de fin. L'histoire doit se COUPER net au moment le plus palpitant pour donner une envie IRRESISTIBLE de lire la suite. Frustration positive maximum.
 
-PLAN NARRATIF (5 parties — construire l'attachement avant la coupure) :
-1. INTRODUCTION IMMERSIVE — Presenter ${name} dans le decor du brief. Poser l'univers en quelques phrases fortes et evocatrices.
-2. PERSONNALITE & QUOTIDIEN — Montrer ${name} dans son element : ses habitudes, ses passions, ses proches. Donner envie de s'attacher au personnage.
-3. DECLENCHEUR — Un evenement inattendu surgit. ${name} reagit avec curiosite/courage. L'aventure commence.
-4. DEBUT D'AVENTURE — ${name} s'engage. Premieres decouvertes, premiers indices. La tension monte progressivement.
-5. CLIFFHANGER INTENSE — Le moment le plus palpitant. ${name} est sur le point de decouvrir un secret, d'ouvrir une porte mysterieuse... mais le texte SE COUPE NET. NE PAS resoudre.
+PLAN NARRATIF (3 parties — rythme RAPIDE, construire l'attachement avant la coupure) :
+1. INTRODUCTION IMMERSIVE — Presenter ${name} dans le decor du brief : son univers, ses habitudes, ses passions, ses proches. Poser tout ca en quelques phrases fortes et evocatrices — le lecteur doit etre immediatement captive ET attache au personnage.
+2. DECLENCHEUR + AVENTURE — Un evenement inattendu surgit et lance l'aventure. ${name} reagit avec curiosite/courage, s'engage, fait ses premieres decouvertes. Monter la tension RAPIDEMENT.
+3. CLIFFHANGER INTENSE — Le moment le plus palpitant. ${name} est sur le point de decouvrir un secret, d'ouvrir une porte mysterieuse... mais le texte SE COUPE NET. NE PAS resoudre.
 
 ────── EXIGENCES TECHNIQUES ──────
 
@@ -166,9 +164,9 @@ REGLE CRITIQUE :
 NE PAS ecrire "Paragraphe", "Partie", "Chapitre" ou tout autre label dans le texte. Chaque string contient UNIQUEMENT le texte narratif, comme lu a voix haute a un enfant.
 
 FORMAT DE REPONSE :
-Reponds UNIQUEMENT avec un JSON array de EXACTEMENT 5 strings.
+Reponds UNIQUEMENT avec un JSON array de EXACTEMENT 3 strings.
 Pas de titre, pas de label, pas de commentaire, JUSTE le JSON array du texte narratif pur.
-Exemple : ["Il etait une fois...", "Au quotidien, ${name}...", "Mais ce jour-la...", "Soudain, une lumiere...", "Et alors que tout semblait perdu..."]`;
+Exemple : ["Il etait une fois ${name}...", "Un jour, un evenement extraordinaire...", "Et alors que tout semblait perdu..."]`;
 }
 
 // --- Club Premium prompt (12 paragraphs, rich narrative) ---
@@ -275,7 +273,7 @@ Pas de titre, pas de label, pas de commentaire, JUSTE le JSON array du texte nar
 export async function generateStoryText(params: StoryTextParams, title: string): Promise<StoryTextResult> {
   const openai = getOpenAI();
   const isClub = params.isClub === true;
-  const targetParagraphs = isClub ? 20 : 5;
+  const targetParagraphs = isClub ? 20 : 3;
   const prompt = isClub ? buildClubStoryPrompt(params) : buildStoryPrompt(params);
 
   console.log(`[StoryTextGenerator] Generating ${targetParagraphs} paragraphs (${isClub ? 'CLUB' : 'FREE'}) for:`, params.protagonistName);
@@ -285,7 +283,7 @@ export async function generateStoryText(params: StoryTextParams, title: string):
       const response = await openai.chat.completions.create({
         model: 'gpt-4o-mini',
         messages: [{ role: 'user', content: prompt }],
-        max_tokens: isClub ? 12000 : 2200, // 5 paragraphes = ~900 tokens, 20 paragraphes = ~4000 tokens
+        max_tokens: isClub ? 12000 : 1500, // 3 paragraphes = ~600 tokens, 20 paragraphes = ~4000 tokens
         temperature: isClub ? 0.85 : 0.8,
       });
 
@@ -407,15 +405,15 @@ ${existingText}
 
 REGLE ABSOLUE : La suite DOIT se derouler dans le MEME UNIVERS, avec les MEMES personnages, le MEME theme (${theme}) et le MEME ton que les paragraphes ci-dessus. Tu ne dois PAS changer d'univers, pas introduire de nouveaux themes, pas inventer un decor different. Tu continues EXACTEMENT la meme histoire.
 
-Tu dois maintenant ecrire EXACTEMENT 15 paragraphes pour TERMINER cette histoire en beaute.
+Tu dois maintenant ecrire EXACTEMENT 17 paragraphes pour TERMINER cette histoire en beaute.
 
-PLAN NARRATIF DE LA SUITE (15 parties) :
+PLAN NARRATIF DE LA SUITE (17 parties) :
 - REVELATION — La suite immediate du cliffhanger. Ce que ${name} decouvre.
 - AVENTURE (3 parties) — ${name} explore, decouvre, interagit. Dialogues et actions.
 - MONTEE EN TENSION (3 parties) — Des obstacles croissants, des choix. Le theme "${theme}" est au coeur.
-- EPREUVE MAJEURE (2 parties) — Le plus grand defi. ${name} doute, puise dans son courage${params.hobbies ? ` et ses passions (${params.hobbies})` : ''}.
+- EPREUVE MAJEURE (3 parties) — Le plus grand defi. ${name} doute, puise dans son courage${params.hobbies ? ` et ses passions (${params.hobbies})` : ''}.
 - RESOLUTION (3 parties) — ${name} surmonte l'epreuve. Moment emouvant.
-- CELEBRATION (2 parties) — Retour au calme, joie partagee.
+- CELEBRATION (3 parties) — Retour au calme, joie partagee.
 - CONCLUSION — Morale douce et ouverture poetique${message ? `. Le message central (${message}) doit transparaitre.` : ''}
 
 EXIGENCES :
@@ -433,10 +431,10 @@ NE PAS ecrire "Paragraphe", "Partie", "Chapitre" ou tout autre label/titre/numer
 Chaque string du JSON doit contenir UNIQUEMENT le texte narratif de l'histoire, comme si un parent le lisait a voix haute a son enfant. Aucun prefixe, aucun numero, aucune annotation.
 
 FORMAT DE REPONSE :
-Reponds UNIQUEMENT avec un JSON array de EXACTEMENT 15 strings.
+Reponds UNIQUEMENT avec un JSON array de EXACTEMENT 17 strings.
 Pas de titre, pas de commentaire, pas de label, JUSTE le JSON array du texte narratif pur.`;
 
-  const targetContinuation = 15; // 5 existing + 15 new = 20 total
+  const targetContinuation = 17; // 3 existing + 17 new = 20 total
   console.log(`[StoryTextGenerator] Generating continuation (${targetContinuation} paragraphs) for: ${name}`);
 
   for (let attempt = 0; attempt < 2; attempt++) {
@@ -475,7 +473,7 @@ Pas de titre, pas de commentaire, pas de label, JUSTE le JSON array du texte nar
         text = text.replace(/^\d+[\.\)]\s*/, '');
         return text.trim();
       });
-      // Assembler l'histoire complete : 5 premiers + 15 nouveaux = 20 paragraphes
+      // Assembler l'histoire complete : 3 premiers + 17 nouveaux = 20 paragraphes
       const fullParagraphs = [...existingParagraphs, ...validContinuation].slice(0, 20);
 
       console.log(`[StoryTextGenerator] Continuation generated: ${validContinuation.length} new paragraphs, total: ${fullParagraphs.length}`);

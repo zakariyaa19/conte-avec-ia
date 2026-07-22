@@ -218,8 +218,8 @@ const BlogArticleAlternativeToniebox: React.FC = () => {
               </p>
               <ul>
                 <li>Une <strong>couverture personnalisée</strong> avec le titre « Lucas et le Trésor du Tyrannosaure Pirate »</li>
-                <li><strong>3 pages d'histoire</strong> (12 avec le Club) où Lucas embarque sur un navire pirate, rencontre un T-Rex qui garde un trésor, et résout l'énigme grâce à son courage</li>
-                <li><strong>7 illustrations uniques</strong> (12+ avec le Club) montrant Lucas dans chaque scène — si vous avez uploadé sa photo, le personnage lui ressemble</li>
+                <li><strong>3 pages d'histoire</strong> (20 avec le Club) où Lucas embarque sur un navire pirate, rencontre un T-Rex qui garde un trésor, et résout l'énigme grâce à son courage</li>
+                <li><strong>3 illustrations uniques</strong> (20 avec le Club) montrant Lucas dans chaque scène — si vous avez uploadé sa photo, le personnage lui ressemble</li>
                 <li>Un <strong>vocabulaire adapté</strong> à 5 ans : phrases courtes, mots simples, mais une vraie aventure avec du suspense</li>
                 <li>Le tout en <strong>PDF téléchargeable</strong>, imprimable, lisible sur tout appareil</li>
               </ul>

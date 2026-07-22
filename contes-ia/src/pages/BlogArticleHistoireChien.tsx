@@ -44,7 +44,7 @@ const BlogArticleHistoireChien: React.FC = () => {
     },
     {
       question: "Combien coûte un livre personnalisé enfant et chien ?",
-      answer: "Le premier livre personnalisé est gratuit sur Contedia (chapitre 3 pages + 7 illustrations). Pour la version complète 12 pages : 2,99€ unique. Pour des aventures illimitées avec son chien : Club mensuel à 1,99€ le premier mois (puis 9,99€/mois, 4 livres complets/mois) ou Club annuel à 79,99€/an."
+      answer: "Le premier livre personnalisé est gratuit sur Contedia (chapitre 3 pages + 3 illustrations). Pour la version complète 20 pages : 2,99€ unique. Pour des aventures illimitées avec son chien : Club mensuel à 1,99€ le premier mois (puis 9,99€/mois, 4 livres complets/mois) ou Club annuel à 79,99€/an."
     },
     {
       question: "Peut-on créer un livre hommage si notre chien est décédé ?",

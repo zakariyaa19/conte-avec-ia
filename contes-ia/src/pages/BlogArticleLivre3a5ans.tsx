@@ -152,7 +152,7 @@ const BlogArticleLivre3a5ans: React.FC = () => {
 
               <h3>Le format idéal</h3>
               <ul>
-                <li><strong>Livre gratuit</strong> — 3 pages d'histoire + 7 illustrations, parfait pour découvrir</li>
+                <li><strong>Livre gratuit</strong> — 3 pages d'histoire + 3 illustrations, parfait pour découvrir</li>
                 <li><strong>Livre Club</strong> — 20 pages + 12 illustrations, pour des aventures plus complètes</li>
                 <li><strong>PDF téléchargeable</strong> — lisible sur tablette, imprimable pour la bibliothèque</li>
               </ul>
