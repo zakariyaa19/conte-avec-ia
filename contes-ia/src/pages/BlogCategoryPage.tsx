@@ -243,14 +243,14 @@ const FinalCTA = styled.section`
 const BlogCategoryPage: React.FC = () => {
   const { categorie } = useParams<{ categorie: string }>();
   const category = categorie ? getCategory(categorie) : undefined;
+  const articles = category ? getCategoryArticles(category) : [];
+  const { ref, isVisible, getDelay } = useStaggerReveal(articles.length);
 
   // Pas dans la map → redirige vers le hub blog (évite la 404 et préserve le jus)
   if (!category) {
     return <Navigate to="/blog" replace />;
   }
 
-  const articles = getCategoryArticles(category);
-  const { ref, isVisible, getDelay } = useStaggerReveal(articles.length);
   const siblings = BLOG_CATEGORIES.filter(c => c.slug !== category.slug);
 
   const canonicalUrl = `https://contedia.fr/blog/categorie/${category.slug}`;

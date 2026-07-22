@@ -7,7 +7,7 @@ interface ScrollRevealOptions {
 }
 
 export const useScrollReveal = (options: ScrollRevealOptions = {}) => {
-  const { threshold = 0.15, rootMargin = '0px 0px -40px 0px', once = true } = options;
+  const { threshold = 0.01, rootMargin = '0px 0px -40px 0px', once = true } = options;
   const ref = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
 
