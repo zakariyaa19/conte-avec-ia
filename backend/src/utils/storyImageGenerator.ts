@@ -306,7 +306,7 @@ export async function generateFirstIllustration(
       if (coverImageData) {
         const refFile = await toFile(coverImageData, 'reference.png', { type: 'image/png' });
         const response = await openai.images.edit({
-          model: 'gpt-image-1',
+          model: 'gpt-image-1.5',
           image: refFile,
           prompt,
           n: 1,
@@ -320,7 +320,7 @@ export async function generateFirstIllustration(
         }
       } else {
         const response = await openai.images.generate({
-          model: 'gpt-image-1',
+          model: 'gpt-image-1.5',
           prompt,
           n: 1,
           size: '1024x1536' as any,
@@ -371,7 +371,7 @@ function generatePlaceholderImage(index: number, total: number): Buffer {
 }
 
 // ====================================================================
-// Fonction principale de generation — gpt-image-1 avec image de reference
+// Fonction principale de generation — gpt-image-1.5 avec image de reference
 // ====================================================================
 
 export async function generateStoryImages(
@@ -402,10 +402,10 @@ export async function generateStoryImages(
   const imagesToGenerate = totalImages;
   console.log(`[StoryImageGenerator] Generating ${imagesToGenerate} images ${isClub ? '(CLUB 1024x1024)' : '(FREE 1024x1536)'} (${hasExistingFirst ? '1 reused from preview' : 'all new'}) on ${paragraphs.length} paragraphs (dry run: ${isDryRun})`);
   console.log(`[StoryImageGenerator] Paragraphes illustres: ${indices.map(i => i + 1).join(', ')}`);
-  console.log(`[StoryImageGenerator] Modele: gpt-image-1 avec reference visuelle: ${hasReferenceImage ? 'OUI' : 'NON'}`);
+  console.log(`[StoryImageGenerator] Modele: gpt-image-1.5 avec reference visuelle: ${hasReferenceImage ? 'OUI' : 'NON'}`);
   console.log(`[StoryImageGenerator] Style: ${params.illustrationStyle}, Personnage: ${params.protagonistName}`);
 
-  // Preparer l'image de reference (cover) pour gpt-image-1
+  // Preparer l'image de reference (cover) pour gpt-image-1.5
   let referenceFile: any = null;
   if (referenceImage && !isDryRun) {
     try {
@@ -456,7 +456,7 @@ export async function generateStoryImages(
 
         if (referenceFile) {
           const response = await withTimeout(
-            openai.images.edit({ model: 'gpt-image-1', image: referenceFile, prompt: currentPrompt, n: 1, size: imageSize as any, quality: 'medium' }),
+            openai.images.edit({ model: 'gpt-image-1.5', image: referenceFile, prompt: currentPrompt, n: 1, size: imageSize as any, quality: 'medium' }),
             IMAGE_TIMEOUT, `image ${i + 1} (edit)`
           );
           imageData = response.data?.[0]?.b64_json;
@@ -466,7 +466,7 @@ export async function generateStoryImages(
           }
         } else {
           const response = await withTimeout(
-            openai.images.generate({ model: 'gpt-image-1', prompt: currentPrompt, n: 1, size: imageSize as any, quality: 'medium' }),
+            openai.images.generate({ model: 'gpt-image-1.5', prompt: currentPrompt, n: 1, size: imageSize as any, quality: 'medium' }),
             IMAGE_TIMEOUT, `image ${i + 1} (generate)`
           );
           imageData = response.data?.[0]?.b64_json;
