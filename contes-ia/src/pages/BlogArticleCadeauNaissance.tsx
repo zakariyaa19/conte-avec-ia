@@ -135,7 +135,7 @@ const BlogArticleCadeauNaissance: React.FC = () => {
               </p>
               <ul>
                 <li><strong>3 pages d'histoire</strong> — un récit original qui intègre naturellement le prénom et les éléments choisis</li>
-                <li><strong>7 illustrations uniques</strong> — générées par IA dans un style doux et adapté aux tout-petits</li>
+                <li><strong>3 illustrations uniques</strong> — générées par IA dans un style doux et adapté aux tout-petits</li>
                 <li><strong>Une couverture personnalisée</strong> — avec le titre et le prénom du bébé</li>
                 <li><strong>Un PDF haute qualité</strong> — lisible sur écran, imprimable pour en faire un livre physique</li>
                 <li><strong>Un accès permanent</strong> — dans votre bibliothèque en ligne Contedia</li>

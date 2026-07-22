@@ -205,7 +205,7 @@ export class MailjetService {
                   <div style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); padding: 32px 24px; text-align: center; color: white;">
                     <p style="font-size: 36px; margin: 0 0 8px;">&#x1F4D6;&#x2728;</p>
                     <h1 style="margin: 0; font-size: 22px; font-weight: 800; line-height: 1.3;">Le premier chapitre de ${sp} est pret !</h1>
-                    <p style="margin: 10px 0 0; font-size: 14px; opacity: 0.9;">${sn}, decouvrez les 5 premieres pages illustrees.</p>
+                    <p style="margin: 10px 0 0; font-size: 14px; opacity: 0.9;">${sn}, decouvrez les 3 premieres pages illustrees.</p>
                   </div>
 
                   <div style="padding: 32px 24px;">
@@ -606,7 +606,7 @@ export class MailjetService {
           ` : ''}
 
           <p style="color: #555; font-size: 14px; line-height: 1.75; margin: 0 0 22px; text-align: center;">
-            Pour <strong>2,99&euro;</strong>, debloquez les <strong>15 pages restantes</strong> avec 15 nouvelles illustrations &mdash; la suite et la fin du livre que <em>vous</em> avez imagine pour ${data.protagonistName}.
+            Pour <strong>2,99&euro;</strong>, debloquez les <strong>17 pages restantes</strong> avec 17 nouvelles illustrations &mdash; la suite et la fin du livre que <em>vous</em> avez imagine pour ${data.protagonistName}.
           </p>
 
           <div style="text-align: center; margin: 0 0 12px;">
@@ -646,17 +646,17 @@ export class MailjetService {
           </h1>
 
           <p style="color: #555; font-size: 14px; line-height: 1.7; margin: 0 0 22px; text-align: center;">
-            Vous avez cree les 5 premieres pages, mais le livre est encore <strong>incomplet</strong>. Voici tout ce qui attend ${data.protagonistName} dans la suite :
+            Vous avez cree les 3 premieres pages, mais le livre est encore <strong>incomplet</strong>. Voici tout ce qui attend ${data.protagonistName} dans la suite :
           </p>
 
           <div style="margin: 0 0 24px;">
             <div style="background: #fff8f5; border-left: 3px solid #FF6B6B; border-radius: 8px; padding: 14px 18px; margin-bottom: 10px;">
-              <p style="font-size: 14px; color: #333; margin: 0; font-weight: 700;">&#x1F4D6; 15 pages supplementaires</p>
+              <p style="font-size: 14px; color: #333; margin: 0; font-weight: 700;">&#x1F4D6; 17 pages supplementaires</p>
               <p style="font-size: 12px; color: #777; margin: 4px 0 0; line-height: 1.55;">La revelation du cliffhanger, l'aventure entiere, l'obstacle final et la fin.</p>
             </div>
             <div style="background: #fff8f5; border-left: 3px solid #FF6B6B; border-radius: 8px; padding: 14px 18px; margin-bottom: 10px;">
-              <p style="font-size: 14px; color: #333; margin: 0; font-weight: 700;">&#x1F3A8; 15 nouvelles illustrations</p>
-              <p style="font-size: 12px; color: #777; margin: 4px 0 0; line-height: 1.55;">Generees dans le meme style que vos 5 premieres pages, pour une coherence parfaite.</p>
+              <p style="font-size: 14px; color: #333; margin: 0; font-weight: 700;">&#x1F3A8; 17 nouvelles illustrations</p>
+              <p style="font-size: 12px; color: #777; margin: 4px 0 0; line-height: 1.55;">Generees dans le meme style que vos 3 premieres pages, pour une coherence parfaite.</p>
             </div>
             <div style="background: #fff8f5; border-left: 3px solid #FF6B6B; border-radius: 8px; padding: 14px 18px; margin-bottom: 10px;">
               <p style="font-size: 14px; color: #333; margin: 0; font-weight: 700;">&#x1F4C4; PDF complet telechargeable</p>
@@ -725,7 +725,7 @@ export class MailjetService {
           <div style="text-align: center; margin: 0 0 22px;">
             <p style="font-size: 14px; color: #555; margin: 0 0 14px; line-height: 1.6;">
               Le livre de <strong>${data.protagonistName}</strong> est sauvegarde dans votre bibliotheque.<br>
-              Il manque encore <strong>15 pages</strong> et 15 illustrations pour qu'il soit complet.
+              Il manque encore <strong>17 pages</strong> et 17 illustrations pour qu'il soit complet.
             </p>
             <a href="${magicLink}" style="background: linear-gradient(135deg, #FF6B6B, #FF8E53); color: white; padding: 16px 40px; border-radius: 30px; text-decoration: none; font-weight: 800; font-size: 16px; display: inline-block; box-shadow: 0 4px 16px rgba(255,107,107,0.4);">
               Finir le livre &mdash; 2,99&euro;

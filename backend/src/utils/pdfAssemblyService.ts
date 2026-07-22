@@ -3,7 +3,6 @@ import fontkit from '@pdf-lib/fontkit';
 import sharp from 'sharp';
 import fs from 'fs';
 import path from 'path';
-import { IMAGE_PARAGRAPH_INDICES } from './storyImageGenerator';
 
 // --- Types ---
 
@@ -17,9 +16,9 @@ interface AccentColors {
 export interface PdfAssemblyParams {
   title: string;
   creatorName: string;
-  paragraphs: string[]; // 5 paragraphs (free/cliffhanger) or 20 (club/completed)
+  paragraphs: string[]; // 3 paragraphs (free/cliffhanger) or 20 (club/completed)
   coverImage: Buffer;   // Cover image (portrait, from order's coverImageData)
-  images: Buffer[];     // 5 images (free) or 20 images (club/completed)
+  images: Buffer[];     // 3 images (free) or 20 images (club/completed)
 }
 
 interface PdfFonts {
@@ -636,8 +635,6 @@ async function buildPdfDocument(
   const pdfDoc = await PDFDocument.create();
   const fonts = await fontLoader(pdfDoc);
 
-  const illustratedSet = new Set(IMAGE_PARAGRAPH_INDICES);
-
   // Page 1: Cover
   {
     const page = pdfDoc.addPage([PAGE_WIDTH, PAGE_HEIGHT]);
@@ -650,7 +647,7 @@ async function buildPdfDocument(
   for (let p = 0; p < paragraphs.length; p++) {
     const page = pdfDoc.addPage([PAGE_WIDTH, PAGE_HEIGHT]);
 
-    if (illustratedSet.has(p)) {
+    if (p < images.length) {
       const imgIdx = imageCounter;
       const isEvenPage = imageCounter % 2 === 0;
       const imageOnRight = isEvenPage;

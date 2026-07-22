@@ -179,7 +179,7 @@ const BlogArticleConteSendormir: React.FC = () => {
                 <li><strong>L'IA écrit et illustre</strong> un conte unique en 3 minutes. Vous le recevez par email, prêt à lire ce soir</li>
               </ul>
               <p>
-                Le <Link to="/livre-personnalise-enfant">livre personnalisé</Link> comprend 3 pages d'histoire et 7 illustrations uniques. Le premier conte est <Link to="/blog/conte-personnalise-gratuit">entièrement gratuit</Link>, sans carte bancaire. Votre enfant entendra son prénom dans chaque page — un détail qui fait toute la différence au moment du coucher.
+                Le <Link to="/livre-personnalise-enfant">livre personnalisé</Link> comprend 3 pages d'histoire et 3 illustrations uniques. Le premier conte est <Link to="/blog/conte-personnalise-gratuit">entièrement gratuit</Link>, sans carte bancaire. Votre enfant entendra son prénom dans chaque page — un détail qui fait toute la différence au moment du coucher.
               </p>
               <p>
                 Vous pouvez aussi adapter les contes selon l'<Link to="/contes-par-age">âge de votre enfant</Link>. Pour les 2-3 ans, l'IA propose des phrases courtes et des images vives. Pour les 5-7 ans, des récits plus développés avec une intrigue douce qui accompagne l'endormissement.
