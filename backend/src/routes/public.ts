@@ -8,12 +8,13 @@ const router = Router();
 router.get('/stories/:shareToken', PublicController.getPublicStory);
 
 // Exemples de livres pour la vitrine (IDs hardcodés — pas de données sensibles)
+// Livres complets 20 pages/20 illustrations uniquement (vérifié en base le 22/07 —
+// seuls 3 sur 117 commandes livrées correspondent à ce format, les autres datent
+// des anciennes ères du produit : 3, 5, 6 ou 12 pages).
 const EXAMPLE_ORDER_IDS = [
-  'cmmz0kwlk0001rr2aolxiphqc', // Emmie
-  'cmmyug1tj0007pp29eaxoauab', // Rayan
-  'cmmysygbf0001pp29k87lb1xs', // Timéo
-  'cmmyrepnd0001ne1tz88fo1a9', // Ethan
-  'cmmxrucku000boj2c1q5bj9ab', // Enzo
+  'cmpe4w4se0015qp2dszemqhlv', // Malone — Les Nocturnes de Malone dans la Jungle
+  'cmpelcwrt003cqp2d9xl44w9k', // Horr — Horr et le Chabat des rêves magiques
+  'cmqqb8ygc0091ji2chd4kykde', // Éva — Éva et le trésor enchanté de la forêt
 ];
 
 // Cache en mémoire (rechargé toutes les heures)
