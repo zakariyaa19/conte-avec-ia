@@ -715,7 +715,17 @@ export class AdminController {
         return res.status(404).json({ success: false, message: 'Client non trouve' });
       }
 
-      // Supprimer les commandes, profils enfants, puis le user
+      // Supprimer les assets Cloudinary de chaque commande, puis les commandes,
+      // profils enfants, et enfin le user
+      const { deleteOrderCloudinaryAssets } = await import('../utils/cloudinaryService');
+      const userOrders = await prisma.order.findMany({
+        where: { userId: id },
+        select: { coverImageUrl: true, pdfUrl: true, illustrationUrlsJson: true },
+      });
+      for (const order of userOrders) {
+        await deleteOrderCloudinaryAssets(order);
+      }
+
       await prisma.order.deleteMany({ where: { userId: id } });
       await prisma.childProfile.deleteMany({ where: { userId: id } });
       await prisma.user.delete({ where: { id } });
@@ -919,10 +929,16 @@ export class AdminController {
     try {
       const { id } = req.params;
 
-      const order = await prisma.order.findUnique({ where: { id }, select: { id: true } });
+      const order = await prisma.order.findUnique({
+        where: { id },
+        select: { id: true, coverImageUrl: true, pdfUrl: true, illustrationUrlsJson: true },
+      });
       if (!order) {
         return res.status(404).json({ success: false, message: 'Commande non trouvee' });
       }
+
+      const { deleteOrderCloudinaryAssets } = await import('../utils/cloudinaryService');
+      await deleteOrderCloudinaryAssets(order);
 
       await prisma.order.delete({ where: { id } });
 
