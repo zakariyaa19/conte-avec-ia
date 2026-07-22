@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { processEmailSequence } from '../jobs/emailSequence';
+import { cleanupOldFreeOrders } from '../jobs/cleanupFreeOrders';
 
 const router = Router();
 
@@ -18,6 +19,23 @@ router.post('/email-sequence', async (req: Request, res: Response) => {
   } catch (error) {
     console.error('[Cron] Erreur email sequence:', error);
     res.status(500).json({ success: false, message: 'Erreur traitement séquence email' });
+  }
+});
+
+// Endpoint cron pour la purge des chapitres gratuits jamais completes (>30 jours)
+// Peut etre appele par un cron externe (ex: cron-job.org) une fois par jour
+router.post('/cleanup-free-orders', async (req: Request, res: Response) => {
+  const cronSecret = req.headers['x-cron-secret'] || req.query.secret;
+  if (cronSecret !== (process.env.CRON_SECRET || 'cron-secret-contedia')) {
+    return res.status(401).json({ success: false, message: 'Non autorisé' });
+  }
+
+  try {
+    const result = await cleanupOldFreeOrders();
+    res.json({ success: true, ...result });
+  } catch (error) {
+    console.error('[Cron] Erreur cleanup free orders:', error);
+    res.status(500).json({ success: false, message: 'Erreur purge commandes gratuites' });
   }
 });
 

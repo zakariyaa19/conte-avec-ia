@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import { prisma } from './utils/database';
 import { KeepAliveService } from './utils/keepAlive';
 import { processEmailSequence } from './jobs/emailSequence';
+import { cleanupOldFreeOrders } from './jobs/cleanupFreeOrders';
 
 // Import des routes
 import apiRouter from './routes';
@@ -148,6 +149,14 @@ async function startServer() {
           );
         }, 60 * 60 * 1000); // 1h
         console.log('📧 Cron email sequence démarré (toutes les heures)');
+
+        // Cron interne : purge des chapitres gratuits jamais complétés (>30j), 1x/jour
+        setInterval(() => {
+          cleanupOldFreeOrders().catch(err =>
+            console.error('[Cron] Cleanup free orders error:', err)
+          );
+        }, 24 * 60 * 60 * 1000); // 24h
+        console.log('🧹 Cron cleanup free orders démarré (une fois par jour)');
       }
     });
   } catch (error) {
