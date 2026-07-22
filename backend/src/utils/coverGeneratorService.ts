@@ -521,9 +521,9 @@ export async function generateCoverImage(
   const prompt = buildCoverPrompt(params, characterDescription, title);
   console.log('Cover prompt length:', prompt.length);
 
-  // 5. Appel gpt-image-1 — portrait 1024x1536
+  // 5. Appel gpt-image-1.5 — portrait 1024x1536
   const response = await openai.images.generate({
-    model: 'gpt-image-1',
+    model: 'gpt-image-1.5',
     prompt,
     n: 1,
     size: '1024x1536',
@@ -532,7 +532,7 @@ export async function generateCoverImage(
 
   const imageData = response.data?.[0]?.b64_json;
   if (!imageData) {
-    throw new Error('Aucune image generee par gpt-image-1');
+    throw new Error('Aucune image generee par gpt-image-1.5');
   }
 
   return { imageBase64: imageData, title };

@@ -146,7 +146,7 @@ const animalArticles = blogArticles.filter(a => a.id >= 6 && a.id <= 10);
 const faithArticles = blogArticles.filter(a => a.id >= 11 && a.id <= 15);
 const firstArticles = blogArticles.filter(a => a.id >= 1 && a.id <= 5);
 const cadeauxArticles = blogArticles.filter(a =>
-  ['cadeau-livre-personnalise-enfant', 'cadeau-fete-des-meres-livre-personnalise', 'cadeau-naissance-livre-personnalise-bebe', 'cadeau-noel-livre-personnalise-enfant', 'cadeau-anniversaire-enfant-livre-personnalise', 'idee-cadeau-enfant-3-ans', 'idee-cadeau-enfant-5-ans'].includes(a.slug)
+  ['cadeau-livre-personnalise-enfant', 'cadeau-fete-des-meres-livre-personnalise', 'cadeau-naissance-livre-personnalise-bebe', 'cadeau-noel-livre-personnalise-enfant', 'cadeau-anniversaire-enfant-livre-personnalise', 'idee-cadeau-enfant-3-ans', 'idee-cadeau-enfant-5-ans', 'idee-cadeau-noel-fille', 'idee-cadeau-noel-garcon'].includes(a.slug)
 );
 const comparatifsArticles = blogArticles.filter(a =>
   ['meilleurs-livres-personnalises-enfants-comparatif-2026', 'contedia-vs-wonderbly-comparatif', 'contedia-vs-hourra-heros-comparatif', 'contedia-vs-epopia-comparatif', 'alternative-lunii-livre-personnalise-ia', 'alternative-toniebox-livre-personnalise-enfant', 'lunii-vs-toniebox-comparatif-2026', 'conteuse-enfant-guide-complet-2026', 'chatgpt-vs-contedia-histoires-enfants'].includes(a.slug)
