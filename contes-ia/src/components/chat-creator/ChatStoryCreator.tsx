@@ -96,6 +96,16 @@ export const ChatStoryCreator: React.FC<Props> = ({
   const { hint: hintText, thinking: hintThinking } = useSmartHint(story, detected);
   const ringColor = isReady ? '#22C55E' : percentage >= 35 ? '#F59E0B' : '#FF9999';
 
+  // canGo = brief substantiel ET prenom detecte. Avant, seule la longueur du
+  // texte etait verifiee : un prenom non detecte (minuscules, prenom rare) ne
+  // bloquait pas le passage a l'ecran preview, alors que la generation de
+  // couverture EXIGE un prenom — resultat, l'ecran preview restait bloque sur
+  // "Votre conte prend vie..." indefiniment, sans erreur ni retry possible.
+  // On bloque donc ici, au moment ou l'utilisateur peut encore corriger.
+  const hasEnoughText = story.trim().length >= 20;
+  const hasDetectedName = !!detected.name;
+  const canGo = hasEnoughText && hasDetectedName;
+
   // ── mergedData : detection + defaults pour la creation backend ──
   const mergedData = useMemo<Partial<StoryFormData>>(() => {
     let ageRange = '6-9';
@@ -161,6 +171,43 @@ export const ChatStoryCreator: React.FC<Props> = ({
     }
   }, [isAuthenticated, currentUser, email]);
 
+  // ── Funnel — signaux de blocage dans le flow chat ──────────────────────
+  // trackFunnelStep dedup par step/session (voir funnelTracker.ts), donc pas
+  // besoin de refs de garde ici : chaque effet peut refire sans spammer.
+  // Objectif : voir EXACTEMENT ou les visiteurs decrochent entre l'arrivee et
+  // la soumission, la ou avant on n'avait que page_view/chat_to_preview/
+  // email_entered/form_submitted (rien entre les deux gros steps).
+  useEffect(() => {
+    if (story.length > 0) trackFunnelStep('chat_started_typing');
+  }, [story.length]);
+
+  useEffect(() => {
+    if (detected.name) trackFunnelStep('chat_name_detected');
+  }, [detected.name]);
+
+  useEffect(() => {
+    // Le brief est assez long mais aucun prenom detecte : c'est exactement
+    // le point de blocage corrige (canGo l'exige desormais). Ce signal dit
+    // si des visiteurs continuent d'ecrire sans jamais nommer l'enfant.
+    if (hasEnoughText && !hasDetectedName) trackFunnelStep('chat_text_no_name_20chars');
+  }, [hasEnoughText, hasDetectedName]);
+
+  useEffect(() => {
+    if (isReady) trackFunnelStep('chat_score_ready');
+  }, [isReady]);
+
+  useEffect(() => {
+    if (coverPreview.rawBase64) trackFunnelStep('chat_cover_ready');
+  }, [coverPreview.rawBase64]);
+
+  useEffect(() => {
+    if (coverPreview.error) trackFunnelStep('chat_cover_error');
+  }, [coverPreview.error]);
+
+  useEffect(() => {
+    if (draftRestored) trackFunnelStep('draft_restored');
+  }, [draftRestored]);
+
   // Focus on step change
   useEffect(() => {
     if (step === 'preview') {
@@ -173,20 +220,10 @@ export const ChatStoryCreator: React.FC<Props> = ({
     if (file.size > 15 * 1024 * 1024) { alert('Photo trop lourde (max 15 Mo)'); return; }
     if (!file.type.startsWith('image/')) { alert('Format de fichier non supporté'); return; }
     const r = new FileReader();
-    r.onerror = () => { alert('Erreur lors de la lecture de la photo'); };
-    r.onload = e => { setPhoto(file); setPhotoPreview(e.target?.result as string); };
+    r.onerror = () => { trackFunnelStep('chat_photo_read_failed'); alert('Erreur lors de la lecture de la photo'); };
+    r.onload = e => { setPhoto(file); setPhotoPreview(e.target?.result as string); trackFunnelStep('chat_photo_added'); };
     r.readAsDataURL(file);
   }, []);
-
-  // canGo = brief substantiel ET prenom detecte. Avant, seule la longueur du
-  // texte etait verifiee : un prenom non detecte (minuscules, prenom rare) ne
-  // bloquait pas le passage a l'ecran preview, alors que la generation de
-  // couverture EXIGE un prenom — resultat, l'ecran preview restait bloque sur
-  // "Votre conte prend vie..." indefiniment, sans erreur ni retry possible.
-  // On bloque donc ici, au moment ou l'utilisateur peut encore corriger.
-  const hasEnoughText = story.trim().length >= 20;
-  const hasDetectedName = !!detected.name;
-  const canGo = hasEnoughText && hasDetectedName;
 
   // CTA → preview
   const gotoPreview = useCallback(() => {
@@ -258,6 +295,7 @@ export const ChatStoryCreator: React.FC<Props> = ({
       }
     } catch {
       setGoogleError(true);
+      trackFunnelStep('chat_google_auth_error');
     }
   }, [setTokenAndUser, onUpdate]);
 

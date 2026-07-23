@@ -358,10 +358,14 @@ const EmptyState = styled.div`
 // ═══════════════════════════════════════════════
 
 const STEPS: { key: string; label: string; color: string }[] = [
-  { key: 'page_view',        label: 'Visite formulaire',  color: '#6366F1' },
-  { key: 'chat_to_preview',  label: 'Histoire decrite',   color: '#8B5CF6' },
-  { key: 'email_entered',    label: 'Email/Auth',         color: '#10B981' },
-  { key: 'form_submitted',   label: 'Livre cree',         color: '#059669' },
+  { key: 'page_view',           label: 'Visite formulaire',   color: '#6366F1' },
+  { key: 'chat_started_typing', label: 'Commence a ecrire',   color: '#818CF8' },
+  { key: 'chat_name_detected',  label: 'Prenom detecte',      color: '#A78BFA' },
+  { key: 'chat_score_ready',    label: 'Brief pret (70%)',    color: '#8B5CF6' },
+  { key: 'chat_to_preview',     label: 'Histoire decrite',    color: '#7C3AED' },
+  { key: 'chat_cover_ready',    label: 'Couverture generee',  color: '#C084FC' },
+  { key: 'email_entered',       label: 'Email/Auth',          color: '#10B981' },
+  { key: 'form_submitted',      label: 'Livre cree',          color: '#059669' },
 ];
 
 const SOURCE_LABELS: Record<string, string> = {
@@ -372,6 +376,23 @@ const SOURCE_LABELS: Record<string, string> = {
   direct: 'Acces direct',
 };
 
+// Signaux de blocage — pas une sequence, des moments precis a surveiller.
+// Cle = step envoye par trackFunnelStep(), voir funnelTracker.ts / ChatStoryCreator.tsx.
+const BLOCKER_LABELS: Record<string, string> = {
+  chat_text_no_name_20chars: "Brief long sans prenom detecte",
+  chat_photo_added: "Photo jointe",
+  chat_photo_read_failed: "Echec lecture photo (upload)",
+  chat_cover_photo_conversion_failed: "Photo non prise en compte (cover)",
+  chat_cover_error: "Echec generation couverture",
+  chat_google_auth_error: "Echec connexion Google",
+  form_submit_error: "Erreur a la soumission finale",
+  story_generation_failed_seen: "Livre gratuit : echec de generation",
+  draft_restored: "Brouillon restaure (utile)",
+};
+// Ces steps sont des signaux positifs/neutres, pas des blocages — a afficher
+// dans une couleur differente pour ne pas les faire lire comme des problemes.
+const BLOCKER_NEUTRAL = new Set(['chat_photo_added', 'draft_restored']);
+
 // ═══════════════════════════════════════════════
 // COMPONENT
 // ═══════════════════════════════════════════════
@@ -380,6 +401,7 @@ interface FunnelData {
   period: string;
   totalSessions: number;
   funnel: { step: string; sessions: number; percentage: number }[];
+  blockers: { step: string; sessions: number; percentage: number }[];
   bySource: { source: string; count: number }[];
   byDevice: { device: string; count: number }[];
 }
@@ -529,6 +551,26 @@ export const AdminFunnelPage: React.FC<Props> = ({ token }) => {
                 ))}
               </FunnelBody>
             </FunnelCard>
+
+            {/* ── SIGNAUX DE BLOCAGE ── */}
+            {data.blockers.length > 0 && (
+              <MetaCard style={{ marginBottom: 24 }}>
+                <MetaHeader>Signaux de blocage (moments precis, pas une sequence)</MetaHeader>
+                <MetaBody>
+                  {data.blockers
+                    .slice()
+                    .sort((a, b) => b.sessions - a.sessions)
+                    .map(b => (
+                      <MetaRow key={b.step}>
+                        <MetaLabel>{BLOCKER_LABELS[b.step] || b.step}</MetaLabel>
+                        <MetaValue style={{ color: BLOCKER_NEUTRAL.has(b.step) ? '#059669' : b.percentage >= 20 ? '#DC2626' : '#111827' }}>
+                          {b.sessions} <span style={{ fontWeight: 500, color: '#9CA3AF' }}>({b.percentage}% des visiteurs)</span>
+                        </MetaValue>
+                      </MetaRow>
+                    ))}
+                </MetaBody>
+              </MetaCard>
+            )}
 
             {/* ── INSIGHT SUMMARY ── */}
             <InsightCard>

@@ -319,6 +319,7 @@ export const StoryFormPage: React.FC = () => {
           errorMessage = msg;
         }
       } catch { /* safety net */ }
+      trackFunnelStep('form_submit_error');
       // Remplace l'ancien alert() natif : c'etait le pire endroit possible pour
       // decouvrir une erreur (apres avoir deja decrit l'histoire, attendu
       // l'apercu, donne son email) — desormais affiche inline dans le flow,

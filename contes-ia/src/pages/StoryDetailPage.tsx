@@ -11,6 +11,7 @@ import { StoryReader } from '../components/ui/StoryReader';
 import { PostPurchaseFlow } from '../components/ui/PostPurchaseFlow';
 import { useExperiment } from '../hooks/useExperiment';
 import { trackPaywallEvent } from '../utils/paywallTracking';
+import { trackFunnelStep } from '../utils/funnelTracker';
 import { ApiService } from '../config/api';
 import { getImageUrl } from '../config/constants';
 import { ShareModal } from '../components/ui/ShareModal';
@@ -636,6 +637,13 @@ export const StoryDetailPage: React.FC = () => {
       }
     }
   }, [story?.storyStatus, id]);
+
+  // Funnel : combien de visiteurs voient reellement l'ecran d'echec —
+  // avant le fix GENERATION_FAILED, ce moment etait invisible (traite
+  // comme "en cours" pour toujours), donc ce signal n'existait pas du tout.
+  useEffect(() => {
+    if (story?.storyStatus === 'GENERATION_FAILED') trackFunnelStep('story_generation_failed_seen');
+  }, [story?.storyStatus]);
 
   // Auto-refresh while story is generating (5s si retour paiement ou nouveau, 10s sinon)
   // Le polling s'arretait uniquement sur DISPONIBLE : en cas d'echec de generation

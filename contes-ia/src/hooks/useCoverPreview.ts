@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { StoryFormData } from '../types/FormTypes';
 import { ApiService } from '../config/api';
+import { trackFunnelStep } from '../utils/funnelTracker';
 
 interface UseCoverPreviewReturn {
   coverImageUrl: string | null;
@@ -98,7 +99,10 @@ export function useCoverPreview(formData: Partial<StoryFormData>): UseCoverPrevi
         try {
           photoBase64 = await fileToBase64(formData.photo);
         } catch {
-          // Ignorer l'erreur de conversion photo
+          // La generation repart sans la photo (le hero ne lui ressemblera
+          // pas) plutot que d'echouer entierement — mais c'etait totalement
+          // silencieux avant. On le trace pour savoir si ca arrive en vrai.
+          trackFunnelStep('chat_cover_photo_conversion_failed');
         }
       }
 
