@@ -121,3 +121,53 @@ export function trackFunnelStep(step: string): void {
     body: JSON.stringify(payload),
   }).catch(() => {});
 }
+
+// ── Exit tracking ───────────────────────────────────────────────────────
+// trackFunnelStep dit QUELLES etapes ont ete atteintes. Ca ne dit jamais OU
+// exactement quelqu'un a lache — entre deux etapes, c'est une boite noire.
+// registerExitTracking capture "l'etat au moment ou la page se ferme" via
+// un label calcule cote appelant (ex: 'exit_form_text_no_name'). sendBeacon
+// est utilise plutot que fetch car les requetes fetch peuvent etre annulees
+// par le navigateur pendant un unload — sendBeacon est concu pour ca.
+export function registerExitTracking(getLabel: () => string): () => void {
+  let sent = false;
+
+  const send = () => {
+    if (sent) return;
+    const label = getLabel();
+    if (!label) return; // label vide = l'appelant juge qu'il n'y a rien a tracer (ex: soumission en cours)
+    sent = true;
+
+    const payload = JSON.stringify({
+      sessionId: getSessionId(),
+      step: label,
+      source: getSource(),
+      device: getDevice(),
+    });
+
+    if (navigator.sendBeacon) {
+      const blob = new Blob([payload], { type: 'application/json' });
+      navigator.sendBeacon(`${API_BASE}/api/public/funnel`, blob);
+    } else {
+      // Fallback navigateurs anciens — keepalive pour survivre a l'unload
+      fetch(`${API_BASE}/api/public/funnel`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: payload,
+        keepalive: true,
+      }).catch(() => {});
+    }
+  };
+
+  // pagehide : fermeture d'onglet / navigation. visibilitychange (hidden) :
+  // changement d'app mobile, mise en veille — pagehide n'est pas toujours
+  // fiable sur mobile Safari, donc les deux se completent.
+  const onHidden = () => { if (document.visibilityState === 'hidden') send(); };
+  window.addEventListener('pagehide', send);
+  document.addEventListener('visibilitychange', onHidden);
+
+  return () => {
+    window.removeEventListener('pagehide', send);
+    document.removeEventListener('visibilitychange', onHidden);
+  };
+}

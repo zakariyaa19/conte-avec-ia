@@ -117,6 +117,100 @@ const KpiSub = styled.div`
 `;
 
 // ═══════════════════════════════════════════════
+// REVENUE CARDS — la section la plus visible de la page (demande explicite :
+// distinguer gratuit / completion 2,99€ / abonnement Club, meme a 0 abonnes).
+// ═══════════════════════════════════════════════
+
+const RevenueSectionTitle = styled.h2`
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #9CA3AF;
+  margin: 0 0 12px;
+`;
+
+const RevenueGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 8px;
+  @media (max-width: 900px) { grid-template-columns: 1fr; }
+`;
+
+const RevenueCard = styled.div<{ $accent: string }>`
+  background: white;
+  border: 1px solid #E5E7EB;
+  border-radius: 16px;
+  padding: 22px 24px 20px;
+  position: relative;
+  overflow: hidden;
+  animation: ${fadeIn} 0.4s ease both;
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: ${p => p.$accent};
+  }
+`;
+
+const RevenueCardHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+`;
+
+const RevenueCardLabel = styled.div`
+  font-size: 13px;
+  font-weight: 700;
+  color: #374151;
+`;
+
+const RevenueCardBadge = styled.span<{ $color: string; $bg: string }>`
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 3px 9px;
+  border-radius: 100px;
+  color: ${p => p.$color};
+  background: ${p => p.$bg};
+  white-space: nowrap;
+`;
+
+const RevenueCardValue = styled.div`
+  font-size: 32px;
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin-bottom: 8px;
+`;
+
+const RevenueCardSub = styled.div`
+  font-size: 13px;
+  color: #6B7280;
+  line-height: 1.5;
+`;
+
+const RevenueCardEmptyNote = styled.div`
+  font-size: 12px;
+  color: #9CA3AF;
+  font-style: italic;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed #E5E7EB;
+`;
+
+const RevenueFootnote = styled.div`
+  font-size: 12px;
+  color: #9CA3AF;
+  margin-bottom: 24px;
+`;
+
+// ═══════════════════════════════════════════════
 // FUNNEL CARD
 // ═══════════════════════════════════════════════
 
@@ -393,6 +487,21 @@ const BLOCKER_LABELS: Record<string, string> = {
 // dans une couleur differente pour ne pas les faire lire comme des problemes.
 const BLOCKER_NEUTRAL = new Set(['chat_photo_added', 'draft_restored']);
 
+// Moments de sortie — captures via sendBeacon au moment reel ou la page se
+// ferme (registerExitTracking, funnelTracker.ts). Dit OU precisement
+// quelqu'un a lache prise, ce que les steps francdis seuls ne disent pas.
+const EXIT_LABELS: Record<string, string> = {
+  exit_form_empty: 'Parti sans rien ecrire',
+  exit_form_short_text: 'Parti apres un debut de texte (moins de 20 caracteres)',
+  exit_form_text_no_name: 'Parti avec du texte mais sans prenom detecte',
+  exit_form_name_not_ready: 'Parti avec prenom detecte mais brief incomplet',
+  exit_form_ready_not_clicked: 'Parti alors que le bouton "Pret" etait actif',
+  exit_preview_cover_loading: 'Parti pendant que la couverture generait',
+  exit_preview_cover_error: 'Parti apres un echec de generation de couverture',
+  exit_preview_awaiting_auth: 'Parti sans donner son email / se connecter',
+  exit_preview_ready_not_submitted: 'Parti alors que tout etait pret — pas clique sur le CTA final',
+};
+
 // ═══════════════════════════════════════════════
 // COMPONENT
 // ═══════════════════════════════════════════════
@@ -402,6 +511,13 @@ interface FunnelData {
   totalSessions: number;
   funnel: { step: string; sessions: number; percentage: number }[];
   blockers: { step: string; sessions: number; percentage: number }[];
+  exits: { step: string; sessions: number; percentage: number }[];
+  revenue: {
+    freeBooks: number;
+    completion: { count: number; revenue: number; conversionPct: number };
+    directPurchase: { count: number; revenue: number };
+    club: { newSubscribers: number; activeSubscribers: number };
+  };
   bySource: { source: string; count: number }[];
   byDevice: { device: string; count: number }[];
 }
@@ -461,7 +577,7 @@ export const AdminFunnelPage: React.FC<Props> = ({ token }) => {
         <Header>
           <HeaderLeft>
             <Title>Funnel de conversion</Title>
-            <Subtitle>Parcours nouveau formulaire 2-step (description histoire → identification → livre cree)</Subtitle>
+            <Subtitle>Revenus (gratuit / completion 2,99€ / Club), parcours visiteur et points de blocage</Subtitle>
           </HeaderLeft>
           <PeriodPicker>
             {periods.map(p => (
@@ -471,6 +587,54 @@ export const AdminFunnelPage: React.FC<Props> = ({ token }) => {
             ))}
           </PeriodPicker>
         </Header>
+
+        {/* ── REVENUS & CONVERSIONS PAYANTES ── toujours visible, meme sans
+            visite de funnel : c'est de l'argent reel confirme par Stripe,
+            pas un evenement client qui peut manquer. Les 3 cartes distinguent
+            explicitement gratuit / completion 2,99€ / abonnement Club. */}
+        <RevenueSectionTitle>Revenus &amp; conversions payantes — {data.period}</RevenueSectionTitle>
+        <RevenueGrid>
+          <RevenueCard $accent="#6366F1">
+            <RevenueCardHeader>
+              <RevenueCardLabel>Livre gratuit</RevenueCardLabel>
+              <RevenueCardBadge $color="#4338CA" $bg="#EEF2FF">Entree du funnel</RevenueCardBadge>
+            </RevenueCardHeader>
+            <RevenueCardValue>{data.revenue.freeBooks}</RevenueCardValue>
+            <RevenueCardSub>livre{data.revenue.freeBooks > 1 ? 's' : ''} delivre{data.revenue.freeBooks > 1 ? 's' : ''} gratuitement — 0€, sert de base au taux de completion ci-contre</RevenueCardSub>
+          </RevenueCard>
+
+          <RevenueCard $accent="#059669">
+            <RevenueCardHeader>
+              <RevenueCardLabel>Completion — 2,99€</RevenueCardLabel>
+              <RevenueCardBadge $color="#047857" $bg="#ECFDF5">Paiement unique</RevenueCardBadge>
+            </RevenueCardHeader>
+            <RevenueCardValue>{data.revenue.completion.count}</RevenueCardValue>
+            <RevenueCardSub>
+              <strong style={{ color: '#111827' }}>{data.revenue.completion.revenue.toFixed(2)}€</strong> encaisses
+              {data.revenue.freeBooks > 0 && <> — <strong style={{ color: '#111827' }}>{data.revenue.completion.conversionPct}%</strong> des livres gratuits</>}
+            </RevenueCardSub>
+            {data.revenue.directPurchase.count > 0 && (
+              <RevenueCardEmptyNote>
+                + {data.revenue.directPurchase.count} achat{data.revenue.directPurchase.count > 1 ? 's' : ''} direct{data.revenue.directPurchase.count > 1 ? 's' : ''} (2eme livre+, hors completion) : {data.revenue.directPurchase.revenue.toFixed(2)}€
+              </RevenueCardEmptyNote>
+            )}
+          </RevenueCard>
+
+          <RevenueCard $accent="#7C3AED">
+            <RevenueCardHeader>
+              <RevenueCardLabel>Club — Abonnement</RevenueCardLabel>
+              <RevenueCardBadge $color="#6D28D9" $bg="#F5F3FF">Recurrent</RevenueCardBadge>
+            </RevenueCardHeader>
+            <RevenueCardValue>{data.revenue.club.newSubscribers}</RevenueCardValue>
+            <RevenueCardSub>nouvel{data.revenue.club.newSubscribers > 1 ? 's' : ''} abonne{data.revenue.club.newSubscribers > 1 ? 's' : ''} sur la periode</RevenueCardSub>
+            {data.revenue.club.activeSubscribers === 0 ? (
+              <RevenueCardEmptyNote>Aucun abonne actif pour l'instant — pret a detecter des la premiere conversion (1,99€ puis 9,99€/mois, ou 79,99€/an).</RevenueCardEmptyNote>
+            ) : (
+              <RevenueCardEmptyNote style={{ fontStyle: 'normal', color: '#6B7280' }}>{data.revenue.club.activeSubscribers} abonne{data.revenue.club.activeSubscribers > 1 ? 's' : ''} actif{data.revenue.club.activeSubscribers > 1 ? 's' : ''} au total (tous historiques, pas juste cette periode)</RevenueCardEmptyNote>
+            )}
+          </RevenueCard>
+        </RevenueGrid>
+        <RevenueFootnote>Le MRR Club (montants variables 1er mois vs suivants) n'est pas calcule ici — voir le dashboard Stripe pour le chiffre exact.</RevenueFootnote>
 
         {data.totalSessions === 0 ? (
           <EmptyState>
@@ -487,7 +651,7 @@ export const AdminFunnelPage: React.FC<Props> = ({ token }) => {
                 <KpiSub>sessions uniques</KpiSub>
               </KpiCard>
               <KpiCard $accent="#059669">
-                <KpiLabel>Conversion</KpiLabel>
+                <KpiLabel>Conversion livre gratuit</KpiLabel>
                 <KpiValue $color={Number(convRate) >= 3 ? '#059669' : Number(convRate) >= 1 ? '#D97706' : '#DC2626'}>
                   {convRate}%
                 </KpiValue>
@@ -565,6 +729,28 @@ export const AdminFunnelPage: React.FC<Props> = ({ token }) => {
                         <MetaLabel>{BLOCKER_LABELS[b.step] || b.step}</MetaLabel>
                         <MetaValue style={{ color: BLOCKER_NEUTRAL.has(b.step) ? '#059669' : b.percentage >= 20 ? '#DC2626' : '#111827' }}>
                           {b.sessions} <span style={{ fontWeight: 500, color: '#9CA3AF' }}>({b.percentage}% des visiteurs)</span>
+                        </MetaValue>
+                      </MetaRow>
+                    ))}
+                </MetaBody>
+              </MetaCard>
+            )}
+
+            {/* ── MOMENTS DE SORTIE ── captures via sendBeacon au moment reel
+                ou la page se ferme : dit OU precisement les gens partent,
+                pas seulement quelles etapes ont ete franchies. */}
+            {data.exits.length > 0 && (
+              <MetaCard style={{ marginBottom: 24 }}>
+                <MetaHeader>Moments de sortie (ou exactement les gens partent)</MetaHeader>
+                <MetaBody>
+                  {data.exits
+                    .slice()
+                    .sort((a, b) => b.sessions - a.sessions)
+                    .map(e => (
+                      <MetaRow key={e.step}>
+                        <MetaLabel>{EXIT_LABELS[e.step] || e.step}</MetaLabel>
+                        <MetaValue style={{ color: e.percentage >= 20 ? '#DC2626' : '#111827' }}>
+                          {e.sessions} <span style={{ fontWeight: 500, color: '#9CA3AF' }}>({e.percentage}% des visiteurs)</span>
                         </MetaValue>
                       </MetaRow>
                     ))}

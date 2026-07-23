@@ -291,6 +291,10 @@ async function processCompletionPayment(orderId: string, source: string): Promis
     data: {
       price: PRODUCT_PRICES.EBOOK_COMPLETE,
       purchaseType: 'SINGLE',
+      // Manquait ici (present sur le chemin achat unique classique) — sans
+      // ca, impossible de dater une completion payee pour un reporting par
+      // periode ; on se rabattait sur updatedAt, decale par autoCompleteStory.
+      paidAt: new Date(),
     }
   });
 
@@ -832,6 +836,10 @@ export const handleStripeWebhook = async (req: Request, res: Response) => {
               where: { id: userId },
               data: {
                 role: 'CLUB',
+                // Ne jamais ecraser sur un renouvellement/reactivation — on
+                // veut la date de la toute premiere conversion pour mesurer
+                // les nouveaux abonnes par periode.
+                clubSince: existingUser?.clubSince ?? new Date(),
                 subscriptionId: sub.id,
                 subscriptionStatus: sub.status,
                 subscriptionPeriodEnd: getSubscriptionPeriodEnd(sub),
