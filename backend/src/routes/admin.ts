@@ -94,18 +94,37 @@ router.get('/funnel', authenticateAdmin, requireAdmin, async (req, res) => {
       _count: { id: true },
     });
 
-    // Funnel du nouveau formulaire 2-step (ChatStoryCreator) :
-    // visite → histoire decrite (step 1 → preview) → email/auth → livre cree
+    // Funnel sequentiel du flow chat (ChatStoryCreator) — granularite ajoutee
+    // pour voir EXACTEMENT ou les visiteurs decrochent entre l'arrivee et la
+    // soumission (avant : rien entre chat_to_preview et email_entered).
     const funnelOrder = [
       'page_view',
+      'chat_started_typing',
+      'chat_name_detected',
+      'chat_score_ready',
       'chat_to_preview',
+      'chat_cover_ready',
       'email_entered',
       'form_submitted',
     ];
 
+    // Signaux de blocage — pas une sequence, des moments precis ou quelque
+    // chose a coince. A regarder en % du total pour prioriser les correctifs.
+    const blockerSteps = [
+      'chat_text_no_name_20chars',
+      'chat_photo_added',
+      'chat_photo_read_failed',
+      'chat_cover_photo_conversion_failed',
+      'chat_cover_error',
+      'chat_google_auth_error',
+      'form_submit_error',
+      'story_generation_failed_seen',
+      'draft_restored',
+    ];
+
     const total = Number(totalSessions[0]?.count || 0);
 
-    const funnel = funnelOrder.map(step => {
+    const toRow = (step: string) => {
       const found = sessionsPerStep.find(s => s.step === step);
       const sessions = Number(found?.sessions || 0);
       return {
@@ -113,7 +132,10 @@ router.get('/funnel', authenticateAdmin, requireAdmin, async (req, res) => {
         sessions,
         percentage: total > 0 ? Math.round((sessions / total) * 100) : 0,
       };
-    });
+    };
+
+    const funnel = funnelOrder.map(toRow);
+    const blockers = blockerSteps.map(toRow).filter(b => b.sessions > 0);
 
     res.json({
       success: true,
@@ -121,6 +143,7 @@ router.get('/funnel', authenticateAdmin, requireAdmin, async (req, res) => {
         period: `${days} derniers jours`,
         totalSessions: total,
         funnel,
+        blockers,
         bySource: bySource.map(s => ({ source: s.source || 'direct', count: s._count.id })),
         byDevice: byDevice.map(d => ({ device: d.device || 'unknown', count: d._count.id })),
       }

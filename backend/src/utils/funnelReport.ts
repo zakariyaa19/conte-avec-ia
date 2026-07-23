@@ -1,0 +1,139 @@
+// Rapport funnel en ligne de commande — lit directement les FunnelEvent en
+// base, sans passer par l'admin web ni un export Clarity manuel.
+//
+// Usage : npm run funnel:report -- --days=30
+//
+// Le parcours sequentiel (FUNNEL_ORDER) et les signaux de blocage (BLOCKERS)
+// doivent rester synchronises avec les appels trackFunnelStep() du frontend
+// (ChatStoryCreator.tsx, StoryFormPage.tsx, StoryDetailPage.tsx,
+// useCoverPreview.ts) et avec contes-ia/src/pages/AdminFunnelPage.tsx —
+// c'est la meme donnee, deux vues (script pour moi, dashboard pour l'humain).
+
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
+
+const FUNNEL_ORDER: { key: string; label: string }[] = [
+  { key: 'page_view', label: 'Visite formulaire' },
+  { key: 'chat_started_typing', label: 'Commence a ecrire' },
+  { key: 'chat_name_detected', label: 'Prenom detecte' },
+  { key: 'chat_score_ready', label: 'Brief pret (score >= 70%)' },
+  { key: 'chat_to_preview', label: 'Histoire decrite -> preview' },
+  { key: 'chat_cover_ready', label: 'Couverture generee' },
+  { key: 'email_entered', label: 'Email / Auth' },
+  { key: 'form_submitted', label: 'Livre cree' },
+];
+
+const BLOCKERS: { key: string; label: string; kind: 'warn' | 'info' }[] = [
+  { key: 'chat_text_no_name_20chars', label: 'Brief long (20+ car.) sans prenom detecte', kind: 'warn' },
+  { key: 'chat_photo_added', label: 'Photo jointe', kind: 'info' },
+  { key: 'chat_photo_read_failed', label: 'Echec lecture photo (upload cote client)', kind: 'warn' },
+  { key: 'chat_cover_photo_conversion_failed', label: 'Photo non prise en compte pour la cover', kind: 'warn' },
+  { key: 'chat_cover_error', label: 'Echec generation couverture (preview)', kind: 'warn' },
+  { key: 'chat_google_auth_error', label: 'Echec connexion Google', kind: 'warn' },
+  { key: 'form_submit_error', label: 'Erreur a la soumission finale (ex-alert())', kind: 'warn' },
+  { key: 'story_generation_failed_seen', label: 'Livre gratuit : ecran d\'echec de generation vu', kind: 'warn' },
+  { key: 'draft_restored', label: 'Brouillon restaure apres fermeture/refresh', kind: 'info' },
+];
+
+function parseDays(): number {
+  const arg = process.argv.find(a => a.startsWith('--days='));
+  const days = arg ? parseInt(arg.split('=')[1], 10) : 30;
+  return Number.isFinite(days) && days > 0 ? days : 30;
+}
+
+function bar(pct: number, width = 28): string {
+  const filled = Math.max(0, Math.min(width, Math.round((pct / 100) * width)));
+  return '#'.repeat(filled) + '-'.repeat(width - filled);
+}
+
+function pad(n: number | string, width: number): string {
+  return String(n).padStart(width);
+}
+
+async function main() {
+  const days = parseDays();
+  const since = new Date();
+  since.setDate(since.getDate() - days);
+
+  const sessionsPerStep = await prisma.$queryRawUnsafe<{ step: string; sessions: bigint }[]>(
+    `SELECT step, COUNT(DISTINCT "sessionId") as sessions FROM funnel_events WHERE "createdAt" >= $1 GROUP BY step ORDER BY sessions DESC`,
+    since
+  );
+  const totalRow = await prisma.$queryRawUnsafe<{ count: bigint }[]>(
+    `SELECT COUNT(DISTINCT "sessionId") as count FROM funnel_events WHERE "createdAt" >= $1`,
+    since
+  );
+  const total = Number(totalRow[0]?.count || 0);
+
+  const bySource = await prisma.funnelEvent.groupBy({
+    by: ['source'],
+    where: { createdAt: { gte: since }, step: 'page_view' },
+    _count: { id: true },
+  });
+  const byDevice = await prisma.funnelEvent.groupBy({
+    by: ['device'],
+    where: { createdAt: { gte: since }, step: 'page_view' },
+    _count: { id: true },
+  });
+
+  const find = (step: string) => Number(sessionsPerStep.find(s => s.step === step)?.sessions || 0);
+
+  console.log('');
+  console.log(`FUNNEL DE CONVERSION — ${days} derniers jours`);
+  console.log(`${total} visiteurs uniques (sessions distinctes)`);
+  console.log('');
+
+  if (total === 0) {
+    console.log('Aucune donnee sur cette periode.');
+    await prisma.$disconnect();
+    return;
+  }
+
+  console.log('== Parcours sequentiel ==========================================');
+  let prevSessions = total;
+  FUNNEL_ORDER.forEach((s, i) => {
+    const sessions = find(s.key);
+    const pct = Math.round((sessions / total) * 100);
+    const dropFromPrev = i > 0 && prevSessions > 0 ? Math.round(((prevSessions - sessions) / prevSessions) * 100) : 0;
+    const dropTag = i > 0 && dropFromPrev > 0 ? `  (-${dropFromPrev}% vs etape precedente)` : '';
+    console.log(`${bar(pct)} ${pad(pct, 3)}%  ${pad(sessions, 4)}  ${s.label}${dropTag}`);
+    prevSessions = sessions;
+  });
+
+  console.log('');
+  console.log('== Signaux de blocage (moments precis, pas une sequence) =======');
+  const blockerRows = BLOCKERS.map(b => ({ ...b, sessions: find(b.key) })).filter(b => b.sessions > 0);
+  if (blockerRows.length === 0) {
+    console.log('Aucun signal de blocage enregistre sur cette periode.');
+  } else {
+    blockerRows
+      .sort((a, b) => b.sessions - a.sessions)
+      .forEach(b => {
+        const pct = Math.round((b.sessions / total) * 100);
+        const flag = b.kind === 'warn' && pct >= 20 ? '  <!> a regarder en priorite' : '';
+        console.log(`  ${pad(b.sessions, 4)} (${pad(pct, 2)}%)  ${b.label}${flag}`);
+      });
+  }
+
+  console.log('');
+  console.log('== Source du trafic (sur page_view) =============================');
+  bySource.sort((a, b) => b._count.id - a._count.id).forEach(s => {
+    console.log(`  ${pad(s._count.id, 4)}  ${s.source || 'direct'}`);
+  });
+
+  console.log('');
+  console.log('== Appareil (sur page_view) ======================================');
+  byDevice.sort((a, b) => b._count.id - a._count.id).forEach(d => {
+    console.log(`  ${pad(d._count.id, 4)}  ${d.device === 'mobile' ? 'mobile' : d.device === 'desktop' ? 'desktop' : (d.device || 'inconnu')}`);
+  });
+
+  console.log('');
+  await prisma.$disconnect();
+}
+
+main().catch(async (e) => {
+  console.error(e);
+  await prisma.$disconnect();
+  process.exit(1);
+});
