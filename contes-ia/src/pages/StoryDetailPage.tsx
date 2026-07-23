@@ -638,8 +638,10 @@ export const StoryDetailPage: React.FC = () => {
   }, [story?.storyStatus, id]);
 
   // Auto-refresh while story is generating (5s si retour paiement ou nouveau, 10s sinon)
+  // Le polling s'arretait uniquement sur DISPONIBLE : en cas d'echec de generation
+  // (GENERATION_FAILED), il tournait indefiniment sans jamais le detecter.
   useEffect(() => {
-    if (!story || story.storyStatus === 'DISPONIBLE') return;
+    if (!story || story.storyStatus === 'DISPONIBLE' || story.storyStatus === 'GENERATION_FAILED') return;
     const delay = (isCompletionReturn || isNewStory) ? 5000 : 10000;
     const interval = setInterval(() => {
       loadStory();
@@ -741,9 +743,50 @@ export const StoryDetailPage: React.FC = () => {
   }
 
   const isAvailable = story.storyStatus === 'DISPONIBLE';
+  const isFailed = story.storyStatus === 'GENERATION_FAILED';
   const statusColor = isAvailable ? theme.colors.status.success : theme.colors.status.warning;
   const coverUrl = story.coverImageUrl ? getImageUrl(story.coverImageUrl) : null;
   const displayTitle = story.coverTitle || `Conte de ${story.protagonistName}`;
+
+  // ─── PAGE DÉDIÉE ÉCHEC DE GÉNÉRATION ───
+  // Avant : GENERATION_FAILED tombait dans la meme branche que "en cours de
+  // creation", avec une barre figee a 15% et un polling qui tournait pour
+  // toujours — l'utilisateur ne savait jamais que ca avait echoue. Ca touche
+  // potentiellement le tout premier livre gratuit, apres qu'il ait deja donne
+  // son email : le pire moment pour un echec silencieux.
+  if (isFailed) {
+    return (
+      <PageContainer>
+        <Header />
+        <MainContent>
+          <BackLink onClick={() => navigate('/dashboard')}>
+            &larr; Ma bibliothèque
+          </BackLink>
+
+          <GeneratingCard>
+            <GenInner>
+              <GenBook>&#9888;&#65039;</GenBook>
+              <GenTitle>{displayTitle}</GenTitle>
+              <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: 14, margin: '0 0 24px' }}>
+                La création du livre de {story.protagonistName} a rencontré un problème technique.<br/>
+                Ce n'est pas de votre faute — notre équipe a été notifiée automatiquement.
+              </p>
+              <Button variant="primary" onClick={() => navigate('/create-story')}>
+                Recréer l'histoire
+              </Button>
+            </GenInner>
+          </GeneratingCard>
+
+          <div style={{ textAlign: 'center', marginTop: theme.spacing.lg }}>
+            <p style={{ fontSize: 13, color: 'var(--text-light)' }}>
+              Besoin d'aide ? Contactez-nous, on s'en occupe personnellement.
+            </p>
+          </div>
+        </MainContent>
+        <Footer />
+      </PageContainer>
+    );
+  }
 
   // ─── PAGE DÉDIÉE GÉNÉRATION EN COURS ───
   if (!isAvailable) {

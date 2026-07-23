@@ -85,11 +85,16 @@ export function useStoryDetection(combined: string, hasPhoto: boolean): Detected
         break;
       }
     }
-    // Tentative complementaire : "appelé(e) X", "prenom X", "il/elle s'appelle X"
+    // Tentative complementaire : "appelé(e) X", "prenom X", "il/elle s'appelle X".
+    // Case-insensitive sur le prenom lui-meme (pas seulement le mot-cle) : ces
+    // tournures sont un signal explicite et non-ambigu, donc on capte aussi un
+    // prenom tape entierement en minuscules (frequent sur clavier mobile) —
+    // sinon un prenom comme "lucas" ne serait jamais detecte malgre un signal clair.
     if (!name) {
-      const explicit = text.match(/(?:appel[ée]e?|prenom|nomm[ée]e?|c'est|appell?\w*)\s+([A-ZÀ-ÖØ-Ý][a-zà-öø-ÿ-]{1,29})/i);
-      if (explicit && isPlausibleName(explicit[1])) {
-        name = explicit[1].trim();
+      const explicit = text.match(/(?:appel[ée]e?|prenom|nomm[ée]e?|c'est|appell?\w*)\s+([A-Za-zÀ-ÖØ-öø-ÿ][a-zà-öø-ÿ-]{1,29})/i);
+      if (explicit) {
+        const candidate = explicit[1].charAt(0).toUpperCase() + explicit[1].slice(1);
+        if (isPlausibleName(candidate)) name = candidate;
       }
     }
 

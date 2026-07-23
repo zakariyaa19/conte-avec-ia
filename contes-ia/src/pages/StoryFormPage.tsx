@@ -12,6 +12,7 @@ import { safeLocalStorage, safeSessionStorage } from '../utils/safeStorage';
 
 export const StoryFormPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const { user, isAuthenticated, isClub, setTokenAndUser } = useAuth();
   const location = useLocation();
   const referralCode = useMemo(() => {
@@ -159,6 +160,7 @@ export const StoryFormPage: React.FC = () => {
   };
 
   const handleSubmit = async (overrideData?: Partial<StoryFormData>) => {
+    setSubmitError(null);
     // Merge any last-minute data (e.g., cover image from wizard)
     const submitData = overrideData ? { ...formData, ...overrideData } : { ...formData };
     // Inject referral code if present
@@ -317,8 +319,14 @@ export const StoryFormPage: React.FC = () => {
           errorMessage = msg;
         }
       } catch { /* safety net */ }
-      alert(errorMessage);
+      // Remplace l'ancien alert() natif : c'etait le pire endroit possible pour
+      // decouvrir une erreur (apres avoir deja decrit l'histoire, attendu
+      // l'apercu, donne son email) — desormais affiche inline dans le flow,
+      // et on garde le brouillon (cf. ChatStoryCreator.doSubmit) pour reessayer
+      // sans tout retaper.
+      setSubmitError(errorMessage);
       setIsSubmitting(false);
+      throw error;
     }
   };
 
@@ -340,6 +348,7 @@ export const StoryFormPage: React.FC = () => {
         isClub={isClub}
         currentUser={user}
         clubCredit={clubCredit}
+        submitError={submitError}
       />
     </>
   );

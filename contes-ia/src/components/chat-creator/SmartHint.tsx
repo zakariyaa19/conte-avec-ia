@@ -103,7 +103,14 @@ const Content = styled.div`
   z-index: 1;
 `;
 
-const HintText = styled.p`
+// Etait styled.p — mais en mode "thinking", HintText contient ThinkingDots
+// (un <div>), et un <div> a l'interieur d'un <p> est du HTML invalide. React
+// le detecte et log une erreur de nesting a chaque frappe pendant que l'IA
+// "reflechit" ; en StrictMode/hydratation ca peut cascader en boucle de
+// re-render ("Maximum update depth exceeded") — reproductible meme sans
+// aucune des modifications de cette session. Un <div> ne change rien au style
+// (styled-components applique le meme CSS) et resout le nesting invalide.
+const HintText = styled.div`
   font-family: 'Poppins', system-ui, -apple-system, sans-serif;
   font-size: 14px;
   font-weight: 500;

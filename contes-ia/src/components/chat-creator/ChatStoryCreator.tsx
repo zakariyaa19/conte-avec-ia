@@ -11,6 +11,7 @@ import { BookCoverPreview } from '../ui/BookCoverPreview';
 import { useStoryDetection, computeDetectionScore } from './useStoryDetection';
 import { useSmartHint } from './useSmartHint';
 import { SmartHint } from './SmartHint';
+import { useChatPersistence, loadChatDraft, clearChatDraft } from './useChatPersistence';
 import { Header as SiteHeader } from '../layout/Header';
 
 import {
@@ -28,6 +29,8 @@ interface Props {
   isClub: boolean;
   currentUser: any;
   clubCredit: any;
+  /** Erreur de soumission (definie par StoryFormPage) — remplace l'ancien alert() natif */
+  submitError?: string | null;
 }
 
 const STORY_LIMIT = 600;
@@ -41,10 +44,15 @@ const PLACEHOLDERS = [
 
 export const ChatStoryCreator: React.FC<Props> = ({
   formData, onUpdate, onSubmit, isSubmitting,
-  isAuthenticated, isClub, currentUser,
+  isAuthenticated, isClub, currentUser, submitError,
 }) => {
   // ── Single field : description complete (prenom + age + theme + tout) ────
-  const [story, setStory] = useState('');
+  // Restaure un brouillon existant (<24h) au montage : avant, tout le texte
+  // tape etait perdu si l'onglet se fermait, si un appel arrivait sur mobile,
+  // ou lors d'un simple refresh accidentel — useChatPersistence existait mais
+  // n'etait jamais branche.
+  const [story, setStory] = useState(() => loadChatDraft()?.rawText || '');
+  const [draftRestored] = useState(() => !!loadChatDraft());
   const [photo, setPhoto] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [email, setEmail] = useState(formData.userEmail || '');
@@ -128,6 +136,11 @@ export const ChatStoryCreator: React.FC<Props> = ({
   // Cover preview
   const coverPreview = useCoverPreview(mergedData);
 
+  // Sauvegarde debounced du brouillon (texte uniquement — un File ne se
+  // serialise pas ; si une photo etait jointe, on le rappelle a l'utilisateur
+  // via le bandeau "brouillon restauré" ci-dessous).
+  useChatPersistence(story, photo?.name);
+
   // Auth
   useEffect(() => { if (isAuthenticated && currentUser?.email) setEmail(currentUser.email); }, [isAuthenticated, currentUser]);
   useEffect(() => { trackFunnelStep('chat_ui_page_view'); }, []);
@@ -165,11 +178,15 @@ export const ChatStoryCreator: React.FC<Props> = ({
     r.readAsDataURL(file);
   }, []);
 
-  // canGo = brief substantiel. La regex peut rater un prenom en minuscules
-  // ou complexe, mais le backend appelle GPT-4o-mini au submit pour extraire
-  // le vrai prenom + entites. Si GPT echoue aussi (vraiment aucun prenom dans
-  // le texte), le backend renvoie 400 avec un message clair.
-  const canGo = story.trim().length >= 20;
+  // canGo = brief substantiel ET prenom detecte. Avant, seule la longueur du
+  // texte etait verifiee : un prenom non detecte (minuscules, prenom rare) ne
+  // bloquait pas le passage a l'ecran preview, alors que la generation de
+  // couverture EXIGE un prenom — resultat, l'ecran preview restait bloque sur
+  // "Votre conte prend vie..." indefiniment, sans erreur ni retry possible.
+  // On bloque donc ici, au moment ou l'utilisateur peut encore corriger.
+  const hasEnoughText = story.trim().length >= 20;
+  const hasDetectedName = !!detected.name;
+  const canGo = hasEnoughText && hasDetectedName;
 
   // CTA → preview
   const gotoPreview = useCallback(() => {
@@ -211,6 +228,12 @@ export const ChatStoryCreator: React.FC<Props> = ({
       };
       onUpdate(final);
       await onSubmit(final);
+      // Soumission reussie (onSubmit rejette desormais en cas d'echec reel,
+      // voir StoryFormPage.handleSubmit) : le brouillon n'a plus lieu d'etre.
+      clearChatDraft();
+    } catch {
+      // Erreur deja affichee par StoryFormPage (submitError, cf. props) — on
+      // garde le brouillon pour permettre de reessayer sans tout retaper.
     } finally {
       setSubmitting(false);
     }
@@ -241,6 +264,19 @@ export const ChatStoryCreator: React.FC<Props> = ({
   const inApp = /FBAN|FBAV|Instagram|Line\/|Twitter|MicroMessenger/i.test(navigator.userAgent);
   const validEmail = !!email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const isBusy = submitting || isSubmitting;
+
+  // Filet de securite : depuis que canGo exige un prenom detecte, gotoPreview
+  // devrait toujours appeler coverPreview.generate() avant de passer a 'preview'.
+  // On garde ce garde-fou pour ne plus jamais reproduire l'ecran de chargement
+  // infini si un chemin futur atteint 'preview' sans avoir lance la generation.
+  // Doit rester AVANT le "if (step === 'form') return" ci-dessous : les hooks
+  // ne peuvent pas etre appeles apres un retour conditionnel.
+  useEffect(() => {
+    if (step === 'preview' && !coverPreview.rawBase64 && !coverPreview.isGenerating && !coverPreview.error) {
+      coverPreview.generate();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step]);
 
   // ═══ STEP 1 : FORM ════════════════════════════════════
   if (step === 'form') {
@@ -277,6 +313,12 @@ export const ChatStoryCreator: React.FC<Props> = ({
                 Le livre dont votre enfant est le <span style={{ color: C.coral }}>héros</span>.
               </h1>
             </div>
+
+            {draftRestored && (
+              <p style={{ fontSize: 12, color: 'var(--text-light)', textAlign: 'center', margin: '-4px 0 0' }}>
+                📝 Brouillon restauré — reprenez où vous en étiez
+              </p>
+            )}
 
             {/* SmartHint REMONTE au-dessus du Composer : reste visible meme quand le
                 clavier mobile est ouvert (sinon il passe sous le clavier et l'utilisateur
@@ -362,11 +404,13 @@ export const ChatStoryCreator: React.FC<Props> = ({
               aria-busy={isBusy}
               style={isReady ? { boxShadow: '0 0 0 3px rgba(34,197,94,0.18), 0 8px 28px rgba(34,197,94,0.3)' } : undefined}
             >
-              {!canGo
+              {!hasEnoughText
                 ? 'Décrivez votre histoire ci-dessus'
-                : isReady
-                  ? `✨ Prêt — créer le livre de ${heroName}`
-                  : `Créer le livre de ${heroName} — Gratuit`}
+                : !hasDetectedName
+                  ? 'Ajoutez le prénom de l\'enfant pour continuer'
+                  : isReady
+                    ? `✨ Prêt — créer le livre de ${heroName}`
+                    : `Créer le livre de ${heroName} — Gratuit`}
             </CTA>
             <CompletionRing percentage={percentage} color={ringColor} />
           </FooterInner>
@@ -420,7 +464,7 @@ export const ChatStoryCreator: React.FC<Props> = ({
             ) : (
               <BookCoverPreview
                 coverImageUrl={coverUrl}
-                isGenerating={!coverReady}
+                isGenerating={coverPreview.isGenerating || (!coverReady && !coverError)}
               />
             )}
           </div>
@@ -461,6 +505,16 @@ export const ChatStoryCreator: React.FC<Props> = ({
                   placeholder="votre@email.com" autoComplete="email"
                   onKeyDown={e => { if (e.key === 'Enter') handlePreviewSubmit(); }}
                   aria-label="Adresse email" />
+              </div>
+            )}
+
+            {submitError && (
+              <div style={{
+                background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)',
+                borderRadius: 10, padding: '10px 14px', marginBottom: 10,
+                fontSize: 13, color: C.danger, textAlign: 'center',
+              }}>
+                {submitError}
               </div>
             )}
 
