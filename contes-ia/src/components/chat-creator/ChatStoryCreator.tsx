@@ -4,7 +4,7 @@ import { StoryFormData } from '../../types/FormTypes';
 import { ApiService } from '../../config/api';
 import { useAuth } from '../../contexts/AuthContext';
 import { safeLocalStorage } from '../../utils/safeStorage';
-import { trackFunnelStep } from '../../utils/funnelTracker';
+import { trackFunnelStep, registerExitTracking } from '../../utils/funnelTracker';
 import { useCoverPreview, isPhase1Complete } from '../../hooks/useCoverPreview';
 import { CompletionRing } from './CompletionRing';
 import { BookCoverPreview } from '../ui/BookCoverPreview';
@@ -302,6 +302,31 @@ export const ChatStoryCreator: React.FC<Props> = ({
   const inApp = /FBAN|FBAV|Instagram|Line\/|Twitter|MicroMessenger/i.test(navigator.userAgent);
   const validEmail = !!email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const isBusy = submitting || isSubmitting;
+
+  // ── "Ou est la personne exactement quand elle quitte la page ?" ────────
+  // trackFunnelStep dit quelles etapes sont franchies ; ca ne dit jamais OU
+  // precisement quelqu'un abandonne entre deux. exitLabel calcule l'etat
+  // exact a chaque render ; registerExitTracking l'envoie via sendBeacon au
+  // moment reel ou la page se ferme (pagehide/visibilitychange).
+  const exitLabel = useMemo(() => {
+    if (isBusy) return ''; // soumission en cours / vient de reussir (redirection) — pas un abandon
+    if (step === 'form') {
+      if (story.length === 0) return 'exit_form_empty';
+      if (!hasEnoughText) return 'exit_form_short_text';
+      if (!hasDetectedName) return 'exit_form_text_no_name';
+      if (!isReady) return 'exit_form_name_not_ready';
+      return 'exit_form_ready_not_clicked';
+    }
+    if (coverPreview.error) return 'exit_preview_cover_error';
+    if (!coverPreview.rawBase64) return 'exit_preview_cover_loading';
+    if (!(isAuthenticated || validEmail)) return 'exit_preview_awaiting_auth';
+    return 'exit_preview_ready_not_submitted';
+  }, [isBusy, step, story.length, hasEnoughText, hasDetectedName, isReady, coverPreview.error, coverPreview.rawBase64, isAuthenticated, validEmail]);
+
+  const exitLabelRef = useRef(exitLabel);
+  useEffect(() => { exitLabelRef.current = exitLabel; }, [exitLabel]);
+
+  useEffect(() => registerExitTracking(() => exitLabelRef.current), []);
 
   // Filet de securite : depuis que canGo exige un prenom detecte, gotoPreview
   // devrait toujours appeler coverPreview.generate() avant de passer a 'preview'.

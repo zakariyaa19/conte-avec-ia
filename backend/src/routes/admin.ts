@@ -4,6 +4,7 @@ import { StoryGenerationController } from '../controllers/storyGenerationControl
 import { authenticateAdmin, requireAdmin } from '../middleware/auth';
 import { upload, uploadPdf } from '../middleware/upload';
 import { prisma } from '../utils/database';
+import { PRODUCT_PRICES } from '../utils/pricing';
 
 const router = Router();
 
@@ -122,6 +123,22 @@ router.get('/funnel', authenticateAdmin, requireAdmin, async (req, res) => {
       'draft_restored',
     ];
 
+    // Moments de sortie — captures via sendBeacon au moment reel ou la page
+    // se ferme (registerExitTracking, funnelTracker.ts). Contrairement aux
+    // steps ci-dessus (etapes franchies), ceci dit OU quelqu'un a lache prise
+    // exactement — la donnee qui manquait completement avant.
+    const exitSteps = [
+      'exit_form_empty',
+      'exit_form_short_text',
+      'exit_form_text_no_name',
+      'exit_form_name_not_ready',
+      'exit_form_ready_not_clicked',
+      'exit_preview_cover_loading',
+      'exit_preview_cover_error',
+      'exit_preview_awaiting_auth',
+      'exit_preview_ready_not_submitted',
+    ];
+
     const total = Number(totalSessions[0]?.count || 0);
 
     const toRow = (step: string) => {
@@ -136,6 +153,64 @@ router.get('/funnel', authenticateAdmin, requireAdmin, async (req, res) => {
 
     const funnel = funnelOrder.map(toRow);
     const blockers = blockerSteps.map(toRow).filter(b => b.sessions > 0);
+    const exits = exitSteps.map(toRow).filter(e => e.sessions > 0);
+
+    // ═══ Conversions payantes — verite terrain (Order/User), pas des
+    // evenements client qui peuvent echouer silencieusement (ad-blocker,
+    // onglet ferme trop vite). C'est Stripe qui confirme, pas le navigateur. ═══
+
+    // Livres gratuits delivres sur la periode (le haut du funnel payant)
+    const freeBooks = await prisma.order.count({
+      where: { price: 0, purchaseType: 'SINGLE', storyStatus: 'DISPONIBLE', createdAt: { gte: since } },
+    });
+
+    // Completion du chapitre gratuit -> livre complet a 2,99€ (LE conversion
+    // demandee explicitement : distincte de l'abonnement Club et des achats
+    // directs). paidAt fiable depuis le fix processCompletionPayment.
+    const completions = await prisma.order.aggregate({
+      where: { price: PRODUCT_PRICES.EBOOK_COMPLETE, purchaseType: 'SINGLE', paidAt: { gte: since } },
+      _count: { id: true },
+      _sum: { price: true },
+    });
+
+    // Achats directs (2eme livre+, hors completion — prix different de 2,99€
+    // et de 0). Argent reel mais un autre funnel que la completion.
+    const directPurchases = await prisma.order.aggregate({
+      where: { purchaseType: 'SINGLE', price: { gt: 0, not: PRODUCT_PRICES.EBOOK_COMPLETE }, paidAt: { gte: since } },
+      _count: { id: true },
+      _sum: { price: true },
+    });
+
+    // Abonnement Club — distinct de la completion, demande explicitement.
+    // clubSince = date de la toute premiere conversion (jamais ecrasee sur
+    // renouvellement), donc mesurable par periode contrairement a role=CLUB
+    // seul qui n'est qu'un instantane.
+    const newClubSubscribers = await prisma.user.count({
+      where: { clubSince: { gte: since } },
+    });
+    const activeClubSubscribers = await prisma.user.count({
+      where: { role: 'CLUB', subscriptionStatus: 'active' },
+    });
+
+    const revenue = {
+      freeBooks,
+      completion: {
+        count: completions._count.id,
+        revenue: Number(completions._sum.price || 0),
+        conversionPct: freeBooks > 0 ? Math.round((completions._count.id / freeBooks) * 100) : 0,
+      },
+      directPurchase: {
+        count: directPurchases._count.id,
+        revenue: Number(directPurchases._sum.price || 0),
+      },
+      club: {
+        newSubscribers: newClubSubscribers,
+        activeSubscribers: activeClubSubscribers,
+        // Revenu Club non calcule ici : facturation recurrente Stripe avec
+        // montants variables (1,99€ 1er mois puis 9,99€/mois ou 79,99€/an) —
+        // pas fiable a estimer depuis Order. Voir le dashboard Stripe pour le MRR exact.
+      },
+    };
 
     res.json({
       success: true,
@@ -144,6 +219,8 @@ router.get('/funnel', authenticateAdmin, requireAdmin, async (req, res) => {
         totalSessions: total,
         funnel,
         blockers,
+        exits,
+        revenue,
         bySource: bySource.map(s => ({ source: s.source || 'direct', count: s._count.id })),
         byDevice: byDevice.map(d => ({ device: d.device || 'unknown', count: d._count.id })),
       }

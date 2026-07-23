@@ -10,6 +10,7 @@
 // c'est la meme donnee, deux vues (script pour moi, dashboard pour l'humain).
 
 import { PrismaClient } from '@prisma/client';
+import { PRODUCT_PRICES } from './pricing';
 
 const prisma = new PrismaClient();
 
@@ -35,6 +36,21 @@ const BLOCKERS: { key: string; label: string; kind: 'warn' | 'info' }[] = [
   { key: 'story_generation_failed_seen', label: 'Livre gratuit : ecran d\'echec de generation vu', kind: 'warn' },
   { key: 'draft_restored', label: 'Brouillon restaure apres fermeture/refresh', kind: 'info' },
 ];
+
+// Captures via sendBeacon au moment reel ou la page se ferme (registerExitTracking,
+// funnelTracker.ts) — dit OU precisement quelqu'un a lache prise, contrairement
+// aux steps ci-dessus qui disent seulement quelles etapes ont ete franchies.
+const EXIT_LABELS: Record<string, string> = {
+  exit_form_empty: "Parti sans rien ecrire",
+  exit_form_short_text: 'Parti apres un debut de texte (<20 car.)',
+  exit_form_text_no_name: 'Parti avec du texte mais sans prenom detecte',
+  exit_form_name_not_ready: 'Parti avec prenom detecte mais brief incomplet (<70%)',
+  exit_form_ready_not_clicked: "Parti alors que le bouton \"Pret\" etait actif — n'a pas clique",
+  exit_preview_cover_loading: 'Parti pendant que la couverture generait',
+  exit_preview_cover_error: 'Parti apres un echec de generation de couverture',
+  exit_preview_awaiting_auth: 'Parti sans donner son email / se connecter',
+  exit_preview_ready_not_submitted: "Parti alors que tout etait pret — n'a pas clique sur le CTA final",
+};
 
 function parseDays(): number {
   const arg = process.argv.find(a => a.startsWith('--days='));
@@ -79,13 +95,49 @@ async function main() {
 
   const find = (step: string) => Number(sessionsPerStep.find(s => s.step === step)?.sessions || 0);
 
+  // ═══ Revenus & conversions payantes — verite terrain (Order/User), pas
+  // des evenements client qui peuvent echouer silencieusement. C'est Stripe
+  // qui confirme cote serveur, pas le navigateur. Trois conversions bien
+  // distinctes : livre gratuit (aucun revenu), completion 2,99€, Club. ═══
+  const freeBooks = await prisma.order.count({
+    where: { price: 0, purchaseType: 'SINGLE', storyStatus: 'DISPONIBLE', createdAt: { gte: since } },
+  });
+  const completions = await prisma.order.aggregate({
+    where: { price: PRODUCT_PRICES.EBOOK_COMPLETE, purchaseType: 'SINGLE', paidAt: { gte: since } },
+    _count: { id: true },
+    _sum: { price: true },
+  });
+  const directPurchases = await prisma.order.aggregate({
+    where: { purchaseType: 'SINGLE', price: { gt: 0, not: PRODUCT_PRICES.EBOOK_COMPLETE }, paidAt: { gte: since } },
+    _count: { id: true },
+    _sum: { price: true },
+  });
+  const newClubSubscribers = await prisma.user.count({ where: { clubSince: { gte: since } } });
+  const activeClubSubscribers = await prisma.user.count({ where: { role: 'CLUB', subscriptionStatus: 'active' } });
+
+  const completionCount = completions._count.id;
+  const completionRevenue = Number(completions._sum.price || 0);
+  const completionPct = freeBooks > 0 ? Math.round((completionCount / freeBooks) * 100) : 0;
+  const directCount = directPurchases._count.id;
+  const directRevenue = Number(directPurchases._sum.price || 0);
+
   console.log('');
   console.log(`FUNNEL DE CONVERSION — ${days} derniers jours`);
+  console.log('');
+  console.log('== Revenus & conversions payantes ================================');
+  console.log(`  Livres gratuits delivres      : ${freeBooks}`);
+  console.log(`  Completion (2,99€)            : ${completionCount}  ->  ${completionRevenue.toFixed(2)}€  (${completionPct}% des livres gratuits)`);
+  console.log(`  Achat direct / 2eme livre+    : ${directCount}  ->  ${directRevenue.toFixed(2)}€`);
+  console.log(`  Nouveaux abonnes Club         : ${newClubSubscribers}`);
+  console.log(`  Abonnes Club actifs (total)   : ${activeClubSubscribers}`);
+  console.log(`  Revenu one-shot total periode : ${(completionRevenue + directRevenue).toFixed(2)}€  (Club MRR non calcule ici — voir Stripe)`);
+  console.log('');
+
   console.log(`${total} visiteurs uniques (sessions distinctes)`);
   console.log('');
 
   if (total === 0) {
-    console.log('Aucune donnee sur cette periode.');
+    console.log('Aucune donnee de funnel visiteur sur cette periode (mais les chiffres de revenus ci-dessus restent valides).');
     await prisma.$disconnect();
     return;
   }
@@ -113,6 +165,20 @@ async function main() {
         const pct = Math.round((b.sessions / total) * 100);
         const flag = b.kind === 'warn' && pct >= 20 ? '  <!> a regarder en priorite' : '';
         console.log(`  ${pad(b.sessions, 4)} (${pad(pct, 2)}%)  ${b.label}${flag}`);
+      });
+  }
+
+  console.log('');
+  console.log('== Moments de sortie (ou exactement les gens partent) ===========');
+  const exitRows = Object.keys(EXIT_LABELS).map(key => ({ key, sessions: find(key) })).filter(e => e.sessions > 0);
+  if (exitRows.length === 0) {
+    console.log('Aucune sortie capturee sur cette periode.');
+  } else {
+    exitRows
+      .sort((a, b) => b.sessions - a.sessions)
+      .forEach(e => {
+        const pct = Math.round((e.sessions / total) * 100);
+        console.log(`  ${pad(e.sessions, 4)} (${pad(pct, 2)}%)  ${EXIT_LABELS[e.key]}`);
       });
   }
 

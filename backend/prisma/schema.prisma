@@ -28,6 +28,10 @@ model User {
   subscriptionId        String?
   subscriptionStatus    String?
   subscriptionPeriodEnd DateTime?
+  // Date de la 1ere conversion Club (jamais ecrasee sur les renouvellements/
+  // reactivations) — permet de mesurer les nouveaux abonnes par periode,
+  // ce qui n'existait pas avant (role=CLUB seul ne dit pas QUAND).
+  clubSince             DateTime?
 
   // Compteur soumissions Club (reset hebdomadaire lazy)
   weeklySubmissionCount Int       @default(0)
