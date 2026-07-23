@@ -139,6 +139,11 @@ router.get('/funnel', authenticateAdmin, requireAdmin, async (req, res) => {
       'exit_preview_ready_not_submitted',
     ];
 
+    // Paywall (cliffhanger -> completion 2,99€) — existait deja cote Clarity/
+    // Meta/TikTok (paywallTracking.ts) mais etait invisible ici. Base = 100%
+    // sur paywall_view (pas sur les visiteurs du formulaire, univers different).
+    const paywallOrder = ['paywall_view', 'paywall_click', 'paywall_checkout_open', 'paywall_payment_success'];
+
     const total = Number(totalSessions[0]?.count || 0);
 
     const toRow = (step: string) => {
@@ -154,6 +159,23 @@ router.get('/funnel', authenticateAdmin, requireAdmin, async (req, res) => {
     const funnel = funnelOrder.map(toRow);
     const blockers = blockerSteps.map(toRow).filter(b => b.sessions > 0);
     const exits = exitSteps.map(toRow).filter(e => e.sessions > 0);
+
+    // Paywall : population differente des visiteurs du formulaire (quelqu'un
+    // peut lire son livre gratuit plusieurs jours apres l'avoir cree) — base
+    // 100% sur paywall_view, pas sur `total`, sinon le % serait trompeur.
+    const paywallViewSessions = Number(sessionsPerStep.find(s => s.step === 'paywall_view')?.sessions || 0);
+    const toRowPaywall = (step: string) => {
+      const found = sessionsPerStep.find(s => s.step === step);
+      const sessions = Number(found?.sessions || 0);
+      return {
+        step,
+        sessions,
+        percentage: paywallViewSessions > 0 ? Math.round((sessions / paywallViewSessions) * 100) : 0,
+      };
+    };
+    const paywallFunnel = paywallOrder.map(toRowPaywall);
+    const paywallExitSteps = ['exit_paywall_seen_not_clicked', 'exit_paywall_checkout_open_not_paid'];
+    const paywallExits = paywallExitSteps.map(toRowPaywall).filter(e => e.sessions > 0);
 
     // ═══ Conversions payantes — verite terrain (Order/User), pas des
     // evenements client qui peuvent echouer silencieusement (ad-blocker,
@@ -220,6 +242,8 @@ router.get('/funnel', authenticateAdmin, requireAdmin, async (req, res) => {
         funnel,
         blockers,
         exits,
+        paywallFunnel,
+        paywallExits,
         revenue,
         bySource: bySource.map(s => ({ source: s.source || 'direct', count: s._count.id })),
         byDevice: byDevice.map(d => ({ device: d.device || 'unknown', count: d._count.id })),

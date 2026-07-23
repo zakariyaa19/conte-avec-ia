@@ -52,6 +52,22 @@ const EXIT_LABELS: Record<string, string> = {
   exit_preview_ready_not_submitted: "Parti alors que tout etait pret — n'a pas clique sur le CTA final",
 };
 
+// Paywall (cliffhanger -> completion 2,99€) — existait deja cote Clarity/
+// Meta/TikTok (paywallTracking.ts) mais etait invisible ici avant le 23/07.
+// Population differente du reste (quelqu'un peut lire son livre gratuit
+// plusieurs jours apres l'avoir cree) : base 100% sur paywall_view, pas sur
+// les visiteurs du formulaire.
+const PAYWALL_ORDER: { key: string; label: string }[] = [
+  { key: 'paywall_view', label: 'Voit l\'ecran "Offrir la suite"' },
+  { key: 'paywall_click', label: 'Clique sur le CTA principal' },
+  { key: 'paywall_checkout_open', label: 'Ouvre le paiement (Stripe Elements)' },
+  { key: 'paywall_payment_success', label: 'Paiement confirme (cote client)' },
+];
+const PAYWALL_EXIT_LABELS: Record<string, string> = {
+  exit_paywall_seen_not_clicked: 'Parti apres avoir vu le paywall, sans cliquer',
+  exit_paywall_checkout_open_not_paid: 'Parti avec le paiement ouvert, sans le finir',
+};
+
 function parseDays(): number {
   const arg = process.argv.find(a => a.startsWith('--days='));
   const days = arg ? parseInt(arg.split('=')[1], 10) : 30;
@@ -180,6 +196,31 @@ async function main() {
         const pct = Math.round((e.sessions / total) * 100);
         console.log(`  ${pad(e.sessions, 4)} (${pad(pct, 2)}%)  ${EXIT_LABELS[e.key]}`);
       });
+  }
+
+  console.log('');
+  console.log('== Paywall — cliffhanger -> completion 2,99€ =====================');
+  const paywallViewSessions = find('paywall_view');
+  if (paywallViewSessions === 0) {
+    console.log('Aucune vue du paywall capturee sur cette periode.');
+  } else {
+    let prevPaywall = paywallViewSessions;
+    PAYWALL_ORDER.forEach((s, i) => {
+      const sessions = find(s.key);
+      const pct = Math.round((sessions / paywallViewSessions) * 100);
+      const dropFromPrev = i > 0 && prevPaywall > 0 ? Math.round(((prevPaywall - sessions) / prevPaywall) * 100) : 0;
+      const dropTag = i > 0 && dropFromPrev > 0 ? `  (-${dropFromPrev}% vs etape precedente)` : '';
+      console.log(`${bar(pct)} ${pad(pct, 3)}%  ${pad(sessions, 4)}  ${s.label}${dropTag}`);
+      prevPaywall = sessions;
+    });
+    const paywallExitRows = Object.keys(PAYWALL_EXIT_LABELS).map(key => ({ key, sessions: find(key) })).filter(e => e.sessions > 0);
+    if (paywallExitRows.length > 0) {
+      console.log('');
+      paywallExitRows.sort((a, b) => b.sessions - a.sessions).forEach(e => {
+        const pct = Math.round((e.sessions / paywallViewSessions) * 100);
+        console.log(`  ${pad(e.sessions, 4)} (${pad(pct, 2)}%)  ${PAYWALL_EXIT_LABELS[e.key]}`);
+      });
+    }
   }
 
   console.log('');

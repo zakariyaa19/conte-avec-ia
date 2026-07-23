@@ -502,6 +502,19 @@ const EXIT_LABELS: Record<string, string> = {
   exit_preview_ready_not_submitted: 'Parti alors que tout etait pret — pas clique sur le CTA final',
 };
 
+// Paywall (cliffhanger -> completion 2,99€) — deja tracke vers Clarity/Meta/
+// TikTok (paywallTracking.ts), desormais aussi visible ici depuis le 23/07.
+const PAYWALL_STEPS: { key: string; label: string; color: string }[] = [
+  { key: 'paywall_view', label: 'Voit "Offrir la suite"', color: '#F59E0B' },
+  { key: 'paywall_click', label: 'Clique le CTA', color: '#EA580C' },
+  { key: 'paywall_checkout_open', label: 'Ouvre le paiement', color: '#DC2626' },
+  { key: 'paywall_payment_success', label: 'Paiement confirme', color: '#059669' },
+];
+const PAYWALL_EXIT_LABELS: Record<string, string> = {
+  exit_paywall_seen_not_clicked: "Parti apres avoir vu le paywall, sans cliquer",
+  exit_paywall_checkout_open_not_paid: "Parti avec le paiement ouvert, sans le finir",
+};
+
 // ═══════════════════════════════════════════════
 // COMPONENT
 // ═══════════════════════════════════════════════
@@ -512,6 +525,8 @@ interface FunnelData {
   funnel: { step: string; sessions: number; percentage: number }[];
   blockers: { step: string; sessions: number; percentage: number }[];
   exits: { step: string; sessions: number; percentage: number }[];
+  paywallFunnel: { step: string; sessions: number; percentage: number }[];
+  paywallExits: { step: string; sessions: number; percentage: number }[];
   revenue: {
     freeBooks: number;
     completion: { count: number; revenue: number; conversionPct: number };
@@ -751,6 +766,73 @@ export const AdminFunnelPage: React.FC<Props> = ({ token }) => {
                         <MetaLabel>{EXIT_LABELS[e.step] || e.step}</MetaLabel>
                         <MetaValue style={{ color: e.percentage >= 20 ? '#DC2626' : '#111827' }}>
                           {e.sessions} <span style={{ fontWeight: 500, color: '#9CA3AF' }}>({e.percentage}% des visiteurs)</span>
+                        </MetaValue>
+                      </MetaRow>
+                    ))}
+                </MetaBody>
+              </MetaCard>
+            )}
+
+            {/* ── PAYWALL : cliffhanger -> completion 2,99€ ── deja tracke vers
+                Clarity/Meta/TikTok (paywallTracking.ts), visible ici depuis le
+                23/07. Base 100% = paywall_view, PAS les visiteurs du formulaire
+                (quelqu'un peut lire son livre gratuit plusieurs jours apres). */}
+            {(() => {
+              const paywallViews = data.paywallFunnel.find(p => p.step === 'paywall_view')?.sessions || 0;
+              if (paywallViews === 0) return null;
+              return (
+                <FunnelCard>
+                  <FunnelHeader>
+                    <FunnelTitle>Paywall — livre gratuit lu → complétion 2,99€</FunnelTitle>
+                    <span style={{ fontSize: 12, color: '#9CA3AF' }}>{paywallViews} vue{paywallViews > 1 ? 's' : ''} du paywall</span>
+                  </FunnelHeader>
+                  <FunnelBody>
+                    {PAYWALL_STEPS.map((s, i) => {
+                      const row = data.paywallFunnel.find(p => p.step === s.key);
+                      const sessions = row?.sessions || 0;
+                      const pct = row?.percentage || 0;
+                      const prevSessions = i > 0 ? (data.paywallFunnel.find(p => p.step === PAYWALL_STEPS[i - 1].key)?.sessions || 0) : sessions;
+                      const dropPct = i > 0 && prevSessions > 0 ? Math.round(((prevSessions - sessions) / prevSessions) * 100) : 0;
+                      const severity: 'critical' | 'warning' | 'ok' = dropPct >= 70 ? 'critical' : dropPct >= 40 ? 'warning' : 'ok';
+                      return (
+                        <React.Fragment key={s.key}>
+                          <StepRow $delay={i}>
+                            <StepLabel>{s.label}</StepLabel>
+                            <StepBarContainer>
+                              <StepBarFill $pct={pct} $color={s.color} $delay={i}>
+                                {pct >= 12 && <StepBarPct>{pct}%</StepBarPct>}
+                              </StepBarFill>
+                            </StepBarContainer>
+                            <StepCount $highlight={i === PAYWALL_STEPS.length - 1}>{sessions}</StepCount>
+                          </StepRow>
+                          {i > 0 && dropPct > 0 && (
+                            <DropOffRow $severity={severity} $delay={i}>
+                              <DropOffIndicator $severity={severity}>
+                                <DropDot $severity={severity} />
+                                -{dropPct}% abandonnent{severity === 'critical' && ' — critique'}{severity === 'warning' && ' — a surveiller'}
+                              </DropOffIndicator>
+                            </DropOffRow>
+                          )}
+                        </React.Fragment>
+                      );
+                    })}
+                  </FunnelBody>
+                </FunnelCard>
+              );
+            })()}
+
+            {data.paywallExits.length > 0 && (
+              <MetaCard style={{ marginBottom: 24 }}>
+                <MetaHeader>Sorties du paywall (ou exactement, pas juste quelles etapes)</MetaHeader>
+                <MetaBody>
+                  {data.paywallExits
+                    .slice()
+                    .sort((a, b) => b.sessions - a.sessions)
+                    .map(e => (
+                      <MetaRow key={e.step}>
+                        <MetaLabel>{PAYWALL_EXIT_LABELS[e.step] || e.step}</MetaLabel>
+                        <MetaValue style={{ color: e.percentage >= 20 ? '#DC2626' : '#111827' }}>
+                          {e.sessions} <span style={{ fontWeight: 500, color: '#9CA3AF' }}>({e.percentage}% des vues du paywall)</span>
                         </MetaValue>
                       </MetaRow>
                     ))}

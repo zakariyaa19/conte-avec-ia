@@ -4,6 +4,7 @@ import { theme } from '../../styles/theme';
 import { getImageUrl } from '../../config/constants';
 import { InlineCheckout } from '../payment/InlineCheckout';
 import { trackPaywallEvent } from '../../utils/paywallTracking';
+import { registerExitTracking } from '../../utils/funnelTracker';
 
 
 /* ═══════════════════════════════════════════
@@ -500,6 +501,22 @@ export const StoryReader: React.FC<StoryReaderProps> = ({
       });
     }
   }, [currentSlide, isCliffhanger, isShared, orderId, slides, completionCheckoutVariant, protagonistName]);
+
+  // ── "Ou exactement quelqu'un part du paywall ?" — meme pattern que
+  // ChatStoryCreator.tsx (exit tracking). Le paywall a deja son propre
+  // tracking (paywall_view/click/checkout_open) mais rien ne disait ce qui
+  // se passait pour ceux qui ARRIVENT au paywall et NE FONT RIEN — vu le
+  // cliffhanger, n'a pas clique ; ou a ouvert le paiement, ne l'a pas fini.
+  const reachedPaywallEnd = isCliffhanger && !isShared && !!orderId && slides[currentSlide]?.type === 'end';
+  const paywallExitLabel = !reachedPaywallEnd
+    ? ''
+    : inlineCheckoutOpen
+      ? 'exit_paywall_checkout_open_not_paid'
+      : 'exit_paywall_seen_not_clicked';
+
+  const paywallExitLabelRef = useRef(paywallExitLabel);
+  useEffect(() => { paywallExitLabelRef.current = paywallExitLabel; }, [paywallExitLabel]);
+  useEffect(() => registerExitTracking(() => paywallExitLabelRef.current), []);
 
   // Lock body scroll + force scroll to top + escape key
   useEffect(() => {

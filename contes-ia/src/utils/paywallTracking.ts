@@ -10,6 +10,7 @@
 // Chaque event est aussi declenche UNE SEULE FOIS par orderId pour eviter le double-comptage.
 
 import { safeSessionStorage } from './safeStorage';
+import { trackFunnelStep } from './funnelTracker';
 
 type PaywallEvent =
   | 'paywall_view'
@@ -41,6 +42,12 @@ function alreadyFired(event: PaywallEvent, orderId: string): boolean {
 export function trackPaywallEvent(event: PaywallEvent, payload: PaywallEventPayload): void {
   if (typeof window === 'undefined') return;
   if (alreadyFired(event, payload.orderId)) return;
+
+  // Ces evenements partaient uniquement vers Clarity/Meta/TikTok — invisibles
+  // du funnel interrogeable (funnel_events). Meme step name, meme table que
+  // le reste du tracking conversion, pour pouvoir les lire avec
+  // `npm run funnel:report` au lieu de dependre d'outils tiers.
+  trackFunnelStep(event);
 
   const value = payload.value ?? DEFAULT_VALUE;
   const meta = {
