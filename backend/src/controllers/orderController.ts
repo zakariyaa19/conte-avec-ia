@@ -51,18 +51,25 @@ export class OrderController {
       // retourne le vrai prenom (ou null si vraiment rien). On ecrase ensuite
       // les champs frontend par les valeurs GPT (quand elles sont meilleures).
       const brief = (formData.specialEvents || '').trim();
-      let extracted = null as Awaited<ReturnType<typeof extractStoryEntities>> | null;
+      let extraction: Awaited<ReturnType<typeof extractStoryEntities>> = { success: false, entities: null as any };
       if (brief.length >= 3) {
         try {
-          extracted = await extractStoryEntities(brief);
+          extraction = await extractStoryEntities(brief);
         } catch (extractErr) {
           console.error('[OrderController] Echec extraction GPT, on continue avec les valeurs frontend:', extractErr);
         }
       }
+      const extracted = extraction.success ? extraction.entities : null;
 
-      // Prenom : priorite GPT > frontend
+      // Prenom : priorite GPT > frontend. Si l'extraction a REUSSI et que GPT
+      // n'a trouve aucun prenom, c'est un verdict fiable (GPT a lu tout le
+      // brief) — on l'ecrase la devinette frontend au lieu de la garder par
+      // defaut, sinon un faux positif regex (ex: "Rencontrer" pris pour un
+      // prenom dans "Rencontrer les extraterrestres") passait silencieusement.
       if (extracted?.protagonistName) {
         formData.protagonistName = extracted.protagonistName;
+      } else if (extraction.success) {
+        formData.protagonistName = null as any;
       }
       // Age, genre, theme, hobbies : completer si manquant cote frontend
       if (extracted?.protagonistAge && !formData.protagonistAge) {
