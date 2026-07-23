@@ -27,6 +27,18 @@ export interface ExtractedEntities {
   illustrationStyle: string | null;    // "manga", "aquarelle", "3d", etc.
 }
 
+// `success` distingue "GPT a lu le brief en entier et n'y a trouve aucun vrai
+// prenom" (verdict fiable, protagonistName=null EST l'information) de "l'appel
+// OpenAI a echoue" (aucune information, EMPTY_RESULT est un simple filet de
+// securite). Avant, les deux cas etaient indiscernables pour l'appelant — un
+// null "je ne trouve rien" et un null "je n'ai pas pu verifier" se valaient,
+// donc le null autoritatif de GPT etait ignore au profit de la devinette
+// regex frontend, parfois fausse (ex: "Rencontrer" pris pour un prenom).
+export interface ExtractionResult {
+  success: boolean;
+  entities: ExtractedEntities;
+}
+
 const EMPTY_RESULT: ExtractedEntities = {
   protagonistName: null,
   protagonistAge: null,
@@ -42,9 +54,11 @@ const EMPTY_RESULT: ExtractedEntities = {
 const SYSTEM_PROMPT = `Tu es un parseur d'entites pour un service de creation de livres pour enfants. Le parent ecrit un brief libre decrivant l'enfant et l'histoire qu'il imagine. Tu extrais les informations factuelles en JSON.
 
 REGLES ABSOLUES :
-- protagonistName : UNIQUEMENT un vrai prenom propre (Lea, Adam, Mohamed, Luna, Marie-Louise...). JAMAIS un article ("Un", "Le", "Mon"), un pronom ("Elle", "Il"), un mot generique ("enfant", "fille", "garcon", "bebe", "petit"), un chiffre, ou une syllabe sans sens. Si aucun vrai prenom n'est mentionne, retourne null.
+- protagonistName : UNIQUEMENT un vrai prenom propre (Lea, Adam, Mohamed, Luna, Marie-Louise...). JAMAIS un article ("Un", "Le", "Mon"), un pronom ("Elle", "Il"), un mot generique ("enfant", "fille", "garcon", "bebe", "petit"), un verbe ou debut de phrase capitalise ("Rencontrer", "Aller", "Voici"), un chiffre, ou une syllabe sans sens. Si aucun vrai prenom n'est mentionne, retourne null — ne devine JAMAIS un prenom a partir d'un mot ambigu.
+- protagonistGender : si aucun pronom explicite (il/elle) n'indique le genre mais que le prenom a un genre conventionnel clair en francais (ex: Sandro, Adam, Lucas = garcon ; Lea, Luna, Sasha peut etre les deux — dans le doute reste null), deduis-le du prenom. Ne force rien si le prenom est ambigu.
+- protagonistAge : donne toujours un nombre d'annees. Si le brief donne un age en MOIS (ex: "6 mois", "15 mois"), convertis en annees completes arrondies vers le bas (6 mois -> "0", 15 mois -> "1", 23 mois -> "1"). Si aucun age n'est mentionne, retourne null.
 - secondaryCharacters : extrais TOUS les autres personnages, animaux, doudous, freres, soeurs, amis mentionnes. Chacun a son propre objet.
-- Ne fabrique RIEN. Si une info n'est pas explicitement dans le brief, retourne null pour ce champ.
+- Ne fabrique RIEN d'autre. Si une info n'est pas explicitement dans le brief, retourne null pour ce champ.
 - Reponds UNIQUEMENT avec le JSON, sans markdown, sans commentaire.
 
 Format JSON attendu :
@@ -71,15 +85,22 @@ async function getOpenAI() {
 
 /**
  * Appelle GPT-4o-mini pour extraire les entites du brief.
- * Retourne EMPTY_RESULT en cas d'erreur (l'appelant utilisera les valeurs
- * envoyees par le frontend en fallback).
+ *
+ * `success: false` signifie "je n'ai pas pu verifier" (brief trop court, cle
+ * API absente, erreur OpenAI/parsing) — l'appelant doit alors utiliser les
+ * valeurs frontend en fallback, comme avant.
+ * `success: true` avec un champ a `null` signifie "j'ai lu le brief en entier
+ * et cette info n'y est vraiment pas" — c'est une reponse autoritative que
+ * l'appelant doit respecter, y compris quand elle contredit une devinette
+ * regex frontend (ex: protagonistName=null doit ecraser un faux positif comme
+ * "Rencontrer" pris pour un prenom).
  */
-export async function extractStoryEntities(brief: string): Promise<ExtractedEntities> {
+export async function extractStoryEntities(brief: string): Promise<ExtractionResult> {
   const text = (brief || '').trim();
-  if (text.length < 3) return EMPTY_RESULT;
+  if (text.length < 3) return { success: false, entities: EMPTY_RESULT };
   if (!process.env.OPENAI_API_KEY) {
     console.warn('[EntityExtractor] OPENAI_API_KEY absent, skip extraction');
-    return EMPTY_RESULT;
+    return { success: false, entities: EMPTY_RESULT };
   }
 
   try {
@@ -96,7 +117,7 @@ export async function extractStoryEntities(brief: string): Promise<ExtractedEnti
     });
 
     const raw = completion.choices[0]?.message?.content?.trim();
-    if (!raw) return EMPTY_RESULT;
+    if (!raw) return { success: false, entities: EMPTY_RESULT };
 
     const parsed = JSON.parse(raw);
 
@@ -131,18 +152,21 @@ export async function extractStoryEntities(brief: string): Promise<ExtractedEnti
       typeof v === 'string' && v.trim().length > 0 ? v.trim().slice(0, max) : null;
 
     return {
-      protagonistName,
-      protagonistAge,
-      protagonistGender,
-      secondaryCharacters,
-      hobbies: stringOrNull(parsed.hobbies, 200),
-      favoriteDish: stringOrNull(parsed.favoriteDish, 80),
-      theme: stringOrNull(parsed.theme, 120),
-      occasion: stringOrNull(parsed.occasion, 40),
-      illustrationStyle: stringOrNull(parsed.illustrationStyle, 40),
+      success: true,
+      entities: {
+        protagonistName,
+        protagonistAge,
+        protagonistGender,
+        secondaryCharacters,
+        hobbies: stringOrNull(parsed.hobbies, 200),
+        favoriteDish: stringOrNull(parsed.favoriteDish, 80),
+        theme: stringOrNull(parsed.theme, 120),
+        occasion: stringOrNull(parsed.occasion, 40),
+        illustrationStyle: stringOrNull(parsed.illustrationStyle, 40),
+      },
     };
   } catch (error: any) {
     console.error('[EntityExtractor] Erreur:', error?.message || error);
-    return EMPTY_RESULT;
+    return { success: false, entities: EMPTY_RESULT };
   }
 }

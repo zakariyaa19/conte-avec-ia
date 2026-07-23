@@ -98,9 +98,26 @@ export function useStoryDetection(combined: string, hasPhoto: boolean): Detected
       }
     }
 
-    // ── Age : "X ans"
+    // ── Age : "X ans" en priorite, sinon "X mois" (bebes, chiffre ou nombre
+    // ecrit — "un mois" est tres frequent pour un nouveau-ne) converti en
+    // annees pleines. Avant : un age donne en mois n'etait jamais reconnu, et
+    // le systeme retombait sur le defaut generique 7 ans -> livre pense pour
+    // un enfant de 6-9 ans genere pour un bebe de quelques mois. On garde le
+    // champ `age` en annees (pas de nouveau champ) pour que tout le reste
+    // (ageRange, score, SmartHint) continue de marcher sans autre changement.
+    const MONTH_WORDS: Record<string, number> = {
+      un: 1, une: 1, deux: 2, trois: 3, quatre: 4, cinq: 5, six: 6,
+      sept: 7, huit: 8, neuf: 9, dix: 10, onze: 11, douze: 12,
+    };
     const ageMatch = text.match(/(\d{1,2})\s*ans?\b/i);
-    const age = ageMatch ? ageMatch[1] : null;
+    const ageMonthsDigitMatch = !ageMatch ? text.match(/(\d{1,2})\s*mois\b/i) : null;
+    const ageMonthsWordMatch = !ageMatch && !ageMonthsDigitMatch
+      ? t.match(/\b(un|une|deux|trois|quatre|cinq|six|sept|huit|neuf|dix|onze|douze)\s*mois\b/)
+      : null;
+    const months = ageMonthsDigitMatch
+      ? parseInt(ageMonthsDigitMatch[1], 10)
+      : (ageMonthsWordMatch ? MONTH_WORDS[ageMonthsWordMatch[1]] : null);
+    const age = ageMatch ? ageMatch[1] : (months !== null ? String(Math.floor(months / 12)) : null);
 
     // ── Genre
     let gender: 'boy' | 'girl' | null = null;
