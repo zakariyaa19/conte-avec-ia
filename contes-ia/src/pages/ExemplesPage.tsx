@@ -9,6 +9,7 @@ import { useStaggerReveal } from '../hooks/useScrollReveal';
 import { StoryReader } from '../components/ui/StoryReader';
 import { ApiService } from '../config/api';
 import { SEOHead } from '../components/SEOHead';
+import { GENERAL_THEMES, CENTRAL_MESSAGES, ILLUSTRATION_STYLES } from '../types/FormTypes';
 
 interface ExampleStory {
   id: string;
@@ -36,29 +37,12 @@ const STYLE_COLORS: Record<string, string> = {
   'geometric': '#0984E3',
 };
 
-const STYLE_LABELS: Record<string, string> = {
-  '3d-animation': 'Animation 3D',
-  'japanese-manga': 'Manga',
-  'kawaii': 'Kawaii',
-  'paper-cut': 'Papier Découpé',
-  'watercolor': 'Aquarelle',
-  'geometric': 'Géométrique',
-};
-
-const THEME_LABELS: Record<string, string> = {
-  'fairy-tales': 'Contes de fées',
-  'custom': 'Personnalisé',
-  'adventure': 'Aventure',
-};
-
-const MESSAGE_LABELS: Record<string, string> = {
-  'sharing': 'Partage',
-  'love': 'Amour',
-  'respect': 'Respect',
-  'courage': 'Courage',
-  'non spécifié': 'Aventure',
-  '': 'Découverte',
-};
+// Libellés dérivés des listes canoniques du formulaire (types/FormTypes.ts) —
+// couvrent toutes les valeurs possibles, contrairement à une table écrite à
+// la main qui finit toujours par en oublier une (ex: 'family' affiché brut).
+const STYLE_LABELS: Record<string, string> = Object.fromEntries(ILLUSTRATION_STYLES.map(s => [s.value, s.label]));
+const THEME_LABELS: Record<string, string> = Object.fromEntries(GENERAL_THEMES.map(t => [t.value, t.label]));
+const MESSAGE_LABELS: Record<string, string> = Object.fromEntries(CENTRAL_MESSAGES.map(m => [m.value, m.label]));
 
 const PageContainer = styled.div`
   min-height: 100vh;
