@@ -69,17 +69,17 @@ const giftOccasions = [
 
 const giftFormats = [
   {
-    format: "eBook Numérique",
-    price: "4,99€",
-    description: "Format digital immédiat, parfait pour une surprise de dernière minute ou un cadeau éco-responsable.",
+    format: "Livre Complet",
+    price: "2,99€",
+    description: "20 pages illustrées, format digital immédiat, parfait pour une surprise de dernière minute ou un cadeau éco-responsable.",
     advantages: ["Livraison instantanée", "Écologique", "Lecture sur tablette", "Prix accessible"],
     bestFor: ["Cadeaux spontanés", "Familles nomades", "Lecture interactive", "Budget serré"],
     icon: "\uD83D\uDCF1"
   },
   {
     format: "Club des Histoires",
-    price: "9,99€/mois",
-    description: "L'abonnement idéal pour les familles : 4 livres avec 2x plus de pages par mois, 9 styles, personnages secondaires. Crédits cumulables.",
+    price: "1,99€/mois",
+    description: "1,99€ le 1er mois puis 9,99€/mois : l'abonnement idéal pour les familles — 4 livres avec 2x plus de pages par mois, 9 styles, personnages secondaires. Crédits cumulables.",
     advantages: ["4 livres par mois", "2x plus de pages & illustrations", "Sans engagement", "Soit 2,50€ par livre"],
     bestFor: ["Familles passionnées", "Cadeaux réguliers", "Lecteurs assidus", "Budget maîtrisé"],
     icon: "\u2B50"
@@ -225,7 +225,7 @@ const IdeesCadeauxPage: React.FC = () => {
                 <div style={{
                   fontSize: '1.5rem',
                   fontWeight: 700,
-                  color: theme.colors.accent.coral,
+                  color: theme.colors.accent.coralDark,
                   marginBottom: '12px'
                 }}>
                   {item.price}

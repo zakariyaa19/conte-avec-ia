@@ -201,7 +201,7 @@ const BlogArticleHistoireChien: React.FC = () => {
 
               <h3>6-8 ans : « [Prénom] et Max au pays des dragons »</h3>
               <p>
-                Aventure complexe (12 pages) : l'enfant et son chien sont transportés dans un monde magique où ils doivent retrouver le chemin du retour. Le chien sauve l'enfant à un moment clé. Renforce la confiance en l'animal protecteur.
+                Aventure complexe (20 pages) : l'enfant et son chien sont transportés dans un monde magique où ils doivent retrouver le chemin du retour. Le chien sauve l'enfant à un moment clé. Renforce la confiance en l'animal protecteur.
               </p>
 
               <h3>9-12 ans : « [Prénom] et Buddy : la mission de la forêt interdite »</h3>
