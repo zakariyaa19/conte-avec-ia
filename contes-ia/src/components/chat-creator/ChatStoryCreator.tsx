@@ -34,6 +34,14 @@ interface Props {
 }
 
 const STORY_LIMIT = 600;
+// Seuil du bouton "Pret" — volontairement bas : le CTA est deja cliquable des
+// hasEnoughText+hasDetectedName (canGo), ce seuil ne pilote que l'aspect
+// engageant (glow vert, texte "Pret ✨"). Avant a 70%, il fallait un brief
+// presque complet avant que le bouton ait l'air "fini" — la vraie generation
+// de couverture (l'ecran qui suit) n'arrivait donc que tres tard dans
+// l'ecriture. Valeur de depart a ajuster avec les donnees du funnel
+// (chat_score_ready / chat_to_preview) une fois en prod.
+const READY_THRESHOLD_PCT = 35;
 
 const PLACEHOLDERS = [
   "Une petite fille de 10 ans qui adore le foot, dans l'univers d'Harry Potter...",
@@ -87,11 +95,15 @@ export const ChatStoryCreator: React.FC<Props> = ({
   // GPT au moment du submit (ApiService.extractStoryEntities) corrige.
   const detected = useStoryDetection(story, !!photo);
   const percentage = computeDetectionScore(detected);
+  const hasDetectedName = !!detected.name;
 
-  // Seuil 70% = "pret a lancer" : signal visuel CTA (couleur + texte). On NE PAS
-  // override le hint pour ne pas court-circuiter les suggestions importantes
-  // restantes de GPT (notamment "ajoute la photo de l'enfant").
-  const isReady = percentage >= 70;
+  // Seuil bas (READY_THRESHOLD_PCT) + prenom detecte = "pret a lancer" :
+  // signal visuel CTA (couleur + texte). Exige explicitement le prenom pour
+  // eviter un etat visuel incoherent (glow "Pret ✨" alors que canGo, plus
+  // bas, bloque quand meme le clic sans prenom). On NE PAS override le hint
+  // pour ne pas court-circuiter les suggestions importantes restantes de GPT
+  // (notamment "ajoute la photo de l'enfant").
+  const isReady = hasDetectedName && percentage >= READY_THRESHOLD_PCT;
   // SmartHint = vraie analyse IA du brief (debounced, cache, fallback local)
   const { hint: hintText, thinking: hintThinking } = useSmartHint(story, detected);
   const ringColor = isReady ? '#22C55E' : percentage >= 35 ? '#F59E0B' : '#FF9999';
@@ -103,7 +115,6 @@ export const ChatStoryCreator: React.FC<Props> = ({
   // "Votre conte prend vie..." indefiniment, sans erreur ni retry possible.
   // On bloque donc ici, au moment ou l'utilisateur peut encore corriger.
   const hasEnoughText = story.trim().length >= 20;
-  const hasDetectedName = !!detected.name;
   const canGo = hasEnoughText && hasDetectedName;
 
   // ── mergedData : detection + defaults pour la creation backend ──
