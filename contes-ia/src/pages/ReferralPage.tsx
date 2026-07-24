@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import { theme } from '../styles/theme';
 import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
-import { useAuth } from '../contexts/AuthContext';
 import { ApiService } from '../config/api';
 
 const fadeIn = keyframes`from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}`;
@@ -17,20 +15,24 @@ const Card = styled.div`
 `;
 
 export const ReferralPage: React.FC = () => {
-  const { isAuthenticated } = useAuth();
-  const navigate = useNavigate();
   const [data, setData] = useState<{ referralCode: string; referralCredits: number; referralCount: number; maxCredits: number; referralLink: string } | null>(null);
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!isAuthenticated) { navigate('/login'); return; }
+    // Auth deja garantie par <ProtectedRoute> (voir App.tsx) : attend que
+    // isLoading soit false avant meme de monter cette page, donc pas besoin
+    // de re-verifier isAuthenticated ici. L'ancien check redirigeait vers
+    // /login pour un utilisateur pourtant connecte, car isAuthenticated
+    // valait encore false pendant le court instant ou AuthContext verifie
+    // le token au chargement direct de la page (visite directe, pas un clic
+    // depuis l'app).
     const token = localStorage.getItem('userToken') || '';
     ApiService.getReferralInfo(token)
       .then(res => { if (res.success) setData(res.data); })
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, [isAuthenticated, navigate]);
+  }, []);
 
   const handleCopy = async () => {
     if (!data) return;
