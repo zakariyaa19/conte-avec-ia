@@ -246,3 +246,63 @@ export function computeDetectionScore(d: DetectedEntities): number {
   if (d.occasion) s += 5;
   return s; // 0-100
 }
+
+// ── Priorite des suggestions du coach IA (SmartHint) ────────────────────
+// Deux paliers au lieu d'une liste plate :
+// - COEUR : les 4 seules infos qui n'ont pas deja un defaut technique
+//   raisonnable ailleurs (mergedData dans ChatStoryCreator.tsx) et qui
+//   changent vraiment la qualite de l'histoire. Tant qu'il en manque une,
+//   le coach pose une vraie question.
+// - BONUS : suggere une fois, jamais bloquant (y compris la photo — avant,
+//   une regle explicite cote GPT interdisait de dire "tout est pret" sans
+//   photo ; ~27% des commandes reelles n'en joignent pas, elles ne
+//   recevaient donc jamais ce signal).
+// "Mechant" n'existe plus dans aucun palier : sur 48 commandes reelles ou le
+// texte l'evoque, 10 disent explicitement "pas de mechant" contre 2 qui en
+// decrivent un vrai — 75% ne l'evoquent jamais. Il occupait une position
+// haute dans l'ancien prompt GPT pour ~4% de reponses utiles, sans meme
+// avoir de champ dedie pour etre pris en compte. Si un parent en parle
+// spontanement, le texte brut part quand meme vers la generation — on ne le
+// demande simplement plus jamais de maniere proactive.
+export type HintTopic = 'name' | 'age' | 'gender' | 'theme'
+  | 'secondary' | 'moral' | 'photo' | 'style' | 'hobby' | 'occasion';
+
+const CORE_TOPICS: { key: HintTopic; filled: (d: DetectedEntities) => boolean }[] = [
+  { key: 'name', filled: d => !!d.name },
+  { key: 'age', filled: d => !!d.age },
+  { key: 'gender', filled: d => !!d.gender },
+  { key: 'theme', filled: d => !!d.theme },
+];
+
+const BONUS_TOPICS: { key: HintTopic; filled: (d: DetectedEntities) => boolean }[] = [
+  { key: 'secondary', filled: d => !!d.secondary },
+  { key: 'moral', filled: d => !!d.moral },
+  { key: 'photo', filled: d => d.hasPhoto },
+  { key: 'style', filled: d => !!d.style },
+  { key: 'hobby', filled: d => !!d.hobby },
+  { key: 'occasion', filled: d => !!d.occasion },
+];
+
+export function isCoreComplete(d: DetectedEntities): boolean {
+  return CORE_TOPICS.every(t => t.filled(d));
+}
+
+/**
+ * Prochain sujet a suggerer : parcourt COEUR puis BONUS, ignore les sujets
+ * deja dans `skipped` (voir useSmartHint.ts — sujet ignore si la personne a
+ * tape ~50 caracteres de plus sans jamais repondre a la suggestion en
+ * cours). Retourne null si tout est rempli ou ignore.
+ */
+export function getNextHintTopic(
+  d: DetectedEntities,
+  skipped: ReadonlySet<HintTopic> | HintTopic[] = []
+): HintTopic | null {
+  const skip = skipped instanceof Set ? skipped : new Set(skipped);
+  for (const t of CORE_TOPICS) {
+    if (!t.filled(d) && !skip.has(t.key)) return t.key;
+  }
+  for (const t of BONUS_TOPICS) {
+    if (!t.filled(d) && !skip.has(t.key)) return t.key;
+  }
+  return null;
+}
