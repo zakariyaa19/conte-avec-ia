@@ -465,8 +465,8 @@ export const ClubPage: React.FC = () => {
 
   const comparison = [
     { feature: 'Chapitres gratuits', free: '3', club: 'Illimité' },
-    { feature: 'Pages/livre', free: '5 (chapitre)', club: '12 (complet)' },
-    { feature: 'Illustrations', free: '5', club: '12' },
+    { feature: 'Pages/livre', free: '3 (chapitre)', club: '20 (complet)' },
+    { feature: 'Illustrations', free: '3', club: '20' },
     { feature: 'Livre complet', free: '2,99€/livre', club: 'Inclus' },
     { feature: "Styles d'illustration", free: '1', club: '9' },
     { feature: 'Personnages secondaires', free: '1', club: '5' },
@@ -628,7 +628,10 @@ export const ClubPage: React.FC = () => {
         <Section>
           <Inner>
             <TestimonialCard>
-              <p style={{ fontSize: '32px', margin: '0 0 12px' }}>⭐⭐⭐⭐⭐</p>
+              {/* "★" (U+2605) plutot que l'emoji "⭐" : l'emoji herite de la
+                  police Poppins (aucun fallback emoji dans le stack) et se
+                  rend comme un contour vide au lieu d'une etoile pleine. */}
+              <p style={{ fontSize: '32px', margin: '0 0 12px', color: '#FFB800', letterSpacing: '2px' }}>★★★★★</p>
               <p style={{
                 fontSize: theme.fontSizes.base, color: 'var(--text-primary)',
                 fontStyle: 'italic', lineHeight: 1.6, margin: '0 0 12px',

@@ -360,6 +360,7 @@ const CTATitle = styled.h2`
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 16px;
+  color: #fff;
 
   @media (max-width: 768px) {
     font-size: 1.5rem;

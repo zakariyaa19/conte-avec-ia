@@ -193,7 +193,7 @@ export const Footer: React.FC = () => {
         </FooterGrid>
 
         <FooterBottom>
-          <Copyright>&copy; 2025 Contedia. Tous droits réservés.</Copyright>
+          <Copyright>&copy; {new Date().getFullYear()} Contedia. Tous droits réservés.</Copyright>
           <LegalInfo>
             SIRET: 99282930900010 | TVA non applicable, art. 293 B du CGI | contact@contedia.fr
           </LegalInfo>
