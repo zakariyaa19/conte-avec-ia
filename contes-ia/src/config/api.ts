@@ -823,13 +823,14 @@ export class ApiService {
   static async generateSmartHint(
     description: string,
     hasPhoto: boolean,
+    skippedTopics: string[] = [],
     signal?: AbortSignal
   ): Promise<{ success: boolean; data?: { hint: string; cached?: boolean; fallback?: boolean }; message?: string }> {
     const url = `${this.baseUrl}/api/preview/smart-hint`;
     const response = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ description, hasPhoto }),
+      body: JSON.stringify({ description, hasPhoto, skippedTopics }),
       signal,
     });
     return response.json();
