@@ -16,11 +16,11 @@ const fadeInUp = keyframes`
 // ─── Styled Components ───
 
 const PageWrapper = styled.div`
-  color: #2d2d2d;
+  color: var(--text-primary);
 `;
 
 const HeroSection = styled.section`
-  background: linear-gradient(135deg, #fff5f7 0%, #f0f4ff 50%, #fef9f0 100%);
+  background: var(--gradient-hero);
   padding: 80px 24px 60px;
   text-align: center;
   position: relative;
@@ -64,7 +64,7 @@ const HeroContent = styled.div`
 const HeroTitle = styled.h1`
   font-size: 2.6rem;
   font-weight: 800;
-  color: #1a1a2e;
+  color: var(--text-primary);
   line-height: 1.2;
   margin-bottom: 24px;
 
@@ -91,7 +91,7 @@ const HeroDivider = styled.div`
 const HeroText = styled.p`
   font-size: 1.15rem;
   line-height: 1.8;
-  color: #444;
+  color: var(--text-secondary);
   max-width: 700px;
   margin: 0 auto;
   font-style: italic;
@@ -114,7 +114,7 @@ const Section = styled.section`
 const SectionTitle = styled.h2`
   font-size: 2rem;
   font-weight: 700;
-  color: #1a1a2e;
+  color: var(--text-primary);
   text-align: center;
   margin-bottom: 12px;
 
@@ -132,7 +132,7 @@ const SectionTitle = styled.h2`
 
 const SectionSubtitle = styled.p`
   font-size: 1.05rem;
-  color: #666;
+  color: var(--text-secondary);
   text-align: center;
   max-width: 600px;
   margin: 0 auto 40px;
@@ -142,7 +142,7 @@ const SectionSubtitle = styled.p`
 const TextBlock = styled.div`
   font-size: 1.05rem;
   line-height: 1.8;
-  color: #444;
+  color: var(--text-secondary);
   max-width: 780px;
   margin: 0 auto;
 
@@ -151,7 +151,7 @@ const TextBlock = styled.div`
   }
 
   strong {
-    color: #1a1a2e;
+    color: var(--text-primary);
   }
 
   @media (max-width: 768px) {
@@ -161,7 +161,7 @@ const TextBlock = styled.div`
 
 const StepsSection = styled.section`
   padding: 60px 24px;
-  background: #f8f9fc;
+  background: var(--bg-secondary);
 `;
 
 const StepsContainer = styled.div`
@@ -184,9 +184,9 @@ const StepsGrid = styled.div`
 const StepCard = styled.div`
   text-align: center;
   padding: 32px 20px;
-  background: #fff;
+  background: var(--bg-card);
   border-radius: 16px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-card);
 `;
 
 const StepIcon = styled.div`
@@ -211,13 +211,13 @@ const StepNumber = styled.div`
 const StepTitle = styled.h3`
   font-size: 1.1rem;
   font-weight: 700;
-  color: #1a1a2e;
+  color: var(--text-primary);
   margin-bottom: 8px;
 `;
 
 const StepText = styled.p`
   font-size: 0.92rem;
-  color: #666;
+  color: var(--text-secondary);
   line-height: 1.6;
 `;
 
@@ -240,10 +240,10 @@ const EngagementGrid = styled.div`
 
 const EngagementCard = styled.div`
   padding: 28px 24px;
-  background: #fff;
+  background: var(--bg-card);
   border-radius: 16px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
-  border: 1px solid #f0f0f0;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-color);
 `;
 
 const EngagementIcon = styled.div`
@@ -254,13 +254,13 @@ const EngagementIcon = styled.div`
 const EngagementTitle = styled.h3`
   font-size: 1.05rem;
   font-weight: 700;
-  color: #1a1a2e;
+  color: var(--text-primary);
   margin-bottom: 8px;
 `;
 
 const EngagementText = styled.p`
   font-size: 0.92rem;
-  color: #666;
+  color: var(--text-secondary);
   line-height: 1.6;
 `;
 
@@ -315,7 +315,7 @@ const ContactEmail = styled.a`
   display: inline-block;
   font-size: 1.15rem;
   font-weight: 600;
-  color: #e06b80;
+  color: #C9302C;
   text-decoration: none;
   margin-bottom: 16px;
 
@@ -326,7 +326,7 @@ const ContactEmail = styled.a`
 
 const ContactLegal = styled.p`
   font-size: 0.85rem;
-  color: #999;
+  color: var(--text-light);
   margin-top: 16px;
   line-height: 1.6;
 `;
@@ -382,12 +382,12 @@ const Breadcrumb = styled.nav`
   max-width: 1200px;
   margin: 0 auto;
   font-size: 0.85rem;
-  color: #888;
+  color: var(--text-light);
 
   a {
-    color: #888;
+    color: var(--text-light);
     text-decoration: none;
-    &:hover { color: #e06b80; }
+    &:hover { color: #C9302C; }
   }
 
   span { margin: 0 8px; }
@@ -452,7 +452,7 @@ const AProposPage: React.FC = () => {
         </Section>
 
         {/* Notre Histoire */}
-        <Section style={{ background: '#f8f9fc', maxWidth: '100%', padding: '60px 24px' }}>
+        <Section style={{ background: 'var(--bg-secondary)', maxWidth: '100%', padding: '60px 24px' }}>
           <div style={{ maxWidth: '900px', margin: '0 auto' }}>
             <SectionTitle>Notre <span>Histoire</span></SectionTitle>
             <SectionSubtitle>
@@ -528,7 +528,7 @@ const AProposPage: React.FC = () => {
         </TechSection>
 
         {/* Nos Engagements */}
-        <Section style={{ background: '#f8f9fc', maxWidth: '100%', padding: '60px 24px' }}>
+        <Section style={{ background: 'var(--bg-secondary)', maxWidth: '100%', padding: '60px 24px' }}>
           <div style={{ maxWidth: '900px', margin: '0 auto' }}>
             <SectionTitle>Nos <span>Engagements</span></SectionTitle>
             <SectionSubtitle>
@@ -593,17 +593,17 @@ const AProposPage: React.FC = () => {
         {/* Contactez-nous */}
         <ContactSection>
           <SectionTitle style={{ marginBottom: 24 }}>Contactez-<span>nous</span></SectionTitle>
-          <p style={{ fontSize: '1.05rem', color: '#666', lineHeight: 1.7, marginBottom: 20 }}>
+          <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: 20 }}>
             Une question, une suggestion, un partenariat ? N'hésitez pas à nous écrire.
           </p>
           <ContactEmail href="mailto:contact@contedia.fr">
             contact@contedia.fr
           </ContactEmail>
           <div style={{ marginTop: 16, display: 'flex', justifyContent: 'center', gap: 20 }}>
-            <a href="https://www.facebook.com/contedia" target="_blank" rel="noopener noreferrer" style={{ color: '#666', textDecoration: 'none', fontSize: '0.95rem' }}>
+            <a href="https://www.facebook.com/contedia" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontSize: '0.95rem' }}>
               Facebook
             </a>
-            <a href="https://www.instagram.com/contedia.fr" target="_blank" rel="noopener noreferrer" style={{ color: '#666', textDecoration: 'none', fontSize: '0.95rem' }}>
+            <a href="https://www.instagram.com/contedia.fr" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontSize: '0.95rem' }}>
               Instagram
             </a>
           </div>
