@@ -91,7 +91,7 @@ const ageRanges = [
   {
     icon: '🎒',
     title: "École (6-8 ans)",
-    description: "Histoires plus longues (12 pages), vocabulaire enrichi, aventures complexes. L'enfant lit seul et adore relire \"son\" livre.",
+    description: "Histoires plus longues (20 pages en version complète), vocabulaire enrichi, aventures complexes. L'enfant lit seul et adore relire \"son\" livre.",
     keywords: ["6 ans", "7 ans", "8 ans", "Lecture autonome"]
   },
   {
@@ -152,7 +152,7 @@ const faqQuestions = [
   },
   {
     question: "Le premier conte personnalisé est-il vraiment gratuit ?",
-    answer: "Oui, le premier conte personnalisé est entièrement gratuit, sans carte bancaire, sans engagement, sans essai limité. Vous recevez un livre illustré complet (chapitre de 3 pages avec cliffhanger). Pour découvrir la suite (12 pages complètes), c'est 2,99€ unique — ou rejoignez le Club à 1,99€ le premier mois."
+    answer: "Oui, le premier conte personnalisé est entièrement gratuit, sans carte bancaire, sans engagement, sans essai limité. Vous recevez un livre illustré complet (chapitre de 3 pages avec cliffhanger). Pour découvrir la suite (20 pages complètes), c'est 2,99€ unique — ou rejoignez le Club à 1,99€ le premier mois."
   },
   {
     question: "Est-ce que mon enfant peut être le héros, même s'il a un prénom rare ou étranger ?",
@@ -160,7 +160,7 @@ const faqQuestions = [
   },
   {
     question: "Quelle est la longueur d'un conte personnalisé ?",
-    answer: "Un conte personnalisé Contedia complet fait 12 pages illustrées (un par paragraphe + illustrations pleine page). Le premier chapitre gratuit fait 3 pages avec un cliffhanger pour vous donner envie de lire la suite. À 12 pages, c'est l'équivalent d'un livre jeunesse de 15-20 minutes de lecture."
+    answer: "Un conte personnalisé Contedia complet fait 20 pages illustrées (un par paragraphe + illustrations pleine page). Le premier chapitre gratuit fait 3 pages avec un cliffhanger pour vous donner envie de lire la suite. À 20 pages, c'est l'équivalent d'un livre jeunesse de 20-30 minutes de lecture."
   },
   {
     question: "Peut-on imprimer le conte personnalisé ?",
@@ -172,11 +172,11 @@ const faqQuestions = [
   },
   {
     question: "Combien coûte un conte personnalisé Contedia ?",
-    answer: "Le premier conte est gratuit (chapitre de 3 pages). Pour lire la suite complète (12 pages) : 2,99€ unique. Pour des contes illimités : Club mensuel à 1,99€ le premier mois puis 9,99€/mois (4 contes complets/mois) ou Club annuel 79,99€/an (-33%). Vs Wonderbly : 25-40€ le livre. Vs Lunii : 65€ + packs."
+    answer: "Le premier conte est gratuit (chapitre de 3 pages). Pour lire la suite complète (20 pages) : 2,99€ unique. Pour des contes illimités : Club mensuel à 1,99€ le premier mois puis 9,99€/mois (4 contes complets/mois) ou Club annuel 79,99€/an (-33%). Vs Wonderbly : 25-40€ le livre. Vs Lunii : 65€ + packs."
   },
   {
     question: "Comment l'IA s'assure que le contenu est adapté à l'âge ?",
-    answer: "L'IA est entraînée sur la littérature jeunesse et calibre automatiquement le vocabulaire, la longueur des phrases, et la complexité narrative selon l'âge renseigné. À 2 ans, on a 3 pages avec phrases courtes et grandes images. À 8 ans, on a 12 pages avec aventures plus complexes. Vous gardez la main : si l'âge est mal réglé, vous pouvez régénérer."
+    answer: "L'IA est entraînée sur la littérature jeunesse et calibre automatiquement le vocabulaire, la longueur des phrases, et la complexité narrative selon l'âge renseigné — à 2 ans, phrases courtes et grandes images ; à 8 ans, aventures plus complexes. Le nombre de pages, lui, ne dépend pas de l'âge : 3 pages pour le premier chapitre gratuit, 20 pages pour la version complète. Vous gardez la main : si l'âge est mal réglé, vous pouvez régénérer."
   },
   {
     question: "Peut-on offrir un conte personnalisé en cadeau ?",

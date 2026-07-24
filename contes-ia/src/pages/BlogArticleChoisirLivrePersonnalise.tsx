@@ -172,7 +172,7 @@ const BlogArticleChoisirLivrePersonnalise: React.FC = () => {
                 Un livre personnalisé pour un bébé de 1 an n'a rien à voir avec un livre pour un enfant de 8 ans. Vérifiez que le service propose :
               </p>
               <ul>
-                <li>Différentes longueurs selon l'âge (3 pages pour bébé, 12 pages pour primaire)</li>
+                <li>Différentes longueurs selon l'âge et le format (quelques pages pour un bébé, une vraie histoire complète pour un enfant qui lit déjà)</li>
                 <li>Vocabulaire adapté (simple pour 3 ans, riche pour 8 ans)</li>
                 <li>Thèmes appropriés (animaux/couleurs pour bébé, aventure/mystère pour ado)</li>
               </ul>
@@ -289,7 +289,7 @@ const BlogArticleChoisirLivrePersonnalise: React.FC = () => {
                 <li>Thèmes : mystère, exploration, école</li>
               </ul>
               <p>
-                Recommandation : Contedia 12 pages ou Tiny Library.
+                Recommandation : Contedia (20 pages en version complète) ou Tiny Library.
               </p>
 
               <h3>Ados (9-12 ans)</h3>

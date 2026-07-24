@@ -1163,7 +1163,7 @@ const FinalCTAButtons = styled.div`
 
 const WhiteButton = styled.button`
   background: white;
-  color: ${theme.colors.accent.coral};
+  color: ${theme.colors.accent.coralDark};
   border: none;
   padding: 14px 32px;
   border-radius: ${theme.borderRadius.full};

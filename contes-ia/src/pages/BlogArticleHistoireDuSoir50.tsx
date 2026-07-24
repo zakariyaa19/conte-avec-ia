@@ -203,7 +203,7 @@ const BlogArticleHistoireDuSoir50: React.FC = () => {
                 <li><strong>Le club des cinq pour enfants</strong> — Mini-aventures entre amis.</li>
                 <li><strong>L'inventeur du sommeil</strong> — Origine mythologique du sommeil, fantastique doux.</li>
                 <li><strong>Les contes des Mille et Une Nuits adaptés</strong> — Aladdin, Sinbad. Versions enfants.</li>
-                <li><strong>L'aventure personnalisée de [Prénom] à 7 ans</strong> — <Link to="/conte-personnalise">Histoire IA 12 pages</Link> avec votre enfant et ses amis comme héros.</li>
+                <li><strong>L'aventure personnalisée de [Prénom] à 7 ans</strong> — <Link to="/conte-personnalise">Histoire IA 20 pages</Link> avec votre enfant et ses amis comme héros.</li>
               </ol>
 
               <h2 id="themes">10 histoires du soir originales par thème</h2>
@@ -234,7 +234,7 @@ const BlogArticleHistoireDuSoir50: React.FC = () => {
                 <li><strong>Identification totale</strong> — L'enfant entend son prénom dans chaque paragraphe. Plus de « la petite fille » : c'est <em>SA</em> sœur, <em>SON</em> chat, <em>SON</em> aventure.</li>
                 <li><strong>Endormissement plus rapide</strong> — Quand le héros du livre s'endort à la fin, l'enfant s'endort en miroir.</li>
                 <li><strong>Pas de répétition</strong> — Vous générez une nouvelle histoire personnalisée chaque semaine. Plus jamais « papa, t'as déjà lu celle-là ».</li>
-                <li><strong>Adapté à l'âge</strong> — L'IA ajuste vocabulaire et longueur. À 3 ans, 3 pages ; à 7 ans, 12 pages.</li>
+                <li><strong>Adapté à l'âge</strong> — L'IA ajuste vocabulaire et complexité selon l'âge. Le premier chapitre gratuit fait 3 pages ; la version complète, 20 pages.</li>
                 <li><strong>Calme garanti</strong> — Vous choisissez un thème apaisant (animaux doux, voyage, étoiles).</li>
                 <li><strong>Premier conte gratuit</strong> — Aucun risque à tester. Pas de carte bancaire.</li>
               </ul>

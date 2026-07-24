@@ -296,7 +296,7 @@ const BlogArticleSEO3: React.FC = () => {
                 L'enfant lit maintenant tout seul. Les besoins changent :
               </p>
               <ul>
-                <li><strong>Histoires plus longues et complexes</strong> — Contedia adapte automatiquement la longueur des paragraphes à l'âge. À 7 ans, votre enfant reçoit une histoire de 12 pages avec vocabulaire enrichi.</li>
+                <li><strong>Histoires plus longues et complexes</strong> — Contedia adapte automatiquement le vocabulaire et la complexité à l'âge. Dès 6-7 ans, la version complète (20 pages) a tout le vocabulaire enrichi qu'il faut pour une lecture autonome.</li>
                 <li><strong>Yoto Mini</strong> est intéressant à cet âge pour l'autonomie (cartes faciles à ranger, podcasts éducatifs).</li>
                 <li><strong>Mon Petit Morphée</strong> pour les rituels du soir et la méditation enfant.</li>
               </ul>
@@ -401,7 +401,7 @@ const BlogArticleSEO3: React.FC = () => {
                 <li><strong>Étape 3 : C'est prêt</strong> — L'IA génère une histoire unique avec des illustrations sur mesure. En 5 minutes, le livre est dans votre bibliothèque.</li>
               </ul>
               <p>
-                Le résultat : un livre illustré de 3 à 12 pages, lisible sur n'importe quel écran (téléphone, tablette, ordinateur) ou imprimable en PDF. Vous pouvez le lire ensemble au coucher, comme un <Link to="/blog/conte-pour-sendormir-histoires-personnalisees">rituel du soir personnalisé</Link>. Et le partager avec toute la famille en un clic (impossible avec une conteuse physique).
+                Le résultat : un livre illustré de 3 à 20 pages, lisible sur n'importe quel écran (téléphone, tablette, ordinateur) ou imprimable en PDF. Vous pouvez le lire ensemble au coucher, comme un <Link to="/blog/conte-pour-sendormir-histoires-personnalisees">rituel du soir personnalisé</Link>. Et le partager avec toute la famille en un clic (impossible avec une conteuse physique).
               </p>
 
               <h2 id="temoignages">Ce que les parents disent de leur conteuse personnalisable</h2>
