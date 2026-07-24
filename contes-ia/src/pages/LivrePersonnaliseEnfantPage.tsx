@@ -451,7 +451,7 @@ const CTASub = styled.p`
 const CTABtn = styled.button`
   padding: 16px 40px;
   background: white;
-  color: ${theme.colors.accent.coral};
+  color: ${theme.colors.accent.coralDark};
   border: none;
   border-radius: 14px;
   font-size: 1rem;

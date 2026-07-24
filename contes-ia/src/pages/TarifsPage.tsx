@@ -261,8 +261,8 @@ const PricingButton = styled(Link)<{ $featured?: boolean }>`
   display: block;
   padding: 14px 24px;
   background: ${({ $featured }) => $featured ? 'linear-gradient(135deg, #e06b80, #c94f6d)' : 'transparent'};
-  color: ${({ $featured }) => $featured ? '#fff' : '#e06b80'};
-  border: ${({ $featured }) => $featured ? 'none' : '2px solid #e06b80'};
+  color: ${({ $featured }) => $featured ? '#fff' : '#C9302C'};
+  border: ${({ $featured }) => $featured ? 'none' : '2px solid #C9302C'};
   font-size: 1rem;
   font-weight: 700;
   border-radius: 50px;
@@ -275,7 +275,7 @@ const PricingButton = styled(Link)<{ $featured?: boolean }>`
     box-shadow: ${({ $featured }) => $featured
       ? '0 6px 24px rgba(224, 107, 128, 0.4)'
       : '0 4px 16px rgba(224, 107, 128, 0.2)'};
-    ${({ $featured }) => !$featured && 'background: #e06b80; color: #fff;'}
+    ${({ $featured }) => !$featured && 'background: #C9302C; color: #fff;'}
   }
 `;
 

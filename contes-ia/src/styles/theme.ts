@@ -13,7 +13,12 @@ export const theme = {
     // Couleurs d'accentuation
     accent: {
       coral: '#FF9999',
-      coralDark: '#E88888',
+      // Version foncee de coral, pensee pour du texte/bordures sur fond clair.
+      // #E88888 (ancienne valeur) ne passait qu'a ~2,6:1 de contraste sur
+      // blanc, tres en dessous du seuil WCAG AA (4,5:1) -- illisible en
+      // pratique (boutons "Commencer gratuitement" etc). #C9302C passe a
+      // ~5,3:1, meme famille de teinte (rouge corail).
+      coralDark: '#C9302C',
       pastelBlue: '#A8D8EA',
       paleYellow: '#FFE5B4',
       softPink: '#FFB3BA',

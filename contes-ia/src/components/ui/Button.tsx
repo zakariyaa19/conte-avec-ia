@@ -88,11 +88,11 @@ const StyledButton = styled.button<{ $variant: string; $size: string; $fullWidth
       case 'outline':
         return css`
           background-color: transparent;
-          color: ${theme.colors.accent.coral};
-          border-color: ${theme.colors.accent.coral};
+          color: ${theme.colors.accent.coralDark};
+          border-color: ${theme.colors.accent.coralDark};
 
           &:hover:not(:disabled) {
-            background-color: ${theme.colors.accent.coral};
+            background-color: ${theme.colors.accent.coralDark};
             color: ${theme.colors.text.white};
             transform: translateY(-2px);
             box-shadow: ${theme.shadows.glow};
@@ -109,7 +109,7 @@ const StyledButton = styled.button<{ $variant: string; $size: string; $fullWidth
 
           &:hover:not(:disabled) {
             background-color: var(--hover-bg);
-            color: ${theme.colors.accent.coral};
+            color: ${theme.colors.accent.coralDark};
           }
         `;
       default:

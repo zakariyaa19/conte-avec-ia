@@ -369,7 +369,7 @@ export const FinalCTAText = styled.p`
 
 export const WhiteButton = styled.button`
   background: white;
-  color: ${theme.colors.accent.coral};
+  color: ${theme.colors.accent.coralDark};
   font-family: ${theme.fonts.body};
   font-size: ${theme.fontSizes.base};
   font-weight: 700;
