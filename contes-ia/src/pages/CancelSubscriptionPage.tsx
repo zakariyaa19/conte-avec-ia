@@ -13,6 +13,20 @@ const Page = styled.div`min-height:100vh;display:flex;flex-direction:column;back
 const Main = styled.main`flex:1;display:flex;align-items:center;justify-content:center;padding:40px 16px;`;
 const Card = styled.div`max-width:480px;width:100%;animation:${fadeIn} 0.5s ease both;`;
 
+// Grille 2 colonnes par defaut ; repasse en 1 colonne sur les tres petits
+// ecrans (iPhone SE et similaires, ~375px) ou "1fr 1fr" laissait trop peu
+// de place a chaque carte (contenu texte serre/replie).
+const PlanComparisonGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 24px;
+
+  @media (max-width: 380px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
 export const CancelSubscriptionPage: React.FC = () => {
   const { isClub, isAuthenticated, refreshProfile } = useAuth();
   const navigate = useNavigate();
@@ -102,9 +116,7 @@ export const CancelSubscriptionPage: React.FC = () => {
           </h1>
 
           {/* Comparison table */}
-          <div style={{
-            display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '24px',
-          }}>
+          <PlanComparisonGrid>
             {/* Free plan */}
             <div style={{
               background: 'var(--bg-card)', border: '1px solid var(--border-color)',
@@ -134,7 +146,7 @@ export const CancelSubscriptionPage: React.FC = () => {
                 <p key={f} style={{ fontSize: '11px', color: 'var(--text-primary)', margin: '0 0 4px', fontWeight: 500 }}>✓ {f}</p>
               ))}
             </div>
-          </div>
+          </PlanComparisonGrid>
 
           {/* Retention offer */}
           <div style={{

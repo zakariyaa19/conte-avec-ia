@@ -128,7 +128,7 @@ function App() {
           <Route path="/dashboard/account" element={<ProtectedRoute><AccountPage /></ProtectedRoute>} />
           <Route path="/club" element={<ClubPage />} />
           <Route path="/club/checkout" element={<ClubCheckoutPage />} />
-          <Route path="/referral" element={<ReferralPage />} />
+          <Route path="/referral" element={<ProtectedRoute><ReferralPage /></ProtectedRoute>} />
           <Route path="/account/cancel" element={<ProtectedRoute><CancelSubscriptionPage /></ProtectedRoute>} />
           <Route path="/upgrade" element={<Navigate to="/club/checkout" replace />} />
           <Route path="/story/:shareToken" element={<PublicStoryPage />} />
