@@ -7,8 +7,8 @@ import { Accordion } from '../components/ui/Accordion';
 import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
 import { useNavigate } from 'react-router-dom';
-import { exampleStories } from '../data/exampleStories';
 import { useScrollReveal, useStaggerReveal } from '../hooks/useScrollReveal';
+import { GENERAL_THEMES, CENTRAL_MESSAGES, ILLUSTRATION_STYLES } from '../types/FormTypes';
 import { StoryReader } from '../components/ui/StoryReader';
 import { ApiService } from '../config/api';
 import { useAuth } from '../contexts/AuthContext';
@@ -1205,14 +1205,44 @@ const GhostWhiteButton = styled.button`
 const STEP_DURATION = 3500;
 const HERO_BOOK_DURATION = 3000;
 
+// Exemples chargés en live depuis /api/public/examples (les mêmes commandes
+// que la page /exemples) — pas de liste statique a maintenir en parallele :
+// avant, `data/exampleStories.ts` figeait 5 anciens livres (Emmie, Rayan,
+// Timeo, Ethan, Enzo) et le clic tentait de les faire correspondre a l'API
+// par nom normalise. Quand le backend est passe a 3 nouveaux exemples
+// (Malone, Horr, Eva, cf. public.ts), plus aucun nom ne matchait jamais :
+// le clic sur une couverture ou "Feuilleter ce conte" ne faisait plus rien.
+interface HomeExampleStory {
+  id: string;
+  coverImageUrl: string | null;
+  coverTitle: string;
+  protagonistName: string;
+  protagonistAge: string | null;
+  ageRange: string;
+  generalTheme: string;
+  centralMessage: string;
+  illustrationStyle: string;
+  creatorName: string | null;
+  paragraphs: string[];
+  illustrationUrls: string[];
+}
+
 const STYLE_COLORS: Record<string, string> = {
-  'Animation 3D': '#6C5CE7',
-  'Manga': '#D63031',
-  'Kawaii': '#E84393',
-  'Papier Découpé': '#E17055',
-  'Aquarelle': '#00B894',
-  'Géométrique': '#0984E3',
+  '3d-animation': '#6C5CE7',
+  'japanese-manga': '#D63031',
+  'kawaii': '#E84393',
+  'paper-cut': '#E17055',
+  'watercolor': '#00B894',
+  'geometric': '#0984E3',
 };
+
+// Libellés dérivés des listes canoniques du formulaire (types/FormTypes.ts) —
+// ces listes couvrent TOUTES les valeurs possibles, contrairement à une
+// table de correspondance écrite à la main qui finit toujours par en
+// oublier une (ex: 'family' affiché brut faute d'entrée dans le mapping).
+const STYLE_LABELS: Record<string, string> = Object.fromEntries(ILLUSTRATION_STYLES.map(s => [s.value, s.label]));
+const THEME_LABELS: Record<string, string> = Object.fromEntries(GENERAL_THEMES.map(t => [t.value, t.label]));
+const MESSAGE_LABELS: Record<string, string> = Object.fromEntries(CENTRAL_MESSAGES.map(m => [m.value, m.label]));
 
 const slidesData = [
   {
@@ -1349,11 +1379,10 @@ export const HomePage: React.FC = () => {
   const [stepKey, setStepKey] = useState(0);
   const [activeBook, setActiveBook] = useState(0);
   const [readerOpen, setReaderOpen] = useState(false);
-  const [selectedStory, setSelectedStory] = useState<typeof exampleStories[0] | null>(null);
-  const [readerData, setReaderData] = useState<{ paragraphs: string[]; illustrationUrls: string[]; creatorName?: string } | null>(null);
-  const [apiExamples, setApiExamples] = useState<any[] | null>(null);
+  const [selectedStory, setSelectedStory] = useState<HomeExampleStory | null>(null);
+  const [apiExamples, setApiExamples] = useState<HomeExampleStory[] | null>(null);
 
-  // Pré-charger les données exemples depuis l'API
+  // Charger les exemples depuis l'API (source unique — voir commentaire sur HomeExampleStory)
   useEffect(() => {
     const baseUrl = ApiService.getBaseUrl();
     fetch(`${baseUrl}/api/public/examples`)
@@ -1388,11 +1417,12 @@ const faqReveal = useScrollReveal();
 
   // Auto-play hero books
   useEffect(() => {
+    if (!apiExamples || apiExamples.length === 0) return;
     const timer = setInterval(() => {
-      setActiveBook(prev => (prev + 1) % exampleStories.length);
+      setActiveBook(prev => (prev + 1) % apiExamples.length);
     }, HERO_BOOK_DURATION);
     return () => clearInterval(timer);
-  }, []);
+  }, [apiExamples]);
 
   // Auto-play des etapes
   useEffect(() => {
@@ -1412,19 +1442,12 @@ const faqReveal = useScrollReveal();
     setStepKey(k => k + 1);
   };
 
-  const openStoryViewer = useCallback((story: typeof exampleStories[0]) => {
-    setSelectedStory(story);
-    if (!apiExamples) return;
-    // Matcher par nom du protagoniste (les IDs statiques != IDs base de données)
-    const normalize = (s: string) => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-    const match = apiExamples.find((s: any) =>
-      normalize(s.protagonistName) === normalize(story.protagonistName)
-    );
-    if (match && match.paragraphs?.length > 0) {
-      setReaderData({ paragraphs: match.paragraphs, illustrationUrls: match.illustrationUrls, creatorName: match.creatorName });
+  const openStoryViewer = useCallback((story: HomeExampleStory) => {
+    if (story.paragraphs.length > 0) {
+      setSelectedStory(story);
       setReaderOpen(true);
     }
-  }, [apiExamples]);
+  }, []);
 
   const closeStoryViewer = useCallback(() => {
     setReaderOpen(false);
@@ -1493,20 +1516,21 @@ const faqReveal = useScrollReveal();
 
             <HeroBooksBlock>
               <BookStack>
-                {exampleStories.map((story, i) => {
-                  const offset = (i - activeBook + exampleStories.length) % exampleStories.length;
+                {(apiExamples || []).map((story, i) => {
+                  const count = apiExamples!.length;
+                  const offset = (i - activeBook + count) % count;
                   const isActive = offset === 0;
                   return (
                     <BookCover
                       key={story.id}
                       $active={isActive}
-                      $offset={offset > exampleStories.length / 2 ? exampleStories.length - offset : offset}
-                      $zIndex={exampleStories.length - (offset > exampleStories.length / 2 ? exampleStories.length - offset : offset)}
+                      $offset={offset > count / 2 ? count - offset : offset}
+                      $zIndex={count - (offset > count / 2 ? count - offset : offset)}
                       onClick={() => isActive ? openStoryViewer(story) : setActiveBook(i)}
                     >
                       <img
-                        src={story.coverImage}
-                        alt={story.title}
+                        src={story.coverImageUrl || ''}
+                        alt={story.coverTitle}
                         loading={i < 2 ? 'eager' : 'lazy'}
                         crossOrigin="anonymous"
                       />
@@ -1519,7 +1543,7 @@ const faqReveal = useScrollReveal();
                   );
                 })}
                 <BookDots>
-                  {exampleStories.map((_, i) => (
+                  {(apiExamples || []).map((_, i) => (
                     <BookDot
                       key={i}
                       $active={activeBook === i}
@@ -1544,8 +1568,11 @@ const faqReveal = useScrollReveal();
             </SectionWrapper>
 
             <ShowcaseGrid>
-              {exampleStories.map((story, i) => {
+              {(apiExamples || []).map((story, i) => {
                 const styleColor = STYLE_COLORS[story.illustrationStyle] || theme.colors.accent.coral;
+                const styleLabel = STYLE_LABELS[story.illustrationStyle] || story.illustrationStyle;
+                const themeLabel = THEME_LABELS[story.generalTheme] || story.generalTheme;
+                const messageLabel = MESSAGE_LABELS[story.centralMessage] || story.centralMessage || 'Découverte';
                 return (
                   <ShowcaseCard
                     key={story.id}
@@ -1555,8 +1582,8 @@ const faqReveal = useScrollReveal();
                   >
                     <ShowcardCover>
                       <img
-                        src={story.coverImage}
-                        alt={story.title}
+                        src={story.coverImageUrl || ''}
+                        alt={story.coverTitle}
                         loading="lazy"
                         crossOrigin="anonymous"
                       />
@@ -1566,17 +1593,16 @@ const faqReveal = useScrollReveal();
                     </ShowcardCover>
                     <ShowcardInfo>
                       <ShowcardStyleBadge $color={styleColor}>
-                        {story.illustrationStyle}
+                        {styleLabel}
                       </ShowcardStyleBadge>
-                      <ShowcardTitle>{story.title}</ShowcardTitle>
+                      <ShowcardTitle>{story.coverTitle}</ShowcardTitle>
                       <ShowcardMeta>
-                        <ShowcardTag>{story.ageRange}</ShowcardTag>
-                        <ShowcardTag>{story.generalTheme}</ShowcardTag>
-                        <ShowcardTag>{story.centralMessage}</ShowcardTag>
+                        <ShowcardTag>{story.ageRange} ans</ShowcardTag>
+                        <ShowcardTag>{themeLabel}</ShowcardTag>
+                        <ShowcardTag>{messageLabel}</ShowcardTag>
                       </ShowcardMeta>
                       <ShowcardDescription>
-                        L'histoire de {story.protagonistName}, {story.protagonistAge}
-                        {story.secondaryCharacterName && `, accompagne de ${story.secondaryCharacterName}`}.
+                        L'histoire de {story.protagonistName}{story.protagonistAge ? `, ${story.protagonistAge} ans` : ''}.
                       </ShowcardDescription>
                     </ShowcardInfo>
                   </ShowcaseCard>
@@ -1842,13 +1868,13 @@ const faqReveal = useScrollReveal();
       <Footer />
 
       {/* ============ STORY READER MODAL ============ */}
-      {readerOpen && selectedStory && readerData && (
+      {readerOpen && selectedStory && (
         <StoryReader
-          coverImageUrl={(() => { const n = (s: string) => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); return apiExamples?.find((s: any) => n(s.protagonistName) === n(selectedStory.protagonistName))?.coverImageUrl || selectedStory.coverImage; })()}
-          coverTitle={selectedStory.title}
-          paragraphs={readerData.paragraphs}
-          illustrationUrls={readerData.illustrationUrls}
-          creatorName={readerData.creatorName}
+          coverImageUrl={selectedStory.coverImageUrl}
+          coverTitle={selectedStory.coverTitle}
+          paragraphs={selectedStory.paragraphs}
+          illustrationUrls={selectedStory.illustrationUrls}
+          creatorName={selectedStory.creatorName || undefined}
           protagonistName={selectedStory.protagonistName}
           onClose={closeStoryViewer}
           onCreateAnother={() => navigate('/create-story')}
